@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=6
+ATLAS_CHANGED_RELATION_COUNT=2
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,14 +40,19 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1` |
+| `CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1` |
+| `GATE:portfolio_capital_reservation_budget_v1` |
+| `NAVIGATION_INDEX:map_of_truth` |
+| `RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 | `RUNTIME_COMPONENT:od_u01_p01_29p_sizing_mint_canonical_adjudication_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:r_enter_live_29p_join_consumes_portfolio_budget` |
+| `REL:s_map_navigates_mi_forecast_calibration_offline_stack_v1` |
 
 ## NEW_RELATIONS
 
@@ -93,8 +98,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6962: OD U01/P01 three-input 29P sizing-mint adjudication (CASE D); catalog entity for od_u01_p01; od_29p successor mint-precondition link; Law Map/CSIA navigation only; no GET/POST; AUTHORITY=NONE.
+- Post-#6962 Category-A repair: treasury capital handoff fail-closed without explicit U01 acctLv witness (SEM-SURF-DIV-00004); OD/Law Map/CSIA navigation alignment; sealed 29P common-epoch/pack UNKNOWN retained; no GET/POST; AUTHORITY=NONE.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=OD_U01_P01_29P_SIZING_MINT_CANONICAL_ADJUDICATION_V1
+- modified_by=POST_6962_TREASURY_U01_WITNESS_FAIL_CLOSED_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

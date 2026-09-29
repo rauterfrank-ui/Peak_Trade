@@ -128,9 +128,23 @@ def execute_current_productive_treasury_single_source_capital_handoff_v1(
     """Delegate one margin observation through Treasury/E4/C08 then B05 29P produce."""
     if clear_treasury_idempotency:
         clear_treasury_reconciliation_idempotency_cache_v1()
-    host_inputs = u04_p01_host_inputs or build_default_full_core_u04_p01_eligibility_host_inputs_v1(
-        raw_acct_lv="2",
-    )
+    if u04_p01_host_inputs is None:
+        return _fail_closed(
+            reasons=(
+                "U04_P01_ELIGIBILITY_HOST_INPUTS_MISSING",
+                "U01_WITNESS_REQUIRED_NO_IMPLICIT_ACCT_LV_DEFAULT",
+            ),
+            treasury_class="",
+            ct_bound=False,
+        )
+    raw_acct_lv = str(u04_p01_host_inputs.u01_raw_acct_lv or "").strip()
+    if raw_acct_lv == "":
+        return _fail_closed(
+            reasons=("U01_RAW_ACCT_LV_WITNESS_MISSING",),
+            treasury_class="",
+            ct_bound=False,
+        )
+    host_inputs = u04_p01_host_inputs
     treasury_obs = build_treasury_venue_observation_from_trusted_account_balance_usdc_avail_eq_v1(
         avail_eq_raw=str(margin_observation.value),
         account_identity=str(margin_observation.bound_account_identity),

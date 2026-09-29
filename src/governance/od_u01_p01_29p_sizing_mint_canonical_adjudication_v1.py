@@ -37,8 +37,14 @@ PRODUCER: Final[str] = (
     "src/ops/governed_productive_account_equity_authority_producer_v1/"
     "current_productive_available_for_sizing_producer_v1.py"
 )
+TREASURY_HANDOFF: Final[str] = (
+    "src/ops/full_core_live_path_composition_root_v1/"
+    "current_productive_treasury_single_source_capital_handoff_v1.py"
+)
 
 DL_MINT_KEYS: Final[tuple[str, ...]] = tuple(f"DL-MINT-{i:02d}" for i in range(1, 18))
+DL_U01_WITNESS_KEYS: Final[tuple[str, ...]] = ("DL-U01-WIT-01",)
+DOMAIN_LAW_KEYS: Final[tuple[str, ...]] = DL_MINT_KEYS + DL_U01_WITNESS_KEYS
 
 
 @dataclass(frozen=True)
@@ -102,14 +108,16 @@ def validate_adjudication_against_repo_v1(
     if replay.get("replay_can_mint_29p_current") is not False:
         reasons.append("REPLAY_CAN_MINT_29P_MUST_BE_FALSE")
     laws = p.get("domain_laws", {})
-    if set(laws) != set(DL_MINT_KEYS):
-        reasons.append("DL_MINT_KEYS_INCOMPLETE")
+    if set(laws) != set(DOMAIN_LAW_KEYS):
+        reasons.append("DOMAIN_LAW_KEYS_MISMATCH")
     if laws.get("DL-MINT-08") != "UNKNOWN_CURRENT":
         reasons.append("DL_MINT_08_SEALED_EPOCH_MUST_BE_UNKNOWN")
     if laws.get("DL-MINT-16") != "UNKNOWN_CURRENT":
         reasons.append("DL_MINT_16_PACK_MUST_BE_UNKNOWN")
-    proven_count = sum(1 for v in laws.values() if v == "PROVEN_CURRENT")
-    if proven_count != 15:
+    if laws.get("DL-U01-WIT-01") != "PROVEN_CURRENT":
+        reasons.append("DL_U01_WIT_01_MUST_BE_PROVEN_CURRENT")
+    proven_mint = sum(1 for k in DL_MINT_KEYS if laws.get(k) == "PROVEN_CURRENT")
+    if proven_mint != 15:
         reasons.append("EXPECTED_15_DL_MINT_PROVEN_CURRENT")
 
     numeric = json.loads((repo_root / NUMERIC_ADJ).read_text(encoding="utf-8"))
@@ -172,6 +180,21 @@ def validate_adjudication_against_repo_v1(
         reasons.append("RISK_FRACTION_MUST_NOT_APPLY_AT_MINT")
     if risk.get("u04_reapplication_at_mint") is not False:
         reasons.append("U04_REAPPLICATION_MUST_BE_FALSE")
+
+    treasury = (repo_root / TREASURY_HANDOFF).read_text(encoding="utf-8")
+    for token in (
+        "U01_WITNESS_REQUIRED_NO_IMPLICIT_ACCT_LV_DEFAULT",
+        "U01_RAW_ACCT_LV_WITNESS_MISSING",
+        "U04_P01_ELIGIBILITY_HOST_INPUTS_MISSING",
+    ):
+        if token not in treasury:
+            reasons.append(f"TREASURY_U01_WITNESS_GUARD_MISSING_{token}")
+    if 'raw_acct_lv="2"' in treasury and "u04_p01_host_inputs or" in treasury:
+        reasons.append("TREASURY_MUST_NOT_IMPLICIT_DEFAULT_ACCT_LV_2")
+    divs = p.get("semantic_divergences", [])
+    div04 = next((d for d in divs if d.get("id") == "SEM-SURF-DIV-00004"), None)
+    if div04 is None or div04.get("status") != "PROVEN_CURRENT":
+        reasons.append("SEM_SURF_DIV_00004_MUST_BE_PROVEN_AFTER_REPAIR")
 
     return (len(reasons) == 0, tuple(reasons))
 

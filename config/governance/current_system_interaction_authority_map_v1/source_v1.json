@@ -4707,7 +4707,7 @@
     {
       "id": "account_equity_mapping_unbound",
       "epistemic_class": "PARTIAL",
-      "statement": "Full-Core Source→Semantic mapping for RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING is ratified (details[ccy=USDC].availEq via producer wrap, DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01); 29P fresh-trusted numeric venue bind (OD_29P_FRESH_TRUSTED_NUMERIC_VENUE_BIND); U01 eligibility + P01 standing directive + three-input sizing-mint join (OD_U01_P01_29P_SIZING_MINT) adjudicated at contract level; sealed normative 29P common epoch/venue number, productive GET execution, and Companion C2 remain unbound.",
+      "statement": "Full-Core Source→Semantic mapping for RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING is ratified (details[ccy=USDC].availEq via producer wrap, DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01); 29P fresh-trusted numeric venue bind (OD_29P_FRESH_TRUSTED_NUMERIC_VENUE_BIND); U01 eligibility + P01 standing directive + three-input sizing-mint join (OD_U01_P01_29P_SIZING_MINT) adjudicated; treasury handoff fail-closed without explicit U01 acctLv witness (SEM-SURF-DIV-00004 repaired); sealed normative 29P common epoch/venue number, productive GET execution, and Companion C2 remain unbound.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",

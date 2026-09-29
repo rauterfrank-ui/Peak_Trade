@@ -57,6 +57,11 @@ and numeric base, then `produce_current_productive_29p_risk_capital_v1` mints ty
 - No Master V2 / Double Play mutation.
 - Does not authorize `OD_EXTERNAL_EFFECT`.
 
+## Treasury U01 witness (SEM-SURF-DIV-00004)
+
+`execute_current_productive_treasury_single_source_capital_handoff_v1` requires explicit
+`u04_p01_host_inputs` with non-empty `u01_raw_acct_lv`. No implicit `acctLv=2` default.
+
 ## Remaining owner boundary
 
 `OD_SEALED_VENUE_29P_NORMATIVE`: sealed common-epoch semantics and full 29P normative

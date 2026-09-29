@@ -408,7 +408,7 @@
       "law_id": "OD-U01-P01-29P-SIZING-MINT-ADJUDICATION-V1",
       "canonical_source": "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json",
       "canonical_anchor": "od_u01_p01_29p_sizing_mint_canonical_adjudication_v1",
-      "source_sha256": "f5ae93b707e10601b2b977af3c45d35fd7c2356d29c1fe86af1c2fa273bd4016",
+      "source_sha256": "41251fed80f5292ac278fb44246210f7ce88d137999a369c71a63aff3e222533",
       "source_authority_class": "RUNBOOK",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",
@@ -1697,8 +1697,8 @@
         "tests/governance/test_od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py",
         "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json"
       ],
-      "base_sha": "6268fab255353ceed84384051de1c045232f3a4c",
-      "head_sha": "6268fab255353ceed84384051de1c045232f3a4c",
+      "base_sha": "490a9fedb0c075903dbd80fec63d7f476158a393",
+      "head_sha": "490a9fedb0c075903dbd80fec63d7f476158a393",
       "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
     },
     {
