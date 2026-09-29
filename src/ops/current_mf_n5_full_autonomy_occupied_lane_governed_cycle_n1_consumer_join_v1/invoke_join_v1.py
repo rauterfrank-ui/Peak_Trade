@@ -487,6 +487,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     live_29p_injected: CurrentProductiveEnterLive29PInjectedGetV1 | None = None,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
     canonical_price_provenance: object | None = None,
+    canonical_price_provenance_by_lane: Mapping[str, object] | None = None,
     portfolio_budget_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
     common_epoch_decision_epoch: str | None = None,
 ) -> dict[str, OccupiedLaneGovernedCycleN1ConsumerResultV1]:
@@ -501,7 +502,9 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         _fail(FAILURE_ORIGIN_MAIN_SHA, OWNER)
     if candles_payload is None:
         _fail(FAILURE_INJECTED_C1_REQUIRED, OWNER)
-    if canonical_price_provenance is None:
+    if canonical_price_provenance_by_lane is not None and canonical_price_provenance is not None:
+        _fail(FAILURE_AUTHORITY, "dual_canonical_price_provenance_forbidden")
+    if canonical_price_provenance_by_lane is None and canonical_price_provenance is None:
         _fail(FAILURE_AUTHORITY, "canonical_price_provenance")
     prefix = str(cycle_id_prefix or "").strip()
     if not prefix:
@@ -519,11 +522,23 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             _fail(FAILURE_OCCUPANCY, lane_id)
     addressed = bind_occupied_lane_governed_cycle_store_roots_v1(composed_pairs)
     occupancy = dict(occupancy_payloads) if occupancy_payloads is not None else _occupancy_absent()
+    base_mark_px = mark_px
+    base_index_px = index_px
+    base_provenance: object | None = canonical_price_provenance
+    if canonical_price_provenance_by_lane is not None:
+        first_lane = next(iter(composed_pairs))
+        base_provenance = canonical_price_provenance_by_lane.get(first_lane)
+        if base_provenance is None:
+            _fail(FAILURE_AUTHORITY, f"canonical_price_provenance_by_lane:{first_lane}")
+        base_mark_px = float(getattr(base_provenance, "mark_px", mark_px))
+        base_index_px = float(getattr(base_provenance, "index_px", index_px))
+    if base_provenance is None:
+        _fail(FAILURE_AUTHORITY, "canonical_price_provenance")
     s7_base = _s7_kwargs(
         cycle_id_prefix=prefix,
         observed_unix=observed_unix,
-        mark_px=mark_px,
-        index_px=index_px,
+        mark_px=base_mark_px,
+        index_px=base_index_px,
         bid_px=bid_px,
         ask_px=ask_px,
         volume=volume,
@@ -534,7 +549,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         venue_flat=venue_flat,
         existing_position_side=existing_position_side,
         g17_typed_vol_producers=g17_typed_vol_producers,
-        canonical_price_provenance=canonical_price_provenance,
+        canonical_price_provenance=base_provenance,
     )
     results: dict[str, OccupiedLaneGovernedCycleN1ConsumerResultV1] = {}
     for lane_id in LANE_IDS:
@@ -551,6 +566,13 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             _fail(FAILURE_NATIVE_ID_MISSING, lane_id)
         lane_pairs = {lane_id: pair}
         lane_s7 = dict(s7_base)
+        if canonical_price_provenance_by_lane is not None:
+            lane_prov = canonical_price_provenance_by_lane.get(lane_id)
+            if lane_prov is None:
+                _fail(FAILURE_AUTHORITY, f"canonical_price_provenance_by_lane:{lane_id}")
+            lane_s7["canonical_price_provenance"] = lane_prov
+            lane_s7["mark_px"] = float(getattr(lane_prov, "mark_px", lane_s7["mark_px"]))
+            lane_s7["index_px"] = float(getattr(lane_prov, "index_px", lane_s7["index_px"]))
         if g17_typed_vol_producers is not None:
             if lane_id not in g17_typed_vol_producers:
                 _fail(FAILURE_S8_ROOTS_MISSING, f"g17:{lane_id}")

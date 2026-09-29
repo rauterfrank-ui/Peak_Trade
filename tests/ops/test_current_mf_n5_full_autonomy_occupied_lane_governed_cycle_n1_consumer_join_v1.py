@@ -257,7 +257,12 @@ def _mv2_aligned_candles(*, last_ts_ms: int, mark_px: float) -> dict[str, object
     return {"code": "0", "data": rows}
 
 
-def _market_kwargs(*, cycle_id_prefix: str, last_ts: float = C1_TS) -> dict[str, object]:
+def _market_kwargs(
+    *,
+    cycle_id_prefix: str,
+    last_ts: float = C1_TS,
+    venue_native_id: str = "VENUE-HARNESS",
+) -> dict[str, object]:
     from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
         build_provenance_from_governed_synthetic_close_mark_and_index_v1,
     )
@@ -272,7 +277,7 @@ def _market_kwargs(*, cycle_id_prefix: str, last_ts: float = C1_TS) -> dict[str,
         "mark_px": mark_px,
         "index_px": index_px,
         "canonical_price_provenance": build_provenance_from_governed_synthetic_close_mark_and_index_v1(
-            venue_native_id="VENUE-HARNESS",
+            venue_native_id=str(venue_native_id),
             mark_px=mark_px,
             index_px=index_px,
         ),

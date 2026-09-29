@@ -28,11 +28,16 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1
     OccupiedLaneN1HostJoinReadinessProjectionV1,
     compose_occupied_lane_n1_host_join_readiness_v1,
 )
+from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.cap24_lane_canonical_price_provenance_compose_v1 import (
+    Cap24LaneCanonicalPriceProvenanceComposeError,
+    build_n5_lane_canonical_price_provenance_from_cap24_v1,
+)
 from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.constants_v1 import (
     AUTONOMY_TRADING_DECISION_AUTHORITY,
     EXECUTION_SCHEDULE,
     EXTERNAL_EFFECT_AUTHORIZED,
     FAILURE_AUTHORITY,
+    FAILURE_CAP24_PROVENANCE,
     FAILURE_CARDINALITY,
     FAILURE_EXTERNAL_EFFECT,
     FAILURE_FORBIDDEN_KWARG,
@@ -208,6 +213,32 @@ def _assert_lane_root_isolation(rollups: tuple[ProductiveFullAutonomyN5LaneRollu
             seen[root] = f"{rollup.lane_id}:{role}"
 
 
+def _inject_cap24_lane_canonical_price_provenance_v1(
+    selected_pairs: Mapping[str, tuple[Any, BoundInstrumentV1]],
+    cap24_bind: ProductiveFullAutonomyCap24BindContextV1,
+    readiness_kwargs: dict[str, Any],
+) -> None:
+    """Replace caller provenance with Cap24-sidecar-aligned per-lane witnesses."""
+
+    index_px = readiness_kwargs.get("index_px")
+    if index_px is None:
+        _fail(FAILURE_CAP24_PROVENANCE, "index_px_required")
+    try:
+        by_lane = build_n5_lane_canonical_price_provenance_from_cap24_v1(
+            selected_pairs,
+            cap24_bind.mark_price_by_native_id,
+            index_px=float(index_px),
+        )
+    except Cap24LaneCanonicalPriceProvenanceComposeError as exc:
+        _fail(FAILURE_CAP24_PROVENANCE, str(exc))
+    readiness_kwargs.pop("canonical_price_provenance", None)
+    readiness_kwargs["canonical_price_provenance_by_lane"] = by_lane
+    if len(by_lane) == 1:
+        only = next(iter(by_lane.values()))
+        readiness_kwargs["mark_px"] = float(only.mark_px)
+        readiness_kwargs["index_px"] = float(only.index_px)
+
+
 def _rollup_from_readiness(
     projections: Mapping[str, OccupiedLaneN1HostJoinReadinessProjectionV1],
 ) -> tuple[ProductiveFullAutonomyN5LaneRollupV1, ...]:
@@ -311,6 +342,11 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
     )
     readiness_kwargs = dict(cycle_kwargs)
     readiness_kwargs["origin_main_sha"] = origin_main_sha
+    _inject_cap24_lane_canonical_price_provenance_v1(
+        selected_pairs,
+        cap24_bind,
+        readiness_kwargs,
+    )
     readiness = compose_occupied_lane_n1_host_join_readiness_v1(
         selected_pairs,
         portfolio_budget_owner=owner,
@@ -328,11 +364,19 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
 
     completion: OccupiedLaneRuntimeN5CompletionResultV1 | None = None
     if include_host_completion_rollup:
+        completion_kwargs = {
+            k: v for k, v in cycle_kwargs.items() if k not in FORBIDDEN_COMPOSE_KWARGS
+        }
+        _inject_cap24_lane_canonical_price_provenance_v1(
+            selected_pairs,
+            cap24_bind,
+            completion_kwargs,
+        )
         completion = run_occupied_lane_runtime_n5_completion_v1(
             selected_pairs,
             target_cardinality=target,
             origin_main_sha=origin_main_sha,
-            **{k: v for k, v in cycle_kwargs.items() if k not in FORBIDDEN_COMPOSE_KWARGS},
+            **completion_kwargs,
         )
         if int(completion.post_count) != 0 or completion.permit_created:
             _fail(FAILURE_EXTERNAL_EFFECT, OWNER)
