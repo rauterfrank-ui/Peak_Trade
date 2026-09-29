@@ -1829,6 +1829,7 @@ relations:
   notes: Package containment of the offline Core-to-Live composition root. Containment is not Live authorization. Atlas is
     not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:s_map_navigates_mi_forecast_calibration_offline_stack_v1
+  # atlas_entity_review: PR #6978 governance currency closure — generated atlas refresh only; NAVIGATION_ONLY edge unchanged; ATLAS_AUTHORITY=NONE.
   # atlas_entity_review: OD_ACCOUNT_EQUITY_SIZING_SOURCE PR #6960 — NAVIGATION_ONLY edge unchanged; CSIA source touch only; ATLAS_AUTHORITY=NONE.
   # atlas_entity_review: Post-6934/PR #6935 — NAVIGATION_ONLY edge unchanged; CSIA source touch only; ATLAS_AUTHORITY=NONE.
   # atlas_entity_review: Post-6933 governance closure — NAVIGATION_ONLY edge unchanged; CSIA source touch only; ATLAS_AUTHORITY=NONE.

@@ -5,6 +5,7 @@
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json",
+    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
     "docs/governance/current_law_impact_map_v1/generated/semantic_object_index_v1.md",
     "docs/ops/specs/HISTORICALLY_ATTESTED_CURRENT_SYSTEM_SEMANTIC_RESTORATION_ADMISSION_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
@@ -12,18 +13,22 @@
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "docs/system_atlas/provenance/impact_state.yaml"
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "docs/system_atlas/relations/structural.yaml",
+    "evidence/ops/double_play_productive_host_e2e_golden_vector_v1/20260929T220100Z/WP_DOUBLE_PLAY_PRODUCTIVE_HOST_E2E_GOLDEN_VECTOR_V1.json",
+    "evidence/ops/double_play_productive_host_e2e_golden_vector_v1/20260929T220100Z/golden_vector_contract_matrix.json"
   ],
-  "changed_paths_sha256": "0afb64af59591df5be06ab74abaddf95076ad35594d5411f2d6df043f1a9dbb4",
+  "changed_paths_sha256": "c914963562c319ac79254c63d5493c4b9d9a4495697a7bc8b494171dbf4d657d",
   "base_sha": "2bed43a47735cc633e5e4da52ba02b4303747cd2",
   "authority_effect": "NONE",
   "covered_candidate_paths": [],
   "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
   "verdict": "LAW_MAP_UPDATE_REQUIRED",
-  "reason": "PR #6978 post-merge governance currency closure: law map navigation for sobj_double_play_old_effective_host_contract + canonical price provenance evidence refs; AUTHORITY=NONE.",
-  "selector_used_as_law_impact_authority": false,
+  "reason": "PR #6978 post-merge governance currency closure: law map G17 census SHA refresh + sobj_double_play_old_effective_host_contract navigation; AUTHORITY=NONE.",
+  "selector_used_as_map_impact_authority": false,
   "evidence_refs": [
     "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/historically_attested_current_system_semantic_restoration_authorization_v1.json"
-  ]
+  ],
+  "selector_used_as_law_impact_authority": false
 }
