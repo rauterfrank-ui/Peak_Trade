@@ -1,41 +1,33 @@
 {
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/source_v1.json",
-    "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/guidance/capability_dependency_closures.yaml",
-    "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
-    "src/ops/single_selected_future_runtime_binding_v1/cap24_runtime_binding_witness_epoch_v1.py",
-    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py",
-    "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py"
+    "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/MANIFEST.json",
+    "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/peak_trade_dp_bear_short_symmetry_v1.json",
+    "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/peak_trade_dp_bear_short_symmetry_v1.md",
+    "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/peak_trade_dp_golden_vector_natural_enter_v1.json",
+    "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/peak_trade_dp_golden_vector_natural_enter_v1.md"
   ],
-  "changed_paths_sha256": "ee290f6eaf9276d2b8c13a1d61b0e5fb13d7c48dfcff033458b9ae3112bcce77",
-  "base_sha": "7a3597e61966749a9e30d06f3514e23a9179fb9e",
+  "changed_paths_sha256": "ab2fc4dbf58799cb890cf3c687187debcbac702b7a7ac9ebcd756ffe670a55c9",
+  "base_sha": "0353b45e8623c0188359fcfb1e50ec8359bcc847",
   "authority_effect": "NONE",
   "covered_candidate_paths": [
-    "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
-    "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
-    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
-    "src/ops/single_selected_future_runtime_binding_v1/cap24_runtime_binding_witness_epoch_v1.py",
-    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py",
-    "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py"
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
+    "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/MANIFEST.json",
+    "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/peak_trade_dp_bear_short_symmetry_v1.json",
+    "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/peak_trade_dp_bear_short_symmetry_v1.md",
+    "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/peak_trade_dp_golden_vector_natural_enter_v1.json",
+    "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/peak_trade_dp_golden_vector_natural_enter_v1.md"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "PR #6980: Cap24 runtime binding witness epoch + Owner-GO baseline re-pin 7a3597e; CSIA partial + Atlas catalog/closures; integration-only; AUTHORITY=NONE; POST_COUNT=0.",
+  "verdict": "NO_MAP_IMPACT",
+  "reason": "PR #6981: evidence-only preserve of bilateral DP natural-enter golden-vector proof artifacts under evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/; docs-token illustrative path encoding; register evidence prefix as impact candidate; no CSIA semantic/authority mutation; AUTHORITY=NONE; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
   "evidence_refs": [
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/system_atlas/provenance/changes.yaml",
-    "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py"
+    "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/MANIFEST.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json"
   ]
 }

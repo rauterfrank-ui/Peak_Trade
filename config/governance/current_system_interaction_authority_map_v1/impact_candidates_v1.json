@@ -509,6 +509,7 @@
     "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
     "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
     "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
-    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py"
+    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py",
+    "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/"
   ]
 }

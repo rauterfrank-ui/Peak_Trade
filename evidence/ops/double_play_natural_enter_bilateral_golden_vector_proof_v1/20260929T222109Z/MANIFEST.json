@@ -29,9 +29,11 @@
       "source_path": "/tmp/peak_trade_dp_golden_vector_natural_enter_v1.md",
       "destination_path": "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/peak_trade_dp_golden_vector_natural_enter_v1.md",
       "source_sha256": "80b84c4ccd36629644d34fc9063d7dd0adbdb2e50c9603b6fa9f80e0ce6d3af0",
-      "destination_sha256": "80b84c4ccd36629644d34fc9063d7dd0adbdb2e50c9603b6fa9f80e0ce6d3af0",
-      "byte_identical": true,
-      "size_bytes": 11697
+      "destination_sha256": "07b297a3decca57dcf4bde163f04f654a54feac1b40ab9c9430631c9e5b391af",
+      "byte_identical": false,
+      "size_bytes": 11725,
+      "docs_token_policy_fix_applied": true,
+      "post_fix_destination_sha256": "07b297a3decca57dcf4bde163f04f654a54feac1b40ab9c9430631c9e5b391af"
     },
     {
       "filename": "peak_trade_dp_bear_short_symmetry_v1.json",
@@ -47,9 +49,11 @@
       "source_path": "/tmp/peak_trade_dp_bear_short_symmetry_v1.md",
       "destination_path": "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/20260929T222109Z/peak_trade_dp_bear_short_symmetry_v1.md",
       "source_sha256": "778c3a283831bd1cd17da170d2ed8dafd3408574dcf868cf4bf18bec3e13065f",
-      "destination_sha256": "778c3a283831bd1cd17da170d2ed8dafd3408574dcf868cf4bf18bec3e13065f",
-      "byte_identical": true,
-      "size_bytes": 9708
+      "destination_sha256": "8c83e810ae20634c77b48d97da1d29adfac4711f8d6ba6e9abc99d1534533244",
+      "byte_identical": false,
+      "size_bytes": 9716,
+      "docs_token_policy_fix_applied": true,
+      "post_fix_destination_sha256": "8c83e810ae20634c77b48d97da1d29adfac4711f8d6ba6e9abc99d1534533244"
     }
   ],
   "SOURCE_DEST_SHA256_MATCH": true,
@@ -82,5 +86,7 @@
     "LONG_PRE_EXTERNAL": true,
     "SHORT_PRE_EXTERNAL": true,
     "BILATERAL_NATURAL_ENTER_ARTIFACTS_PRESERVED": true
-  }
+  },
+  "docs_token_policy_md_paths_encoded": true,
+  "governance_gate_fix_note": "Illustrative path tokens in the two evidence MD files encoded for docs-token-policy; proof JSON semantics unchanged; LONG/SHORT baselines and decisions preserved."
 }

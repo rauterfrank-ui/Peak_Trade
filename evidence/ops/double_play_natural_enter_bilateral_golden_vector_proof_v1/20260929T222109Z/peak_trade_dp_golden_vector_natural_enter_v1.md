@@ -6,8 +6,8 @@ STATUS: GOLDEN_VECTOR_ENTER_PROVEN
 
 ## Golden Vector
 
-- SOURCE: `tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py::run_natural_enter_long_sequence_for_governed_pre_external_v1`
-- HARNESS: `evidence/ops/double_play_productive_host_e2e_golden_vector_v1/20260929T220100Z/e2e_forensic_harness_v1.py::_forensic_productive_enter_long / contract FORENSIC_PRODUCTIVE_ENTER_LONG`
+- SOURCE: `tests&#47;ops&#47;_current_productive_natural_mv2_dp_enter_fixture_v1.py::run_natural_enter_long_sequence_for_governed_pre_external_v1`
+- HARNESS: `evidence&#47;ops&#47;double_play_productive_host_e2e_golden_vector_v1&#47;20260929T220100Z&#47;e2e_forensic_harness_v1.py::_forensic_productive_enter_long &#47; contract FORENSIC_PRODUCTIVE_ENTER_LONG`
 - EXPECTS_ENTER: True
 - EXPECTED_SIDE/DECISION/CONFIRMATION: LONG / enter_long / CONFIRMED
 - CURRENT_DECISION/SIDE: enter_long / LONG

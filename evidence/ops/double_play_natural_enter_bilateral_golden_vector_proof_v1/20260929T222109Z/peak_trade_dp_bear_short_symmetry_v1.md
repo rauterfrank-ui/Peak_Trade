@@ -11,7 +11,7 @@ integrated_offline_trading_logic_replay_v1: single-lane C3 — bull_assessment/b
 
 ## Short vector
 
-SOURCE: `tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py::run_natural_enter_short_sequence_for_bound_v1`
+SOURCE: `tests&#47;ops&#47;_current_productive_natural_mv2_dp_enter_fixture_v1.py::run_natural_enter_short_sequence_for_bound_v1`
 ENTRY_SHORT_OBSERVED: True
 PRE_EXTERNAL_REACHED: True
 MAX_BEAR_CONFIRMATION: confirmed:2
