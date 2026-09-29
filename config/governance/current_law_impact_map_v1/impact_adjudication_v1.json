@@ -7,6 +7,7 @@
     "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
     "docs/governance/current_law_impact_map_v1/generated/surface_census_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
     "docs/system_atlas/entities/catalog.yaml",
@@ -29,19 +30,16 @@
     "tests/ops/test_p5_10_productive_activation_and_binding_v1.py",
     "tests/test_ranking_universe_to_full_core_ssf_handoff_contract_v1.py"
   ],
-  "changed_paths_sha256": "d7e5cd2ab79cddd2e06e3c6ab3e852fa38087898cb20843000cdbac67c50d9b3",
+  "changed_paths_sha256": "342bd49284878a2076d2f7495b314d68c45d3903338184fffd6eadc8d801e39c",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/source_v1.json",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_native_full_cycle_host_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py"
   ],
   "evidence_refs": [
     "config/governance/current_law_impact_map_v1/source_v1.json",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
-    "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py",
-    "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+    "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py"
   ],
   "selector_used_as_law_impact_authority": false,
   "verdict": "LAW_MAP_UPDATE_REQUIRED",
-  "reason": "L019/DIV-001: SEM-SURF-DIV-00004 synthetic mark provenance closure; law reference sha256 refresh; AUTHORITY=NONE."
+  "reason": "L019/DIV-001: SEM-SURF-DIV-00004 synthetic mark provenance closure; regenerated law_reference_index; AUTHORITY=NONE."
 }
