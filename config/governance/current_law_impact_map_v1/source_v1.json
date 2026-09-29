@@ -837,7 +837,9 @@
       "code_surfaces": [
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py",
-        "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py"
+        "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py",
+        "src/ops/single_selected_future_runtime_binding_v1/cap24_runtime_binding_witness_epoch_v1.py",
+        "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py"
       ],
       "config_surfaces": [],
       "law_ref_ids": [
@@ -846,7 +848,9 @@
       ],
       "evidence_refs": [
         "src/ops/single_selected_future_runtime_binding_v1/constants_v1.py",
+        "src/ops/single_selected_future_runtime_binding_v1/cap24_runtime_binding_witness_epoch_v1.py",
         "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py",
+        "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py",
         "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
       ],
       "csia_record_id": "runtime_binding_cap24"
