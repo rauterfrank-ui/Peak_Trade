@@ -13,11 +13,11 @@ from scripts.ops.law_map_v1.surface_census_v1 import file_sha256, law_ref, sobj
 REPO_ROOT = Path(__file__).resolve().parents[3]
 SOURCE_PATH = REPO_ROOT / "config/governance/current_law_impact_map_v1/source_v1.json"
 UCS_WORKSET = REPO_ROOT / "config/governance/current_law_impact_map_v1/ucs_frozen_workset_v1.json"
-R29_JSON = REPO_ROOT / "config/governance/current_law_impact_map_v1/remaining_29_frozen_workset_v1.json"
-RUNBOOK = "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
-EQUITY_RAT = (
-    "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json"
+R29_JSON = (
+    REPO_ROOT / "config/governance/current_law_impact_map_v1/remaining_29_frozen_workset_v1.json"
 )
+RUNBOOK = "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+EQUITY_RAT = "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json"
 
 POST_MERGE_BASELINE_SHA = "e2a3dbdb202edb32f01a30da488538b40976b26a"
 CENSUS_ID = "REMAINING_29_EVIDENCE_EXHAUSTION_V1"
@@ -118,7 +118,9 @@ def _build_rows() -> list[ExhaustionRow]:
                 f"{p}/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py",
                 "GENUINELY_CANONICAL_OWNER_BLOCKED",
                 "UNKNOWN_CURRENT",
-                (f"{p}/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py",),
+                (
+                    f"{p}/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py",
+                ),
                 "No Master Runbook DEFINITION_SCHEMA_PATH or CURRENT spec naming this freshness seam.",
                 OWNER_DECISION_EXTERNAL_EFFECT,
                 pins=("unk_sealed_venue_number_29p",),
@@ -128,7 +130,10 @@ def _build_rows() -> list[ExhaustionRow]:
                 f"{p}/full_core_live_path_composition_root_v1/current_productive_occupancy_classify_and_c1_gate_v1.py",
                 "GENUINELY_CANONICAL_OWNER_BLOCKED",
                 "UNKNOWN_CURRENT",
-                (f"{p}/full_core_live_path_composition_root_v1/current_productive_occupancy_classify_and_c1_gate_v1.py", RUNBOOK),
+                (
+                    f"{p}/full_core_live_path_composition_root_v1/current_productive_occupancy_classify_and_c1_gate_v1.py",
+                    RUNBOOK,
+                ),
                 "Relocated classify/gate tokens without durable CURRENT spec owner in CSIA domains.",
                 OWNER_DECISION_EXTERNAL_EFFECT,
             ),
@@ -176,7 +181,10 @@ def _build_rows() -> list[ExhaustionRow]:
                 f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
                 "GENUINELY_CANONICAL_OWNER_BLOCKED",
                 "UNKNOWN_CURRENT",
-                (EQUITY_RAT, "tests/ops/test_full_core_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py"),
+                (
+                    EQUITY_RAT,
+                    "tests/ops/test_full_core_current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
+                ),
                 "Trusted GET sizing value vs account-equity mapping CSIA PARTIAL (account_equity_mapping_unbound).",
                 OWNER_DECISION_ACCOUNT_EQUITY,
                 pins=("unk_account_equity_sizing_source",),
@@ -201,7 +209,10 @@ def _build_rows() -> list[ExhaustionRow]:
                 f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py",
                 "GENUINELY_CANONICAL_OWNER_BLOCKED",
                 "UNKNOWN_CURRENT",
-                ("tests/ops/test_full_core_current_productive_29p_risk_capital_model_v1.py", RUNBOOK),
+                (
+                    "tests/ops/test_full_core_current_productive_29p_risk_capital_model_v1.py",
+                    RUNBOOK,
+                ),
                 "Risk capital vs treasury/B05 equity identity not proven.",
                 OWNER_DECISION_SEALED_29P,
             ),
@@ -260,7 +271,9 @@ def _build_rows() -> list[ExhaustionRow]:
                 f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_reserved_productivity_root_guard_v1.py",
                 "GENUINELY_CANONICAL_OWNER_BLOCKED",
                 "UNKNOWN_CURRENT",
-                (f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_reserved_productivity_root_guard_v1.py",),
+                (
+                    f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_reserved_productivity_root_guard_v1.py",
+                ),
                 "No CURRENT spec/runbook DEFINITION_SCHEMA for guard semantics.",
                 OWNER_DECISION_CAP24_MARK,
                 pins=("unk_cap24_l1_productive_mark_provenance",),
@@ -270,7 +283,9 @@ def _build_rows() -> list[ExhaustionRow]:
                 f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",
                 "GENUINELY_CANONICAL_OWNER_BLOCKED",
                 "UNKNOWN_CURRENT",
-                (f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",),
+                (
+                    f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",
+                ),
                 "29P handoff epoch; sealed venue pin OPEN.",
                 OWNER_DECISION_SEALED_29P,
                 pins=("unk_sealed_venue_number_29p",),
@@ -280,7 +295,10 @@ def _build_rows() -> list[ExhaustionRow]:
                 f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_credential_join_v1.py",
                 "GENUINELY_CANONICAL_OWNER_BLOCKED",
                 "UNKNOWN_CURRENT",
-                (f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_credential_join_v1.py", RUNBOOK),
+                (
+                    f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_credential_join_v1.py",
+                    RUNBOOK,
+                ),
                 "Execute-network credential join; checkout_independent runbook defs name different surfaces.",
                 OWNER_DECISION_EXTERNAL_EFFECT,
             ),
@@ -289,7 +307,9 @@ def _build_rows() -> list[ExhaustionRow]:
                 f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_read_credential_loader_v1.py",
                 "GENUINELY_CANONICAL_OWNER_BLOCKED",
                 "UNKNOWN_CURRENT",
-                (f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_read_credential_loader_v1.py",),
+                (
+                    f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_read_credential_loader_v1.py",
+                ),
                 "Credential loader authority not indexed in CURRENT runbook definition schema.",
                 OWNER_DECISION_EXTERNAL_EFFECT,
             ),
@@ -669,6 +689,9 @@ def render_markdown(artifact: dict[str, Any]) -> str:
 def write_artifact() -> dict[str, Any]:
     artifact = build_artifact()
     R29_JSON.write_text(json.dumps(artifact, indent=2) + "\n", encoding="utf-8")
-    md = REPO_ROOT / "docs/governance/current_law_impact_map_v1/generated/remaining_29_evidence_exhaustion_v1.md"
+    md = (
+        REPO_ROOT
+        / "docs/governance/current_law_impact_map_v1/generated/remaining_29_evidence_exhaustion_v1.md"
+    )
     md.write_text(render_markdown(artifact), encoding="utf-8")
     return artifact
