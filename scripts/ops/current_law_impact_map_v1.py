@@ -57,7 +57,6 @@ MAP_SURFACE_PATHS = (
 REQUIRED_UNKNOWN_IDS = (
     "unk_mt_l5_nullline_identity",
     "unk_double_play_slot_crs_handoff",
-    "unk_sealed_venue_number_29p",
 )
 
 

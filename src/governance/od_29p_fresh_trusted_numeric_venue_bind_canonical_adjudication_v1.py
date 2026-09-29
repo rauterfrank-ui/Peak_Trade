@@ -69,8 +69,13 @@ def validate_adjudication_against_repo_v1(
         reasons.append("INDEPENDENCE_GATE_MUST_PASS")
     if p.get("numeric_venue_bind_resolved") is not True:
         reasons.append("NUMERIC_VENUE_BIND_MUST_BE_RESOLVED")
-    if p.get("unk_sealed_venue_number_29p_status") != "UNKNOWN_CURRENT":
-        reasons.append("SEALED_29P_MUST_REMAIN_UNKNOWN")
+    unk = p.get("unk_sealed_venue_number_29p_status")
+    if unk == "UNKNOWN_CURRENT":
+        reasons.append("SEALED_29P_MUST_NOT_REMAIN_UNKNOWN")
+    if p.get("successor_owner_ratification") != "OD-29P-NORMATIVE-PACK-V1":
+        reasons.append("SUCCESSOR_OD_29P_PACK_MISSING")
+    if p.get("29p_normative_pack_identity_status") != "RATIFIED_CURRENT":
+        reasons.append("PACK_IDENTITY_MUST_BE_RATIFIED")
     if p.get("replay_can_mint_freshness") is not False:
         reasons.append("REPLAY_CAN_MINT_FRESHNESS_MUST_BE_FALSE")
     prior = json.loads((repo_root / PRIOR_SIZING_ADJ).read_text(encoding="utf-8"))

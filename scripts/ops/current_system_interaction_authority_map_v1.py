@@ -67,7 +67,6 @@ OPEN_CLASSES = ("UNKNOWN", "CONFLICTING", "PARTIAL")
 
 REQUIRED_UNKNOWN_IDS = (
     "double_play_slot_crs_handoff",
-    "sealed_venue_number_29p",
     "offline_instrument_literal_quantity_effect",
     "test_or_script_only_diff_authority_edge",
 )

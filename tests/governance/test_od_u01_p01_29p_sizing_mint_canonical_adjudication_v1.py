@@ -49,10 +49,11 @@ def test_u01_p01_mint_adjudication_loads_and_validates() -> None:
 def test_dl_mint_laws_indexed() -> None:
     laws = json.loads((REPO / ADJUDICATION_CONFIG).read_text(encoding="utf-8"))["domain_laws"]
     assert set(laws) == set(DOMAIN_LAW_KEYS)
-    assert laws["DL-MINT-08"] == "UNKNOWN_CURRENT"
-    assert laws["DL-MINT-16"] == "UNKNOWN_CURRENT"
+    assert laws["DL-MINT-08"] == "RATIFIED_CURRENT"
+    assert laws["DL-MINT-16"] == "RATIFIED_CURRENT"
     assert laws["DL-U01-WIT-01"] == "PROVEN_CURRENT"
     assert sum(1 for k in DL_MINT_KEYS if laws[k] == "PROVEN_CURRENT") == 15
+    assert sum(1 for k in DL_MINT_KEYS if laws[k] == "RATIFIED_CURRENT") == 2
 
 
 def test_u01_p01_align_with_6960_6961_without_reopening() -> None:
@@ -80,13 +81,12 @@ def test_semantic_ids_match_runtime_constants() -> None:
     assert P01_DOES_NOT_APPLY in json.dumps(payload["p01"])
 
 
-def test_sem_surf_div_00004_repaired_and_sealed_pack_still_unknown() -> None:
+def test_sem_surf_div_00004_repaired_and_sealed_pack_ratified() -> None:
     payload = json.loads((REPO / ADJUDICATION_CONFIG).read_text(encoding="utf-8"))
     div04 = next(d for d in payload["semantic_divergences"] if d["id"] == "SEM-SURF-DIV-00004")
     assert div04["status"] == "PROVEN_CURRENT"
-    assert payload["29p_common_epoch_binding_status"] == "UNKNOWN_CURRENT"
-    assert payload["29p_normative_pack_identity_status"] == "UNKNOWN_CURRENT"
-    assert payload["unk_sealed_venue_number_29p_status"] == "UNKNOWN_CURRENT"
-    assert payload["next_genuine_blocker"] == (
-        "OD_SEALED_VENUE_29P_NORMATIVE_COMMON_EPOCH_AND_VENUE_NUMBER"
-    )
+    assert payload["29p_common_epoch_binding_status"] == "RATIFIED_CURRENT"
+    assert payload["29p_normative_pack_identity_status"] == "RATIFIED_CURRENT"
+    assert payload["unk_sealed_venue_number_29p_status"] != "UNKNOWN_CURRENT"
+    assert payload["closed_by_owner_decision"] == "OD-29P-NORMATIVE-PACK-V1"
+    assert payload["next_genuine_blocker"] is None

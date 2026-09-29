@@ -4,7 +4,7 @@
   "navigation_evidence_only": true,
   "post_merge_baseline_sha": "6268fab255353ceed84384051de1c045232f3a4c",
   "frozen_remaining_workset_count": 29,
-  "frozen_remaining_workset_sha256": "658f643ca5e724b9b0f09129e5179a21a291738a2597b7a8ba9f2a95b83e1bb6",
+  "frozen_remaining_workset_sha256": "92306f7680262d2c38b575e2e8b19d662a3a29e11c003dcfa1c1eb1784286e16",
   "census_id": "REMAINING_29_EVIDENCE_EXHAUSTION_V1",
   "records": [
     {
@@ -12,9 +12,7 @@
       "surface": "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py",
       "ucs6958_disposition": "UNCLASSIFIED_EVIDENCE_GAP",
       "root_cause_group": "RCG_EXTERNAL_EFFECT_AUTHORIZATION",
-      "unknown_pins": [
-        "unk_sealed_venue_number_29p"
-      ],
+      "unknown_pins": [],
       "exhaustion_disposition": "GENUINELY_CANONICAL_OWNER_BLOCKED",
       "domain_law_adjudication": "UNKNOWN_CURRENT",
       "primary_evidence_refs": [
@@ -81,19 +79,18 @@
       "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py",
       "ucs6958_disposition": "UNCLASSIFIED_AUTHORITY_GAP",
       "root_cause_group": "RCG_SEALED_VENUE_29P_NORMATIVE",
-      "unknown_pins": [
-        "unk_sealed_venue_number_29p"
-      ],
-      "exhaustion_disposition": "GENUINELY_CANONICAL_OWNER_BLOCKED",
-      "domain_law_adjudication": "UNKNOWN_CURRENT",
+      "unknown_pins": [],
+      "exhaustion_disposition": "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+      "domain_law_adjudication": "RATIFIED_CURRENT",
       "primary_evidence_refs": [
+        "config/governance/od_29p_normative_pack_v1.json",
         "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF_V1.md",
         "tests/ops/test_full_core_current_productive_29p_common_epoch_handoff_v1.py"
       ],
-      "missing_canonical_fact": "Sealed venue 29P normative epoch semantics OPEN.",
-      "owner_decision_boundary": "OD_SEALED_VENUE_29P_NORMATIVE",
-      "bind_lref": null,
-      "bind_sobj": null
+      "missing_canonical_fact": null,
+      "owner_decision_boundary": null,
+      "bind_lref": "OD-29P-NORMATIVE-PACK-V1",
+      "bind_sobj": "sobj_nav_b05_account_equity_productive_chain"
     },
     {
       "workset_id": "UCS-0032",
@@ -118,9 +115,7 @@
       "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_live_account_bound_and_instrument_scope_v1.py",
       "ucs6958_disposition": "UNCLASSIFIED_AUTHORITY_GAP",
       "root_cause_group": "RCG_SEALED_VENUE_29P_NORMATIVE",
-      "unknown_pins": [
-        "unk_sealed_venue_number_29p"
-      ],
+      "unknown_pins": [],
       "exhaustion_disposition": "EXISTING_CURRENT_EVIDENCE_BINDABLE",
       "domain_law_adjudication": "UNKNOWN_CURRENT",
       "primary_evidence_refs": [
@@ -145,7 +140,7 @@
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ],
       "missing_canonical_fact": "Risk capital vs treasury/B05 equity identity not proven.",
-      "owner_decision_boundary": "OD_SEALED_VENUE_29P_NORMATIVE",
+      "owner_decision_boundary": "OD-29P-NORMATIVE-PACK-V1",
       "bind_lref": null,
       "bind_sobj": null
     },
@@ -253,18 +248,17 @@
       "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",
       "ucs6958_disposition": "UNCLASSIFIED_AUTHORITY_GAP",
       "root_cause_group": "RCG_SEALED_VENUE_29P_NORMATIVE",
-      "unknown_pins": [
-        "unk_sealed_venue_number_29p"
-      ],
-      "exhaustion_disposition": "GENUINELY_CANONICAL_OWNER_BLOCKED",
-      "domain_law_adjudication": "UNKNOWN_CURRENT",
+      "unknown_pins": [],
+      "exhaustion_disposition": "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+      "domain_law_adjudication": "RATIFIED_CURRENT",
       "primary_evidence_refs": [
+        "config/governance/od_29p_normative_pack_v1.json",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py"
       ],
-      "missing_canonical_fact": "29P handoff epoch; sealed venue pin OPEN.",
-      "owner_decision_boundary": "OD_SEALED_VENUE_29P_NORMATIVE",
-      "bind_lref": null,
-      "bind_sobj": null
+      "missing_canonical_fact": null,
+      "owner_decision_boundary": null,
+      "bind_lref": "OD-29P-NORMATIVE-PACK-V1",
+      "bind_sobj": "sobj_nav_b05_account_equity_productive_chain"
     },
     {
       "workset_id": "UCS-0049",
@@ -372,9 +366,7 @@
       "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_p01_policy_replacement_and_29p_continuation_v1.py",
       "ucs6958_disposition": "UNCLASSIFIED_AUTHORITY_GAP",
       "root_cause_group": "RCG_SEALED_VENUE_29P_NORMATIVE",
-      "unknown_pins": [
-        "unk_sealed_venue_number_29p"
-      ],
+      "unknown_pins": [],
       "exhaustion_disposition": "EXISTING_CURRENT_EVIDENCE_BINDABLE",
       "domain_law_adjudication": "UNKNOWN_CURRENT",
       "primary_evidence_refs": [
@@ -398,7 +390,7 @@
         "docs/system_atlas/entities/catalog.yaml"
       ],
       "missing_canonical_fact": "No runbook DEFINITION_SCHEMA for p01_policy_v1; atlas navigation only.",
-      "owner_decision_boundary": "OD_SEALED_VENUE_29P_NORMATIVE",
+      "owner_decision_boundary": null,
       "bind_lref": null,
       "bind_sobj": null
     },

@@ -42,7 +42,8 @@ def test_aligns_with_6960_sizing_source_without_reopening() -> None:
     assert numeric["transform_id"] == sizing["available_for_sizing"]["transformation_id"]
     assert numeric["output_semantic_id"] == "RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING"
     assert sizing["decision_case"] == "A"
-    assert numeric["unk_sealed_venue_number_29p_status"] == "UNKNOWN_CURRENT"
+    assert numeric["unk_sealed_venue_number_29p_status"] != "UNKNOWN_CURRENT"
+    assert numeric["successor_owner_ratification"] == "OD-29P-NORMATIVE-PACK-V1"
 
 
 def test_observation_surface_matches_risk_capital_model() -> None:

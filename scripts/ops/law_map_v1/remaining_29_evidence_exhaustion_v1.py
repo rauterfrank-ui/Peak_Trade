@@ -25,6 +25,7 @@ OD_NUMERIC = (
     "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json"
 )
 OD_U01_P01_MINT = "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json"
+OD_29P_NORMATIVE_PACK = "config/governance/od_29p_normative_pack_v1.json"
 CENSUS_ID = "REMAINING_29_EVIDENCE_EXHAUSTION_V1"
 
 SOBJ_NAV_EXTERNAL = "sobj_nav_external_effect_seam"
@@ -32,7 +33,7 @@ SOBJ_NAV_B05 = "sobj_nav_b05_account_equity_productive_chain"
 SOBJ_NAV_COMPOSITION = "sobj_nav_full_core_composition_joins"
 
 OWNER_DECISION_ACCOUNT_EQUITY = "OD_ACCOUNT_EQUITY_SIZING_SOURCE"
-OWNER_DECISION_SEALED_29P = "OD_SEALED_VENUE_29P_NORMATIVE"
+OWNER_DECISION_SEALED_29P = "OD-29P-NORMATIVE-PACK-V1"
 OWNER_DECISION_EXTERNAL_EFFECT = "OD_EXTERNAL_EFFECT_AND_CREDENTIAL_AUTHORITY"
 OWNER_DECISION_CAP24_MARK = "OD_CAP24_PRODUCTIVE_MARK_PROVENANCE"
 OWNER_DECISION_VENUE_PLAN_IDENTITY = "OD_VENUE_PLAN_CAP24_MV2_IDENTITY"
@@ -131,7 +132,6 @@ def _build_rows() -> list[ExhaustionRow]:
                 ),
                 "No Master Runbook DEFINITION_SCHEMA_PATH or CURRENT spec naming this freshness seam.",
                 OWNER_DECISION_EXTERNAL_EFFECT,
-                pins=("unk_sealed_venue_number_29p",),
             ),
             row(
                 "UCS-0019",
@@ -174,15 +174,17 @@ def _build_rows() -> list[ExhaustionRow]:
             row(
                 "UCS-0031",
                 f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py",
-                "GENUINELY_CANONICAL_OWNER_BLOCKED",
-                "UNKNOWN_CURRENT",
+                "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+                "RATIFIED_CURRENT",
                 (
+                    OD_29P_NORMATIVE_PACK,
                     "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF_V1.md",
                     "tests/ops/test_full_core_current_productive_29p_common_epoch_handoff_v1.py",
                 ),
-                "Sealed venue 29P normative epoch semantics OPEN.",
-                OWNER_DECISION_SEALED_29P,
-                pins=("unk_sealed_venue_number_29p",),
+                None,
+                None,
+                bind_lref="OD-29P-NORMATIVE-PACK-V1",
+                bind_sobj=SOBJ_NAV_B05,
             ),
             row(
                 "UCS-0032",
@@ -212,7 +214,6 @@ def _build_rows() -> list[ExhaustionRow]:
                 None,
                 bind_lref="SPEC-29P-LIVE-ACCOUNT-BOUND-V1",
                 bind_sobj=SOBJ_NAV_B05,
-                pins=("unk_sealed_venue_number_29p",),
             ),
             row(
                 "UCS-0034",
@@ -296,14 +297,16 @@ def _build_rows() -> list[ExhaustionRow]:
             row(
                 "UCS-0045",
                 f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",
-                "GENUINELY_CANONICAL_OWNER_BLOCKED",
-                "UNKNOWN_CURRENT",
+                "EXISTING_CURRENT_EVIDENCE_BINDABLE",
+                "RATIFIED_CURRENT",
                 (
+                    OD_29P_NORMATIVE_PACK,
                     f"{p}/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",
                 ),
-                "29P handoff epoch; sealed venue pin OPEN.",
-                OWNER_DECISION_SEALED_29P,
-                pins=("unk_sealed_venue_number_29p",),
+                None,
+                None,
+                bind_lref="OD-29P-NORMATIVE-PACK-V1",
+                bind_sobj=SOBJ_NAV_B05,
             ),
             row(
                 "UCS-0049",
@@ -397,7 +400,6 @@ def _build_rows() -> list[ExhaustionRow]:
                 None,
                 bind_lref="SPEC-P01-POLICY-REPLACEMENT-V1",
                 bind_sobj=SOBJ_NAV_B05,
-                pins=("unk_sealed_venue_number_29p",),
             ),
             row(
                 "UCS-0068",
@@ -406,7 +408,7 @@ def _build_rows() -> list[ExhaustionRow]:
                 "UNKNOWN_CURRENT",
                 ("docs/system_atlas/entities/catalog.yaml",),
                 "No runbook DEFINITION_SCHEMA for p01_policy_v1; atlas navigation only.",
-                OWNER_DECISION_SEALED_29P,
+                None,
             ),
             row(
                 "UCS-0070",
@@ -555,6 +557,12 @@ def _additive_lrefs() -> list[dict[str, Any]]:
             "OD-U01-P01-29P-SIZING-MINT-ADJUDICATION-V1",
             OD_U01_P01_MINT,
             "od_u01_p01_29p_sizing_mint_canonical_adjudication_v1",
+            SOBJ_NAV_B05,
+        ),
+        (
+            "OD-29P-NORMATIVE-PACK-V1",
+            OD_29P_NORMATIVE_PACK,
+            "od_29p_normative_pack_v1",
             SOBJ_NAV_B05,
         ),
         (

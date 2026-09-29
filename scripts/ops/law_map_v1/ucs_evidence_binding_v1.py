@@ -467,7 +467,7 @@ def _build_disposition_table() -> list[DispositionRow]:
                 "tests/ops/test_full_core_current_productive_29p_common_epoch_handoff_v1.py",
                 "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py",
             ),
-            "29P epoch handoff; sealed venue 29P normative binding OPEN (unk_sealed_venue_number_29p).",
+            "29P epoch handoff; sealed normative pack ratified (OD-29P-NORMATIVE-PACK-V1).",
             RCG_SEALED_29P,
         ),
         (

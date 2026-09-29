@@ -1593,21 +1593,21 @@ flowchart LR
 
 ## treasury_to_admission
 
-- lifecycle=CONFLICTING
+- lifecycle=PROVEN_CURRENT
 - flow_type=DATA_FLOW
-- contract_or_payload=conditional treasury decrease join | SEMANTIC_PAIR=treasury_to_admission; DISTINCT_FROM=equity_value_unbound
-- producer=treasury_29p
-- consumer=capital_admission
-- authority_effect=CONFLICTING
-- decision_effect=DECREASE_NOT_MINT
+- contract_or_payload=treasury single-source handoff then capital admission then step29p admissibility; treasury does not mint risk_admissible | SEMANTIC_PAIR=treasury_to_admission; DISTINCT_FROM=equity_value_unbound
+- producer=current_productive_treasury_single_source_capital_handoff_v1
+- consumer=evaluate_step_29p_capital_risk_admissibility_v1
+- authority_effect=NONE
+- decision_effect=ADMISSION_EVAL_NOT_TREASURY_MINT
 - direct_or_indirect=DIRECT
-- identity_binding=OBSERVATION_GATED
-- temporal_binding=UNKNOWN
-- version_binding=UNKNOWN
-- provenance_binding=RUNBOOK_WORDING_VERSUS_DECREASE_JOIN
-- promotion_required=UNKNOWN
+- identity_binding=CREDENTIAL_BOUND_ACCOUNT_VENUE_SCOPE
+- temporal_binding=DECISION_EPOCH_AND_FRESHNESS_GATED
+- version_binding=current_productive_treasury_single_source_capital_handoff_v1
+- provenance_binding=C08_SINGLE_SOURCE_THEN_B05_THEN_ADMISSIBILITY
+- promotion_required=FALSE
 - fail_closed=TRUE
-- evidence=`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`, `src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py`
+- evidence=`config/governance/od_29p_normative_pack_v1.json`, `src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py`, `src/ops/full_core_live_path_composition_root_v1/step_29p_capital_risk_admissibility_v1.py`, `tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py`
 
 ## universe_to_ranking
 
