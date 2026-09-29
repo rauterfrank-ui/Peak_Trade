@@ -488,6 +488,12 @@
     ".github/workflows/truth_gates_pr.yml",
     "config/governance/current_system_census_graph_v1/",
     "scripts/ops/validate_current_system_census_graph_v1.py",
-    "tests/governance/test_current_system_census_graph_v1.py"
+    "tests/governance/test_current_system_census_graph_v1.py",
+    "config/governance/monitoring_topology_audit_ssot_v1.json",
+    "tests/governance/test_monitoring_topology_audit_ssot_v1.py",
+    "src/obs/metrics_server.py",
+    "src/obs/metricsd.py",
+    "src/live/web/app.py",
+    "scripts/obs/ai_live_exporter.py"
   ]
 }
