@@ -473,6 +473,7 @@
     "scripts/ops/check_current_law_impact_v1.py",
     "scripts/ops/law_map_v1/",
     "tests/ops/test_current_law_impact_map_v1.py",
+    "tests/ops/test_ucs_evidence_binding_v1.py",
     ".github/workflows/truth_gates_pr.yml"
   ]
 }
