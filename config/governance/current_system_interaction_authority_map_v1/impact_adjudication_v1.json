@@ -11,16 +11,21 @@
     "docs/governance/OD_U01_P01_29P_SIZING_MINT_CANONICAL_ADJUDICATION_V1.md",
     "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "src/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
     "tests/governance/test_od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py",
     "tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py"
   ],
-  "changed_paths_sha256": "c66048955f7945feed8fc275652ad1db7c47689446a0622c5451b1facf7d4a9f",
+  "changed_paths_sha256": "14f1b3db4b14d5c91df93514e82b1f54ef3f3d4cc0b2f20147415907bae48009",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/source_v1.json",
     "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py"
   ],
   "evidence_refs": [
@@ -30,5 +35,5 @@
   ],
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "Post-#6962 treasury U01 witness fail-closed; CSIA account_equity navigation statement alignment; sealed 29P pack remains UNKNOWN."
+  "reason": "Post-#6962 treasury U01 witness fail-closed; CSIA account_equity navigation statement alignment; atlas review; sealed 29P pack remains UNKNOWN."
 }
