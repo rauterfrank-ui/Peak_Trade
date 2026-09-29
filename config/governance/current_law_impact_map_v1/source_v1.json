@@ -476,7 +476,7 @@
       "law_id": "RUNBOOK-VENUE-PLAN-TDMODE-AUTHORITY-V1",
       "canonical_source": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
       "canonical_anchor": "CURRENT Venue-Plan tdMode and Order-Environment Authority",
-      "source_sha256": "de75976b132c8a5214dca5ea9dbba0cbcf3967b839a4d5be9506e48e34e89d11",
+      "source_sha256": "82ecb786f1ab5a7234060ebfddf8cc60ca9f6717c3dc0532c79a08a5c169ffab",
       "source_authority_class": "RUNBOOK",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",

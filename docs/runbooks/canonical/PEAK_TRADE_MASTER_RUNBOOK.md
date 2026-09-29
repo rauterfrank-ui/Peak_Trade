@@ -101,7 +101,7 @@ Adjudicated **CURRENT** architecture at baseline `dfcf4d04b8400763bee6ab0b465fa1
 persisted for navigation — not runtime authorization — in:
 
 - [`docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md`](../../governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md)
-- [`config/governance/current_universe_landscape_snapshot_v1/source_v1.json`](../../config/governance/current_universe_landscape_snapshot_v1/source_v1.json)
+- [`config/governance/current_universe_landscape_snapshot_v1/source_v1.json`](../../../config/governance/current_universe_landscape_snapshot_v1/source_v1.json)
 
 Use the Authority Map and Census graph as complementary navigation (`AUTHORITY=NONE`;
 graph loses on conflict). Standing productive safety remains
