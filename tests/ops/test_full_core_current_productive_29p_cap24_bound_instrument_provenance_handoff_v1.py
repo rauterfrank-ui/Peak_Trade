@@ -34,6 +34,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     default_current_productive_cap24_runtime_state_root_v1,
     resolve_current_productive_29p_cap24_bound_instrument_for_common_epoch_v1,
 )
+from src.ops.single_selected_future_runtime_binding_v1.cap24_runtime_binding_witness_epoch_v1 import (
+    resolve_cap24_runtime_binding_witness_epoch_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
     OWNER_GO,
     PIN_OWNER_GO,
@@ -491,6 +494,50 @@ def test_execute_cap24_fail_closed_when_handoff_invalid(tmp_path: Path) -> None:
         )
     assert result.first_real_blocker == "CAP24_BOUND_INSTRUMENT_FAIL_CLOSED"
     assert result.deduplicated_get_count == 0
+
+
+def test_witness_epoch_uses_wall_time_when_decision_predates_valid_from(tmp_path: Path) -> None:
+    chain = _build_chain(tmp_path)
+    selection = chain["selection"]
+    witness = resolve_cap24_runtime_binding_witness_epoch_v1(
+        selection=selection,
+        decision_epoch="2020-01-01T00:00:00Z",
+    )
+    assert witness == selection.selected_at_wall_time
+
+
+def test_witness_epoch_keeps_early_decision_for_not_yet_valid_selection(tmp_path: Path) -> None:
+    chain = _build_chain(tmp_path)
+    selection = chain["selection"]
+    future_from = "2099-01-01T00:00:00Z"
+    patched = SingleSelectedFutureSelectionV1.from_dict(
+        {
+            **selection.to_dict(),
+            "valid_from": future_from,
+            "valid_until": "2099-01-02T00:00:00Z",
+            "selected_at_wall_time": "2020-01-01T00:00:00Z",
+        }
+    )
+    witness = resolve_cap24_runtime_binding_witness_epoch_v1(
+        selection=patched,
+        decision_epoch="2020-01-01T00:00:00Z",
+    )
+    assert witness == "2020-01-01T00:00:00Z"
+
+
+def test_acquire_binds_when_witness_epoch_resolved_from_wall_time(tmp_path: Path) -> None:
+    chain = _build_fresh_chain(tmp_path / "build")
+    prod = _materialize_productivity_root(tmp_path, chain)
+    witness = resolve_cap24_runtime_binding_witness_epoch_v1(
+        selection=chain["selection"],
+        decision_epoch="2020-01-01T00:00:00Z",
+    )
+    handoff = acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
+        productivity_root=prod,
+        repository_sha=REPO_SHA,
+        binding_epoch=witness,
+    )
+    assert handoff.venue_native_id == chain["venue_native_id"]
 
 
 def test_legacy_build_chain_still_binds_via_gate(tmp_path: Path) -> None:

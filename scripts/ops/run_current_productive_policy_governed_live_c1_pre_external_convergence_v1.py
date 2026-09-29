@@ -229,7 +229,7 @@ def _main() -> int:
         execution_head_sha = baseline_sha
     origin_sha = baseline_sha
     repository_sha = execution_head_sha
-    epoch = args.binding_epoch or _utc_iso()
+    decision_epoch = args.binding_epoch or _utc_iso()
 
     acq = acquire_eea_universe_inventory_v1(transport=UrllibEeaPublicUniverseGetTransportV1())
     if acq.ok is not True:
@@ -244,13 +244,30 @@ def _main() -> int:
         productivity_root=productivity_root,
         repository_sha=repository_sha,
         allow_default_productivity_root=False,
-        decision_epoch=epoch,
+        decision_epoch=decision_epoch,
         execution_integrity_backend=backend,
+    )
+    from src.ops.single_selected_future_policy_v1.persistence_v1 import (
+        load_and_validate_selection_v1,
+    )
+    from src.ops.single_selected_future_runtime_binding_v1.cap24_runtime_binding_witness_epoch_v1 import (
+        resolve_cap24_runtime_binding_witness_epoch_v1,
+    )
+
+    sel_root = productivity_root / "runtime_state" / "selection"
+    sel_load = load_and_validate_selection_v1(sel_root, require_manifest=True)
+    if sel_load.ok is not True or sel_load.selection is None:
+        out = {"status": "FAIL", "blocker": "CAP23_SELECTION_LOAD_FAIL_CLOSED"}
+        print(json.dumps(out, sort_keys=True))
+        return 2
+    binding_epoch = resolve_cap24_runtime_binding_witness_epoch_v1(
+        selection=sel_load.selection,
+        decision_epoch=decision_epoch,
     )
     handoff = acquire_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1(
         productivity_root=productivity_root,
         repository_sha=repository_sha,
-        binding_epoch=epoch,
+        binding_epoch=binding_epoch,
     )
     bound = handoff.bound_instrument
     native_id = str(bound.venue_native_id or "").strip()
@@ -258,7 +275,7 @@ def _main() -> int:
         productivity_root=productivity_root,
         lane_state_root=lane_state_root,
         repository_sha=repository_sha,
-        binding_epoch=epoch,
+        binding_epoch=binding_epoch,
         authorization_native_id=native_id,
     )
     if not pre.ok:

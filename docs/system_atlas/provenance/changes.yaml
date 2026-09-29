@@ -293,6 +293,16 @@ changes:
       PR #6952: consume adjudicated Owner-GO when live origin/main is descendant of decision baseline;
       fail-closed MV2/DP drift gate; enables post-#6951 productive C1 run on main; no POST/credentials;
       ATLAS_AUTHORITY=NONE.
+  - id: CHANGE:pr_6980_natural_enter_causal_blocker_resolution_v1
+    from: 7a3597e61966749a9e30d06f3514e23a9179fb9e
+    to: 7a3597e61966749a9e30d06f3514e23a9179fb9e
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: evidence/ops/natural_enter_causal_blocker_resolution_loop_v1/20260929T213000Z/WP_NATURAL_ENTER_CAUSAL_BLOCKER_RESOLUTION_LOOP_V1.json
+    notes: >-
+      PR #6980: Cap24 runtime binding witness epoch for productive PRE_EXTERNAL runner; Owner-GO decision
+      baseline re-pinned to 7a3597e; live EEA reproof reached Double Play (no Natural-Enter in bounded window);
+      MV2/DP strategy unchanged; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED

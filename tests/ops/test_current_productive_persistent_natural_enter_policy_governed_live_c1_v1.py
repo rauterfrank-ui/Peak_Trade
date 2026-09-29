@@ -69,8 +69,9 @@ from tests.trading.master_v2.test_double_play_runtime_typed_volatility_presence_
 )
 
 REPO = Path(__file__).resolve().parents[2]
-BASELINE_SHA = "27c3cd4aa21e181282b19a89a9e2187b30ed93f4"
 POST_MERGE_MAIN_SHA = "7b706117695e0ef79d1510ae98c335dd5bc8630b"
+CURRENT_MAIN_SHA = "7a3597e61966749a9e30d06f3514e23a9179fb9e"
+BASELINE_SHA = CURRENT_MAIN_SHA
 
 
 def test_owner_go_decision_present_and_pins_unchanged() -> None:
@@ -85,10 +86,19 @@ def test_owner_go_decision_present_and_pins_unchanged() -> None:
     assert CONTINUOUS_RUN_AUTHORIZED is False
 
 
-def test_owner_go_decision_accepts_post_merge_main_without_mv2_dp_drift() -> None:
+def test_owner_go_decision_rejects_ancestor_main_when_pinned_at_current() -> None:
     ok, reasons = validate_bounded_continuous_run_owner_go_decision_v1(
         repo_root=REPO,
         baseline_origin_main_sha=POST_MERGE_MAIN_SHA,
+    )
+    assert ok is False
+    assert "BASELINE_SHA_MISMATCH" in reasons
+
+
+def test_owner_go_decision_accepts_current_main_at_pinned_baseline() -> None:
+    ok, reasons = validate_bounded_continuous_run_owner_go_decision_v1(
+        repo_root=REPO,
+        baseline_origin_main_sha=CURRENT_MAIN_SHA,
     )
     assert ok, reasons
 
@@ -266,6 +276,9 @@ def test_policy_governed_persistent_path_integrated(tmp_path: Path) -> None:
         origin_main_sha=BASELINE_SHA,
         g17_producers=g17,
         candles_payload=obs_boot.candles_payload,
+        mark_price_payload=obs_boot.mark_price_payload,
+        venue_native_id=native_id,
+        index_tickers_payload=obs_boot.index_tickers_payload,
     )
     floor = _cursor_floor_or_zero(Path(pairs["LANE_1"][0].lane_state_root))
     auth = _continuous_auth(native_id=native_id, max_cycles=1)
