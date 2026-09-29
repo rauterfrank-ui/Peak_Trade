@@ -19,7 +19,11 @@
     "docs/governance/current_law_impact_map_v1/generated/unknown_and_conflict_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
+    "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/current_law_impact_map_v1.py",
     "scripts/ops/current_system_interaction_authority_map_v1.py",
@@ -34,14 +38,16 @@
     "tests/ops/test_current_system_interaction_authority_map_v1.py",
     "tests/ops/test_remaining_29_evidence_exhaustion_v1.py"
   ],
-  "changed_paths_sha256": "bdd812ff4d2b365dfb2cc97a2c62691f93140b31bd25d30282f8f8a3bedb1ac9",
+  "changed_paths_sha256": "f9035699fb22233f47a9e171078ca8308ec1c1384597d7f42acafb96dbbfcfa7",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/od_29p_normative_pack_v1.json",
+    "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/provenance/impact_state.yaml"
   ],
   "evidence_refs": [
     "config/governance/od_29p_normative_pack_v1.json",
+    "docs/system_atlas/entities/catalog.yaml",
     "tests/governance/test_od_29p_normative_pack_v1_semantic_enforcement_v1.py"
   ],
   "selector_used_as_law_impact_authority": false,

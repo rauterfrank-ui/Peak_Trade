@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=6
-ATLAS_CHANGED_RELATION_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=4
+ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,19 +40,16 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1` |
-| `GATE:portfolio_capital_reservation_budget_v1` |
 | `NAVIGATION_INDEX:map_of_truth` |
-| `RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1` |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `RUNTIME_COMPONENT:od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1` |
+| `RUNTIME_COMPONENT:od_29p_normative_pack_v1` |
 | `RUNTIME_COMPONENT:od_u01_p01_29p_sizing_mint_canonical_adjudication_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:r_enter_live_29p_join_consumes_portfolio_budget` |
-| `REL:s_map_navigates_mi_forecast_calibration_offline_stack_v1` |
+| _(none)_ |
 
 ## NEW_RELATIONS
 
@@ -98,7 +95,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Post-#6962 Category-A repair: treasury capital handoff fail-closed without explicit U01 acctLv witness (SEM-SURF-DIV-00004); OD/Law Map/CSIA navigation alignment; OD-29P-NORMATIVE-PACK-V1 closes sealed 29P pack/epoch/venue-number pins; treasury_to_admission CSIA alignment; no GET/POST; AUTHORITY=NONE.
+- OD-29P-NORMATIVE-PACK-V1 closes sealed 29P pack/epoch/venue-number pins; CSIA treasury_to_admission navigation alignment; atlas catalog entity for od_29p_normative_pack_v1; no GET/POST; AUTHORITY=NONE.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
 - modified_by=OD_29P_NORMATIVE_PACK_V1_CANONICAL_CLOSURE
 
