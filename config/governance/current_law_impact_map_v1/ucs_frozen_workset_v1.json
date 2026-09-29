@@ -293,7 +293,7 @@
         "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py"
       ],
-      "unresolved_reason": "CRS capital_context rebind; account-equity source selection remains CSIA PARTIAL (unk_account_equity_sizing_source).",
+      "unresolved_reason": "HISTORICAL_DISCOVERY: CSIA PARTIAL unk_account_equity_sizing_source pin at CRS capital_context rebind. CURRENT_ADJUDICATED: normative account-equity sizing-source RESOLVED_NORMATIVE via OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1 and SEM-SURF-DIV-00003. Does not prove numeric venue observation or Treasury identity.",
       "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
       "discovery_method": "discover_unclassified_current_productive_v1",
       "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
@@ -501,12 +501,13 @@
       "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py",
       "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
       "bound_sobj": null,
-      "bound_lref": null,
+      "bound_lref": "OD-29P-NORMATIVE-PACK-V1",
       "evidence_refs": [
+        "config/governance/od_29p_normative_pack_v1.json",
         "tests/ops/test_full_core_current_productive_29p_common_epoch_handoff_v1.py",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py"
       ],
-      "unresolved_reason": "29P epoch handoff; sealed normative pack ratified (OD-29P-NORMATIVE-PACK-V1).",
+      "unresolved_reason": "HISTORICAL_DISCOVERY: normative epoch semantics OPEN at UCS freeze. CURRENT_ADJUDICATED: common-epoch normative closure via OD-29P-NORMATIVE-PACK-V1 (L041-COMMON-EPOCH-NORMATIVE=PROVEN_CURRENT). Does not prove L025 numeric venue bind, L038 Treasury identity, or productive external observation.",
       "root_cause_group": "RCG_SEALED_VENUE_29P_NORMATIVE",
       "discovery_method": "discover_unclassified_current_productive_v1",
       "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
@@ -650,13 +651,14 @@
       "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_source_selection_v1.py",
       "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
       "bound_sobj": null,
-      "bound_lref": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
+      "bound_lref": "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
       "evidence_refs": [
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
         "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
         "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_source_selection_v1.py"
       ],
-      "unresolved_reason": "Direct carrier for account-equity source selection; maps to unk_account_equity_sizing_source.",
+      "unresolved_reason": "HISTORICAL_DISCOVERY: direct carrier pinned to unk_account_equity_sizing_source. CURRENT_ADJUDICATED: normative account-equity sizing-source RESOLVED_NORMATIVE via OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1 and SEM-SURF-DIV-00003. Does not prove numeric venue observation or Treasury identity.",
       "root_cause_group": "RCG_B05_ACCOUNT_EQUITY_AUTHORITY_UNBOUND",
       "discovery_method": "discover_unclassified_current_productive_v1",
       "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",
@@ -732,11 +734,12 @@
       "surface": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",
       "disposition": "UNCLASSIFIED_AUTHORITY_GAP",
       "bound_sobj": null,
-      "bound_lref": null,
+      "bound_lref": "OD-29P-NORMATIVE-PACK-V1",
       "evidence_refs": [
+        "config/governance/od_29p_normative_pack_v1.json",
         "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py"
       ],
-      "unresolved_reason": "29P handoff epoch semantics; sealed normative pack ratified (OD-29P-NORMATIVE-PACK-V1).",
+      "unresolved_reason": "HISTORICAL_DISCOVERY: sealed venue pin OPEN at UCS freeze. CURRENT_ADJUDICATED: common-epoch normative closure via OD-29P-NORMATIVE-PACK-V1 (L041-COMMON-EPOCH-NORMATIVE=PROVEN_CURRENT). Does not prove L025 numeric venue bind, L038 Treasury identity, or productive external observation.",
       "root_cause_group": "RCG_SEALED_VENUE_29P_NORMATIVE",
       "discovery_method": "discover_unclassified_current_productive_v1",
       "materiality": "CURRENT_PRODUCTIVE_GLOB_MATERIAL",

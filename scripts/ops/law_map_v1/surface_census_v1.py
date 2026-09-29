@@ -8,6 +8,9 @@ from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 
+# Closed by OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1 / SEM-SURF-DIV-00003 (navigation guard).
+_SUPPRESSED_UNKNOWN_RELATION_IDS = frozenset({"unk_account_equity_sizing_source"})
+
 
 def file_sha256(rel: str) -> str:
     path = REPO_ROOT / rel
@@ -450,18 +453,9 @@ def expansion_payload() -> dict[str, Any]:
                 "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
             ],
         },
-        {
-            "id": "unk_account_equity_sizing_source",
-            "unknown_class": "NORMATIVE_BOUND_UNKNOWN",
-            "statement": "CURRENT productive available-for-sizing / account-equity source selection semantics remain PARTIAL in CSIA; no durable law-compliance adjudication indexed.",
-            "left_ref": "csia:account_equity_mapping_unbound",
-            "right_ref": "sobj_portfolio_capital_budget",
-            "evidence_refs": [
-                "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-                portfolio_code,
-            ],
-        },
     ]
+
+    new_unknown = [u for u in new_unknown if u["id"] not in _SUPPRESSED_UNKNOWN_RELATION_IDS]
 
     divergences = [
         {
