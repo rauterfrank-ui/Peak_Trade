@@ -35,7 +35,7 @@ algebra from #6960 apply.
 
 - No productive network GET executed by this adjudication.
 - No credential load or secret resolution.
-- Does not close `unk_sealed_venue_number_29p` (29P normative pack identity).
+- Normative pack / venue-number pin closed via successor [`OD-29P-NORMATIVE-PACK-V1`](OD_29P_NORMATIVE_PACK_V1.md).
 - Does not authorize `OD_EXTERNAL_EFFECT` / live credential GET execution.
 - U01 eligibility, P01 directive, and three-input mint join are adjudicated in
   `OD_U01_P01_29P_SIZING_MINT_CANONICAL_ADJUDICATION_V1` (successor WP); sealed

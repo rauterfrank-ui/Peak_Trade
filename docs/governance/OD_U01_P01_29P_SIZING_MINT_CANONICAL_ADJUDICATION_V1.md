@@ -19,9 +19,9 @@ Closes the **semantic and join-contract** chain from U01 account-mode eligibilit
 P01 governed reduction directive through the three-input mint into typed 29P risk-capital,
 without re-opening PR #6960 transform semantics or PR #6961 numeric venue bind.
 
-Does **not** close `OD_SEALED_VENUE_29P_NORMATIVE` (common epoch sealed identity,
-venue number pack). Join-level `decision_epoch` alignment is proven; sealed normative
-epoch remains `UNKNOWN_CURRENT`.
+Sealed normative pack identity and venue-number pin closure are **superseded by**
+[`OD-29P-NORMATIVE-PACK-V1`](OD_29P_NORMATIVE_PACK_V1.md). Join-level `decision_epoch`
+alignment remains proven; sealed epoch and pack identity are `RATIFIED_CURRENT` there.
 
 ## U01 (eligibility, not numeric)
 
@@ -62,7 +62,8 @@ and numeric base, then `produce_current_productive_29p_risk_capital_v1` mints ty
 `execute_current_productive_treasury_single_source_capital_handoff_v1` requires explicit
 `u04_p01_host_inputs` with non-empty `u01_raw_acct_lv`. No implicit `acctLv=2` default.
 
-## Remaining owner boundary
+## Owner closure (successor)
 
-`OD_SEALED_VENUE_29P_NORMATIVE`: sealed common-epoch semantics and full 29P normative
-pack identity beyond join `decision_epoch` equality.
+`OD-29P-NORMATIVE-PACK-V1` ratifies sealed 29P pack semantics (common epoch, venue/account
+identity without numeric ordinal, validated pack invariant). This adjudication record
+retains forensic `prior_owner_decision_exact_question` in JSON.

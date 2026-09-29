@@ -85,5 +85,4 @@ Open epistemic records are projected, not closed.
 - id=whole_core_productive_q0_q1_authority_ratification_v1 class=PARTIAL statement=CURRENT Full-Core Q0 owner ops.governed_productive_account_equity_authority_producer_v1; Q1 owner src.governance.capital_risk_sizing_v1 with owner count 1; offline Q5/scoped sizing owners remain non-competing inventory scopes.
 - id=double_play_slot_crs_handoff class=UNKNOWN statement=Double-play capital slot CRS handoff is not evidenced.
 - id=offline_instrument_literal_quantity_effect class=UNKNOWN statement=Quantity effect of offline instrument literals on the current productive run is unknown.
-- id=sealed_venue_number_29p class=UNKNOWN statement=No sealed current venue number for 29P sizing is bound on origin/main.
 - id=test_or_script_only_diff_authority_edge class=UNKNOWN statement=Whether a test-only or script-only diff can change an authority edge without touching the owner file is undetermined.

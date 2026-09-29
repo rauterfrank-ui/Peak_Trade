@@ -22,8 +22,8 @@ def test_frozen_remaining_count_and_partition() -> None:
     rows = _build_rows()
     assert len(rows) == 29
     c = Counter(r.exhaustion_disposition for r in rows)
-    assert c["EXISTING_CURRENT_EVIDENCE_BINDABLE"] == 18
-    assert c["GENUINELY_CANONICAL_OWNER_BLOCKED"] == 11
+    assert c["EXISTING_CURRENT_EVIDENCE_BINDABLE"] == 20
+    assert c["GENUINELY_CANONICAL_OWNER_BLOCKED"] == 9
     assert sum(c.values()) == 29
 
 

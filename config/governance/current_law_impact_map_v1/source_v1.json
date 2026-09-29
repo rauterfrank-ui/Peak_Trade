@@ -374,7 +374,7 @@
       "law_id": "OD-29P-FRESH-TRUSTED-NUMERIC-VENUE-BIND-ADJUDICATION-V1",
       "canonical_source": "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json",
       "canonical_anchor": "od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1",
-      "source_sha256": "a1c4be297075c60bffd6a521d37a1d37dc48c62377d30092a55a60b4ef2f91d1",
+      "source_sha256": "ff3a4fc82e32849706f3f69d36e12aeb0f75e37eec396f27ecb86d27b41493ca",
       "source_authority_class": "RUNBOOK",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",
@@ -408,7 +408,7 @@
       "law_id": "OD-U01-P01-29P-SIZING-MINT-ADJUDICATION-V1",
       "canonical_source": "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json",
       "canonical_anchor": "od_u01_p01_29p_sizing_mint_canonical_adjudication_v1",
-      "source_sha256": "41251fed80f5292ac278fb44246210f7ce88d137999a369c71a63aff3e222533",
+      "source_sha256": "f8bca9e155057d9649fb6e282624578d54f09f47fa964843ba6e6e87e0d17d54",
       "source_authority_class": "RUNBOOK",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",
@@ -418,6 +418,24 @@
       ],
       "evidence_refs": [
         "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "OD-29P-NORMATIVE-PACK-V1",
+      "canonical_source": "config/governance/od_29p_normative_pack_v1.json",
+      "canonical_anchor": "od_29p_normative_pack_v1",
+      "source_sha256": "06cd22287f78f383b89ed9ad65dfe4b9cbdb080613d897108be9b98fcf085ce6",
+      "source_authority_class": "RUNBOOK",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "OD-29P-NORMATIVE-PACK-V1",
+      "semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "evidence_refs": [
+        "config/governance/od_29p_normative_pack_v1.json",
+        "docs/governance/OD_29P_NORMATIVE_PACK_V1.md",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ]
     },
@@ -1591,16 +1609,6 @@
         "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l5_nullline_v1.py",
         "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
       ]
-    },
-    {
-      "id": "unk_sealed_venue_number_29p",
-      "unknown_class": "NORMATIVE_BOUND_UNKNOWN",
-      "statement": "Sealed venue number 29P normative binding remains open (CSIA UNKNOWN pin).",
-      "left_ref": "csia:sealed_venue_number_29p",
-      "right_ref": "N/A",
-      "evidence_refs": [
-        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
-      ]
     }
   ],
   "conflicting_relations": [],
@@ -1699,6 +1707,22 @@
       ],
       "base_sha": "490a9fedb0c075903dbd80fec63d7f476158a393",
       "head_sha": "490a9fedb0c075903dbd80fec63d7f476158a393",
+      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
+    },
+    {
+      "id": "reproof_od_29p_normative_pack_v1",
+      "law_ref_ids": [
+        "OD-29P-NORMATIVE-PACK-V1"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "proof_refs": [
+        "tests/governance/test_od_29p_normative_pack_v1_semantic_enforcement_v1.py",
+        "config/governance/od_29p_normative_pack_v1.json"
+      ],
+      "base_sha": "0f3caec8381b8e75d6bf3c6b1ed7e5c994e25a7e",
+      "head_sha": "0f3caec8381b8e75d6bf3c6b1ed7e5c994e25a7e",
       "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
     },
     {

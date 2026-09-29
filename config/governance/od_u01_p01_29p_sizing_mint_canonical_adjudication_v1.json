@@ -104,7 +104,8 @@
     "semantic": "JOIN_DECISION_EPOCH_SINGLE_STRING_EQUALITY_ACROSS_NUMERIC_U01_P01_U04",
     "authority": "produce_current_productive_available_for_sizing_v1_and_produce_current_productive_29p_risk_capital_v1",
     "join_decision_epoch_alignment_status": "PROVEN_CURRENT",
-    "sealed_normative_common_epoch_status": "UNKNOWN_CURRENT",
+    "sealed_normative_common_epoch_status": "RATIFIED_CURRENT",
+    "successor_owner_ratification": "OD-29P-NORMATIVE-PACK-V1",
     "boundary": "ELIGIBILITY_SCOPE_OR_EPOCH_MISMATCH_AND_PEER_EPOCH_MISMATCH_REASON_CODES",
     "clock_domain": "decision_epoch_string_plus_observed_at_as_of_and_age_seconds_freshness",
     "can_u01_from_epoch_n_join_p01_from_epoch_n_plus_1": false,
@@ -112,10 +113,11 @@
     "can_replayed_u01_join_current_numeric": false,
     "can_replayed_p01_join_current_numeric": false
   },
-  "29p_common_epoch_binding_status": "UNKNOWN_CURRENT",
-  "29p_normative_pack_complete": false,
-  "29p_normative_pack_identity_status": "UNKNOWN_CURRENT",
-  "unk_sealed_venue_number_29p_status": "UNKNOWN_CURRENT",
+  "29p_common_epoch_binding_status": "RATIFIED_CURRENT",
+  "29p_normative_pack_complete": true,
+  "29p_normative_pack_identity_status": "RATIFIED_CURRENT",
+  "unk_sealed_venue_number_29p_status": "CLOSED_VENUE_ACCOUNT_IDENTITY_NOT_NUMERIC_ORDINAL",
+  "successor_owner_ratification": "OD-29P-NORMATIVE-PACK-V1",
   "29p_numeric_input_binding_status": "PROVEN_CURRENT",
   "29p_freshness_admission_status": "PROVEN_CURRENT",
   "29p_account_binding_status": "PROVEN_CURRENT",
@@ -172,7 +174,7 @@
       "semantic_id": "SEALED_VENUE_29P_NORMATIVE_EPOCH",
       "authority": "OD_SEALED_VENUE_29P_NORMATIVE",
       "required": true,
-      "current_status": "UNKNOWN_CURRENT"
+      "current_status": "RATIFIED_CURRENT"
     },
     {
       "component": "risk_fraction",
@@ -182,11 +184,11 @@
       "current_status": "PROVEN_CURRENT_NOT_AT_MINT"
     },
     {
-      "component": "sealed_venue_number_29p",
-      "semantic_id": "UNK_SEALED_VENUE_NUMBER_29P",
-      "authority": "OD_SEALED_VENUE_29P_NORMATIVE",
+      "component": "sealed_venue_account_identity_29p",
+      "semantic_id": "CANONICAL_VENUE_ACCOUNT_IDENTITY_BINDING_29P",
+      "authority": "OD-29P-NORMATIVE-PACK-V1",
       "required": true,
-      "current_status": "UNKNOWN_CURRENT"
+      "current_status": "RATIFIED_CURRENT"
     }
   ],
   "semantic_divergences": [
@@ -210,7 +212,7 @@
     "DL-MINT-05": "PROVEN_CURRENT",
     "DL-MINT-06": "PROVEN_CURRENT",
     "DL-MINT-07": "PROVEN_CURRENT",
-    "DL-MINT-08": "UNKNOWN_CURRENT",
+    "DL-MINT-08": "RATIFIED_CURRENT",
     "DL-MINT-09": "PROVEN_CURRENT",
     "DL-MINT-10": "PROVEN_CURRENT",
     "DL-MINT-11": "PROVEN_CURRENT",
@@ -218,13 +220,15 @@
     "DL-MINT-13": "PROVEN_CURRENT",
     "DL-MINT-14": "PROVEN_CURRENT",
     "DL-MINT-15": "PROVEN_CURRENT",
-    "DL-MINT-16": "UNKNOWN_CURRENT",
+    "DL-MINT-16": "RATIFIED_CURRENT",
     "DL-MINT-17": "PROVEN_CURRENT",
     "DL-U01-WIT-01": "PROVEN_CURRENT"
   },
-  "owner_decision_required": true,
-  "owner_decision_exact_question": "OD_SEALED_VENUE_29P_NORMATIVE: bind sealed venue 29P normative common-epoch identity and venue number pack beyond join-decision_epoch equality.",
-  "next_genuine_blocker": "OD_SEALED_VENUE_29P_NORMATIVE_COMMON_EPOCH_AND_VENUE_NUMBER",
+  "owner_decision_required": false,
+  "owner_decision_exact_question": null,
+  "prior_owner_decision_exact_question": "OD_SEALED_VENUE_29P_NORMATIVE: bind sealed venue 29P normative common-epoch identity and venue number pack beyond join-decision_epoch equality.",
+  "next_genuine_blocker": null,
+  "closed_by_owner_decision": "OD-29P-NORMATIVE-PACK-V1",
   "primary_evidence_refs": [
     "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_U01_ACCOUNT_MODE_SEMANTIC_RATIFICATION_V1.md",
     "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_P01_POLICY_REPLACEMENT_V1.md",
@@ -236,6 +240,8 @@
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_producer_v1.py",
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+    "config/governance/od_29p_normative_pack_v1.json",
+    "docs/governance/OD_29P_NORMATIVE_PACK_V1.md"
   ]
 }

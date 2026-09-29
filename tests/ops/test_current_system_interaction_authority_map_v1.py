@@ -54,9 +54,12 @@ def test_proven_current_without_evidence_fails() -> None:
     assert any("missing evidence anchor" in error for error in errors)
 
 
-def test_unknown_stays_unknown() -> None:
-    view = MAP.render_views(_doc())["authority"]
-    assert "id=sealed_venue_number_29p class=UNKNOWN" in view
+def test_sealed_venue_29p_pin_closed_not_in_open_unknowns() -> None:
+    doc = _doc()
+    record_ids = {record["id"] for record in doc["open_epistemic_records"]}
+    assert "sealed_venue_number_29p" not in record_ids
+    view = MAP.render_views(doc)["authority"]
+    assert "id=sealed_venue_number_29p class=UNKNOWN" not in view
     assert MAP.project_status("UNKNOWN") == "UNKNOWN"
 
 

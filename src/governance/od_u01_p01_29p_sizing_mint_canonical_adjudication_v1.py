@@ -94,10 +94,13 @@ def validate_adjudication_against_repo_v1(
         reasons.append("DECISION_CASE_MUST_BE_A_OR_D")
     if p.get("dependency_gate") != "PASS":
         reasons.append("DEPENDENCY_GATE_MUST_PASS")
-    if p.get("29p_normative_pack_complete") is not False:
-        reasons.append("29P_NORMATIVE_PACK_MUST_REMAIN_INCOMPLETE")
-    if p.get("unk_sealed_venue_number_29p_status") != "UNKNOWN_CURRENT":
-        reasons.append("UNK_SEALED_29P_MUST_REMAIN_UNKNOWN")
+    if p.get("29p_normative_pack_complete") is not True:
+        reasons.append("29P_NORMATIVE_PACK_MUST_BE_COMPLETE")
+    unk = p.get("unk_sealed_venue_number_29p_status")
+    if unk == "UNKNOWN_CURRENT":
+        reasons.append("UNK_SEALED_29P_MUST_NOT_REMAIN_UNKNOWN")
+    if p.get("closed_by_owner_decision") != "OD-29P-NORMATIVE-PACK-V1":
+        reasons.append("PACK_CLOSURE_OD_MISSING")
     replay = p.get("replay", {})
     if replay.get("replay_can_mint_freshness") is not False:
         reasons.append("REPLAY_CAN_MINT_FRESHNESS_MUST_BE_FALSE")
@@ -110,15 +113,16 @@ def validate_adjudication_against_repo_v1(
     laws = p.get("domain_laws", {})
     if set(laws) != set(DOMAIN_LAW_KEYS):
         reasons.append("DOMAIN_LAW_KEYS_MISMATCH")
-    if laws.get("DL-MINT-08") != "UNKNOWN_CURRENT":
-        reasons.append("DL_MINT_08_SEALED_EPOCH_MUST_BE_UNKNOWN")
-    if laws.get("DL-MINT-16") != "UNKNOWN_CURRENT":
-        reasons.append("DL_MINT_16_PACK_MUST_BE_UNKNOWN")
+    if laws.get("DL-MINT-08") != "RATIFIED_CURRENT":
+        reasons.append("DL_MINT_08_SEALED_EPOCH_MUST_BE_RATIFIED")
+    if laws.get("DL-MINT-16") != "RATIFIED_CURRENT":
+        reasons.append("DL_MINT_16_PACK_MUST_BE_RATIFIED")
     if laws.get("DL-U01-WIT-01") != "PROVEN_CURRENT":
         reasons.append("DL_U01_WIT_01_MUST_BE_PROVEN_CURRENT")
     proven_mint = sum(1 for k in DL_MINT_KEYS if laws.get(k) == "PROVEN_CURRENT")
-    if proven_mint != 15:
-        reasons.append("EXPECTED_15_DL_MINT_PROVEN_CURRENT")
+    ratified_mint = sum(1 for k in DL_MINT_KEYS if laws.get(k) == "RATIFIED_CURRENT")
+    if proven_mint != 15 or ratified_mint != 2:
+        reasons.append("EXPECTED_15_DL_MINT_PROVEN_AND_2_RATIFIED")
 
     numeric = json.loads((repo_root / NUMERIC_ADJ).read_text(encoding="utf-8"))
     sizing = json.loads((repo_root / SIZING_ADJ).read_text(encoding="utf-8"))
