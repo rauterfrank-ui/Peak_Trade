@@ -2,7 +2,7 @@
 
 ## What it is
 
-`current_system_census_graph_v1` is a **navigation and evidence index** for the Peak_Trade system topology as established by the **CURRENT Complete System Census V1** forensic runs at baseline `d590b8142210680805f8dc159c5a2fb684e87737`.
+`current_system_census_graph_v1` is a **navigation and evidence index** for the Peak_Trade system topology as established by the **CURRENT Complete System Census V1** forensic runs, navigation-rebound at architecture fixpoint baseline `d26caea78d1a178fde0a9e91aee169d454eebcae`.
 
 It materializes:
 

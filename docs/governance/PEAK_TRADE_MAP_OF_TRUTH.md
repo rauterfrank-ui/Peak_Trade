@@ -15,7 +15,7 @@ PARALLEL_SSOT_CREATED=false
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 CURRENT_ONLY_INVENTORY=false
 CURRENT_ONLY_INVENTORY_REASON=NAVIGATION_ONLY_DESIGN_MIXES_CURRENT_HISTORICAL_FORENSIC_TARGETS
-CURRENT_REVIEWED_AT_SHA=744a9c896f53d33b2d3c24977da1891a2e8549f1
+CURRENT_REVIEWED_AT_SHA=d26caea78d1a178fde0a9e91aee169d454eebcae
 ```
 
 **Role:** discovery / path resolution only.  
@@ -123,7 +123,12 @@ in the Master Runbook and the named packages.
 | Peak_Trade canonical truth sync and closure record (B12) | `docs/evidence/peak_trade_canonical_truth_sync_and_closure_v1/SUMMARY.json` |
 | Elementary C1 mark direction identity | `src/trading/market_state/elementary_direction_v1.py` |
 | Governed universe | `src/ops/governed_futures_universe_producer_v1/` |
-| Productive ranking | `src/ops/productive_futures_ranking_producer_v1/` |
+| Economic-MD Input-2 producer (not Cap22 ranking authority) | `src/ops/economic_md_input_producer_v1/` |
+| B05 Cap21 feature production (Cap22 input seam) | `src/ops/peak_trade_ranking_feature_production_v1/` / `docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_PRODUCTION_V1.md` |
+| Productive ranking (Cap22 / B06) | `src/ops/productive_futures_ranking_producer_v1/` |
+| Cap11 productive reconciliation runtime binding | `src/ops/productive_reconciliation_runtime_binding_v1/` |
+| Wallclock / session orchestration bridge | `src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/` |
+| MF membership (logical owner / behavior / state artifact; navigation) | `src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py` / `src/ops/mf_membership_context_artifact_contract_v1.py` / `src/ops/mf_membership_previous_to_current_replay_contract_v1.py` (logical owner name: `ops.mf_membership_rotation_controller_v1`; no standalone package) |
 | STEP29M post-selection offline binding | `src/backtest/step29m_current_single_selected_future_dynamic_binding_v1.py` |
 | Optimization Universe (first-class offline) | `src/experiments/canonical_optimization_universe_v1.py` |
 | Learning / DDO capture and export | `src/learning/deterministic_decision_outcome_v0/` |
@@ -179,6 +184,8 @@ authority and must not be read as activation or next-step instructions.
 | Path | Navigation note |
 | --- | --- |
 | [`config/governance/current_system_interaction_authority_map_v1/source_v1.json`](../../config/governance/current_system_interaction_authority_map_v1/source_v1.json) | **Navigation only:** structured source for CURRENT System Interaction & Authority Map (`AUTHORITY=NONE`, `map_authority=NONE`); derived read-only views under [`docs/governance/current_system_interaction_authority_map_v1/generated/`](current_system_interaction_authority_map_v1/generated/); not operational SSOT |
+| [`config/governance/current_system_census_graph_v1/source_v1.json`](../../config/governance/current_system_census_graph_v1/source_v1.json) | **Navigation only:** CURRENT Complete System Census graph index (`AUTHORITY=NONE`); package/surface topology and semantic edges; not runtime authority |
+| [`docs/system_atlas/generated/SYSTEM_ATLAS.md`](../system_atlas/generated/SYSTEM_ATLAS.md) | **Navigation only:** System Atlas generated views (`ATLAS_AUTHORITY=NONE`); reconcile with CSIA and census graph before use |
 | [`docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md`](PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md) | Historical/runtime discovery aid; reconcile against Master Runbook + CURRENT code before use |
 | [`docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md`](PEAK_TRADE_IMPLEMENTATION_CONTRACT.md) | Short navigation contract; not a second SSOT |
 | [`docs/ops/registry/DOCS_TRUTH_MAP.md`](../ops/registry/DOCS_TRUTH_MAP.md) | Docs drift registry; not a runbook |
