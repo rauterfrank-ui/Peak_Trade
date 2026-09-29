@@ -31,9 +31,9 @@ DECISION_AUTHORITY=NONE
 
 ## Object granularity
 
-- `src/<top-level-package>`
-- `src/ops/<capability-package>`
-- Explicit infrastructure surfaces (`config/governance`, `scripts/ops`, …)
+- `src&#47;<top-level-package>`
+- `src&#47;ops&#47;<capability-package>`
+- Explicit infrastructure surfaces (governance config tree, ops scripts tree, …)
 
 ## Semantic edges
 

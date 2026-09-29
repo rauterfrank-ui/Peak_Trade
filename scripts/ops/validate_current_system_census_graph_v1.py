@@ -58,10 +58,7 @@ def load_json(path: Path) -> Any:
 
 
 def git_head() -> str:
-    return (
-        subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True)
-        .strip()
-    )
+    return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True).strip()
 
 
 def validate_structure(doc: dict[str, Any]) -> list[str]:

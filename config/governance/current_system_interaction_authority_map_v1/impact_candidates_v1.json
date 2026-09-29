@@ -476,6 +476,9 @@
     "tests/ops/test_ucs_evidence_binding_v1.py",
     "tests/ops/test_remaining_29_evidence_exhaustion_v1.py",
     "tests/ops/test_stale_navigation_rebind_v1.py",
-    ".github/workflows/truth_gates_pr.yml"
+    ".github/workflows/truth_gates_pr.yml",
+    "config/governance/current_system_census_graph_v1/",
+    "scripts/ops/validate_current_system_census_graph_v1.py",
+    "tests/governance/test_current_system_census_graph_v1.py"
   ]
 }
