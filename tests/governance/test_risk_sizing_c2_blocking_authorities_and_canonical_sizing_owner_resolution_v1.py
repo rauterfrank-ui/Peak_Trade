@@ -129,8 +129,15 @@ def test_blocker_d_sizing_owner_unresolved_parallel_bypasses() -> None:
         len(d["productive_quantity_decision_owner_census"]["parallel_bypass_owners_reachable"]) == 5
     )
     inv = _load(INVENTORY_JSON)
-    assert inv["markers"]["CANONICAL_RISK_SIZING_OWNER"] == "UNRESOLVED"
+    assert inv["markers"]["CANONICAL_RISK_SIZING_OWNER"] == "src.governance.capital_risk_sizing_v1"
+    assert inv["markers"]["PRODUCTIVE_FINAL_QUANTITY_OWNER_COUNT"] == 1
     assert inv["markers"]["BYPASS_PATH_COUNT"] == 5
+    supersession = res["supersession_v1"]
+    assert (
+        supersession["superseded_for_productive_canonical_sizing_owner_interpretation_by"]
+        == "config/governance/risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json"
+    )
+    assert d["canonical_risk_sizing_owner"] == "UNRESOLVED"
 
 
 def test_deferred_decisions_present() -> None:

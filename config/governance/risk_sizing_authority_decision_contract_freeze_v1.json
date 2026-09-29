@@ -82,6 +82,14 @@
     "CANONICAL_PRICE_OWNER": "ops.governed_productive_reference_price_authority_producer_v1",
     "CANONICAL_INSTRUMENT_METADATA_OWNER": "ops.governed_productive_instrument_metadata_authority_producer_v1",
     "SINGULAR_REPO_WIDE_OWNER_REQUIRED": true,
+    "SINGULAR_REPO_WIDE_OWNER_REQUIRED_MEANS": "ONE_CANONICAL_PRODUCTIVE_MV2_FULL_CORE_FINAL_QUANTITY_OWNER_NOT_ONE_REPOSITORY_SIZING_IMPLEMENTATION",
+    "REPO_WIDE_SINGLE_SIZING_IMPLEMENTATION_REQUIRED": false,
+    "CANONICAL_PRODUCTIVE_RISK_SIZING_OWNER": "src.governance.capital_risk_sizing_v1",
+    "PRODUCTIVE_SCOPE": "full_core_mv2_governance_intent_bound",
+    "PRODUCTIVE_FINAL_QUANTITY_OWNER_COUNT": 1,
+    "REPOSITORY_SIZING_IMPLEMENTATION_COUNT": 5,
+    "CANONICAL_ALL_SIZING_REPOSITORY_OWNER": "UNASSIGNED",
+    "GOVERNANCE_SEMANTIC_MARKER_ALIGNMENT_V1": true,
     "MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER": "src.governance.capital_risk_sizing_v1",
     "MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER_SCOPE": "mv2_governance_intent_bound",
     "STEP29P_ADMISSIBILITY_AUTHORITY_BOUNDARY": "capital_risk_admissibility_owner_v1",
@@ -465,6 +473,8 @@
     "runtime_rewire_performed": false,
     "productive_runtime_semantics_changed": false,
     "singular_repo_wide_owner_required": false,
+    "historical_singular_repo_wide_owner_required_at_topology_adjudication": false,
+    "current_productive_canonical_semantics_superseded_by": "config/governance/risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json",
     "mv2_intent_bound_quantity_algebra_owner": "src.governance.capital_risk_sizing_v1",
     "mv2_intent_bound_quantity_algebra_owner_scope": "mv2_governance_intent_bound",
     "step29p_admissibility_authority_boundary": "capital_risk_admissibility_owner_v1",
@@ -491,7 +501,13 @@
       "reference_price_input_domain_unresolved",
       "instrument_metadata_input_domain_unresolved"
     ],
-    "notes": "Scope-limited MV2 quantity owner adjudication does not populate CANONICAL_RISK_SIZING_OWNER (repo-wide singular owner field)."
+    "notes": "Historical topology adjudication snapshot (singular_repo_wide_owner_required=false). CURRENT productive canonical FINAL_QUANTITY owner ratified via risk_sizing_c2_canonical_risk_sizing_authority_closure_v1; SINGULAR_REPO_WIDE_OWNER_REQUIRED marker means one canonical productive MV2 authority, not one repository-wide sizing implementation."
+  },
+  "governance_semantic_marker_alignment_v1": {
+    "workpackage_id": "BOUNDED_WP_RISK_SIZING_GOVERNANCE_SEMANTIC_MARKER_ALIGNMENT_V1",
+    "authority_effect": "NONE",
+    "runtime_effect": "NONE",
+    "supersedes_interpretation_conflicts_only": true
   },
   "drift_policy": {
     "conversion_ready_claimed_true": "FAIL",

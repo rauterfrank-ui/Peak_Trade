@@ -32,9 +32,12 @@
     "DEPRECATE_LEGACY_PATH_IS_NOT_OPERATOR_FATE": true,
     "DEPRECATED_QUARANTINED_IS_NOT_OPERATOR_FATE": true,
     "SINGULAR_REPO_WIDE_OWNER_REQUIRED": false,
+    "SINGULAR_REPO_WIDE_OWNER_REQUIRED_AT_VOCABULARY_FREEZE": false,
+    "CURRENT_SINGULAR_MARKER_SEMANTICS_CROSS_REF": "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
     "MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER": "src.governance.capital_risk_sizing_v1",
     "MV2_INTENT_BOUND_QUANTITY_ALGEBRA_OWNER_SCOPE": "mv2_governance_intent_bound",
     "CANONICAL_RISK_SIZING_OWNER": "UNRESOLVED",
+    "CANONICAL_RISK_SIZING_OWNER_AT_VOCABULARY_FREEZE": "UNRESOLVED",
     "LIVE_AUTHORIZED": false,
     "ORDERS_ENABLED": false
   },
@@ -226,5 +229,10 @@
     "This freeze defines vocabulary and decision authority only; it does not adjudicate the five bypass fates.",
     "Open inventory governance questions remain open; they motivate vocabulary distinctions but are not answered here.",
     "CRS DEPRECATE_LEGACY_PATH and EFS DEPRECATED_QUARANTINED remain foreign classifications and must not be copied into operator_fate_adjudication."
-  ]
+  ],
+  "supersession_v1": {
+    "preserved_as_historical_vocabulary_snapshot": true,
+    "productive_canonical_owner_markers_superseded_by": "config/governance/risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json",
+    "current_semantics_cross_ref": "config/governance/risk_sizing_owner_inventory_ssot_v1.json"
+  }
 }
