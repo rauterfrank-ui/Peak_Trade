@@ -1,34 +1,33 @@
 {
-  "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
   "authority_effect": "NONE",
-  "base_sha": "d590b8142210680805f8dc159c5a2fb684e87737",
+  "base_sha": "fe1a10d180de69bcac3d32780dc20ead9f84d45a",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "config/governance/current_system_census_graph_v1/README.md",
-    "config/governance/current_system_census_graph_v1/schema_v1.json",
-    "config/governance/current_system_census_graph_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "scripts/ops/validate_current_system_census_graph_v1.py",
-    "tests/governance/test_current_system_census_graph_v1.py"
+    "docs/ops/specs/WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "src/ops/whole_system_connection_closure_bounded_wp_v1/__init__.py",
+    "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
+    "src/ops/whole_system_connection_closure_bounded_wp_v1/proof_v1.py",
+    "tests/ops/test_whole_system_connection_closure_bounded_wp_v1.py"
   ],
-  "changed_paths_sha256": "db4e565eefaa2add4a0d50610b2105a5b1a63c830e042005deb3b1fdb5714995",
+  "changed_paths_sha256": "3106fdb7472d0fe3a9ff29676868fe8c40f321b6915fb9071f6ca3a2b70d5b2e",
   "covered_candidate_paths": [
-    "config/governance/current_system_census_graph_v1/README.md",
-    "config/governance/current_system_census_graph_v1/schema_v1.json",
-    "config/governance/current_system_census_graph_v1/source_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "scripts/ops/validate_current_system_census_graph_v1.py",
-    "tests/governance/test_current_system_census_graph_v1.py"
+    "docs/ops/specs/WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "src/ops/whole_system_connection_closure_bounded_wp_v1/__init__.py",
+    "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
+    "src/ops/whole_system_connection_closure_bounded_wp_v1/proof_v1.py",
+    "tests/ops/test_whole_system_connection_closure_bounded_wp_v1.py"
   ],
   "evidence_refs": [
-    "config/governance/current_system_census_graph_v1/README.md",
-    "config/governance/current_system_census_graph_v1/source_v1.json",
-    "tests/governance/test_current_system_census_graph_v1.py"
+    "docs/ops/specs/WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1.md",
+    "tests/ops/test_whole_system_connection_closure_bounded_wp_v1.py"
   ],
+  "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
+  "reason": "PR #6969 whole-system connection proof caller alignment only; no change to current_law_impact_map_v1 source or derived law-map views; candidate catalog extended for bounded WP and Atlas entity review.",
   "selector_used_as_law_impact_authority": false,
-  "verdict": "NO_LAW_IMPACT",
-  "reason": "PR #6968 adds census graph navigation artifact (AUTHORITY=NONE). No change to current_law_impact_map_v1 source or derived law-map views; candidate catalog extended only."
+  "verdict": "NO_LAW_IMPACT"
 }
