@@ -1,0 +1,323 @@
+[
+  {
+    "seq": 1,
+    "layer": "EXTERNAL_INPUT",
+    "contract_id": "CAP24_INSTRUMENT",
+    "old_effective_value": "historical_ssf_selection",
+    "current_produced_value": "current",
+    "current_consumed_value": "Cap24 handoff in productive entry script",
+    "classification": "CURRENT_EQUIVALENT",
+    "productive_reachable": true,
+    "forensic_continuation": false,
+    "source_evidence": "WP4 selection JSON"
+  },
+  {
+    "seq": 2,
+    "layer": "BOOTSTRAP",
+    "contract_id": "BOOTSTRAP_MARK_PAYLOAD",
+    "old_effective_value": "mark attached for S7 compose",
+    "current_produced_value": "public mark-price GET attached in LiveFreshC1.poll",
+    "current_consumed_value": "required non-null at bootstrap",
+    "classification": "CURRENT_EQUIVALENT",
+    "productive_reachable": true,
+    "forensic_continuation": false,
+    "first_divergence": false,
+    "downstream_impact": "none when wired",
+    "source_evidence": "LiveFreshC1 source + WP4"
+  },
+  {
+    "seq": 3,
+    "layer": "F1M9",
+    "contract_id": "STALE_INTEGRATED_REPLAY",
+    "old_effective_value": {
+      "decision_outcome": "no_action",
+      "fail_reasons": [],
+      "replay_pass": true
+    },
+    "current_produced_value": {
+      "decision_outcome": "no_action",
+      "fail_reasons": [],
+      "replay_pass": true
+    },
+    "current_consumed_value": {
+      "decision_outcome": "no_action",
+      "fail_reasons": [],
+      "replay_pass": true
+    },
+    "classification": "WP3_COMPAT_EQUIVALENT",
+    "productive_reachable": true,
+    "forensic_continuation": false,
+    "source_evidence": "WP2 side_current D_E"
+  },
+  {
+    "seq": 4,
+    "layer": "G17",
+    "contract_id": "G17_POLICY_STRING",
+    "old_effective_value": "BIND_ONLY_WHEN_PRODUCED",
+    "current_produced_value": "BIND_WHEN_PRODUCED_OR_PROCESS_INTERNAL_REUSE",
+    "current_consumed_value": "effective bind gated by WP3 flag",
+    "classification": "BEHAVIORAL_DIVERGENCE",
+    "productive_reachable": true,
+    "forensic_continuation": false,
+    "source_evidence": "WP2 G17 vector"
+  },
+  {
+    "seq": 5,
+    "layer": "BOOTSTRAP",
+    "contract_id": "BOOTSTRAP_OBSERVATION",
+    "old_effective_value": "OLD replay/host where applicable",
+    "current_produced_value": {
+      "contract_id": "BOOTSTRAP_OBSERVATION",
+      "injected_observation_fields": [
+        "candles_payload",
+        "occupancy_payloads",
+        "mark_price_payload",
+        "index_tickers_payload"
+      ],
+      "live_poll_sets_mark_price_payload": true,
+      "live_poll_uses_public_mark_get": true,
+      "bootstrap_requires_mark": true,
+      "s5_runner_requires_mark": true,
+      "entry_script_fetches_g17_mark_history": true,
+      "wp4_productive_stop_if_unpatched": "BOOTSTRAP_CMC_MARK_PAYLOAD_REQUIRED",
+      "classification": "CURRENT_EQUIVALENT",
+      "productive_reachable": true,
+      "forensic_continuation": false
+    },
+    "current_consumed_value": {
+      "contract_id": "BOOTSTRAP_OBSERVATION",
+      "injected_observation_fields": [
+        "candles_payload",
+        "occupancy_payloads",
+        "mark_price_payload",
+        "index_tickers_payload"
+      ],
+      "live_poll_sets_mark_price_payload": true,
+      "live_poll_uses_public_mark_get": true,
+      "bootstrap_requires_mark": true,
+      "s5_runner_requires_mark": true,
+      "entry_script_fetches_g17_mark_history": true,
+      "wp4_productive_stop_if_unpatched": "BOOTSTRAP_CMC_MARK_PAYLOAD_REQUIRED",
+      "classification": "CURRENT_EQUIVALENT",
+      "productive_reachable": true,
+      "forensic_continuation": false
+    },
+    "classification": "CURRENT_EQUIVALENT",
+    "productive_reachable": true,
+    "forensic_continuation": false,
+    "source_evidence": "e2e_forensic_harness_v1"
+  },
+  {
+    "seq": 6,
+    "layer": "F1M9",
+    "contract_id": "F1M9_STALE_DP_ADMISSION",
+    "old_effective_value": "OLD replay/host where applicable",
+    "current_produced_value": {
+      "contract_id": "F1M9_STALE_DP_ADMISSION",
+      "wp3_active": true,
+      "integrated_replay_pass": true,
+      "decision_outcome": "no_action",
+      "classification": "WP3_COMPAT_EQUIVALENT",
+      "productive_reachable": true,
+      "forensic_continuation": false
+    },
+    "current_consumed_value": {
+      "contract_id": "F1M9_STALE_DP_ADMISSION",
+      "wp3_active": true,
+      "integrated_replay_pass": true,
+      "decision_outcome": "no_action",
+      "classification": "WP3_COMPAT_EQUIVALENT",
+      "productive_reachable": true,
+      "forensic_continuation": false
+    },
+    "classification": "WP3_COMPAT_EQUIVALENT",
+    "productive_reachable": true,
+    "forensic_continuation": false,
+    "source_evidence": "e2e_forensic_harness_v1"
+  },
+  {
+    "seq": 7,
+    "layer": "G17",
+    "contract_id": "G17_DUPLICATE_NOOP_CMC_BIND",
+    "old_effective_value": "OLD replay/host where applicable",
+    "current_produced_value": {
+      "contract_id": "G17_DUPLICATE_NOOP_CMC_BIND",
+      "outcome": "TypedRuntimeProducerOutcomeV1.DUPLICATE_NOOP",
+      "bind_performed": false,
+      "wp3_produced_only": true,
+      "classification": "WP3_COMPAT_EQUIVALENT",
+      "productive_reachable": true,
+      "forensic_continuation": false
+    },
+    "current_consumed_value": {
+      "contract_id": "G17_DUPLICATE_NOOP_CMC_BIND",
+      "outcome": "TypedRuntimeProducerOutcomeV1.DUPLICATE_NOOP",
+      "bind_performed": false,
+      "wp3_produced_only": true,
+      "classification": "WP3_COMPAT_EQUIVALENT",
+      "productive_reachable": true,
+      "forensic_continuation": false
+    },
+    "classification": "WP3_COMPAT_EQUIVALENT",
+    "productive_reachable": true,
+    "forensic_continuation": false,
+    "source_evidence": "e2e_forensic_harness_v1"
+  },
+  {
+    "seq": 8,
+    "layer": "LAYERED",
+    "contract_id": "LAYERED_OBSERVATION_INIT",
+    "old_effective_value": "OLD replay/host where applicable",
+    "current_produced_value": {
+      "contract_id": "LAYERED_OBSERVATION_INIT",
+      "wp3_flag": true,
+      "seam_branches_on_flag": false,
+      "classification": "BEHAVIORAL_DIVERGENCE",
+      "productive_reachable": true,
+      "forensic_continuation": false
+    },
+    "current_consumed_value": {
+      "contract_id": "LAYERED_OBSERVATION_INIT",
+      "wp3_flag": true,
+      "seam_branches_on_flag": false,
+      "classification": "BEHAVIORAL_DIVERGENCE",
+      "productive_reachable": true,
+      "forensic_continuation": false
+    },
+    "classification": "BEHAVIORAL_DIVERGENCE",
+    "productive_reachable": true,
+    "forensic_continuation": false,
+    "source_evidence": "e2e_forensic_harness_v1"
+  },
+  {
+    "seq": 9,
+    "layer": "FORENSIC",
+    "contract_id": "FORENSIC_PRODUCTIVE_ENTER_LONG",
+    "old_effective_value": "OLD replay/host where applicable",
+    "current_produced_value": {
+      "contract_id": "FORENSIC_PRODUCTIVE_ENTER_LONG",
+      "decision_outcome": "enter_long",
+      "disposition": "",
+      "mark_px": 1635.0,
+      "enter_ts": 1789527900.0,
+      "pre_external_or_enter": true,
+      "classification": "CURRENT_EQUIVALENT",
+      "productive_reachable": false,
+      "forensic_continuation": true,
+      "continuation_reason": "BOOTSTRAP_CMC_MARK_PAYLOAD_REQUIRED"
+    },
+    "current_consumed_value": {
+      "contract_id": "FORENSIC_PRODUCTIVE_ENTER_LONG",
+      "decision_outcome": "enter_long",
+      "disposition": "",
+      "mark_px": 1635.0,
+      "enter_ts": 1789527900.0,
+      "pre_external_or_enter": true,
+      "classification": "CURRENT_EQUIVALENT",
+      "productive_reachable": false,
+      "forensic_continuation": true,
+      "continuation_reason": "BOOTSTRAP_CMC_MARK_PAYLOAD_REQUIRED"
+    },
+    "classification": "CURRENT_EQUIVALENT",
+    "productive_reachable": false,
+    "forensic_continuation": true,
+    "source_evidence": "e2e_forensic_harness_v1"
+  },
+  {
+    "seq": 10,
+    "layer": "C1",
+    "contract_id": "DUPLICATE_NO_DOUBLE_ADVANCE",
+    "old_effective_value": false,
+    "current_produced_value": false,
+    "current_consumed_value": false,
+    "classification": "EXACT_MATCH",
+    "productive_reachable": true,
+    "forensic_continuation": false,
+    "source_evidence": "WP2 vector C"
+  },
+  {
+    "seq": 11,
+    "layer": "RECON",
+    "contract_id": "RECON_FLAT",
+    "old_effective_value": {
+      "cases": [
+        {
+          "decision_outcome": "no_action",
+          "label": "reconciled_flat",
+          "reconciliation_state": "reconciled",
+          "replay_pass": true
+        },
+        {
+          "decision_outcome": "reconcile_only",
+          "label": "reconciliation_required",
+          "reconciliation_state": "reconciliation_required",
+          "replay_pass": true
+        }
+      ],
+      "vector_id": "F_RECON_POSITION_FLAT"
+    },
+    "current_produced_value": {
+      "cases": [
+        {
+          "decision_outcome": "no_action",
+          "label": "reconciled_flat",
+          "reconciliation_state": "reconciled",
+          "replay_pass": true
+        },
+        {
+          "decision_outcome": "reconcile_only",
+          "label": "reconciliation_required",
+          "reconciliation_state": "reconciliation_required",
+          "replay_pass": true
+        }
+      ],
+      "vector_id": "F_RECON_POSITION_FLAT"
+    },
+    "current_consumed_value": {
+      "cases": [
+        {
+          "decision_outcome": "no_action",
+          "label": "reconciled_flat",
+          "reconciliation_state": "reconciled",
+          "replay_pass": true
+        },
+        {
+          "decision_outcome": "reconcile_only",
+          "label": "reconciliation_required",
+          "reconciliation_state": "reconciliation_required",
+          "replay_pass": true
+        }
+      ],
+      "vector_id": "F_RECON_POSITION_FLAT"
+    },
+    "classification": "CURRENT_EQUIVALENT",
+    "productive_reachable": true,
+    "forensic_continuation": false,
+    "source_evidence": "WP2 vector F"
+  },
+  {
+    "seq": 12,
+    "layer": "SAFETY",
+    "contract_id": "CANONICAL_PRICE_PROVENANCE",
+    "old_effective_value": {
+      "module_present": false,
+      "old_equivalent_restriction": false,
+      "vector_id": "I_CANONICAL_PRICE_PROVENANCE"
+    },
+    "current_produced_value": {
+      "forbidden_mark_source_blocked": true,
+      "forbidden_sources": [
+        "ORDINARY_MARKET_CANDLE_CLOSE",
+        "UNPROVEN"
+      ],
+      "old_equivalent_restriction": false,
+      "valid_provenance_passes": true,
+      "vector_id": "I_CANONICAL_PRICE_PROVENANCE"
+    },
+    "current_consumed_value": "fail-closed on forbidden sources",
+    "classification": "CURRENT_SAFETY_BOUNDARY",
+    "productive_reachable": true,
+    "forensic_continuation": false,
+    "source_evidence": "WP2 vector I"
+  }
+]

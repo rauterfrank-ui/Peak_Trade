@@ -1,0 +1,1170 @@
+{
+  "adjudication_summary": {
+    "deterministic_bear_enter_short_integrated": "NOT_REACHED",
+    "deterministic_bull_enter_long_integrated": "NOT_REACHED",
+    "duplicate_double_advance": "PROVEN_NO",
+    "forensic_productive_enter_long": "enter_long"
+  },
+  "baseline_sha": "8475ebb948d246efd0c70a1cf4101fd3bf1b54db",
+  "contract_matrix": [
+    {
+      "classification": "CURRENT_EQUIVALENT",
+      "contract_id": "CAP24_INSTRUMENT",
+      "current_consumed_value": "Cap24 handoff in productive entry script",
+      "current_produced_value": "current",
+      "forensic_continuation": false,
+      "layer": "EXTERNAL_INPUT",
+      "old_effective_value": "historical_ssf_selection",
+      "productive_reachable": true,
+      "seq": 1,
+      "source_evidence": "WP4 selection JSON"
+    },
+    {
+      "classification": "CURRENT_EQUIVALENT",
+      "contract_id": "BOOTSTRAP_MARK_PAYLOAD",
+      "current_consumed_value": "required non-null at bootstrap",
+      "current_produced_value": "public mark-price GET attached in LiveFreshC1.poll",
+      "downstream_impact": "none when wired",
+      "first_divergence": false,
+      "forensic_continuation": false,
+      "layer": "BOOTSTRAP",
+      "old_effective_value": "mark attached for S7 compose",
+      "productive_reachable": true,
+      "seq": 2,
+      "source_evidence": "LiveFreshC1 source + WP4"
+    },
+    {
+      "classification": "WP3_COMPAT_EQUIVALENT",
+      "contract_id": "STALE_INTEGRATED_REPLAY",
+      "current_consumed_value": {
+        "decision_outcome": "no_action",
+        "fail_reasons": [],
+        "replay_pass": true
+      },
+      "current_produced_value": {
+        "decision_outcome": "no_action",
+        "fail_reasons": [],
+        "replay_pass": true
+      },
+      "forensic_continuation": false,
+      "layer": "F1M9",
+      "old_effective_value": {
+        "decision_outcome": "no_action",
+        "fail_reasons": [],
+        "replay_pass": true
+      },
+      "productive_reachable": true,
+      "seq": 3,
+      "source_evidence": "WP2 side_current D_E"
+    },
+    {
+      "classification": "BEHAVIORAL_DIVERGENCE",
+      "contract_id": "G17_POLICY_STRING",
+      "current_consumed_value": "effective bind gated by WP3 flag",
+      "current_produced_value": "BIND_WHEN_PRODUCED_OR_PROCESS_INTERNAL_REUSE",
+      "forensic_continuation": false,
+      "layer": "G17",
+      "old_effective_value": "BIND_ONLY_WHEN_PRODUCED",
+      "productive_reachable": true,
+      "seq": 4,
+      "source_evidence": "WP2 G17 vector"
+    },
+    {
+      "classification": "CURRENT_EQUIVALENT",
+      "contract_id": "BOOTSTRAP_OBSERVATION",
+      "current_consumed_value": {
+        "bootstrap_requires_mark": true,
+        "classification": "CURRENT_EQUIVALENT",
+        "contract_id": "BOOTSTRAP_OBSERVATION",
+        "entry_script_fetches_g17_mark_history": true,
+        "forensic_continuation": false,
+        "injected_observation_fields": [
+          "candles_payload",
+          "occupancy_payloads",
+          "mark_price_payload",
+          "index_tickers_payload"
+        ],
+        "live_poll_sets_mark_price_payload": true,
+        "live_poll_uses_public_mark_get": true,
+        "productive_reachable": true,
+        "s5_runner_requires_mark": true,
+        "wp4_productive_stop_if_unpatched": "BOOTSTRAP_CMC_MARK_PAYLOAD_REQUIRED"
+      },
+      "current_produced_value": {
+        "bootstrap_requires_mark": true,
+        "classification": "CURRENT_EQUIVALENT",
+        "contract_id": "BOOTSTRAP_OBSERVATION",
+        "entry_script_fetches_g17_mark_history": true,
+        "forensic_continuation": false,
+        "injected_observation_fields": [
+          "candles_payload",
+          "occupancy_payloads",
+          "mark_price_payload",
+          "index_tickers_payload"
+        ],
+        "live_poll_sets_mark_price_payload": true,
+        "live_poll_uses_public_mark_get": true,
+        "productive_reachable": true,
+        "s5_runner_requires_mark": true,
+        "wp4_productive_stop_if_unpatched": "BOOTSTRAP_CMC_MARK_PAYLOAD_REQUIRED"
+      },
+      "forensic_continuation": false,
+      "layer": "BOOTSTRAP",
+      "old_effective_value": "OLD replay/host where applicable",
+      "productive_reachable": true,
+      "seq": 5,
+      "source_evidence": "e2e_forensic_harness_v1"
+    },
+    {
+      "classification": "WP3_COMPAT_EQUIVALENT",
+      "contract_id": "F1M9_STALE_DP_ADMISSION",
+      "current_consumed_value": {
+        "classification": "WP3_COMPAT_EQUIVALENT",
+        "contract_id": "F1M9_STALE_DP_ADMISSION",
+        "decision_outcome": "no_action",
+        "forensic_continuation": false,
+        "integrated_replay_pass": true,
+        "productive_reachable": true,
+        "wp3_active": true
+      },
+      "current_produced_value": {
+        "classification": "WP3_COMPAT_EQUIVALENT",
+        "contract_id": "F1M9_STALE_DP_ADMISSION",
+        "decision_outcome": "no_action",
+        "forensic_continuation": false,
+        "integrated_replay_pass": true,
+        "productive_reachable": true,
+        "wp3_active": true
+      },
+      "forensic_continuation": false,
+      "layer": "F1M9",
+      "old_effective_value": "OLD replay/host where applicable",
+      "productive_reachable": true,
+      "seq": 6,
+      "source_evidence": "e2e_forensic_harness_v1"
+    },
+    {
+      "classification": "WP3_COMPAT_EQUIVALENT",
+      "contract_id": "G17_DUPLICATE_NOOP_CMC_BIND",
+      "current_consumed_value": {
+        "bind_performed": false,
+        "classification": "WP3_COMPAT_EQUIVALENT",
+        "contract_id": "G17_DUPLICATE_NOOP_CMC_BIND",
+        "forensic_continuation": false,
+        "outcome": "TypedRuntimeProducerOutcomeV1.DUPLICATE_NOOP",
+        "productive_reachable": true,
+        "wp3_produced_only": true
+      },
+      "current_produced_value": {
+        "bind_performed": false,
+        "classification": "WP3_COMPAT_EQUIVALENT",
+        "contract_id": "G17_DUPLICATE_NOOP_CMC_BIND",
+        "forensic_continuation": false,
+        "outcome": "TypedRuntimeProducerOutcomeV1.DUPLICATE_NOOP",
+        "productive_reachable": true,
+        "wp3_produced_only": true
+      },
+      "forensic_continuation": false,
+      "layer": "G17",
+      "old_effective_value": "OLD replay/host where applicable",
+      "productive_reachable": true,
+      "seq": 7,
+      "source_evidence": "e2e_forensic_harness_v1"
+    },
+    {
+      "classification": "BEHAVIORAL_DIVERGENCE",
+      "contract_id": "LAYERED_OBSERVATION_INIT",
+      "current_consumed_value": {
+        "classification": "BEHAVIORAL_DIVERGENCE",
+        "contract_id": "LAYERED_OBSERVATION_INIT",
+        "forensic_continuation": false,
+        "productive_reachable": true,
+        "seam_branches_on_flag": false,
+        "wp3_flag": true
+      },
+      "current_produced_value": {
+        "classification": "BEHAVIORAL_DIVERGENCE",
+        "contract_id": "LAYERED_OBSERVATION_INIT",
+        "forensic_continuation": false,
+        "productive_reachable": true,
+        "seam_branches_on_flag": false,
+        "wp3_flag": true
+      },
+      "forensic_continuation": false,
+      "layer": "LAYERED",
+      "old_effective_value": "OLD replay/host where applicable",
+      "productive_reachable": true,
+      "seq": 8,
+      "source_evidence": "e2e_forensic_harness_v1"
+    },
+    {
+      "classification": "CURRENT_EQUIVALENT",
+      "contract_id": "FORENSIC_PRODUCTIVE_ENTER_LONG",
+      "current_consumed_value": {
+        "classification": "CURRENT_EQUIVALENT",
+        "continuation_reason": "BOOTSTRAP_CMC_MARK_PAYLOAD_REQUIRED",
+        "contract_id": "FORENSIC_PRODUCTIVE_ENTER_LONG",
+        "decision_outcome": "enter_long",
+        "disposition": "",
+        "enter_ts": 1789527900.0,
+        "forensic_continuation": true,
+        "mark_px": 1635.0,
+        "pre_external_or_enter": true,
+        "productive_reachable": false
+      },
+      "current_produced_value": {
+        "classification": "CURRENT_EQUIVALENT",
+        "continuation_reason": "BOOTSTRAP_CMC_MARK_PAYLOAD_REQUIRED",
+        "contract_id": "FORENSIC_PRODUCTIVE_ENTER_LONG",
+        "decision_outcome": "enter_long",
+        "disposition": "",
+        "enter_ts": 1789527900.0,
+        "forensic_continuation": true,
+        "mark_px": 1635.0,
+        "pre_external_or_enter": true,
+        "productive_reachable": false
+      },
+      "forensic_continuation": true,
+      "layer": "FORENSIC",
+      "old_effective_value": "OLD replay/host where applicable",
+      "productive_reachable": false,
+      "seq": 9,
+      "source_evidence": "e2e_forensic_harness_v1"
+    },
+    {
+      "classification": "EXACT_MATCH",
+      "contract_id": "DUPLICATE_NO_DOUBLE_ADVANCE",
+      "current_consumed_value": false,
+      "current_produced_value": false,
+      "forensic_continuation": false,
+      "layer": "C1",
+      "old_effective_value": false,
+      "productive_reachable": true,
+      "seq": 10,
+      "source_evidence": "WP2 vector C"
+    },
+    {
+      "classification": "CURRENT_EQUIVALENT",
+      "contract_id": "RECON_FLAT",
+      "current_consumed_value": {
+        "cases": [
+          {
+            "decision_outcome": "no_action",
+            "label": "reconciled_flat",
+            "reconciliation_state": "reconciled",
+            "replay_pass": true
+          },
+          {
+            "decision_outcome": "reconcile_only",
+            "label": "reconciliation_required",
+            "reconciliation_state": "reconciliation_required",
+            "replay_pass": true
+          }
+        ],
+        "vector_id": "F_RECON_POSITION_FLAT"
+      },
+      "current_produced_value": {
+        "cases": [
+          {
+            "decision_outcome": "no_action",
+            "label": "reconciled_flat",
+            "reconciliation_state": "reconciled",
+            "replay_pass": true
+          },
+          {
+            "decision_outcome": "reconcile_only",
+            "label": "reconciliation_required",
+            "reconciliation_state": "reconciliation_required",
+            "replay_pass": true
+          }
+        ],
+        "vector_id": "F_RECON_POSITION_FLAT"
+      },
+      "forensic_continuation": false,
+      "layer": "RECON",
+      "old_effective_value": {
+        "cases": [
+          {
+            "decision_outcome": "no_action",
+            "label": "reconciled_flat",
+            "reconciliation_state": "reconciled",
+            "replay_pass": true
+          },
+          {
+            "decision_outcome": "reconcile_only",
+            "label": "reconciliation_required",
+            "reconciliation_state": "reconciliation_required",
+            "replay_pass": true
+          }
+        ],
+        "vector_id": "F_RECON_POSITION_FLAT"
+      },
+      "productive_reachable": true,
+      "seq": 11,
+      "source_evidence": "WP2 vector F"
+    },
+    {
+      "classification": "CURRENT_SAFETY_BOUNDARY",
+      "contract_id": "CANONICAL_PRICE_PROVENANCE",
+      "current_consumed_value": "fail-closed on forbidden sources",
+      "current_produced_value": {
+        "forbidden_mark_source_blocked": true,
+        "forbidden_sources": [
+          "ORDINARY_MARKET_CANDLE_CLOSE",
+          "UNPROVEN"
+        ],
+        "old_equivalent_restriction": false,
+        "valid_provenance_passes": true,
+        "vector_id": "I_CANONICAL_PRICE_PROVENANCE"
+      },
+      "forensic_continuation": false,
+      "layer": "SAFETY",
+      "old_effective_value": {
+        "module_present": false,
+        "old_equivalent_restriction": false,
+        "vector_id": "I_CANONICAL_PRICE_PROVENANCE"
+      },
+      "productive_reachable": true,
+      "seq": 12,
+      "source_evidence": "WP2 vector I"
+    }
+  ],
+  "forensic_traces": [
+    {
+      "bootstrap_requires_mark": true,
+      "classification": "CURRENT_EQUIVALENT",
+      "contract_id": "BOOTSTRAP_OBSERVATION",
+      "entry_script_fetches_g17_mark_history": true,
+      "forensic_continuation": false,
+      "injected_observation_fields": [
+        "candles_payload",
+        "occupancy_payloads",
+        "mark_price_payload",
+        "index_tickers_payload"
+      ],
+      "live_poll_sets_mark_price_payload": true,
+      "live_poll_uses_public_mark_get": true,
+      "productive_reachable": true,
+      "s5_runner_requires_mark": true,
+      "wp4_productive_stop_if_unpatched": "BOOTSTRAP_CMC_MARK_PAYLOAD_REQUIRED"
+    },
+    {
+      "classification": "WP3_COMPAT_EQUIVALENT",
+      "contract_id": "F1M9_STALE_DP_ADMISSION",
+      "decision_outcome": "no_action",
+      "forensic_continuation": false,
+      "integrated_replay_pass": true,
+      "productive_reachable": true,
+      "wp3_active": true
+    },
+    {
+      "bind_performed": false,
+      "classification": "WP3_COMPAT_EQUIVALENT",
+      "contract_id": "G17_DUPLICATE_NOOP_CMC_BIND",
+      "forensic_continuation": false,
+      "outcome": "TypedRuntimeProducerOutcomeV1.DUPLICATE_NOOP",
+      "productive_reachable": true,
+      "wp3_produced_only": true
+    },
+    {
+      "classification": "BEHAVIORAL_DIVERGENCE",
+      "contract_id": "LAYERED_OBSERVATION_INIT",
+      "forensic_continuation": false,
+      "productive_reachable": true,
+      "seam_branches_on_flag": false,
+      "wp3_flag": true
+    },
+    {
+      "classification": "CURRENT_EQUIVALENT",
+      "continuation_reason": "BOOTSTRAP_CMC_MARK_PAYLOAD_REQUIRED",
+      "contract_id": "FORENSIC_PRODUCTIVE_ENTER_LONG",
+      "decision_outcome": "enter_long",
+      "disposition": "",
+      "enter_ts": 1789527900.0,
+      "forensic_continuation": true,
+      "mark_px": 1635.0,
+      "pre_external_or_enter": true,
+      "productive_reachable": false
+    }
+  ],
+  "generated_at_utc": "20260929T201501Z",
+  "historical_sha": "23dccab71eac79c8d39498bbe5bfc84bd54ebf9d",
+  "level_a": {
+    "repo_root": "/Users/frnkhrz/Peak_Trade",
+    "repository_sha": "8475ebb948d246efd0c70a1cf4101fd3bf1b54db",
+    "side": "current",
+    "vectors": {
+      "A": {
+        "composition_reached": false,
+        "composition_status": "no_action",
+        "cycles": [
+          {
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=0)",
+              "present": true
+            },
+            "composition_status": "no_action",
+            "cycle": 0,
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true,
+            "runtime_scope_after": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "runtime_scope_before": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "side_state_after": "long_armed",
+            "side_state_before": "long_armed"
+          }
+        ],
+        "enter_long": false,
+        "vector_id": "A_BULL_ENTER_LONG"
+      },
+      "B": {
+        "cycles": [
+          {
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=0)",
+              "present": true
+            },
+            "composition_status": "no_action",
+            "cycle": 0,
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true,
+            "runtime_scope_after": {
+              "anchor_price": 3530.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3030.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4030.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "runtime_scope_before": {
+              "anchor_price": 3530.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3030.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4030.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "side_state_after": "short_armed",
+            "side_state_before": "short_armed"
+          }
+        ],
+        "enter_short": false,
+        "vector_id": "B_BEAR_ENTER_SHORT"
+      },
+      "C": {
+        "cycles": [
+          {
+            "c1_classification": "distinct",
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=0)",
+              "present": true
+            },
+            "confirmation_advanced": false,
+            "cycle": 0,
+            "distinct_count_after": null,
+            "label": "distinct_1",
+            "lifecycle_reason": "neutral_no_lane"
+          },
+          {
+            "c1_classification": "distinct",
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=1)",
+              "present": true
+            },
+            "confirmation_advanced": true,
+            "cycle": 1,
+            "distinct_count_after": 1,
+            "label": "distinct_2",
+            "lifecycle_reason": "activate_new_sequence"
+          },
+          {
+            "c1_classification": "duplicate",
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=1)",
+              "present": true
+            },
+            "confirmation_advanced": false,
+            "cycle": 2,
+            "distinct_count_after": null,
+            "label": "duplicate_noop",
+            "lifecycle_reason": "rejected_no_lane"
+          },
+          {
+            "c1_classification": "distinct",
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=2)",
+              "present": true
+            },
+            "confirmation_advanced": true,
+            "cycle": 3,
+            "distinct_count_after": 1,
+            "label": "distinct_3",
+            "lifecycle_reason": "activate_new_sequence"
+          }
+        ],
+        "duplicate_advanced_confirmation": false,
+        "duplicate_distinct_increment": [
+          0,
+          0,
+          0
+        ],
+        "vector_id": "C_DUPLICATE_C1"
+      },
+      "D_E": {
+        "consumer_wiring_authorized": true,
+        "fresh": {
+          "integrated_replay": {
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true
+          },
+          "new_consumer_alpha_allowed": true,
+          "new_enforcement_applied": true,
+          "old_presence_alpha_allowed": true
+        },
+        "has_f1_m9_consumer_module": true,
+        "ratified_max_age_seconds": 600,
+        "stale": {
+          "integrated_replay": {
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true
+          },
+          "new_consumer_alpha_allowed": false,
+          "new_enforcement_applied": true,
+          "old_presence_alpha_allowed": true
+        },
+        "vector_id": "D_E_F1M9_FRESH_STALE"
+      },
+      "F": {
+        "cases": [
+          {
+            "decision_outcome": "no_action",
+            "label": "reconciled_flat",
+            "reconciliation_state": "reconciled",
+            "replay_pass": true
+          },
+          {
+            "decision_outcome": "reconcile_only",
+            "label": "reconciliation_required",
+            "reconciliation_state": "reconciliation_required",
+            "replay_pass": true
+          }
+        ],
+        "vector_id": "F_RECON_POSITION_FLAT"
+      },
+      "G": {
+        "cycles": [
+          {
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=0)",
+              "present": true
+            },
+            "composition_status": "no_action",
+            "cycle": 0,
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true,
+            "runtime_scope_after": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "runtime_scope_before": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "side_state_after": "long_armed",
+            "side_state_before": "long_armed"
+          },
+          {
+            "c3_signal_strength": 0.02,
+            "c3_status": "candidate",
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "candidate",
+              "bull_distinct_count": 1,
+              "bull_latest_epoch": "MarketObservationEpoch(value=2)",
+              "present": true
+            },
+            "composition_status": "observe",
+            "cycle": 1,
+            "decision_outcome": "observe",
+            "fail_reasons": [],
+            "replay_pass": true,
+            "runtime_scope_after": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "runtime_scope_before": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "side_state_after": "long_armed",
+            "side_state_before": "long_armed"
+          }
+        ],
+        "vector_id": "G_SINGLE_LANE_TWO_CYCLE"
+      },
+      "G17": {
+        "estimate_absent_policy": "BIND_WHEN_PRODUCED_OR_PROCESS_INTERNAL_REUSE",
+        "reuse_allowed_outcomes": [
+          "DUPLICATE_NOOP",
+          "PRODUCED"
+        ],
+        "vector_id": "G17_CMC_BIND"
+      },
+      "H": {
+        "current_module_markers": {
+          "cmc_mark_obs_helper": true,
+          "finalized_closes_grid_helper": true,
+          "transition_carryforward_param": true
+        },
+        "note": "Historical side verified via worktree module markers in orchestrator",
+        "vector_id": "H_LAYERED_INIT"
+      },
+      "I": {
+        "forbidden_mark_source_blocked": true,
+        "forbidden_sources": [
+          "ORDINARY_MARKET_CANDLE_CLOSE",
+          "UNPROVEN"
+        ],
+        "old_equivalent_restriction": false,
+        "valid_provenance_passes": true,
+        "vector_id": "I_CANONICAL_PRICE_PROVENANCE"
+      }
+    }
+  },
+  "level_a_historical": {
+    "repo_root": "/Users/frnkhrz/Peak_Trade/evidence/ops/double_play_differential_golden_vector_v1/20260929T204200Z/wt_historical",
+    "repository_sha": "23dccab71eac79c8d39498bbe5bfc84bd54ebf9d",
+    "side": "historical",
+    "vectors": {
+      "A": {
+        "composition_reached": false,
+        "composition_status": "no_action",
+        "cycles": [
+          {
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=0)",
+              "present": true
+            },
+            "composition_status": "no_action",
+            "cycle": 0,
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true,
+            "runtime_scope_after": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "runtime_scope_before": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "side_state_after": "long_armed",
+            "side_state_before": "long_armed"
+          }
+        ],
+        "enter_long": false,
+        "vector_id": "A_BULL_ENTER_LONG"
+      },
+      "B": {
+        "cycles": [
+          {
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=0)",
+              "present": true
+            },
+            "composition_status": "no_action",
+            "cycle": 0,
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true,
+            "runtime_scope_after": {
+              "anchor_price": 3530.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3030.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4030.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "runtime_scope_before": {
+              "anchor_price": 3530.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3030.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4030.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "side_state_after": "short_armed",
+            "side_state_before": "short_armed"
+          }
+        ],
+        "enter_short": false,
+        "vector_id": "B_BEAR_ENTER_SHORT"
+      },
+      "C": {
+        "cycles": [
+          {
+            "c1_classification": "distinct",
+            "carrier_after": {
+              "present": false
+            },
+            "confirmation_advanced": false,
+            "cycle": 0,
+            "distinct_count_after": null,
+            "label": "distinct_1",
+            "lifecycle_reason": "neutral_no_lane"
+          },
+          {
+            "c1_classification": "distinct",
+            "carrier_after": {
+              "present": false
+            },
+            "confirmation_advanced": true,
+            "cycle": 1,
+            "distinct_count_after": 1,
+            "label": "distinct_2",
+            "lifecycle_reason": "activate_new_sequence"
+          },
+          {
+            "c1_classification": "duplicate",
+            "carrier_after": {
+              "present": false
+            },
+            "confirmation_advanced": false,
+            "cycle": 2,
+            "distinct_count_after": null,
+            "label": "duplicate_noop",
+            "lifecycle_reason": "rejected_no_lane"
+          },
+          {
+            "c1_classification": "distinct",
+            "carrier_after": {
+              "present": false
+            },
+            "confirmation_advanced": true,
+            "cycle": 3,
+            "distinct_count_after": 1,
+            "label": "distinct_3",
+            "lifecycle_reason": "activate_new_sequence"
+          }
+        ],
+        "duplicate_advanced_confirmation": false,
+        "duplicate_distinct_increment": [
+          null,
+          null,
+          null
+        ],
+        "vector_id": "C_DUPLICATE_C1"
+      },
+      "D_E": {
+        "consumer_wiring_authorized": false,
+        "fresh": {
+          "integrated_replay": {
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true
+          },
+          "new_consumer_alpha_allowed": null,
+          "new_enforcement_applied": null,
+          "old_presence_alpha_allowed": true
+        },
+        "has_f1_m9_consumer_module": false,
+        "ratified_max_age_seconds": 600,
+        "stale": {
+          "integrated_replay": {
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true
+          },
+          "new_consumer_alpha_allowed": null,
+          "new_enforcement_applied": null,
+          "old_presence_alpha_allowed": true
+        },
+        "vector_id": "D_E_F1M9_FRESH_STALE"
+      },
+      "F": {
+        "cases": [
+          {
+            "decision_outcome": "no_action",
+            "label": "reconciled_flat",
+            "reconciliation_state": "reconciled",
+            "replay_pass": true
+          },
+          {
+            "decision_outcome": "reconcile_only",
+            "label": "reconciliation_required",
+            "reconciliation_state": "reconciliation_required",
+            "replay_pass": true
+          }
+        ],
+        "vector_id": "F_RECON_POSITION_FLAT"
+      },
+      "G": {
+        "cycles": [
+          {
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+              "bull_assessment_state": "observe",
+              "bull_distinct_count": 0,
+              "bull_latest_epoch": "MarketObservationEpoch(value=0)",
+              "present": true
+            },
+            "composition_status": "no_action",
+            "cycle": 0,
+            "decision_outcome": "no_action",
+            "fail_reasons": [],
+            "replay_pass": true,
+            "runtime_scope_after": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "runtime_scope_before": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "side_state_after": "long_armed",
+            "side_state_before": "long_armed"
+          },
+          {
+            "c3_signal_strength": 0.02,
+            "c3_status": "candidate",
+            "carrier_after": {
+              "bear_assessment_state": "observe",
+              "bear_distinct_count": 0,
+              "bear_latest_epoch": "MarketObservationEpoch(value=1)",
+              "bull_assessment_state": "candidate",
+              "bull_distinct_count": 1,
+              "bull_latest_epoch": "MarketObservationEpoch(value=2)",
+              "present": true
+            },
+            "composition_status": "observe",
+            "cycle": 1,
+            "decision_outcome": "observe",
+            "fail_reasons": [],
+            "replay_pass": true,
+            "runtime_scope_after": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "runtime_scope_before": {
+              "anchor_price": 3500.0,
+              "chop_latched": false,
+              "current_downscope_boundary": 3000.0,
+              "current_hysteresis_band": 500.0,
+              "current_upscope_boundary": 4000.0,
+              "last_completed_side_switch_tick": -1000000,
+              "last_switch_tick": -1000000,
+              "now_tick": 0,
+              "scope_stability_ticks": 0,
+              "switches_in_window": 0,
+              "window_start_tick": 0
+            },
+            "side_state_after": "long_armed",
+            "side_state_before": "long_armed"
+          }
+        ],
+        "vector_id": "G_SINGLE_LANE_TWO_CYCLE"
+      },
+      "G17": {
+        "estimate_absent_policy": "BIND_ONLY_WHEN_PRODUCED",
+        "reuse_allowed_outcomes": [],
+        "vector_id": "G17_CMC_BIND"
+      },
+      "H": {
+        "current_module_markers": {
+          "cmc_mark_obs_helper": false,
+          "finalized_closes_grid_helper": false,
+          "transition_carryforward_param": false
+        },
+        "note": "Historical side verified via worktree module markers in orchestrator",
+        "vector_id": "H_LAYERED_INIT"
+      },
+      "I": {
+        "module_present": false,
+        "old_equivalent_restriction": false,
+        "vector_id": "I_CANONICAL_PRICE_PROVENANCE"
+      }
+    }
+  },
+  "level_b_productive": {
+    "bootstrap_trace": {
+      "bootstrap_requires_mark": true,
+      "classification": "CURRENT_EQUIVALENT",
+      "contract_id": "BOOTSTRAP_OBSERVATION",
+      "entry_script_fetches_g17_mark_history": true,
+      "forensic_continuation": false,
+      "injected_observation_fields": [
+        "candles_payload",
+        "occupancy_payloads",
+        "mark_price_payload",
+        "index_tickers_payload"
+      ],
+      "live_poll_sets_mark_price_payload": true,
+      "live_poll_uses_public_mark_get": true,
+      "productive_reachable": true,
+      "s5_runner_requires_mark": true,
+      "wp4_productive_stop_if_unpatched": "BOOTSTRAP_CMC_MARK_PAYLOAD_REQUIRED"
+    },
+    "productive_cycles_observed": 0,
+    "real_get_candles": true,
+    "wp4_first_stop": "BOOTSTRAP_CMC_MARK_PAYLOAD_REQUIRED"
+  },
+  "minimal_patch_plan": {
+    "minimal_patches_required": 1,
+    "patches": [
+      {
+        "authority_impact": "NONE",
+        "derived_closes": [
+          "EFFECT_01",
+          "EFFECT_02",
+          "EFFECT_03",
+          "PRODUCTIVE_FIRST_STOP"
+        ],
+        "likely_files": [
+          "src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py",
+          "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py"
+        ],
+        "mechanism": "binding correction / host input-builder",
+        "patch_id": "PATCH_1",
+        "root_ids_closed": [
+          "ROOT_WIRING_01"
+        ],
+        "safety_impact": "NONE",
+        "semantic": "Attach scoped public mark-price (and index if required) to cold bootstrap observation",
+        "state_ownership_impact": "NONE",
+        "surface": "LiveFreshC1ContinuousObservationSourceV1 and/or entry script bootstrap_observation"
+      }
+    ]
+  },
+  "root_cause_graph": {
+    "edges": [
+      {
+        "from": "ROOT_WIRING_01",
+        "to": "EFFECT_01"
+      },
+      {
+        "from": "EFFECT_01",
+        "to": "EFFECT_02"
+      },
+      {
+        "from": "EFFECT_02",
+        "to": "EFFECT_03"
+      }
+    ],
+    "forensic_continuation_note": "After counterfactual mark wiring (fixture path), CURRENT productive host reaches enter_long in harness \u2014 no additional ROOT wiring defect proven before PRE_EXTERNAL in this vector run.",
+    "nodes": [
+      {
+        "adjudication": "CLOSED",
+        "id": "ROOT_WIRING_01",
+        "label": "LiveFreshC1 poll attaches public mark-price payload"
+      },
+      {
+        "adjudication": "DERIVED_DOWNSTREAM_DIVERGENCE",
+        "id": "EFFECT_01",
+        "label": "Cold bootstrap fail-closed"
+      },
+      {
+        "adjudication": "DERIVED_DOWNSTREAM_DIVERGENCE",
+        "id": "EFFECT_02",
+        "label": "No productive S5/MV2 cycles"
+      },
+      {
+        "adjudication": "DERIVED_DOWNSTREAM_DIVERGENCE",
+        "id": "EFFECT_03",
+        "label": "Natural ENTER unreachable in Level B"
+      },
+      {
+        "adjudication": "ROOT_BEHAVIORAL_DIVERGENCE",
+        "id": "ROOT_STRUCT_01",
+        "label": "G17 module policy string vs WP3 effective bind",
+        "note": "Derived at integrated replay; productive bind WP3_COMPAT when flag on"
+      }
+    ],
+    "root_divergences_total": 0,
+    "root_wiring_01": "CLOSED"
+  },
+  "wp3_flags": {
+    "f1_boundary": true,
+    "g17_produced_only": true,
+    "layered_cmc_init": true,
+    "old_effective_enabled": true
+  },
+  "wp_id": "DOUBLE_PLAY_PRODUCTIVE_HOST_E2E_GOLDEN_VECTOR_V1"
+}

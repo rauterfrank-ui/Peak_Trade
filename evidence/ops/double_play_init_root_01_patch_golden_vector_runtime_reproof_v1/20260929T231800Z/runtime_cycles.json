@@ -1,0 +1,16 @@
+{
+  "runtime_phase": "D",
+  "evidence_root": "evidence/ops/double_play_init_root_01_patch_golden_vector_runtime_reproof_v1/20260929T231800Z/runtime",
+  "productive_cycles_completed": 1,
+  "bootstrap_initialization_incomplete": false,
+  "terminal_disposition": "MAX_DURATION_BOUND_STOP",
+  "first_genuine_blocker": "MAX_RUN_DURATION",
+  "native_id": "0G-USDT-SWAP",
+  "get_request_count": 4,
+  "post_count": 0,
+  "external_effect_count": 0,
+  "natural_enter_observed": false,
+  "pre_external_reached": false,
+  "decision_outcome_cycle_1": "no_action",
+  "forensic_continuation": false
+}

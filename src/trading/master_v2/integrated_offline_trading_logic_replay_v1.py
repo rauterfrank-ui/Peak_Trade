@@ -1492,7 +1492,16 @@ def run_integrated_offline_trading_logic_replay_v1(
             )
         # Eligibility result is consumed via presence_gate.eligibility (never discarded).
         _ = presence_gate.eligibility
-        alpha_allowed = consumer_path.alpha_scope_entry_authority_allowed
+        from trading.master_v2.double_play_old_effective_host_contract_v1 import (
+            audit_consumer_enforcement_without_dp_block_v1,
+            resolve_alpha_scope_entry_for_integrated_replay_v1,
+        )
+
+        alpha_allowed, _compat_reasons = resolve_alpha_scope_entry_for_integrated_replay_v1(
+            presence_gate=presence_gate,
+            consumer_path=consumer_path,
+        )
+        _ = audit_consumer_enforcement_without_dp_block_v1(consumer_path)
 
         if not alpha_allowed:
             reasons = presence_gate.reason_codes or (TYPED_VOLATILITY_ESTIMATE_MISSING_REASON,)

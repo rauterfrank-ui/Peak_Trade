@@ -1,0 +1,58 @@
+{
+  "nodes": [
+    "LIVE_COLD_S7_COMPOSE",
+    "SCOPE_ON_OUTGOING_CURSOR",
+    "ENSURE_LAYERED_EPISODE_STORE",
+    "WP3_CMC_OBS_BUILDER",
+    "IDENTICAL_MARK_AT_T_MINUS_60_AND_T",
+    "L3_NEUTRAL_NEUTRAL",
+    "NULllINE_NONE",
+    "INITIALIZATION_INCOMPLETE",
+    "ADDRESSING_JOIN_FAIL",
+    "PRODUCTIVE_CYCLES_0"
+  ],
+  "edges": [
+    [
+      "LIVE_COLD_S7_COMPOSE",
+      "SCOPE_ON_OUTGOING_CURSOR"
+    ],
+    [
+      "SCOPE_ON_OUTGOING_CURSOR",
+      "ENSURE_LAYERED_EPISODE_STORE"
+    ],
+    [
+      "ENSURE_LAYERED_EPISODE_STORE",
+      "WP3_CMC_OBS_BUILDER"
+    ],
+    [
+      "WP3_CMC_OBS_BUILDER",
+      "IDENTICAL_MARK_AT_T_MINUS_60_AND_T"
+    ],
+    [
+      "IDENTICAL_MARK_AT_T_MINUS_60_AND_T",
+      "L3_NEUTRAL_NEUTRAL"
+    ],
+    [
+      "L3_NEUTRAL_NEUTRAL",
+      "NULlline_NONE"
+    ],
+    [
+      "NULlline_NONE",
+      "INITIALIZATION_INCOMPLETE"
+    ],
+    [
+      "INITIALIZATION_INCOMPLETE",
+      "ADDRESSING_JOIN_FAIL"
+    ],
+    [
+      "ADDRESSING_JOIN_FAIL",
+      "PRODUCTIVE_CYCLES_0"
+    ]
+  ],
+  "root_divergence_ids": [
+    "INIT_ROOT_01_WP3_CMC_STATIC_MARK_L3_INCOMPATIBLE"
+  ],
+  "addressing_join_root_cause": false,
+  "layered_init_root_cause": true,
+  "cold_start_dependency_cycle": false
+}

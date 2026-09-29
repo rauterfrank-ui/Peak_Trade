@@ -1,0 +1,290 @@
+{
+  "integrated_A": {
+    "composition_reached": false,
+    "composition_status": "no_action",
+    "cycles": [
+      {
+        "carrier_after": {
+          "bear_assessment_state": "observe",
+          "bear_distinct_count": 0,
+          "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+          "bull_assessment_state": "observe",
+          "bull_distinct_count": 0,
+          "bull_latest_epoch": "MarketObservationEpoch(value=0)",
+          "present": true
+        },
+        "composition_status": "no_action",
+        "cycle": 0,
+        "decision_outcome": "no_action",
+        "fail_reasons": [],
+        "replay_pass": true,
+        "runtime_scope_after": {
+          "anchor_price": 3500.0,
+          "chop_latched": false,
+          "current_downscope_boundary": 3000.0,
+          "current_hysteresis_band": 500.0,
+          "current_upscope_boundary": 4000.0,
+          "last_completed_side_switch_tick": -1000000,
+          "last_switch_tick": -1000000,
+          "now_tick": 0,
+          "scope_stability_ticks": 0,
+          "switches_in_window": 0,
+          "window_start_tick": 0
+        },
+        "runtime_scope_before": {
+          "anchor_price": 3500.0,
+          "chop_latched": false,
+          "current_downscope_boundary": 3000.0,
+          "current_hysteresis_band": 500.0,
+          "current_upscope_boundary": 4000.0,
+          "last_completed_side_switch_tick": -1000000,
+          "last_switch_tick": -1000000,
+          "now_tick": 0,
+          "scope_stability_ticks": 0,
+          "switches_in_window": 0,
+          "window_start_tick": 0
+        },
+        "side_state_after": "long_armed",
+        "side_state_before": "long_armed"
+      }
+    ],
+    "enter_long": false,
+    "vector_id": "A_BULL_ENTER_LONG"
+  },
+  "integrated_B": {
+    "cycles": [
+      {
+        "carrier_after": {
+          "bear_assessment_state": "observe",
+          "bear_distinct_count": 0,
+          "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+          "bull_assessment_state": "observe",
+          "bull_distinct_count": 0,
+          "bull_latest_epoch": "MarketObservationEpoch(value=0)",
+          "present": true
+        },
+        "composition_status": "no_action",
+        "cycle": 0,
+        "decision_outcome": "no_action",
+        "fail_reasons": [],
+        "replay_pass": true,
+        "runtime_scope_after": {
+          "anchor_price": 3530.0,
+          "chop_latched": false,
+          "current_downscope_boundary": 3030.0,
+          "current_hysteresis_band": 500.0,
+          "current_upscope_boundary": 4030.0,
+          "last_completed_side_switch_tick": -1000000,
+          "last_switch_tick": -1000000,
+          "now_tick": 0,
+          "scope_stability_ticks": 0,
+          "switches_in_window": 0,
+          "window_start_tick": 0
+        },
+        "runtime_scope_before": {
+          "anchor_price": 3530.0,
+          "chop_latched": false,
+          "current_downscope_boundary": 3030.0,
+          "current_hysteresis_band": 500.0,
+          "current_upscope_boundary": 4030.0,
+          "last_completed_side_switch_tick": -1000000,
+          "last_switch_tick": -1000000,
+          "now_tick": 0,
+          "scope_stability_ticks": 0,
+          "switches_in_window": 0,
+          "window_start_tick": 0
+        },
+        "side_state_after": "short_armed",
+        "side_state_before": "short_armed"
+      }
+    ],
+    "enter_short": false,
+    "vector_id": "B_BEAR_ENTER_SHORT"
+  },
+  "integrated_C": {
+    "cycles": [
+      {
+        "c1_classification": "distinct",
+        "carrier_after": {
+          "bear_assessment_state": "observe",
+          "bear_distinct_count": 0,
+          "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+          "bull_assessment_state": "observe",
+          "bull_distinct_count": 0,
+          "bull_latest_epoch": "MarketObservationEpoch(value=0)",
+          "present": true
+        },
+        "confirmation_advanced": false,
+        "cycle": 0,
+        "distinct_count_after": null,
+        "label": "distinct_1",
+        "lifecycle_reason": "neutral_no_lane"
+      },
+      {
+        "c1_classification": "distinct",
+        "carrier_after": {
+          "bear_assessment_state": "observe",
+          "bear_distinct_count": 0,
+          "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+          "bull_assessment_state": "observe",
+          "bull_distinct_count": 0,
+          "bull_latest_epoch": "MarketObservationEpoch(value=1)",
+          "present": true
+        },
+        "confirmation_advanced": true,
+        "cycle": 1,
+        "distinct_count_after": 1,
+        "label": "distinct_2",
+        "lifecycle_reason": "activate_new_sequence"
+      },
+      {
+        "c1_classification": "duplicate",
+        "carrier_after": {
+          "bear_assessment_state": "observe",
+          "bear_distinct_count": 0,
+          "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+          "bull_assessment_state": "observe",
+          "bull_distinct_count": 0,
+          "bull_latest_epoch": "MarketObservationEpoch(value=1)",
+          "present": true
+        },
+        "confirmation_advanced": false,
+        "cycle": 2,
+        "distinct_count_after": null,
+        "label": "duplicate_noop",
+        "lifecycle_reason": "rejected_no_lane"
+      },
+      {
+        "c1_classification": "distinct",
+        "carrier_after": {
+          "bear_assessment_state": "observe",
+          "bear_distinct_count": 0,
+          "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+          "bull_assessment_state": "observe",
+          "bull_distinct_count": 0,
+          "bull_latest_epoch": "MarketObservationEpoch(value=2)",
+          "present": true
+        },
+        "confirmation_advanced": true,
+        "cycle": 3,
+        "distinct_count_after": 1,
+        "label": "distinct_3",
+        "lifecycle_reason": "activate_new_sequence"
+      }
+    ],
+    "duplicate_advanced_confirmation": false,
+    "duplicate_distinct_increment": [
+      0,
+      0,
+      0
+    ],
+    "vector_id": "C_DUPLICATE_C1"
+  },
+  "integrated_G": {
+    "cycles": [
+      {
+        "carrier_after": {
+          "bear_assessment_state": "observe",
+          "bear_distinct_count": 0,
+          "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+          "bull_assessment_state": "observe",
+          "bull_distinct_count": 0,
+          "bull_latest_epoch": "MarketObservationEpoch(value=0)",
+          "present": true
+        },
+        "composition_status": "no_action",
+        "cycle": 0,
+        "decision_outcome": "no_action",
+        "fail_reasons": [],
+        "replay_pass": true,
+        "runtime_scope_after": {
+          "anchor_price": 3500.0,
+          "chop_latched": false,
+          "current_downscope_boundary": 3000.0,
+          "current_hysteresis_band": 500.0,
+          "current_upscope_boundary": 4000.0,
+          "last_completed_side_switch_tick": -1000000,
+          "last_switch_tick": -1000000,
+          "now_tick": 0,
+          "scope_stability_ticks": 0,
+          "switches_in_window": 0,
+          "window_start_tick": 0
+        },
+        "runtime_scope_before": {
+          "anchor_price": 3500.0,
+          "chop_latched": false,
+          "current_downscope_boundary": 3000.0,
+          "current_hysteresis_band": 500.0,
+          "current_upscope_boundary": 4000.0,
+          "last_completed_side_switch_tick": -1000000,
+          "last_switch_tick": -1000000,
+          "now_tick": 0,
+          "scope_stability_ticks": 0,
+          "switches_in_window": 0,
+          "window_start_tick": 0
+        },
+        "side_state_after": "long_armed",
+        "side_state_before": "long_armed"
+      },
+      {
+        "c3_signal_strength": 0.02,
+        "c3_status": "candidate",
+        "carrier_after": {
+          "bear_assessment_state": "observe",
+          "bear_distinct_count": 0,
+          "bear_latest_epoch": "MarketObservationEpoch(value=0)",
+          "bull_assessment_state": "candidate",
+          "bull_distinct_count": 1,
+          "bull_latest_epoch": "MarketObservationEpoch(value=2)",
+          "present": true
+        },
+        "composition_status": "observe",
+        "cycle": 1,
+        "decision_outcome": "observe",
+        "fail_reasons": [],
+        "replay_pass": true,
+        "runtime_scope_after": {
+          "anchor_price": 3500.0,
+          "chop_latched": false,
+          "current_downscope_boundary": 3000.0,
+          "current_hysteresis_band": 500.0,
+          "current_upscope_boundary": 4000.0,
+          "last_completed_side_switch_tick": -1000000,
+          "last_switch_tick": -1000000,
+          "now_tick": 0,
+          "scope_stability_ticks": 0,
+          "switches_in_window": 0,
+          "window_start_tick": 0
+        },
+        "runtime_scope_before": {
+          "anchor_price": 3500.0,
+          "chop_latched": false,
+          "current_downscope_boundary": 3000.0,
+          "current_hysteresis_band": 500.0,
+          "current_upscope_boundary": 4000.0,
+          "last_completed_side_switch_tick": -1000000,
+          "last_switch_tick": -1000000,
+          "now_tick": 0,
+          "scope_stability_ticks": 0,
+          "switches_in_window": 0,
+          "window_start_tick": 0
+        },
+        "side_state_after": "long_armed",
+        "side_state_before": "long_armed"
+      }
+    ],
+    "vector_id": "G_SINGLE_LANE_TWO_CYCLE"
+  },
+  "forensic_productive_enter": {
+    "contract_id": "FORENSIC_PRODUCTIVE_ENTER_LONG",
+    "decision_outcome": "enter_long",
+    "disposition": "",
+    "mark_px": 1635.0,
+    "enter_ts": 1789527900.0,
+    "pre_external_or_enter": true,
+    "classification": "CURRENT_EQUIVALENT",
+    "productive_reachable": false,
+    "forensic_continuation": true,
+    "continuation_reason": "BOOTSTRAP_CMC_MARK_PAYLOAD_REQUIRED"
+  }
+}

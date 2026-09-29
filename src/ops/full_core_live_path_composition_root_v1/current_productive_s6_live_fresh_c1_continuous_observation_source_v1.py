@@ -32,6 +32,18 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
     bind_s4a_fresh_c1_get_runtime_authority_v1,
     load_current_productive_c1_cursor_or_reason_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    ProductiveCanonicalPriceProvenanceError,
+    build_cmc_mark_provenance_from_okx_mark_price_payload_v1,
+)
+from src.ops.current_productive_eea_universe_inventory_acquisition_v1.constants_v1 import (
+    ENDPOINT_PUBLIC_MARK_PRICE,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+    ENDPOINT_MARKET_INDEX_TICKERS,
+    extract_mark_and_index_from_payload_v1,
+    resolve_index_ticker_inst_id_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
     FullCoreProductiveReadOnlyGetTransportV1,
 )
@@ -76,6 +88,52 @@ class LiveFreshC1ContinuousObservationSourceV1:
             return None
         return f"{GET_PATH}?instId={self.native_id}&bar={GET_BAR}&limit={GET_LIMIT}"
 
+    def _fetch_mark_price_payloads_for_native_v1(
+        self, *, poll_index: int
+    ) -> tuple[Mapping[str, Any], Mapping[str, Any] | None] | None:
+        """Public GET mark-price (+ index-tickers when idx missing) for Cap24-bound native_id."""
+        native = str(self.native_id or "").strip()
+        if not native:
+            return None
+        mark_endpoint = f"{ENDPOINT_PUBLIC_MARK_PRICE}?instId={native}"
+        mark_result = self.transport.get(
+            endpoint=mark_endpoint,
+            auth_required=False,
+            pretrade_decision_id=f"continuous-run-{self.run_id}-mark-{poll_index}",
+        )
+        if not bool(getattr(mark_result, "get_performed", False)):
+            return None
+        mark_payload = getattr(mark_result, "payload", None)
+        if not isinstance(mark_payload, dict):
+            return None
+        mark_px, index_from_mark = extract_mark_and_index_from_payload_v1(
+            mark_payload, native_id=native
+        )
+        if mark_px is None:
+            return None
+        index_payload: Mapping[str, Any] | None = None
+        if index_from_mark is None:
+            index_inst = resolve_index_ticker_inst_id_v1(native)
+            index_endpoint = f"{ENDPOINT_MARKET_INDEX_TICKERS}?instId={index_inst}"
+            index_result = self.transport.get(
+                endpoint=index_endpoint,
+                auth_required=False,
+                pretrade_decision_id=f"continuous-run-{self.run_id}-index-{poll_index}",
+            )
+            if bool(getattr(index_result, "get_performed", False)):
+                candidate = getattr(index_result, "payload", None)
+                if isinstance(candidate, dict):
+                    index_payload = candidate
+        try:
+            build_cmc_mark_provenance_from_okx_mark_price_payload_v1(
+                mark_price_payload=mark_payload,
+                venue_native_id=native,
+                index_from_index_tickers=index_payload,
+            )
+        except ProductiveCanonicalPriceProvenanceError:
+            return None
+        return mark_payload, index_payload
+
     def poll(self) -> InjectedContinuousObservationV1 | None:
         ok, reasons = validate_bounded_continuous_run_owner_go_decision_v1()
         if not ok:
@@ -115,9 +173,15 @@ class LiveFreshC1ContinuousObservationSourceV1:
         candles_payload: Mapping[str, Any] = payload
         if "data" not in candles_payload:
             return None
+        mark_bundle = self._fetch_mark_price_payloads_for_native_v1(poll_index=poll_index)
+        if mark_bundle is None:
+            return None
+        mark_price_payload, index_tickers_payload = mark_bundle
         return InjectedContinuousObservationV1(
             candles_payload=candles_payload,
             occupancy_payloads=productive_auth_free_flat_occupancy_payloads_v1(),
+            mark_price_payload=mark_price_payload,
+            index_tickers_payload=index_tickers_payload,
         )
 
 

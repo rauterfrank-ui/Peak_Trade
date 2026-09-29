@@ -1,0 +1,13 @@
+{
+  "artifact_class": "DOUBLE_PLAY_OLD_EFFECTIVE_HOST_CONTRACT_DECISION_V1",
+  "workpackage_id": "DOUBLE_PLAY_OLD_EFFECTIVE_HOST_CONTRACT_V1",
+  "owner_go": true,
+  "enabled": true,
+  "integrated_replay_presence_alpha_at_dp_boundary": true,
+  "g17_cmc_bind_produced_only": true,
+  "layered_core_cmc_mark_observation_init": true,
+  "normative_spec": "evidence/ops/double_play_compatibility_boundary_patch_v1/20260929T214800Z/WP_DOUBLE_PLAY_COMPATIBILITY_BOUNDARY_PATCH_V1.md",
+  "authority_effect": "NONE",
+  "state_ownership_effect": "NONE",
+  "external_effect_authorized": false
+}

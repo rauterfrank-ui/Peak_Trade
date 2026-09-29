@@ -1,0 +1,17 @@
+{
+  "wp": "DOUBLE_PLAY_INIT_ROOT_01_PATCH_GOLDEN_VECTOR_RUNTIME_REPROOF_V1",
+  "baseline_sha": "8475ebb948d246efd0c70a1cf4101fd3bf1b54db",
+  "branch": "wp3/double-play-compatibility-boundary-v1",
+  "init_root_01_patched": true,
+  "init_root_01_patch_surface": "productive_cycle_bind_seam_v1.py",
+  "historical_init_obs_semantics": "finalized_closes 1m grid (_observation_candidates_from_closes_v1 @ 23dccab)",
+  "current_init_obs_source": "_layered_core_initialization_observations_v1 -> _observation_candidates_from_finalized_closes_v1",
+  "cold_s7_golden_vector": "PASS",
+  "full_e2e_golden_vector": "PASS",
+  "init_root_01": "CLOSED",
+  "root_wiring_01": "CLOSED",
+  "runtime_phase_executed": true,
+  "productive_cycles": 1,
+  "natural_enter_observed": false,
+  "wp_status": "BLOCKED_NO_MARKET_ENTER"
+}

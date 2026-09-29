@@ -117,8 +117,37 @@ class _MockTransport:
 
 
 def test_live_fresh_c1_cold_lane_bootstrap_poll_with_mock_transport(tmp_path: Path) -> None:
+    from src.ops.current_productive_eea_universe_inventory_acquisition_v1.constants_v1 import (
+        ENDPOINT_PUBLIC_MARK_PRICE,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_one_shot_c1_observation_source_v1 import (
+        GET_PATH,
+    )
+    from tests.ops._current_productive_canonical_price_test_helpers_v1 import (
+        okx_public_mark_price_payload_v1,
+    )
+
     payload = {"code": "0", "msg": "", "data": [["1", "1", "1", "1", "1", "1", "1", "USDT", "1"]]}
-    transport = _MockTransport(payload)
+    mark_payload = okx_public_mark_price_payload_v1(native_id=NATIVE_ID, mark_px=3500.0)
+
+    class _DualMockTransport:
+        def __init__(self) -> None:
+            self.calls = 0
+
+        def get(
+            self, *, endpoint: str, auth_required: bool, pretrade_decision_id: str
+        ) -> _MockGetResult:
+            del pretrade_decision_id
+            assert auth_required is False
+            self.calls += 1
+            path = endpoint.split("?", 1)[0]
+            if path == GET_PATH:
+                return _MockGetResult(get_performed=True, payload=payload)
+            if path == ENDPOINT_PUBLIC_MARK_PRICE:
+                return _MockGetResult(get_performed=True, payload=mark_payload)
+            return _MockGetResult(get_performed=False, payload=None)
+
+    transport = _DualMockTransport()
     cold_lane = tmp_path / "cold_lane"
     cold_lane.mkdir()
     source = LiveFreshC1ContinuousObservationSourceV1(
@@ -130,14 +159,44 @@ def test_live_fresh_c1_cold_lane_bootstrap_poll_with_mock_transport(tmp_path: Pa
     )
     obs = source.poll()
     assert obs is not None
-    assert transport.calls == 1
+    assert obs.mark_price_payload is not None
+    assert transport.calls == 2
     assert source.get_count == 1
 
 
 def test_live_fresh_c1_observation_source_poll_with_mock_transport(tmp_path: Path) -> None:
+    from src.ops.current_productive_eea_universe_inventory_acquisition_v1.constants_v1 import (
+        ENDPOINT_PUBLIC_MARK_PRICE,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_one_shot_c1_observation_source_v1 import (
+        GET_PATH,
+    )
+    from tests.ops._current_productive_canonical_price_test_helpers_v1 import (
+        okx_public_mark_price_payload_v1,
+    )
+
     cursor = _seed_cursor(tmp_path / "lane", event_time=0.0)
     payload = {"code": "0", "msg": "", "data": [["1", "1", "1", "1", "1", "1", "1", "USDT", "1"]]}
-    transport = _MockTransport(payload)
+    mark_payload = okx_public_mark_price_payload_v1(native_id=NATIVE_ID, mark_px=3500.0)
+
+    class _DualMockTransport:
+        def __init__(self) -> None:
+            self.calls = 0
+
+        def get(
+            self, *, endpoint: str, auth_required: bool, pretrade_decision_id: str
+        ) -> _MockGetResult:
+            del pretrade_decision_id
+            assert auth_required is False
+            self.calls += 1
+            path = endpoint.split("?", 1)[0]
+            if path == GET_PATH:
+                return _MockGetResult(get_performed=True, payload=payload)
+            if path == ENDPOINT_PUBLIC_MARK_PRICE:
+                return _MockGetResult(get_performed=True, payload=mark_payload)
+            return _MockGetResult(get_performed=False, payload=None)
+
+    transport = _DualMockTransport()
     source = LiveFreshC1ContinuousObservationSourceV1(
         cursor_store_root=cursor,
         evidence_root=tmp_path / "evidence",
@@ -147,7 +206,8 @@ def test_live_fresh_c1_observation_source_poll_with_mock_transport(tmp_path: Pat
     )
     obs = source.poll()
     assert obs is not None
-    assert transport.calls == 1
+    assert obs.mark_price_payload is not None
+    assert transport.calls == 2
     assert (tmp_path / "evidence/fresh_c1_get_owner_go_consumptions_v1.jsonl").is_file()
 
 

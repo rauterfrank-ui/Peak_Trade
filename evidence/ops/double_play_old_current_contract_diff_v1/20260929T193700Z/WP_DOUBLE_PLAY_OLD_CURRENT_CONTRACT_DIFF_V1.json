@@ -1,0 +1,405 @@
+{
+  "wp_id": "DOUBLE_PLAY_OLD_CURRENT_CONTRACT_DIFF_V1",
+  "mode": "READ_ONLY_FORENSICS",
+  "generated_at_utc": "2026-09-29T19:37:00Z",
+  "baselines": {
+    "CURRENT_ORIGIN_MAIN_SHA": "8475ebb948d246efd0c70a1cf4101fd3bf1b54db",
+    "CURRENT_ORIGIN_MAIN_TREE": "db42efb40cc3a335d221646dc00b9a063fd0cf8e",
+    "HISTORICAL_SHA": "23dccab71eac79c8d39498bbe5bfc84bd54ebf9d",
+    "HISTORICAL_TREE": "700f0264f62e62a028597787dea00de284617294",
+    "HISTORICAL_ENTER_EVIDENCE_SHA": "34e0f887f351137a3566fe73c400b2fa570ff668",
+    "FIRST_POST_TARGET_DP_WIRING_CHANGE": "d590b8142210680805f8dc159c5a2fb684e87737",
+    "WORKTREE_STATUS": "clean; branch=main; HEAD=origin/main"
+  },
+  "current_dp_owner": {
+    "symbol": "run_integrated_offline_trading_logic_replay_v1",
+    "module": "trading.master_v2.integrated_offline_trading_logic_replay_v1",
+    "productive_host": "src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1.run_current_productive_master_v2_runtime_cycle_v1",
+    "evidence_status": "PROVEN_CURRENT"
+  },
+  "core_unchanged_paths_zero_diff": [
+    "src/trading/master_v2/double_play_state.py",
+    "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
+    "src/trading/master_v2/double_play_composition_matrix_v1.py",
+    "src/trading/master_v2/double_play_survival.py",
+    "src/trading/master_v2/deterministic_scope_event_generator_v1.py",
+    "src/trading/master_v2/directional_assessment_v1.py",
+    "src/trading/master_v2/directional_assessment_confirmation_integration_v1.py",
+    "src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py",
+    "src/trading/master_v2/double_play_runtime_typed_volatility_presence_gate_v1.py",
+    "src/trading/master_v2/double_play_core_wiring_v1.py"
+  ],
+  "contracts": [
+    {
+      "contract_id": "DP-OWNER-01",
+      "layer": "K",
+      "semantic_role": "sole_integrated_dp_decision_orchestrator",
+      "classification": "EXACT_MATCH",
+      "old_evidence": "git:23dccab71:integrated_offline_trading_logic_replay_v1.py",
+      "current_evidence": "git:8475ebb:integrated_offline_trading_logic_replay_v1.py",
+      "lossless_mapping_possible": true,
+      "adapter_required": false,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "POLICY-CANONICAL-01",
+      "layer": "F",
+      "semantic_role": "confirmation_epochs_up_adverse_reversal_distances",
+      "classification": "EXACT_MATCH",
+      "old_value_or_domain": "TOML confirmation_epochs=2 up=200 adverse=80 reversal=120",
+      "current_value_or_domain": "identical; git diff empty on config/ops/canonical_decision_runtime_config_v1.toml",
+      "lossless_mapping_possible": true,
+      "adapter_required": false,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "POLICY-DIRECTIONAL-01",
+      "layer": "E",
+      "semantic_role": "directional_signal_thresholds_epochs",
+      "classification": "EXACT_MATCH",
+      "old_value_or_domain": "observe=0.001 candidate=0.005 confirm=0.01 epochs=2 via _default_policies",
+      "current_value_or_domain": "same callsite import; no diff decision_economics_cycle_bridge_v1",
+      "lossless_mapping_possible": true,
+      "adapter_required": false,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "CMC-PRICE-01",
+      "layer": "A",
+      "semantic_role": "mark_index_reference_for_cmc_and_features",
+      "classification": "ADAPTER_REQUIRED",
+      "semantic_delta": "CURRENT adds ProductiveCycleCanonicalPriceProvenanceV1 fail-closed validation and forbids candle-close relabel as mark",
+      "lossless_mapping_possible": true,
+      "adapter_required": true,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "G17-CMC-BIND-01",
+      "layer": "G",
+      "semantic_role": "typed_vol_estimate_into_cmc",
+      "classification": "ADAPTER_REQUIRED",
+      "old_gate_semantics": "BIND_ONLY_WHEN_PRODUCED; absent estimate leaves CMC unchanged",
+      "current_gate_semantics": "BIND_WHEN_PRODUCED_OR_PROCESS_INTERNAL_REUSE; DUPLICATE_NOOP may bind prior estimate",
+      "semantic_delta": "Presence continuity can differ on no-new-sample cycles",
+      "lossless_mapping_possible": true,
+      "adapter_required": true,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "F1M9-PRESENCE-GATE-01",
+      "layer": "G",
+      "semantic_role": "typed_vol_presence_alpha_scope_entry",
+      "classification": "CURRENT_EQUIVALENT",
+      "old_producer": "evaluate_double_play_runtime_typed_volatility_presence_gate_v1 + resolve_governed_runtime_seam_for_presence_gate_v1",
+      "current_producer": "same evaluate_* invoked inside evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1",
+      "lossless_mapping_possible": true,
+      "adapter_required": false,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "F1M9-CONSUMER-PATH-01",
+      "layer": "G",
+      "semantic_role": "productive_host_to_presence_gate_wiring",
+      "classification": "ADAPTER_REQUIRED",
+      "semantic_delta": "d590b8142+ successor: F1/M9 consumer path, runtime admission, seam digest, ledger bootstrap",
+      "old_callsite": "integrated replay direct presence_gate evaluate",
+      "current_callsite": "evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1",
+      "lossless_mapping_possible": true,
+      "adapter_required": true,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "F1M9-MAX-AGE-ENFORCEMENT-01",
+      "layer": "G",
+      "semantic_role": "alpha_scope_entry_after_presence_gate",
+      "classification": "SEMANTIC_CONFLICT",
+      "semantic_delta": "apply_bounded_enforcement_to_double_play_alpha_v1 can block alpha on VOLATILITY_ESTIMATE_STALE (600s ratified); OLD path had no enforcement overlay",
+      "decision_effect": "Additional fail-closed alpha denial vs historical productive path",
+      "lossless_mapping_possible": false,
+      "adapter_required": true,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "F1M9-PRESENCE-GATE-NONE-01",
+      "layer": "G",
+      "semantic_role": "fail_closed_when_consumer_path_returns_no_gate",
+      "classification": "SEMANTIC_CONFLICT",
+      "semantic_delta": "CURRENT integrated replay returns replay_pass=False if presence_gate is None; OLD always had gate object from direct evaluate",
+      "lossless_mapping_possible": false,
+      "adapter_required": true,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "C1-DISTINCT-DUPLICATE-01",
+      "layer": "C",
+      "semantic_role": "observation_acceptance_classification",
+      "classification": "EXACT_MATCH",
+      "old_source_file": "trading/market_state/distinct_market_observation_acceptor_v1.py",
+      "current_source_file": "same; git diff empty H..CURRENT",
+      "lossless_mapping_possible": true,
+      "adapter_required": false,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "C1-HOST-BINDING-01",
+      "layer": "C",
+      "semantic_role": "productive_c1_host_evaluate_and_commit",
+      "classification": "EXACT_MATCH",
+      "old_source_file": "src/ops/stateful_confirmation_and_c1_productive_binding_v1/",
+      "current_source_file": "same; git diff empty H..CURRENT",
+      "lossless_mapping_possible": true,
+      "adapter_required": false,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "SCOPE-CONFIRM-01",
+      "layer": "B",
+      "semantic_role": "scope_confirmation_epochs_and_generator",
+      "classification": "EXACT_MATCH",
+      "old_producer": "generate_deterministic_scope_event",
+      "current_producer": "same module; zero diff",
+      "lossless_mapping_possible": true,
+      "adapter_required": false,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "SINGLE-LANE-LIFECYCLE-01",
+      "layer": "C",
+      "semantic_role": "cap61_active_lane_routing_prior_state",
+      "classification": "SEMANTIC_CONFLICT",
+      "semantic_delta": "OLD: prior_presence from prior_presence_from_dual_carrier_v1(prior_carrier) dual-auth fail-closed inactive; CURRENT: prior_carrier + lane-selected decode + carrier_after_lifecycle + SWITCH_RESUME_PERSISTENT_LANE",
+      "decision_effect": "Confirmation activation/resume semantics can diverge on dual-slot carriers",
+      "lossless_mapping_possible": false,
+      "adapter_required": true,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "C3-INTEGRATION-WIRING-01",
+      "layer": "E",
+      "semantic_role": "c3_prior_progress_input",
+      "classification": "SEMANTIC_CONFLICT",
+      "semantic_delta": "persist_single_lane_into_dual_carrier_v1 now passes prior_carrier=lifecycle.carrier_after_lifecycle; OLD used default empty prior on persist",
+      "decision_effect": "Dual-carrier padding/authority merge at persist boundary changed",
+      "lossless_mapping_possible": false,
+      "adapter_required": true,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "C3-PURE-EVAL-01",
+      "layer": "E",
+      "semantic_role": "directional_assessment_with_confirmation_progress",
+      "classification": "EXACT_MATCH",
+      "old_source_file": "directional_assessment_confirmation_integration_v1.py",
+      "current_source_file": "same; zero diff H..CURRENT",
+      "lossless_mapping_possible": true,
+      "adapter_required": false,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "SIDESTATE-TRANSITION-01",
+      "layer": "D",
+      "semantic_role": "transition_state_owner",
+      "classification": "EXACT_MATCH",
+      "old_state_owner": "double_play_state.transition_state",
+      "current_state_owner": "same; zero diff double_play_state.py",
+      "lossless_mapping_possible": true,
+      "adapter_required": false,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "RUNTIME-SCOPE-01",
+      "layer": "D",
+      "semantic_role": "RuntimeScopeState_resolve_in_integrated_replay",
+      "classification": "EXACT_MATCH",
+      "old_persistence_semantics": "_resolve_runtime_scope_state_for_cycle_v1 in integrated replay",
+      "current_persistence_semantics": "unchanged integrated replay body (orchestration diff only upstream)",
+      "lossless_mapping_possible": true,
+      "adapter_required": false,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "LAYERED-CORE-OBS-INIT-01",
+      "layer": "L",
+      "semantic_role": "naked_layered_core_episode_observation_candidates",
+      "classification": "SEMANTIC_CONFLICT",
+      "semantic_delta": "productive_cycle_bind_seam: init obs from CMC mark grid vs historical finalized closes grid; side_state_from_transition_carryforward added",
+      "decision_effect": "Cold-start / restore C1 epoch seeding can diverge",
+      "lossless_mapping_possible": false,
+      "adapter_required": true,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "CURSOR-PERSIST-01",
+      "layer": "L",
+      "semantic_role": "sidestate_confirmation_cursor",
+      "classification": "EXACT_MATCH",
+      "old_source_file": "current_productive_sidestate_confirmation_cursor_v1.py",
+      "current_source_file": "zero diff H..CURRENT",
+      "lossless_mapping_possible": true,
+      "adapter_required": false,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "RECON-REPLAY-ENUM-01",
+      "layer": "H",
+      "semantic_role": "reconciliation_state_passed_to_entry_exit",
+      "classification": "ADAPTER_REQUIRED",
+      "old_value_or_domain": "ReconciliationState.RECONCILED constant in runtime cycle builder",
+      "current_value_or_domain": "ProductiveMasterV2ReconciliationAdmissionV1.integrated_replay_reconciliation_state_v1()",
+      "semantic_delta": "Same enum when upstream gate_ok and master_v2_reconciliation_state=reconciled; fail-closed admission wrapper added",
+      "lossless_mapping_possible": true,
+      "adapter_required": true,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "RECON-ADMISSION-GATE-01",
+      "layer": "H",
+      "semantic_role": "upstream_reconciliation_witness",
+      "classification": "ADAPTER_REQUIRED",
+      "old_producer": "implicit always-reconciled host constant",
+      "current_producer": "build_productive_master_v2_reconciliation_admission_from_gate_v1",
+      "lossless_mapping_possible": true,
+      "adapter_required": true,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "POSITION-FLAT-01",
+      "layer": "H",
+      "semantic_role": "venue_flat_existing_position_side_entry_precondition",
+      "classification": "EXACT_MATCH",
+      "semantic_delta": "Host still passes venue_flat, position_state, existing_position_side into replay; no semantic change proven in diff hunks",
+      "lossless_mapping_possible": true,
+      "adapter_required": false,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "SURVIVAL-01",
+      "layer": "I",
+      "semantic_role": "post_c3_survival_gate",
+      "classification": "EXACT_MATCH",
+      "old_source_file": "double_play_survival.py",
+      "current_source_file": "zero diff",
+      "lossless_mapping_possible": true,
+      "adapter_required": false,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "SUITABILITY-01",
+      "layer": "I",
+      "semantic_role": "post_c3_suitability_gate",
+      "classification": "EXACT_MATCH",
+      "lossless_mapping_possible": true,
+      "adapter_required": false,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "COMPOSITION-01",
+      "layer": "J",
+      "semantic_role": "confirmed_admissibility_and_side_selection",
+      "classification": "EXACT_MATCH",
+      "old_source_file": "double_play_composition_matrix_v1.py",
+      "current_source_file": "zero diff",
+      "lossless_mapping_possible": true,
+      "adapter_required": false,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "ENTRY-EXIT-01",
+      "layer": "K",
+      "semantic_role": "entry_exit_policy_precedence",
+      "classification": "EXACT_MATCH",
+      "old_source_file": "double_play_entry_exit_policy_v0.py",
+      "current_source_file": "zero diff",
+      "lossless_mapping_possible": true,
+      "adapter_required": false,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "EXIT-PRODUCERS-01",
+      "layer": "K",
+      "semantic_role": "host_exit_policy_producer_binding",
+      "classification": "EXACT_MATCH",
+      "old_source_file": "exit_policy_producer_binding_v1",
+      "current_source_file": "zero diff H..CURRENT",
+      "lossless_mapping_possible": true,
+      "adapter_required": false,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "OUTGOING-CARRIER-01",
+      "layer": "L",
+      "semantic_role": "directional_confirmation_side_state_carrier_t_plus_1",
+      "classification": "SEMANTIC_CONFLICT",
+      "semantic_delta": "Combined SINGLE-LANE-LIFECYCLE-01 + C3-INTEGRATION-WIRING-01 changes outgoing carrier merge",
+      "lossless_mapping_possible": false,
+      "adapter_required": true,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "PRODUCTIVE-TYPED-VOL-FLAG-01",
+      "layer": "G",
+      "semantic_role": "require_productive_typed_volatility_presence_gate",
+      "classification": "EXACT_MATCH",
+      "old_value_or_domain": "True on productive runtime cycle",
+      "current_value_or_domain": "True on productive runtime cycle",
+      "lossless_mapping_possible": true,
+      "adapter_required": false,
+      "core_change_required": false
+    },
+    {
+      "contract_id": "RUNTIME-ADMISSION-F1M9-01",
+      "layer": "G",
+      "semantic_role": "productive_runtime_admission_for_f1_m9_surface",
+      "classification": "ADAPTER_REQUIRED",
+      "semantic_delta": "evaluate_productive_runtime_admission_v1 gate when consumer_wiring_authorized",
+      "current_evidence": "config/governance/governed_f1_m9_* decision owner_go=true wiring authorized",
+      "lossless_mapping_possible": true,
+      "adapter_required": true,
+      "core_change_required": false
+    }
+  ],
+  "minimal_divergence_set": [
+    "F1M9-CONSUMER-PATH-01",
+    "F1M9-MAX-AGE-ENFORCEMENT-01",
+    "G17-CMC-BIND-01",
+    "SINGLE-LANE-LIFECYCLE-01",
+    "LAYERED-CORE-OBS-INIT-01",
+    "RECON-ADMISSION-GATE-01"
+  ],
+  "pflichtfragen": {
+    "q1_core_equivalence": "PROVEN_CURRENT",
+    "q2_typed_vol_lossless_without_core": "CONFLICTING_CURRENT",
+    "q3_recon_lossless_without_core": "PROVEN_CURRENT",
+    "q4_c1_one_advance_per_distinct": "CONFLICTING_CURRENT",
+    "q5_reset_double_advance_stagnation_path": "CONFLICTING_CURRENT",
+    "q6_sidestate_runtime_scope_persistence": "CONFLICTING_CURRENT",
+    "q7_c3_carrier_thresholds": "PROVEN_CURRENT",
+    "q8_survival_suitability_composition_entry_exit_core": "PROVEN_CURRENT",
+    "q9_wp2_named_deltas": [
+      "F1M9-MAX-AGE-ENFORCEMENT-01",
+      "F1M9-PRESENCE-GATE-NONE-01",
+      "G17-CMC-BIND-01",
+      "SINGLE-LANE-LIFECYCLE-01",
+      "C3-INTEGRATION-WIRING-01",
+      "LAYERED-CORE-OBS-INIT-01",
+      "RECON-ADMISSION-GATE-01",
+      "CMC-PRICE-01"
+    ],
+    "q10_core_change_required_for_old_contract_restore": "PROVEN_NO"
+  },
+  "blocker": {
+    "BLOCKER": "NONE",
+    "MISSING_EVIDENCE": [],
+    "WHY_STATIC_EVIDENCE_IS_INSUFFICIENT": "Behavioral equivalence of SINGLE-LANE-LIFECYCLE-01 and LAYERED-CORE-OBS-INIT-01 requires WP-2 differential replay; static proof stops at classified semantic delta.",
+    "NEXT_REQUIRED_PROOF": "WP-2 cycle-by-cycle golden vector on shared fixture sequence"
+  },
+  "summary_counts": {
+    "CONTRACTS_TOTAL": 30,
+    "EXACT_MATCH": 17,
+    "CURRENT_EQUIVALENT": 1,
+    "ADAPTER_REQUIRED": 8,
+    "SEMANTIC_CONFLICT": 6,
+    "MISSING": 0,
+    "UNKNOWN": 0
+  }
+}
