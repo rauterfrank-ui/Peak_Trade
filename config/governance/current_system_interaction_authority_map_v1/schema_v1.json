@@ -253,7 +253,19 @@
         "id": {"type": "string", "minLength": 1},
         "epistemic_class": {"enum": ["UNKNOWN", "CONFLICTING", "PARTIAL"]},
         "statement": {"type": "string", "minLength": 1},
-        "evidence_refs": {"$ref": "#/$defs/ref_list"}
+        "evidence_refs": {"$ref": "#/$defs/ref_list"},
+        "closure_adjudication_class": {
+          "enum": [
+            "PROVEN_CURRENT",
+            "CURRENT_SUPPORT",
+            "EXPLICITLY_NOT_CURRENT",
+            "OPEN_EVIDENCE",
+            "CONFLICTING",
+            "REPRESENTATION_ONLY",
+            "SUPERSEDED_NONCURRENT"
+          ]
+        },
+        "closure_note": {"type": "string", "minLength": 1}
       }
     }
   }

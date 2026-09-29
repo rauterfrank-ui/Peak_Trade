@@ -25,6 +25,10 @@ from src.ops.single_selected_future_policy_v1.constants_v1 import (  # noqa: E40
 from src.ops.single_selected_future_policy_v1.producer_v1 import (  # noqa: E402
     run_single_selected_future_policy_v1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap24_reserved_productivity_root_guard_v1 import (  # noqa: E402
+    ReservedCap24ProductivityRootError,
+    assert_standalone_capability_state_root_not_reserved_cap24_v1,
+)
 
 
 def _git_sha() -> str:
@@ -50,6 +54,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--max-ranking-age-seconds", type=float, default=86400.0)
     parser.add_argument("--open-position-instrument-id", type=str, default=None)
     args = parser.parse_args(argv)
+
+    try:
+        assert_standalone_capability_state_root_not_reserved_cap24_v1(args.state_root)
+    except ReservedCap24ProductivityRootError as exc:
+        print(json.dumps({"ok": False, "failure_codes": [exc.failure_code], "error": str(exc)}))
+        return 2
 
     if args.ranking_snapshot_json is None and args.ranking_state_root is None:
         parser.error("one of --ranking-snapshot-json or --ranking-state-root is required")

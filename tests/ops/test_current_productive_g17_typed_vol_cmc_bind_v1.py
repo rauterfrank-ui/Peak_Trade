@@ -2,6 +2,11 @@
 
 from __future__ import annotations
 
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    build_provenance_from_governed_synthetic_close_mark_and_index_v1,
+)
+
+
 from pathlib import Path
 
 import pytest
@@ -42,6 +47,9 @@ from trading.master_v2.canonical_volatility_typed_runtime_producer_scaffold_v1 i
 from trading.master_v2.double_play_entry_exit_policy_v0 import ExistingPositionSide
 from trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1 import (
     TYPED_VOLATILITY_ESTIMATE_MISSING_REASON,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_pt1m_mark_sample_adapter_v1 import (
+    g17_ingest_kwargs_from_extracted_sample_v1,
 )
 from tests.ops.test_current_productive_g17_typed_vol_mark_history_checkpoint_v1 import (
     _apply,
@@ -131,7 +139,7 @@ def _closes() -> tuple[float, ...]:
 def test_owner_lock_tokens_and_non_transfer() -> None:
     assert PACKAGE_MARKER.endswith("=true")
     assert BIND_OWNER.endswith("current_productive_g17_typed_vol_cmc_bind_v1")
-    assert ESTIMATE_ABSENT_CMC_POLICY == "BIND_ONLY_WHEN_PRODUCED"
+    assert ESTIMATE_ABSENT_CMC_POLICY == "BIND_WHEN_PRODUCED_OR_PROCESS_INTERNAL_REUSE"
     assert INGEST_SAMPLE is False
     assert PRESENCE_GATE_IN_THIS_WP is False
     assert CMC_BINDING_PERFORMED is True
@@ -249,12 +257,14 @@ def test_master_v2_cycle_consumes_produced_join2_producer(
     )
     closes = _closes()
     last = float(closes[-1])
+    index_px = last * 0.995
+    bound = _bound()
     cycle = run_current_productive_master_v2_runtime_cycle_v1(
-        bound_instrument=_bound(),
+        bound_instrument=bound,
         cycle_id="g17-cmc-bind-produced",
         observed_unix=1_700_000_100.0,
         mark_px=last,
-        index_px=last,
+        index_px=index_px,
         bid_px=last - 0.5,
         ask_px=last + 0.5,
         volume=12_345.0,
@@ -265,6 +275,11 @@ def test_master_v2_cycle_consumes_produced_join2_producer(
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
         g17_typed_vol_producer=created.producer,
+        canonical_price_provenance=build_provenance_from_governed_synthetic_close_mark_and_index_v1(
+            venue_native_id=str(bound.venue_native_id or bound.instrument_id),
+            mark_px=float(last),
+            index_px=float(index_px),
+        ),
     )
     assert cycle.input_blocker == ""
     assert cycle.replay is not None
@@ -295,12 +310,14 @@ def test_master_v2_cycle_absent_estimate_does_not_bind_typed_carrier(
     )
     closes = _closes()
     last = float(closes[-1])
+    index_px = last * 0.995
+    bound = _bound()
     without_producer = run_current_productive_master_v2_runtime_cycle_v1(
-        bound_instrument=_bound(),
+        bound_instrument=bound,
         cycle_id="g17-cmc-bind-absent-baseline",
         observed_unix=1_700_000_100.0,
         mark_px=last,
-        index_px=last,
+        index_px=index_px,
         bid_px=last - 0.5,
         ask_px=last + 0.5,
         volume=12_345.0,
@@ -310,13 +327,18 @@ def test_master_v2_cycle_absent_estimate_does_not_bind_typed_carrier(
         last_finalized_event_ts_unix=1_700_000_000.0,
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
+        canonical_price_provenance=build_provenance_from_governed_synthetic_close_mark_and_index_v1(
+            venue_native_id=str(bound.venue_native_id or bound.instrument_id),
+            mark_px=float(last),
+            index_px=float(index_px),
+        ),
     )
     with_restored = run_current_productive_master_v2_runtime_cycle_v1(
-        bound_instrument=_bound(),
+        bound_instrument=bound,
         cycle_id="g17-cmc-bind-absent",
         observed_unix=1_700_000_100.0,
         mark_px=last,
-        index_px=last,
+        index_px=index_px,
         bid_px=last - 0.5,
         ask_px=last + 0.5,
         volume=12_345.0,
@@ -327,6 +349,11 @@ def test_master_v2_cycle_absent_estimate_does_not_bind_typed_carrier(
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
         g17_typed_vol_producer=restored.producer,
+        canonical_price_provenance=build_provenance_from_governed_synthetic_close_mark_and_index_v1(
+            venue_native_id=str(bound.venue_native_id or bound.instrument_id),
+            mark_px=float(last),
+            index_px=float(index_px),
+        ),
     )
     assert without_producer.input_blocker == ""
     assert with_restored.input_blocker == ""
@@ -351,12 +378,14 @@ def _allowed_bound() -> BoundInstrumentV1:
 def _cycle_kwargs(cycle_id: str, *, producer=None) -> dict:
     closes = _closes()
     last = float(closes[-1])
+    index_px = last * 0.995
+    bound = _allowed_bound()
     return {
-        "bound_instrument": _allowed_bound(),
+        "bound_instrument": bound,
         "cycle_id": cycle_id,
         "observed_unix": 1_700_000_100.0,
         "mark_px": last,
-        "index_px": last,
+        "index_px": index_px,
         "bid_px": last - 0.5,
         "ask_px": last + 0.5,
         "volume": 12_345.0,
@@ -367,6 +396,11 @@ def _cycle_kwargs(cycle_id: str, *, producer=None) -> dict:
         "venue_flat": True,
         "existing_position_side": ExistingPositionSide.NONE,
         "g17_typed_vol_producer": producer,
+        "canonical_price_provenance": build_provenance_from_governed_synthetic_close_mark_and_index_v1(
+            venue_native_id=str(bound.venue_native_id or bound.instrument_id),
+            mark_px=last,
+            index_px=index_px,
+        ),
     }
 
 
@@ -375,6 +409,28 @@ def test_master_v2_cycle_none_producer_fail_closes_typed_presence() -> None:
     assert cycle.input_blocker == ""
     assert TYPED_VOLATILITY_ESTIMATE_MISSING_REASON in cycle.fail_reasons
     assert cycle.decision_outcome not in {"enter_long", "enter_short"}
+
+
+def test_duplicate_noop_reuses_prior_estimate_for_cmc_and_presence_gate(
+    tmp_path: Path,
+) -> None:
+    samples = _sixty_one_samples()
+    created = _apply(tmp_path, samples=samples)
+    producer = created.producer
+    assert producer is not None
+    dup = producer.ingest_finalized_pt1m_mark_sample_v1(
+        **g17_ingest_kwargs_from_extracted_sample_v1(samples[-1])
+    )
+    assert dup.outcome is TypedRuntimeProducerOutcomeV1.DUPLICATE_NOOP
+    assert producer.output_port_v1().estimate is not None
+    bound = apply_current_productive_g17_typed_vol_cmc_bind_v1(_context(), producer=producer)
+    assert bound.bind_performed is True
+    assert bound.context.canonical_volatility_estimate is not None
+    cycle = run_current_productive_master_v2_runtime_cycle_v1(
+        **_cycle_kwargs("g17-duplicate-noop-reuse", producer=producer)
+    )
+    assert cycle.input_blocker == ""
+    assert TYPED_VOLATILITY_ESTIMATE_MISSING_REASON not in cycle.fail_reasons
 
 
 def test_master_v2_cycle_produced_estimate_does_not_presence_fail(

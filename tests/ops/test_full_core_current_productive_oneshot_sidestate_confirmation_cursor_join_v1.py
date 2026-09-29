@@ -14,6 +14,9 @@ from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     run_current_productive_master_v2_runtime_cycle_v1,
 )
+from tests.ops._current_productive_canonical_price_test_helpers_v1 import (
+    provenance_for_bound_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     CURSOR_LINEAGE_ID,
     CURSOR_SCHEMA_NAME,
@@ -75,6 +78,33 @@ DR_HEADING = (
 THIS_SLICE = "11.2.1.DR.FULL_CORE_CURRENT_PRODUCTIVE_ONESHOT_SIDESTATE_AND_CONFIRMATION_CURSOR_JOIN"
 _INSTRUMENT = "inst-eth-usdt-perp"
 _PRODUCED_G17_CACHE: dict[str, CanonicalVolatilityTypedRuntimeProducerScaffoldV1] = {}
+_F1_M9_LEDGER_CACHE: dict[str, object] | None = None
+
+
+def _f1_m9_cycle_ledger_kwargs_v1() -> dict[str, object]:
+    from tests.ops._current_productive_pre_external_test_process_isolation_v1 import (
+        active_pre_external_test_f1_m9_cycle_ledger_kwargs_v1,
+    )
+
+    active = active_pre_external_test_f1_m9_cycle_ledger_kwargs_v1()
+    if active is not None:
+        return active
+
+    global _F1_M9_LEDGER_CACHE
+    if _F1_M9_LEDGER_CACHE is None:
+        from tests.ops._current_productive_f1_m9_durable_seam_fixture_v1 import (
+            materialize_f1_m9_runtime_applied_seam_ledgers_v1,
+        )
+
+        root = Path(tempfile.mkdtemp(prefix="peak-f1-m9-ledgers-"))
+        _F1_M9_LEDGER_CACHE = materialize_f1_m9_runtime_applied_seam_ledgers_v1(root)
+    assert _F1_M9_LEDGER_CACHE is not None
+    return {
+        "f1_m9_productive_apply_ledger_paths": _F1_M9_LEDGER_CACHE["apply_ledger_paths"],
+        "f1_m9_threshold_ledger_paths": _F1_M9_LEDGER_CACHE["threshold_ledger_paths"],
+    }
+
+
 PROTECTED_ALGORITHM_FILES = (
     "src/ops/governed_futures_universe_producer_v1/eligibility_v1.py",
     "src/ops/productive_futures_ranking_producer_v1/ranking_v1.py",
@@ -152,12 +182,13 @@ def _cycle(
         if g17_typed_vol_producer is _AUTO_G17
         else g17_typed_vol_producer
     )
+    index_px = last * 0.995
     return run_current_productive_master_v2_runtime_cycle_v1(
         bound_instrument=resolved_bound,
         cycle_id=cycle_id,
         observed_unix=float(event_ts_unix) + 100.0,
         mark_px=last,
-        index_px=last,
+        index_px=index_px,
         bid_px=last - 0.5,
         ask_px=last + 0.5,
         volume=12_345.0,
@@ -169,6 +200,12 @@ def _cycle(
         existing_position_side=ExistingPositionSide.NONE,
         incoming_cursor=incoming_cursor,
         g17_typed_vol_producer=producer,
+        canonical_price_provenance=provenance_for_bound_v1(
+            bound=resolved_bound,
+            mark_px=last,
+            index_px=index_px,
+        ),
+        **_f1_m9_cycle_ledger_kwargs_v1(),
     )
 
 
@@ -261,6 +298,7 @@ def test_cycle_b_restores_cursor_and_existing_logic_can_enter() -> None:
 
 def test_cycle_b_downstream_enter_29p_29q_venue_plan_envelope_without_permit() -> None:
     from tests.ops.test_full_core_current_productive_enter_live_29p_join_v1 import (
+        EPOCH,
         _balance_payload,
         _injected,
     )
@@ -282,7 +320,7 @@ def test_cycle_b_downstream_enter_29p_29q_venue_plan_envelope_without_permit() -
         replay=cycle_b.replay,
         bound_instrument=_bound(),
         injected=_injected(payload=_balance_payload()),
-        decision_epoch="2026-09-16T00:00:00Z",
+        decision_epoch=EPOCH,
     )
     assert join.decision_class == DECISION_ENTER
     assert join.status == STATUS_PASS
@@ -297,7 +335,7 @@ def test_cycle_b_downstream_enter_29p_29q_venue_plan_envelope_without_permit() -
         bound_instrument=_bound(),
         session_id="cursor-join-session",
         run_id="cursor-join-run",
-        composed_epoch="2026-09-16T00:00:00Z",
+        composed_epoch=EPOCH,
         execution_mode="LIVE",
     )
     assert status is CompositionStatusV1.PASS, reasons
@@ -306,7 +344,7 @@ def test_cycle_b_downstream_enter_29p_29q_venue_plan_envelope_without_permit() -
         plan,
         admission_ref="DR_CURSOR_JOIN_HOST_ENTER_OFFLINE",
         provenance_ref="CURRENT_PRODUCTIVE_MASTER_V2_VENUE_PLAN",
-        creation_epoch="2026-09-16T00:00:00Z",
+        creation_epoch=EPOCH,
     )
     assert envelope.envelope_id
     assert envelope.envelope_digest
@@ -318,6 +356,7 @@ def test_cycle_b_downstream_enter_29p_29q_venue_plan_envelope_without_permit() -
 def test_natural_enter_via_live_29p_join_reaches_envelope_without_permit() -> None:
     """CRS/intent bind at enter-live-29p join — not via stale isolated ARMED replay."""
     from tests.ops.test_full_core_current_productive_enter_live_29p_join_v1 import (
+        EPOCH,
         _balance_payload,
         _injected,
     )
@@ -334,7 +373,7 @@ def test_natural_enter_via_live_29p_join_reaches_envelope_without_permit() -> No
         replay=cycle_b.replay,
         bound_instrument=_bound(),
         injected=_injected(payload=_balance_payload()),
-        decision_epoch="2026-09-16T00:00:00Z",
+        decision_epoch=EPOCH,
     )
     assert join.status == STATUS_PASS
     rebound = join.replay
@@ -347,7 +386,7 @@ def test_natural_enter_via_live_29p_join_reaches_envelope_without_permit() -> No
         bound_instrument=_bound(),
         session_id="armed-replay-session",
         run_id="armed-replay-run",
-        composed_epoch="2026-09-16T00:00:00Z",
+        composed_epoch=EPOCH,
         execution_mode="LIVE",
     )
     assert status is CompositionStatusV1.PASS, reasons
@@ -356,7 +395,7 @@ def test_natural_enter_via_live_29p_join_reaches_envelope_without_permit() -> No
         plan,
         admission_ref="DR_CURSOR_JOIN_NATURAL_ENTER_LIVE_29P",
         provenance_ref="CURRENT_PRODUCTIVE_MASTER_V2_VENUE_PLAN",
-        creation_epoch="2026-09-16T00:00:00Z",
+        creation_epoch=EPOCH,
     )
     assert envelope.envelope_id
     assert envelope.envelope_digest

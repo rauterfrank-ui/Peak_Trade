@@ -29,4 +29,9 @@ Companion C2 may **read-only** consume governed producer outputs from the existi
 - No `signal_to_orders` semantic change  
 - No external effect or Multi-Future activation  
 
-Next bounded step after merge: **C2 Fraction→Units Runtime Completion** (wire binding + algebra at producers).
+Runtime completion scaffold (fail-closed; no shadow/live binding):
+[`COMPANION_C2_FRACTION_TO_UNITS_RUNTIME_COMPLETION_V1.md`](../ops/specs/COMPANION_C2_FRACTION_TO_UNITS_RUNTIME_COMPLETION_V1.md)
+(`config/governance/companion_c2_fraction_to_units_runtime_completion_v1_decision_v1.json`).
+
+Next genuine blocker: scoped Owner-GO for shadow/live producer binding with
+`NEXT_PRODUCTIVE_CONVERSION_SLICE_AUTHORIZED=true`.

@@ -7,17 +7,25 @@ AUTHORITY=NONE
 ```mermaid
 flowchart LR
   governance_promotion -->|authorization_to_seam| m9_volatility_max_age
+  governed_productive_account_equity_authority_v1 -->|b05_account_equity_to_crs| capital_risk_sizing
+  governed_productive_instrument_metadata_authority_v1 -->|b05_instrument_metadata_to_crs| capital_risk_sizing
+  governed_productive_reference_price_authority_v1 -->|b05_reference_price_to_crs| capital_risk_sizing
   cap22_research_backtest_live_parity_b09 -->|b09_parity_proof_preserves_selection_authority| selection_cap23
   runtime_binding_cap24 -->|binding_cap24_to_operator_profile_b11| operator_profile_explainability_b11
   runtime_binding_cap24 -->|binding_to_mv2| mv2_double_play
   c1_confirmation -->|c1_injected_governed_cycle| governed_cycle
-  execution_external_effect -->|dashboard_read| presentation_dashboard
-  treasury_29p -->|equity_value_unbound| capital_risk_sizing
+  cap21_cap23_productive_persistence_v1 -->|cap21_cap23_persist_to_cap24_productivity_carrier| cap24_productivity_state_carrier_v1
+  governed_cycle -->|dashboard_read| presentation_dashboard
+  eea_universe_inventory_acquisition_v1 -->|eea_acquisition_to_cap21_cap23_persist| cap21_cap23_productive_persistence_v1
+  governed_productive_account_equity_authority_v1 -->|equity_value_unbound| capital_risk_sizing
+  f1_m9_productive_runtime_threshold_consumer_wiring -->|f1_m9_canonical_durable_bootstrap_to_master_v2_seam| mv2_double_play
   full_autonomy_n5 -->|fa_compose_cap23_produce_join| selection_cap23
   full_autonomy_n5 -->|fa_compose_cap24_bind_join| runtime_binding_cap24
   full_autonomy_n5 -->|fa_compose_governed_cycle_n1| governed_cycle
   full_autonomy_n5 -->|fa_compose_mv2_dp_handoff_join| mv2_double_play
   full_autonomy_n5 -->|fa_compose_portfolio_budget| portfolio_reservation
+  full_autonomy_n5 -->|fa_n5_orchestrator_to_lane_persistence| n5_durable_lane_assignment_persistence_v1
+  full_core_fresh_pretrade_runtime_get -->|fresh_pretrade_get_to_b05_producers| governed_productive_account_equity_authority_v1
   future_profile_snapshot_b07 -->|future_profile_b07_to_operator_profile_b11| operator_profile_explainability_b11
   g17_typed_vol_cmc_bind -->|g17_bind_into_mv2_cycle| mv2_double_play
   g2_runtime_learning_optimization_input_binding -->|g2_binding_to_canonical_optimization_learning_input| optimization_universe
@@ -27,6 +35,7 @@ flowchart LR
   g2_runtime_learning_optimization_input_binding -->|g2_runtime_to_m4_m8_real_mechanical_continuation| optimization_universe
   governance_promotion -->|governance_promotion_to_f1_m9_scoped_owner_apply_execution| f1_m9_scoped_owner_apply_execution
   governed_cycle -->|governed_cycle_t2_mv2_stack| mv2_double_play
+  governed_cycle -->|governed_cycle_to_presentation_read| presentation_dashboard
   governed_cycle -->|governed_cycle_venue_plan_status| venue_plan_td_mode
   mv2_double_play -->|integrated_replay_safety_gate_before_intent| order_intent
   order_intent -->|intent_to_execution| execution_external_effect
@@ -48,8 +57,11 @@ flowchart LR
   portfolio_reservation -->|portfolio_to_enter| treasury_29p
   okx_eea_private_account_state_runtime_wp_b -->|private_state_runtime_adapts_fresh_pretrade_get| full_core_fresh_pretrade_runtime_get
   okx_eea_private_account_state_runtime_wp_b -->|private_state_runtime_preserves_cap23_selection_owner| selection_cap23
+  okx_eea_private_account_state_runtime_wp_b -->|private_state_runtime_to_wp_c_convergence| market_data_private_state_runtime_convergence_wp_c
+  learning_ddo -->|productive_ddo_offline_export_to_g2_primary_evidence| bounded_runtime_primary_evidence
   peak_trade_public_market_data_runtime_wp_a -->|public_md_runtime_adapter_to_ranking_cap22| ranking_cap22
   peak_trade_public_market_data_runtime_wp_a -->|public_md_runtime_preserves_cap23_selection_owner| selection_cap23
+  peak_trade_public_market_data_runtime_wp_a -->|public_md_runtime_to_wp_c_convergence| market_data_private_state_runtime_convergence_wp_c
   ranking_cap22 -->|ranking_context_to_future_profile_b07| future_profile_snapshot_b07
   ranking_cap22 -->|ranking_economics_to_b09_parity_proof| cap22_research_backtest_live_parity_b09
   ranking_cap22 -->|ranking_to_selection| selection_cap23
@@ -73,7 +85,9 @@ flowchart LR
   selection_cap23 -->|selection_cap23_to_operator_profile_b11| operator_profile_explainability_b11
   selection_cap23 -->|selection_reference_to_future_profile_b07| future_profile_snapshot_b07
   selection_cap23 -->|selection_to_binding| runtime_binding_cap24
+  current_productive_sidestate_confirmation_cursor_v1 -->|sidestate_cursor_to_mv2_cycle| mv2_double_play
   capital_risk_sizing -->|sizing_to_intent| order_intent
+  ssf_cap72_host_live_execution_port_join_v1 -->|ssf_cap72_host_binding_to_live_execution_port| host_join_send_adapter
   selection_cap23 -->|step29m_consumes_selection| step29m
   treasury_29p -->|treasury_to_admission| capital_risk_sizing
   universe_cap21 -->|universe_to_ranking| ranking_cap22
@@ -100,6 +114,60 @@ flowchart LR
 - promotion_required=TRUE
 - fail_closed=TRUE
 - evidence=`src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py`, `config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json`
+
+## b05_account_equity_to_crs
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=typed_29p_available_for_sizing_account_equity to four CRS slots via mv2_capital_context_rebind
+- producer=ops.governed_productive_account_equity_authority_producer_v1
+- consumer=src.governance.capital_risk_sizing_v1
+- authority_effect=NONE
+- decision_effect=N1_PRODUCTIVE_BIND_ON_ENTER_LIVE_29P
+- direct_or_indirect=DIRECT
+- identity_binding=TYPED_EQUITY_TO_CRS_LIMITS
+- temporal_binding=FRESH_PRETRADE_GET_WITNESS
+- version_binding=current_productive_mv2_capital_context_rebind_v1
+- provenance_binding=B05_ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py`, `config/governance/final_current_authority_closure_limit_equity_and_layered_safety_ratification_v1.json`
+
+## b05_instrument_metadata_to_crs
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=OKX instruments row metadata for quantity constraints
+- producer=ops.governed_productive_instrument_metadata_authority_producer_v1
+- consumer=src.governance.capital_risk_sizing_v1
+- authority_effect=NONE
+- decision_effect=INSTRUMENT_METADATA_FOR_SIZING
+- direct_or_indirect=DIRECT
+- identity_binding=INSTRUMENTS_ROW
+- temporal_binding=FRESH_PRETRADE_GET_WITNESS
+- version_binding=current_productive_okx_instruments_row_producer_v1
+- provenance_binding=B05_INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/governed_productive_instrument_metadata_authority_producer_v1/current_productive_okx_instruments_row_producer_v1.py`, `config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json`
+
+## b05_reference_price_to_crs
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=mark_price reference for quantity algebra
+- producer=ops.governed_productive_reference_price_authority_producer_v1
+- consumer=src.governance.capital_risk_sizing_v1
+- authority_effect=NONE
+- decision_effect=REFERENCE_PRICE_FOR_SIZING
+- direct_or_indirect=DIRECT
+- identity_binding=MARK_PRICE_SEMANTICS
+- temporal_binding=FRESH_PRETRADE_GET_WITNESS
+- version_binding=current_productive_mv2_mark_reference_price_producer_v1
+- provenance_binding=B05_REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/governed_productive_reference_price_authority_producer_v1/current_productive_mv2_mark_reference_price_producer_v1.py`, `config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json`
 
 ## b09_parity_proof_preserves_selection_authority
 
@@ -173,13 +241,31 @@ flowchart LR
 - fail_closed=TRUE
 - evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py`, `src/ops/stateful_confirmation_and_c1_productive_binding_v1/constants_v1.py`
 
+## cap21_cap23_persist_to_cap24_productivity_carrier
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=Cap-2.3 decision authority unchanged; orchestrated snapshots published/read from runtime/current_productive/cap24_selection_state
+- producer=run_cap21_to_cap23_persist_productive_v1
+- consumer=cap24_productivity_state_carrier_v1
+- authority_effect=NONE
+- decision_effect=STATE_CARRIER_PUBLISH_READ_ONLY_FOR_PRODUCTIVE_CHAIN
+- direct_or_indirect=INDIRECT
+- identity_binding=CAP23_SELECTION_AUTHORITY_UNCHANGED
+- temporal_binding=UNKNOWN
+- version_binding=src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py
+- provenance_binding=NO_SECOND_SELECTION_OWNER
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py`, `src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py`
+
 ## dashboard_read
 
 - lifecycle=PROVEN_CURRENT
 - flow_type=PRESENTATION_FLOW
 - contract_or_payload=runtime SSOT to read model to dashboard
-- producer=read_model
-- consumer=dashboard
+- producer=ops.canonical_read_model_and_market_dashboard_rebuild_v1
+- consumer=presentation_dashboard
 - authority_effect=NONE
 - decision_effect=DISPLAY_ONLY
 - direct_or_indirect=INDIRECT
@@ -191,12 +277,30 @@ flowchart LR
 - fail_closed=TRUE
 - evidence=`src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/constants_v1.py`
 
+## eea_acquisition_to_cap21_cap23_persist
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=acquire_eea_universe_inventory_v1 → EeaUniverseAcquisitionResultV1 injected into run_cap21_to_cap23_persist_productive_v1; Cap-2.1 NO-NETWORK preserved
+- producer=acquire_eea_universe_inventory_v1
+- consumer=run_cap21_to_cap23_persist_productive_v1
+- authority_effect=NONE
+- decision_effect=INJECTED_PAYLOAD_HANDOFF_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=ACQUISITION_PROVENANCE
+- temporal_binding=SOURCE_EVENT_TIME
+- version_binding=src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py
+- provenance_binding=CAP21_NO_NETWORK_INVARIANT
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py`, `src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py`
+
 ## equity_value_unbound
 
 - lifecycle=UNKNOWN
 - flow_type=DATA_FLOW
-- contract_or_payload=DETAILS_USDC_AVAILEQ mapping option B
-- producer=treasury_29p
+- contract_or_payload=NON_FULL_CORE_OR_PRE_BIND mapping gap record; treasury is not B05 equity authority | SEMANTIC_PAIR=equity_value_unbound; DISTINCT_FROM=treasury_to_admission
+- producer=ops.governed_productive_account_equity_authority_producer_v1
 - consumer=sizing_context
 - authority_effect=NONE
 - decision_effect=NUMERIC_VENUE_VALUE_UNBOUND
@@ -208,6 +312,24 @@ flowchart LR
 - promotion_required=UNKNOWN
 - fail_closed=TRUE
 - evidence=`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`, `src/ops/governed_productive_account_equity_authority_producer_v1/__init__.py`
+
+## f1_m9_canonical_durable_bootstrap_to_master_v2_seam
+
+- lifecycle=PARTIAL
+- flow_type=CONSTRAINT_FLOW
+- contract_or_payload=ensure_canonical_f1_m9_runtime_applied_seam_materialized_v1 then governed authorized_productive_parameter_seam for Master-V2 cycle admission
+- producer=current_productive_f1_m9_canonical_durable_bootstrap_v1
+- consumer=run_current_productive_master_v2_runtime_cycle_v1
+- authority_effect=NONE
+- decision_effect=DURABLE_APPLY_SEAM_PRESENCE_FOR_THRESHOLD_CONSUMER_WIRING
+- direct_or_indirect=DIRECT
+- identity_binding=CANONICAL_F1_M9_LEDGER_PATHS_AND_APPLY_START_ONLY
+- temporal_binding=600S_OWNER_THRESHOLD_LINEAGE
+- version_binding=current_productive_f1_m9_canonical_durable_bootstrap/v1
+- provenance_binding=NO_SECOND_AUTHORITY; NO_SYNTHETIC_SEAM; PRODUCTIVE_ACTIVATION_AUTHORIZED=false
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `src/governance/f1_m9_productive_apply_durable_ledger_paths_v1.py`, `src/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1.py`, `tests/ops/test_current_productive_f1_m9_clean_checkout_bootstrap_v1.py`, `tests/ops/test_current_productive_f1_m9_seam_master_v2_cold_start_restart_v1.py`
 
 ## fa_compose_cap23_produce_join
 
@@ -249,7 +371,7 @@ flowchart LR
 
 - lifecycle=PROVEN_CURRENT
 - flow_type=CONSTRAINT_FLOW
-- contract_or_payload=invoke_occupied_lane_governed_cycle_n1_consumer_v1 per lane; terminal PRE_EXTERNAL or HOLD_CLOSED
+- contract_or_payload=invoke_occupied_lane_governed_cycle_n1_consumer_v1 per lane; T2/S7 per-lane dispatch (T2_S7_USED; non-V5 EG); terminal PRE_EXTERNAL or HOLD_CLOSED
 - producer=compose_occupied_lane_n1_host_join_readiness_v1
 - consumer=run_current_productive_governed_cycle_v1
 - authority_effect=NONE
@@ -261,7 +383,7 @@ flowchart LR
 - provenance_binding=AUTONOMY_CAN_POST_FALSE
 - promotion_required=FALSE
 - fail_closed=TRUE
-- evidence=`src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/readiness_join_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py`
+- evidence=`src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/readiness_join_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py`, `src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/constants_v1.py`
 
 ## fa_compose_mv2_dp_handoff_join
 
@@ -298,6 +420,42 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py`, `src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py`
+
+## fa_n5_orchestrator_to_lane_persistence
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=consume_recovered_isolated_lane_topology_v1 → persist_durable_lane_assignment_v1 (recovery re-entry included)
+- producer=run_productive_full_autonomy_n5_runtime_orchestrator_v1
+- consumer=persist_durable_lane_assignment_v1
+- authority_effect=NONE
+- decision_effect=LANE_CHECKPOINT_PERSIST_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=SINGLE_WRITER_LOCK
+- temporal_binding=UNKNOWN
+- version_binding=src/ops/current_mf_n5_recovered_topology_consumer_join_v1/consumer_v1.py
+- provenance_binding=PRODUCTIVE_MF_AUTHORIZATION_FALSE
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py`, `src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py`
+
+## fresh_pretrade_get_to_b05_producers
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=trusted venue GET payloads to B05 producer witness surfaces
+- producer=fresh_pretrade_runtime_get_v1
+- consumer=governed_productive_account_equity_authority_producer_v1
+- authority_effect=NONE
+- decision_effect=WITNESS_INPUT_ONLY
+- direct_or_indirect=DIRECT
+- identity_binding=GET_TRANSPORT_RESULT
+- temporal_binding=PRE_EXTERNAL
+- version_binding=fresh_pretrade_runtime_get_v1
+- provenance_binding=POST_COUNT_0_READ_ONLY
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py`, `src/ops/full_core_live_path_composition_root_v1/datasafety_context_bind_from_fresh_pretrade_get_transport_result_v1.py`
 
 ## future_profile_b07_to_operator_profile_b11
 
@@ -339,7 +497,7 @@ flowchart LR
 
 - lifecycle=PROVEN_CURRENT
 - flow_type=EVIDENCE_FLOW
-- contract_or_payload=learning_evidence_record_v1 (runtime-derived) → CANONICAL_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_V1 ack
+- contract_or_payload=learning_evidence_record_v1 (runtime-derived) → CANONICAL_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_V1 ack | SEMANTIC_PAIR=g2_binding_to_canonical_optimization_learning_input; DISTINCT_FROM=g2_runtime_to_m4_m8_real_mechanical_continuation
 - producer=bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_input_v1
 - consumer=validate_canonical_optimization_universe_learning_input_v1
 - authority_effect=NONE
@@ -357,7 +515,7 @@ flowchart LR
 
 - lifecycle=PARTIAL
 - flow_type=EVIDENCE_FLOW
-- contract_or_payload=M4–M8 return loop continuation (fixture-bounded DDO learning_evidence_export path only)
+- contract_or_payload=M4–M8 return loop continuation (fixture-bounded DDO learning_evidence_export path only) | SEMANTIC_PAIR=g2_m4_m8_fixture_continuation; DISTINCT_FROM=real_runtime_g2_to_meta_optimization_feedback_continuation
 - producer=export_learning_evidence_from_state_v1
 - consumer=run_m4_m8_evidence_return_loop_v1
 - authority_effect=NONE
@@ -375,7 +533,7 @@ flowchart LR
 
 - lifecycle=PROVEN_CURRENT
 - flow_type=EVIDENCE_FLOW
-- contract_or_payload=GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1; immutable primary archive in, projection artifact out
+- contract_or_payload=GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1; immutable primary archive in, projection artifact out | DISTINCT_FROM=productive_ddo_offline_export_to_g2_primary_evidence (Case B: productive DDO export not admissible as primary evidence)
 - producer=validate_durable_primary_evidence_root
 - consumer=run_governed_runtime_primary_to_offline_observation_projection_v1
 - authority_effect=NONE
@@ -387,7 +545,7 @@ flowchart LR
 - provenance_binding=PRIMARY_EVIDENCE_IMPLIES_PRODUCTIVE_AUTHORIZATION=false
 - promotion_required=FALSE
 - fail_closed=TRUE
-- evidence=`docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md`, `src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py`, `scripts/ops/primary_evidence_retention_v0.py`
+- evidence=`docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md`, `src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py`, `scripts/ops/primary_evidence_retention_v0.py`, `src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py`
 
 ## g2_runtime_learning_to_optimization_input_binding
 
@@ -411,7 +569,7 @@ flowchart LR
 
 - lifecycle=PROVEN_CURRENT
 - flow_type=EVIDENCE_FLOW
-- contract_or_payload=runtime-derived learning_evidence_record_v1 → bounded offline M4 plane → run_m4_m8_evidence_return_loop_v1
+- contract_or_payload=runtime-derived learning_evidence_record_v1 → bounded offline M4 plane → run_m4_m8_evidence_return_loop_v1 | SEMANTIC_PAIR=g2_runtime_to_m4_m8_real_mechanical_continuation; DISTINCT_FROM=g2_binding_to_canonical_optimization_learning_input
 - producer=run_g2_runtime_to_m4_m8_evidence_return_continuation_v1
 - consumer=run_m4_m8_evidence_return_loop_v1
 - authority_effect=NONE
@@ -460,6 +618,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`
+
+## governed_cycle_to_presentation_read
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=PRESENTATION_FLOW
+- contract_or_payload=productive runtime/cycle SSOT to read model (non-authority)
+- producer=ops.canonical_read_model_and_market_dashboard_rebuild_v1
+- consumer=presentation_dashboard
+- authority_effect=NONE
+- decision_effect=DISPLAY_ONLY
+- direct_or_indirect=INDIRECT
+- identity_binding=READ_MODEL_PROJECTION
+- temporal_binding=UNKNOWN
+- version_binding=canonical_read_model_and_market_dashboard_rebuild_v1
+- provenance_binding=AUTHORITY_EFFECT_NONE
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/constants_v1.py`
 
 ## governed_cycle_venue_plan_status
 
@@ -544,12 +720,12 @@ flowchart LR
 - decision_effect=MUST_NOT_MUTATE_PRODUCER
 - direct_or_indirect=DIRECT
 - identity_binding=UNKNOWN
-- temporal_binding=HOST_DURABILITY_UNPROVEN
+- temporal_binding=PRODUCTIVE_MV2_OPTIONAL_LEDGER_PARTIAL
 - version_binding=src/learning/deterministic_decision_outcome_v0/capture_v0.py
-- provenance_binding=HOST_LIST_NOT_CLOSED
+- provenance_binding=PARTIAL_HOST_LIST_MV2_AND_BRIDGE
 - promotion_required=FALSE
 - fail_closed=TRUE
-- evidence=`src/learning/deterministic_decision_outcome_v0/capture_v0.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`
+- evidence=`src/learning/deterministic_decision_outcome_v0/capture_v0.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py`, `tests/ops/test_current_productive_master_v2_ddo_learning_capture_join_v1.py`, `tests/ops/test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`
 
 ## learning_evidence_export_to_optimization
 
@@ -567,7 +743,7 @@ flowchart LR
 - provenance_binding=UNIFIED_BLUEPRINT_D02_d02_learning_to_optimization
 - promotion_required=FALSE
 - fail_closed=TRUE
-- evidence=`config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json`, `src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py`, `src/experiments/canonical_optimization_universe_learning_input_v1.py`, `tests/experiments/test_canonical_optimization_universe_v1.py`
+- evidence=`config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json`, `src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py`, `src/experiments/canonical_optimization_universe_learning_input_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py`, `tests/ops/test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py`, `tests/experiments/test_canonical_optimization_universe_v1.py`, `src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py`, `docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md`
 
 ## meta_search_backflow
 
@@ -591,7 +767,7 @@ flowchart LR
 
 - lifecycle=PROVEN_CURRENT
 - flow_type=DATA_FLOW
-- contract_or_payload=forecast_outcome_join_v1 references N_BARS actual_outcome_ref only; NO_DUPLICATE_OUTCOME_TRUTH; normative N_BARS semantics unchanged
+- contract_or_payload=forecast_outcome_join_v1 references N_BARS actual_outcome_ref only; NO_DUPLICATE_OUTCOME_TRUTH; normative N_BARS semantics unchanged | SEMANTIC_PAIR=mi_offline_compose_ddo_n_bars_outcome; DISTINCT_FROM=mi_offline_typed_export_to_learning_path
 - producer=market_intelligence_forecast_calibration_offline_stack_d03
 - consumer=learning_ddo
 - authority_effect=NONE
@@ -627,7 +803,7 @@ flowchart LR
 
 - lifecycle=PROVEN_CURRENT
 - flow_type=DATA_FLOW
-- contract_or_payload=Phase 10 MI-crossing bounded multi-cycle offline replay: offline orchestrator MI-enriched M4 closure → M5 return → M6 meta ingest → M7 feedback → deterministic multi-cycle identity; SEARCH_EXECUTION_AUTHORIZED=false
+- contract_or_payload=Phase 10 MI-crossing bounded multi-cycle offline replay: offline orchestrator MI-enriched M4 closure → M5 return → M6 meta ingest → M7 feedback → deterministic multi-cycle identity; SEARCH_EXECUTION_AUTHORIZED=false | SEMANTIC_PAIR=mi_offline_to_multi_cycle_m5_m8_replay; DISTINCT_FROM=mi_offline_to_optimization_research_input
 - producer=market_intelligence_forecast_calibration_offline_stack_d03
 - consumer=optimization_universe
 - authority_effect=NONE
@@ -645,7 +821,7 @@ flowchart LR
 
 - lifecycle=PROVEN_CURRENT
 - flow_type=DATA_FLOW
-- contract_or_payload=MI-enriched M4 intake: market_intelligence_optimization_research_input_v1 + canonical_optimization_universe_mi_enriched_m4_intake_v1 → run_optimization_universe_experiment_plane_v1; PROPOSAL_ONLY; OPTIMIZATION_PRODUCTIVE_AUTHORITY NONE
+- contract_or_payload=MI-enriched M4 intake: market_intelligence_optimization_research_input_v1 + canonical_optimization_universe_mi_enriched_m4_intake_v1 → run_optimization_universe_experiment_plane_v1; PROPOSAL_ONLY; OPTIMIZATION_PRODUCTIVE_AUTHORITY NONE | SEMANTIC_PAIR=mi_offline_to_optimization_research_input; DISTINCT_FROM=mi_offline_to_multi_cycle_m5_m8_replay
 - producer=market_intelligence_forecast_calibration_offline_stack_d03
 - consumer=optimization_universe
 - authority_effect=NONE
@@ -663,7 +839,7 @@ flowchart LR
 
 - lifecycle=PROVEN_CURRENT
 - flow_type=DATA_FLOW
-- contract_or_payload=MARKET_INTELLIGENCE_LEARNING_EVIDENCE via mi_to_learning_evidence_bridge_v1 and mi_learning_evidence_learning_export_v1; DDO reducers unchanged; learning_evidence_export_v1 path routing only
+- contract_or_payload=MARKET_INTELLIGENCE_LEARNING_EVIDENCE via mi_to_learning_evidence_bridge_v1 and mi_learning_evidence_learning_export_v1; DDO reducers unchanged; learning_evidence_export_v1 path routing only | SEMANTIC_PAIR=mi_offline_typed_export_to_learning_path; DISTINCT_FROM=mi_offline_compose_ddo_n_bars_outcome
 - producer=market_intelligence_forecast_calibration_offline_stack_d03
 - consumer=learning_ddo
 - authority_effect=NONE
@@ -681,7 +857,7 @@ flowchart LR
 
 - lifecycle=PARTIAL
 - flow_type=CONSTRAINT_FLOW
-- contract_or_payload=EXECUTABLE_VENUE_PLAN_BOUND with eligibility true; PRE_EXTERNAL_EFFECT boundary; POST still unauthorized in cycle
+- contract_or_payload=EXECUTABLE_VENUE_PLAN_BOUND with eligibility true; PRE_EXTERNAL_EFFECT boundary; POST still unauthorized in cycle | SEMANTIC_PAIR=mv2_executable_pre_external_terminal; DISTINCT_FROM=mv2_valid_no_trade_terminal
 - producer=run_current_productive_governed_cycle_v1
 - consumer=execution_external_effect
 - authority_effect=NONE
@@ -697,13 +873,13 @@ flowchart LR
 
 ## mv2_to_sizing
 
-- lifecycle=CONFLICTING
+- lifecycle=PARTIAL
 - flow_type=CONSTRAINT_FLOW
 - contract_or_payload=CanonicalCoreRuntimeCapitalContextV0
-- producer=current_productive_enter_live_29p_join_v1
+- producer=ops.governed_productive_account_equity_authority_producer_v1.current_productive_enter_live_29p_join_v1
 - consumer=capital_risk_sizing
 - authority_effect=NONE
-- decision_effect=WIRING_PRESENT_OWNER_CONFLICTING
+- decision_effect=WIRING_PRESENT_B05_BIND_ON_ENTER_LIVE
 - direct_or_indirect=DIRECT
 - identity_binding=CONTEXT_OBJECT
 - temporal_binding=UNKNOWN
@@ -717,7 +893,7 @@ flowchart LR
 
 - lifecycle=PROVEN_CURRENT
 - flow_type=CONSTRAINT_FLOW
-- contract_or_payload=NO_EXECUTABLE_DECISION/HOLD/observe; DECISION_EXECUTION_ELIGIBLE=false; POST_COUNT=0; valid terminal not failure
+- contract_or_payload=NO_EXECUTABLE_DECISION/HOLD/observe; DECISION_EXECUTION_ELIGIBLE=false; POST_COUNT=0; valid terminal not failure | SEMANTIC_PAIR=mv2_valid_no_trade_terminal; DISTINCT_FROM=mv2_executable_pre_external_terminal
 - producer=run_current_productive_master_v2_runtime_cycle_v1
 - consumer=execution_external_effect
 - authority_effect=NONE
@@ -839,6 +1015,42 @@ flowchart LR
 - fail_closed=TRUE
 - evidence=`tests/ops/test_okx_eea_private_account_state_runtime_v1.py`, `src/ops/okx_eea_private_account_state_runtime_v1/constants_v1.py`
 
+## private_state_runtime_to_wp_c_convergence
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=converged_private_handoff_v1; WP-B normalized state only; no second productive truth
+- producer=okx_eea_private_account_state_runtime_wp_b
+- consumer=market_data_private_state_runtime_convergence_wp_c
+- authority_effect=NONE
+- decision_effect=CONVERGENCE_INGRESS_ONLY_NO_AUTHORITY_MINT
+- direct_or_indirect=DIRECT
+- identity_binding=WP_C_CONSUMER_CENSUS_BOUND
+- temporal_binding=OFFLINE_CI_AND_PRODUCTIVE_HOST_WHEN_CONVERGED
+- version_binding=MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1
+- provenance_binding=src/ops/market_data_private_state_runtime_convergence_v1/private_handoff_v1.py
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/market_data_private_state_runtime_convergence_v1/private_handoff_v1.py`, `tests/ops/test_market_data_private_state_runtime_convergence_v1.py`, `src/ops/market_data_private_state_runtime_convergence_v1/consumer_census_v1.py`
+
+## productive_ddo_offline_export_to_g2_primary_evidence
+
+- lifecycle=CONFLICTING
+- flow_type=EVIDENCE_FLOW
+- contract_or_payload=CASE_B_FORBIDDEN: productive MV2/N5 DDO offline export (ACCEPTED_OFFLINE_RESEARCH_INPUT) cannot become G2 primary evidence; anti-laundering | SEMANTIC_PAIR=productive_ddo_offline_export_to_g2_primary_evidence; DISTINCT_FROM=g2_primary_evidence_to_offline_projection
+- producer=current_productive_master_v2_ddo_capture_to_offline_export_join_v1
+- consumer=validate_durable_primary_evidence_root
+- authority_effect=NONE
+- decision_effect=BRIDGE_FORBIDDEN
+- direct_or_indirect=INDIRECT
+- identity_binding=PRODUCTIVE_DDO_HANDOFF_NOT_PRIMARY_MANIFEST
+- temporal_binding=UNKNOWN
+- version_binding=governed_productive_learning_to_g2_primary_evidence_causal_closure_v1
+- provenance_binding=LIFECYCLE_PROVENANCE_LAUNDERING_FORBIDDEN
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md`, `docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md`, `src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py`, `tests/governance/test_governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py`, `config/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1_decision_v1.json`
+
 ## public_md_runtime_adapter_to_ranking_cap22
 
 - lifecycle=PROVEN_CURRENT
@@ -874,6 +1086,24 @@ flowchart LR
 - promotion_required=FALSE
 - fail_closed=TRUE
 - evidence=`tests/ops/test_peak_trade_public_market_data_runtime_v1.py`, `src/ops/peak_trade_public_market_data_runtime_v1/constants_v1.py`
+
+## public_md_runtime_to_wp_c_convergence
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=converged_public_handoff_v1; WP-A canonical facts only; no competing transport consumer truth
+- producer=peak_trade_public_market_data_runtime_wp_a
+- consumer=market_data_private_state_runtime_convergence_wp_c
+- authority_effect=NONE
+- decision_effect=CONVERGENCE_INGRESS_ONLY_NO_AUTHORITY_MINT
+- direct_or_indirect=DIRECT
+- identity_binding=WP_C_CONSUMER_CENSUS_BOUND
+- temporal_binding=OFFLINE_CI_AND_PRODUCTIVE_HOST_WHEN_CONVERGED
+- version_binding=MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1
+- provenance_binding=src/ops/market_data_private_state_runtime_convergence_v1/public_handoff_v1.py
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/market_data_private_state_runtime_convergence_v1/public_handoff_v1.py`, `tests/ops/test_market_data_private_state_runtime_convergence_v1.py`, `src/ops/market_data_private_state_runtime_convergence_v1/consumer_census_v1.py`
 
 ## ranking_context_to_future_profile_b07
 
@@ -987,7 +1217,7 @@ flowchart LR
 
 - lifecycle=PROVEN_CURRENT
 - flow_type=EVIDENCE_FLOW
-- contract_or_payload=run_real_runtime_g2_to_meta_learning_optimization_feedback_continuation_v1
+- contract_or_payload=run_real_runtime_g2_to_meta_learning_optimization_feedback_continuation_v1 | SEMANTIC_PAIR=real_runtime_g2_to_meta_optimization_feedback_continuation; DISTINCT_FROM=g2_m4_m8_fixture_continuation
 - producer=run_real_runtime_g2_to_meta_learning_optimization_feedback_continuation_v1
 - consumer=validate_real_m4_m8_cycle_meta_optimization_feedback_join_v1
 - authority_effect=NONE
@@ -1289,6 +1519,24 @@ flowchart LR
 - fail_closed=TRUE
 - evidence=`src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py`, `src/ops/single_selected_future_runtime_binding_v1/constants_v1.py`
 
+## sidestate_cursor_to_mv2_cycle
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=DATA_FLOW
+- contract_or_payload=Durable cursor floor + side-state confirmation inputs for productive MV2 cycle
+- producer=current_productive_sidestate_confirmation_cursor_v1
+- consumer=mv2_double_play
+- authority_effect=NONE
+- decision_effect=CONTEXT_ONLY_NOT_DECISION_OWNER
+- direct_or_indirect=INDIRECT
+- identity_binding=CURSOR_FILENAME_AND_SIDE_STATE
+- temporal_binding=C1_VENUE_EVENT_TIME_FLOOR
+- version_binding=CURRENT_PRODUCTIVE_SIDESTATE_CONFIRMATION_CURSOR_V1
+- provenance_binding=tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py`, `tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py`
+
 ## sizing_to_intent
 
 - lifecycle=PARTIAL
@@ -1306,6 +1554,24 @@ flowchart LR
 - promotion_required=TRUE
 - fail_closed=TRUE
 - evidence=`src/ops/full_core_live_path_composition_root_v1/constants_v1.py`, `src/governance/capital_risk_sizing_v1.py`
+
+## ssf_cap72_host_binding_to_live_execution_port
+
+- lifecycle=PROVEN_CURRENT
+- flow_type=CONSTRAINT_FLOW
+- contract_or_payload=HostActivationBindingV1 → LiveExecutionPortV1 via join_cap72_host_to_live_execution_port_v1; SSF Full-Core only; no POST/wire
+- producer=join_cap72_host_to_live_execution_port_v1
+- consumer=LiveExecutionPortV1
+- authority_effect=NONE
+- decision_effect=HOST_JOIN_NOT_EXECUTION_ELIGIBLE
+- direct_or_indirect=DIRECT
+- identity_binding=HOST_JOIN_OWNER=stateful_no_order_host_join_v1
+- temporal_binding=UNKNOWN
+- version_binding=src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
+- provenance_binding=SSF_NOT_N5_LANE_LOCAL_ACTIVATION
+- promotion_required=FALSE
+- fail_closed=TRUE
+- evidence=`src/ops/single_future_stateful_no_order_runtime_activation_v1/host_binding_v1.py`, `src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py`
 
 ## step29m_consumes_selection
 
@@ -1327,21 +1593,21 @@ flowchart LR
 
 ## treasury_to_admission
 
-- lifecycle=CONFLICTING
+- lifecycle=PROVEN_CURRENT
 - flow_type=DATA_FLOW
-- contract_or_payload=conditional treasury decrease join
-- producer=treasury_29p
-- consumer=capital_admission
-- authority_effect=CONFLICTING
-- decision_effect=DECREASE_NOT_MINT
+- contract_or_payload=treasury single-source handoff then capital admission then step29p admissibility; treasury does not mint risk_admissible | SEMANTIC_PAIR=treasury_to_admission; DISTINCT_FROM=equity_value_unbound
+- producer=current_productive_treasury_single_source_capital_handoff_v1
+- consumer=evaluate_step_29p_capital_risk_admissibility_v1
+- authority_effect=NONE
+- decision_effect=ADMISSION_EVAL_NOT_TREASURY_MINT
 - direct_or_indirect=DIRECT
-- identity_binding=OBSERVATION_GATED
-- temporal_binding=UNKNOWN
-- version_binding=UNKNOWN
-- provenance_binding=RUNBOOK_WORDING_VERSUS_DECREASE_JOIN
-- promotion_required=UNKNOWN
+- identity_binding=CREDENTIAL_BOUND_ACCOUNT_VENUE_SCOPE
+- temporal_binding=DECISION_EPOCH_AND_FRESHNESS_GATED
+- version_binding=current_productive_treasury_single_source_capital_handoff_v1
+- provenance_binding=C08_SINGLE_SOURCE_THEN_B05_THEN_ADMISSIBILITY
+- promotion_required=FALSE
 - fail_closed=TRUE
-- evidence=`docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`, `src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py`
+- evidence=`config/governance/od_29p_normative_pack_v1.json`, `src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py`, `src/ops/full_core_live_path_composition_root_v1/step_29p_capital_risk_admissibility_v1.py`, `tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py`
 
 ## universe_to_ranking
 

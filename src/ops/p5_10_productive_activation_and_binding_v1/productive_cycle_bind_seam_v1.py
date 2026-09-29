@@ -25,7 +25,12 @@ from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.contracts_v1 import
 )
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 import (
     NakedLayeredCoreDurableStateError,
+    atomic_persist_episode_v1,
+    initialize_naked_layered_core_episode_v1,
     restore_episode_from_store_v1,
+)
+from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l6_dynamic_scope_generator_v1 import (
+    ExplicitPassthroughDynamicScopeGeneratorV1,
 )
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.orchestrator_v1 import (
     MechanicalStepSpecV1,
@@ -43,6 +48,10 @@ from src.ops.p5_10b_layered_epoch_remaining_authority_closure_v1.contract_v1 imp
     LayeredEpochCanonicalHandoffRequestV1,
     execute_layered_epoch_canonical_sidestate_handoff_v1,
     map_scope_event_evidence_to_scope_event_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    ProductiveCanonicalPriceProvenanceError,
+    ProductiveCycleCanonicalPriceProvenanceV1,
 )
 from src.ops.p5_2_productive_cycle_seam_invoke_and_authority_bind_v1.contract_v1 import (
     ProductiveCycleAuthorityBindRequestV1,
@@ -109,13 +118,16 @@ def _inactive_carry() -> ProductiveLayeredCoreBindCarryV1:
     )
 
 
-def _observation_candidates_from_closes_v1(
+def _observation_candidates_from_cmc_mark_v1(
     *,
     instrument_key: InstrumentObservationKeyV1,
-    closes: Sequence[float],
+    cmc_mark_price_m_t: float,
     event_ts_unix: float,
 ) -> Tuple[ObservationCandidateV1, ...]:
-    if len(closes) < 2:
+    """Layered-core initialization observations use CMC-class mark, not candle.close."""
+
+    mark = float(cmc_mark_price_m_t)
+    if mark <= 0:
         return ()
     t0 = float(event_ts_unix) - 60.0
     t1 = float(event_ts_unix)
@@ -125,15 +137,37 @@ def _observation_candidates_from_closes_v1(
             canonical_instrument_id=instrument_key.canonical_instrument_id,
             venue_instrument_id=instrument_key.venue_instrument_id,
             venue_event_time=t0,
-            mark_price=float(closes[-2]),
+            mark_price=mark,
         ),
         ObservationCandidateV1(
             venue=instrument_key.venue,
             canonical_instrument_id=instrument_key.canonical_instrument_id,
             venue_instrument_id=instrument_key.venue_instrument_id,
             venue_event_time=t1,
-            mark_price=float(closes[-1]),
+            mark_price=mark,
         ),
+    )
+
+
+def _observation_candidates_from_finalized_closes_v1(
+    *,
+    instrument_key: InstrumentObservationKeyV1,
+    closes: Sequence[float],
+    last_event_ts_unix: float,
+) -> Tuple[ObservationCandidateV1, ...]:
+    """One candidate per finalized close on a 1m grid ending at last_event_ts_unix."""
+    if len(closes) < 2:
+        return ()
+    n = len(closes)
+    return tuple(
+        ObservationCandidateV1(
+            venue=instrument_key.venue,
+            canonical_instrument_id=instrument_key.canonical_instrument_id,
+            venue_instrument_id=instrument_key.venue_instrument_id,
+            venue_event_time=float(last_event_ts_unix) - 60.0 * (n - 1 - i),
+            mark_price=float(close),
+        )
+        for i, close in enumerate(closes)
     )
 
 
@@ -168,6 +202,8 @@ def prepare_productive_layered_core_replay_bind_v1(
     existing_position_side: ExistingPositionSide,
     side_state_from_cursor_restore: bool,
     side_state_from_venue_position: bool,
+    side_state_from_transition_carryforward: bool = False,
+    canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1 | None = None,
     existing_scope_present: bool,
 ) -> Tuple[IntegratedOfflineReplayInputV1, ProductiveLayeredCoreBindCarryV1]:
     """Attach layered-core seal for CZ-4 delegation when bind is requested and enabled."""
@@ -192,9 +228,23 @@ def prepare_productive_layered_core_replay_bind_v1(
     )
     store_root = Path(layered_core_store_root)
 
+    if side_state_from_venue_position:
+        return replay_input, _fail_carry("side_state_venue_observation_seed_forbidden")
+    if canonical_price_provenance is None:
+        return replay_input, _fail_carry("canonical_cmc_mark_provenance_required")
+    try:
+        canonical_price_provenance.validate_against_cycle_inputs_v1(
+            mark_px=float(mark_price_m_t),
+            index_px=float(replay_input.canonical_market_context.index_price),
+            venue_native_id=venue_native_id,
+        )
+    except ProductiveCanonicalPriceProvenanceError:
+        return replay_input, _fail_carry("canonical_cmc_mark_provenance_invalid")
+
     seed_class = classify_side_state_seed_v1(
         from_venue_position=side_state_from_venue_position,
         from_cursor_restore=side_state_from_cursor_restore,
+        from_transition_carryforward=side_state_from_transition_carryforward,
         claims_core_regime_authority=False,
     )
     if seed_class is SideStateSeedClassV1.CORE_REGIME_AUTHORITY_CLAIM:
@@ -208,10 +258,12 @@ def prepare_productive_layered_core_replay_bind_v1(
         instrument_id=instrument_id,
         instrument_key=instrument_key,
     )
-    observations = _observation_candidates_from_closes_v1(
+    # Layered-core init needs ≥2 distinct observation marks; finalized closes supply the
+    # 1m grid only. Authoritative mechanical M_t remains CMC (mark_price_m_t + provenance).
+    observations = _observation_candidates_from_finalized_closes_v1(
         instrument_key=instrument_key,
         closes=finalized_closes,
-        event_ts_unix=last_finalized_event_ts_unix,
+        last_event_ts_unix=float(last_finalized_event_ts_unix),
     )
     restore_existing = True
     try:
@@ -394,6 +446,10 @@ def ensure_productive_layered_core_episode_store_v1(
     First productive sidestate cycles may run without layered bind (no incoming scope carrier).
     Once outgoing cursor carries ``existing_scope``, later cycles require a restorable episode
     under the same store root as the sidestate confirmation cursor owner.
+
+    Scope on the outgoing cursor was already produced by the upstream MV2 replay in the same S7
+    compose pass. Persist initialization-only episode state here (no duplicate L6–L10 mechanical
+    step) so live cold bootstrap cannot fail-closed on a second mechanical step from two closes.
     """
     if not PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED:
         return ()
@@ -419,27 +475,27 @@ def ensure_productive_layered_core_episode_store_v1(
         instrument_id=instrument_id,
         instrument_key=instrument_key,
     )
-    observations = _observation_candidates_from_closes_v1(
+    _ = mark_price_m_t
+    observations = _observation_candidates_from_finalized_closes_v1(
         instrument_key=instrument_key,
         closes=finalized_closes,
-        event_ts_unix=float(last_finalized_event_ts_unix),
+        last_event_ts_unix=float(last_finalized_event_ts_unix),
     )
     if len(observations) < 2:
         return ("layered_core_bootstrap_observations_insufficient",)
 
-    result = run_p5_layered_core_authority_seam_v1(
-        store_root=root,
-        selected=selected,
-        mark_price_m_t=float(mark_price_m_t),
-        mechanical_step=MechanicalStepSpecV1(
-            mark_price_m_t=float(mark_price_m_t),
-            proposed_d_t=float(CANONICAL_UP_DISTANCE),
-        ),
-        restore_existing=False,
-        initialization_observations=observations,
-    )
-    if not result.ok:
-        return tuple(result.failure_codes or ("layered_core_bootstrap_seam_failed",))
+    try:
+        episode, init_failures = initialize_naked_layered_core_episode_v1(
+            selected=selected,
+            initialization_observations=observations,
+            first_mechanical_step=None,
+            scope_generator=ExplicitPassthroughDynamicScopeGeneratorV1(),
+        )
+    except NakedLayeredCoreDurableStateError as exc:
+        return (f"layered_core_bootstrap_init_fail_closed:{exc}",)
+    if init_failures:
+        return tuple(init_failures)
+    atomic_persist_episode_v1(root, episode)
     return ()
 
 

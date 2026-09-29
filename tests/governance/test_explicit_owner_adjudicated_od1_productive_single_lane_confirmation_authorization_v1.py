@@ -175,7 +175,7 @@ def _report(
 
 
 class TestOd1SingleLaneConfirmationCommittedInactiveGrantV1:
-    def test_committed_artifact_is_valid_inactive_closed_grant(self) -> None:
+    def test_committed_artifact_is_valid_closed_grant(self) -> None:
         auth = load_od1_single_lane_confirmation_authorization(REPO_ROOT)
         assert auth is not None
         valid, reasons = validate_od1_single_lane_confirmation_authorization(
@@ -237,6 +237,9 @@ class TestOd1SingleLaneConfirmationCommittedInactiveGrantV1:
         assert COMMITTED_SLICE_GRANT_ID in notes
         assert HISTORICAL_BOUND_DIFF_BASE_SHA in notes
         assert HISTORICAL_AUTHORIZED_EVIDENCE_DIGEST in notes
+        assert "SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_OD1_SLICE_V1" in notes
+        assert "dc727b5ab8885ebd230b428496e5a57173356279" in notes
+        assert "759b0a68db7fc4df12d5fe76220a1983b3687bda761c27c0d924c3191314c619" in notes
         assert COMMITTED_ALLOWED_PATHS == [
             "src/trading/master_v2/single_lane_confirmation_activation_v1.py",
             "src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py",

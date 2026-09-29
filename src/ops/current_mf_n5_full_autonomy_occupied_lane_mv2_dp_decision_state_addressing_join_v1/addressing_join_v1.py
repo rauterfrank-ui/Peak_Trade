@@ -37,6 +37,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     FAILURE_MISSING_LANE_STATE,
     FAILURE_MISSING_STORE_ROOT,
     FAILURE_MISMATCHED_LANE_STATE,
+    FAILURE_OUTGOING_CURSOR_NOT_PRODUCED,
     FAILURE_N1_GLOBAL_CURSOR_STORE,
     FAILURE_OCCUPANCY,
     FAILURE_PAIR_TYPE,
@@ -49,6 +50,8 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_add
     FIVE_LANE_CONTINUOUS_HOST_JOIN,
     FIVE_LANE_RUNTIME_CREATED,
     FULL_AUTONOMY_HOST_CHANGE_REQUIRED,
+    DDO_LEARNING_CAPTURE_LEDGER_BASENAME_V1,
+    ENABLE_PRODUCTIVE_MV2_DDO_LEARNING_CAPTURE_V1,
     GOVERNED_CYCLE_EVIDENCE_ROOT_DIRNAME,
     GOVERNED_CYCLE_LOCK_ROOT_DIRNAME,
     GLOBAL_N1_CURSOR_REJECTED,
@@ -102,6 +105,9 @@ from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     load_current_productive_sidestate_confirmation_cursor_v1,
     persist_current_productive_sidestate_confirmation_cursor_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    ProductiveCycleCanonicalPriceProvenanceV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     CurrentProductiveMasterV2CycleResultV1,
@@ -197,6 +203,12 @@ def _assert_non_authority() -> None:
         or INSTRUMENT_ID_ALONE_SUFFICIENT
     ):
         _fail(FAILURE_AUTHORITY, "constant_violation")
+
+
+def _ddo_learning_capture_ledger_path_v1(store_root: str | Path) -> Path | None:
+    if not ENABLE_PRODUCTIVE_MV2_DDO_LEARNING_CAPTURE_V1:
+        return None
+    return Path(store_root) / DDO_LEARNING_CAPTURE_LEDGER_BASENAME_V1
 
 
 def _require_identity_match(
@@ -400,6 +412,7 @@ def invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
     existing_position_side: ExistingPositionSide,
     incoming_cursor: object | None = None,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
+    canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Lane-isolated bounded harness invoke of the existing N=1 MV2+DP cycle.
 
@@ -440,10 +453,12 @@ def invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
             existing_position_side=existing_position_side,
             incoming_cursor=None,
             g17_typed_vol_producer=producers[lane_id],
+            ddo_durable_evidence_ledger_path=_ddo_learning_capture_ledger_path_v1(store_root),
             **productive_layered_core_bind_cycle_kwargs_v1(
                 layered_core_store_root=store_root,
                 incoming_cursor=None,
             ),
+            canonical_price_provenance=canonical_price_provenance,
         )
         invoked[lane_id] = OccupiedLaneMv2DpDecisionStateConsumerInvocationV1(
             lane_id=lane_id,
@@ -476,6 +491,7 @@ def carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
     venue_flat: bool,
     existing_position_side: ExistingPositionSide,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
+    canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Pass each occupied lane's prior outgoing cursor as the next incoming cursor.
 
@@ -541,10 +557,12 @@ def carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
             existing_position_side=existing_position_side,
             incoming_cursor=lane_cursor,
             g17_typed_vol_producer=producers[lane_id],
+            ddo_durable_evidence_ledger_path=_ddo_learning_capture_ledger_path_v1(store_root),
             **productive_layered_core_bind_cycle_kwargs_v1(
                 layered_core_store_root=store_root,
                 incoming_cursor=lane_cursor,
             ),
+            canonical_price_provenance=canonical_price_provenance,
         )
         carried[lane_id] = OccupiedLaneMv2DpDecisionStateConsumerInvocationV1(
             lane_id=lane_id,
@@ -650,6 +668,7 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
     venue_flat: bool,
     existing_position_side: ExistingPositionSide,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
+    canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Reload each lane's cursor file and pass it as that lane's next incoming cursor.
 
@@ -690,10 +709,12 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
             existing_position_side=existing_position_side,
             incoming_cursor=incoming,
             g17_typed_vol_producer=producers[lane_id],
+            ddo_durable_evidence_ledger_path=_ddo_learning_capture_ledger_path_v1(store_root),
             **productive_layered_core_bind_cycle_kwargs_v1(
                 layered_core_store_root=store_root,
                 incoming_cursor=incoming,
             ),
+            canonical_price_provenance=canonical_price_provenance,
         )
         restored[lane_id] = OccupiedLaneMv2DpDecisionStateConsumerInvocationV1(
             lane_id=lane_id,
@@ -706,6 +727,44 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
             cycle_result=cycle_result,
         )
     return restored
+
+
+def _s7_upstream_cycle_diagnostics_v1(
+    cycle_result: CurrentProductiveMasterV2CycleResultV1,
+) -> str:
+    """Serialize producer diagnostics for S7 pre-persist fail-closed (no new authority)."""
+    parts: list[str] = []
+    blocker = str(cycle_result.input_blocker or "").strip()
+    if blocker:
+        parts.append(f"input_blocker={blocker}")
+    if cycle_result.fail_reasons:
+        joined = ",".join(str(x) for x in cycle_result.fail_reasons[:8])
+        parts.append(f"fail_reasons={joined}")
+    replay = cycle_result.replay
+    if replay is not None and replay.fail_reasons:
+        joined = ",".join(str(x) for x in tuple(replay.fail_reasons)[:8])
+        parts.append(f"replay_fail_reasons={joined}")
+    parts.append(f"cursor_restore_status={cycle_result.cursor_restore_status}")
+    parts.append(f"replay_pass={cycle_result.replay_pass}")
+    return "|".join(parts)
+
+
+def _require_s7_outgoing_cursors_before_persist_v1(
+    composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
+    restored: Mapping[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1],
+) -> None:
+    """Fail closed before S7 persist when the productive cycle omitted outgoing_cursor."""
+    bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)
+    for lane_id in LANE_IDS:
+        if bound_seam.get(lane_id) is None:
+            continue
+        record = restored.get(lane_id)
+        if record is None:
+            continue
+        if record.cycle_result.outgoing_cursor is not None:
+            continue
+        detail = f"{lane_id}:{_s7_upstream_cycle_diagnostics_v1(record.cycle_result)}"
+        _fail(FAILURE_OUTGOING_CURSOR_NOT_PRODUCED, detail)
 
 
 def compose_occupied_lane_mv2_dp_durable_cycle_v1(
@@ -725,10 +784,13 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
     venue_flat: bool,
     existing_position_side: ExistingPositionSide,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
+    canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
-    """Load, run the existing N=1 cycle, then persist the new outgoing cursor.
+    """Load, run the existing N=1 cycle, then persist when outgoing_cursor is produced.
 
-    Reuses S6 restore (load + cycle) and S6 persist. lane_state_root stays
+    Reuses S6 restore (load + cycle) and S6 persist. Persist runs only when every
+    occupied lane cycle produced a non-null outgoing_cursor; otherwise fail-closed
+    with upstream cycle diagnostics (no cursor fabrication). lane_state_root stays
     external addressing. Cap61 remains unbound. S6 restore itself is unchanged.
     """
     _assert_non_authority()
@@ -748,7 +810,9 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
         venue_flat=venue_flat,
         existing_position_side=existing_position_side,
         g17_typed_vol_producers=g17_typed_vol_producers,
+        canonical_price_provenance=canonical_price_provenance,
     )
+    _require_s7_outgoing_cursors_before_persist_v1(composed_pairs, restored)
     bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)
     for lane_id in LANE_IDS:
         record = restored.get(lane_id)
@@ -756,11 +820,13 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
         if record is None or seam_item is None:
             continue
         bound, store_root, _cursor_address = seam_item
+        closes_for_bootstrap = tuple(finalized_closes)
+        mark_for_bootstrap = float(mark_px)
         bootstrap_failures = ensure_productive_layered_core_episode_store_v1(
             store_root=Path(store_root),
             bound_instrument=bound,
-            mark_price_m_t=float(mark_px),
-            finalized_closes=finalized_closes,
+            mark_price_m_t=mark_for_bootstrap,
+            finalized_closes=closes_for_bootstrap,
             last_finalized_event_ts_unix=float(last_finalized_event_ts_unix),
             outgoing_cursor=record.cycle_result.outgoing_cursor,
         )

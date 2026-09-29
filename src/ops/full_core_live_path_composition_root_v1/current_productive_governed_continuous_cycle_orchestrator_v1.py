@@ -149,6 +149,7 @@ S5CycleRunnerV1 = Callable[..., CurrentProductiveGovernedCycleResultV1]
 TimeFnV1 = Callable[[], float]
 SleepFnV1 = Callable[[float], None]
 CancelFnV1 = Callable[[], bool]
+IterationAuthorityGateV1 = Callable[[int], None]
 
 
 class CurrentProductiveGovernedContinuousCycleOrchestratorError(ValueError):
@@ -177,6 +178,8 @@ class CurrentProductiveGovernedContinuousCycleRunAuthorizationV1:
 class InjectedContinuousObservationV1:
     candles_payload: Mapping[str, Any]
     occupancy_payloads: Mapping[str, Any]
+    mark_price_payload: Mapping[str, Any] | None = None
+    index_tickers_payload: Mapping[str, Any] | None = None
 
 
 class ContinuousObservationSourceV1(Protocol):
@@ -431,6 +434,16 @@ def _advance_persisted_c1_cursor_floor_v1(
     cursor_store_root: Path,
     venue_event_time: float,
 ) -> None:
+    """Reconcile S6 sequencing floor after a successful S5 cycle.
+
+    Durable sidestate cursor commits are owned by S7
+    (``persist_occupied_lane_mv2_dp_decision_state_cursor_v1`` via
+    ``compose_occupied_lane_mv2_dp_durable_cycle_v1``). Stub or non-persisting
+    T2 paths leave the floor unchanged; S6 then performs the minimal
+    ``venue_event_time`` bump. When the durable owner already committed the
+    accepted C1 epoch (``incoming == previous``), this is a no-op reconcile —
+    not duplicate-input acceptance (freshness gates run before S5).
+    """
     cursor, reason = load_current_productive_c1_cursor_or_reason_v1(cursor_store_root)
     if cursor is None:
         raise CurrentProductiveGovernedContinuousCycleOrchestratorError(
@@ -445,10 +458,12 @@ def _advance_persisted_c1_cursor_floor_v1(
             raise TypeError("last_accepted_observation_identity")
         previous = float(identity["venue_event_time"])
         incoming = float(venue_event_time)
-        if incoming <= previous:
+        if incoming < previous:
             raise CurrentProductiveGovernedContinuousCycleOrchestratorError(
                 REASON_STALE_OR_EQUAL_C1, "cursor_advance"
             )
+        if incoming == previous:
+            return
         identity["venue_event_time"] = incoming
     except CurrentProductiveGovernedContinuousCycleOrchestratorError:
         raise
@@ -497,6 +512,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
     time_fn: TimeFnV1 | None = None,
     sleep_fn: SleepFnV1 | None = None,
     cancel_requested: CancelFnV1 | None = None,
+    iteration_authority_gate_v1: IterationAuthorityGateV1 | None = None,
 ) -> CurrentProductiveGovernedContinuousCycleRunResultV1:
     _assert_standing_pins()
     _validate_authorization(authorization)
@@ -588,6 +604,11 @@ def run_current_productive_governed_continuous_cycle_run_v1(
     def _elapsed() -> float:
         return float(clock()) - started_at
 
+    def _touch_poll_liveness_v1() -> None:
+        """Active Fresh-C1 polling (incl. stale wait) is not a sequencer stall."""
+        nonlocal last_progress_at
+        last_progress_at = float(clock())
+
     def _stop(
         *,
         result_disposition: str,
@@ -675,6 +696,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                 )
             observation = observation_source.poll()
             if observation is None:
+                _touch_poll_liveness_v1()
                 _write_ledger(state=STATE_WAITING_FOR_NEXT_C1)
                 sleeper(float(authorization.wait_interval_seconds))
                 continue
@@ -695,14 +717,10 @@ def run_current_productive_governed_continuous_cycle_run_v1(
             c1_obs = mapped.observation
             c1_time = float(c1_obs.venue_event_time)
             if c1_time <= float(last_accepted):
-                return _stop(
-                    result_disposition=DISPOSITION_FAIL_CLOSED,
-                    result_reason=REASON_STALE_OR_EQUAL_C1,
-                    result_terminal="STALE_C1",
-                    state=STATE_FAILED_STOP,
-                    blocker=REASON_STALE_OR_EQUAL_C1,
-                    owner_next="Stale or equal C1 was rejected. S5 was not invoked. Do not resume.",
-                )
+                _touch_poll_liveness_v1()
+                _write_ledger(state=STATE_WAITING_FOR_NEXT_C1)
+                sleeper(float(authorization.wait_interval_seconds))
+                continue
             freshness = evaluate_current_productive_c1_observation_against_cursor_floor_v1(
                 owner_go=EH_SEAM_OWNER_GO,
                 cursor_store_root=Path(cursor_store_root),
@@ -718,6 +736,21 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     owner_next="C1 failed cursor freshness. S5 was not invoked. Do not resume.",
                 )
             cycle_index = len(records) + 1
+            if iteration_authority_gate_v1 is not None:
+                try:
+                    iteration_authority_gate_v1(cycle_index)
+                except Exception as exc:
+                    return _stop(
+                        result_disposition=DISPOSITION_FAIL_CLOSED,
+                        result_reason="ITERATION_AUTHORITY_GATE_DENIED",
+                        result_terminal="AUTHORITY_VIOLATION",
+                        state=STATE_FAILED_STOP,
+                        blocker=str(exc),
+                        owner_next=(
+                            "Iteration authority gate denied before S5 cycle. "
+                            "Continuous run terminated. Do not resume."
+                        ),
+                    )
             consume_id = mint_s5_cycle_consume_instance_id_v1(
                 run_id=run_id,
                 cycle_index=cycle_index,
@@ -775,6 +808,8 @@ def run_current_productive_governed_continuous_cycle_run_v1(
                     evidence_root=cycle_root / "s5",
                     candles_payload=observation.candles_payload,
                     occupancy_payloads=observation.occupancy_payloads,
+                    mark_price_payload=observation.mark_price_payload,
+                    index_tickers_payload=observation.index_tickers_payload,
                     execute_network=False,
                     perform_get=False,
                     eg_cycle_dispatch=eg_cycle_dispatch,

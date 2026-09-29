@@ -85,6 +85,29 @@ def test_runtime_apply_start_continuation_complete(tmp_path: Path) -> None:
     )
 
 
+def test_apply_start_idempotent_replay_after_durable_apply(tmp_path: Path) -> None:
+    ledger_root = tmp_path / "durable"
+    ledger_root.mkdir()
+    first = run_governed_f1_m9_scoped_owner_productive_runtime_apply_start_continuation_v1(
+        GovernedF1M9RuntimeApplyStartRequestV1(
+            apply_ledger_paths=_apply_ledger_paths(ledger_root),
+            threshold_ledger_paths=_threshold_ledger_paths(ledger_root),
+            repo_root=REPO_ROOT,
+        )
+    )
+    assert first.status == "CONTINUATION_COMPLETE"
+    second = run_governed_f1_m9_scoped_owner_productive_runtime_apply_start_continuation_v1(
+        GovernedF1M9RuntimeApplyStartRequestV1(
+            apply_ledger_paths=_apply_ledger_paths(ledger_root),
+            threshold_ledger_paths=_threshold_ledger_paths(ledger_root),
+            repo_root=REPO_ROOT,
+        )
+    )
+    assert second.status == "CONTINUATION_COMPLETE", second.blocking_reasons
+    assert second.bound_seam_record is not None
+    assert second.bound_seam_record.get("runtime_applied") is True
+
+
 def test_threshold_enforcement_closure_still_reachable_after_apply_start(tmp_path: Path) -> None:
     from src.governance.f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1 import (
         STATUS_CLOSURE_COMPLETE,

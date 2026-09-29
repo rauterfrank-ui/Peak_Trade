@@ -1,0 +1,14 @@
+{
+  "workpackage_id": "POST_6946_ACTUAL_VENUE_POST_BASELINE_REBIND_AND_NEXT_GATE_ADJUDICATION_V1",
+  "normative_spec": "docs/ops/specs/POST_6946_ACTUAL_VENUE_POST_BASELINE_REBIND_AND_NEXT_GATE_ADJUDICATION_V1.md",
+  "owner_go": true,
+  "owner_go_token": "POST_6946_ACTUAL_VENUE_POST_BASELINE_REBIND_AND_NEXT_GATE_ADJUDICATION_V1",
+  "previous_recorded_post_slice_baseline_sha": "1e859eaa79f48308cf7037656c6465191ed9993b",
+  "recorded_post_slice_baseline_sha": "fca07afa1fa74a94cdecde3876c9c30ad79ba828",
+  "baseline_authority_class": "VERSIONED_POST_SLICE_RECORDED_BASELINE_WITH_LIVE_INTEGRITY_AND_PROTECTED_SURFACE_DRIFT_GATE",
+  "self_referential_pin_loop_remediated": true,
+  "actual_venue_post_performed": false,
+  "post_allowed": false,
+  "real_venue_post_allowed": false,
+  "foreign_position_gate_adjudication": "READ_ONLY_HISTORICAL_EVIDENCE_SUGGESTS_BLOCKER_NOT_FRESH_PROVEN"
+}

@@ -2,6 +2,11 @@
 
 from __future__ import annotations
 
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    build_provenance_from_governed_synthetic_close_mark_and_index_v1,
+)
+
+
 from pathlib import Path
 
 import pytest
@@ -59,12 +64,14 @@ def _run_cycle(
 ):
     path = _strong_uptrend_closes()
     producer = _produced_g17_producer(instrument_id=_INSTRUMENT)
+    bound = _bound()
+    index_px = float(mark_px) * 0.995
     return run_current_productive_master_v2_runtime_cycle_v1(
-        bound_instrument=_bound(),
+        bound_instrument=bound,
         cycle_id=cycle_id,
         observed_unix=float(event_ts_unix) + 100.0,
         mark_px=float(mark_px),
-        index_px=float(mark_px),
+        index_px=index_px,
         bid_px=float(mark_px) - 0.5,
         ask_px=float(mark_px) + 0.5,
         volume=12_345.0,
@@ -78,6 +85,11 @@ def _run_cycle(
         g17_typed_vol_producer=producer,
         productive_layered_core_bind_requested=productive_layered_core_bind_requested,
         layered_core_store_root=layered_core_store_root,
+        canonical_price_provenance=build_provenance_from_governed_synthetic_close_mark_and_index_v1(
+            venue_native_id=str(bound.venue_native_id or bound.instrument_id),
+            mark_px=float(mark_px),
+            index_px=index_px,
+        ),
     )
 
 

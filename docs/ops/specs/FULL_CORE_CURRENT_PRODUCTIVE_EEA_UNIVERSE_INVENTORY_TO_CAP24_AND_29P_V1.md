@@ -1,7 +1,7 @@
 ---
 docs_token: DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P_V1
 status: active
-scope: Full-Core CURRENT_PRODUCTIVE EEA READ-ONLY universe inventory acquisition; Cap-2.1 no-network producer; Cap-2.2 structural ranking; Cap-2.3 reselection; Cap-2.4 BoundInstrument; LAB plus Fresh Pretrade GET; U01; P01 DOES_NOT_APPLY; USDC availEq; CU; STEP-29P; no POST; no Live enable
+scope: Full-Core CURRENT_PRODUCTIVE EEA READ-ONLY universe inventory acquisition; Cap-2.1 no-network producer; Cap-2.2 PEAK_TRADE_RANKING_MATRIX_POLICY_V1 ranking (B03/B05 wired via Cap-2.1-only path); Cap-2.3 reselection; Cap-2.4 BoundInstrument; LAB plus Fresh Pretrade GET; U01; P01 DOES_NOT_APPLY; USDC availEq; CU; STEP-29P; no POST; no Live enable
 capability: FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P_V1
 architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
 last_updated: 2026-09-15
@@ -17,8 +17,11 @@ Atlas remains `NAVIGATION_ONLY` / `AUTHORITY=NONE`.
 This persist adds a separate CURRENT_PRODUCTIVE READ-ONLY acquisition
 layer for `eea.okx.com` `&#47;api&#47;v5&#47;public&#47;instruments` and
 `&#47;api&#47;v5&#47;public&#47;mark-price` (FUTURES+SWAP, no instId, no credentials, no
-POST). Cap-2.1 remains the no-network domain producer. Cap-2.2 remains
-structural ranking with `ECONOMIC_RANK_ACTIVATED=false`. This Owner-GO
+POST). Cap-2.1 remains the no-network domain producer. Cap-2.2 consumes
+ratified `PEAK_TRADE_RANKING_MATRIX_POLICY_V1` via the shared Cap-2.1→2.3
+persistence chain (`assert_current_productive_cap22_ranking_policy_binding_v1`);
+`ECONOMIC_RANK_ACTIVATED=false` on the CURRENT productive admission surface.
+This Owner-GO
 authorizes execution of the existing Cap-2.3
 `CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1` with
 `RESELECTION_PERMITTED=true` and `MANUAL_INSTRUMENT_SELECTION_PERMITTED=false`.

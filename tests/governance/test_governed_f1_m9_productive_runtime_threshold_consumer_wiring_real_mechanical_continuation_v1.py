@@ -10,10 +10,13 @@ from src.governance.f1_m9_productive_apply_ledger_v1 import (
     F1M9ProductiveApplyLedgerPathsV1,
     initialize_empty_revocation_ledger_v1,
 )
+from src.governance.current_productive_activation_policy_v1 import (
+    RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE,
+    standing_productive_activation_authorized_v1,
+)
 from src.governance.f1_m9_productive_runtime_threshold_consumer_wiring_v1 import (
     DECISION_CONFIG,
     FORBIDDEN_UNGOVERNED_NUMERIC_DEFAULTS,
-    PRODUCTIVE_ACTIVATION_AUTHORIZED,
     RATIFIED_THRESHOLD_NUMERIC_MAX_AGE_SECONDS,
     REAL_P4_TO_F1_M9_JOIN_STATUS,
     STATUS_WIRED,
@@ -29,6 +32,7 @@ from src.governance.governed_f1_m9_productive_runtime_threshold_consumer_wiring_
 )
 from src.governance.governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1 import (
     GovernedF1M9ThresholdConsumerWiringRequestV1,
+    resolve_runtime_applied_seam_for_consumer_wiring_v1,
     run_governed_f1_m9_productive_runtime_threshold_consumer_wiring_continuation_v1,
 )
 from src.governance.governed_runtime_primary_to_offline_observation_projection_v1 import (
@@ -113,7 +117,7 @@ def _canonical_seam(tmp_path: Path) -> dict:
 
 def test_decision_and_global_invariants() -> None:
     assert consumer_wiring_authorized_v1(repo_root=REPO_ROOT) is True
-    assert PRODUCTIVE_ACTIVATION_AUTHORIZED is False
+    assert standing_productive_activation_authorized_v1(repo_root=REPO_ROOT) is True
     assert REAL_P4_TO_F1_M9_JOIN_STATUS == "REAL_P4_F1_M9_JOIN_NOT_CANONICAL"
     assert EXTERNAL_EFFECT is False
     assert EXTERNAL_EFFECT_AUTHORIZED is False
@@ -123,6 +127,21 @@ def test_decision_and_global_invariants() -> None:
     assert NUMERIC_MAX_AGE_DECIDED is False
     assert ENFORCEMENT_ENABLED is False
     assert prove_governed_f1_m9_productive_runtime_threshold_consumer_wiring_v1(repo_root=REPO_ROOT)
+
+
+def test_resolve_runtime_applied_seam_idempotent_after_durable_apply(tmp_path: Path) -> None:
+    ledger_root = tmp_path / "durable"
+    ledger_root.mkdir()
+    request = GovernedF1M9ThresholdConsumerWiringRequestV1(
+        apply_ledger_paths=_apply_ledger_paths(ledger_root),
+        threshold_ledger_paths=_threshold_ledger_paths(ledger_root),
+        repo_root=REPO_ROOT,
+    )
+    first = resolve_runtime_applied_seam_for_consumer_wiring_v1(request)
+    second = resolve_runtime_applied_seam_for_consumer_wiring_v1(request)
+    assert first is not None
+    assert second is not None
+    assert first.get("seam_digest") == second.get("seam_digest")
 
 
 def test_canonical_600s_happy_path_and_lineage(tmp_path: Path) -> None:
@@ -139,6 +158,7 @@ def test_canonical_600s_happy_path_and_lineage(tmp_path: Path) -> None:
         eligibility=elig,
         governed_seam_record=seam,
         require_governed_seam=True,
+        runtime_surface=RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE,
         repo_root=REPO_ROOT,
     )
     assert path.wiring_status == STATUS_WIRED
@@ -146,7 +166,8 @@ def test_canonical_600s_happy_path_and_lineage(tmp_path: Path) -> None:
     assert path.configuration_runtime_applied is True
     assert path.enforcement_applied is True
     assert path.alpha_scope_entry_authority_allowed is True
-    assert path.productive_activation_authorized is False
+    assert path.productive_runtime_admission is True
+    assert path.productive_activation_authorized is True
 
 
 def test_stale_rejection_and_boundary_600_inclusive(tmp_path: Path) -> None:
@@ -164,6 +185,7 @@ def test_stale_rejection_and_boundary_600_inclusive(tmp_path: Path) -> None:
         eligibility=stale_elig,
         governed_seam_record=seam,
         require_governed_seam=True,
+        runtime_surface=RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE,
         repo_root=REPO_ROOT,
     )
     assert stale_path.wiring_status == STATUS_WIRED
@@ -183,6 +205,7 @@ def test_stale_rejection_and_boundary_600_inclusive(tmp_path: Path) -> None:
         eligibility=boundary_elig,
         governed_seam_record=seam,
         require_governed_seam=True,
+        runtime_surface=RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE,
         repo_root=REPO_ROOT,
     )
     assert boundary_path.wiring_status == STATUS_WIRED
@@ -201,6 +224,7 @@ def test_stale_rejection_and_boundary_600_inclusive(tmp_path: Path) -> None:
         eligibility=over_elig,
         governed_seam_record=seam,
         require_governed_seam=True,
+        runtime_surface=RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE,
         repo_root=REPO_ROOT,
     )
     assert over_path.alpha_scope_entry_authority_allowed is False
@@ -213,6 +237,7 @@ def test_fail_closed_missing_and_mismatched_seam(tmp_path: Path) -> None:
         eligibility=elig,
         governed_seam_record=None,
         require_governed_seam=True,
+        runtime_surface=RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE,
         repo_root=REPO_ROOT,
     )
     assert "GOVERNED_SEAM_RECORD_REQUIRED" in missing.reason_codes
@@ -225,6 +250,7 @@ def test_fail_closed_missing_and_mismatched_seam(tmp_path: Path) -> None:
         eligibility=elig,
         governed_seam_record=bad_digest,
         require_governed_seam=True,
+        runtime_surface=RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE,
         repo_root=REPO_ROOT,
     )
     assert "SEAM_DIGEST_INVALID" in mismatched.reason_codes
@@ -235,6 +261,7 @@ def test_fail_closed_missing_and_mismatched_seam(tmp_path: Path) -> None:
         eligibility=elig,
         governed_seam_record=no_runtime,
         require_governed_seam=True,
+        runtime_surface=RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE,
         repo_root=REPO_ROOT,
     )
     assert "CONFIGURATION_RUNTIME_APPLIED_REQUIRED" in not_applied.reason_codes
@@ -256,6 +283,7 @@ def test_forbidden_historical_numeric_defaults_rejected(tmp_path: Path) -> None:
             eligibility=elig,
             governed_seam_record=bad,
             require_governed_seam=True,
+            runtime_surface=RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE,
             repo_root=REPO_ROOT,
         )
         assert "FORBIDDEN_UNGOVERNED_NUMERIC_DEFAULT" in path.reason_codes
@@ -276,6 +304,7 @@ def test_stale_reason_code_from_bounded_enforcement(tmp_path: Path) -> None:
         eligibility=stale_elig,
         governed_seam_record=seam,
         require_governed_seam=True,
+        runtime_surface=RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE,
         repo_root=REPO_ROOT,
     )
     assert stale_path.presence_gate is not None

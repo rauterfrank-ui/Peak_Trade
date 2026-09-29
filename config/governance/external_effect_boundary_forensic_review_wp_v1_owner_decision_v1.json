@@ -1,0 +1,15 @@
+{
+  "workpackage_id": "EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1",
+  "owner_go": true,
+  "owner_go_token": "OWNER_GO_EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW",
+  "baseline_origin_main_sha": "7330b6cb8a3cfccca9163028cbdf13e13910088c",
+  "external_effect_boundary_forensic_review_owner_go": true,
+  "external_effect_authorized": false,
+  "post_allowed": false,
+  "wire_send_permitted": false,
+  "real_venue_post_allowed": false,
+  "autonomy_can_mint_permit": false,
+  "autonomy_can_post": false,
+  "credential_access_performed": false,
+  "runtime_authorization_effect": "NONE"
+}

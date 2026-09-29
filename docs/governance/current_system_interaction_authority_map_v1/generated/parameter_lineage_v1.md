@@ -182,18 +182,34 @@ Historical defaults stay historical. Model semantics are not aged into history.
 - conflicts=INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED=true on Full-Core B05 path (#6817); Companion C2 handoff still absent
 - evidence=`src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py`, `config/governance/risk_sizing_authority_decision_contract_freeze_v1.json`
 
-## typed_29p_equity_to_four_crs_limits
+## reference_price_mark_productive_authority_v1
 
-- semantic_class=CONFLICTING
-- source_ref=src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py
-- canonical_owner_ref=UNRESOLVED
+- semantic_class=CURRENT_AUTHORITY
+- source_ref=src/ops/governed_productive_reference_price_authority_producer_v1/current_productive_mv2_mark_reference_price_producer_v1.py
+- canonical_owner_ref=ops.governed_productive_reference_price_authority_producer_v1
 - current_consumer_ref=src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
-- current_decision_effect=Formula wires four CRS limits to typed 29P equity. The scalar is not CURRENT_AUTHORITY while the equity owner is unresolved.
-- authority_status=UNRESOLVED
+- current_decision_effect=Mark-price reference for CRS on enter-live-29p; not INDEX_PX.
+- authority_status=CURRENT_AUTHORITY
 - historical_default_status=NOT_HISTORICAL_DEFAULT
-- lifecycle=CURRENT_WIRING_AUTHORITY_UNRESOLVED
+- lifecycle=RATIFIED_PRODUCTIVE_BINDING
 - optimization_surface_status=NOT_AN_OPTIMIZATION_SURFACE
 - learning_evidence_status=NOT_LEARNING_EVIDENCE
 - productive_seam_status=ENTER_JOIN_CALL
-- conflicts=ACCOUNT_EQUITY_AUTHORITY_OWNER unresolved, limit names versus equity collapse
-- evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`, `config/governance/risk_sizing_authority_decision_contract_freeze_v1.json`
+- conflicts=(none)
+- evidence=`src/ops/governed_productive_reference_price_authority_producer_v1/current_productive_mv2_mark_reference_price_producer_v1.py`, `config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json`, `config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json`
+
+## typed_29p_equity_to_four_crs_limits
+
+- semantic_class=CURRENT_AUTHORITY
+- source_ref=src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py
+- canonical_owner_ref=ops.governed_productive_account_equity_authority_producer_v1 (N=1 productive bind seam; CRS dimensions remain distinct)
+- current_consumer_ref=src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
+- current_decision_effect=Ratified productive N=1 bind: four CRS bound values := typed 29P available-for-sizing equity on enter-live-29p path. CRS math keeps four distinct dimensions; no new limit policy.
+- authority_status=CURRENT_AUTHORITY
+- historical_default_status=NOT_HISTORICAL_DEFAULT
+- lifecycle=RATIFIED_PRODUCTIVE_N1_BINDING
+- optimization_surface_status=NOT_AN_OPTIMIZATION_SURFACE
+- learning_evidence_status=NOT_LEARNING_EVIDENCE
+- productive_seam_status=ENTER_JOIN_CALL
+- conflicts=(none)
+- evidence=`src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py`, `src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py`, `docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md`, `config/governance/risk_sizing_authority_decision_contract_freeze_v1.json`, `config/governance/final_current_authority_closure_limit_equity_and_layered_safety_ratification_v1.json`

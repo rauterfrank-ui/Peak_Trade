@@ -1,0 +1,1920 @@
+{
+  "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
+  "schema_version": "1",
+  "authority_effect": "NONE",
+  "map_authority": "NONE",
+  "law_reference_is_normative": false,
+  "bootstrap_exhaustive": false,
+  "normalize_unknown_to_current": false,
+  "baseline_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
+  "law_references": [
+    {
+      "law_id": "B05-ACCOUNT-EQUITY-RATIFICATION-V1",
+      "canonical_source": "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+      "canonical_anchor": "risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1",
+      "source_sha256": "6d28478c7f07a1f08e4f135bc73eea4cb2502044ada9ff2516cdf65aa2c8a8a4",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "B05 account equity authority ratification (navigation)",
+      "semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "evidence_refs": [
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "law_id": "B05-INSTRUMENT-METADATA-RATIFICATION-V1",
+      "canonical_source": "config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json",
+      "canonical_anchor": "risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1",
+      "source_sha256": "377b939814ee2a0ff3d7fdd4d2436710d0db5ec6be924aff2e214ac347bbcf25",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "B05 instrument metadata authority ratification",
+      "semantic_object_ids": [
+        "sobj_b05_instrument_metadata_authority_producer"
+      ],
+      "evidence_refs": [
+        "config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "law_id": "B05-REFERENCE-PRICE-RATIFICATION-V1",
+      "canonical_source": "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json",
+      "canonical_anchor": "risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1",
+      "source_sha256": "b385f8875b23c0b058ce85898fd47eefb6eaed29ecafe81aea4a88b9093130a6",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "B05 reference price authority ratification",
+      "semantic_object_ids": [
+        "sobj_b05_reference_price_authority_producer"
+      ],
+      "evidence_refs": [
+        "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "law_id": "CAP-SSF-HANDOFF-V1",
+      "canonical_source": "docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md",
+      "canonical_anchor": "RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1",
+      "source_sha256": "641f4b763b39328c2ea78f7932f7194e4300e8433c1cb7f7fbac787229e05db0",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "Ranking universe to Full-Core SSF handoff",
+      "semantic_object_ids": [
+        "sobj_ranking_ssf_handoff"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md",
+        "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "law_id": "CAP21-GOVERNED-UNIVERSE-V1",
+      "canonical_source": "src/ops/governed_futures_universe_producer_v1/constants_v1.py",
+      "canonical_anchor": "GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1",
+      "source_sha256": "465371e80921507cdbf4f65050ddbe1b3980c3873d7ca71b345487b6ff4bc3f3",
+      "source_authority_class": "EVIDENCE_CENSUS",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "CAP21-GOVERNED-UNIVERSE-V1",
+      "semantic_object_ids": [
+        "sobj_cap21_universe"
+      ],
+      "evidence_refs": [
+        "src/ops/governed_futures_universe_producer_v1/constants_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "law_id": "CAP22-PRODUCTIVE-RANKING-V1",
+      "canonical_source": "docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md",
+      "canonical_anchor": "MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1",
+      "source_sha256": "64148629a14e432420440a007948ff6ad2c8ec5dc8ab784cf7950e126c2f2438",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "CAP22-PRODUCTIVE-RANKING-V1",
+      "semantic_object_ids": [
+        "sobj_cap22_ranking"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md",
+        "src/ops/productive_futures_ranking_producer_v1/constants_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "law_id": "CAP23-SINGLE-SELECTED-FUTURE-V1",
+      "canonical_source": "src/ops/single_selected_future_policy_v1/constants_v1.py",
+      "canonical_anchor": "SINGLE_SELECTED_FUTURE_POLICY_V1",
+      "source_sha256": "d5651c05276a04754cec5801fdd22090c92a7ccb355869c2fd0e81414c6c2121",
+      "source_authority_class": "EVIDENCE_CENSUS",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "CAP23-SINGLE-SELECTED-FUTURE-V1",
+      "semantic_object_ids": [
+        "sobj_cap23_selection"
+      ],
+      "evidence_refs": [
+        "src/ops/single_selected_future_policy_v1/constants_v1.py",
+        "src/ops/single_selected_future_policy_v1/selection_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "law_id": "CAP24-RUNTIME-BINDING-V1",
+      "canonical_source": "src/ops/single_selected_future_runtime_binding_v1/constants_v1.py",
+      "canonical_anchor": "SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1",
+      "source_sha256": "660b2b6bbb426dd767c62dc7a257b7abf9ed30a421657be1fc3bd4559de455ea",
+      "source_authority_class": "EVIDENCE_CENSUS",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "CAP24-RUNTIME-BINDING-V1",
+      "semantic_object_ids": [
+        "sobj_cap24_runtime_binding"
+      ],
+      "evidence_refs": [
+        "src/ops/single_selected_future_runtime_binding_v1/constants_v1.py",
+        "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "law_id": "FULL-CORE-PRE-EXTERNAL-CLOSURE-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1",
+      "source_sha256": "33138122c4f050948f2de0d667b6bac8773b6468887f93ad5513f104ebd51845",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "Full-Core PRE_EXTERNAL closure spec",
+      "semantic_object_ids": [
+        "sobj_nav_full_core_composition_joins"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "law_id": "G17-TYPED-VOL-CMC-BIND-V1",
+      "canonical_source": "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py",
+      "canonical_anchor": "apply_current_productive_g17_typed_vol_cmc_bind_v1",
+      "source_sha256": "f5eebff8f7f3561adcd77b1d85b3386400aeb427bd834a11b631ed113fb9886e",
+      "source_authority_class": "EVIDENCE_CENSUS",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "G17-TYPED-VOL-CMC-BIND-V1",
+      "semantic_object_ids": [
+        "sobj_g17_typed_vol_bind"
+      ],
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py",
+        "src/trading/master_v2/canonical_volatility_productive_runtime_cmc_typed_binding_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "law_id": "M9-VOL-MAX-AGE-DECISION-V1",
+      "canonical_source": "config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json",
+      "canonical_anchor": "m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1",
+      "source_sha256": "7eeb4e818bc447921aa3178c6c3a894f36479b6dba360962831a40ebe102df43",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "M9-VOL-MAX-AGE-DECISION-V1",
+      "semantic_object_ids": [
+        "sobj_m9_vol_max_age"
+      ],
+      "evidence_refs": [
+        "config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json",
+        "src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L10_BULL_BEAR_STATE_SWITCH",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L10_BULL_BEAR_STATE_SWITCH",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L10_BULL_BEAR_STATE_SWITCH",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l10_bull_bear_state_switch"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L1_SELECTED_FUTURE",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L1_SELECTED_FUTURE",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L1_SELECTED_FUTURE",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l1_selected_future"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L2_MARKET_OBSERVATION",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L2_MARKET_OBSERVATION",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L2_MARKET_OBSERVATION",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l2_market_observation"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L3_INITIAL_DIRECTION",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L3_INITIAL_DIRECTION",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L3_INITIAL_DIRECTION",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l3_initial_direction"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L4_INITIAL_STATE_INITIALIZATION",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L4_INITIAL_STATE_INITIALIZATION",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L4_INITIAL_STATE_INITIALIZATION",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l4_initial_state_initialization"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L5_NULLLINE",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L5_NULLLINE",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L5_NULLLINE",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l5_nullline"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L6_DYNAMIC_SCOPE_GENERATOR",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L6_DYNAMIC_SCOPE_GENERATOR",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L6_DYNAMIC_SCOPE_GENERATOR",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l6_dynamic_scope_generator"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L7_SCOPE_STATE",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L7_SCOPE_STATE",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L7_SCOPE_STATE",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l7_scope_state"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L8_RUNNING_REFERENCE",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L8_RUNNING_REFERENCE",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L8_RUNNING_REFERENCE",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l8_running_reference"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "MV2-LAYER-L9_COUNTER_MOVE",
+      "canonical_source": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+      "canonical_anchor": "L9_COUNTER_MOVE",
+      "source_sha256": "430348b6cd93ff8a21392a286b7b5c5fffde0e6783f627c92382bbb173d83396",
+      "source_authority_class": "MODEL_CATALOG",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "L9_COUNTER_MOVE",
+      "semantic_object_ids": [
+        "sobj_mv2_layer_l9_counter_move"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py"
+      ]
+    },
+    {
+      "law_id": "OD-29P-FRESH-TRUSTED-NUMERIC-VENUE-BIND-ADJUDICATION-V1",
+      "canonical_source": "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json",
+      "canonical_anchor": "od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1",
+      "source_sha256": "ff3a4fc82e32849706f3f69d36e12aeb0f75e37eec396f27ecb86d27b41493ca",
+      "source_authority_class": "RUNBOOK",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "OD-29P-FRESH-TRUSTED-NUMERIC-VENUE-BIND-ADJUDICATION-V1",
+      "semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "evidence_refs": [
+        "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "OD-29P-NORMATIVE-PACK-V1",
+      "canonical_source": "config/governance/od_29p_normative_pack_v1.json",
+      "canonical_anchor": "od_29p_normative_pack_v1",
+      "source_sha256": "06cd22287f78f383b89ed9ad65dfe4b9cbdb080613d897108be9b98fcf085ce6",
+      "source_authority_class": "RUNBOOK",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "OD-29P-NORMATIVE-PACK-V1",
+      "semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "evidence_refs": [
+        "config/governance/od_29p_normative_pack_v1.json",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+      "canonical_source": "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
+      "canonical_anchor": "od_account_equity_sizing_source_canonical_adjudication_v1",
+      "source_sha256": "71e231d35613d02e2fd426c23d3a4ce2e7a382dc19879015581bccf9e798dac7",
+      "source_authority_class": "RUNBOOK",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1",
+      "semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "evidence_refs": [
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "OD-U01-P01-29P-SIZING-MINT-ADJUDICATION-V1",
+      "canonical_source": "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json",
+      "canonical_anchor": "od_u01_p01_29p_sizing_mint_canonical_adjudication_v1",
+      "source_sha256": "f8bca9e155057d9649fb6e282624578d54f09f47fa964843ba6e6e87e0d17d54",
+      "source_authority_class": "RUNBOOK",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "OD-U01-P01-29P-SIZING-MINT-ADJUDICATION-V1",
+      "semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "evidence_refs": [
+        "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "PROD-CANONICAL-PRICE-PROVENANCE-V1",
+      "canonical_source": "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+      "canonical_anchor": "ProductiveCanonicalPriceProvenanceError",
+      "source_sha256": "cb7cd9839850753c39decd59c405d38159d1f8fd0de5862ebd5b49eeaad6adf0",
+      "source_authority_class": "EVIDENCE_CENSUS",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "composition-root canonical mark/index provenance",
+      "semantic_object_ids": [
+        "sobj_canonical_price_provenance"
+      ],
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ]
+    },
+    {
+      "law_id": "PUBLIC-MD-RUNTIME-POLICY-V1",
+      "canonical_source": "config/governance/peak_trade_public_market_data_runtime_v1_policy_v1.json",
+      "canonical_anchor": "peak_trade_public_market_data_runtime_v1_policy_v1",
+      "source_sha256": "fc2b9165d324407ae3d3b9de72fa06f29c62d3e680a8c0134ef5bdf83d2dbfaa",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "PUBLIC-MD-RUNTIME-POLICY-V1",
+      "semantic_object_ids": [
+        "sobj_public_md_runtime"
+      ],
+      "evidence_refs": [
+        "config/governance/peak_trade_public_market_data_runtime_v1_policy_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "law_id": "RUNBOOK-VENUE-PLAN-TDMODE-AUTHORITY-V1",
+      "canonical_source": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "canonical_anchor": "CURRENT Venue-Plan tdMode and Order-Environment Authority",
+      "source_sha256": "4f7967ee48c938bd682a68155cf3fee0566a8d287aaaea0af2278771d32b82b8",
+      "source_authority_class": "RUNBOOK",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "RUNBOOK-VENUE-PLAN-TDMODE-AUTHORITY-V1",
+      "semantic_object_ids": [
+        "sobj_nav_full_core_composition_joins"
+      ],
+      "evidence_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "SEM-DIV-00001",
+      "canonical_source": "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+      "canonical_anchor": "test_natural_enter_rejects_candle_close_only_mark_without_payload",
+      "source_sha256": "8aaadaf5d51e466d9d015708dd66646393870cfb0fd7be1f22a0d0ee3e2b5731",
+      "source_authority_class": "ENFORCEMENT_TEST",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SEM-DIV-00001",
+      "semantic_object_ids": [
+        "sobj_sem_div_enforcement_chain"
+      ],
+      "evidence_refs": [
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py"
+      ]
+    },
+    {
+      "law_id": "SEM-DIV-00002",
+      "canonical_source": "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+      "canonical_anchor": "test_cycle_rejects_forbidden_candle_close_mark_source",
+      "source_sha256": "8aaadaf5d51e466d9d015708dd66646393870cfb0fd7be1f22a0d0ee3e2b5731",
+      "source_authority_class": "ENFORCEMENT_TEST",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SEM-DIV-00002",
+      "semantic_object_ids": [
+        "sobj_sem_div_enforcement_chain"
+      ],
+      "evidence_refs": [
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py"
+      ]
+    },
+    {
+      "law_id": "SEM-DIV-00006",
+      "canonical_source": "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+      "canonical_anchor": "test_observation_sidestate_seed_class_rejected_on_bind",
+      "source_sha256": "8aaadaf5d51e466d9d015708dd66646393870cfb0fd7be1f22a0d0ee3e2b5731",
+      "source_authority_class": "ENFORCEMENT_TEST",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SEM-DIV-00006",
+      "semantic_object_ids": [
+        "sobj_sem_div_enforcement_chain"
+      ],
+      "evidence_refs": [
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py"
+      ]
+    },
+    {
+      "law_id": "SPEC-29P-LIVE-ACCOUNT-BOUND-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_FOR_29P_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_FOR_29P_V1",
+      "source_sha256": "6e855708da42f6179dd533e5af1c408e8c0200cb115f6b9151b49327f65ff023",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SPEC-29P-LIVE-ACCOUNT-BOUND-V1",
+      "semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_FOR_29P_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "SPEC-EXECUTION-ADMISSION-REMAINDER-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_EXECUTION_ADMISSION_REMAINDER_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_EXECUTION_ADMISSION_REMAINDER_V1",
+      "source_sha256": "89a3fb3eb54cce130a655f944422b0490ecc3925cc4f47418d0ff3d9afda0973",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SPEC-EXECUTION-ADMISSION-REMAINDER-V1",
+      "semantic_object_ids": [
+        "sobj_nav_external_effect_seam"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_EXECUTION_ADMISSION_REMAINDER_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "SPEC-LIVE-ARMED-STANDING-GATE-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ARMED_STANDING_GATE_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ARMED_STANDING_GATE_V1",
+      "source_sha256": "d23781586003eecd91f7950633d25e024be5228fe6f822ba7a3b84dbe72be03f",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SPEC-LIVE-ARMED-STANDING-GATE-V1",
+      "semantic_object_ids": [
+        "sobj_nav_external_effect_seam"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ARMED_STANDING_GATE_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "SPEC-LIVE-ENABLED-STANDING-GATE-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE_V1",
+      "source_sha256": "17c0e90c64008a80496d8caba9fb14a74b50cea2e2f7775a07b7cbf3449f8b3b",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SPEC-LIVE-ENABLED-STANDING-GATE-V1",
+      "semantic_object_ids": [
+        "sobj_nav_external_effect_seam"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "SPEC-LIVE-EXECUTION-PORT-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION_V1",
+      "source_sha256": "29825d77f531c3c0a6d1562f0040abcf83199163db264c1851117affa36ca50c",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SPEC-LIVE-EXECUTION-PORT-V1",
+      "semantic_object_ids": [
+        "sobj_nav_external_effect_seam"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "SPEC-P01-POLICY-REPLACEMENT-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_P01_POLICY_REPLACEMENT_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_P01_POLICY_REPLACEMENT_V1",
+      "source_sha256": "a2d2056da08c73adc56cfd0b585c7b7524cb03aa2a5ff553c54538bea5d6b0e0",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SPEC-P01-POLICY-REPLACEMENT-V1",
+      "semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_P01_POLICY_REPLACEMENT_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "SPEC-SUBMISSION-AUTHORIZED-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_SUBMISSION_AUTHORIZED_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_SUBMISSION_AUTHORIZED_V1",
+      "source_sha256": "f1b994aa7fff52d9b051d103717a74f8ba4e27ff160d0460f338cc04ef76dafc",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SPEC-SUBMISSION-AUTHORIZED-V1",
+      "semantic_object_ids": [
+        "sobj_nav_external_effect_seam"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_SUBMISSION_AUTHORIZED_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "SPEC-U01-ACCOUNT-MODE-RATIFICATION-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_U01_ACCOUNT_MODE_SEMANTIC_RATIFICATION_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_U01_ACCOUNT_MODE_SEMANTIC_RATIFICATION_V1",
+      "source_sha256": "fa1ac3892e43e987d74e23e40727d75b2fa19be24d19ef8e5e01c20ba7a4f02c",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SPEC-U01-ACCOUNT-MODE-RATIFICATION-V1",
+      "semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_U01_ACCOUNT_MODE_SEMANTIC_RATIFICATION_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "law_id": "SPEC-WIRE-SEND-STANDING-GATE-V1",
+      "canonical_source": "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_WIRE_SEND_PERMITTED_STANDING_GATE_V1.md",
+      "canonical_anchor": "FULL_CORE_CURRENT_PRODUCTIVE_WIRE_SEND_PERMITTED_STANDING_GATE_V1",
+      "source_sha256": "dc92be5a080e55ae2ea25220691b9f0f3d252f692096c88594fe81949bbcf5bc",
+      "source_authority_class": "CANONICAL_SPEC",
+      "index_status": "INDEXED",
+      "law_reference_authority": "NONE",
+      "display_label": "SPEC-WIRE-SEND-STANDING-GATE-V1",
+      "semantic_object_ids": [
+        "sobj_nav_external_effect_seam"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_WIRE_SEND_PERMITTED_STANDING_GATE_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    }
+  ],
+  "semantic_objects": [
+    {
+      "id": "sobj_b05_instrument_metadata_authority_producer",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/governed_productive_instrument_metadata_authority_producer_v1/current_productive_okx_instruments_row_producer_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "B05-INSTRUMENT-METADATA-RATIFICATION-V1"
+      ],
+      "evidence_refs": [
+        "config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "governed_productive_instrument_metadata_authority_v1"
+    },
+    {
+      "id": "sobj_b05_reference_price_authority_producer",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/governed_productive_reference_price_authority_producer_v1/current_productive_mv2_mark_reference_price_producer_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "B05-REFERENCE-PRICE-RATIFICATION-V1"
+      ],
+      "evidence_refs": [
+        "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "governed_productive_reference_price_authority_v1"
+    },
+    {
+      "id": "sobj_canonical_price_provenance",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "PROVEN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "PROD-CANONICAL-PRICE-PROVENANCE-V1",
+        "SEM-DIV-00001",
+        "SEM-DIV-00002"
+      ],
+      "csia_record_id": "productive_canonical_price_provenance_v1",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_cap21_universe",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/governed_futures_universe_producer_v1/constants_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "CAP21-GOVERNED-UNIVERSE-V1"
+      ],
+      "evidence_refs": [
+        "src/ops/governed_futures_universe_producer_v1/constants_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "universe_cap21"
+    },
+    {
+      "id": "sobj_cap22_ranking",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/productive_futures_ranking_producer_v1/producer_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "CAP22-PRODUCTIVE-RANKING-V1"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md",
+        "src/ops/productive_futures_ranking_producer_v1/producer_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "ranking_cap22"
+    },
+    {
+      "id": "sobj_cap23_selection",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/single_selected_future_policy_v1/selection_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "CAP23-SINGLE-SELECTED-FUTURE-V1"
+      ],
+      "evidence_refs": [
+        "src/ops/single_selected_future_policy_v1/constants_v1.py",
+        "src/ops/single_selected_future_policy_v1/selection_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "selection_cap23"
+    },
+    {
+      "id": "sobj_cap24_runtime_binding",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py",
+        "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "CAP24-RUNTIME-BINDING-V1",
+        "CAP-SSF-HANDOFF-V1"
+      ],
+      "evidence_refs": [
+        "src/ops/single_selected_future_runtime_binding_v1/constants_v1.py",
+        "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "runtime_binding_cap24"
+    },
+    {
+      "id": "sobj_elementary_direction",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/market_state/elementary_direction_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [],
+      "evidence_refs": [
+        "src/trading/market_state/elementary_direction_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "elementary_direction"
+    },
+    {
+      "id": "sobj_evidence_only_productive_harness",
+      "semantic_class": "ENFORCEMENT_CONTRACT",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_chain_baseline_contract_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_exact_object_disposition_to_one_shot_flatten_post_boundary_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_flatten_occupancy_absent_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v2.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_after_non_executable_decision_v3.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_post_flatten_evidence_adjudication_and_canonical_state_advance_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_unknown_post_attempt_read_only_reconciliation_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [],
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "id": "sobj_full_core_cycle_orchestrator",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_native_full_cycle_host_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "PROD-CANONICAL-PRICE-PROVENANCE-V1"
+      ],
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_native_full_cycle_host_v1.py",
+        "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "full_core_live_path_composition_root"
+    },
+    {
+      "id": "sobj_g17_typed_vol_bind",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_pt1m_mark_sample_adapter_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_mark_history_checkpoint_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "G17-TYPED-VOL-CMC-BIND-V1",
+        "M9-VOL-MAX-AGE-DECISION-V1"
+      ],
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "g17_typed_vol_cmc_bind"
+    },
+    {
+      "id": "sobj_m9_vol_max_age",
+      "semantic_class": "NAVIGATION_ONLY",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py"
+      ],
+      "config_surfaces": [
+        "config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json"
+      ],
+      "law_ref_ids": [
+        "M9-VOL-MAX-AGE-DECISION-V1"
+      ],
+      "evidence_refs": [
+        "config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "m9_volatility_max_age"
+    },
+    {
+      "id": "sobj_mv2_layer_l10_bull_bear_state_switch",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l10_bull_bear_switch_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L10_BULL_BEAR_STATE_SWITCH"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l10_bull_bear_switch_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l1_selected_future",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l1_selected_future_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L1_SELECTED_FUTURE"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l1_selected_future_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l2_market_observation",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l2_market_observation_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L2_MARKET_OBSERVATION"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l2_market_observation_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l3_initial_direction",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l3_initial_direction_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L3_INITIAL_DIRECTION"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l3_initial_direction_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l4_initial_state_initialization",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l4_initial_state_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L4_INITIAL_STATE_INITIALIZATION"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l4_initial_state_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l5_nullline",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "PROVEN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l5_nullline_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L5_NULLLINE"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l5_nullline_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l6_dynamic_scope_generator",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l6_dynamic_scope_generator_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L6_DYNAMIC_SCOPE_GENERATOR"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l6_dynamic_scope_generator_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l7_scope_state",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l7_scope_state_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L7_SCOPE_STATE"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l7_scope_state_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l8_running_reference",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l8_running_reference_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L8_RUNNING_REFERENCE"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l8_running_reference_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_layer_l9_counter_move",
+      "semantic_class": "CANONICAL_MODEL_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l9_counter_move_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "MV2-LAYER-L9_COUNTER_MOVE"
+      ],
+      "evidence_refs": [
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l9_counter_move_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_mv2_runtime_cycle_host",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "PROD-CANONICAL-PRICE-PROVENANCE-V1"
+      ],
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_nav_b05_account_equity_productive_chain",
+      "semantic_class": "NAVIGATION_ONLY",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_eea_acquisition_productive_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_fresh_trusted_usdc_free_margin_get_and_produce_sizing_value_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_live_account_bound_and_instrument_scope_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_account_equity_source_architecture_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_models_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_producer_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_source_selection_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_p01_policy_replacement_and_29p_continuation_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u01_account_mode_semantic_ratification_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_models_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "B05-ACCOUNT-EQUITY-RATIFICATION-V1"
+      ],
+      "evidence_refs": [
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "governed_productive_account_equity_authority_v1"
+    },
+    {
+      "id": "sobj_nav_c1_observation_sources",
+      "semantic_class": "NAVIGATION_ONLY",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_scoped_one_shot_c1_observation_source_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "PUBLIC-MD-RUNTIME-POLICY-V1"
+      ],
+      "evidence_refs": [
+        "config/governance/peak_trade_public_market_data_runtime_v1_policy_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "peak_trade_public_market_data_runtime_wp_a"
+    },
+    {
+      "id": "sobj_nav_external_effect_seam",
+      "semantic_class": "NAVIGATION_ONLY",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_owner_go_durable_consume_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap72_host_join_to_live_execution_port_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execution_admission_remainder_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_cycle_to_exact_envelope_bound_single_use_post_boundary_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_armed_standing_gate_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_authorized_and_cap_11_1_send_capable_adapter_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_enabled_standing_gate_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_live_execution_port_construction_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_submission_authorized_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_wire_send_permitted_standing_gate_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [],
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ]
+    },
+    {
+      "id": "sobj_nav_full_core_composition_joins",
+      "semantic_class": "NAVIGATION_ONLY",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_runtime_to_pre_external_effect_applicability_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "FULL-CORE-PRE-EXTERNAL-CLOSURE-V1"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "full_core_live_path_composition_root"
+    },
+    {
+      "id": "sobj_p5_authority_bind",
+      "semantic_class": "ENFORCEMENT_CONTRACT",
+      "current_status": "PROVEN_CURRENT",
+      "code_surfaces": [
+        "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "SEM-DIV-00006"
+      ],
+      "evidence_refs": [
+        "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_persistent_natural_enter_convergence",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "PROVEN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "SEM-DIV-00001"
+      ],
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ]
+    },
+    {
+      "id": "sobj_portfolio_capital_budget",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_portfolio_budget_productive_join_v1.py",
+        "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [],
+      "evidence_refs": [
+        "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "portfolio_reservation"
+    },
+    {
+      "id": "sobj_public_md_runtime",
+      "semantic_class": "CURRENT_PRODUCTIVE_SEMANTIC",
+      "current_status": "UNKNOWN_CURRENT",
+      "code_surfaces": [
+        "src/ops/peak_trade_public_market_data_runtime_v1/facts_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "PUBLIC-MD-RUNTIME-POLICY-V1"
+      ],
+      "evidence_refs": [
+        "config/governance/peak_trade_public_market_data_runtime_v1_policy_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ],
+      "csia_record_id": "peak_trade_public_market_data_runtime_wp_a"
+    },
+    {
+      "id": "sobj_ranking_ssf_handoff",
+      "semantic_class": "ENFORCEMENT_CONTRACT",
+      "current_status": "PROVEN_CURRENT",
+      "code_surfaces": [
+        "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "CAP-SSF-HANDOFF-V1"
+      ],
+      "evidence_refs": [
+        "docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md",
+        "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py",
+        "tests/test_ranking_universe_to_full_core_ssf_handoff_contract_v1.py"
+      ],
+      "csia_record_id": "selection_cap23"
+    },
+    {
+      "id": "sobj_sem_div_enforcement_chain",
+      "semantic_class": "ENFORCEMENT_CONTRACT",
+      "current_status": "PROVEN_CURRENT",
+      "code_surfaces": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+        "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py"
+      ],
+      "config_surfaces": [],
+      "law_ref_ids": [
+        "SEM-DIV-00001",
+        "SEM-DIV-00002",
+        "SEM-DIV-00006"
+      ],
+      "evidence_refs": [
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ]
+    }
+  ],
+  "impact_edges": [
+    {
+      "id": "edge_b05_instrument_to_crs_nav",
+      "edge_class": "PRODUCES",
+      "from_id": "sobj_b05_instrument_metadata_authority_producer",
+      "to_id": "sobj_nav_b05_account_equity_productive_chain",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "id": "edge_b05_ref_price_to_crs_nav",
+      "edge_class": "PRODUCES",
+      "from_id": "sobj_b05_reference_price_authority_producer",
+      "to_id": "sobj_nav_b05_account_equity_productive_chain",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "id": "edge_cap21_persists_productive_state",
+      "edge_class": "PERSISTS",
+      "from_id": "sobj_cap21_universe",
+      "to_id": "sobj_cap22_ranking",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "id": "edge_cap21_to_cap22",
+      "edge_class": "PRODUCES",
+      "from_id": "sobj_cap21_universe",
+      "to_id": "sobj_cap22_ranking",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/governed_futures_universe_producer_v1/constants_v1.py",
+        "src/ops/productive_futures_ranking_producer_v1/producer_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "id": "edge_cap22_to_cap23",
+      "edge_class": "PRODUCES",
+      "from_id": "sobj_cap22_ranking",
+      "to_id": "sobj_cap23_selection",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md",
+        "src/ops/single_selected_future_policy_v1/selection_v1.py",
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "id": "edge_cap24_binds_l1",
+      "edge_class": "BINDS",
+      "from_id": "sobj_cap24_runtime_binding",
+      "to_id": "sobj_mv2_layer_l1_selected_future",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/single_selected_future_runtime_binding_v1/constants_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l1_selected_future_v1.py",
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json"
+      ]
+    },
+    {
+      "id": "edge_cap_persist_to_cap23",
+      "edge_class": "PERSISTS",
+      "from_id": "sobj_cap21_universe",
+      "to_id": "sobj_cap23_selection",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py"
+      ]
+    },
+    {
+      "id": "edge_conv_to_price",
+      "edge_class": "PRODUCES",
+      "from_id": "sobj_persistent_natural_enter_convergence",
+      "to_id": "sobj_canonical_price_provenance",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py"
+      ]
+    },
+    {
+      "id": "edge_cursor_replay_pre_external",
+      "edge_class": "REPLAYS",
+      "from_id": "sobj_nav_full_core_composition_joins",
+      "to_id": "sobj_full_core_cycle_orchestrator",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_fresh_runtime_from_persisted_cursor_to_pre_external_effect_applicability_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py"
+      ]
+    },
+    {
+      "id": "edge_cycle_constrains_bind",
+      "edge_class": "CONSTRAINS",
+      "from_id": "sobj_p5_authority_bind",
+      "to_id": "sobj_mv2_runtime_cycle_host",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
+      ]
+    },
+    {
+      "id": "edge_elem_to_direction_layer",
+      "edge_class": "PRODUCES",
+      "from_id": "sobj_elementary_direction",
+      "to_id": "sobj_mv2_layer_l3_initial_direction",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/trading/market_state/elementary_direction_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l3_initial_direction_v1.py"
+      ]
+    },
+    {
+      "id": "edge_g17_persists_mark_history",
+      "edge_class": "PERSISTS",
+      "from_id": "sobj_g17_typed_vol_bind",
+      "to_id": "sobj_g17_typed_vol_bind",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_mark_history_checkpoint_v1.py"
+      ]
+    },
+    {
+      "id": "edge_g17_to_cycle",
+      "edge_class": "TRANSFORMS",
+      "from_id": "sobj_g17_typed_vol_bind",
+      "to_id": "sobj_mv2_runtime_cycle_host",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
+      ]
+    },
+    {
+      "id": "edge_handoff_cap23_cap24",
+      "edge_class": "TRANSFORMS",
+      "from_id": "sobj_ranking_ssf_handoff",
+      "to_id": "sobj_cap24_runtime_binding",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md",
+        "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py",
+        "src/ops/single_selected_future_runtime_binding_v1/constants_v1.py"
+      ]
+    },
+    {
+      "id": "edge_l5_ref_law",
+      "edge_class": "REFERENCES_LAW",
+      "from_id": "sobj_mv2_layer_l5_nullline",
+      "to_id": "MV2-LAYER-L5_NULLLINE",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py",
+        "docs/evidence/master_v2_double_play_evidence_input_plane_p0/l1_l10_evidence_seam_census_v1.json"
+      ]
+    },
+    {
+      "id": "edge_m9_constrains_g17",
+      "edge_class": "CONSTRAINS",
+      "from_id": "sobj_m9_vol_max_age",
+      "to_id": "sobj_g17_typed_vol_bind",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py"
+      ]
+    },
+    {
+      "id": "edge_orchestrator_consumes_cap24",
+      "edge_class": "CONSUMES",
+      "from_id": "sobj_full_core_cycle_orchestrator",
+      "to_id": "sobj_cap24_runtime_binding",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+        "src/ops/single_selected_future_runtime_binding_v1/constants_v1.py"
+      ]
+    },
+    {
+      "id": "edge_orchestrator_persists_sidestate_cursor",
+      "edge_class": "PERSISTS",
+      "from_id": "sobj_full_core_cycle_orchestrator",
+      "to_id": "sobj_full_core_cycle_orchestrator",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py",
+        "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.py"
+      ]
+    },
+    {
+      "id": "edge_orchestrator_to_mv2_cycle",
+      "edge_class": "CONSUMES",
+      "from_id": "sobj_full_core_cycle_orchestrator",
+      "to_id": "sobj_mv2_runtime_cycle_host",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
+      ]
+    },
+    {
+      "id": "edge_portfolio_constrains_cycle",
+      "edge_class": "CONSTRAINS",
+      "from_id": "sobj_portfolio_capital_budget",
+      "to_id": "sobj_full_core_cycle_orchestrator",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py"
+      ]
+    },
+    {
+      "id": "edge_price_to_cycle",
+      "edge_class": "TRANSFORMS",
+      "from_id": "sobj_canonical_price_provenance",
+      "to_id": "sobj_mv2_runtime_cycle_host",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
+      ]
+    },
+    {
+      "id": "edge_pubmd_to_observation",
+      "edge_class": "PRODUCES",
+      "from_id": "sobj_public_md_runtime",
+      "to_id": "sobj_mv2_layer_l2_market_observation",
+      "propagate_impact": true,
+      "evidence_refs": [
+        "config/governance/peak_trade_public_market_data_runtime_v1_policy_v1.json",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l2_market_observation_v1.py"
+      ]
+    },
+    {
+      "id": "edge_sem_div_reproof",
+      "edge_class": "REQUIRES_REPROOF",
+      "from_id": "sobj_sem_div_enforcement_chain",
+      "to_id": "reproof_sem_div_6955",
+      "propagate_impact": false,
+      "evidence_refs": [
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ]
+    }
+  ],
+  "unknown_relations": [
+    {
+      "id": "unk_cap24_l1_productive_mark_provenance",
+      "unknown_class": "EVIDENCE_DISCOVERY_UNKNOWN",
+      "statement": "Whether Cap 2.4 bound instrument identity and composition-root canonical mark/index provenance share one CURRENT freshness/instrument binding chain is not adjudicated in durable compliance evidence.",
+      "left_ref": "sobj_cap24_runtime_binding:BoundInstrumentV1",
+      "right_ref": "sobj_canonical_price_provenance:venue_native_id",
+      "evidence_refs": [
+        "src/ops/single_selected_future_runtime_binding_v1/constants_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py"
+      ]
+    },
+    {
+      "id": "unk_double_play_slot_crs_handoff",
+      "unknown_class": "EVIDENCE_DISCOVERY_UNKNOWN",
+      "statement": "Double Play slot CRS handoff semantics remain open (CSIA UNKNOWN pin).",
+      "left_ref": "csia:double_play_slot_crs_handoff",
+      "right_ref": "sobj_sem_div_enforcement_chain",
+      "evidence_refs": [
+        "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+      ]
+    },
+    {
+      "id": "unk_mt_l5_nullline_identity",
+      "unknown_class": "UNKNOWN_RELATION",
+      "statement": "Whether composition-root M_t/mark_px input is semantically identical to L5 nullline initialization_mark is OPEN; PR #6955 did not establish identity.",
+      "left_ref": "sobj_mv2_runtime_cycle_host:mark_px/M_t",
+      "right_ref": "sobj_mv2_layer_l5_nullline:nullline_price_basis",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l5_nullline_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ]
+    }
+  ],
+  "conflicting_relations": [],
+  "reproof_index": [
+    {
+      "id": "reproof_od_29p_fresh_trusted_numeric_venue_bind",
+      "law_ref_ids": [
+        "OD-29P-FRESH-TRUSTED-NUMERIC-VENUE-BIND-ADJUDICATION-V1"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "proof_refs": [
+        "tests/governance/test_od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py",
+        "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json"
+      ],
+      "base_sha": "5fbc61636b14e912f7148ef6bb91e4752db71a6a",
+      "head_sha": "5fbc61636b14e912f7148ef6bb91e4752db71a6a",
+      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
+    },
+    {
+      "id": "reproof_od_29p_fresh_trusted_numeric_venue_bind",
+      "law_ref_ids": [
+        "OD-29P-FRESH-TRUSTED-NUMERIC-VENUE-BIND-ADJUDICATION-V1"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "proof_refs": [
+        "tests/governance/test_od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py",
+        "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json"
+      ],
+      "base_sha": "6268fab255353ceed84384051de1c045232f3a4c",
+      "head_sha": "6268fab255353ceed84384051de1c045232f3a4c",
+      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
+    },
+    {
+      "id": "reproof_od_29p_fresh_trusted_numeric_venue_bind",
+      "law_ref_ids": [
+        "OD-29P-FRESH-TRUSTED-NUMERIC-VENUE-BIND-ADJUDICATION-V1"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "proof_refs": [
+        "tests/governance/test_od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.py",
+        "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json"
+      ],
+      "base_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
+      "head_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
+      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
+    },
+    {
+      "id": "reproof_od_29p_normative_pack_v1",
+      "law_ref_ids": [
+        "OD-29P-NORMATIVE-PACK-V1"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "proof_refs": [
+        "tests/governance/test_od_29p_normative_pack_v1_semantic_enforcement_v1.py",
+        "config/governance/od_29p_normative_pack_v1.json"
+      ],
+      "base_sha": "0f3caec8381b8e75d6bf3c6b1ed7e5c994e25a7e",
+      "head_sha": "0f3caec8381b8e75d6bf3c6b1ed7e5c994e25a7e",
+      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
+    },
+    {
+      "id": "reproof_od_account_equity_sizing_source",
+      "law_ref_ids": [
+        "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "proof_refs": [
+        "tests/governance/test_od_account_equity_sizing_source_canonical_adjudication_v1.py",
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
+      ],
+      "base_sha": "570c437eb45295929128a13b2bc194bfb1fc063a",
+      "head_sha": "570c437eb45295929128a13b2bc194bfb1fc063a",
+      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
+    },
+    {
+      "id": "reproof_od_account_equity_sizing_source",
+      "law_ref_ids": [
+        "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "proof_refs": [
+        "tests/governance/test_od_account_equity_sizing_source_canonical_adjudication_v1.py",
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
+      ],
+      "base_sha": "5fbc61636b14e912f7148ef6bb91e4752db71a6a",
+      "head_sha": "5fbc61636b14e912f7148ef6bb91e4752db71a6a",
+      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
+    },
+    {
+      "id": "reproof_od_account_equity_sizing_source",
+      "law_ref_ids": [
+        "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "proof_refs": [
+        "tests/governance/test_od_account_equity_sizing_source_canonical_adjudication_v1.py",
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
+      ],
+      "base_sha": "6268fab255353ceed84384051de1c045232f3a4c",
+      "head_sha": "6268fab255353ceed84384051de1c045232f3a4c",
+      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
+    },
+    {
+      "id": "reproof_od_account_equity_sizing_source",
+      "law_ref_ids": [
+        "OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "proof_refs": [
+        "tests/governance/test_od_account_equity_sizing_source_canonical_adjudication_v1.py",
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json"
+      ],
+      "base_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
+      "head_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
+      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
+    },
+    {
+      "id": "reproof_od_u01_p01_29p_sizing_mint",
+      "law_ref_ids": [
+        "OD-U01-P01-29P-SIZING-MINT-ADJUDICATION-V1"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "proof_refs": [
+        "tests/governance/test_od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py",
+        "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json"
+      ],
+      "base_sha": "490a9fedb0c075903dbd80fec63d7f476158a393",
+      "head_sha": "490a9fedb0c075903dbd80fec63d7f476158a393",
+      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
+    },
+    {
+      "id": "reproof_od_u01_p01_29p_sizing_mint",
+      "law_ref_ids": [
+        "OD-U01-P01-29P-SIZING-MINT-ADJUDICATION-V1"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_nav_b05_account_equity_productive_chain"
+      ],
+      "proof_refs": [
+        "tests/governance/test_od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.py",
+        "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json"
+      ],
+      "base_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
+      "head_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
+      "adjudication_status": "OWNER_ADJUDICATED_CURRENT"
+    },
+    {
+      "id": "reproof_sem_div_6955",
+      "law_ref_ids": [
+        "SEM-DIV-00001",
+        "SEM-DIV-00002",
+        "SEM-DIV-00006"
+      ],
+      "affected_semantic_object_ids": [
+        "sobj_sem_div_enforcement_chain"
+      ],
+      "proof_refs": [
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py"
+      ],
+      "base_sha": "4e84cbf7385c37e89a1a55bbfd978685ffe3e575",
+      "head_sha": "ce6c06a22155cafb53cc19df3d71fd2dbba0c768",
+      "adjudication_status": "INDEXED_EVIDENCE_ONLY"
+    }
+  ],
+  "semantic_divergence_index": [
+    {
+      "id": "SEM-SURF-DIV-00001",
+      "adjudication": "UNKNOWN_CURRENT",
+      "producer_ref": "sobj_mv2_runtime_cycle_host",
+      "consumer_ref": "sobj_mv2_layer_l5_nullline",
+      "statement": "M_t/mark_px at composition-root vs L5 nullline initialization_mark \u2014 identity OPEN (maps to unk_mt_l5_nullline_identity).",
+      "expected_canonical_source": "UNKNOWN",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l5_nullline_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ],
+      "reproof_required": true,
+      "unknown_relation_id": "unk_mt_l5_nullline_identity"
+    },
+    {
+      "id": "SEM-SURF-DIV-00002",
+      "adjudication": "UNKNOWN_CURRENT",
+      "producer_ref": "sobj_canonical_price_provenance",
+      "consumer_ref": "sobj_mv2_runtime_cycle_host",
+      "statement": "Index vs mark distinctness enforced at composition-root (SEM-DIV-00001/00002 tests); downstream MV2 layer interpretation of those fields remains UNKNOWN_CURRENT for full chain.",
+      "expected_canonical_source": "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+      "evidence_refs": [
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py"
+      ],
+      "reproof_required": true,
+      "unknown_relation_id": null
+    },
+    {
+      "id": "SEM-SURF-DIV-00003",
+      "adjudication": "PROVEN_CURRENT",
+      "producer_ref": "csia:account_equity_mapping_unbound",
+      "consumer_ref": "sobj_nav_b05_account_equity_productive_chain",
+      "statement": "OD_ACCOUNT_EQUITY_SIZING_SOURCE adjudicated: CSIA PARTIAL numeric venue bind scope reconciled with B05 Full-Core authority-owner + producer-wrap + DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01 transform binding; unk_account_equity_sizing_source resolved.",
+      "expected_canonical_source": "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
+      "evidence_refs": [
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
+        "docs/governance/OD_ACCOUNT_EQUITY_SIZING_SOURCE_CANONICAL_ADJUDICATION_V1.md",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json"
+      ],
+      "reproof_required": false,
+      "unknown_relation_id": null
+    },
+    {
+      "id": "SEM-SURF-DIV-00004",
+      "adjudication": "PROVEN_CURRENT",
+      "producer_ref": "sobj_canonical_price_provenance",
+      "consumer_ref": "current_productive_native_full_cycle_host_v1",
+      "statement": "L019/DIV-001 closed: governed synthetic close-chain mark_px uses EXPLICIT_SYNTHETIC_FIXTURE mark_source; OKX public mark_source with EXPLICIT_TEST_FIXTURE index collapse forbidden at builder.",
+      "expected_canonical_source": "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_native_full_cycle_host_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_layered_long_mv2_state_advance_for_pre_external_v1.py",
+        "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ],
+      "reproof_required": false,
+      "unknown_relation_id": null
+    }
+  ],
+  "unclassified_current_surfaces": [
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py",
+      "classification": "UNCLASSIFIED_CURRENT",
+      "reason": "UCS-0002 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: No Master Runbook DEFINITION_SCHEMA_PATH or CURRENT spec naming this freshness seam."
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_occupancy_classify_and_c1_gate_v1.py",
+      "classification": "UNCLASSIFIED_CURRENT",
+      "reason": "UCS-0019 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Relocated classify/gate tokens without durable CURRENT spec owner in CSIA domains."
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_v1.py",
+      "classification": "UNCLASSIFIED_CURRENT",
+      "reason": "UCS-0028 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Cap24/MV2 replay vs venue-plan bind owner not identity-proven; no CSIA code_ref."
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py",
+      "classification": "UNCLASSIFIED_CURRENT",
+      "reason": "UCS-0034 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Risk capital vs treasury/B05 equity identity not proven."
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_reserved_productivity_root_guard_v1.py",
+      "classification": "UNCLASSIFIED_CURRENT",
+      "reason": "UCS-0042 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: No CURRENT spec/runbook DEFINITION_SCHEMA for guard semantics."
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_credential_join_v1.py",
+      "classification": "UNCLASSIFIED_CURRENT",
+      "reason": "UCS-0049 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Execute-network credential join; checkout_independent runbook defs name different surfaces."
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_read_credential_loader_v1.py",
+      "classification": "UNCLASSIFIED_CURRENT",
+      "reason": "UCS-0050 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Credential loader authority not indexed in CURRENT runbook definition schema."
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_p01_policy_v1.py",
+      "classification": "UNCLASSIFIED_CURRENT",
+      "reason": "UCS-0068 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: No runbook DEFINITION_SCHEMA for p01_policy_v1; atlas navigation only."
+    },
+    {
+      "path": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u01_account_mode_adapter_v1.py",
+      "classification": "UNCLASSIFIED_CURRENT",
+      "reason": "UCS-0071 EXHAUSTION=GENUINELY_CANONICAL_OWNER_BLOCKED: Runbook/spec name ratification module as authority; adapter not primary DEFINITION_SCHEMA."
+    }
+  ],
+  "surface_census_meta": {
+    "census_id": "UCS_EVIDENCE_BINDING_V1",
+    "authority": "NONE",
+    "bootstrap_exhaustive": false,
+    "census_method": "UCS_FROZEN_WORKSET_EVIDENCE_BINDING_V1",
+    "unclassified_sample_cap": 120,
+    "notes": "Navigation-only UCS pass; dispositions in ucs_frozen_workset_v1.json.",
+    "frozen_workset_sha256": "1faa5ad603886a2d77f4c11465cb989a9b7ddd0d3aae758378287a6739a5b8c3",
+    "frozen_workset_count": 78
+  }
+}

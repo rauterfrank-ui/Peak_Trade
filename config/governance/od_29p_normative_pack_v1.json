@@ -1,0 +1,139 @@
+{
+  "contract_name": "od_29p_normative_pack_v1",
+  "contract_id": "OD-29P-NORMATIVE-PACK-V1",
+  "contract_version": "v1",
+  "schema_version": "od_29p_normative_pack_schema_v1",
+  "ssot_doc": "docs/governance/OD_29P_NORMATIVE_PACK_V1.md",
+  "owner_go": "OWNER_GO=true",
+  "owner_decision_id": "OD-29P-NORMATIVE-PACK-V1",
+  "owner_go_status": "CONSUMED",
+  "baseline_sha": "0f3caec8381b8e75d6bf3c6b1ed7e5c994e25a7e",
+  "prior_adjudications": [
+    "OD_ACCOUNT_EQUITY_SIZING_SOURCE_CANONICAL_ADJUDICATION_V1",
+    "OD_29P_FRESH_TRUSTED_NUMERIC_VENUE_BIND_CANONICAL_ADJUDICATION_V1",
+    "OD_U01_P01_29P_SIZING_MINT_CANONICAL_ADJUDICATION_V1"
+  ],
+  "decision_case": "D",
+  "dependency_gate": "PASS",
+  "authority_effect": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "external_effect_authorized": false,
+  "real_productive_get_executed_in_wp": false,
+  "post_allowed": false,
+  "real_venue_post_allowed": false,
+  "sealed_29p_canonical_meaning": "FAIL_CLOSED_PROOF_SAME_DECISION_INSTANCE_BINDINGS_NOT_NEW_TRADING_OR_EXECUTION_AUTHORITY",
+  "forensic_lineage": {
+    "prior_29p_normative_pack_identity_status": "UNKNOWN_CURRENT",
+    "prior_29p_common_epoch_binding_status": "UNKNOWN_CURRENT",
+    "prior_unk_sealed_venue_number_29p_status": "UNKNOWN_CURRENT",
+    "prior_sealed_normative_common_epoch_status": "UNKNOWN_CURRENT",
+    "prior_owner_boundary": "OD_SEALED_VENUE_29P_NORMATIVE_COMMON_EPOCH_AND_VENUE_NUMBER",
+    "closure_authority": "OD-29P-NORMATIVE-PACK-V1"
+  },
+  "normative_epoch": {
+    "semantic_id": "SEALED_VENUE_29P_NORMATIVE_EPOCH",
+    "canonical_identity": "COMMON_DECISION_EPOCH_ALIGNMENT_ON_PRODUCTIVE_29P_HANDOFF",
+    "second_independent_clock_introduced": false,
+    "decision_epoch_is_not": [
+      "venue_observation_time",
+      "uTime",
+      "observed_at_as_of",
+      "request_time",
+      "package_finished_time",
+      "ranking_epoch",
+      "selection_epoch"
+    ],
+    "freshness_clocks_retained": [
+      "observed_at_as_of",
+      "age_seconds",
+      "PRETRADE_FRESHNESS_POLICY",
+      "NUMERIC_EQUITY_TTL_SECONDS"
+    ],
+    "join_decision_epoch_alignment_status": "PROVEN_CURRENT",
+    "sealed_normative_common_epoch_status": "RATIFIED_CURRENT",
+    "runtime_enforcement_owner": "produce_current_productive_available_for_sizing_v1_and_produce_current_productive_29p_risk_capital_v1",
+    "clock_domain_note": "decision_epoch_string_plus_observed_at_as_of_and_age_seconds_freshness"
+  },
+  "venue_account_binding": {
+    "historical_token_29p_venue_number": "TERMINOLOGY_GOVERNANCE_DRIFT_CLOSED",
+    "arbitrary_venue_ordinal_introduced": false,
+    "canonical_mechanism": "bound_venue_identity_and_bound_account_identity_on_numeric_and_join_facts",
+    "venue_identity_distinct_from_account_identity": true,
+    "instrument_identity_owner": "CAP24_BOUND_INSTRUMENT",
+    "unk_sealed_venue_number_29p_status": "CLOSED_VENUE_ACCOUNT_IDENTITY_NOT_NUMERIC_ORDINAL",
+    "account_binding_status": "PROVEN_CURRENT",
+    "instrument_binding_status": "PROVEN_CURRENT_CAP24_BOUND"
+  },
+  "pack_identity": {
+    "semantic_id": "29P_PACK_IDENTITY",
+    "foreign_authority_minted": false,
+    "new_pack_id_digest_uuid_introduced": false,
+    "representation": "VALIDATED_INVARIANT_OVER_EXISTING_CANONICAL_BINDINGS",
+    "required_bindings": [
+      "SHARED_DECISION_EPOCH",
+      "bound_account_identity",
+      "bound_venue_identity",
+      "bound_td_mode",
+      "FRESH_TRUSTED_USDC_AVAILEQ_OBSERVATION",
+      "U01_ELIGIBLE_ACCOUNT_MODE_FACT",
+      "P01_APPLICABILITY_KNOWN_FACT",
+      "U04_RESERVATION_FACT",
+      "CAP24_INSTRUMENT_WHERE_APPLICABLE",
+      "STEP_29P_ADMISSIBILITY_EVIDENCE"
+    ],
+    "29p_normative_pack_complete": true,
+    "29p_normative_pack_identity_status": "RATIFIED_CURRENT",
+    "missing_mismatch_fail_closed": true
+  },
+  "treasury_to_admission_representation": {
+    "csia_edge_id": "treasury_to_admission",
+    "prior_map_lifecycle": "CONFLICTING",
+    "current_semantics": "TREASURY_SINGLE_SOURCE_HANDOFF_THEN_CAPITAL_ADMISSION_THEN_STEP29P_ADMISSIBILITY",
+    "treasury_mints_risk_admissible": false,
+    "admission_owner": "evaluate_step_29p_capital_risk_admissibility_v1",
+    "orchestration_seam": "CURRENT_PRODUCTIVE_TREASURY_SINGLE_SOURCE_CAPITAL_HANDOFF_V1"
+  },
+  "replay": {
+    "replay_can_mint_freshness": false,
+    "replay_can_mint_u01_current": false,
+    "replay_can_mint_p01_current": false,
+    "replay_can_mint_29p_current": false,
+    "replay_can_mint_sealed_pack_identity": false
+  },
+  "domain_laws": {
+    "DL-SEAL-01": "RATIFIED_CURRENT",
+    "DL-SEAL-02": "RATIFIED_CURRENT",
+    "DL-SEAL-03": "RATIFIED_CURRENT",
+    "DL-SEAL-04": "RATIFIED_CURRENT",
+    "DL-SEAL-05": "RATIFIED_CURRENT",
+    "DL-SEAL-06": "RATIFIED_CURRENT",
+    "DL-SEAL-07": "RATIFIED_CURRENT",
+    "DL-SEAL-08": "RATIFIED_CURRENT",
+    "DL-SEAL-09": "RATIFIED_CURRENT",
+    "DL-SEAL-10": "RATIFIED_CURRENT"
+  },
+  "domain_law_statements": {
+    "DL-SEAL-01": "Sealed 29P requires common decision_epoch alignment across required join inputs.",
+    "DL-SEAL-02": "decision_epoch identity must not be silently equated with observation or freshness clocks.",
+    "DL-SEAL-03": "Venue and account identity use canonical bound_venue_identity and bound_account_identity; no invented venue ordinal.",
+    "DL-SEAL-04": "Instrument identity remains Cap24-bound where the CURRENT 29P path requires it.",
+    "DL-SEAL-05": "U01, P01, and B05 provenance remain required at the mint join where CURRENT contracts require them.",
+    "DL-SEAL-06": "Missing or mismatched required pack binding fails closed at producer and handoff seams.",
+    "DL-SEAL-07": "Sealed pack identity validates bindings only; it does not mint foreign trading, sizing, or POST authority.",
+    "DL-SEAL-08": "Replay cannot mint fresh CURRENT 29P identity or freshness authority.",
+    "DL-SEAL-09": "Treasury handoff does not mint risk_admissible; admission remains evaluate_step_29p_capital_risk_admissibility_v1.",
+    "DL-SEAL-10": "PRE_EXTERNAL remains terminal; standing POST and external effect remain false without scoped Owner-GO."
+  },
+  "owner_decision_required": false,
+  "next_genuine_blocker": null,
+  "primary_evidence_refs": [
+    "config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json",
+    "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_producer_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_live_account_bound_and_instrument_scope_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/step_29p_capital_risk_admissibility_v1.py",
+    "src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/proof_v1.py"
+  ]
+}

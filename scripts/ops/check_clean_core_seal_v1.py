@@ -240,7 +240,6 @@ CENSUS_MEMBERS: tuple[dict[str, Any], ...] = (
                 "_canonical_scope_event_to_scope_event",
                 "_resolve_c3_confirmation_binding_v1",
                 "evaluate_elementary_direction_from_observation_acceptance_v1",
-                "prior_presence_from_dual_carrier_v1",
                 "apply_single_lane_confirmation_lifecycle_v1",
                 "evaluate_directional_assessment_with_confirmation_progress_v1",
                 "active_single_lane_presence_v1",

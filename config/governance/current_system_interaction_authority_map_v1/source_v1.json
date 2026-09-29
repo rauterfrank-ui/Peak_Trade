@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "d9f33a62f43f036932ed7c8bca648c71997dd162",
+  "baseline_sha": "744a9c896f53d33b2d3c24977da1891a2e8549f1",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -401,6 +401,7 @@
         "docs/ops/specs/EVIDENCE_INPUT_PLANE_P5_PRODUCER_PRODUCTIVE_INGRESS_V1.md"
       ],
       "code_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
         "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
         "src/governance/master_v2_double_play_evidence_input_plane_p0_evidence_seam_census_v1.py",
@@ -408,10 +409,15 @@
         "src/governance/master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1/__init__.py",
         "src/governance/master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1/__init__.py",
         "src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/__init__.py",
-        "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/__init__.py"
+        "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/__init__.py",
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/feature_regime_pipeline_v1.py",
+        "src/trading/master_v2/canonical_volatility_productive_runtime_cmc_typed_binding_v1.py"
       ],
       "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "tests/ops/test_current_productive_f1_m9_clean_checkout_bootstrap_v1.py",
+        "tests/ops/test_current_productive_f1_m9_seam_master_v2_cold_start_restart_v1.py",
         "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "docs/governance/MASTER_V2_DOUBLE_PLAY_EVIDENCE_INPUT_PLANE_P0_EVIDENCE_SEAM_CENSUS_V1.md",
@@ -432,7 +438,9 @@
         "tests/governance/test_master_v2_double_play_evidence_input_plane_p2_evidence_adjudicator_runtime_v1.py",
         "tests/governance/test_master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1.py",
         "tests/governance/test_master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1.py",
-        "tests/governance/test_master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.py"
+        "tests/governance/test_master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.py",
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/feature_regime_pipeline_v1.py",
+        "src/trading/master_v2/canonical_volatility_productive_runtime_cmc_typed_binding_v1.py"
       ]
     },
     {
@@ -480,7 +488,7 @@
     {
       "id": "full_autonomy_n5",
       "tier": "FIRST_CLASS",
-      "role": "Compose-only orchestrator. N greater than 1 is disabled. No selection, trading, or execution authority.",
+      "role": "Compose-only orchestrator. N greater than 1 is disabled. No selection, trading, or execution authority. ANNOTATION: N5 lane-local Cap-7.2 activation via runtime_n5_completion_v1 is not SSF LiveExecutionPort join (see ssf_cap72_host_live_execution_port_join_v1). PRODUCTIVE_MF_AUTHORIZATION=false.",
       "canonical_owner_ref": "src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1",
       "authority_class": "CANONICAL_AUTHORITY",
       "lifecycle": "PRODUCTIVE_COMPOSE_IMPLEMENTED",
@@ -511,19 +519,96 @@
       "contract_refs": [],
       "code_refs": [
         "src/governance/capital_risk_sizing_v1.py",
-        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py"
+        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
+        "src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py",
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py"
       ],
       "evidence_refs": [
         "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
         "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
         "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
-        "src/governance/capital_risk_sizing_v1.py"
+        "src/governance/capital_risk_sizing_v1.py",
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py"
+      ]
+    },
+    {
+      "id": "governed_productive_account_equity_authority_v1",
+      "tier": "FIRST_CLASS",
+      "role": "Full-Core B05 account-equity authority producer owner. Produces typed available-for-sizing equity for enter-live-29p CRS bind; not treasury lifecycle capital; fail-closed without trusted GET witness.",
+      "canonical_owner_ref": "ops.governed_productive_account_equity_authority_producer_v1",
+      "authority_class": "CANONICAL_AUTHORITY",
+      "lifecycle": "RATIFIED_PRODUCTIVE_N1_BINDING",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/final_current_authority_closure_limit_equity_and_layered_safety_ratification_v1.json"
+      ],
+      "code_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/constants_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
+      ],
+      "evidence_refs": [
+        "config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json",
+        "config/governance/final_current_authority_closure_limit_equity_and_layered_safety_ratification_v1.json",
+        "tests/governance/test_final_current_authority_closure_limit_equity_and_layered_safety_ratification_v1.py"
+      ]
+    },
+    {
+      "id": "governed_productive_reference_price_authority_v1",
+      "tier": "FIRST_CLASS",
+      "role": "Full-Core B05 reference-price authority producer owner (mark_price semantics). Feeds CRS quantity path on enter-live-29p; INDEX_PX is not reference-price authority.",
+      "canonical_owner_ref": "ops.governed_productive_reference_price_authority_producer_v1",
+      "authority_class": "CANONICAL_AUTHORITY",
+      "lifecycle": "RATIFIED_PRODUCTIVE_BINDING",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json"
+      ],
+      "code_refs": [
+        "src/ops/governed_productive_reference_price_authority_producer_v1/constants_v1.py",
+        "src/ops/governed_productive_reference_price_authority_producer_v1/current_productive_mv2_mark_reference_price_producer_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
+      ],
+      "evidence_refs": [
+        "config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json",
+        "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json"
+      ]
+    },
+    {
+      "id": "governed_productive_instrument_metadata_authority_v1",
+      "tier": "FIRST_CLASS",
+      "role": "Full-Core B05 instrument-metadata authority producer owner (OKX instruments row). Quantity constraints for CRS on enter-live-29p; offline replay literals remain non-CURRENT on productive join.",
+      "canonical_owner_ref": "ops.governed_productive_instrument_metadata_authority_producer_v1",
+      "authority_class": "CANONICAL_AUTHORITY",
+      "lifecycle": "RATIFIED_PRODUCTIVE_BINDING",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json"
+      ],
+      "code_refs": [
+        "src/ops/governed_productive_instrument_metadata_authority_producer_v1/constants_v1.py",
+        "src/ops/governed_productive_instrument_metadata_authority_producer_v1/current_productive_okx_instruments_row_producer_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
+      ],
+      "evidence_refs": [
+        "config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json",
+        "config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json"
       ]
     },
     {
       "id": "treasury_29p",
       "tier": "FIRST_CLASS",
-      "role": "REPRESENTATION=TREASURY_LIFECYCLE_SUBDOMAIN; not Full-Core B05 equity authority. Treasury Phase 1-3 + C08 semantic closeout bound per runbook; C08 cannot mint risk admissibility; Full-Core account-equity chain closed separately (#6817).",
+      "role": "REPRESENTATION=TREASURY_LIFECYCLE_SUBDOMAIN; not Full-Core B05 equity authority. Treasury Phase 1-3 + C08 semantic closeout bound per runbook; C08 cannot mint risk admissibility; Full-Core account-equity chain closed separately (#6817). PR #6953 navigation: single-source handoff module wired to enter-live-29p join; gap_dag EARLIEST pin converged to Treasury handoff GET; no POST/credential authority.",
       "canonical_owner_ref": "TREASURY_PHASE_BINDINGS_NAVIGATION_ONLY",
       "authority_class": "NAVIGATION_INDEX",
       "lifecycle": "C08_SEMANTIC_CLOSEOUT_BOUND",
@@ -535,12 +620,14 @@
         "docs/ops/specs/C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL_SEMANTIC_AUTHORITY_CLOSEOUT_V1.md"
       ],
       "code_refs": [
-        "src/ops/governed_productive_account_equity_authority_producer_v1/__init__.py"
+        "src/ops/governed_productive_account_equity_authority_producer_v1/__init__.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py"
       ],
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "docs/ops/specs/C08_TREASURY_OBSERVED_OR_RECONCILED_CAPITAL_SEMANTIC_AUTHORITY_CLOSEOUT_V1.md",
-        "config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json"
+        "config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py"
       ]
     },
     {
@@ -567,21 +654,30 @@
     {
       "id": "safety",
       "tier": "FIRST_CLASS",
-      "role": "Offline safety boundary is visible on the cycle. A single productive safety owner is not closed. Kill-switch current binding is unknown.",
-      "canonical_owner_ref": "UNCLOSED_SEE_OPEN_RECORD:safety_owner_unclosed",
-      "authority_class": "PARTIAL",
-      "lifecycle": "BOUNDARY_VISIBLE_OWNER_UNCLOSED",
-      "status": "PARTIAL",
+      "role": "Layered CURRENT safety authorities ratified (no umbrella runtime owner): replay safety-kernel veto, durable kill-switch FILEGATE, KILL_ALL SideState block, flatten exact-object plan. Cap 11.5 is not productive safety SSOT.",
+      "canonical_owner_ref": "LAYERED:DECISION=MASTER_V2_PLUS_DOUBLE_PLAY;REPLAY_SAFETY_VETO=trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0;DURABLE_KILL_SWITCH=src.ops.gates.risk_gate+durable_filegate_join_v1;KILL_ALL=DoublePlay.SideState;FLATTEN=current_productive_exact_object_flatten_plan_v1",
+      "authority_class": "CANONICAL_AUTHORITY",
+      "lifecycle": "LAYERED_SAFETY_RATIFIED",
+      "status": "PROVEN_CURRENT",
       "runbook_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ],
-      "contract_refs": [],
+      "contract_refs": [
+        "config/governance/final_current_authority_closure_limit_equity_and_layered_safety_ratification_v1.json"
+      ],
       "code_refs": [
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py",
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py"
       ],
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py",
+        "src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_exact_object_flatten_plan_v1.py"
       ]
     },
     {
@@ -597,31 +693,38 @@
       ],
       "contract_refs": [],
       "code_refs": [
-        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py"
+        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py"
       ],
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py"
       ]
     },
     {
       "id": "execution_external_effect",
       "tier": "FIRST_CLASS",
-      "role": "External effect and POST remain false on productive cycle terminals. Receives NO_EXECUTABLE and PRE_EXTERNAL rollups; must not reinterpret HOLD as POST failure.",
+      "role": "Layered external-effect terminal: PRE_EXTERNAL and NO_EXECUTABLE rollups; standing EXTERNAL_EFFECT_AUTHORIZED/POST_ALLOWED/REAL_VENUE_POST_ALLOWED remain false; LIVE_AUTHORIZED standing predicates on Full-Core are admission-only and do not authorize POST. Single owner full_core_live_path_composition_root_v1; no competing external-effect authority.",
       "canonical_owner_ref": "full_core_live_path_composition_root_v1",
-      "authority_class": "CONFLICTING",
+      "authority_class": "CANONICAL_AUTHORITY",
       "lifecycle": "EXTERNAL_EFFECT_FALSE",
-      "status": "CONFLICTING",
+      "status": "PARTIAL",
       "runbook_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ],
       "contract_refs": [],
       "code_refs": [
-        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py"
+        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
+        "tests/governance/test_external_effect_boundary_forensic_review_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py"
       ],
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "config/governance/external_effect_authorization_policy_v1_record.json",
+        "tests/governance/test_external_effect_boundary_forensic_review_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py"
       ]
     },
     {
@@ -642,6 +745,7 @@
       ],
       "evidence_refs": [
         "scripts/ops/primary_evidence_retention_v0.py",
+        "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py",
         "tests/ops/test_bounded_observation_review_durable_primary_evidence_contract_v0.py"
       ]
     },
@@ -860,11 +964,34 @@
       ],
       "contract_refs": [],
       "code_refs": [
-        "src/ops/stateful_confirmation_and_c1_productive_binding_v1/constants_v1.py"
+        "src/ops/stateful_confirmation_and_c1_productive_binding_v1/constants_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py"
       ],
       "evidence_refs": [
         "src/ops/stateful_confirmation_and_c1_productive_binding_v1/constants_v1.py",
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py",
+        "tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py"
+      ]
+    },
+    {
+      "id": "current_productive_sidestate_confirmation_cursor_v1",
+      "tier": "INTERMEDIATE",
+      "role": "Current productive durable side-state / confirmation cursor floor seam. Consumes/writes cursor state for MV2 path; not a trading-decision or selection owner.",
+      "canonical_owner_ref": "ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1",
+      "authority_class": "NONE",
+      "lifecycle": "CURSOR_FLOOR_SEAM",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [],
+      "code_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py"
+      ],
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py",
+        "tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py"
       ]
     },
     {
@@ -889,8 +1016,8 @@
     {
       "id": "governed_cycle",
       "tier": "INTERMEDIATE",
-      "role": "Exactly-one governed cycle orchestrator to PRE_EXTERNAL_EFFECT or VALID_NO_TRADE_TERMINAL. HOLD_CLOSED is a valid completed disposition, not a POST/failure path. Continuous run unauthorized.",
-      "canonical_owner_ref": "governed_continuous_cycle_orchestrator_v1",
+      "role": "S5 exactly-one current productive governed cycle orchestrator (run_current_productive_governed_cycle_v1) to PRE_EXTERNAL_EFFECT or VALID_NO_TRADE_TERMINAL. HOLD_CLOSED is a valid completed disposition, not POST/failure. S6 bounded continuous progression is current_continuous_run_policy + current_productive_governed_continuous_cycle_orchestrator_v1 only; continuous run unauthorized without that policy. Offline persistent Natural-ENTER convergence (fixed S8 lane-root through S6/S7 to PRE_EXTERNAL) is current_productive_persistent_natural_enter_convergence_v1 with CONTINUOUS_RUN_AUTHORIZED=false and POST statically unreachable.",
+      "canonical_owner_ref": "run_current_productive_governed_cycle_v1",
       "authority_class": "CANONICAL_AUTHORITY",
       "lifecycle": "CONTINUOUS_RUN_UNAUTHORIZED",
       "status": "PROVEN_CURRENT",
@@ -899,11 +1026,17 @@
       ],
       "contract_refs": [],
       "code_refs": [
-        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py"
+        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py"
       ],
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+        "tests/ops/test_full_core_current_productive_governed_cycle_orchestrator_v1.py",
+        "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py"
       ]
     },
     {
@@ -1063,6 +1196,7 @@
       ],
       "code_refs": [
         "src/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1.py",
+        "src/governance/f1_m9_productive_apply_durable_ledger_paths_v1.py",
         "src/governance/f1_m9_productive_runtime_apply_start_owner_binding_v1.py",
         "src/governance/f1_m9_productive_apply_execution_boundary_v1.py"
       ],
@@ -1097,6 +1231,280 @@
         "tests/governance/test_governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1.py",
         "config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1_decision_v1.json",
         "config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_wp_v1_owner_decision_v1.json"
+      ]
+    },
+    {
+      "id": "current_productive_activation_policy",
+      "tier": "INTERMEDIATE",
+      "role": "CURRENT Productive Activation policy: bounded PRE_EXTERNAL runtime admission; F1/M9 consumer gate; no continuous run or external effect.",
+      "canonical_owner_ref": "current_productive_activation_policy_v1",
+      "authority_class": "PARTIAL",
+      "lifecycle": "POLICY_AUTHORIZED_RUNTIME_ADMISSION_BOUND",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/current_productive_activation_policy_v1.py",
+        "src/governance/governed_current_productive_activation_policy_closure_v1.py",
+        "src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/governance/test_current_productive_activation_policy_v1.py",
+        "config/governance/current_productive_activation_policy_v1_record.json",
+        "config/governance/current_productive_activation_policy_owner_go_v1_decision.json"
+      ]
+    },
+    {
+      "id": "current_continuous_run_policy",
+      "tier": "INTERMEDIATE",
+      "role": "CURRENT Continuous Run policy: governed repeated PRE_EXTERNAL-bounded productive cycles via S6 orchestrator binding; requires valid Productive Activation; no external effect.",
+      "canonical_owner_ref": "current_continuous_run_policy_v1",
+      "authority_class": "PARTIAL",
+      "lifecycle": "POLICY_AUTHORIZED_CONTINUOUS_RUNTIME_ADMISSION_BOUND",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/CURRENT_CONTINUOUS_RUN_POLICY_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/current_continuous_run_policy_v1.py",
+        "src/governance/current_continuous_run_runtime_binding_v1.py",
+        "src/governance/governed_current_continuous_run_policy_closure_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/governance/test_current_continuous_run_policy_v1.py",
+        "config/governance/current_continuous_run_policy_v1_record.json",
+        "config/governance/current_continuous_run_policy_owner_go_v1_decision.json"
+      ]
+    },
+    {
+      "id": "external_effect_boundary_forensic_review",
+      "tier": "INTERMEDIATE",
+      "role": "Post-#6892 External Effect boundary forensic census + simulated gate proof; PRE_EXTERNAL reachability does not mint external effect.",
+      "canonical_owner_ref": "external_effect_boundary_forensic_review_v1",
+      "authority_class": "NONE",
+      "lifecycle": "FORENSIC_REVIEW_COMPLETE_FAIL_CLOSED",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1.md",
+        "docs/ops/specs/PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/external_effect_boundary_forensic_review_v1/proof_v1.py",
+        "src/governance/governed_external_effect_boundary_forensic_review_closure_v1.py",
+        "src/governance/governed_current_productive_chain_pre_external_to_external_effect_boundary_closure_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_gate_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/governance/test_external_effect_boundary_forensic_review_v1.py",
+        "config/governance/external_effect_boundary_forensic_review_v1_decision_v1.json",
+        "config/governance/external_effect_boundary_forensic_review_wp_v1_owner_decision_v1.json"
+      ]
+    },
+    {
+      "id": "external_effect_authorization_policy",
+      "tier": "INTERMEDIATE",
+      "role": "External Effect authorization policy: governed PRE_EXTERNAL → standing gate seam binding; standing flags remain fail-closed.",
+      "canonical_owner_ref": "external_effect_authorization_policy_v1",
+      "authority_class": "PARTIAL",
+      "lifecycle": "POLICY_AUTHORIZED_GATE_SEAM_BOUND",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/EXTERNAL_EFFECT_AUTHORIZATION_POLICY_V1.md",
+        "docs/ops/specs/EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1.md",
+        "docs/ops/specs/PRE_EXTERNAL_TO_EXTERNAL_EFFECT_BOUNDARY_BOUNDED_WP_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/external_effect_authorization_policy_v1.py",
+        "src/governance/external_effect_authorization_policy_gate_binding_v1.py",
+        "src/governance/governed_external_effect_authorization_policy_closure_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_gate_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/governance/test_external_effect_authorization_policy_v1.py",
+        "config/governance/external_effect_authorization_policy_v1_record.json",
+        "config/governance/external_effect_authorization_policy_owner_go_v1_decision.json",
+        "config/governance/external_effect_authorization_policy_v1_decision_v1.json"
+      ]
+    },
+    {
+      "id": "standing_external_effect_lift_policy",
+      "tier": "INTERMEDIATE",
+      "role": "Standing External Effect Lift: governed parameterized gate standing on #6894 policy; import-time constant and envelope POST remain fail-closed.",
+      "canonical_owner_ref": "standing_external_effect_lift_policy_v1",
+      "authority_class": "PARTIAL",
+      "lifecycle": "POLICY_AUTHORIZED_STANDING_LIFT_BOUND",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1.md",
+        "docs/ops/specs/EXTERNAL_EFFECT_AUTHORIZATION_POLICY_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/standing_external_effect_lift_policy_v1.py",
+        "src/governance/standing_external_effect_lift_gate_binding_v1.py",
+        "src/governance/governed_standing_external_effect_lift_policy_closure_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_gate_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/governance/test_standing_external_effect_lift_policy_v1.py",
+        "config/governance/standing_external_effect_lift_policy_v1_record.json",
+        "config/governance/standing_external_effect_lift_owner_go_v1_decision.json",
+        "config/governance/standing_external_effect_lift_policy_v1_decision_v1.json"
+      ]
+    },
+    {
+      "id": "external_effect_permit_mint_policy",
+      "tier": "INTERMEDIATE",
+      "role": "External Effect Permit Mint: governed policy admission on #6895 standing lift; runtime mint/credential/POST remain fail-closed.",
+      "canonical_owner_ref": "external_effect_permit_mint_policy_v1",
+      "authority_class": "PARTIAL",
+      "lifecycle": "POLICY_AUTHORIZED_PERMIT_MINT_ADMISSION_BOUND",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/EXTERNAL_EFFECT_PERMIT_MINT_POLICY_V1.md",
+        "docs/ops/specs/STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/external_effect_permit_mint_policy_v1.py",
+        "src/governance/external_effect_permit_mint_gate_binding_v1.py",
+        "src/governance/governed_external_effect_permit_mint_policy_closure_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/governance/test_external_effect_permit_mint_policy_v1.py",
+        "config/governance/external_effect_permit_mint_policy_v1_record.json",
+        "config/governance/external_effect_permit_mint_owner_go_v1_decision.json",
+        "config/governance/external_effect_permit_mint_policy_v1_decision_v1.json"
+      ]
+    },
+    {
+      "id": "checkout_independent_credential_access_policy",
+      "tier": "INTERMEDIATE",
+      "role": "Checkout-independent credential access: governed policy admission on #6896 permit mint; no real secret load/Keychain/POST.",
+      "canonical_owner_ref": "checkout_independent_credential_access_policy_v1",
+      "authority_class": "PARTIAL",
+      "lifecycle": "POLICY_AUTHORIZED_CREDENTIAL_ACCESS_ADMISSION_BOUND",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/CHECKOUT_INDEPENDENT_CREDENTIAL_ACCESS_POLICY_V1.md",
+        "docs/ops/specs/EXTERNAL_EFFECT_PERMIT_MINT_POLICY_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/checkout_independent_credential_access_policy_v1.py",
+        "src/governance/checkout_independent_credential_access_gate_binding_v1.py",
+        "src/governance/governed_checkout_independent_credential_access_policy_closure_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_capability_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/governance/test_checkout_independent_credential_access_policy_v1.py",
+        "config/governance/checkout_independent_credential_access_policy_v1_record.json",
+        "config/governance/checkout_independent_credential_access_owner_go_v1_decision.json",
+        "config/governance/checkout_independent_credential_access_policy_v1_decision_v1.json"
+      ]
+    },
+    {
+      "id": "real_keychain_access_or_credential_material_load_policy",
+      "tier": "INTERMEDIATE",
+      "role": "Real Keychain / credential material load: governed ephemeral acquisition on #6897; standing pins false; no signing/POST.",
+      "canonical_owner_ref": "real_keychain_access_or_credential_material_load_policy_v1",
+      "authority_class": "PARTIAL",
+      "lifecycle": "POLICY_AUTHORIZED_MATERIAL_LOAD_BOUND",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/REAL_KEYCHAIN_ACCESS_OR_CREDENTIAL_MATERIAL_LOAD_POLICY_V1.md",
+        "docs/ops/specs/CHECKOUT_INDEPENDENT_CREDENTIAL_ACCESS_POLICY_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/real_keychain_access_or_credential_material_load_policy_v1.py",
+        "src/governance/real_keychain_access_governed_credential_material_acquisition_v1.py",
+        "src/governance/real_keychain_access_or_credential_material_load_gate_binding_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_os_native_store_acquisition_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/governance/test_real_keychain_access_or_credential_material_load_policy_v1.py",
+        "config/governance/real_keychain_access_or_credential_material_load_policy_v1_record.json",
+        "config/governance/real_keychain_access_or_credential_material_load_owner_go_v1_decision.json",
+        "config/governance/real_keychain_access_or_credential_material_load_policy_v1_decision_v1.json"
+      ]
+    },
+    {
+      "id": "current_productive_k1_opaque_signing_handle_pre_post_policy",
+      "tier": "INTERMEDIATE",
+      "role": "K1 opaque signing handle PRE-POST: governed Keychain → request signing → PRE-POST envelope; POST admission fail-closed.",
+      "canonical_owner_ref": "current_productive_k1_opaque_signing_handle_pre_post_policy_v1",
+      "authority_class": "PARTIAL",
+      "lifecycle": "POLICY_AUTHORIZED_K1_PRE_POST_BOUND",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1.md",
+        "docs/ops/specs/REAL_KEYCHAIN_ACCESS_OR_CREDENTIAL_MATERIAL_LOAD_POLICY_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/current_productive_k1_opaque_signing_handle_pre_post_policy_v1.py",
+        "src/governance/k1_opaque_signing_handle_governed_construction_v1.py",
+        "src/governance/current_productive_k1_pre_post_request_envelope_v1.py",
+        "src/governance/current_productive_k1_pre_post_productive_chain_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/governance/test_current_productive_k1_opaque_signing_handle_pre_post_policy_v1.py",
+        "config/governance/current_productive_k1_opaque_signing_handle_pre_post_policy_v1_record.json",
+        "config/governance/current_productive_k1_opaque_signing_handle_pre_post_owner_go_v1_decision.json",
+        "config/governance/current_productive_k1_opaque_signing_handle_pre_post_policy_v1_decision_v1.json"
+      ]
+    },
+    {
+      "id": "productive_activation_boundary_forensic_review",
+      "tier": "INTERMEDIATE",
+      "role": "Post-#6889 Productive Activation boundary forensic census + static proof; consumer reachability does not mint activation.",
+      "canonical_owner_ref": "productive_activation_boundary_forensic_review_v1",
+      "authority_class": "NONE",
+      "lifecycle": "FORENSIC_REVIEW_COMPLETE_FAIL_CLOSED",
+      "status": "PARTIAL",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1.md"
+      ],
+      "code_refs": [
+        "src/governance/productive_activation_boundary_forensic_review_v1/proof_v1.py",
+        "src/governance/governed_productive_activation_boundary_forensic_review_closure_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/governance/test_productive_activation_boundary_forensic_review_v1.py",
+        "config/governance/productive_activation_boundary_forensic_review_v1_decision_v1.json",
+        "config/governance/productive_activation_boundary_forensic_review_wp_v1_owner_decision_v1.json"
       ]
     },
     {
@@ -1143,7 +1551,7 @@
     {
       "id": "host_join_send_adapter",
       "tier": "INTERMEDIATE",
-      "role": "Host-join readiness and send-capable adapter pins are not external effect.",
+      "role": "Host-join readiness and send-capable adapter pins are not external effect. N5 n1_host_join_readiness compose surface; SSF Cap-7.2→LiveExecutionPort transition represented separately (ssf_cap72_host_live_execution_port_join_v1).",
       "canonical_owner_ref": "n1_host_join_readiness_v1",
       "authority_class": "CANONICAL_AUTHORITY",
       "lifecycle": "NOT_EXTERNAL_EFFECT",
@@ -1296,6 +1704,145 @@
         "src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
         "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_G17_DK_MV2_TYPED_VOL_HOT_PATH_JOIN_V1.md"
+      ]
+    },
+    {
+      "id": "eea_universe_inventory_acquisition_v1",
+      "tier": "INTERMEDIATE",
+      "role": "REPRESENTATION=EXTERNAL_EFFECT_READ_BOUNDARY; distinct EEA public READ acquisition layer (GET instruments+mark; post_count=0). Injects payloads only; Cap-2.1 governed_futures_universe_producer remains NO-NETWORK. No selection, POST, credential, or Cap-2.1 network ownership.",
+      "canonical_owner_ref": "ops.current_productive_eea_universe_inventory_acquisition_v1",
+      "authority_class": "NONE",
+      "lifecycle": "READ_INGRESS_ONLY",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P_V1.md"
+      ],
+      "code_refs": [
+        "src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py",
+        "src/ops/current_productive_eea_universe_inventory_acquisition_v1/constants_v1.py",
+        "src/ops/current_productive_eea_universe_inventory_acquisition_v1/transport_v1.py"
+      ],
+      "evidence_refs": [
+        "src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
+        "tests/ops/test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py"
+      ]
+    },
+    {
+      "id": "cap21_cap23_productive_persistence_v1",
+      "tier": "INTERMEDIATE",
+      "role": "Shared Cap-2.1→2.3 productive persistence orchestration (run_cap21_to_cap23_persist_productive_v1). Consumes injected acquisition payloads; invokes existing Cap-2.1/2.2/2.3 producers only. No network I/O here.",
+      "canonical_owner_ref": "ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap21_to_cap23_productive_persistence_v1",
+      "authority_class": "NONE",
+      "lifecycle": "PERSISTENCE_ORCHESTRATION_ONLY",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [],
+      "code_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py"
+      ],
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
+        "src/ops/single_selected_future_policy_v1/producer_v1.py"
+      ]
+    },
+    {
+      "id": "ssf_cap72_host_live_execution_port_join_v1",
+      "tier": "INTERMEDIATE",
+      "role": "REPRESENTATION=SSF_FULL_CORE_CAP72_TRANSITION; SSF path host_binding_v1→LiveExecutionPortV1 via join_cap72_host_to_live_execution_port_v1. Uses canonical HOST_JOIN_OWNER semantics; not LIVE_AUTHORIZED, not POST, not wire-send. Distinct from N5 lane-local Cap-7.2 activation (see full_autonomy_n5 annotation).",
+      "canonical_owner_ref": "stateful_no_order_host_join_v1",
+      "authority_class": "NONE",
+      "lifecycle": "HOST_JOIN_NOT_EXTERNAL_EFFECT",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION_V1.md"
+      ],
+      "code_refs": [
+        "src/ops/single_future_stateful_no_order_runtime_activation_v1/host_binding_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap72_host_join_to_live_execution_port_v1.py"
+      ],
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py",
+        "tests/ops/test_full_core_current_productive_cap72_host_join_to_live_execution_port_v1.py"
+      ]
+    },
+    {
+      "id": "n5_durable_lane_assignment_persistence_v1",
+      "tier": "INTERMEDIATE",
+      "role": "REPRESENTATION=STATE_WRITER; N=5 occupied-lane durable lane-assignment checkpoint (DurableLaneAssignmentSingleWriterV1). Single-writer lock semantics; no Cap-2.3/Cap-2.4 selection or binding authority. PRODUCTIVE_MF_AUTHORIZATION remains false at orchestrator constants.",
+      "canonical_owner_ref": "ops.current_mf_n5_durable_lane_assignment_persistence_v1",
+      "authority_class": "NONE",
+      "lifecycle": "LANE_CHECKPOINT_PERSISTENCE",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [],
+      "code_refs": [
+        "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/single_writer_v1.py",
+        "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py",
+        "src/ops/current_mf_n5_recovered_topology_consumer_join_v1/consumer_v1.py"
+      ],
+      "evidence_refs": [
+        "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/single_writer_v1.py",
+        "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py"
+      ]
+    },
+    {
+      "id": "cap24_productivity_state_carrier_v1",
+      "tier": "INTERMEDIATE",
+      "role": "REPRESENTATION=STATE_CARRIER; productive filesystem carrier runtime/current_productive/cap24_selection_state. Cap-2.3 remains sole selection decision authority; writers are cap21→cap23 orchestration only (EEA execute, cap24 canonical writer Owner-GO). No rerank/reselect authority.",
+      "canonical_owner_ref": "ops.single_selected_future_policy_v1",
+      "authority_class": "NONE",
+      "lifecycle": "PRODUCTIVITY_ROOT_CARRIER",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER_V1.md"
+      ],
+      "code_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py"
+      ],
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER_V1.md"
+      ]
+    },
+    {
+      "id": "current_productive_native_full_cycle_host_v1",
+      "tier": "INTERMEDIATE",
+      "role": "Compose-only native full-cycle host: EEA Cap21–Cap24 typed bound handoff, production MV2 state advance, Full-Core PRE_EXTERNAL closure. AUTHORITY=NONE; no rerank/reselect/sizing/trading/POST authority.",
+      "canonical_owner_ref": "ops.governed_productive_account_equity_authority_producer_v1.current_productive_native_full_cycle_host_v1",
+      "authority_class": "NONE",
+      "lifecycle": "PRODUCTIVE_COMPOSITION_ORCHESTRATION",
+      "status": "PROVEN_CURRENT",
+      "runbook_refs": [
+        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+      ],
+      "contract_refs": [],
+      "code_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_native_full_cycle_host_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_layered_long_mv2_state_advance_for_pre_external_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_controlled_external_market_observation_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py"
+      ],
+      "evidence_refs": [
+        "tests/ops/test_current_productive_native_full_cycle_host_v1.py",
+        "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
+        "docs/system_atlas/entities/catalog.yaml"
       ]
     }
   ],
@@ -1812,7 +2359,7 @@
       "from_domain": "market_intelligence_forecast_calibration_offline_stack_d03",
       "to_domain": "learning_ddo",
       "flow_type": "DATA_FLOW",
-      "contract_or_payload": "forecast_outcome_join_v1 references N_BARS actual_outcome_ref only; NO_DUPLICATE_OUTCOME_TRUTH; normative N_BARS semantics unchanged",
+      "contract_or_payload": "forecast_outcome_join_v1 references N_BARS actual_outcome_ref only; NO_DUPLICATE_OUTCOME_TRUTH; normative N_BARS semantics unchanged | SEMANTIC_PAIR=mi_offline_compose_ddo_n_bars_outcome; DISTINCT_FROM=mi_offline_typed_export_to_learning_path",
       "producer": "market_intelligence_forecast_calibration_offline_stack_d03",
       "consumer": "learning_ddo",
       "authority_effect": "NONE",
@@ -1835,7 +2382,7 @@
       "from_domain": "market_intelligence_forecast_calibration_offline_stack_d03",
       "to_domain": "learning_ddo",
       "flow_type": "DATA_FLOW",
-      "contract_or_payload": "MARKET_INTELLIGENCE_LEARNING_EVIDENCE via mi_to_learning_evidence_bridge_v1 and mi_learning_evidence_learning_export_v1; DDO reducers unchanged; learning_evidence_export_v1 path routing only",
+      "contract_or_payload": "MARKET_INTELLIGENCE_LEARNING_EVIDENCE via mi_to_learning_evidence_bridge_v1 and mi_learning_evidence_learning_export_v1; DDO reducers unchanged; learning_evidence_export_v1 path routing only | SEMANTIC_PAIR=mi_offline_typed_export_to_learning_path; DISTINCT_FROM=mi_offline_compose_ddo_n_bars_outcome",
       "producer": "market_intelligence_forecast_calibration_offline_stack_d03",
       "consumer": "learning_ddo",
       "authority_effect": "NONE",
@@ -1860,7 +2407,7 @@
       "from_domain": "market_intelligence_forecast_calibration_offline_stack_d03",
       "to_domain": "optimization_universe",
       "flow_type": "DATA_FLOW",
-      "contract_or_payload": "MI-enriched M4 intake: market_intelligence_optimization_research_input_v1 + canonical_optimization_universe_mi_enriched_m4_intake_v1 → run_optimization_universe_experiment_plane_v1; PROPOSAL_ONLY; OPTIMIZATION_PRODUCTIVE_AUTHORITY NONE",
+      "contract_or_payload": "MI-enriched M4 intake: market_intelligence_optimization_research_input_v1 + canonical_optimization_universe_mi_enriched_m4_intake_v1 → run_optimization_universe_experiment_plane_v1; PROPOSAL_ONLY; OPTIMIZATION_PRODUCTIVE_AUTHORITY NONE | SEMANTIC_PAIR=mi_offline_to_optimization_research_input; DISTINCT_FROM=mi_offline_to_multi_cycle_m5_m8_replay",
       "producer": "market_intelligence_forecast_calibration_offline_stack_d03",
       "consumer": "optimization_universe",
       "authority_effect": "NONE",
@@ -1885,7 +2432,7 @@
       "from_domain": "market_intelligence_forecast_calibration_offline_stack_d03",
       "to_domain": "optimization_universe",
       "flow_type": "DATA_FLOW",
-      "contract_or_payload": "Phase 10 MI-crossing bounded multi-cycle offline replay: offline orchestrator MI-enriched M4 closure → M5 return → M6 meta ingest → M7 feedback → deterministic multi-cycle identity; SEARCH_EXECUTION_AUTHORIZED=false",
+      "contract_or_payload": "Phase 10 MI-crossing bounded multi-cycle offline replay: offline orchestrator MI-enriched M4 closure → M5 return → M6 meta ingest → M7 feedback → deterministic multi-cycle identity; SEARCH_EXECUTION_AUTHORIZED=false | SEMANTIC_PAIR=mi_offline_to_multi_cycle_m5_m8_replay; DISTINCT_FROM=mi_offline_to_optimization_research_input",
       "producer": "market_intelligence_forecast_calibration_offline_stack_d03",
       "consumer": "optimization_universe",
       "authority_effect": "NONE",
@@ -1979,12 +2526,12 @@
       "to_domain": "capital_risk_sizing",
       "flow_type": "CONSTRAINT_FLOW",
       "contract_or_payload": "CanonicalCoreRuntimeCapitalContextV0",
-      "producer": "current_productive_enter_live_29p_join_v1",
+      "producer": "ops.governed_productive_account_equity_authority_producer_v1.current_productive_enter_live_29p_join_v1",
       "consumer": "capital_risk_sizing",
       "authority_effect": "NONE",
-      "decision_effect": "WIRING_PRESENT_OWNER_CONFLICTING",
+      "decision_effect": "WIRING_PRESENT_B05_BIND_ON_ENTER_LIVE",
       "direct_or_indirect": "DIRECT",
-      "lifecycle": "CONFLICTING",
+      "lifecycle": "PARTIAL",
       "identity_binding": "CONTEXT_OBJECT",
       "temporal_binding": "UNKNOWN",
       "version_binding": "offline_replay_futures_metadata_v0",
@@ -2118,22 +2665,50 @@
       "from_domain": "treasury_29p",
       "to_domain": "capital_risk_sizing",
       "flow_type": "DATA_FLOW",
-      "contract_or_payload": "conditional treasury decrease join",
-      "producer": "treasury_29p",
-      "consumer": "capital_admission",
-      "authority_effect": "CONFLICTING",
-      "decision_effect": "DECREASE_NOT_MINT",
+      "contract_or_payload": "treasury single-source handoff then capital admission then step29p admissibility; treasury does not mint risk_admissible | SEMANTIC_PAIR=treasury_to_admission; DISTINCT_FROM=equity_value_unbound",
+      "producer": "current_productive_treasury_single_source_capital_handoff_v1",
+      "consumer": "evaluate_step_29p_capital_risk_admissibility_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "ADMISSION_EVAL_NOT_TREASURY_MINT",
       "direct_or_indirect": "DIRECT",
-      "lifecycle": "CONFLICTING",
-      "identity_binding": "OBSERVATION_GATED",
-      "temporal_binding": "UNKNOWN",
-      "version_binding": "UNKNOWN",
-      "provenance_binding": "RUNBOOK_WORDING_VERSUS_DECREASE_JOIN",
-      "promotion_required": "UNKNOWN",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "CREDENTIAL_BOUND_ACCOUNT_VENUE_SCOPE",
+      "temporal_binding": "DECISION_EPOCH_AND_FRESHNESS_GATED",
+      "version_binding": "current_productive_treasury_single_source_capital_handoff_v1",
+      "provenance_binding": "C08_SINGLE_SOURCE_THEN_B05_THEN_ADMISSIBILITY",
+      "promotion_required": "FALSE",
       "fail_closed": "TRUE",
       "evidence_refs": [
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
+        "config/governance/od_29p_normative_pack_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/step_29p_capital_risk_admissibility_v1.py",
+        "tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py"
+      ]
+    },
+    {
+      "id": "productive_ddo_offline_export_to_g2_primary_evidence",
+      "from_domain": "learning_ddo",
+      "to_domain": "bounded_runtime_primary_evidence",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "CASE_B_FORBIDDEN: productive MV2/N5 DDO offline export (ACCEPTED_OFFLINE_RESEARCH_INPUT) cannot become G2 primary evidence; anti-laundering | SEMANTIC_PAIR=productive_ddo_offline_export_to_g2_primary_evidence; DISTINCT_FROM=g2_primary_evidence_to_offline_projection",
+      "producer": "current_productive_master_v2_ddo_capture_to_offline_export_join_v1",
+      "consumer": "validate_durable_primary_evidence_root",
+      "authority_effect": "NONE",
+      "decision_effect": "BRIDGE_FORBIDDEN",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "CONFLICTING",
+      "identity_binding": "PRODUCTIVE_DDO_HANDOFF_NOT_PRIMARY_MANIFEST",
+      "temporal_binding": "UNKNOWN",
+      "version_binding": "governed_productive_learning_to_g2_primary_evidence_causal_closure_v1",
+      "provenance_binding": "LIFECYCLE_PROVENANCE_LAUNDERING_FORBIDDEN",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md",
+        "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md",
+        "src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py",
+        "tests/governance/test_governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py",
+        "config/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1_decision_v1.json"
       ]
     },
     {
@@ -2141,7 +2716,7 @@
       "from_domain": "bounded_runtime_primary_evidence",
       "to_domain": "g2_runtime_primary_offline_projection",
       "flow_type": "EVIDENCE_FLOW",
-      "contract_or_payload": "GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1; immutable primary archive in, projection artifact out",
+      "contract_or_payload": "GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1; immutable primary archive in, projection artifact out | DISTINCT_FROM=productive_ddo_offline_export_to_g2_primary_evidence (Case B: productive DDO export not admissible as primary evidence)",
       "producer": "validate_durable_primary_evidence_root",
       "consumer": "run_governed_runtime_primary_to_offline_observation_projection_v1",
       "authority_effect": "NONE",
@@ -2157,7 +2732,8 @@
       "evidence_refs": [
         "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md",
         "src/governance/governed_runtime_primary_to_offline_observation_projection_v1.py",
-        "scripts/ops/primary_evidence_retention_v0.py"
+        "scripts/ops/primary_evidence_retention_v0.py",
+        "src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py"
       ]
     },
     {
@@ -2189,7 +2765,7 @@
       "from_domain": "g2_runtime_learning_optimization_input_binding",
       "to_domain": "optimization_universe",
       "flow_type": "EVIDENCE_FLOW",
-      "contract_or_payload": "learning_evidence_record_v1 (runtime-derived) → CANONICAL_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_V1 ack",
+      "contract_or_payload": "learning_evidence_record_v1 (runtime-derived) → CANONICAL_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_V1 ack | SEMANTIC_PAIR=g2_binding_to_canonical_optimization_learning_input; DISTINCT_FROM=g2_runtime_to_m4_m8_real_mechanical_continuation",
       "producer": "bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_input_v1",
       "consumer": "validate_canonical_optimization_universe_learning_input_v1",
       "authority_effect": "NONE",
@@ -2213,7 +2789,7 @@
       "from_domain": "g2_runtime_primary_offline_projection",
       "to_domain": "optimization_universe",
       "flow_type": "EVIDENCE_FLOW",
-      "contract_or_payload": "M4–M8 return loop continuation (fixture-bounded DDO learning_evidence_export path only)",
+      "contract_or_payload": "M4–M8 return loop continuation (fixture-bounded DDO learning_evidence_export path only) | SEMANTIC_PAIR=g2_m4_m8_fixture_continuation; DISTINCT_FROM=real_runtime_g2_to_meta_optimization_feedback_continuation",
       "producer": "export_learning_evidence_from_state_v1",
       "consumer": "run_m4_m8_evidence_return_loop_v1",
       "authority_effect": "NONE",
@@ -2236,7 +2812,7 @@
       "from_domain": "g2_runtime_learning_optimization_input_binding",
       "to_domain": "optimization_universe",
       "flow_type": "EVIDENCE_FLOW",
-      "contract_or_payload": "runtime-derived learning_evidence_record_v1 → bounded offline M4 plane → run_m4_m8_evidence_return_loop_v1",
+      "contract_or_payload": "runtime-derived learning_evidence_record_v1 → bounded offline M4 plane → run_m4_m8_evidence_return_loop_v1 | SEMANTIC_PAIR=g2_runtime_to_m4_m8_real_mechanical_continuation; DISTINCT_FROM=g2_binding_to_canonical_optimization_learning_input",
       "producer": "run_g2_runtime_to_m4_m8_evidence_return_continuation_v1",
       "consumer": "run_m4_m8_evidence_return_loop_v1",
       "authority_effect": "NONE",
@@ -2308,7 +2884,7 @@
       "from_domain": "g2_runtime_primary_offline_projection",
       "to_domain": "optimization_universe",
       "flow_type": "EVIDENCE_FLOW",
-      "contract_or_payload": "run_real_runtime_g2_to_meta_learning_optimization_feedback_continuation_v1",
+      "contract_or_payload": "run_real_runtime_g2_to_meta_learning_optimization_feedback_continuation_v1 | SEMANTIC_PAIR=real_runtime_g2_to_meta_optimization_feedback_continuation; DISTINCT_FROM=g2_m4_m8_fixture_continuation",
       "producer": "run_real_runtime_g2_to_meta_learning_optimization_feedback_continuation_v1",
       "consumer": "validate_real_m4_m8_cycle_meta_optimization_feedback_join_v1",
       "authority_effect": "NONE",
@@ -2540,6 +3116,33 @@
       ]
     },
     {
+      "id": "f1_m9_canonical_durable_bootstrap_to_master_v2_seam",
+      "from_domain": "f1_m9_productive_runtime_threshold_consumer_wiring",
+      "to_domain": "mv2_double_play",
+      "flow_type": "CONSTRAINT_FLOW",
+      "contract_or_payload": "ensure_canonical_f1_m9_runtime_applied_seam_materialized_v1 then governed authorized_productive_parameter_seam for Master-V2 cycle admission",
+      "producer": "current_productive_f1_m9_canonical_durable_bootstrap_v1",
+      "consumer": "run_current_productive_master_v2_runtime_cycle_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "DURABLE_APPLY_SEAM_PRESENCE_FOR_THRESHOLD_CONSUMER_WIRING",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PARTIAL",
+      "identity_binding": "CANONICAL_F1_M9_LEDGER_PATHS_AND_APPLY_START_ONLY",
+      "temporal_binding": "600S_OWNER_THRESHOLD_LINEAGE",
+      "version_binding": "current_productive_f1_m9_canonical_durable_bootstrap/v1",
+      "provenance_binding": "NO_SECOND_AUTHORITY; NO_SYNTHETIC_SEAM; PRODUCTIVE_ACTIVATION_AUTHORIZED=false",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "src/governance/f1_m9_productive_apply_durable_ledger_paths_v1.py",
+        "src/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1.py",
+        "tests/ops/test_current_productive_f1_m9_clean_checkout_bootstrap_v1.py",
+        "tests/ops/test_current_productive_f1_m9_seam_master_v2_cold_start_restart_v1.py"
+      ]
+    },
+    {
       "id": "learning_capture",
       "from_domain": "mv2_double_play",
       "to_domain": "learning_ddo",
@@ -2552,13 +3155,18 @@
       "direct_or_indirect": "DIRECT",
       "lifecycle": "PARTIAL",
       "identity_binding": "UNKNOWN",
-      "temporal_binding": "HOST_DURABILITY_UNPROVEN",
+      "temporal_binding": "PRODUCTIVE_MV2_OPTIONAL_LEDGER_PARTIAL",
       "version_binding": "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
-      "provenance_binding": "HOST_LIST_NOT_CLOSED",
+      "provenance_binding": "PARTIAL_HOST_LIST_MV2_AND_BRIDGE",
       "promotion_required": "FALSE",
       "fail_closed": "TRUE",
       "evidence_refs": [
         "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "tests/ops/test_current_productive_master_v2_ddo_learning_capture_join_v1.py",
+        "tests/ops/test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ]
     },
@@ -2584,7 +3192,11 @@
         "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
         "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
         "src/experiments/canonical_optimization_universe_learning_input_v1.py",
-        "tests/experiments/test_canonical_optimization_universe_v1.py"
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
+        "tests/ops/test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
+        "tests/experiments/test_canonical_optimization_universe_v1.py",
+        "src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py",
+        "docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md"
       ]
     },
     {
@@ -2656,12 +3268,12 @@
     },
     {
       "id": "dashboard_read",
-      "from_domain": "execution_external_effect",
+      "from_domain": "governed_cycle",
       "to_domain": "presentation_dashboard",
       "flow_type": "PRESENTATION_FLOW",
       "contract_or_payload": "runtime SSOT to read model to dashboard",
-      "producer": "read_model",
-      "consumer": "dashboard",
+      "producer": "ops.canonical_read_model_and_market_dashboard_rebuild_v1",
+      "consumer": "presentation_dashboard",
       "authority_effect": "NONE",
       "decision_effect": "DISPLAY_ONLY",
       "direct_or_indirect": "INDIRECT",
@@ -2678,11 +3290,11 @@
     },
     {
       "id": "equity_value_unbound",
-      "from_domain": "treasury_29p",
+      "from_domain": "governed_productive_account_equity_authority_v1",
       "to_domain": "capital_risk_sizing",
       "flow_type": "DATA_FLOW",
-      "contract_or_payload": "DETAILS_USDC_AVAILEQ mapping option B",
-      "producer": "treasury_29p",
+      "contract_or_payload": "NON_FULL_CORE_OR_PRE_BIND mapping gap record; treasury is not B05 equity authority | SEMANTIC_PAIR=equity_value_unbound; DISTINCT_FROM=treasury_to_admission",
+      "producer": "ops.governed_productive_account_equity_authority_producer_v1",
       "consumer": "sizing_context",
       "authority_effect": "NONE",
       "decision_effect": "NUMERIC_VENUE_VALUE_UNBOUND",
@@ -2797,7 +3409,7 @@
       "from_domain": "full_autonomy_n5",
       "to_domain": "governed_cycle",
       "flow_type": "CONSTRAINT_FLOW",
-      "contract_or_payload": "invoke_occupied_lane_governed_cycle_n1_consumer_v1 per lane; terminal PRE_EXTERNAL or HOLD_CLOSED",
+      "contract_or_payload": "invoke_occupied_lane_governed_cycle_n1_consumer_v1 per lane; T2/S7 per-lane dispatch (T2_S7_USED; non-V5 EG); terminal PRE_EXTERNAL or HOLD_CLOSED",
       "producer": "compose_occupied_lane_n1_host_join_readiness_v1",
       "consumer": "run_current_productive_governed_cycle_v1",
       "authority_effect": "NONE",
@@ -2812,7 +3424,8 @@
       "fail_closed": "TRUE",
       "evidence_refs": [
         "src/ops/current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1/readiness_join_v1.py",
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py"
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+        "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/constants_v1.py"
       ]
     },
     {
@@ -2959,7 +3572,7 @@
       "from_domain": "mv2_double_play",
       "to_domain": "execution_external_effect",
       "flow_type": "CONSTRAINT_FLOW",
-      "contract_or_payload": "NO_EXECUTABLE_DECISION/HOLD/observe; DECISION_EXECUTION_ELIGIBLE=false; POST_COUNT=0; valid terminal not failure",
+      "contract_or_payload": "NO_EXECUTABLE_DECISION/HOLD/observe; DECISION_EXECUTION_ELIGIBLE=false; POST_COUNT=0; valid terminal not failure | SEMANTIC_PAIR=mv2_valid_no_trade_terminal; DISTINCT_FROM=mv2_executable_pre_external_terminal",
       "producer": "run_current_productive_master_v2_runtime_cycle_v1",
       "consumer": "execution_external_effect",
       "authority_effect": "NONE",
@@ -2983,7 +3596,7 @@
       "from_domain": "mv2_double_play",
       "to_domain": "execution_external_effect",
       "flow_type": "CONSTRAINT_FLOW",
-      "contract_or_payload": "EXECUTABLE_VENUE_PLAN_BOUND with eligibility true; PRE_EXTERNAL_EFFECT boundary; POST still unauthorized in cycle",
+      "contract_or_payload": "EXECUTABLE_VENUE_PLAN_BOUND with eligibility true; PRE_EXTERNAL_EFFECT boundary; POST still unauthorized in cycle | SEMANTIC_PAIR=mv2_executable_pre_external_terminal; DISTINCT_FROM=mv2_valid_no_trade_terminal",
       "producer": "run_current_productive_governed_cycle_v1",
       "consumer": "execution_external_effect",
       "authority_effect": "NONE",
@@ -3045,6 +3658,283 @@
       "evidence_refs": [
         "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
         "src/ops/productive_reconciliation_runtime_binding_v1/models_v1.py"
+      ]
+    },
+    {
+      "id": "eea_acquisition_to_cap21_cap23_persist",
+      "from_domain": "eea_universe_inventory_acquisition_v1",
+      "to_domain": "cap21_cap23_productive_persistence_v1",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "acquire_eea_universe_inventory_v1 → EeaUniverseAcquisitionResultV1 injected into run_cap21_to_cap23_persist_productive_v1; Cap-2.1 NO-NETWORK preserved",
+      "producer": "acquire_eea_universe_inventory_v1",
+      "consumer": "run_cap21_to_cap23_persist_productive_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "INJECTED_PAYLOAD_HANDOFF_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "ACQUISITION_PROVENANCE",
+      "temporal_binding": "SOURCE_EVENT_TIME",
+      "version_binding": "src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py",
+      "provenance_binding": "CAP21_NO_NETWORK_INVARIANT",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py"
+      ]
+    },
+    {
+      "id": "ssf_cap72_host_binding_to_live_execution_port",
+      "from_domain": "ssf_cap72_host_live_execution_port_join_v1",
+      "to_domain": "host_join_send_adapter",
+      "flow_type": "CONSTRAINT_FLOW",
+      "contract_or_payload": "HostActivationBindingV1 → LiveExecutionPortV1 via join_cap72_host_to_live_execution_port_v1; SSF Full-Core only; no POST/wire",
+      "producer": "join_cap72_host_to_live_execution_port_v1",
+      "consumer": "LiveExecutionPortV1",
+      "authority_effect": "NONE",
+      "decision_effect": "HOST_JOIN_NOT_EXECUTION_ELIGIBLE",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "HOST_JOIN_OWNER=stateful_no_order_host_join_v1",
+      "temporal_binding": "UNKNOWN",
+      "version_binding": "src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py",
+      "provenance_binding": "SSF_NOT_N5_LANE_LOCAL_ACTIVATION",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/single_future_stateful_no_order_runtime_activation_v1/host_binding_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py"
+      ]
+    },
+    {
+      "id": "fa_n5_orchestrator_to_lane_persistence",
+      "from_domain": "full_autonomy_n5",
+      "to_domain": "n5_durable_lane_assignment_persistence_v1",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "consume_recovered_isolated_lane_topology_v1 → persist_durable_lane_assignment_v1 (recovery re-entry included)",
+      "producer": "run_productive_full_autonomy_n5_runtime_orchestrator_v1",
+      "consumer": "persist_durable_lane_assignment_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "LANE_CHECKPOINT_PERSIST_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "SINGLE_WRITER_LOCK",
+      "temporal_binding": "UNKNOWN",
+      "version_binding": "src/ops/current_mf_n5_recovered_topology_consumer_join_v1/consumer_v1.py",
+      "provenance_binding": "PRODUCTIVE_MF_AUTHORIZATION_FALSE",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
+        "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py"
+      ]
+    },
+    {
+      "id": "cap21_cap23_persist_to_cap24_productivity_carrier",
+      "from_domain": "cap21_cap23_productive_persistence_v1",
+      "to_domain": "cap24_productivity_state_carrier_v1",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "Cap-2.3 decision authority unchanged; orchestrated snapshots published/read from runtime/current_productive/cap24_selection_state",
+      "producer": "run_cap21_to_cap23_persist_productive_v1",
+      "consumer": "cap24_productivity_state_carrier_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "STATE_CARRIER_PUBLISH_READ_ONLY_FOR_PRODUCTIVE_CHAIN",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "CAP23_SELECTION_AUTHORITY_UNCHANGED",
+      "temporal_binding": "UNKNOWN",
+      "version_binding": "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py",
+      "provenance_binding": "NO_SECOND_SELECTION_OWNER",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py"
+      ]
+    },
+    {
+      "id": "public_md_runtime_to_wp_c_convergence",
+      "from_domain": "peak_trade_public_market_data_runtime_wp_a",
+      "to_domain": "market_data_private_state_runtime_convergence_wp_c",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "converged_public_handoff_v1; WP-A canonical facts only; no competing transport consumer truth",
+      "producer": "peak_trade_public_market_data_runtime_wp_a",
+      "consumer": "market_data_private_state_runtime_convergence_wp_c",
+      "authority_effect": "NONE",
+      "decision_effect": "CONVERGENCE_INGRESS_ONLY_NO_AUTHORITY_MINT",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "WP_C_CONSUMER_CENSUS_BOUND",
+      "temporal_binding": "OFFLINE_CI_AND_PRODUCTIVE_HOST_WHEN_CONVERGED",
+      "version_binding": "MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1",
+      "provenance_binding": "src/ops/market_data_private_state_runtime_convergence_v1/public_handoff_v1.py",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/market_data_private_state_runtime_convergence_v1/public_handoff_v1.py",
+        "tests/ops/test_market_data_private_state_runtime_convergence_v1.py",
+        "src/ops/market_data_private_state_runtime_convergence_v1/consumer_census_v1.py"
+      ]
+    },
+    {
+      "id": "private_state_runtime_to_wp_c_convergence",
+      "from_domain": "okx_eea_private_account_state_runtime_wp_b",
+      "to_domain": "market_data_private_state_runtime_convergence_wp_c",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "converged_private_handoff_v1; WP-B normalized state only; no second productive truth",
+      "producer": "okx_eea_private_account_state_runtime_wp_b",
+      "consumer": "market_data_private_state_runtime_convergence_wp_c",
+      "authority_effect": "NONE",
+      "decision_effect": "CONVERGENCE_INGRESS_ONLY_NO_AUTHORITY_MINT",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "WP_C_CONSUMER_CENSUS_BOUND",
+      "temporal_binding": "OFFLINE_CI_AND_PRODUCTIVE_HOST_WHEN_CONVERGED",
+      "version_binding": "MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1",
+      "provenance_binding": "src/ops/market_data_private_state_runtime_convergence_v1/private_handoff_v1.py",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/market_data_private_state_runtime_convergence_v1/private_handoff_v1.py",
+        "tests/ops/test_market_data_private_state_runtime_convergence_v1.py",
+        "src/ops/market_data_private_state_runtime_convergence_v1/consumer_census_v1.py"
+      ]
+    },
+    {
+      "id": "sidestate_cursor_to_mv2_cycle",
+      "from_domain": "current_productive_sidestate_confirmation_cursor_v1",
+      "to_domain": "mv2_double_play",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "Durable cursor floor + side-state confirmation inputs for productive MV2 cycle",
+      "producer": "current_productive_sidestate_confirmation_cursor_v1",
+      "consumer": "mv2_double_play",
+      "authority_effect": "NONE",
+      "decision_effect": "CONTEXT_ONLY_NOT_DECISION_OWNER",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "CURSOR_FILENAME_AND_SIDE_STATE",
+      "temporal_binding": "C1_VENUE_EVENT_TIME_FLOOR",
+      "version_binding": "CURRENT_PRODUCTIVE_SIDESTATE_CONFIRMATION_CURSOR_V1",
+      "provenance_binding": "tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py",
+        "tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py"
+      ]
+    },
+    {
+      "id": "b05_account_equity_to_crs",
+      "from_domain": "governed_productive_account_equity_authority_v1",
+      "to_domain": "capital_risk_sizing",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "typed_29p_available_for_sizing_account_equity to four CRS slots via mv2_capital_context_rebind",
+      "producer": "ops.governed_productive_account_equity_authority_producer_v1",
+      "consumer": "src.governance.capital_risk_sizing_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "N1_PRODUCTIVE_BIND_ON_ENTER_LIVE_29P",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "TYPED_EQUITY_TO_CRS_LIMITS",
+      "temporal_binding": "FRESH_PRETRADE_GET_WITNESS",
+      "version_binding": "current_productive_mv2_capital_context_rebind_v1",
+      "provenance_binding": "B05_ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
+        "config/governance/final_current_authority_closure_limit_equity_and_layered_safety_ratification_v1.json"
+      ]
+    },
+    {
+      "id": "b05_reference_price_to_crs",
+      "from_domain": "governed_productive_reference_price_authority_v1",
+      "to_domain": "capital_risk_sizing",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "mark_price reference for quantity algebra",
+      "producer": "ops.governed_productive_reference_price_authority_producer_v1",
+      "consumer": "src.governance.capital_risk_sizing_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "REFERENCE_PRICE_FOR_SIZING",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "MARK_PRICE_SEMANTICS",
+      "temporal_binding": "FRESH_PRETRADE_GET_WITNESS",
+      "version_binding": "current_productive_mv2_mark_reference_price_producer_v1",
+      "provenance_binding": "B05_REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/governed_productive_reference_price_authority_producer_v1/current_productive_mv2_mark_reference_price_producer_v1.py",
+        "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json"
+      ]
+    },
+    {
+      "id": "b05_instrument_metadata_to_crs",
+      "from_domain": "governed_productive_instrument_metadata_authority_v1",
+      "to_domain": "capital_risk_sizing",
+      "flow_type": "DATA_FLOW",
+      "contract_or_payload": "OKX instruments row metadata for quantity constraints",
+      "producer": "ops.governed_productive_instrument_metadata_authority_producer_v1",
+      "consumer": "src.governance.capital_risk_sizing_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "INSTRUMENT_METADATA_FOR_SIZING",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "INSTRUMENTS_ROW",
+      "temporal_binding": "FRESH_PRETRADE_GET_WITNESS",
+      "version_binding": "current_productive_okx_instruments_row_producer_v1",
+      "provenance_binding": "B05_INSTRUMENT_METADATA_AUTHORITY_CHAIN_CLOSED",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/governed_productive_instrument_metadata_authority_producer_v1/current_productive_okx_instruments_row_producer_v1.py",
+        "config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json"
+      ]
+    },
+    {
+      "id": "fresh_pretrade_get_to_b05_producers",
+      "from_domain": "full_core_fresh_pretrade_runtime_get",
+      "to_domain": "governed_productive_account_equity_authority_v1",
+      "flow_type": "EVIDENCE_FLOW",
+      "contract_or_payload": "trusted venue GET payloads to B05 producer witness surfaces",
+      "producer": "fresh_pretrade_runtime_get_v1",
+      "consumer": "governed_productive_account_equity_authority_producer_v1",
+      "authority_effect": "NONE",
+      "decision_effect": "WITNESS_INPUT_ONLY",
+      "direct_or_indirect": "DIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "GET_TRANSPORT_RESULT",
+      "temporal_binding": "PRE_EXTERNAL",
+      "version_binding": "fresh_pretrade_runtime_get_v1",
+      "provenance_binding": "POST_COUNT_0_READ_ONLY",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/datasafety_context_bind_from_fresh_pretrade_get_transport_result_v1.py"
+      ]
+    },
+    {
+      "id": "governed_cycle_to_presentation_read",
+      "from_domain": "governed_cycle",
+      "to_domain": "presentation_dashboard",
+      "flow_type": "PRESENTATION_FLOW",
+      "contract_or_payload": "productive runtime/cycle SSOT to read model (non-authority)",
+      "producer": "ops.canonical_read_model_and_market_dashboard_rebuild_v1",
+      "consumer": "presentation_dashboard",
+      "authority_effect": "NONE",
+      "decision_effect": "DISPLAY_ONLY",
+      "direct_or_indirect": "INDIRECT",
+      "lifecycle": "PROVEN_CURRENT",
+      "identity_binding": "READ_MODEL_PROJECTION",
+      "temporal_binding": "UNKNOWN",
+      "version_binding": "canonical_read_model_and_market_dashboard_rebuild_v1",
+      "provenance_binding": "AUTHORITY_EFFECT_NONE",
+      "promotion_required": "FALSE",
+      "fail_closed": "TRUE",
+      "evidence_refs": [
+        "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/constants_v1.py"
       ]
     }
   ],
@@ -3370,14 +4260,14 @@
     },
     {
       "family_id": "typed_29p_equity_to_four_crs_limits",
-      "semantic_class": "CONFLICTING",
+      "semantic_class": "CURRENT_AUTHORITY",
       "source_ref": "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
-      "canonical_owner_ref": "UNRESOLVED",
+      "canonical_owner_ref": "ops.governed_productive_account_equity_authority_producer_v1 (N=1 productive bind seam; CRS dimensions remain distinct)",
       "current_consumer_ref": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
-      "current_decision_effect": "Formula wires four CRS limits to typed 29P equity. The scalar is not CURRENT_AUTHORITY while the equity owner is unresolved.",
-      "authority_status": "UNRESOLVED",
+      "current_decision_effect": "Ratified productive N=1 bind: four CRS bound values := typed 29P available-for-sizing equity on enter-live-29p path. CRS math keeps four distinct dimensions; no new limit policy.",
+      "authority_status": "CURRENT_AUTHORITY",
       "historical_default_status": "NOT_HISTORICAL_DEFAULT",
-      "lifecycle": "CURRENT_WIRING_AUTHORITY_UNRESOLVED",
+      "lifecycle": "RATIFIED_PRODUCTIVE_N1_BINDING",
       "optimization_surface_status": "NOT_AN_OPTIMIZATION_SURFACE",
       "learning_evidence_status": "NOT_LEARNING_EVIDENCE",
       "productive_seam_status": "ENTER_JOIN_CALL",
@@ -3385,12 +4275,10 @@
         "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json"
+        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
+        "config/governance/final_current_authority_closure_limit_equity_and_layered_safety_ratification_v1.json"
       ],
-      "conflicts": [
-        "ACCOUNT_EQUITY_AUTHORITY_OWNER unresolved",
-        "limit names versus equity collapse"
-      ]
+      "conflicts": []
     },
     {
       "family_id": "m9_numeric_max_age_seconds",
@@ -3410,46 +4298,38 @@
         "config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json"
       ],
       "conflicts": []
+    },
+    {
+      "family_id": "reference_price_mark_productive_authority_v1",
+      "semantic_class": "CURRENT_AUTHORITY",
+      "source_ref": "src/ops/governed_productive_reference_price_authority_producer_v1/current_productive_mv2_mark_reference_price_producer_v1.py",
+      "canonical_owner_ref": "ops.governed_productive_reference_price_authority_producer_v1",
+      "current_consumer_ref": "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+      "current_decision_effect": "Mark-price reference for CRS on enter-live-29p; not INDEX_PX.",
+      "authority_status": "CURRENT_AUTHORITY",
+      "historical_default_status": "NOT_HISTORICAL_DEFAULT",
+      "lifecycle": "RATIFIED_PRODUCTIVE_BINDING",
+      "optimization_surface_status": "NOT_AN_OPTIMIZATION_SURFACE",
+      "learning_evidence_status": "NOT_LEARNING_EVIDENCE",
+      "productive_seam_status": "ENTER_JOIN_CALL",
+      "evidence_refs": [
+        "src/ops/governed_productive_reference_price_authority_producer_v1/current_productive_mv2_mark_reference_price_producer_v1.py",
+        "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json",
+        "config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json"
+      ],
+      "conflicts": []
     }
   ],
   "open_epistemic_records": [
-    {
-      "id": "authority_flow_no_proven_current_instance",
-      "epistemic_class": "UNKNOWN",
-      "statement": "No CURRENT committed edge is proven as AUTHORITY_FLOW (explicit authority delegation/transport). Census on origin/main @ 32171b35e631cab767dca4f5fcd99b8a837caf23 (Unified Blueprint D01 closure via UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1): ranking_to_selection and Cap2.3 selection remain DECISION_FLOW with localized authority_effect; explicit_productive_authorization_v1 and optimization ingress remain PROMOTION_FLOW with APPLY/ENFORCEMENT authority NONE; P5 CZ-4 layered-core seal delegation exists but productive authority cutover is false (see p5_bind_without_cutover); K1 credential and venue-plan seams are not trading-decision delegation. Do not synthesize an AUTHORITY_FLOW edge from authorization or promotion alone.",
-      "evidence_refs": [
-        "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-        "src/governance/explicit_productive_authorization_v1.py",
-        "src/trading/master_v2/integrated_offline_replay_p5_cz4_delegation_v1.py",
-        "src/ops/p5_10_productive_activation_and_binding_v1/constants_v1.py",
-        "src/ops/single_selected_future_policy_v1/constants_v1.py"
-      ]
-    },
-    {
-      "id": "reselect_rerank_absence",
-      "epistemic_class": "UNKNOWN",
-      "statement": "Execution must not rerank or reselect. A repo-wide absence scan is not complete.",
-      "evidence_refs": [
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py"
-      ]
-    },
     {
       "id": "double_play_slot_crs_handoff",
       "epistemic_class": "UNKNOWN",
       "statement": "Double-play capital slot CRS handoff is not evidenced.",
       "evidence_refs": [
         "src/trading/master_v2/double_play_capital_slot.py"
-      ]
-    },
-    {
-      "id": "sealed_venue_number_29p",
-      "epistemic_class": "UNKNOWN",
-      "statement": "No sealed current venue number for 29P sizing is bound on origin/main.",
-      "evidence_refs": [
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-        "src/ops/governed_productive_account_equity_authority_producer_v1/__init__.py"
-      ]
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "CRS handoff semantics partially represented via mv2_to_sizing and parameter families."
     },
     {
       "id": "survival_suitability_composition_owner",
@@ -3459,28 +4339,9 @@
         "src/trading/master_v2/post_confirmation_survival_suitability_composition_binding_v1.py",
         "src/trading/master_v2/double_play_composition_matrix_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
-      ]
-    },
-    {
-      "id": "kill_switch_full_core_safety_owner",
-      "epistemic_class": "UNKNOWN",
-      "statement": "Kill-switch Cap 11.5 is not established as the current full-core safety owner.",
-      "evidence_refs": [
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
-      ]
-    },
-    {
-      "id": "reference_price_authority_owner",
-      "epistemic_class": "PARTIAL",
-      "statement": "REFERENCE_PRICE_AUTHORITY_OWNER ratified for Full-Core track to ops.governed_productive_reference_price_authority_producer_v1 with price_semantics_class mark_price. B05 Full-Core authority-chain closure (#6817): REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED=true on enter-live-29p path; Companion conversion handoff absent; INDEX_PX is not reference-price authority.",
-      "evidence_refs": [
-        "config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json",
-        "config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json",
-        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
-        "src/ops/b05_full_core_governed_authority_chain_closure_v1/registry_and_witness_v1.py",
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Composition binding owner string partial; not closed single-owner."
     },
     {
       "id": "optimization_surface_consumer_list",
@@ -3505,7 +4366,9 @@
         "src/governance/unified_blueprint_phase_21_learning_integration_v1.py",
         "config/governance/unified_blueprint_post_phase_15_dod_remediation_v1.json",
         "docs/ops/specs/UNIFIED_BLUEPRINT_POST_PHASE_15_DOD_REMEDIATION_NORMATIVE_V1.md"
-      ]
+      ],
+      "closure_adjudication_class": "CURRENT_SUPPORT",
+      "closure_note": "Optimization universe is offline/research support; not productive authority."
     },
     {
       "id": "offline_instrument_literal_quantity_effect",
@@ -3515,7 +4378,9 @@
         "src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
         "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json"
-      ]
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Offline literals on non-productive branches; governed producer on enter-live."
     },
     {
       "id": "test_or_script_only_diff_authority_edge",
@@ -3523,7 +4388,9 @@
       "statement": "Whether a test-only or script-only diff can change an authority edge without touching the owner file is undetermined.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
-      ]
+      ],
+      "closure_adjudication_class": "EXPLICITLY_NOT_CURRENT",
+      "closure_note": "Test/script diff surfaces are not productive authority."
     },
     {
       "id": "docs_ops_specs_map_impact",
@@ -3533,98 +4400,43 @@
         "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
         "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
         "scripts/ops/current_system_interaction_authority_map_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "GAP-TRUE-03 map impact is diff-bound candidate catalog only."
     },
     {
       "id": "runbook_freshness_stamp",
       "epistemic_class": "PARTIAL",
-      "statement": "Map source baseline_sha rebound to origin/main 070f8940b1ec027f903e9f55a5718dfee8cd35ab (post-#6817 merge). Runbook BOUND_ORIGIN_MAIN_SHA navigation stamp may lag HEAD; map rebind does not adjudicate runbook authority or refresh runbook stamps.",
+      "statement": "RESOLVED_BY_CURRENT_RATIFICATION for review stamp: Master Runbook CURRENT_REVIEWED_AT_SHA=744a9c896f53d33b2d3c24977da1891a2e8549f1 POST_6925 CURRENT navigation baseline rebind WP; map baseline_sha rebound; navigation-only.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
-      ]
-    },
-    {
-      "id": "account_equity_blocks",
-      "epistemic_class": "PARTIAL",
-      "statement": "Full-Core B05 ACCOUNT_EQUITY_AUTHORITY_OWNER ratified to ops.governed_productive_account_equity_authority_producer_v1; B05 closure (#6817): ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED=true on enter-live-29p path via CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING producer pin. Companion C2 path remains NO_CONVERSION_HANDOFF (C2 UNRESOLVED). Treasury subdomain represented separately (treasury_29p domain).",
-      "evidence_refs": [
-        "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
-        "config/governance/risk_sizing_b05_full_core_governed_authority_chain_closure_v1.json",
-        "src/ops/b05_full_core_governed_authority_chain_closure_v1/registry_and_witness_v1.py",
-        "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
-        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json"
-      ]
-    },
-    {
-      "id": "b05_vs_singular_risk_owner",
-      "epistemic_class": "PARTIAL",
-      "statement": "CANONICAL_RISK_SIZING_OWNER ratified to src.governance.capital_risk_sizing_v1 (count 1) for productive Full-Core MV2 intent-bound scope; five parallel inventory bypass surfaces remain fate-adjudicated non-competing (DUPLICATE_RISK_SIZING_AUTHORITY_COUNT=0). STEP-29P admissibility remains distinct from CRS quantity. Companion C2 conversion dependencies closed (CONVERSION_READY=true; read-only binding/algebra only; no Shadow/Live runtime conversion). Map AUTHORITY=NONE.",
-      "evidence_refs": [
-        "config/governance/risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json",
-        "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
-        "config/governance/risk_sizing_owner_inventory_ssot_v1.json",
-        "config/governance/whole_core_completion_egress_q0_authority_v1.json",
-        "config/governance/portfolio_reservation_treasury_equity_boundary_ratification_v1.json",
-        "src/governance/capital_risk_sizing_v1.py"
-      ]
-    },
-    {
-      "id": "zero_authorized_productive_targets",
-      "epistemic_class": "CONFLICTING",
-      "statement": "ZERO_AUTHORIZED_PRODUCTIVE_TARGETS true conflicts with the M9 decision false while apply remains none.",
-      "evidence_refs": [
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-        "config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json"
-      ]
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "Review stamp rebound POST_6925 navigation baseline rebind WP; navigation-only."
     },
     {
       "id": "treasury_import_wording",
-      "epistemic_class": "CONFLICTING",
-      "statement": "Treasury treasury_29p lifecycle subdomain remains navigation-bound from B05 Q0 ownership; Full-Core enter-live uses bounded single-source C08 transport (current_productive_treasury_single_source_capital_handoff_v1) without Treasury trading/quantity/reservation authority.",
+      "epistemic_class": "PARTIAL",
+      "statement": "DOCUMENTATION_WORDING_ONLY: treasury_29p lifecycle subdomain navigation vs Full-Core C08 single-source handoff wording differ; no competing trading authority. Bounded enter-live transport uses current_productive_treasury_single_source_capital_handoff_v1 without Treasury quantity/reservation authority.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
-      ]
-    },
-    {
-      "id": "live_authorized_cap2_vs_full_core",
-      "epistemic_class": "CONFLICTING",
-      "statement": "Cap2 LIVE_AUTHORIZED false and full-core LIVE_AUTHORIZED true are unresolved as one token. NAVIGATION_INDEX: compare src/ops/governed_futures_universe_producer_v1/constants_v1.py vs src/ops/full_core_live_path_composition_root_v1/constants_v1.py; related spec drift mv2_decision_authority_map_tokens. Map does not merge LIVE semantics.",
-      "evidence_refs": [
-        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
-        "src/ops/governed_futures_universe_producer_v1/constants_v1.py",
-        "docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md"
-      ]
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "Treasury subdomain navigation vs Full-Core B05 equity separation."
     },
     {
       "id": "m4_nongoals_vs_modules",
-      "epistemic_class": "CONFLICTING",
-      "statement": "M4 non-goals disagree with later M5 through M10 modules that exist.",
+      "epistemic_class": "PARTIAL",
+      "statement": "HISTORICAL_REFERENCE: M4 non-goals vs later M5–M10 research modules coexist as historical program layering; not a CURRENT productive authority collision.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "src/experiments/canonical_meta_learning_v1.py"
-      ]
-    },
-    {
-      "id": "limit_names_vs_equity_collapse",
-      "epistemic_class": "CONFLICTING",
-      "statement": "Limit names, the equity collapse onto four CRS limits, and offline dynamic fail-closed are three descriptions.",
-      "evidence_refs": [
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py",
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
-        "src/governance/capital_risk_sizing_v1.py"
-      ]
-    },
-    {
-      "id": "mv2_decision_authority_map_tokens",
-      "epistemic_class": "CONFLICTING",
-      "statement": "MASTER_V2_DECISION_AUTHORITY_MAP_V1 says LIVE_AUTHORIZED false and CURRENT_RUNTIME_TRUTH beside NAVIGATION_ONLY, against the full-core pin.",
-      "evidence_refs": [
-        "docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
-        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "M4 module inventory vs stated nongoals; navigation aid."
     },
     {
       "id": "ranking_activation",
@@ -3638,7 +4450,9 @@
         "docs/ops/specs/PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md",
         "docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_CONTRACT_V1.md",
         "docs/ops/specs/PEAK_TRADE_RANKING_FEATURE_PRODUCTION_V1.md"
-      ]
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Ranking productive; activation gating partial."
     },
     {
       "id": "mv2_proof_baseline_sha",
@@ -3647,24 +4461,35 @@
       "evidence_refs": [
         "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"
-      ]
-    },
-    {
-      "id": "safety_owner_unclosed",
-      "epistemic_class": "PARTIAL",
-      "statement": "Safety boundary is visible on the productive cycle and CONSTRAINT_FLOW handoffs into integrated replay and before order-intent plan bind are mapped; a single closed productive safety owner string and full-core kill-switch owner remain unclosed (see kill_switch_full_core_safety_owner).",
-      "evidence_refs": [
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
-      ]
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "Historical MV2 proof package SHA; map baseline tracks origin/main."
     },
     {
       "id": "p5_bind_without_cutover",
       "epistemic_class": "PARTIAL",
-      "statement": "P5 layered bind is enabled and authority cutover is false.",
+      "statement": "P5 layered bind is enabled; S7 scope-colocated episode store bootstrap is initialization-only after MV2 replay; authority cutover is false.",
       "evidence_refs": [
-        "src/ops/p5_10_productive_activation_and_binding_v1/constants_v1.py"
-      ]
+        "src/ops/p5_10_productive_activation_and_binding_v1/constants_v1.py",
+        "src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_bind_seam_v1.py",
+        "tests/ops/test_productive_layered_core_episode_store_bootstrap_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "PR #6954: composition bootstrap seam only; no MV2/DP semantic change; cutover false."
+    },
+    {
+      "id": "productive_canonical_price_provenance_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Productive MV2 cycle host requires explicit composition-root canonical mark/index provenance; ORDINARY_MARKET_CANDLE_CLOSE is forbidden as M_t; index_px must not collapse to mark_px; SideState venue observation seed is forbidden at P5 bind.",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/contract_v1.py",
+        "src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_bind_seam_v1.py",
+        "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "PR #6955: SEM-DIV-00001/00002/00006 enforcement repair; composition-root adapter only; Master V2/Double Play code untouched; AUTHORITY=NONE."
     },
     {
       "id": "portfolio_budget",
@@ -3672,7 +4497,9 @@
       "statement": "Portfolio authority effect is none, restart is not reconstructable, and venue fill is not integrated.",
       "evidence_refs": [
         "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Portfolio reservation budget owner effect none."
     },
     {
       "id": "replay_provenance_drop",
@@ -3680,7 +4507,9 @@
       "statement": "Replay drops selection_id, ranking_snapshot_id, and universe_snapshot_id.",
       "evidence_refs": [
         "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Replay drops provenance fields; documented partial."
     },
     {
       "id": "sizing_to_intent_plan_only",
@@ -3688,22 +4517,186 @@
       "statement": "Sizing to intent remains plan-only.",
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/constants_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "STEP_29Q plan-only wiring on sizing_to_intent."
     },
     {
       "id": "learning_capture_hosts_and_ddo_durability",
       "epistemic_class": "PARTIAL",
-      "statement": "NAVIGATION_INDEX: @observe_after_producer_v0 seam hosts on origin/main @ 32171b35e631cab767dca4f5fcd99b8a837caf23 (Unified Blueprint D01; src only): selection.universe, selection.ranking, selection.single_future, selection.runtime_binding; core.dynamic_scope, core.bull_bear, core.double_play_entry_exit, core.survival_suitability_composition, core.exit_policy, core.master_v2_evidence; c1.observation_acceptance, confirmation.state; risk.step_29p, plan.step_29q; safety.kernel, safety.killswitch_blocked_flag; recon.startup_gate; feature.typed_volatility, feature.regime; mapper.intended_action; execution.simulated_outcome; real_outcome_horizon_engine. Wallclock bridge explicit DDO host bindings: ddo_n_bars_evaluation_runtime_host_binding_v1, ddo_n_bars_horizon_observation_host_binding_v1, ddo_learning_outcome_evidence_ingest_host_binding_v1, ddo_observation_host_scope_binding_v1, ddo_o4_n_bars_public_plane_convergence_v1 (orchestrator decision_economics_cycle_bridge_v1). Productive O4→N_BARS snapshot materialization consumes WP-A FinalizedPt1hO4BarFactV1 via WP-C converged_o4_handoff_v1 only; CanonicalPublicMdBarProducerV1 is writer-only to WP-A facts, not a competing productive O4 read truth. Track D03 MI offline stack references N_BARS outcome refs only (no duplicate outcome truth). Full-Core CURRENT productive cycle (src/ops/full_core_live_path_composition_root_v1/) has no DDO capture binding on census. REMAINING_PARTIAL: unattended crash durability / A1 durability proof for productive hosts (see tests/learning/test_ddo_a1_*).",
+      "statement": "NAVIGATION_INDEX: @observe_after_producer_v0 seam hosts on origin/main @ 32171b35e631cab767dca4f5fcd99b8a837caf23 (Unified Blueprint D01; src only): selection.universe, selection.ranking, selection.single_future, selection.runtime_binding; core.dynamic_scope, core.bull_bear, core.double_play_entry_exit, core.survival_suitability_composition, core.exit_policy, core.master_v2_evidence; c1.observation_acceptance, confirmation.state; risk.step_29p, plan.step_29q; safety.kernel, safety.killswitch_blocked_flag; recon.startup_gate; feature.typed_volatility, feature.regime; mapper.intended_action; execution.simulated_outcome; real_outcome_horizon_engine. Wallclock bridge explicit DDO host bindings: ddo_n_bars_evaluation_runtime_host_binding_v1, ddo_n_bars_horizon_observation_host_binding_v1, ddo_learning_outcome_evidence_ingest_host_binding_v1, ddo_observation_host_scope_binding_v1, ddo_o4_n_bars_public_plane_convergence_v1 (orchestrator decision_economics_cycle_bridge_v1). Productive O4→N_BARS snapshot materialization consumes WP-A FinalizedPt1hO4BarFactV1 via WP-C converged_o4_handoff_v1 only; CanonicalPublicMdBarProducerV1 is writer-only to WP-A facts, not a competing productive O4 read truth. Track D03 MI offline stack references N_BARS outcome refs only (no duplicate outcome truth). Full-Core CURRENT productive MV2 cycle optional observe-only DDO capture bind via current_productive_master_v2_ddo_learning_capture_join_v1 when ddo_durable_evidence_ledger_path is set (N5 addressing join may supply {store_root}/ddo_learning_capture_v1.jsonl); same-cycle capture→offline export handoff via current_productive_master_v2_ddo_capture_to_offline_export_join_v1 reuses wallclock N_BARS hosts to ACCEPTED_OFFLINE_RESEARCH_INPUT only (PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false); synthetic treasury productive joins (29P→EEA acquisition lineage, 29P→portfolio budget) are separate composition-root modules with AUTHORITY_EFFECT=NONE. Landscape/presentation dashboard ingress-egress is OUT_OF_SCOPE for whole-system causal closure WP. REMAINING_PARTIAL: unattended crash durability / A1 durability proof for productive hosts (see tests/learning/test_ddo_a1_*).",
       "evidence_refs": [
         "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
         "src/learning/deterministic_decision_outcome_v0/capture_v0.py",
         "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
         "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_public_plane_convergence_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_eea_acquisition_productive_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_portfolio_budget_productive_join_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py",
+        "tests/ops/test_current_productive_master_v2_ddo_learning_capture_join_v1.py",
+        "tests/ops/test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
+        "tests/ops/test_current_productive_step_29p_productive_causal_join_v1.py",
         "tests/learning/test_ddo_o4_n_bars_public_plane_convergence_v1.py",
         "tests/learning/test_market_intelligence_forecast_calibration_offline_stack_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "tests/learning/test_ddo_a1_crash_durability_atomic_replace_or_explicit_nonrequirement_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "CURRENT_SUPPORT",
+      "closure_note": "DDO/learning hosts; AUTHORITY=NONE."
+    },
+    {
+      "id": "productive_learning_to_g2_primary_semantic_boundary",
+      "epistemic_class": "PARTIAL",
+      "statement": "Case B: productive MV2/N5 DDO offline export terminating at ACCEPTED_OFFLINE_RESEARCH_INPUT is NOT admissible as bounded_runtime_primary_evidence for G2 projection. Legitimate G2 ingress requires independent durable Paper/Shadow/Testnet primary archives only. Productive lineage must not be relabeled as G2 primary evidence (anti-laundering).",
+      "evidence_refs": [
+        "docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md",
+        "docs/ops/specs/GOVERNED_RUNTIME_PRIMARY_TO_OFFLINE_OBSERVATION_PROJECTION_V1.md",
+        "config/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1_decision_v1.json",
+        "config/governance/governed_runtime_primary_to_offline_observation_projection_v1_decision_v1.json",
+        "src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py",
+        "tests/governance/test_governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py"
+      ],
+      "closure_adjudication_class": "CURRENT_SUPPORT",
+      "closure_note": "SEMANTIC_ADJUDICATION=B; bridge forbidden; PRODUCTIVE_OPTIMIZATION_JOIN=false."
+    },
+    {
+      "id": "post_6938_whole_system_g2_primary_causal_e2e",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-PR-6938 whole-system continuation: legitimate G2 ingress requires independent durable Paper/Shadow/Testnet primary archives discovered or produced via bounded observation lanes; productive DDO ACCEPTED_OFFLINE_RESEARCH_INPUT remains inadmissible (Case B); fixture control may prove G2→M4–M8 mechanics only.",
+      "evidence_refs": [
+        "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_WHOLE_SYSTEM_CAUSAL_E2E_FROM_POST_6938_MAIN_V1.md",
+        "docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md",
+        "config/governance/governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1_decision_v1.json",
+        "src/governance/governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1.py",
+        "scripts/ops/run_authority_map_atlas_guided_whole_system_causal_e2e_from_post_6938_main_v1.py",
+        "tests/governance/test_governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Probative E2E stops at missing independent durable primary evidence until bounded PAPER/SHADOW/TESTNET execute admission."
+    },
+    {
+      "id": "post_6939_paper_g2_primary_run_metadata",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-PR-6939/#6940 whole-system learning path: legitimate bounded_runtime_primary_evidence producer (PAPER lane) → run_paper_only_bounded_observation_adapter_v0 → scheduler_start_boundary_guard_v0 admission → terminal HOLD_NO_PAPER_RUN when SCHEDULER_EXECUTION_AUTHORIZED=false. Adapter closeout can emit G2-admissible RUN_METADATA only after genuine observation; scoped Owner-GO record authorizes bounded PAPER execute attempt only (not scheduler clearance). Downstream G2→M4–M8 remains IMPLEMENTED; fixture-control proves mechanics only—not this real PAPER runtime path. Case B preserved.",
+      "evidence_refs": [
+        "config/governance/post_6939_bounded_paper_primary_g2_closure_v1/owner_go_bounded_paper_approval_v1.md",
+        "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py",
+        "scripts/ops/run_post_6939_bounded_paper_primary_to_g2_m8_causal_closure_e2e_v1.py",
+        "scripts/ops/scheduler_start_boundary_guard_v0.py",
+        "tests/ops/test_run_paper_only_bounded_observation_adapter_v0.py",
+        "tests/ops/test_scheduler_boundary_hard_block_contract_v0.py",
+        "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
+        "docs/ops/specs/SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "PAPER_STATUS=PARKED. Post-6939 attempt: scheduler HOLD terminal (START_RC=2). Post-6940 scoped scheduler execute started then CONTROLLED_ABORT (SIGTERM); partial artifacts ABORTED_INCOMPLETE_NON_QUALIFYING; not G2-primary. Learning branch parked; live-readiness WP continues on productive/PRE_EXTERNAL path only."
+    },
+    {
+      "id": "post_6940_live_readiness_convergence_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-#6940 live-readiness convergence: Map/Atlas-guided productive/live causal census with safe synthetic-treasury no-POST E2E; PRE_EXTERNAL reachable; external-effect standing fail-closed; earliest remaining blocker EXTERNAL_EFFECT_AUTHORIZATION at intent_to_execution; PAPER/SHADOW/TESTNET/G2 learning runtime not executed; trusted private GET/live-account path not authorized in WP.",
+      "evidence_refs": [
+        "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_LIVE_READINESS_CONVERGENCE_FROM_POST_6940_MAIN_V1.md",
+        "config/governance/post_6940_live_readiness_convergence_v1_decision_v1.json",
+        "src/governance/post_6940_live_readiness_convergence_v1.py",
+        "scripts/ops/run_post_6940_authority_map_atlas_live_readiness_convergence_v1.py",
+        "scripts/ops/run_whole_system_causal_closure_from_synthetic_treasury_zero_e2e_v1.py",
+        "tests/governance/test_post_6940_live_readiness_convergence_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Mechanical live-readiness closure exhausted to PRE_EXTERNAL; venue POST requires scoped Owner-GO for external-effect authorization; PAPER remains PARKED."
+    },
+    {
+      "id": "post_6941_pre_external_intent_to_execution_seam_adjudication_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-#6941 intent_to_execution seam forensic adjudication: synthetic-treasury PRE_EXTERNAL plus runtime probe of canonical external-effect policy chain (policy→lift→permit-mint admission bindings); import-time invoke sink and envelope seam fail-closed without permit; policy admissions runtime-proven; operational blocker EXTERNAL_EFFECT_AUTHORIZATION (scoped Owner-GO for permit-backed venue POST, not missing admission wiring); PAPER PARKED.",
+      "evidence_refs": [
+        "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_PRE_EXTERNAL_INTENT_TO_EXECUTION_SEAM_ADJUDICATION_FROM_POST_6941_MAIN_V1.md",
+        "config/governance/post_6941_pre_external_intent_to_execution_seam_adjudication_v1_decision_v1.json",
+        "src/governance/post_6941_pre_external_intent_to_execution_seam_adjudication_v1.py",
+        "scripts/ops/run_post_6941_authority_map_atlas_pre_external_intent_to_execution_seam_v1.py",
+        "scripts/ops/run_whole_system_causal_closure_from_synthetic_treasury_zero_e2e_v1.py",
+        "tests/governance/test_post_6941_pre_external_intent_to_execution_seam_adjudication_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Fixpoint at operational external-effect sink; no permit mint, credential load, or venue POST in WP."
+    },
+    {
+      "id": "post_6942_external_effect_authorization_full_chain_forensic_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-#6942 EXTERNAL_EFFECT_AUTHORIZATION full-chain forensic: extends post-6941 through credential-access and material-load policy admissions, venue-POST admission fail-closed, and one-shot join standing boundary; full policy admissions runtime-proven; first irreversible operation REAL_KEYCHAIN_ACCESS_OR_CREDENTIAL_MATERIAL_LOAD; scoped Owner-GO required before permit perform or venue POST; PAPER PARKED.",
+      "evidence_refs": [
+        "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_EXTERNAL_EFFECT_AUTHORIZATION_FULL_CHAIN_FROM_POST_6942_MAIN_V1.md",
+        "config/governance/post_6942_external_effect_authorization_full_chain_forensic_v1_decision_v1.json",
+        "src/governance/post_6942_external_effect_authorization_full_chain_forensic_v1.py",
+        "scripts/ops/run_post_6942_authority_map_atlas_external_effect_authorization_full_chain_v1.py",
+        "scripts/ops/run_whole_system_causal_closure_from_synthetic_treasury_zero_e2e_v1.py",
+        "tests/governance/test_post_6942_external_effect_authorization_full_chain_forensic_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Operational performance blocked at scoped Owner-GO; no Keychain, permit mint perform, or venue POST in WP."
+    },
+    {
+      "id": "post_6943_real_keychain_material_load_scoped_perform_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-6943 scoped REAL_KEYCHAIN_ACCESS_OR_CREDENTIAL_MATERIAL_LOAD_OWNER_GO perform: governed ephemeral macOS Keychain opaque acquisition only; admission≠perform proven; standing REAL_KEYCHAIN_ACCESS_* pins unchanged; no K1/signing/POST/permit mint; next blocker K1 opaque signing Owner-GO.",
+      "evidence_refs": [
+        "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_REAL_KEYCHAIN_MATERIAL_LOAD_SCOPED_PERFORM_FROM_POST_6943_MAIN_V1.md",
+        "config/governance/post_6943_real_keychain_material_load_scoped_perform_v1_decision_v1.json",
+        "src/governance/post_6943_real_keychain_material_load_scoped_perform_v1.py",
+        "scripts/ops/run_post_6943_real_keychain_material_load_scoped_perform_v1.py",
+        "src/governance/real_keychain_access_governed_credential_material_acquisition_v1.py",
+        "tests/governance/test_post_6943_real_keychain_material_load_scoped_perform_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Material-load perform boundary proven under scoped Owner-GO; K1 Owner-GO not consumed."
+    },
+    {
+      "id": "post_6944_k1_opaque_signing_handle_pre_post_scoped_perform_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-6944 scoped K1 PRE-POST Owner-GO perform: ephemeral K1 Keychain consumer, opaque handle, request signing, PRE-POST envelope; stops at real venue POST admission; no venue HTTP POST; next blocker actual venue POST Owner-GO.",
+      "evidence_refs": [
+        "docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_K1_OPAQUE_SIGNING_HANDLE_PRE_POST_SCOPED_PERFORM_FROM_POST_6944_MAIN_V1.md",
+        "config/governance/post_6944_k1_opaque_signing_handle_pre_post_scoped_perform_v1_decision_v1.json",
+        "src/governance/post_6944_k1_opaque_signing_handle_pre_post_scoped_perform_v1.py",
+        "scripts/ops/run_post_6944_k1_opaque_signing_handle_pre_post_scoped_perform_v1.py",
+        "src/governance/current_productive_k1_pre_post_productive_chain_v1.py",
+        "tests/governance/test_post_6944_k1_opaque_signing_handle_pre_post_scoped_perform_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "K1 PRE-POST perform under scoped Owner-GO; venue POST Owner-GO not consumed."
+    },
+    {
+      "id": "pre_live_fresh_state_and_slice_baseline_convergence_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PRE-LIVE WP: recorded POST-slice baseline plus live integrity/protected-surface drift gate; fresh isolated Cap-24 productivity root; fail-closed historical-store isolation; no venue POST and no Actual-Venue-POST Owner-GO consume.",
+      "evidence_refs": [
+        "docs/ops/specs/PRE_LIVE_FRESH_STATE_AND_SLICE_BASELINE_CONVERGENCE_V1.md",
+        "config/governance/pre_live_fresh_state_and_slice_baseline_convergence_v1_decision_v1.json",
+        "src/governance/pre_live_fresh_state_and_slice_baseline_convergence_v1.py",
+        "scripts/ops/run_pre_live_fresh_state_and_slice_baseline_convergence_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/pre_live_fresh_runtime_root_isolation_v1.py",
+        "tests/governance/test_pre_live_fresh_state_and_slice_baseline_convergence_v1.py",
+        "tests/ops/test_pre_live_fresh_runtime_root_isolation_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Mechanical PRE-LIVE convergence; next blocker Actual-Venue-POST Owner-GO."
+    },
+    {
+      "id": "post_6946_actual_venue_post_baseline_rebind_and_next_gate_adjudication_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "POST-6946 rebind WP: remediates self-referential pin loop; recorded baseline fca07afa; live origin/main plus protected POST-surface drift gate; read-only FOREIGN_OPEN_POSITION gate adjudication; no venue POST.",
+      "evidence_refs": [
+        "docs/ops/specs/POST_6946_ACTUAL_VENUE_POST_BASELINE_REBIND_AND_NEXT_GATE_ADJUDICATION_V1.md",
+        "config/governance/post_6946_actual_venue_post_baseline_rebind_v1_decision_v1.json",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py",
+        "tests/ops/test_current_productive_actual_venue_post_baseline_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Mechanical baseline closure; bounded Actual-POST Owner-GO remains next execution gate."
     },
     {
       "id": "m9_m10_enforcement",
@@ -3712,7 +4705,9 @@
       "evidence_refs": [
         "src/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1.py",
         "config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json"
-      ]
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "M9/M10 promotion seam; enforcement not ratified."
     },
     {
       "id": "productive_capital_context_offline_helper",
@@ -3721,18 +4716,24 @@
       "evidence_refs": [
         "src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "EXPLICITLY_NOT_CURRENT",
+      "closure_note": "Offline helper not productive authority path."
     },
     {
       "id": "account_equity_mapping_unbound",
       "epistemic_class": "PARTIAL",
-      "statement": "Account-equity source mapping is proven on Full-Core while numeric CURRENT venue bind and governed producer implementation remain absent; B05 Full-Core owner ratified separately from mapping; Companion C2 remains unbound (Full-Core mapping not transferable).",
+      "statement": "Full-Core Source→Semantic mapping for RUNNING_ACCOUNT_EQUITY_AVAILABLE_FOR_SIZING is ratified (details[ccy=USDC].availEq via producer wrap, DETAILS_USDC_AVAILEQ_MINUS_CONDITIONAL_P01); 29P fresh-trusted numeric venue bind (OD_29P_FRESH_TRUSTED_NUMERIC_VENUE_BIND); U01 eligibility + P01 standing directive + three-input sizing-mint join (OD_U01_P01_29P_SIZING_MINT) adjudicated; treasury handoff fail-closed without explicit U01 acctLv witness (SEM-SURF-DIV-00004 repaired); sealed normative 29P common epoch/venue number, productive GET execution, and Companion C2 remain unbound.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+        "config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json",
+        "config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json",
         "config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json",
         "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
         "config/governance/risk_sizing_c2_domain_authority_resolution_v1.json"
-      ]
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "PARTIAL retained for live GET execution and C2; sizing source under OD_ACCOUNT_EQUITY_SIZING_SOURCE; numeric observation bind under OD_29P_FRESH_TRUSTED_NUMERIC_VENUE_BIND."
     },
     {
       "id": "loops_a_and_b",
@@ -3743,7 +4744,9 @@
         "src/learning/deterministic_decision_outcome_v0/learning_evidence_export_v1.py",
         "src/experiments/canonical_meta_learning_ingest_v1.py",
         "docs/ops/specs/M5_M8_BOUNDED_META_RETURN_AND_REPLAY_COMPLETION_NORMATIVE_V1.md"
-      ]
+      ],
+      "closure_adjudication_class": "CURRENT_SUPPORT",
+      "closure_note": "MI/learning loops offline; not productive trading authority."
     },
     {
       "id": "unified_blueprint_d02_inter_loop_matrix",
@@ -3753,7 +4756,9 @@
         "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
         "tests/governance/test_unified_blueprint_d01_d02_topology_adjudication_v1.py",
         "docs/ops/specs/UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_NORMATIVE_V1.md"
-      ]
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "Blueprint navigation matrix; AUTHORITY=NONE."
     },
     {
       "id": "clean_trading_core_vs_p5",
@@ -3762,7 +4767,9 @@
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "src/ops/p5_10_productive_activation_and_binding_v1/constants_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "Boundary documentation between core and P5 ingress."
     },
     {
       "id": "full_core_dk_post_boundary_evidence_anchor",
@@ -3773,7 +4780,9 @@
         "evidence/ops/full_core_current_productive_fresh_runtime_cycle_after_non_executable_decision_v1/20260916T010000Z/SUMMARY.json",
         "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_G17_DK_MV2_TYPED_VOL_HOT_PATH_JOIN_V1.md",
         "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_TO_EXACT_ENVELOPE_BOUND_SINGLE_USE_POST_BOUNDARY_V1.md"
-      ]
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "External effect boundary evidentiary anchors; policy gated."
     },
     {
       "id": "repo_convergence_frozen_469_outer_shell_v1",
@@ -3784,7 +4793,9 @@
         "scripts/ops/fast_reference_replay_v1.py",
         "tests/trading/master_v2/test_naked_mv2_double_play_core_authority_hardening_v1.py",
         "tests/trading/master_v2/test_double_play_sole_authority_quarantine_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "Repository convergence cleanup; AUTHORITY=NONE; no trading semantics change."
     },
     {
       "id": "repo_convergence_forensic_203_outer_shell_v1",
@@ -3795,7 +4806,9 @@
         "scripts/ops/fast_reference_replay_v1.py",
         "tests/ops/test_reconciliation_evaluate_pass_v1.py",
         "tests/ops/test_system_atlas_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "Repository convergence cleanup; AUTHORITY=NONE; no trading semantics change."
     },
     {
       "id": "repo_convergence_market_dashboard_historical_chrome_233_outer_shell_v1",
@@ -3806,7 +4819,9 @@
         "scripts/ops/fast_reference_replay_v1.py",
         "tests/webui/test_market_landscape_dashboard_v2_chrome_evidence_v0.py",
         "tests/webui/test_market_landscape_ops_narrow_viewport_containment_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "Repository convergence cleanup; AUTHORITY=NONE; no trading semantics change."
     },
     {
       "id": "repo_convergence_docs_archive_o5_41_outer_shell_v1",
@@ -3816,7 +4831,9 @@
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "scripts/ops/fast_reference_replay_v1.py",
         "docs/ops/CURSOR_MULTI_AGENT_RUNBOOK_FRONTDOOR.md"
-      ]
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "Repository convergence cleanup; AUTHORITY=NONE; no trading semantics change."
     },
     {
       "id": "repo_convergence_fgc01_docs_product_evidence_v1",
@@ -3826,7 +4843,9 @@
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "scripts/ops/fast_reference_replay_v1.py",
         "docs/product/README.md"
-      ]
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "Repository convergence cleanup; AUTHORITY=NONE; no trading semantics change."
     },
     {
       "id": "repo_convergence_fgc02_market_dashboard_evidence_v1",
@@ -3836,7 +4855,9 @@
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "scripts/ops/fast_reference_replay_v1.py",
         "docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md"
-      ]
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "Repository convergence cleanup; AUTHORITY=NONE; no trading semantics change."
     },
     {
       "id": "treasury_full_core_c08_single_source_handoff_v1",
@@ -3846,17 +4867,208 @@
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "C08 treasury vs B05 equity boundary navigation."
     },
     {
       "id": "whole_core_pre_external_egress_proof_closure_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Pre-external to external-effect bounded WP: all sink markers classified; one-shot fresh-envelope POST join is INTENTIONALLY_ISOLATED_OWNER_GO only; PRE_EXTERNAL proof ok; standing POST/external effect remain false.",
+      "statement": "Pre-external to external-effect bounded WP: all sink markers classified; one-shot fresh-envelope POST join and actual Enter POST execute slice are INTENTIONALLY_ISOLATED_OWNER_GO only; PRE_EXTERNAL proof ok; standing POST/external effect remain false.",
       "evidence_refs": [
         "config/governance/whole_core_completion_egress_q0_authority_v1.json",
         "src/ops/pre_external_to_external_effect_boundary_bounded_wp_v1/proof_v1.py",
-        "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py"
-      ]
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
+    },
+    {
+      "id": "current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Bounded Enter POST Owner-GO: durable POST-GO consume, admission-bound one-shot join, K1 opaque signing, single eea.okx.com trade-order POST; standing POST pins false; recorded baseline fca07afa with live origin/main integrity and protected POST-surface drift gate (post-#6946 rebind).",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md",
+        "config/governance/current_productive_actual_venue_post_owner_go_v1_decision.json",
+        "config/governance/current_productive_actual_venue_post_admission_v1_decision.json",
+        "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+        "src/governance/governed_current_productive_actual_venue_post_admission_closure_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
+    },
+    {
+      "id": "current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PRE_EXTERNAL typed EXECUTABLE Enter FinalOrderEnvelopeV1 runtime handoff to PR6900 one-shot POST join boundary; closes envelope object discard at T2; no POST and POST-GO remains unconsumed; recorded POST baseline fca07afa (API alignment).",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_RUNTIME_REACH_TO_ONE_SHOT_POST_JOIN_BOUNDARY_V1.md",
+        "tests/ops/test_current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
+    },
+    {
+      "id": "current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "K1 PRE-POST productive chain runtime-bound to DM pre-live readiness; dual Owner-GO literals (K1 PRE-POST + actual POST); ephemeral Keychain only; no durable POST-GO consume and no venue POST; recorded POST baseline fca07afa.",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_K1_RUNTIME_BINDING_TO_ONE_SHOT_ACTUAL_VENUE_POST_PRE_LIVE_BOUNDARY_V1.md",
+        "tests/ops/test_current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
+    },
+    {
+      "id": "current_productive_one_shot_enter_e2e_runtime_handoff_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "CURRENT productive Enter one-shot E2E prepare handoff: Cap-2.4 provenance through Full-Core PRE_EXTERNAL to FINAL_ORDER_ENVELOPE.json and governed POST/K1 CLI commands; no venue POST and no durable permit consume; recorded POST baseline fca07afa for POST slice API alignment.",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_SHOT_ENTER_E2E_RUNTIME_HANDOFF_V1.md",
+        "tests/ops/test_current_productive_one_shot_enter_e2e_runtime_handoff_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_one_shot_enter_e2e_runtime_handoff_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
+    },
+    {
+      "id": "current_productive_eea_universe_inventory_cap22_ranking_policy_binding_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "REPRESENTATION=ALTERNATE_EXECUTABLE_ENTRY plus Cap-2.1→2.3 pipeline: execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1 (Owner-GO CLI main) is not a governed_cycle child. Distinct EEA READ acquisition (eea_universe_inventory_acquisition_v1) injects payloads; Cap-2.1 producer remains NO-NETWORK; Cap-2.2 ranking bound to PEAK_TRADE_RANKING_MATRIX_POLICY_V1 (B03) with B05 synthesis; no reselection, venue POST, or external effect.",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P_V1.md",
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER_V1.md",
+        "tests/ops/test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_eea_universe_inventory_to_cap24_and_29p_v1.py",
+        "src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
+    },
+    {
+      "id": "current_productive_pre_external_wp1_cap21_public_inst_type_binding_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PRE_EXTERNAL WP1 binds OKX public instType from Cap-2.1 universe lineage via _resolve_public_inst_type_for_bound_instrument_v1 and cap24_productivity_root before common-epoch compose; no silent FUTURES default; parser and venue code semantics unchanged; no venue POST.",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md",
+        "tests/ops/test_full_core_current_productive_pre_external_closure_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
+    },
+    {
+      "id": "current_productive_pre_external_execute_network_mv2_market_handoff_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #6932: PRE_EXTERNAL execute_network binds MV2 mark_px from /api/v5/public/mark-price and finalized_closes from governed C1 candles via sibling extractors; replay setdefault 100/(98,99,100) retained only for execute_network=false injected path; fail-closed MASTER_V2_REQUIRED_GET_INCOMPLETE; no Master-V2/Double-Play change; no venue POST.",
+      "evidence_refs": [
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
+        "tests/ops/test_full_core_current_productive_pre_external_closure_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
+    },
+    {
+      "id": "selected_future_persistent_scope_confirmation_authority_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #6933/#6934: Owner policy SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1 — OD1 single-lane activation is active evaluation-lane routing only; Cap 6.1 dual carrier preserves opposite-side confirmation cursor across elementary direction changes; scope/L10 candidate invalidation remains UNRESOLVED; no selection rebind, no venue POST, no external effect. Post-#6934: bound_origin_main_sha refreshed on policy record; PR #6935 adds governance-hosted integrated-replay proof that inactive bear candidate/1 survives elementary bull on merged dual-carrier replay; eighth-class OD1 slice grant remains closed (grant_active=false); new Master-V2 mutation requires a fresh digest-bound slice.",
+      "evidence_refs": [
+        "docs/ops/specs/SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_AUTHORITY_V1.md",
+        "docs/ops/specs/EXPLICIT_OWNER_ADJUDICATED_OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_AUTHORIZATION_V1.md",
+        "config/governance/explicit_owner_adjudicated_od1_productive_single_lane_confirmation_authorization_v1.json",
+        "config/governance/selected_future_persistent_scope_confirmation_authority_v1.json",
+        "src/trading/master_v2/single_lane_confirmation_activation_v1.py",
+        "tests/trading/master_v2/test_single_lane_confirmation_activation_v1.py",
+        "tests/governance/test_selected_future_persistent_scope_confirmation_authority_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
+    },
+    {
+      "id": "current_productive_endgame_f1_m9_canonical_durable_bootstrap_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #6908: Master-V2 cold-start invokes canonical F1/M9 durable bootstrap (existing apply-start continuation only); PRE_EXTERNAL WP2 uses G17 mark-history when producer absent; occupied-lane invoke join passes common_epoch_decision_epoch; no venue POST; no second authority.",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
+        "tests/ops/test_full_core_current_productive_pre_external_closure_wp2_composition_v1.py",
+        "tests/ops/test_current_productive_f1_m9_clean_checkout_bootstrap_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
+    },
+    {
+      "id": "current_productive_post6908_cold_start_c1_floor_and_claims_guard_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #6909: occupied-lane N1 invoke cold-start binds MV2 cap61 last_finalized_event_ts_unix to injected venue C1 timeline before governed cycle; PRE_EXTERNAL claims guard scans leaf string values and permits canonical SECTION_* symbolic authority labels; no STALE_C1 threshold relaxation; no venue POST.",
+      "evidence_refs": [
+        "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+        "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py",
+        "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py",
+        "tests/ops/test_full_core_current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
+    },
+    {
+      "id": "current_productive_persistent_natural_enter_convergence_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #6948: offline persistent Natural-ENTER convergence binds fixed S8 lane-root through governed continuous S6 and occupied-lane S7 to PRE_EXTERNAL; S5 runner uses S6 evidence_root; cold lane bootstrap via S7 compose; N5 invoke/bootstrap aligns lane S7 closes and mark to injected C1; CONTINUOUS_RUN_AUTHORIZED=false; POST unreachable; not productive continuous authorization.",
+      "evidence_refs": [
+        "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_CONVERGENCE_V1.md",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+        "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+        "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py",
+        "scripts/ops/run_current_productive_persistent_natural_enter_convergence_offline_v1.py",
+        "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Offline harness only; productive continuous Owner-GO and live C1/GET remain next gates."
+    },
+    {
+      "id": "post_6948_productive_continuous_run_authority_live_c1_convergence_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Post-PR-6948 navigation: maps productive continuous causal path (policy admission, runtime binding, S6, live Fresh-C1 GET seam, S5/S7, PRE_EXTERNAL); policy CONTINUOUS_RUNTIME_ADMISSION valid; RUNTIME_OWNER_GO and Fresh-C1 GET GO DEFINED_NOT_CONSUMED; no runtime/GET/POST.",
+      "evidence_refs": [
+        "docs/ops/specs/POST_6948_PRODUCTIVE_CONTINUOUS_RUN_AUTHORITY_LIVE_C1_CONVERGENCE_V1.md",
+        "src/governance/post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py",
+        "config/governance/post_6948_productive_continuous_run_authority_live_c1_convergence_v1_decision_v1.json",
+        "tests/governance/test_post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Owner decision required before productive continuous run with live C1 GET; module pins stay false."
+    },
+    {
+      "id": "current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #6951/#6952: productive PRE_EXTERNAL-only entry script; cold-lane Cap24-bound Fresh-C1 bootstrap; S6 poll liveness; auth-free flat occupancy; Owner-GO consume accepts live main when decision baseline is git-ancestor (MV2/DP drift fail-closed); no POST/permit/credentials; CONTINUOUS_RUN_AUTHORIZED pin unchanged.",
+      "evidence_refs": [
+        "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
+        "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
+        "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py",
+        "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Mechanical wiring only; productive venue GET requires operator transport scope; stop at PRE_EXTERNAL."
+    },
+    {
+      "id": "current_productive_s6_s7_c1_cursor_ownership_seam_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #6910: S7/MV2 durable occupied-lane C1 cursor persist owns the authoritative floor; S6 governed continuous orchestrator _advance_persisted_c1_cursor_floor_v1 reconciles with no-op when incoming venue_event_time equals persisted floor (eliminates STALE_OR_EQUAL_C1 after productive T2); stub-T2 sequencing bump unchanged; no threshold relaxation; no venue POST.",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+        "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_V1.md",
+        "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
     },
     {
       "id": "whole_core_fresh_trusted_q0_enter_live_v1",
@@ -3866,7 +5078,9 @@
         "config/governance/whole_core_completion_egress_q0_authority_v1.json",
         "docs/governance/WHOLE_CORE_COMPLETION_EGRESS_Q0_AUTHORITY_V1.md",
         "tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
     },
     {
       "id": "whole_core_productive_q0_q1_authority_ratification_v1",
@@ -3875,7 +5089,9 @@
       "evidence_refs": [
         "config/governance/whole_core_completion_egress_q0_authority_v1.json",
         "config/governance/risk_sizing_owner_inventory_ssot_v1.json"
-      ]
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
     },
     {
       "id": "whole_core_learning_q6_q8_none_ratification_v1",
@@ -3884,43 +5100,14 @@
       "evidence_refs": [
         "config/governance/whole_core_completion_egress_q0_authority_v1.json",
         "src/governance/explicit_productive_authorization_v1.py"
-      ]
-    },
-    {
-      "id": "post_6828_universe_ranking_selection_binding_domain_v1",
-      "epistemic_class": "PARTIAL",
-      "statement": "Post-#6828 WP-A: UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN ratified as standalone domain census (Cap 2.1\u20132.4 ports); selection/ranking/MV2 ownership unchanged; DOMAIN_RATIFICATION_ONLY; AUTHORITY_EFFECT=NONE.",
-      "evidence_refs": [
-        "config/governance/post_6828_architecture_closure_v1.json",
-        "config/governance/universe_ranking_selection_binding_domain_ratification_v1.json",
-        "docs/governance/UNIVERSE_RANKING_SELECTION_BINDING_DOMAIN_RATIFICATION_V1.md"
-      ]
-    },
-    {
-      "id": "post_6828_c2_companion_blocking_boundary_v1",
-      "epistemic_class": "PARTIAL",
-      "statement": "Post-#6828 WP-B: companion Shadow/Live C2 conversion-input blocking boundary ratified; C2_BLOCKS_Q0/Q1/FULL_CORE=false; authority role closure superseded by C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1 (CONVERSION_READY=true; conversion algebra/binding proven; runtime Fraction\u2192Units wiring absent).",
-      "evidence_refs": [
-        "config/governance/post_6828_architecture_closure_v1.json",
-        "config/governance/risk_sizing_c2_companion_blocking_boundary_ratification_v1.json",
-        "config/governance/risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json",
-        "docs/governance/RISK_SIZING_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1.md"
-      ]
-    },
-    {
-      "id": "c2_canonical_risk_sizing_authority_closure_v1",
-      "epistemic_class": "PARTIAL",
-      "statement": "C2 + CANONICAL_RISK_SIZING_OWNER authority closure: CRS/Q1 sole canonical productive sizing owner (count 1); Companion fraction config vs conversion binding roles ratified; Fraction\u2192Units runtime wiring still absent; AUTHORITY_EFFECT=NONE.",
-      "evidence_refs": [
-        "config/governance/risk_sizing_c2_canonical_risk_sizing_authority_closure_v1.json",
-        "docs/governance/RISK_SIZING_C2_CANONICAL_RISK_SIZING_AUTHORITY_CLOSURE_V1.md",
-        "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
-      ]
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
     },
     {
       "id": "c2_companion_conversion_dependency_closure_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "C2 Companion conversion dependency closure v1: authoritative equity/reference-price/instrument-metadata producer bindings plus LINEAR fraction\u2192units algebra (mark_price; leverage role NONE); CONVERSION_READY=true; read-only binding module only; Shadow/Live still pass raw fraction as quantity; AUTHORITY_EFFECT=NONE.",
+      "statement": "C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1 satisfied on origin/main @ 7c9e00b57a85a39841bfbedcc5c743fbcf5b955d: authoritative equity/reference-price/instrument-metadata bindings plus LINEAR fraction→units algebra proven read-only; runtime_conversion_implemented=false (Companion path only); Full-Core enter-live-29p uses governed B05 producers without Companion conversion handoff.",
       "evidence_refs": [
         "config/governance/risk_sizing_c2_companion_conversion_dependency_closure_v1.json",
         "config/governance/companion_fraction_to_units_contract_v1.json",
@@ -3928,17 +5115,23 @@
         "docs/governance/RISK_SIZING_C2_COMPANION_CONVERSION_DEPENDENCY_CLOSURE_V1.md",
         "docs/governance/COMPANION_FRACTION_TO_UNITS_CONTRACT_V1.md",
         "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/registry_and_witness_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "PROVEN_CURRENT",
+      "closure_note": "C2 companion conversion dependency closure ratified (CONVERSION_READY=true); runtime conversion scaffold v1 present; shadow/live producer binding still absent."
     },
     {
-      "id": "post_6828_portfolio_treasury_equity_boundary_v1",
+      "id": "companion_c2_fraction_to_units_runtime_completion_v1",
       "epistemic_class": "PARTIAL",
-      "statement": "Post-#6828 WP-C: portfolio reservation vs Treasury Q0 observation boundary ratified; Treasury single-source Q0 unchanged; CANONICAL_RESTART_RECONSTRUCTABLE=false classified N5_ACTIVATION_REQUIREMENT; no N5 activation.",
+      "statement": "COMPANION_C2_FRACTION_TO_UNITS_RUNTIME_COMPLETION_V1: fail-closed runtime_conversion_v1 scaffold reuses read-binding + algebra; COMPANION_RUNTIME_CONVERSION_ENABLED=false; passthrough fraction preserved; shadow_session/live_session unbound; NEXT_PRODUCTIVE_CONVERSION_SLICE_AUTHORIZED=false.",
       "evidence_refs": [
-        "config/governance/post_6828_architecture_closure_v1.json",
-        "config/governance/portfolio_reservation_treasury_equity_boundary_ratification_v1.json",
-        "docs/governance/PORTFOLIO_RESERVATION_TREASURY_EQUITY_BOUNDARY_RATIFICATION_V1.md"
-      ]
+        "docs/ops/specs/COMPANION_C2_FRACTION_TO_UNITS_RUNTIME_COMPLETION_V1.md",
+        "config/governance/companion_c2_fraction_to_units_runtime_completion_v1_decision_v1.json",
+        "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/runtime_conversion_v1.py",
+        "tests/ops/test_companion_c2_fraction_to_units_runtime_completion_v1.py",
+        "tests/governance/test_companion_c2_fraction_to_units_runtime_completion_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Producer binding on shadow/live paths requires scoped Owner-GO; not activated in this WP."
     },
     {
       "id": "g2_runtime_primary_offline_observation_projection_v1",
@@ -3951,7 +5144,9 @@
         "config/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1_decision_v1.json",
         "tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py",
         "tests/governance/test_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "CURRENT_SUPPORT",
+      "closure_note": "Governed apply/materialization support chain; RUNTIME_APPLY_STARTED=false."
     },
     {
       "id": "g2_runtime_learning_input_to_optimization_universe_binding_v1",
@@ -3961,7 +5156,9 @@
         "docs/ops/specs/GOVERNED_RUNTIME_LEARNING_INPUT_TO_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_BINDING_V1.md",
         "config/governance/governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1_decision_v1.json",
         "tests/governance/test_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "CURRENT_SUPPORT",
+      "closure_note": "Governed apply/materialization support chain; RUNTIME_APPLY_STARTED=false."
     },
     {
       "id": "g2_runtime_g2_to_m4_m8_real_mechanical_continuation_v1",
@@ -3971,7 +5168,9 @@
         "docs/ops/specs/GOVERNED_RUNTIME_G2_TO_M4_M8_REAL_MECHANICAL_CONTINUATION_V1.md",
         "config/governance/governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1_decision_v1.json",
         "tests/governance/test_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "CURRENT_SUPPORT",
+      "closure_note": "Governed apply/materialization support chain; RUNTIME_APPLY_STARTED=false."
     },
     {
       "id": "m4_m8_real_meta_optimization_feedback_continuation_v1",
@@ -3981,7 +5180,9 @@
         "docs/ops/specs/GOVERNED_M4_M8_EVIDENCE_RETURN_TO_META_LEARNING_OPTIMIZATION_FEEDBACK_REAL_MECHANICAL_CONTINUATION_V1.md",
         "config/governance/governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1_decision_v1.json",
         "tests/governance/test_governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "CURRENT_SUPPORT",
+      "closure_note": "Governed apply/materialization support chain; RUNTIME_APPLY_STARTED=false."
     },
     {
       "id": "real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_v1",
@@ -3991,7 +5192,9 @@
         "docs/ops/specs/GOVERNED_REAL_M4_M8_P5_PRODUCER_BRIDGE_TO_EVIDENCE_ADJUDICATOR_A_REAL_MECHANICAL_CONTINUATION_V1.md",
         "config/governance/governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1_decision_v1.json",
         "tests/governance/test_governed_real_m4_m8_p5_producer_bridge_to_evidence_adjudicator_a_real_mechanical_continuation_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "CURRENT_SUPPORT",
+      "closure_note": "Governed apply/materialization support chain; RUNTIME_APPLY_STARTED=false."
     },
     {
       "id": "real_component_a_to_p3_p4_l6_productive_seam_v1",
@@ -4001,7 +5204,9 @@
         "docs/ops/specs/GOVERNED_REAL_COMPONENT_A_ADMIT_TO_P3_P4_L6_PRODUCTIVE_SEAM_REAL_MECHANICAL_CONTINUATION_V1.md",
         "config/governance/governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1_decision_v1.json",
         "tests/governance/test_governed_real_component_a_admit_to_p3_p4_l6_productive_seam_real_mechanical_continuation_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "CURRENT_SUPPORT",
+      "closure_note": "Governed apply/materialization support chain; RUNTIME_APPLY_STARTED=false."
     },
     {
       "id": "real_p4_l6_seam_to_runtime_apply_materialization_v1",
@@ -4012,7 +5217,9 @@
         "config/governance/governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1_decision_v1.json",
         "config/governance/governed_runtime_apply_materialization_wp_v1_owner_decision_v1.json",
         "tests/governance/test_governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "CURRENT_SUPPORT",
+      "closure_note": "Governed apply/materialization support chain; RUNTIME_APPLY_STARTED=false."
     },
     {
       "id": "f1_m9_scoped_owner_apply_execution_real_continuation_v1",
@@ -4024,7 +5231,9 @@
         "config/governance/governed_f1_m9_scoped_owner_apply_execution_wp_v1_owner_decision_v1.json",
         "tests/governance/test_governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1.py",
         "tests/governance/test_real_p4_to_f1_m9_apply_lineage_join_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "CURRENT_SUPPORT",
+      "closure_note": "Governed apply/materialization support chain; RUNTIME_APPLY_STARTED=false."
     },
     {
       "id": "f1_m9_scoped_owner_productive_runtime_apply_start_v1",
@@ -4035,7 +5244,9 @@
         "config/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1_decision_v1.json",
         "config/governance/governed_f1_m9_scoped_owner_productive_runtime_apply_start_wp_v1_owner_decision_v1.json",
         "tests/governance/test_governed_f1_m9_scoped_owner_productive_runtime_apply_start_real_mechanical_continuation_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "CURRENT_SUPPORT",
+      "closure_note": "Governed apply/materialization support chain; RUNTIME_APPLY_STARTED=false."
     },
     {
       "id": "f1_m9_productive_runtime_threshold_consumer_wiring_v1",
@@ -4046,7 +5257,132 @@
         "config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1_decision_v1.json",
         "config/governance/governed_f1_m9_productive_runtime_threshold_consumer_wiring_wp_v1_owner_decision_v1.json",
         "tests/governance/test_governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1.py"
-      ]
+      ],
+      "closure_adjudication_class": "CURRENT_SUPPORT",
+      "closure_note": "Governed apply/materialization support chain; RUNTIME_APPLY_STARTED=false."
+    },
+    {
+      "id": "current_productive_activation_policy_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "CURRENT Productive Activation policy: singular owner governance.current_productive_activation_policy_v1; lineage-bound record; runtime admission at F1/M9 consumer surfaces; 600s/e556ea63… preserved; continuous run, external effect, POST, permit remain false.",
+      "evidence_refs": [
+        "docs/ops/specs/CURRENT_PRODUCTIVE_ACTIVATION_POLICY_V1.md",
+        "config/governance/current_productive_activation_policy_v1_record.json",
+        "config/governance/current_productive_activation_policy_owner_go_v1_decision.json",
+        "tests/governance/test_current_productive_activation_policy_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
+    },
+    {
+      "id": "external_effect_boundary_forensic_review_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "External Effect boundary forensic review post-#6892: chain closure Productive Activation + Continuous Run → PRE_EXTERNAL → standing external-effect gate; POST/permit/credential access remain unauthorized; earliest blocker EXTERNAL_EFFECT_AUTHORIZATION.",
+      "evidence_refs": [
+        "docs/ops/specs/EXTERNAL_EFFECT_BOUNDARY_FORENSIC_REVIEW_V1.md",
+        "config/governance/external_effect_boundary_forensic_review_v1_decision_v1.json",
+        "config/governance/external_effect_boundary_forensic_review_wp_v1_owner_decision_v1.json",
+        "tests/governance/test_external_effect_boundary_forensic_review_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "External-effect/credential policy record; not activation."
+    },
+    {
+      "id": "external_effect_authorization_policy_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "External Effect authorization policy: singular owner governance.external_effect_authorization_policy_v1; lineage-bound record + gate/envelope seam binding; import-time EXTERNAL_EFFECT_AUTHORIZED false; governed standing lift bound separately.",
+      "evidence_refs": [
+        "docs/ops/specs/EXTERNAL_EFFECT_AUTHORIZATION_POLICY_V1.md",
+        "config/governance/external_effect_authorization_policy_v1_record.json",
+        "config/governance/external_effect_authorization_policy_owner_go_v1_decision.json",
+        "config/governance/external_effect_authorization_policy_v1_decision_v1.json",
+        "tests/governance/test_external_effect_authorization_policy_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "External-effect/credential policy record; not activation."
+    },
+    {
+      "id": "standing_external_effect_lift_policy_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Standing External Effect Lift policy: governance.standing_external_effect_lift_policy_v1; governed gate standing true via parameterized evaluate; permit mint policy bound separately (#6896); credential/POST remain false.",
+      "evidence_refs": [
+        "docs/ops/specs/STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1.md",
+        "config/governance/standing_external_effect_lift_policy_v1_record.json",
+        "config/governance/standing_external_effect_lift_owner_go_v1_decision.json",
+        "config/governance/standing_external_effect_lift_policy_v1_decision_v1.json",
+        "tests/governance/test_standing_external_effect_lift_policy_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Retained open epistemic record; no closure without new evidence."
+    },
+    {
+      "id": "external_effect_permit_mint_policy_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "External Effect Permit Mint policy: governance.external_effect_permit_mint_policy_v1; governed permit-mint admission; credential access policy bound separately; POST/runtime mint false.",
+      "evidence_refs": [
+        "docs/ops/specs/EXTERNAL_EFFECT_PERMIT_MINT_POLICY_V1.md",
+        "config/governance/external_effect_permit_mint_policy_v1_record.json",
+        "config/governance/external_effect_permit_mint_owner_go_v1_decision.json",
+        "config/governance/external_effect_permit_mint_policy_v1_decision_v1.json",
+        "tests/governance/test_external_effect_permit_mint_policy_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "External-effect/credential policy record; not activation."
+    },
+    {
+      "id": "checkout_independent_credential_access_policy_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Checkout-independent credential access policy: governed admission on permit mint; material load policy bound separately; POST/signing false.",
+      "evidence_refs": [
+        "docs/ops/specs/CHECKOUT_INDEPENDENT_CREDENTIAL_ACCESS_POLICY_V1.md",
+        "config/governance/checkout_independent_credential_access_policy_v1_record.json",
+        "config/governance/checkout_independent_credential_access_owner_go_v1_decision.json",
+        "config/governance/checkout_independent_credential_access_policy_v1_decision_v1.json",
+        "tests/governance/test_checkout_independent_credential_access_policy_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "External-effect/credential policy record; not activation."
+    },
+    {
+      "id": "real_keychain_access_or_credential_material_load_policy_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Real Keychain / credential material load: governed ephemeral acquisition on #6897; standing pins false; K1 PRE-POST bound separately (#6899).",
+      "evidence_refs": [
+        "docs/ops/specs/REAL_KEYCHAIN_ACCESS_OR_CREDENTIAL_MATERIAL_LOAD_POLICY_V1.md",
+        "config/governance/real_keychain_access_or_credential_material_load_policy_v1_record.json",
+        "config/governance/real_keychain_access_or_credential_material_load_owner_go_v1_decision.json",
+        "config/governance/real_keychain_access_or_credential_material_load_policy_v1_decision_v1.json",
+        "tests/governance/test_real_keychain_access_or_credential_material_load_policy_v1.py"
+      ],
+      "closure_adjudication_class": "CURRENT_SUPPORT",
+      "closure_note": "Governed apply/materialization support chain; RUNTIME_APPLY_STARTED=false."
+    },
+    {
+      "id": "current_productive_k1_opaque_signing_handle_pre_post_policy_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "K1 opaque signing PRE-POST: Owner-GO ephemeral handle + request signing + envelope validation; real venue POST requires separate actual-POST Owner-GO.",
+      "evidence_refs": [
+        "docs/ops/specs/CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN_ACCESS_AND_OPAQUE_SIGNING_HANDLE_PRE_POST_V1.md",
+        "config/governance/current_productive_k1_opaque_signing_handle_pre_post_policy_v1_record.json",
+        "config/governance/current_productive_k1_opaque_signing_handle_pre_post_owner_go_v1_decision.json",
+        "config/governance/current_productive_k1_opaque_signing_handle_pre_post_policy_v1_decision_v1.json",
+        "tests/governance/test_current_productive_k1_opaque_signing_handle_pre_post_policy_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Policy/evidence boundary record; fail-closed until scoped Owner-GO."
+    },
+    {
+      "id": "productive_activation_boundary_forensic_review_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "Productive Activation boundary forensic review post-#6890: census + static proof; activation authority superseded by current_productive_activation_policy_v1; P5.10 bind distinct; PRE_EXTERNAL fail-closed.",
+      "evidence_refs": [
+        "docs/ops/specs/PRODUCTIVE_ACTIVATION_BOUNDARY_FORENSIC_REVIEW_V1.md",
+        "config/governance/productive_activation_boundary_forensic_review_v1_decision_v1.json",
+        "config/governance/productive_activation_boundary_forensic_review_wp_v1_owner_decision_v1.json",
+        "tests/governance/test_productive_activation_boundary_forensic_review_v1.py"
+      ],
+      "closure_adjudication_class": "OPEN_EVIDENCE",
+      "closure_note": "Activation boundary forensic review; fail-closed."
     }
   ]
 }

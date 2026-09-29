@@ -1,0 +1,28 @@
+{
+  "workpackage_id": "STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1",
+  "owner_go": true,
+  "owner_go_decision_config": "config/governance/standing_external_effect_lift_owner_go_v1_decision.json",
+  "baseline_origin_main_sha": "2309dbd5b04a2fc2b41d88d9905d96671e51b1e3",
+  "standing_external_effect_lift_authorized": true,
+  "governed_standing_external_effect_authorized": true,
+  "import_time_external_effect_authorized": false,
+  "post_allowed": false,
+  "real_venue_post_allowed": false,
+  "wire_send_permitted": false,
+  "permit_mint_authorized": false,
+  "autonomy_can_mint_permit": false,
+  "autonomy_can_post": false,
+  "credential_access_performed": false,
+  "lift_implies_permit_mint": false,
+  "lift_implies_credential_access": false,
+  "lift_implies_real_venue_post": false,
+  "earliest_unclosed_boundary": "EXTERNAL_EFFECT_PERMIT_MINT",
+  "next_genuine_blocker": "EXTERNAL_EFFECT_PERMIT_MINT_OWNER_GO",
+  "normative_spec": "docs/ops/specs/STANDING_EXTERNAL_EFFECT_LIFT_POLICY_V1.md",
+  "bound_lineage": {
+    "external_effect_authorization_policy_record_config": "config/governance/external_effect_authorization_policy_v1_record.json",
+    "external_effect_authorization_policy_v1_decision_config": "config/governance/external_effect_authorization_policy_v1_decision_v1.json",
+    "external_effect_gate_module": "src/ops/full_core_live_path_composition_root_v1/external_effect_gate_v1.py",
+    "envelope_send_seam_module": "src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py"
+  }
+}

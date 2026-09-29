@@ -1,0 +1,17 @@
+{
+  "workpackage_id": "POST_6948_PRODUCTIVE_CONTINUOUS_RUN_AUTHORITY_LIVE_C1_CONVERGENCE_V1",
+  "normative_spec": "docs/ops/specs/POST_6948_PRODUCTIVE_CONTINUOUS_RUN_AUTHORITY_LIVE_C1_CONVERGENCE_V1.md",
+  "baseline_sha": "85581ee6ca095f8533e5f0b09299d8596d61cc81",
+  "owner_decision_required": true,
+  "first_genuine_remaining_blocker": "SCOPED_OWNER_GO_CONSUMPTION_FOR_PRODUCTIVE_CONTINUOUS_RUN_AND_LIVE_FRESH_C1_GET",
+  "earliest_missing_join_or_gate": "OWNER_GO_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_RUN_V1+OWNER_GO_S4A_EH_EXACTLY_ONE_PUBLIC_READONLY_FRESH_C1_GET_V1",
+  "continuous_policy_admission_valid_on_main": true,
+  "pr_6948_offline_path_complete": true,
+  "productive_continuous_runtime_executed": false,
+  "continuous_run_authorized_module_pin_changed": false,
+  "post_owner_go_consumed": false,
+  "permit_minted": false,
+  "venue_post_count": 0,
+  "owner_decision_schema_ref": "build_owner_decision_schema_v1",
+  "next_canonical_step_after_owner_go": "Mechanical wiring WP: policy-governed continuous binding + live C1 observation source on S6 wait loop; PRE_EXTERNAL terminal only; no POST."
+}

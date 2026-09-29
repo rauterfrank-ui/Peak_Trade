@@ -31,19 +31,23 @@ from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
     governed_c1_candles_payload_from_enter_closes_v1,
     prepare_layered_long_armed_seed_for_pre_external_invoke_v1,
 )
+from tests.ops._pre_external_cap21_inst_type_test_helpers_v1 import (
+    write_cap21_productivity_root_for_inst_v1,
+)
+from trading.master_v2.double_play_entry_exit_policy_v0 import ExistingPositionSide
 from tests.ops.test_full_core_current_productive_pre_external_closure_v1 import (
+    _TEST_INST,
     _bound,
     _origin_main_sha,
     _productive_transport,
-)
-from tests.ops.test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1 import (
-    _produced_g17_producer,
 )
 from tests.ops.test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1 import (
     _handle,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
 SPEC_PATH = (
     REPO_ROOT
     / "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_GAP_TRUE_01_EXECUTABLE_ENVELOPE_PRE_EXTERNAL_EVIDENCE_V1.md"
@@ -64,12 +68,11 @@ def test_gap_true_01_closes_with_executable_envelope_pre_external(tmp_path: Path
         head=origin_sha,
     )
     bound = _bound()
-    g17 = _produced_g17_producer(instrument_id=bound.instrument_id)
     lanes_root = tmp_path / "lanes"
-    _arm, enter_closes, mark_px, event_ts = (
+    _arm, enter_closes, mark_px, event_ts, g17 = (
         prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
             bound=bound,
-            g17_typed_vol_producer=g17,
+            g17_typed_vol_producer=object(),
             lane_state_root=lanes_root,
         )
     )
@@ -78,12 +81,14 @@ def test_gap_true_01_closes_with_executable_envelope_pre_external(tmp_path: Path
         enter_closes=enter_closes,
         last_event_ts_unix=event_ts,
     )
+    cap24_root = write_cap21_productivity_root_for_inst_v1(tmp_path, venue_native_id=_TEST_INST)
     result = execute_current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1(
         owner_go=OWNER_GO,
         origin_main_sha=origin_sha,
         bound_instrument=bound,
         fresh_get_transport=_productive_transport(),
         lane_state_root=lanes_root,
+        cap24_productivity_root=cap24_root,
         candles_payload=candles,
         market_kwargs={
             "cycle_id_prefix": "gap-true-01-test",
@@ -98,6 +103,7 @@ def test_gap_true_01_closes_with_executable_envelope_pre_external(tmp_path: Path
             "volume": 10.0,
             "open_interest": 20.0,
             "funding_rate": 0.0001,
+            "existing_position_side": ExistingPositionSide.NONE,
         },
         g17_typed_vol_producers={"LANE_1": g17},
         evidence_root=tmp_path / "evidence",

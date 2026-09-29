@@ -1,1828 +1,988 @@
-# ATLAS_AUTHORITY=NONE
 relations:
-  - id: REL:r_gfu_eligibility_filters
-    source: RUNTIME_COMPONENT:gfu_eligibility
-    type: FILTERS
-    target: UNIVERSE:governed_futures_universe
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
-    requires_okx_fields:
-      - instId
-      - quoteCcy
-      - uly
-
-  - id: REL:r_cap21_produces_universe
-    source: CAPABILITY:cap_2_1_gfu
-    type: PRODUCES
-    target: UNIVERSE:governed_futures_universe
-    epistemic_status: ADJUDICATED
-    evidence_sources:
-      - src/ops/governed_futures_universe_producer_v1/producer_v1.py
-
-  - id: REL:r_cap22_ranks_universe
-    source: SELECTOR:productive_futures_ranking
-    type: RANKS
-    target: UNIVERSE:governed_futures_universe
-    epistemic_status: ADJUDICATED
-    evidence_sources:
-      - src/ops/productive_futures_ranking_producer_v1/policy_v1.py
-
-  - id: REL:r_cap23_selects
-    source: SELECTOR:single_selected_future_policy
-    type: SELECTS
-    target: SELECTOR:productive_futures_ranking
-    epistemic_status: ADJUDICATED
-    evidence_sources:
-      - src/ops/single_selected_future_policy_v1/models_v1.py
-      - src/ops/single_selected_future_policy_v1/policy_v1.py
-      - src/ops/single_selected_future_policy_v1/producer_v1.py
-      - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
-    notes: >-
-      B08: Cap 2.3 consumes the authoritative upstream Cap 2.2 ranked order
-      and applies anti-churn/selection overlay only. It does not rescore,
-      rerank, reconstruct economic features, use Future Profile fields for
-      selection, or fall back to venue-native ordering.
-      Optional pin still selects from the same full Cap 2.2 snapshot.
-      No second ranking, no cross-universe candidate pool.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_current_mf_member_pinned_cap23_n1_adapter_validates_same_universe_pin
-    source: CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1
-    type: VALIDATES
-    target: SELECTOR:single_selected_future_policy
-    epistemic_status: ADJUDICATED
-    evidence_sources:
-      - src/ops/current_mf_member_to_pinned_cap23_n1_adapter_v1/adapter_v1.py
-      - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
-    notes: >-
-      Same-universe pin constraint only. Not PRODUCES/SELECTS/BINDS.
-      CROSS_UNIVERSE_* remain false. No MF domain edge.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_current_mf_n5_lane_topology_calls_pinned_cap23_adapter
-    source: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
-    type: CALLS
-    target: CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1
-    epistemic_status: ADJUDICATED
-    evidence_sources:
-      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
-      - src/ops/current_mf_member_to_pinned_cap23_n1_adapter_v1/adapter_v1.py
-    notes: >-
-      Pin factory reuse only. Not PRODUCES/SELECTS/BINDS. Not Cap23 writer.
-      CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_current_mf_n5_lane_topology_consumes_mf_membership_semantics
-    source: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
-    type: CONSUMES
-    target: CONTRACT:mf_selection_and_anti_churn_semantics_v1
-    epistemic_status: ADJUDICATED
-    evidence_sources:
-      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
-      - src/ops/mf_membership_context_artifact_contract_v1.py
-    notes: >-
-      Consumes governed membership identity and derived enter/retain/exit
-      occupancy. Rank order is not lane identity. Not membership authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_durable_lane_assignment_persistence_persists_n5_lane_topology
-    source: CONTRACT:current_mf_n5_durable_lane_assignment_persistence_v1
-    type: PERSISTS
-    target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
-    epistemic_status: ADJUDICATED
-    evidence_sources:
-      - src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py
-      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
-    notes: >-
-      Records exact prior governed topology. Does not call
-      apply_isolated_lane_topology_v1. Not PRODUCES/SELECTS/BINDS.
-      CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_durable_lane_assignment_persistence_loads_n5_lane_topology
-    source: CONTRACT:current_mf_n5_durable_lane_assignment_persistence_v1
-    type: LOADS
-    target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
-    epistemic_status: ADJUDICATED
-    evidence_sources:
-      - src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py
-      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
-    notes: >-
-      Recovers exact IsolatedLaneTopologyV1 as explicit prior topology.
-      Recovery stops there. Missing/corrupt restart state must not bootstrap.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_recovered_topology_consumer_calls_n5_lane_topology
-    source: CONTRACT:current_mf_n5_recovered_topology_consumer_join_v1
-    type: CALLS
-    target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
-    epistemic_status: ADJUDICATED
-    evidence_sources:
-      - src/ops/current_mf_n5_recovered_topology_consumer_join_v1/consumer_v1.py
-      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
-    notes: >-
-      Calls apply_isolated_lane_topology_v1 with recovered prior_topology
-      or None. Not PRODUCES/SELECTS/BINDS. Not Cap23 writer.
-      CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_recovered_topology_consumer_calls_durable_lane_assignment
-    source: CONTRACT:current_mf_n5_recovered_topology_consumer_join_v1
-    type: CALLS
-    target: CONTRACT:current_mf_n5_durable_lane_assignment_persistence_v1
-    epistemic_status: ADJUDICATED
-    evidence_sources:
-      - src/ops/current_mf_n5_recovered_topology_consumer_join_v1/consumer_v1.py
-      - src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py
-    notes: >-
-      Calls recover then persist. Does not map lanes. Not PRODUCES/SELECTS/BINDS.
-      CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_occupied_lane_pin_consumer_calls_recovered_topology_consumer
-    source: CONTRACT:current_mf_n5_occupied_lane_pin_consumer_join_v1
-    type: CALLS
-    target: CONTRACT:current_mf_n5_recovered_topology_consumer_join_v1
-    epistemic_status: ADJUDICATED
-    evidence_sources:
-      - src/ops/current_mf_n5_occupied_lane_pin_consumer_join_v1/consumer_v1.py
-      - src/ops/current_mf_n5_recovered_topology_consumer_join_v1/consumer_v1.py
-    notes: >-
-      Calls consume_recovered_isolated_lane_topology_v1 and uses that return
-      as pin-builder topology. Not PRODUCES/SELECTS/BINDS. Not Cap23 writer.
-      CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_occupied_lane_pin_consumer_calls_n5_lane_topology
-    source: CONTRACT:current_mf_n5_occupied_lane_pin_consumer_join_v1
-    type: CALLS
-    target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
-    epistemic_status: ADJUDICATED
-    evidence_sources:
-      - src/ops/current_mf_n5_occupied_lane_pin_consumer_join_v1/consumer_v1.py
-      - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
-    notes: >-
-      Calls build_occupied_lane_pins_v1 with the exact consume return and
-      the same current ranking snapshot. Not PRODUCES/SELECTS/BINDS.
-      Not Cap23 writer. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_ranking_domain_occupied_lane_cap23_produce_join_calls_occupied_lane_pin_consumer
-    source: CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1
-    type: CALLS
-    target: CONTRACT:current_mf_n5_occupied_lane_pin_consumer_join_v1
-    epistemic_status: ADJUDICATED
-    evidence_sources:
-      - src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/produce_join_v1.py
-      - src/ops/current_mf_n5_occupied_lane_pin_consumer_join_v1/consumer_v1.py
-    notes: >-
-      Calls consume_occupied_lane_pins_v1 exactly once. Not PRODUCES/SELECTS/BINDS.
-      Not a second Cap23 writer. CROSS_UNIVERSE_* remain false.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_ranking_domain_occupied_lane_cap23_produce_join_calls_cap23
-    source: CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1
-    type: CALLS
-    target: SELECTOR:single_selected_future_policy
-    epistemic_status: ADJUDICATED
-    evidence_sources:
-      - src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/produce_join_v1.py
-      - src/ops/single_selected_future_policy_v1/producer_v1.py
-    notes: >-
-      Calls existing run_single_selected_future_policy_v1 once per occupied
-      lane with that lane's governed pin and lane_state_root. Join is not
-      selection owner. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_cap24_binds
-    source: BINDER:bound_instrument_v1
-    type: BINDS
-    target: SELECTOR:single_selected_future_policy
-    epistemic_status: ADJUDICATED
-    evidence_sources:
-      - src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py
-      - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
-    notes: >-
-      B08: Cap 2.4 binds the selected identity emitted by Cap 2.3 and carries
-      ranking/selection provenance forward. It does not rank, rerank, reselect,
-      or reinterpret instrument choice. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_host72_consumes_binding
-    source: HOST:cap72_stateful_host
-    type: CONSUMES
-    target: BINDER:bound_instrument_v1
-    epistemic_status: ADJUDICATED
-    evidence_sources:
-      - src/ops/single_future_stateful_no_order_runtime_activation_v1/host_binding_v1.py
-
-  - id: REL:r_script_gfu_calls_cap21
-    source: SCRIPT:run_gfu_producer
-    type: CALLS
-    target: CAPABILITY:cap_2_1_gfu
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
-
-  - id: REL:r_script_cap23_calls
-    source: SCRIPT:run_cap23_policy
-    type: CALLS
-    target: CAPABILITY:cap_2_3_single_selected_future
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
-
-  - id: REL:r_md_client_fetches_instruments
-    source: ADAPTER:okx_public_md_client
-    type: FETCHES
-    target: VENUE_ENDPOINT:okx_public_instruments
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/okx_public_market_data_client_v1.py
-
-  - id: REL:r_canary_uses_k1_hmac
-    source: CAPABILITY:cap_11_13_5_live_canary
-    type: SIGNS
-    target: AUTH_PRIMITIVE:okx_hmac_sign
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/authenticated_productive_transport_v1.py
-
-  - id: REL:r_flatten_gates
-    source: GATE:flatten_execute_authority
-    type: GATES
-    target: CAPABILITY:cap_11_13_5_live_canary
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
-
-  - id: REL:r_post_action_observes
-    source: OBSERVER:post_action_canary
-    type: OBSERVES
-    target: GATE:flatten_execute_authority
-    epistemic_status: OPEN
-    render_as_proven: false
-    evidence_sources:
-      - docs/forensics/persistence/registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md
-    notes: Forensic record POST_ACTION_NOT_WIRED_IN_FLATTEN_EXECUTE.
-
-  - id: REL:r_dp_composition_consumes_survival
-    source: RUNTIME_COMPONENT:dp_composition
-    type: CONSUMES
-    target: RUNTIME_COMPONENT:dp_survival
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/trading/master_v2/double_play_composition.py
-      - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md
-
-  - id: REL:r_dp_composition_consumes_suitability
-    source: RUNTIME_COMPONENT:dp_composition
-    type: CONSUMES
-    target: RUNTIME_COMPONENT:dp_suitability
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/trading/master_v2/double_play_composition.py
-
-  - id: REL:r_dp_state_calls
-    source: RUNTIME_COMPONENT:dp_composition
-    type: READS
-    target: RUNTIME_COMPONENT:dp_state
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/trading/master_v2/double_play_composition.py
-
-  - id: REL:r_live_auth_denies
-    source: GATE:live_authorized_false
-    type: DENIES
-    target: CAPABILITY:cap_11_13_5_live_canary
-    epistemic_status: CANONICAL_AUTHORITY
-    authority_sources:
-      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
-    evidence_sources:
-      - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
-
-  - id: REL:r_dp_composition_consumes_capital_slot
-    source: RUNTIME_COMPONENT:dp_composition
-    type: CONSUMES
-    target: RUNTIME_COMPONENT:dp_capital_slot
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/trading/master_v2/double_play_composition.py
-
-  - id: REL:r_dp_core_wiring_calls_integrated_replay
-    source: RUNTIME_COMPONENT:dp_core_wiring
-    type: CALLS
-    target: RUNTIME_COMPONENT:mv2_integrated_replay
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/trading/master_v2/double_play_core_wiring_v1.py
-
-  - id: REL:r_dp_core_wiring_calls_decision_packet
-    source: RUNTIME_COMPONENT:dp_core_wiring
-    type: CALLS
-    target: RUNTIME_COMPONENT:mv2_decision_packet
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/trading/master_v2/double_play_core_wiring_v1.py
-
-  - id: REL:r_dp_core_wiring_calls_quarantine
-    source: RUNTIME_COMPONENT:dp_core_wiring
-    type: CALLS
-    target: RUNTIME_COMPONENT:dp_sole_authority_quarantine
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/trading/master_v2/double_play_core_wiring_v1.py
-
-  - id: REL:r_ddo_capture_observes_universe
-    source: RUNTIME_COMPONENT:ddo_capture_v0
-    type: OBSERVES
-    target: CAPABILITY:cap_2_1_gfu
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/governed_futures_universe_producer_v1/producer_v1.py
-      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-    notes: >-
-      Host decorator observe_after_producer_v0 seam selection.universe.
-      No-op unless an enabled DdoCaptureBindingV0 session is bound. Does not
-      mutate the producer result. Not PRODUCES/CONSUMES/CALLS.
-
-  - id: REL:r_ddo_capture_observes_ranking
-    source: RUNTIME_COMPONENT:ddo_capture_v0
-    type: OBSERVES
-    target: SELECTOR:productive_futures_ranking
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/productive_futures_ranking_producer_v1/producer_v1.py
-      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-    notes: >-
-      Host decorator observe_after_producer_v0 seam selection.ranking.
-      No-op unless an enabled capture session is bound. Not PRODUCES/CONSUMES/CALLS.
-
-  - id: REL:r_ddo_capture_observes_selection
-    source: RUNTIME_COMPONENT:ddo_capture_v0
-    type: OBSERVES
-    target: SELECTOR:single_selected_future_policy
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/single_selected_future_policy_v1/selection_v1.py
-      - src/ops/single_selected_future_policy_v1/models_v1.py
-      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-    notes: >-
-      Host decorator observe_after_producer_v0 seam selection.single_future.
-      No-op unless an enabled capture session is bound. Not PRODUCES/CONSUMES/CALLS.
-      Cap23 governed pin does not confer DDO selection or routing authority.
-
-  - id: REL:r_ddo_capture_observes_binding
-    source: RUNTIME_COMPONENT:ddo_capture_v0
-    type: OBSERVES
-    target: BINDER:bound_instrument_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py
-      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-    notes: >-
-      Host decorator observe_after_producer_v0 seam selection.runtime_binding.
-      No-op unless an enabled capture session is bound. Not Cap-2.4 BINDS.
-
-  - id: REL:r_ddo_capture_observes_recon_startup
-    source: RUNTIME_COMPONENT:ddo_capture_v0
-    type: OBSERVES
-    target: RUNTIME_COMPONENT:recon_startup_gate_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py
-      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-    notes: >-
-      Host decorator observe_after_producer_v0 seam recon.startup_gate.
-      No-op unless an enabled capture session is bound. DDO does not own recon.
-
-  - id: REL:r_ddo_capture_observes_sim_exec
-    source: RUNTIME_COMPONENT:ddo_capture_v0
-    type: OBSERVES
-    target: RUNTIME_COMPONENT:simulated_execution_port_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/single_future_stateful_no_order_runtime_activation_v1/simulated_execution_port_v1.py
-      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-    notes: >-
-      Host decorator observe_after_producer_v0 seam execution.simulated_outcome.
-      No-op unless an enabled capture session is bound. Not venue submit.
-
-  - id: REL:r_ddo_capture_observes_wallclock_cycle_producers
-    source: RUNTIME_COMPONENT:ddo_capture_v0
-    type: OBSERVES
-    target: HOST:wallclock_decision_economics_cycle
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/trading/market_state/distinct_market_observation_acceptor_v1.py
-      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/feature_regime_pipeline_v1.py
-      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/intended_action_mapper_v1.py
-      - src/ops/exit_policy_producer_binding_v1/producers_v1.py
-      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-    notes: >-
-      WP-FS-B1 host decorators for c1.observation_acceptance, feature.regime,
-      feature.typed_volatility, mapper.intended_action, and core.exit_policy.
-      Mapper consumes typed ReplayExecutionSafetyV1 when present.
-      Observation only. Not PRODUCES/CONSUMES/CALLS.
-
-  - id: REL:r_ddo_capture_observes_directional
-    source: RUNTIME_COMPONENT:ddo_capture_v0
-    type: OBSERVES
-    target: RUNTIME_COMPONENT:mv2_directional_assessment
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/trading/master_v2/directional_assessment_v1.py
-      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-    notes: >-
-      Host decorator observe_after_producer_v0 seam core.bull_bear.
-      No-op unless an enabled capture session is bound.
-
-  - id: REL:r_ddo_capture_observes_confirmation
-    source: RUNTIME_COMPONENT:ddo_capture_v0
-    type: OBSERVES
-    target: RUNTIME_COMPONENT:mv2_post_confirmation_ssc
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/stateful_confirmation_and_c1_productive_binding_v1/host_binding_v1.py
-      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-    notes: >-
-      Host decorator observe_after_producer_v0 seam confirmation.state.
-      No-op unless an enabled capture session is bound.
-
-  - id: REL:r_ddo_capture_observes_integrated_replay
-    source: RUNTIME_COMPONENT:ddo_capture_v0
-    type: OBSERVES
-    target: RUNTIME_COMPONENT:mv2_integrated_replay
-    epistemic_status: FORENSIC_RAW
-    modified_by: STEP29M_CURRENT_INSTRUMENT_MV2_OFFLINE_BOUNDARY_MATERIALIZATION_AND_ADMISSION_V1
-    evidence_sources:
-      - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
-      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-    notes: >-
-      Host decorator observe_after_producer_v0 seam core.master_v2_evidence.
-      No-op unless an enabled capture session is bound. Not a second total
-      decision owner. OD1 single-lane replay join does not change this
-      observation-only relation. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_ddo_capture_observes_entry_exit
-    source: RUNTIME_COMPONENT:ddo_capture_v0
-    type: OBSERVES
-    target: RUNTIME_COMPONENT:dp_entry_exit_policy
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/trading/master_v2/double_play_entry_exit_policy_v0.py
-      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-      - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
-    notes: >-
-      Host decorator observe_after_producer_v0 seam core.double_play_entry_exit.
-      Typed producer observation is projected into
-      double_play_entry_exit_observation_v1. Exact producer tokens remain
-      producer-owned. Generic DDO DecisionResult is not a second trading enum.
-      Sibling producer-input evidence is projected into
-      double_play_entry_exit_policy_input_evidence_v1. Observation only.
-
-  - id: REL:r_ddo_capture_observes_entry_exit_input
-    source: RUNTIME_COMPONENT:ddo_capture_v0
-    type: OBSERVES
-    target: RUNTIME_COMPONENT:ddo_double_play_input_evidence_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-      - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
-    notes: >-
-      Host decorator observe_after_producer_v0 seam core.double_play_entry_exit
-      persists sibling producer-input evidence. Observation only. Not trading
-      authority.
-
-  - id: REL:r_ddo_input_evidence_reads_entry_exit_policy
-    source: RUNTIME_COMPONENT:ddo_double_play_input_evidence_v1
-    type: READS
-    target: RUNTIME_COMPONENT:dp_entry_exit_policy
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
-      - src/trading/master_v2/double_play_entry_exit_policy_v0.py
-    notes: >-
-      Reuses producer types plus serialize_entry_exit_policy_input_canonical
-      and compute_entry_exit_policy_input_digest. Does not call
-      evaluate_double_play_entry_exit_policy_v0. Not a second policy owner.
-
-  - id: REL:r_ddo_semantic_replay_reads_entry_exit_observation
-    source: RUNTIME_COMPONENT:ddo_double_play_semantic_replay_v1
-    type: READS
-    target: RUNTIME_COMPONENT:ddo_capture_v0
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py
-      - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
-    notes: >-
-      Offline reconstruction reads immutable typed observation evidence.
-      Does not mutate capture, ledger, or producer results. Not trading
-      authority.
-
-  - id: REL:r_ddo_semantic_replay_reads_entry_exit_policy
-    source: RUNTIME_COMPONENT:ddo_double_play_semantic_replay_v1
-    type: READS
-    target: RUNTIME_COMPONENT:dp_entry_exit_policy
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py
-      - src/trading/master_v2/double_play_entry_exit_policy_v0.py
-    notes: >-
-      Reuses producer types plus serialize_entry_exit_policy_decision_canonical
-      and compute_entry_exit_policy_semantic_digest. Does not call
-      evaluate_double_play_entry_exit_policy_v0. Not a second policy owner.
-
-  - id: REL:r_ddo_capture_observes_scope_events
-    source: RUNTIME_COMPONENT:ddo_capture_v0
-    type: OBSERVES
-    target: RUNTIME_COMPONENT:mv2_scope_events
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/trading/master_v2/deterministic_scope_event_generator_v1.py
-      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-    notes: >-
-      Host decorator observe_after_producer_v0 seam core.dynamic_scope.
-      Observation only.
-
-  - id: REL:r_ddo_capture_observes_safety_kernel
-    source: RUNTIME_COMPONENT:ddo_capture_v0
-    type: OBSERVES
-    target: RUNTIME_COMPONENT:mv2_offline_boundary_adapters
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py
-      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-    notes: >-
-      Host decorator observe_after_producer_v0 seams safety.kernel and
-      safety.killswitch_blocked_flag. Observation only. Not killswitch authority.
-
-  - id: REL:r_wallclock_injects_ddo_capture_session
-    source: HOST:wallclock_decision_economics_cycle
-    type: INJECTS
-    target: RUNTIME_COMPONENT:ddo_capture_v0
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
-      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-    notes: >-
-      with_ddo_capture_session_v0 binds DdoCaptureBindingV0 into a ContextVar
-      for the cycle. bind_host_cycle_capture_context_v0 shares cycle identity
-      with in-cycle producer decorators. Ontology has no CAPTURES type.
-      Session bind is not trading authority.
-
-  - id: REL:r_wallclock_calls_ddo_cycle_capture
-    source: HOST:wallclock_decision_economics_cycle
-    type: CALLS
-    target: RUNTIME_COMPONENT:ddo_capture_v0
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
-      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py
-      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-    notes: >-
-      Direct call to record_productive_cycle_capture_v0. No-op if binding is
-      missing or disabled. Observation of already-computed cycle objects.
-      Does not alter the productive cycle. PR 6634 also invokes learning outcome
-      ingest after evaluation runtime; non-authorizing observation only.
-
-  - id: REL:r_wallclock_materializes_ddo_o4_via_wp_c_public_plane
-    source: HOST:wallclock_decision_economics_cycle
-    type: CALLS
-    target: CAPABILITY:market_data_private_state_runtime_convergence_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_public_plane_convergence_v1.py
-      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
-      - src/ops/market_data_private_state_runtime_convergence_v1/o4_n_bars_learning_caller_closure_v1.py
-    notes: >-
-      Productive DDO O4→N_BARS snapshot reads WP-A facts via WP-C
-      converged_o4_handoff_v1 only. CanonicalPublicMdBarProducerV1 remains a
-      bounded writer to WP-A facts, not a competing productive O4 session read.
-      Fail-closed when history is insufficient. Observation-only.
-
-  - id: REL:r_wallclock_calls_learning_outcome_ingest
-    source: HOST:wallclock_decision_economics_cycle
-    type: CALLS
-    target: RUNTIME_COMPONENT:ddo_learning_outcome_ingest_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
-      - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py
-    notes: >-
-      invoke_productive_learning_outcome_evidence_ingest_v1 after evaluation
-      runtime. apply_learning_state_feedback_to_next_cycle_v1 at cycle start.
-      Non-authorizing; no trading, risk, execution, or promotion authority.
-
-  - id: REL:r_ddo_capture_persists_ledger
-    source: RUNTIME_COMPONENT:ddo_capture_v0
-    type: PERSISTS
-    target: RUNTIME_COMPONENT:ddo_ledger_v0
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-      - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
-      - src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py
-    notes: >-
-      Ontology has no MAY_PERSIST type. PERSISTS is optional at runtime:
-      append occurs only when ledger_path is set on an enabled capture
-      binding. In-memory captured_records still accumulate without a path.
-
-  - id: REL:r_g12_delayed_conjunction_consumes_target_position_state
-    source: RUNTIME_COMPONENT:g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1
-    type: CONSUMES
-    target: GATE:target_position_state
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_13_5_g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1/evaluate_v1.py
-      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_submit_state_v1.py
-    notes: >-
-      Offline delayed G12 evaluator reuses classify_target_position_state_v1.
-      This is classifier reuse, not a GET, not CHOICE_B rewrite, and not G12
-      close. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_g12_canonical_persist_consumes_delayed_conjunction_evaluator
-    source: RUNTIME_COMPONENT:g12_canonical_delayed_zero_persist_and_pending_related_observations_v1
-    type: CONSUMES
-    target: RUNTIME_COMPONENT:g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/adjudicate_v1.py
-      - src/ops/section_11_13_5_g12_delayed_posid_zero_row_full_conjunction_proof_contract_v1/evaluate_v1.py
-    notes: >-
-      Canonical persist/P7/P9 package consumes the merged delayed G12
-      evaluator. This is evaluator reuse, not a POST, not flatten execute,
-      and not section 11.14. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_offline_surface_follows_g12_closeout
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: RUNTIME_COMPONENT:g12_canonical_delayed_zero_persist_and_pending_related_observations_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/assemble_v1.py
-      - src/ops/section_11_13_5_g12_canonical_delayed_zero_persist_and_pending_related_observations_v1/adjudicate_v1.py
-    notes: >-
-      Offline §11.14 surface follows G12 closeout as predecessor context
-      only. This is not Live evidence collection, not GET, not POST, and
-      not section 11.14 completion. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_code_exists_follows_offline_surface
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_offline_evidence_ladder_surface
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/static_execution_graph_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/static_field_adjudication_v1.py
-    notes: >-
-      LIVE_EXECUTION_CODE_EXISTS static adjudication follows the offline
-      surface bind. This is not path-reachable, not GET, not POST, and not
-      section 11.14 completion. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_path_reachable_follows_code_exists
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_execution_code_exists_adjudication
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/path_reachable_predicate_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/path_reachable_adjudication_v1.py
-    notes: >-
-      LIVE_EXECUTION_PATH_REACHABLE adjudication follows CODE_EXISTS.
-      Conditional private GET only. This is not POST, not submit, and not
-      LIVE_PRIVATE_READ_ONLY_PROVEN. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_private_read_only_follows_path_reachable
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_execution_path_reachable_adjudication
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/private_read_only_predicate_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/private_read_only_adjudication_v1.py
-    notes: >-
-      LIVE_PRIVATE_READ_ONLY_PROVEN adjudication follows PATH_REACHABLE.
-      Conditional private GET config+balance only. This is not POST, not
-      submit, and not LIVE_ORDER_PLAN_OBSERVED. Atlas is not trading
-      authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_order_plan_observed_follows_private_read_only
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_private_read_only_proven_adjudication
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/order_plan_observed_predicate_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/order_plan_observed_adjudication_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/order_plan_observe_execute_v1.py
-      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py
-    notes: >-
-      LIVE_ORDER_PLAN_OBSERVED adjudication follows PRIVATE_READ_ONLY.
-      Session-armed gated submit path without POST. This is not ACK, not
-      fill, and not standing Live-gate mutation. Atlas is not trading
-      authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_submit_ack_forensic_follows_order_plan_observed
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_order_plan_observed_adjudication
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/submit_ack_contract_v1.py
-      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py
-      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/http_client_v1.py
-    notes: >-
-      LIVE_SUBMIT_ACK forensic contract follows ORDER_PLAN_OBSERVED.
-      Offline only. Historical CASE_C. Does not POST. Transport ok is not
-      LIVE_SUBMIT_ACK_OBSERVED. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_submit_ack_proof_criterion_follows_forensic
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_submit_ack_contract_and_mutation_boundary_forensic_adjudication
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/submit_ack_observed_adjudication_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/submit_ack_observed_predicate_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/submit_ack_contract_v1.py
-    notes: >-
-      LIVE_SUBMIT_ACK_OBSERVED proof criterion follows the forensic CASE_C
-      slice. Offline only. CASE_A. Does not POST. Producer and criterion
-      are bound. Standing ACK field remained false under that GO. Atlas
-      is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_submit_ack_observed_adjudication_follows_proof_criterion
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_submit_ack_observed_proof_criterion
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/submit_ack_observed_adjudication_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/exact_single_live_submit_execute_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T160450Z/
-    notes: >-
-      LIVE_SUBMIT_ACK_OBSERVED adjudication follows the bound proof
-      criterion. Exact single live POST. ACK true. Fill ineligible
-      under that consumed GO. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_fill_observed_adjudication_follows_submit_ack
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_submit_ack_observed_adjudication
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/fill_observed_adjudication_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/fill_observed_execute_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T165859Z/
-    notes: >-
-      LIVE_FILL_OBSERVED adjudication follows the bound ACK identity.
-      Identity-bound private fills GET. Fill true. Fee ineligible
-      under that consumed GO. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_fee_observed_adjudication_follows_fill
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_fill_observed_adjudication
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/fee_observed_adjudication_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/fee_observed_execute_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T173813Z/
-    notes: >-
-      LIVE_FEE_OBSERVED adjudication follows the bound fill identity.
-      Identity-bound private fills GET. Fee true. Position ineligible
-      under that consumed GO. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_position_reconciled_adjudication_follows_fee
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_fee_observed_adjudication
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/position_reconciled_adjudication_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/position_reconciled_execute_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T181817Z/
-    notes: >-
-      LIVE_POSITION_RECONCILED adjudication follows the bound fee identity.
-      Identity-bound private positions GET. Position true. Accounting
-      ineligible under that consumed GO. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_accounting_reconstructed_adjudication_follows_position
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_position_reconciled_adjudication
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/accounting_reconstructed_adjudication_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/accounting_reconstructed_execute_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T185000Z/
-    notes: >-
-      LIVE_ACCOUNTING_RECONSTRUCTED adjudication follows the bound position
-      identity. Persisted identity-bound fill/fee/position path. Accounting
-      true. Restart ineligible. No GET. No POST. Atlas is not trading
-      authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_restart_reconstructed_adjudication_follows_accounting
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_accounting_reconstructed_adjudication
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_adjudication_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_execute_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T192000Z/
-    notes: >-
-      LIVE_RESTART_RECONSTRUCTED fail-closed census follows accounting
-      reconstruction. Criterion bound. No durable Live pre-restart handoff.
-      No GET. No POST. No restart execution. Atlas is not trading
-      authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_restart_exhaustive_census_follows_restart_adjudication
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_restart_reconstructed_adjudication
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_exhaustive_census_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_exhaustive_execute_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_schema_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260904T195000Z/
-    notes: >-
-      Exhaustive offline LIVE_RESTART_RECONSTRUCTED census follows the
-      fail-closed restart adjudication. Criterion remains bound. No durable
-      Live pre-restart handoff. No GET. No POST. No restart execution.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_restart_handoff_owner_bind_follows_exhaustive_census
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_restart_reconstructed_exhaustive_offline_census
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_owner_bind_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_owner_bind_execute_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_owner_census_matrix_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_historical_unprovability_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_validators_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260906T201500Z/
-    notes: >-
-      Live restart handoff owner bind NONE and retroactive synthesis
-      refusal follow the exhaustive offline census. Owner remains NONE.
-      No GET. No POST. No restart execution. Atlas is not trading
-      authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_required_field_capture_seam_follows_owner_bind
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_restart_handoff_owner_bind_and_retroactive_synthesis_refusal
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_required_field_contract_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_pos_producer_census_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_pos_derivation_refusal_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_owner_vacancy_contract_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_offline_codec_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_required_field_capture_execute_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260906T210000Z/
-    notes: >-
-      Required-field capture-seam and owner-vacancy contract follow the
-      owner-bind NONE slice. pos semantics remain UNPROVEN. Complete
-      capture seam remains UNPROVEN. Owner remains NONE. No GET. No POST.
-      No restart execution. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_architecture_adjudication_follows_required_field_capture_seam
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_handoff_required_field_capture_seam_pos_and_owner_vacancy_contract
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_owner_and_capture_architecture_adjudication_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_architecture_adjudication_execute_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260906T213200Z/
-    notes: >-
-      Owner-and-capture architecture adjudication follows the required-field
-      capture-seam vacancy contract. pos semantics remain UNPROVEN.
-      Complete capture seam remains UNPROVEN. Owner remains NONE.
-      IMPLEMENTATION_AUTHORIZED=false. No GET. No POST. No restart
-      execution. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_pos_semantics_canonical_binding_follows_architecture_adjudication
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_durable_pre_restart_handoff_owner_and_capture_architecture_adjudication
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_pos_semantics_canonical_binding_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_pos_semantics_canonical_binding_execute_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260906T221200Z/
-    notes: >-
-      Pos-semantics canonical binding follows owner-and-capture architecture
-      adjudication. Unique meaning/unit/sign remain UNPROVEN. Zero
-      acceptable producers. New contemporaneous producer required.
-      Complete capture seam remains UNPROVEN. Owner remains NONE.
-      IMPLEMENTATION_AUTHORIZED=false. No GET. No POST. No restart
-      execution. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_pos_producer_semantics_and_contract_follows_pos_semantics_canonical_binding
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_handoff_pos_semantics_canonical_binding
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_pos_producer_semantics_and_contract_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_pos_producer_semantics_and_contract_execute_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260906T224500Z/
-    notes: >-
-      Pos producer-semantics and contract follows pos-semantics canonical
-      binding. Unique meaning/unit/sign are Owner-bound. New
-      contemporaneous producer is contract-only.
-      NEW_PRODUCER_IMPLEMENTED=false. Complete capture seam remains
-      UNPROVEN and can now be adjudicated. Owner remains NONE.
-      IMPLEMENTATION_AUTHORIZED=false. No GET. No POST. No restart
-      execution. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_complete_capture_seam_proof_follows_pos_producer_semantics_and_contract
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_handoff_pos_producer_semantics_and_contract
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_complete_capture_seam_proof_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_complete_capture_seam_proof_execute_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T001700Z/
-    notes: >-
-      Complete-capture-seam proof follows pos producer-semantics and
-      contract. COMPLETE_CAPTURE_SEAM remains UNPROVEN without invention.
-      Owner remains NONE. IMPLEMENTATION_AUTHORIZED=false. No GET. No
-      POST. No restart execution. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_pos_producer_capture_record_owner_and_writer_implementation_follows_complete_capture_seam_proof
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_handoff_complete_capture_seam_proof
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_implementation_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_implementation_execute_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T014000Z/
-    notes: >-
-      S05 producer / owner / writer implementation follows
-      complete-capture-seam proof. NEW_PRODUCER_IMPLEMENTED=true.
-      STORAGE_OWNER_MINTED=true. WRITER_BOUND=true. READER_BOUND=false.
-      COMPLETE_CAPTURE_SEAM remains UNPROVEN. HOST_CRASH_DURABILITY
-      remains UNPROVEN. LIVE_RESTART_RECONSTRUCTED remains false.
-      IMPLEMENTATION_AUTHORIZED=false. No GET. No POST. No restart
-      execution. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_restart_reader_provenance_and_consumer_bind_follows_producer_owner_writer_implementation
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_handoff_pos_producer_capture_record_owner_and_writer_implementation
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_reader_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_reader_bind_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_reader_bind_execute_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_consumer_bind_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T025500Z/
-    notes: >-
-      Restart-reader / provenance / consumer bind follows S05 producer /
-      owner / writer implementation. READER_BOUND=true.
-      RESTART_CONSUMER_BOUND=true. PROVENANCE_VALIDATION=CONTRACT_PROVEN.
-      FRESHNESS_VALIDATION=PARTIAL. COMPLETE_CAPTURE_SEAM remains UNPROVEN.
-      HOST_CRASH_DURABILITY remains UNPROVEN. LIVE_RESTART_RECONSTRUCTED
-      remains false. CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED
-      remains false. IMPLEMENTATION_AUTHORIZED=false. No GET. No POST. No
-      restart execution. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_contemporaneous_pre_restart_observation_follows_restart_reader_bind
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_handoff_restart_reader_provenance_and_consumer_bind
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_contemporaneous_pre_restart_observation_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_contemporaneous_pre_restart_observation_execute_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T054500Z/
-    notes: >-
-      Contemporaneous pre-restart observability prove-or-refute follows
-      restart-reader / provenance / consumer bind.
-      OBSERVATION_STATUS=CLOSED_REFUTED. READ_BACK_RESULT=MISSING_HANDOFF.
-      AUTHORIZED_NON_LIVE_RUNTIME_SURFACE_PRESENT=false.
-      COMPLETE_CAPTURE_SEAM remains UNPROVEN. HOST_CRASH_DURABILITY remains
-      UNPROVEN. LIVE_RESTART_RECONSTRUCTED remains false.
-      CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED remains false.
-      IMPLEMENTATION_AUTHORIZED=false. No GET. No POST. No productive
-      handoff write. No restart execution. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_future_authorized_contemporaneous_capture_window_follows_observation
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_restart_reconstructed_contemporaneous_pre_restart_observation
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_future_authorized_contemporaneous_capture_window_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_future_authorized_contemporaneous_capture_window_execute_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T062800Z/
-    notes: >-
-      Future-authorized contemporaneous capture-window adjudication
-      follows contemporaneous pre-restart observability prove-or-refute.
-      PRODUCTIVE_CAPTURE_OWNER_STATUS=ABSENT.
-      PRODUCTIVE_CAPTURE_HOOK_STATUS=ABSENT.
-      CAPTURE_WINDOW_ORDERING=UNPROVEN.
-      MINIMUM_FUTURE_CAPTURE_WINDOW_SURFACE=UNPROVEN.
-      PRODUCTIVE_BINDING_ALLOWED_IN_THIS_WORKPACKAGE=false.
-      COMPLETE_CAPTURE_SEAM remains UNPROVEN. HOST_CRASH_DURABILITY remains
-      UNPROVEN. LIVE_RESTART_RECONSTRUCTED remains false.
-      CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED remains false.
-      IMPLEMENTATION_AUTHORIZED=false. No GET. No POST. No productive
-      handoff write. No restart execution. No productive runtime join.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_productive_capture_owner_and_lifecycle_hook_binding_follows_capture_window
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_handoff_future_authorized_contemporaneous_capture_window
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_productive_capture_owner_and_lifecycle_hook_binding_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_productive_capture_owner_and_lifecycle_hook_binding_execute_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T081200Z/
-    notes: >-
-      Productive capture-owner and lifecycle-hook binding adjudication
-      follows future-authorized contemporaneous capture-window persist.
-      PRODUCTIVE_CAPTURE_OWNER_STATUS=REFUTED.
-      PRODUCTIVE_LIFECYCLE_HOOK_STATUS=REFUTED.
-      AUTHORIZED_RUNTIME_SURFACE=NONE.
-      BINDING_CASE=CASE_B.
-      MINIMAL_FAIL_CLOSED_BINDING_ALLOWED=false.
-      COMPLETE_CAPTURE_SEAM remains UNPROVEN. HOST_CRASH_DURABILITY remains
-      UNPROVEN. LIVE_RESTART_RECONSTRUCTED remains false.
-      CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED remains false.
-      IMPLEMENTATION_AUTHORIZED=false. No GET. No POST. No productive
-      handoff write. No restart execution. No productive runtime join.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_create_productive_capture_owner_and_lifecycle_hook_follows_case_b
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_handoff_productive_capture_owner_and_lifecycle_hook_binding
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_create_productive_capture_owner_and_lifecycle_hook_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_create_productive_capture_owner_and_lifecycle_hook_execute_v1.py
-      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T090500Z/
-    notes: >-
-      Create productive capture-owner and lifecycle-hook persist follows
-      CASE_B unique-owner and unique-hook refutation.
-      PRODUCTIVE_CAPTURE_OWNER_UNIQUE=true.
-      PRODUCTIVE_LIFECYCLE_HOOK_UNIQUE=true.
-      STRUCTURAL_RUNTIME_BINDING_PROVEN=true.
-      CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false.
-      AUTHORIZED_RUNTIME_SURFACE=NONE.
-      BINDING_CASE=CASE_A_CREATED.
-      PRODUCTIVE_BINDING_IMPLEMENTED=true.
-      COMPLETE_CAPTURE_SEAM remains UNPROVEN. HOST_CRASH_DURABILITY remains
-      UNPROVEN. LIVE_RESTART_RECONSTRUCTED remains false.
-      CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED remains false.
-      IMPLEMENTATION_AUTHORIZED=true. No GET. No POST. No productive
-      handoff write during persist. No restart execution.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_complete_contemporaneous_capture_seam_and_required_field_provenance_follows_create_owner
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_handoff_create_productive_capture_owner_and_lifecycle_hook
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_complete_contemporaneous_capture_seam_and_required_field_provenance_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_complete_contemporaneous_capture_seam_and_required_field_provenance_execute_v1.py
-      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T120000Z/
-    notes: >-
-      Complete contemporaneous capture-seam acceptance contract and
-      required-field provenance persist follows create productive
-      capture-owner and lifecycle-hook.
-      COMPLETE_CAPTURE_SEAM remains UNPROVEN.
-      COMPLETE_CAPTURE_SEAM_ACCEPTANCE_CONTRACT_BOUND=true.
-      REQUIRED_FIELD_PROVENANCE_MATRIX_BOUND=true.
-      CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED=false.
-      STRUCTURAL_RUNTIME_BINDING_PROVEN=true.
-      CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false.
-      AUTHORIZED_RUNTIME_SURFACE=NONE.
-      PARTIAL_CAPTURE_ALLOWED=false.
-      HOST_CRASH_DURABILITY remains UNPROVEN.
-      LIVE_RESTART_RECONSTRUCTED remains false.
-      CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED remains false.
-      IMPLEMENTATION_AUTHORIZED=true. No GET. No POST. No productive
-      capture executed. No restart execution.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_complete_capture_seam_required_field_provenance_and_no_backfill_follows_hook_caller
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_handoff_productive_capture_hook_caller_binding_and_offline_call_path_proof
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_complete_capture_seam_required_field_provenance_and_no_backfill_contract_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_complete_capture_seam_required_field_provenance_and_no_backfill_contract_execute_v1.py
-      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_handoff_owner_and_writer_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T140000Z/
-    notes: >-
-      Complete capture-seam required-field provenance and no-backfill
-      contract persist follows productive hook-caller binding.
-      COMPLETE_CAPTURE_SEAM=PROVEN as offline contract only.
-      REQUIRED_FIELD_PROVENANCE_COMPLETE=true.
-      NO_BACKFILL_CONTRACT_PROVEN=true.
-      PROVENANCE_VALIDATED_CONTEMPORANEOUS_NO_BACKFILL=true.
-      LEGACY_READABLE_IS_NOT_CONTEMPORANEOUS_VALID=true.
-      CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED=false.
-      STRUCTURAL_RUNTIME_BINDING_PROVEN=true.
-      CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false.
-      AUTHORIZED_RUNTIME_SURFACE=NONE.
-      PARTIAL_CAPTURE_ALLOWED=false.
-      HOST_CRASH_DURABILITY remains UNPROVEN.
-      LIVE_RESTART_RECONSTRUCTED remains false.
-      CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_HANDOFF_OBSERVED remains false.
-      IMPLEMENTATION_AUTHORIZED=true. No GET. No POST. No productive
-      capture executed. No restart execution.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_section_11_14_exact_single_live_identity_bound_venue_fill_then_contemporaneous_pre_restart_capture_follows_readiness
-    source: RUNTIME_COMPONENT:section_11_14_live_order_and_economic_evidence_ladder_v1
-    type: CONSUMES
-    target: PHASE:section_11_14_live_handoff_live_identity_bound_venue_fill_readiness_and_exact_execution_contract
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_exact_single_live_identity_bound_venue_fill_then_contemporaneous_pre_restart_capture_v1.py
-      - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/restart_reconstructed_exact_single_live_identity_bound_venue_fill_then_contemporaneous_pre_restart_capture_execute_v1.py
-      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py
-      - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_caller_v1.py
-      - evidence/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/20260907T184500Z/
-    notes: >-
-      Exact-single identity-bound venue-fill then contemporaneous
-      PRE-RESTART capture persist follows live-fill readiness.
-      TERMINAL_STATE=CODE_GAP_FOUND. CODE_CHANGE_REQUIRED=true.
-      LIVE_FILL_READINESS=false.
-      EXACT_ECONOMIC_ACTION_CONTRACT_STATUS=BLOCKED.
-      CONTEMPORANEOUS_PRODUCTIVE_CAPTURE_EXECUTED=false.
-      CURRENT_RUNTIME_EXECUTION_AUTHORIZED=false.
-      AUTHORIZED_RUNTIME_SURFACE=NONE.
-      HOST_CRASH_DURABILITY remains UNPROVEN.
-      LIVE_RESTART_RECONSTRUCTED remains false.
-      IMPLEMENTATION_AUTHORIZED=true. No GET. No POST. No submit. No
-      wire send. No position mutation. No restart execution. Repair
-      merge not authorized. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_cycle_observes_elementary_direction
-    # PR_6804 MV2_TERTIARY_INDEX_PX_ACTIVE_JOIN_V1: NAVIGATION_ONLY; ATLAS_AUTHORITY=NONE;
-    # HIT=evidence_source_master_v2; OBSERVES_SEMANTICS_UNCHANGED=true; INDEX_PX_NOT_DIRECTION_INPUT=true;
-    # TRADING_SEMANTICS_CHANGED=false; EXTERNAL_EFFECT_AUTHORIZED=false; POST_COUNT=0.
-    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-    type: OBSERVES
-    target: RUNTIME_COMPONENT:elementary_direction_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
-      - src/trading/market_state/elementary_direction_v1.py
-    notes: >-
-      Passive cycle-result evidence field only. Not Replay input.
-      Not Double Play / ScopeEvent / SideState / Entry consumption.
-      AUTHORITY_EFFECT=NONE. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_path_calls_venue_translation
-    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-    type: CALLS
-    target: RUNTIME_COMPONENT:full_core_live_path_venue_translation_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/path_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/venue_translation_v1.py
-    notes: >-
-      Offline path calls translator-only venue mapping. Not wire send.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_path_calls_frozen_pretrade
-    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-    type: CALLS
-    target: GATE:full_core_live_path_frozen_pretrade_conjunction_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/path_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
-    notes: >-
-      Offline path evaluates frozen pretrade evidence. Not a GET.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_path_calls_execution_boundary
-    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-    type: CALLS
-    target: GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/path_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/live_execution_port_construction_admission_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
-    notes: >-
-      Offline path always halts before wire. Typed ExecutionAdmissionDecisionV1
-      is consumed at this same join point. Construction admission remains
-      required. Host-join attaches the fail-closed LiveExecutionPort handle
-      and is not submission. Not a second execution boundary.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_path_calls_restart_gate
-    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-    type: CALLS
-    target: GATE:full_core_live_path_restart_gate_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/overclaim_guards_v1.py
-    notes: >-
-      Restart-test surface remains unauthorized. Atlas is not trading
-      authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_path_calls_canary_isolation
-    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-    type: CALLS
-    target: RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
-    notes: >-
-      Canary venue-proof remains distinct from FULL_CORE_LIVE_PATH.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_path_consumes_models
-    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-    type: CONSUMES
-    target: DATA_CONTRACT:full_core_live_path_models_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/models_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/path_v1.py
-    notes: >-
-      Offline path consumes TYPE_ONLY dataclasses. Not a wire SCHEMA.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_path_calls_standing_live_gates
-    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-    type: CALLS
-    target: GATE:full_core_live_path_standing_live_gates_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/live_execution_port_construction_admission_v1.py
-    notes: >-
-      Package-local LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED remain
-      false. LIVE_ENABLED and LIVE_ARMED standing admission seams do not
-      automatically admit. WIRE_SEND_PERMITTED remains independently
-      fail-closed. Does not supersede GATE:live_authorized_false. Atlas is not
-      trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_path_calls_path_identity
-    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-    type: CALLS
-    target: GATE:full_core_live_path_identity_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/live_admission_gap_dag_v1.py
-    notes: >-
-      Productive Live-path identity is FULL_CORE_LIVE_PATH.
-      Next-pointer authority primary is full_core_live_path_authority_v1
-      (SECTION_11_2_1 / 11.2.1 historical compatibility only).
-      Canary / §11.14 remain evidence-domain only. Atlas is not trading
-      authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_path_calls_durable_filegate_join
-    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-    type: CALLS
-    target: GATE:full_core_durable_filegate_join_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
-    notes: >-
-      Halt joins durable FILEGATE as typed admission evidence. Does not
-      admit Live. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_path_calls_owner_one_shot_permit
-    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-    type: CALLS
-    target: GATE:full_core_owner_one_shot_permit_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/owner_one_shot_permit_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
-    notes: >-
-      Halt joins typed OWNER_ONE_SHOT permit evidence. Does not admit
-      Live. Does not override FILEGATE. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_path_calls_fresh_pretrade_runtime_get
-    # CURRENT_PRODUCTIVE_LAB_PRETRADE_TRUSTED_ACCOUNT_CONFIG_U01_CLOSURE_V1 PR_6741: CALLS edge unchanged; common-epoch consumer uses Fresh GET transport outside this CALLS path; ATLAS_AUTHORITY=NONE.
-    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-    type: CALLS
-    target: GATE:full_core_fresh_pretrade_runtime_get_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
-    notes: >-
-      Halt joins typed Fresh Pretrade GET evidence. Does not admit
-      Live. Does not POST. Does not override FILEGATE or permit.
-      S1 data_safety_source_kind stamp does not change this CALLS edge.
-      S2B LIVE_TRADE DataSafetyContext bind is composition-root owned and
-      does not change this CALLS edge.
-      S2C DataSafetyGate.check conjunct does not change this CALLS edge.
-      DataSafetyGate=CONJUNCT_NOT_OWNER.
-      evaluate_execution_admission_v1 remains the sole admission owner.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_path_calls_live_account_bound
-    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-    type: CALLS
-    target: GATE:full_core_live_account_bound_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
-    notes: >-
-      Halt joins typed LIVE_ACCOUNT_BOUND evidence. Does not admit
-      Live. Does not POST. Does not override FILEGATE, permit, or GET.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_live_account_bound_composes_fresh_get
-    # CURRENT_PRODUCTIVE_LAB_PRETRADE_TRUSTED_ACCOUNT_CONFIG_U01_CLOSURE_V1 PR_6741: CONSUMES edge unchanged; instType bind is upstream in common-epoch execute; ATLAS_AUTHORITY=NONE.
-    source: GATE:full_core_live_account_bound_v1
-    type: CONSUMES
-    target: GATE:full_core_fresh_pretrade_runtime_get_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
-    notes: >-
-      LIVE_ACCOUNT_BOUND seam consumes Fresh GET identity extracts.
-      Bound cannot override GET, permit, or FILEGATE. S1
-      data_safety_source_kind stamp does not change this CONSUMES edge.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_path_calls_capital_admission
-    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-    type: CALLS
-    target: GATE:full_core_capital_admission_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
-    notes: >-
-      Halt joins typed Capital Admission evidence. Does not admit
-      Live. Does not POST. Does not override FILEGATE, permit, GET, or
-      LIVE_ACCOUNT_BOUND. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_capital_admission_composes_live_account_bound
-    source: GATE:full_core_capital_admission_v1
-    type: CONSUMES
-    target: GATE:full_core_live_account_bound_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
-    notes: >-
-      Capital Admission seam composes LIVE_ACCOUNT_BOUND join. Bound
-      identity is not capital authority. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_treasury_phase_1_consumes_capital_admission
-    source: GATE:treasury_phase_1_offline_contracts_v1
-    type: CONSUMES
-    target: GATE:full_core_capital_admission_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/treasury_phase_1_offline_contracts_v1/capital_boundary_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
-    notes: >-
-      Treasury Phase-1 reuses Capital Admission semantics and does not
-      mint RISK_ADMISSIBLE. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_treasury_phase_2_consumes_capital_admission
-    source: GATE:treasury_phase_2_read_only_reconciliation_v1
-    type: CONSUMES
-    target: GATE:full_core_capital_admission_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/treasury_phase_2_read_only_reconciliation_v1/join_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
-    notes: >-
-      Phase-2 read-only reconciliation join calls evaluate_capital_admission_v1
-      only. No STEP-29P or execution authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_treasury_e1_binding_consumes_funding_balance_read
-    source: RUNTIME_COMPONENT:treasury_phase_2_read_only_venue_observation_binding_v1
-    type: CONSUMES
-    target: RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/producer_v1.py
-      - src/ops/offline_funding_balance_read_producer_v1/producer_v1.py
-    notes: >-
-      E1 edge: single allowlisted funding balance GET via existing offline
-      producer. No POST or transfer. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_treasury_e1_binding_feeds_phase_2_observation
-    source: RUNTIME_COMPONENT:treasury_phase_2_read_only_venue_observation_binding_v1
-    type: PRODUCES
-    target: DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/producer_v1.py
-      - src/ops/treasury_phase_2_read_only_reconciliation_v1/models_v1.py
-    notes: >-
-      Emits TreasuryVenueObservationV1 for Phase-2 reconciliation only.
-      Does not evaluate reconciliation or capital admission here.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_treasury_s1_decrease_binding_consumes_funding_balance_read
-    source: RUNTIME_COMPONENT:treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1
-    type: CONSUMES
-    target: RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1/producer_v1.py
-      - src/ops/offline_funding_balance_read_producer_v1/producer_v1.py
-    notes: >-
-      S1 edge: single allowlisted funding balance GET via existing offline
-      producer. No POST, transfer, or withdrawal send. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_treasury_s1_decrease_binding_feeds_phase_2_observation
-    source: RUNTIME_COMPONENT:treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1
-    type: PRODUCES
-    target: DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1/producer_v1.py
-      - src/ops/treasury_phase_2_read_only_reconciliation_v1/models_v1.py
-    notes: >-
-      Emits TreasuryVenueObservationV1 with conservative external depletion
-      mapping for Phase-2 reconciliation only. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_treasury_s2_decrease_consumes_s1_observation
-    source: RUNTIME_COMPONENT:treasury_external_capital_decrease_s2_admission_runtime_join_v1
-    type: CONSUMES
-    target: DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/treasury_external_capital_decrease_s2_admission_runtime_join_v1/join_v1.py
-      - src/ops/treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1/producer_v1.py
-    notes: >-
-      S2 edge: consumes S1 TreasuryVenueObservationV1 for decrease only.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_treasury_s2_decrease_consumes_phase2_capital_admission_join
-    source: RUNTIME_COMPONENT:treasury_external_capital_decrease_s2_admission_runtime_join_v1
-    type: CONSUMES
-    target: GATE:treasury_phase_2_read_only_reconciliation_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/treasury_external_capital_decrease_s2_admission_runtime_join_v1/join_v1.py
-      - src/ops/treasury_phase_2_read_only_reconciliation_v1/join_v1.py
-    notes: >-
-      S2 reuses join_treasury_reconciliation_into_capital_admission_v1; no
-      parallel capital authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_treasury_s2_decrease_feeds_productive_capital_admission_seam
-    source: RUNTIME_COMPONENT:treasury_external_capital_decrease_s2_admission_runtime_join_v1
-    type: PRODUCES
-    target: GATE:full_core_capital_admission_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/treasury_external_capital_decrease_s2_admission_runtime_join_v1/join_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
-    notes: >-
-      Productive runtime join into join_capital_admission_into_admission_inputs_v1
-      optional decrease observation path. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_treasury_e4_consumes_phase2_capital_admission_join
-    source: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_v1
-    type: CONSUMES
-    target: GATE:treasury_phase_2_read_only_reconciliation_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/join_v1.py
-      - src/ops/treasury_phase_2_read_only_reconciliation_v1/join_v1.py
-    notes: >-
-      E4 edge: consumes TreasuryCapitalAdmissionJoinV1 from Phase-2 capital
-      admission join. Does not re-evaluate capital admission. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_treasury_e4_feeds_account_equity_orchestration_ingress
-    source: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_v1
-    type: PRODUCES
-    target: DATA_CONTRACT:account_equity_orchestration_ingress_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/join_v1.py
-      - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/models_v1.py
-    notes: >-
-      Emits AccountEquityOrchestrationIngressV1 for governed account-equity
-      orchestration only. No equity value mint. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_treasury_e4_productive_host_consumes_e4_orchestration
-    source: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1
-    type: CONSUMES
-    target: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py
-      - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/join_v1.py
-    notes: >-
-      Productive host join reuses E4 orchestration join output; no parallel E4
-      owner. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_treasury_e4_productive_host_consumes_orchestration_ingress
-    source: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1
-    type: CONSUMES
-    target: DATA_CONTRACT:account_equity_orchestration_ingress_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/governed_productive_account_equity_authority_producer_v1/evaluate_treasury_capital_admission_orchestration_ingress_at_productive_host_v1.py
-      - src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py
-    notes: >-
-      Productive host evaluation consumes E4 AccountEquityOrchestrationIngressV1
-      at ops.governed_productive_account_equity_authority_producer_v1 boundary.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_treasury_phase_3_consumes_phase_2_reconciliation
-    source: GATE:treasury_phase_3_shadow_enforcement_v1
-    type: CONSUMES
-    target: GATE:treasury_phase_2_read_only_reconciliation_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/treasury_phase_3_shadow_enforcement_v1/join_v1.py
-      - src/ops/treasury_phase_2_read_only_reconciliation_v1/reconciliation_v1.py
-    notes: >-
-      Phase-3 reuses evaluate_treasury_read_only_reconciliation_v1 only.
-      Does not call capital admission join or STEP-29P. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_treasury_phase_3_consumes_separation_gate
-    source: GATE:treasury_phase_3_shadow_enforcement_v1
-    type: CONSUMES
-    target: RUNTIME_COMPONENT:treasury_separation_gate_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/treasury_phase_3_shadow_enforcement_v1/join_v1.py
-      - src/ops/treasury_phase_3_shadow_enforcement_v1/shadow_http_v1.py
-      - src/ops/treasury_separation_gate.py
-    notes: >-
-      Reuses evaluate_treasury_policy for bot-role treasury mutation deny.
-      Wired on §11.13 read-only HTTP clients only. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_treasury_phase_3_produces_shadow_enforcement_result
-    source: GATE:treasury_phase_3_shadow_enforcement_v1
-    type: PRODUCES
-    target: DATA_CONTRACT:treasury_shadow_enforcement_result_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/treasury_phase_3_shadow_enforcement_v1/join_v1.py
-      - src/ops/treasury_phase_3_shadow_enforcement_v1/models_v1.py
-    notes: >-
-      Shadow observe/enforce result only. capital_uplift_permitted remains
-      false. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_treasury_phase_3_wires_shadow_http_surfaces
-    source: GATE:treasury_phase_3_shadow_enforcement_v1
-    type: CONSUMES
-    target: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/section_11_13_2_live_private_read_only_v1/http_client_v1.py
-      - src/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_v1/http_client_v1.py
-      - src/ops/section_11_13_4_live_dry_run_order_plan_v1/http_client_v1.py
-    notes: >-
-      Binding is limited to §11.13 read-only/shadow HTTP allowlist checks.
-      Full-Core composition root productive authority graph unchanged.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_treasury_pdf_rebind_census_consumes_treasury_phases
-    source: RUNTIME_COMPONENT:treasury_pdf_current_head_rebind_and_census_v1
-    type: CONSUMES
-    target: GATE:treasury_phase_2_read_only_reconciliation_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/treasury_pdf_current_head_rebind_and_census_v1/census_v1.py
-      - tests/ops/test_treasury_pdf_current_head_rebind_and_census_v1.py
-    notes: >-
-      Offline census reads Phase-1/2/3 constants and interference proof only.
-      Does not authorize network or mutation. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_standing_live_gates_deny_treasury_mutation
-    source: GATE:full_core_live_path_standing_live_gates_v1
-    type: DENIES
-    target: GATE:treasury_phase_1_offline_contracts_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/treasury_phase_1_offline_contracts_v1/authority_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
-    notes: >-
-      LIVE_ENABLED, LIVE_ARMED, and WIRE_SEND_PERMITTED cannot mint
-      Treasury mutation authority. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_fresh_pretrade_get_composes_permit
-    # CURRENT_PRODUCTIVE_LAB_PRETRADE_TRUSTED_ACCOUNT_CONFIG_U01_CLOSURE_V1 PR_6741: CONSUMES edge unchanged; coupling-review only; ATLAS_AUTHORITY=NONE.
-    source: GATE:full_core_fresh_pretrade_runtime_get_v1
-    type: CONSUMES
-    target: GATE:full_core_owner_one_shot_permit_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/owner_one_shot_permit_v1.py
-    notes: >-
-      Fresh GET seam composes OWNER_ONE_SHOT permit join. GET cannot
-      override permit or FILEGATE. S1 data_safety_source_kind stamp does
-      not change this CONSUMES edge. Atlas is not trading authority.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_owner_one_shot_permit_composes_filegate
-    source: GATE:full_core_owner_one_shot_permit_v1
-    type: CONSUMES
-    target: GATE:full_core_durable_filegate_join_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/owner_one_shot_permit_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
-    notes: >-
-      Permit seam composes FILEGATE join. Permit cannot override FILEGATE.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_filegate_join_reads_filegate
-    source: GATE:full_core_durable_filegate_join_v1
-    type: CONSUMES
-    target: GATE:kill_switch_durable_filegate_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
-      - src/ops/gates/risk_gate.py
-    notes: >-
-      Single FILEGATE authority. Join does not write StatePersistence.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_step_29p_fresh_get_fetches_okx_eea
-    source: RUNTIME_COMPONENT:full_core_step_29p_fresh_venue_evidence_v1
-    type: FETCHES
-    target: GATE:full_core_capital_admission_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_step_29p_fresh_venue_evidence_v1/execute_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/step_29p_capital_risk_admissibility_v1.py
-    notes: >-
-      GET-only sibling produces typed observation for 29P evaluation.
-      Observation is not 29P equity authority. Does not POST. Atlas is
-      not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_full_core_step_29p_fresh_get_denies_wire
-    source: RUNTIME_COMPONENT:full_core_step_29p_fresh_venue_evidence_v1
-    type: DENIES
-    target: GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_step_29p_fresh_venue_evidence_v1/execute_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
-    notes: >-
-      Fresh GET execute cannot halt-bypass or construct LiveExecutionPort.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_portfolio_capital_reservation_budget_consumes_sizing
-    source: GATE:portfolio_capital_reservation_budget_v1
-    type: CONSUMES
-    target: RUNTIME_COMPONENT:mv2_capital_risk_sizing
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py
-      - src/governance/capital_risk_sizing_v1.py
-    notes: >-
-      Portfolio budget calls the existing quantity owner after a snapshot.
-      It does not become a second sizing authority. N>1 stays unauthorized.
-      Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_enter_live_29p_join_consumes_portfolio_budget
-    source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-    type: CONSUMES
-    target: GATE:portfolio_capital_reservation_budget_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py
-      - tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py
-      - src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py
-      - src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py
-      - tests/ops/test_full_core_current_productive_enter_live_29p_portfolio_join_v1.py
-      - tests/ops/test_current_productive_mv2_capital_context_rebind_v1.py
-      - tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py
-    notes: >-
-      ENTER Live-29P join optionally calls admit_sized_slot_reservation_v1
-      when portfolio_budget_owner and slot context are paired. PR_6744
-      rebinds MV2 capital context from typed 29P equity before sizing;
-      legacy path unchanged without the pair. Does not authorize external
-      effect or N>1. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_p1_max_evidence_campaign_consumes_witness_foundation
-    source: RUNTIME_COMPONENT:p1_max_evidence_campaign_to_next_real_blocker_v1
-    type: CONSUMES
-    target: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_max_evidence_campaign_to_next_real_blocker_v1.py
-      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
-      - tests/ops/test_full_core_p1_max_evidence_campaign_to_next_real_blocker_v1.py
-    notes: >-
-      Bounded read-only P1 evidence campaign persists witness adjudication and
-      consumes sealed #6666 witness foundation for #6665 re-evaluation.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_p1_currency_domain_witness_consumes_witness_foundation
-    source: RUNTIME_COMPONENT:p1_currency_domain_completeness_witness_v1
-    type: CONSUMES
-    target: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_currency_domain_completeness_witness_v1.py
-      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
-      - tests/ops/test_full_core_p1_currency_domain_completeness_witness_v1.py
-    notes: >-
-      P1 currency-domain completeness witness persists closed-world enumeration
-      and sealed interest-accrued exhaustion composition for #6666 and #6665.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_p1_liability_governance_witness_consumes_witness_foundation
-    source: RUNTIME_COMPONENT:p1_liability_event_class_governance_and_ratified_query_class_set_v1
-    type: CONSUMES
-    target: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_liability_event_class_governance_and_ratified_query_class_set_v1.py
-      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
-      - tests/ops/test_full_core_p1_liability_event_class_governance_v1.py
-    notes: >-
-      P1 liability event-class governance witness persists ratified query-class
-      set without global EQUITY_STOCK kind-set uplift for #6666 LIABILITY root.
-      ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_p1_bounded_traversal_witness_consumes_witness_foundation
-    source: RUNTIME_COMPONENT:p1_bounded_query_traversal_completeness_witness_v1
-    type: CONSUMES
-    target: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_bounded_query_traversal_completeness_witness_v1.py
-      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
-      - tests/ops/test_full_core_p1_bounded_query_traversal_completeness_witness_v1.py
-    notes: >-
-      P1 bounded query traversal witness persists pagination and ordering roots
-      from sealed interest-accrued packs for #6666 and #6665. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_p1_final_closeout_pr1_consumes_witness_foundation
-    source: RUNTIME_COMPONENT:p1_final_closeout_pr1_of_2_v1
-    type: CONSUMES
-    target: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_final_closeout_pr1_of_2_v1.py
-      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
-      - tests/ops/test_full_core_p1_final_closeout_pr1_of_2_v1.py
-    notes: >-
-      P1 final closeout PR 1/2 persists freshness/time/restart witnesses and
-      re-evaluates #6665 via foundation bundle. ATLAS_AUTHORITY=NONE.
-
-  - id: REL:r_p1_negative_completeness_closeout_consumes_witness_foundation
-    source: RUNTIME_COMPONENT:p1_negative_completeness_closeout_contract_v1
-    type: CONSUMES
-    target: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
-    epistemic_status: FORENSIC_RAW
-    evidence_sources:
-      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_negative_completeness_closeout_contract_v1.py
-      - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
-      - tests/ops/test_full_core_p1_completeness_witness_foundation_v1.py
-      - tests/ops/test_full_core_p1_negative_completeness_closeout_contract_v1.py
-    notes: >-
-      P1 negative closeout (#6665) maps sealed witness bundle flags into
-      completeness requirement matrix fail-closed. No trading authority.
-      ATLAS_AUTHORITY=NONE.
+- id: REL:r_gfu_eligibility_filters
+  source: RUNTIME_COMPONENT:gfu_eligibility
+  type: FILTERS
+  target: UNIVERSE:governed_futures_universe
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/governed_futures_universe_producer_v1/eligibility_v1.py
+  requires_okx_fields:
+  - instId
+  - quoteCcy
+  - uly
+- id: REL:r_cap21_produces_universe
+  source: CAPABILITY:cap_2_1_gfu
+  type: PRODUCES
+  target: UNIVERSE:governed_futures_universe
+  epistemic_status: ADJUDICATED
+  evidence_sources:
+  - src/ops/governed_futures_universe_producer_v1/producer_v1.py
+- id: REL:r_cap22_ranks_universe
+  source: SELECTOR:productive_futures_ranking
+  type: RANKS
+  target: UNIVERSE:governed_futures_universe
+  epistemic_status: ADJUDICATED
+  evidence_sources:
+  - src/ops/productive_futures_ranking_producer_v1/policy_v1.py
+- id: REL:r_cap23_selects
+  source: SELECTOR:single_selected_future_policy
+  type: SELECTS
+  target: SELECTOR:productive_futures_ranking
+  epistemic_status: ADJUDICATED
+  evidence_sources:
+  - src/ops/single_selected_future_policy_v1/models_v1.py
+  - src/ops/single_selected_future_policy_v1/policy_v1.py
+  - src/ops/single_selected_future_policy_v1/producer_v1.py
+  - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
+  notes: 'B08: Cap 2.3 consumes the authoritative upstream Cap 2.2 ranked order and applies anti-churn/selection overlay only.
+    It does not rescore, rerank, reconstruct economic features, use Future Profile fields for selection, or fall back to venue-native
+    ordering. Optional pin still selects from the same full Cap 2.2 snapshot. No second ranking, no cross-universe candidate
+    pool. ATLAS_AUTHORITY=NONE.'
+- id: REL:r_current_mf_member_pinned_cap23_n1_adapter_validates_same_universe_pin
+  source: CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1
+  type: VALIDATES
+  target: SELECTOR:single_selected_future_policy
+  epistemic_status: ADJUDICATED
+  evidence_sources:
+  - src/ops/current_mf_member_to_pinned_cap23_n1_adapter_v1/adapter_v1.py
+  - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
+  notes: Same-universe pin constraint only. Not PRODUCES/SELECTS/BINDS. CROSS_UNIVERSE_* remain false. No MF domain edge.
+    ATLAS_AUTHORITY=NONE.
+- id: REL:r_current_mf_n5_lane_topology_calls_pinned_cap23_adapter
+  source: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+  type: CALLS
+  target: CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1
+  epistemic_status: ADJUDICATED
+  evidence_sources:
+  - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
+  - src/ops/current_mf_member_to_pinned_cap23_n1_adapter_v1/adapter_v1.py
+  notes: Pin factory reuse only. Not PRODUCES/SELECTS/BINDS. Not Cap23 writer. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+- id: REL:r_current_mf_n5_lane_topology_consumes_mf_membership_semantics
+  source: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+  type: CONSUMES
+  target: CONTRACT:mf_selection_and_anti_churn_semantics_v1
+  epistemic_status: ADJUDICATED
+  evidence_sources:
+  - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
+  - src/ops/mf_membership_context_artifact_contract_v1.py
+  notes: Consumes governed membership identity and derived enter/retain/exit occupancy. Rank order is not lane identity. Not
+    membership authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_durable_lane_assignment_persistence_persists_n5_lane_topology
+  source: CONTRACT:current_mf_n5_durable_lane_assignment_persistence_v1
+  type: PERSISTS
+  target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+  epistemic_status: ADJUDICATED
+  evidence_sources:
+  - src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py
+  - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
+  notes: Records exact prior governed topology. Does not call apply_isolated_lane_topology_v1. Not PRODUCES/SELECTS/BINDS.
+    CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+- id: REL:r_durable_lane_assignment_persistence_loads_n5_lane_topology
+  source: CONTRACT:current_mf_n5_durable_lane_assignment_persistence_v1
+  type: LOADS
+  target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+  epistemic_status: ADJUDICATED
+  evidence_sources:
+  - src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py
+  - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
+  notes: Recovers exact IsolatedLaneTopologyV1 as explicit prior topology. Recovery stops there. Missing/corrupt restart state
+    must not bootstrap. ATLAS_AUTHORITY=NONE.
+- id: REL:r_recovered_topology_consumer_calls_n5_lane_topology
+  source: CONTRACT:current_mf_n5_recovered_topology_consumer_join_v1
+  type: CALLS
+  target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+  epistemic_status: ADJUDICATED
+  evidence_sources:
+  - src/ops/current_mf_n5_recovered_topology_consumer_join_v1/consumer_v1.py
+  - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
+  notes: Calls apply_isolated_lane_topology_v1 with recovered prior_topology or None. Not PRODUCES/SELECTS/BINDS. Not Cap23
+    writer. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+- id: REL:r_recovered_topology_consumer_calls_durable_lane_assignment
+  source: CONTRACT:current_mf_n5_recovered_topology_consumer_join_v1
+  type: CALLS
+  target: CONTRACT:current_mf_n5_durable_lane_assignment_persistence_v1
+  epistemic_status: ADJUDICATED
+  evidence_sources:
+  - src/ops/current_mf_n5_recovered_topology_consumer_join_v1/consumer_v1.py
+  - src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py
+  notes: Calls recover then persist. Does not map lanes. Not PRODUCES/SELECTS/BINDS. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+- id: REL:r_occupied_lane_pin_consumer_calls_recovered_topology_consumer
+  source: CONTRACT:current_mf_n5_occupied_lane_pin_consumer_join_v1
+  type: CALLS
+  target: CONTRACT:current_mf_n5_recovered_topology_consumer_join_v1
+  epistemic_status: ADJUDICATED
+  evidence_sources:
+  - src/ops/current_mf_n5_occupied_lane_pin_consumer_join_v1/consumer_v1.py
+  - src/ops/current_mf_n5_recovered_topology_consumer_join_v1/consumer_v1.py
+  notes: Calls consume_recovered_isolated_lane_topology_v1 and uses that return as pin-builder topology. Not PRODUCES/SELECTS/BINDS.
+    Not Cap23 writer. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+- id: REL:r_occupied_lane_pin_consumer_calls_n5_lane_topology
+  source: CONTRACT:current_mf_n5_occupied_lane_pin_consumer_join_v1
+  type: CALLS
+  target: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+  epistemic_status: ADJUDICATED
+  evidence_sources:
+  - src/ops/current_mf_n5_occupied_lane_pin_consumer_join_v1/consumer_v1.py
+  - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
+  notes: Calls build_occupied_lane_pins_v1 with the exact consume return and the same current ranking snapshot. Not PRODUCES/SELECTS/BINDS.
+    Not Cap23 writer. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+- id: REL:r_ranking_domain_occupied_lane_cap23_produce_join_calls_occupied_lane_pin_consumer
+  source: CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1
+  type: CALLS
+  target: CONTRACT:current_mf_n5_occupied_lane_pin_consumer_join_v1
+  epistemic_status: ADJUDICATED
+  evidence_sources:
+  - src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/produce_join_v1.py
+  - src/ops/current_mf_n5_occupied_lane_pin_consumer_join_v1/consumer_v1.py
+  notes: Calls consume_occupied_lane_pins_v1 exactly once. Not PRODUCES/SELECTS/BINDS. Not a second Cap23 writer. CROSS_UNIVERSE_*
+    remain false. ATLAS_AUTHORITY=NONE.
+- id: REL:r_ranking_domain_occupied_lane_cap23_produce_join_calls_cap23
+  source: CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1
+  type: CALLS
+  target: SELECTOR:single_selected_future_policy
+  epistemic_status: ADJUDICATED
+  evidence_sources:
+  - src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/produce_join_v1.py
+  - src/ops/single_selected_future_policy_v1/producer_v1.py
+  notes: Calls existing run_single_selected_future_policy_v1 once per occupied lane with that lane's governed pin and lane_state_root.
+    Join is not selection owner. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+- id: REL:r_cap24_binds
+  source: BINDER:bound_instrument_v1
+  type: BINDS
+  target: SELECTOR:single_selected_future_policy
+  epistemic_status: ADJUDICATED
+  evidence_sources:
+  - src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py
+  - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
+  notes: 'B08: Cap 2.4 binds the selected identity emitted by Cap 2.3 and carries ranking/selection provenance forward. It
+    does not rank, rerank, reselect, or reinterpret instrument choice. ATLAS_AUTHORITY=NONE.'
+- id: REL:r_host72_consumes_binding
+  source: HOST:cap72_stateful_host
+  type: CONSUMES
+  target: BINDER:bound_instrument_v1
+  epistemic_status: ADJUDICATED
+  evidence_sources:
+  - src/ops/single_future_stateful_no_order_runtime_activation_v1/host_binding_v1.py
+- id: REL:r_script_gfu_calls_cap21
+  source: SCRIPT:run_gfu_producer
+  type: CALLS
+  target: CAPABILITY:cap_2_1_gfu
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - docs/ops/specs/MASTER_V2_CAPABILITY_2_1_GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1.md
+- id: REL:r_script_cap23_calls
+  source: SCRIPT:run_cap23_policy
+  type: CALLS
+  target: CAPABILITY:cap_2_3_single_selected_future
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md
+- id: REL:r_md_client_fetches_instruments
+  source: ADAPTER:okx_public_md_client
+  type: FETCHES
+  target: VENUE_ENDPOINT:okx_public_instruments
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/okx_public_market_data_client_v1.py
+- id: REL:r_canary_uses_k1_hmac
+  source: CAPABILITY:cap_11_13_5_live_canary
+  type: SIGNS
+  target: AUTH_PRIMITIVE:okx_hmac_sign
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/authenticated_productive_transport_v1.py
+- id: REL:r_flatten_gates
+  source: GATE:flatten_execute_authority
+  type: GATES
+  target: CAPABILITY:cap_11_13_5_live_canary
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_execute_authority_v1.py
+- id: REL:r_post_action_observes
+  source: OBSERVER:post_action_canary
+  type: OBSERVES
+  target: GATE:flatten_execute_authority
+  epistemic_status: OPEN
+  render_as_proven: false
+  evidence_sources:
+  - docs/forensics/persistence/registries/INFORMATION_OBJECT_REFERENCE_REGISTRY_V1.md
+  notes: Forensic record POST_ACTION_NOT_WIRED_IN_FLATTEN_EXECUTE.
+- id: REL:r_dp_composition_consumes_survival
+  source: RUNTIME_COMPONENT:dp_composition
+  type: CONSUMES
+  target: RUNTIME_COMPONENT:dp_survival
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/trading/master_v2/double_play_composition.py
+  - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md
+- id: REL:r_dp_composition_consumes_suitability
+  source: RUNTIME_COMPONENT:dp_composition
+  type: CONSUMES
+  target: RUNTIME_COMPONENT:dp_suitability
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/trading/master_v2/double_play_composition.py
+- id: REL:r_dp_state_calls
+  source: RUNTIME_COMPONENT:dp_composition
+  type: READS
+  target: RUNTIME_COMPONENT:dp_state
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/trading/master_v2/double_play_composition.py
+- id: REL:r_live_auth_denies
+  source: GATE:live_authorized_false
+  type: DENIES
+  target: CAPABILITY:cap_11_13_5_live_canary
+  epistemic_status: CANONICAL_AUTHORITY
+  authority_sources:
+  - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+  evidence_sources:
+  - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+- id: REL:r_dp_composition_consumes_capital_slot
+  source: RUNTIME_COMPONENT:dp_composition
+  type: CONSUMES
+  target: RUNTIME_COMPONENT:dp_capital_slot
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/trading/master_v2/double_play_composition.py
+- id: REL:r_dp_core_wiring_calls_integrated_replay
+  source: RUNTIME_COMPONENT:dp_core_wiring
+  type: CALLS
+  target: RUNTIME_COMPONENT:mv2_integrated_replay
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/trading/master_v2/double_play_core_wiring_v1.py
+- id: REL:r_dp_core_wiring_calls_decision_packet
+  source: RUNTIME_COMPONENT:dp_core_wiring
+  type: CALLS
+  target: RUNTIME_COMPONENT:mv2_decision_packet
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/trading/master_v2/double_play_core_wiring_v1.py
+- id: REL:r_dp_core_wiring_calls_quarantine
+  source: RUNTIME_COMPONENT:dp_core_wiring
+  type: CALLS
+  target: RUNTIME_COMPONENT:dp_sole_authority_quarantine
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/trading/master_v2/double_play_core_wiring_v1.py
+- id: REL:r_ddo_capture_observes_universe
+  source: RUNTIME_COMPONENT:ddo_capture_v0
+  type: OBSERVES
+  target: CAPABILITY:cap_2_1_gfu
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/governed_futures_universe_producer_v1/producer_v1.py
+  - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+  notes: Host decorator observe_after_producer_v0 seam selection.universe. No-op unless an enabled DdoCaptureBindingV0 session
+    is bound. Does not mutate the producer result. Not PRODUCES/CONSUMES/CALLS.
+- id: REL:r_ddo_capture_observes_ranking
+  source: RUNTIME_COMPONENT:ddo_capture_v0
+  type: OBSERVES
+  target: SELECTOR:productive_futures_ranking
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/productive_futures_ranking_producer_v1/producer_v1.py
+  - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+  notes: Host decorator observe_after_producer_v0 seam selection.ranking. No-op unless an enabled capture session is bound.
+    Not PRODUCES/CONSUMES/CALLS.
+- id: REL:r_ddo_capture_observes_selection
+  source: RUNTIME_COMPONENT:ddo_capture_v0
+  type: OBSERVES
+  target: SELECTOR:single_selected_future_policy
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/single_selected_future_policy_v1/selection_v1.py
+  - src/ops/single_selected_future_policy_v1/models_v1.py
+  - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+  notes: Host decorator observe_after_producer_v0 seam selection.single_future. No-op unless an enabled capture session is
+    bound. Not PRODUCES/CONSUMES/CALLS. Cap23 governed pin does not confer DDO selection or routing authority.
+- id: REL:r_ddo_capture_observes_binding
+  source: RUNTIME_COMPONENT:ddo_capture_v0
+  type: OBSERVES
+  target: BINDER:bound_instrument_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py
+  - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+  notes: Host decorator observe_after_producer_v0 seam selection.runtime_binding. No-op unless an enabled capture session
+    is bound. Not Cap-2.4 BINDS.
+- id: REL:r_ddo_capture_observes_recon_startup
+  source: RUNTIME_COMPONENT:ddo_capture_v0
+  type: OBSERVES
+  target: RUNTIME_COMPONENT:recon_startup_gate_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py
+  - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+  notes: Host decorator observe_after_producer_v0 seam recon.startup_gate. No-op unless an enabled capture session is bound.
+    DDO does not own recon.
+- id: REL:r_ddo_capture_observes_sim_exec
+  source: RUNTIME_COMPONENT:ddo_capture_v0
+  type: OBSERVES
+  target: RUNTIME_COMPONENT:simulated_execution_port_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/single_future_stateful_no_order_runtime_activation_v1/simulated_execution_port_v1.py
+  - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+  notes: Host decorator observe_after_producer_v0 seam execution.simulated_outcome. No-op unless an enabled capture session
+    is bound. Not venue submit.
+- id: REL:r_ddo_capture_observes_wallclock_cycle_producers
+  source: RUNTIME_COMPONENT:ddo_capture_v0
+  type: OBSERVES
+  target: HOST:wallclock_decision_economics_cycle
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/trading/market_state/distinct_market_observation_acceptor_v1.py
+  - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/feature_regime_pipeline_v1.py
+  - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/intended_action_mapper_v1.py
+  - src/ops/exit_policy_producer_binding_v1/producers_v1.py
+  - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+  notes: WP-FS-B1 host decorators for c1.observation_acceptance, feature.regime, feature.typed_volatility, mapper.intended_action,
+    and core.exit_policy. Mapper consumes typed ReplayExecutionSafetyV1 when present. Observation only. Not PRODUCES/CONSUMES/CALLS.
+- id: REL:r_ddo_capture_observes_directional
+  source: RUNTIME_COMPONENT:ddo_capture_v0
+  type: OBSERVES
+  target: RUNTIME_COMPONENT:mv2_directional_assessment
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/trading/master_v2/directional_assessment_v1.py
+  - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+  notes: Host decorator observe_after_producer_v0 seam core.bull_bear. No-op unless an enabled capture session is bound.
+- id: REL:r_ddo_capture_observes_confirmation
+  source: RUNTIME_COMPONENT:ddo_capture_v0
+  type: OBSERVES
+  target: RUNTIME_COMPONENT:mv2_post_confirmation_ssc
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/stateful_confirmation_and_c1_productive_binding_v1/host_binding_v1.py
+  - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+  notes: Host decorator observe_after_producer_v0 seam confirmation.state. No-op unless an enabled capture session is bound.
+- id: REL:r_ddo_capture_observes_integrated_replay
+  source: RUNTIME_COMPONENT:ddo_capture_v0
+  type: OBSERVES
+  target: RUNTIME_COMPONENT:mv2_integrated_replay
+  epistemic_status: FORENSIC_RAW
+  modified_by: STEP29M_CURRENT_INSTRUMENT_MV2_OFFLINE_BOUNDARY_MATERIALIZATION_AND_ADMISSION_V1
+  evidence_sources:
+  - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
+  - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+  notes: Host decorator observe_after_producer_v0 seam core.master_v2_evidence. No-op unless an enabled capture session is
+    bound. Not a second total decision owner. OD1 single-lane replay join does not change this observation-only relation.
+    ATLAS_AUTHORITY=NONE.
+- id: REL:r_ddo_capture_observes_entry_exit
+  source: RUNTIME_COMPONENT:ddo_capture_v0
+  type: OBSERVES
+  target: RUNTIME_COMPONENT:dp_entry_exit_policy
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/trading/master_v2/double_play_entry_exit_policy_v0.py
+  - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+  - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
+  notes: Host decorator observe_after_producer_v0 seam core.double_play_entry_exit. Typed producer observation is projected
+    into double_play_entry_exit_observation_v1. Exact producer tokens remain producer-owned. Generic DDO DecisionResult is
+    not a second trading enum. Sibling producer-input evidence is projected into double_play_entry_exit_policy_input_evidence_v1.
+    Observation only.
+- id: REL:r_ddo_capture_observes_entry_exit_input
+  source: RUNTIME_COMPONENT:ddo_capture_v0
+  type: OBSERVES
+  target: RUNTIME_COMPONENT:ddo_double_play_input_evidence_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+  - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
+  notes: Host decorator observe_after_producer_v0 seam core.double_play_entry_exit persists sibling producer-input evidence.
+    Observation only. Not trading authority.
+- id: REL:r_ddo_input_evidence_reads_entry_exit_policy
+  source: RUNTIME_COMPONENT:ddo_double_play_input_evidence_v1
+  type: READS
+  target: RUNTIME_COMPONENT:dp_entry_exit_policy
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
+  - src/trading/master_v2/double_play_entry_exit_policy_v0.py
+  notes: Reuses producer types plus serialize_entry_exit_policy_input_canonical and compute_entry_exit_policy_input_digest.
+    Does not call evaluate_double_play_entry_exit_policy_v0. Not a second policy owner.
+- id: REL:r_ddo_semantic_replay_reads_entry_exit_observation
+  source: RUNTIME_COMPONENT:ddo_double_play_semantic_replay_v1
+  type: READS
+  target: RUNTIME_COMPONENT:ddo_capture_v0
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py
+  - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
+  notes: Offline reconstruction reads immutable typed observation evidence. Does not mutate capture, ledger, or producer results.
+    Not trading authority.
+- id: REL:r_ddo_semantic_replay_reads_entry_exit_policy
+  source: RUNTIME_COMPONENT:ddo_double_play_semantic_replay_v1
+  type: READS
+  target: RUNTIME_COMPONENT:dp_entry_exit_policy
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py
+  - src/trading/master_v2/double_play_entry_exit_policy_v0.py
+  notes: Reuses producer types plus serialize_entry_exit_policy_decision_canonical and compute_entry_exit_policy_semantic_digest.
+    Does not call evaluate_double_play_entry_exit_policy_v0. Not a second policy owner.
+- id: REL:r_ddo_capture_observes_scope_events
+  source: RUNTIME_COMPONENT:ddo_capture_v0
+  type: OBSERVES
+  target: RUNTIME_COMPONENT:mv2_scope_events
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/trading/master_v2/deterministic_scope_event_generator_v1.py
+  - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+  notes: Host decorator observe_after_producer_v0 seam core.dynamic_scope. Observation only.
+- id: REL:r_ddo_capture_observes_safety_kernel
+  source: RUNTIME_COMPONENT:ddo_capture_v0
+  type: OBSERVES
+  target: RUNTIME_COMPONENT:mv2_offline_boundary_adapters
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py
+  - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+  notes: Host decorator observe_after_producer_v0 seams safety.kernel and safety.killswitch_blocked_flag. Observation only.
+    Not killswitch authority.
+- id: REL:r_wallclock_injects_ddo_capture_session
+  source: HOST:wallclock_decision_economics_cycle
+  type: INJECTS
+  target: RUNTIME_COMPONENT:ddo_capture_v0
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
+  - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+  notes: with_ddo_capture_session_v0 binds DdoCaptureBindingV0 into a ContextVar for the cycle. bind_host_cycle_capture_context_v0
+    shares cycle identity with in-cycle producer decorators. Ontology has no CAPTURES type. Session bind is not trading authority.
+- id: REL:r_wallclock_calls_ddo_cycle_capture
+  source: HOST:wallclock_decision_economics_cycle
+  type: CALLS
+  target: RUNTIME_COMPONENT:ddo_capture_v0
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
+  - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py
+  - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+  notes: Direct call to record_productive_cycle_capture_v0. No-op if binding is missing or disabled. Observation of already-computed
+    cycle objects. Does not alter the productive cycle. PR 6634 also invokes learning outcome ingest after evaluation runtime;
+    non-authorizing observation only.
+- id: REL:r_wallclock_materializes_ddo_o4_via_wp_c_public_plane
+  source: HOST:wallclock_decision_economics_cycle
+  type: CALLS
+  target: CAPABILITY:market_data_private_state_runtime_convergence_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_public_plane_convergence_v1.py
+  - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
+  - src/ops/market_data_private_state_runtime_convergence_v1/o4_n_bars_learning_caller_closure_v1.py
+  notes: Productive DDO O4→N_BARS snapshot reads WP-A facts via WP-C converged_o4_handoff_v1 only. CanonicalPublicMdBarProducerV1
+    remains a bounded writer to WP-A facts, not a competing productive O4 session read. Fail-closed when history is insufficient.
+    Observation-only.
+- id: REL:r_wallclock_calls_learning_outcome_ingest
+  source: HOST:wallclock_decision_economics_cycle
+  type: CALLS
+  target: RUNTIME_COMPONENT:ddo_learning_outcome_ingest_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
+  - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py
+  notes: invoke_productive_learning_outcome_evidence_ingest_v1 after evaluation runtime. apply_learning_state_feedback_to_next_cycle_v1
+    at cycle start. Non-authorizing; no trading, risk, execution, or promotion authority.
+- id: REL:r_ddo_capture_persists_ledger
+  source: RUNTIME_COMPONENT:ddo_capture_v0
+  type: PERSISTS
+  target: RUNTIME_COMPONENT:ddo_ledger_v0
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/learning/deterministic_decision_outcome_v0/capture_v0.py
+  - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
+  - src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py
+  notes: 'Ontology has no MAY_PERSIST type. PERSISTS is optional at runtime: append occurs only when ledger_path is set on
+    an enabled capture binding. In-memory captured_records still accumulate without a path.'
+  # atlas_entity_review: PR #6936 — OBSERVES unchanged; DDO capture does not feed elementary_direction; ATLAS_AUTHORITY=NONE.
+  # atlas_entity_review: PR #6937 — OBSERVES unchanged; DDO offline export handoff does not feed elementary_direction; ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_cycle_observes_elementary_direction
+  # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1; canonical_price_provenance threading only; relation semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
+  source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  type: OBSERVES
+  target: RUNTIME_COMPONENT:elementary_direction_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
+  - src/trading/market_state/elementary_direction_v1.py
+  notes: Passive cycle-result evidence field only. Not Replay input. Not Double Play / ScopeEvent / SideState / Entry consumption.
+    AUTHORITY_EFFECT=NONE. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_path_calls_venue_translation
+  source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  type: CALLS
+  target: RUNTIME_COMPONENT:full_core_live_path_venue_translation_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/path_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/venue_translation_v1.py
+  notes: Offline path calls translator-only venue mapping. Not wire send. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_path_calls_frozen_pretrade
+  source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  type: CALLS
+  target: GATE:full_core_live_path_frozen_pretrade_conjunction_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/path_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
+  notes: Offline path evaluates frozen pretrade evidence. Not a GET. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_path_calls_execution_boundary
+  source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  type: CALLS
+  target: GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/path_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/live_execution_port_construction_admission_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
+  notes: Offline path always halts before wire. Typed ExecutionAdmissionDecisionV1 is consumed at this same join point. Construction
+    admission remains required. Host-join attaches the fail-closed LiveExecutionPort handle and is not submission. Not a second
+    execution boundary. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_path_calls_restart_gate
+  source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  type: CALLS
+  target: GATE:full_core_live_path_restart_gate_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/overclaim_guards_v1.py
+  notes: Restart-test surface remains unauthorized. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_path_calls_canary_isolation
+  source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  type: CALLS
+  target: RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
+  notes: Canary venue-proof remains distinct from FULL_CORE_LIVE_PATH. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_path_consumes_models
+  source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  type: CONSUMES
+  target: DATA_CONTRACT:full_core_live_path_models_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/models_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/path_v1.py
+  notes: Offline path consumes TYPE_ONLY dataclasses. Not a wire SCHEMA. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_path_calls_standing_live_gates
+  source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  type: CALLS
+  target: GATE:full_core_live_path_standing_live_gates_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/live_execution_port_construction_admission_v1.py
+  notes: Package-local LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED remain false. LIVE_ENABLED and LIVE_ARMED standing
+    admission seams do not automatically admit. WIRE_SEND_PERMITTED remains independently fail-closed. Does not supersede
+    GATE:live_authorized_false. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_path_calls_path_identity
+  source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  type: CALLS
+  target: GATE:full_core_live_path_identity_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/live_admission_gap_dag_v1.py
+  notes: Productive Live-path identity is FULL_CORE_LIVE_PATH. Next-pointer authority primary is full_core_live_path_authority_v1
+    (SECTION_11_2_1 / 11.2.1 historical compatibility only). Canary / §11.14 remain evidence-domain only. Atlas is not trading
+    authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_path_calls_durable_filegate_join
+  source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  type: CALLS
+  target: GATE:full_core_durable_filegate_join_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+  notes: Halt joins durable FILEGATE as typed admission evidence. Does not admit Live. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_path_calls_owner_one_shot_permit
+  source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  type: CALLS
+  target: GATE:full_core_owner_one_shot_permit_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/owner_one_shot_permit_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+  notes: Halt joins typed OWNER_ONE_SHOT permit evidence. Does not admit Live. Does not override FILEGATE. Atlas is not trading
+    authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_path_calls_fresh_pretrade_runtime_get
+  source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  type: CALLS
+  target: GATE:full_core_fresh_pretrade_runtime_get_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+  notes: Halt joins typed Fresh Pretrade GET evidence. Does not admit Live. Does not POST. Does not override FILEGATE or permit.
+    S1 data_safety_source_kind stamp does not change this CALLS edge. S2B LIVE_TRADE DataSafetyContext bind is composition-root
+    owned and does not change this CALLS edge. S2C DataSafetyGate.check conjunct does not change this CALLS edge. DataSafetyGate=CONJUNCT_NOT_OWNER.
+    evaluate_execution_admission_v1 remains the sole admission owner. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_path_calls_live_account_bound
+  source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  type: CALLS
+  target: GATE:full_core_live_account_bound_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+  notes: Halt joins typed LIVE_ACCOUNT_BOUND evidence. Does not admit Live. Does not POST. Does not override FILEGATE, permit,
+    or GET. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_live_account_bound_composes_fresh_get
+  source: GATE:full_core_live_account_bound_v1
+  type: CONSUMES
+  target: GATE:full_core_fresh_pretrade_runtime_get_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
+  notes: LIVE_ACCOUNT_BOUND seam consumes Fresh GET identity extracts. Bound cannot override GET, permit, or FILEGATE. S1
+    data_safety_source_kind stamp does not change this CONSUMES edge. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_path_calls_capital_admission
+  source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  type: CALLS
+  target: GATE:full_core_capital_admission_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+  notes: Halt joins typed Capital Admission evidence. Does not admit Live. Does not POST. Does not override FILEGATE, permit,
+    GET, or LIVE_ACCOUNT_BOUND. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_capital_admission_composes_live_account_bound
+  source: GATE:full_core_capital_admission_v1
+  type: CONSUMES
+  target: GATE:full_core_live_account_bound_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
+  notes: Capital Admission seam composes LIVE_ACCOUNT_BOUND join. Bound identity is not capital authority. Atlas is not trading
+    authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_treasury_phase_1_consumes_capital_admission
+  source: GATE:treasury_phase_1_offline_contracts_v1
+  type: CONSUMES
+  target: GATE:full_core_capital_admission_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/treasury_phase_1_offline_contracts_v1/capital_boundary_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
+  notes: Treasury Phase-1 reuses Capital Admission semantics and does not mint RISK_ADMISSIBLE. Atlas is not trading authority.
+    ATLAS_AUTHORITY=NONE.
+- id: REL:r_treasury_phase_2_consumes_capital_admission
+  source: GATE:treasury_phase_2_read_only_reconciliation_v1
+  type: CONSUMES
+  target: GATE:full_core_capital_admission_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/treasury_phase_2_read_only_reconciliation_v1/join_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
+  notes: Phase-2 read-only reconciliation join calls evaluate_capital_admission_v1 only. No STEP-29P or execution authority.
+    ATLAS_AUTHORITY=NONE.
+- id: REL:r_treasury_e1_binding_consumes_funding_balance_read
+  source: RUNTIME_COMPONENT:treasury_phase_2_read_only_venue_observation_binding_v1
+  type: CONSUMES
+  target: RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/producer_v1.py
+  - src/ops/offline_funding_balance_read_producer_v1/producer_v1.py
+  notes: 'E1 edge: single allowlisted funding balance GET via existing offline producer. No POST or transfer. ATLAS_AUTHORITY=NONE.'
+- id: REL:r_treasury_e1_binding_feeds_phase_2_observation
+  source: RUNTIME_COMPONENT:treasury_phase_2_read_only_venue_observation_binding_v1
+  type: PRODUCES
+  target: DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/producer_v1.py
+  - src/ops/treasury_phase_2_read_only_reconciliation_v1/models_v1.py
+  notes: Emits TreasuryVenueObservationV1 for Phase-2 reconciliation only. Does not evaluate reconciliation or capital admission
+    here. ATLAS_AUTHORITY=NONE.
+- id: REL:r_treasury_s1_decrease_binding_consumes_funding_balance_read
+  source: RUNTIME_COMPONENT:treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1
+  type: CONSUMES
+  target: RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1/producer_v1.py
+  - src/ops/offline_funding_balance_read_producer_v1/producer_v1.py
+  notes: 'S1 edge: single allowlisted funding balance GET via existing offline producer. No POST, transfer, or withdrawal
+    send. ATLAS_AUTHORITY=NONE.'
+- id: REL:r_treasury_s1_decrease_binding_feeds_phase_2_observation
+  source: RUNTIME_COMPONENT:treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1
+  type: PRODUCES
+  target: DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1/producer_v1.py
+  - src/ops/treasury_phase_2_read_only_reconciliation_v1/models_v1.py
+  notes: Emits TreasuryVenueObservationV1 with conservative external depletion mapping for Phase-2 reconciliation only. ATLAS_AUTHORITY=NONE.
+- id: REL:r_treasury_s2_decrease_consumes_s1_observation
+  source: RUNTIME_COMPONENT:treasury_external_capital_decrease_s2_admission_runtime_join_v1
+  type: CONSUMES
+  target: DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/treasury_external_capital_decrease_s2_admission_runtime_join_v1/join_v1.py
+  - src/ops/treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1/producer_v1.py
+  notes: 'S2 edge: consumes S1 TreasuryVenueObservationV1 for decrease only. ATLAS_AUTHORITY=NONE.'
+- id: REL:r_treasury_s2_decrease_consumes_phase2_capital_admission_join
+  source: RUNTIME_COMPONENT:treasury_external_capital_decrease_s2_admission_runtime_join_v1
+  type: CONSUMES
+  target: GATE:treasury_phase_2_read_only_reconciliation_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/treasury_external_capital_decrease_s2_admission_runtime_join_v1/join_v1.py
+  - src/ops/treasury_phase_2_read_only_reconciliation_v1/join_v1.py
+  notes: S2 reuses join_treasury_reconciliation_into_capital_admission_v1; no parallel capital authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_treasury_s2_decrease_feeds_productive_capital_admission_seam
+  source: RUNTIME_COMPONENT:treasury_external_capital_decrease_s2_admission_runtime_join_v1
+  type: PRODUCES
+  target: GATE:full_core_capital_admission_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/treasury_external_capital_decrease_s2_admission_runtime_join_v1/join_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
+  notes: Productive runtime join into join_capital_admission_into_admission_inputs_v1 optional decrease observation path.
+    ATLAS_AUTHORITY=NONE.
+- id: REL:r_treasury_e4_consumes_phase2_capital_admission_join
+  source: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_v1
+  type: CONSUMES
+  target: GATE:treasury_phase_2_read_only_reconciliation_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/join_v1.py
+  - src/ops/treasury_phase_2_read_only_reconciliation_v1/join_v1.py
+  notes: 'E4 edge: consumes TreasuryCapitalAdmissionJoinV1 from Phase-2 capital admission join. Does not re-evaluate capital
+    admission. ATLAS_AUTHORITY=NONE.'
+- id: REL:r_treasury_e4_feeds_account_equity_orchestration_ingress
+  source: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_v1
+  type: PRODUCES
+  target: DATA_CONTRACT:account_equity_orchestration_ingress_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/join_v1.py
+  - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/models_v1.py
+  notes: Emits AccountEquityOrchestrationIngressV1 for governed account-equity orchestration only. No equity value mint. ATLAS_AUTHORITY=NONE.
+- id: REL:r_treasury_e4_productive_host_consumes_e4_orchestration
+  source: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1
+  type: CONSUMES
+  target: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py
+  - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/join_v1.py
+  notes: Productive host join reuses E4 orchestration join output; no parallel E4 owner. ATLAS_AUTHORITY=NONE.
+- id: REL:r_treasury_e4_productive_host_consumes_orchestration_ingress
+  source: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1
+  type: CONSUMES
+  target: DATA_CONTRACT:account_equity_orchestration_ingress_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/governed_productive_account_equity_authority_producer_v1/evaluate_treasury_capital_admission_orchestration_ingress_at_productive_host_v1.py
+  - src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py
+  notes: Productive host evaluation consumes E4 AccountEquityOrchestrationIngressV1 at ops.governed_productive_account_equity_authority_producer_v1
+    boundary. ATLAS_AUTHORITY=NONE.
+- id: REL:r_treasury_phase_3_consumes_phase_2_reconciliation
+  source: GATE:treasury_phase_3_shadow_enforcement_v1
+  type: CONSUMES
+  target: GATE:treasury_phase_2_read_only_reconciliation_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/treasury_phase_3_shadow_enforcement_v1/join_v1.py
+  - src/ops/treasury_phase_2_read_only_reconciliation_v1/reconciliation_v1.py
+  notes: Phase-3 reuses evaluate_treasury_read_only_reconciliation_v1 only. Does not call capital admission join or STEP-29P.
+    ATLAS_AUTHORITY=NONE.
+- id: REL:r_treasury_phase_3_consumes_separation_gate
+  source: GATE:treasury_phase_3_shadow_enforcement_v1
+  type: CONSUMES
+  target: RUNTIME_COMPONENT:treasury_separation_gate_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/treasury_phase_3_shadow_enforcement_v1/join_v1.py
+  - src/ops/treasury_phase_3_shadow_enforcement_v1/shadow_http_v1.py
+  - src/ops/treasury_separation_gate.py
+  notes: Reuses evaluate_treasury_policy for bot-role treasury mutation deny. Wired on §11.13 read-only HTTP clients only.
+    ATLAS_AUTHORITY=NONE.
+- id: REL:r_treasury_phase_3_produces_shadow_enforcement_result
+  source: GATE:treasury_phase_3_shadow_enforcement_v1
+  type: PRODUCES
+  target: DATA_CONTRACT:treasury_shadow_enforcement_result_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/treasury_phase_3_shadow_enforcement_v1/join_v1.py
+  - src/ops/treasury_phase_3_shadow_enforcement_v1/models_v1.py
+  notes: Shadow observe/enforce result only. capital_uplift_permitted remains false. ATLAS_AUTHORITY=NONE.
+- id: REL:r_treasury_phase_3_wires_shadow_http_surfaces
+  source: GATE:treasury_phase_3_shadow_enforcement_v1
+  type: CONSUMES
+  target: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/section_11_13_2_live_private_read_only_v1/http_client_v1.py
+  - src/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_v1/http_client_v1.py
+  - src/ops/section_11_13_4_live_dry_run_order_plan_v1/http_client_v1.py
+  notes: Binding is limited to §11.13 read-only/shadow HTTP allowlist checks. Full-Core composition root productive authority
+    graph unchanged. ATLAS_AUTHORITY=NONE.
+- id: REL:r_treasury_pdf_rebind_census_consumes_treasury_phases
+  source: RUNTIME_COMPONENT:treasury_pdf_current_head_rebind_and_census_v1
+  type: CONSUMES
+  target: GATE:treasury_phase_2_read_only_reconciliation_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/treasury_pdf_current_head_rebind_and_census_v1/census_v1.py
+  - tests/ops/test_treasury_pdf_current_head_rebind_and_census_v1.py
+  notes: Offline census reads Phase-1/2/3 constants and interference proof only. Does not authorize network or mutation. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_standing_live_gates_deny_treasury_mutation
+  source: GATE:full_core_live_path_standing_live_gates_v1
+  type: DENIES
+  target: GATE:treasury_phase_1_offline_contracts_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/treasury_phase_1_offline_contracts_v1/authority_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
+  notes: LIVE_ENABLED, LIVE_ARMED, and WIRE_SEND_PERMITTED cannot mint Treasury mutation authority. Atlas is not trading authority.
+    ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_fresh_pretrade_get_composes_permit
+  source: GATE:full_core_fresh_pretrade_runtime_get_v1
+  type: CONSUMES
+  target: GATE:full_core_owner_one_shot_permit_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/owner_one_shot_permit_v1.py
+  notes: Fresh GET seam composes OWNER_ONE_SHOT permit join. GET cannot override permit or FILEGATE. S1 data_safety_source_kind
+    stamp does not change this CONSUMES edge. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_owner_one_shot_permit_composes_filegate
+  source: GATE:full_core_owner_one_shot_permit_v1
+  type: CONSUMES
+  target: GATE:full_core_durable_filegate_join_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/owner_one_shot_permit_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
+  notes: Permit seam composes FILEGATE join. Permit cannot override FILEGATE. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_filegate_join_reads_filegate
+  source: GATE:full_core_durable_filegate_join_v1
+  type: CONSUMES
+  target: GATE:kill_switch_durable_filegate_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
+  - src/ops/gates/risk_gate.py
+  notes: Single FILEGATE authority. Join does not write StatePersistence. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_step_29p_fresh_get_fetches_okx_eea
+  source: RUNTIME_COMPONENT:full_core_step_29p_fresh_venue_evidence_v1
+  type: FETCHES
+  target: GATE:full_core_capital_admission_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_step_29p_fresh_venue_evidence_v1/execute_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/step_29p_capital_risk_admissibility_v1.py
+  notes: GET-only sibling produces typed observation for 29P evaluation. Observation is not 29P equity authority. Does not
+    POST. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_full_core_step_29p_fresh_get_denies_wire
+  source: RUNTIME_COMPONENT:full_core_step_29p_fresh_venue_evidence_v1
+  type: DENIES
+  target: GATE:full_core_live_path_execution_boundary_halt_before_wire_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_step_29p_fresh_venue_evidence_v1/execute_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
+  notes: Fresh GET execute cannot halt-bypass or construct LiveExecutionPort. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_portfolio_capital_reservation_budget_consumes_sizing
+  source: GATE:portfolio_capital_reservation_budget_v1
+  type: CONSUMES
+  target: RUNTIME_COMPONENT:mv2_capital_risk_sizing
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py
+  - src/governance/capital_risk_sizing_v1.py
+  notes: Portfolio budget calls the existing quantity owner after a snapshot. It does not become a second sizing authority.
+    N>1 stays unauthorized. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: REL:r_enter_live_29p_join_consumes_portfolio_budget
+  source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  type: CONSUMES
+  target: GATE:portfolio_capital_reservation_budget_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_treasury_single_source_capital_handoff_v1.py
+  - tests/ops/test_full_core_treasury_single_source_capital_handoff_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py
+  - src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py
+  - tests/ops/test_full_core_current_productive_enter_live_29p_portfolio_join_v1.py
+  - tests/ops/test_current_productive_mv2_capital_context_rebind_v1.py
+  - tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py
+  notes: ENTER Live-29P join optionally calls admit_sized_slot_reservation_v1 when portfolio_budget_owner and slot context
+    are paired. PR_6744 rebinds MV2 capital context from typed 29P equity before sizing; legacy path unchanged without the
+    pair. Does not authorize external effect or N>1. ATLAS_AUTHORITY=NONE.
+- id: REL:r_p1_max_evidence_campaign_consumes_witness_foundation
+  source: RUNTIME_COMPONENT:p1_max_evidence_campaign_to_next_real_blocker_v1
+  type: CONSUMES
+  target: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/governed_productive_account_equity_authority_producer_v1/p1_max_evidence_campaign_to_next_real_blocker_v1.py
+  - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
+  - tests/ops/test_full_core_p1_max_evidence_campaign_to_next_real_blocker_v1.py
+  notes: 'Bounded read-only P1 evidence campaign persists witness adjudication and consumes sealed #6666 witness foundation
+    for #6665 re-evaluation. ATLAS_AUTHORITY=NONE.'
+- id: REL:r_p1_currency_domain_witness_consumes_witness_foundation
+  source: RUNTIME_COMPONENT:p1_currency_domain_completeness_witness_v1
+  type: CONSUMES
+  target: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/governed_productive_account_equity_authority_producer_v1/p1_currency_domain_completeness_witness_v1.py
+  - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
+  - tests/ops/test_full_core_p1_currency_domain_completeness_witness_v1.py
+  notes: 'P1 currency-domain completeness witness persists closed-world enumeration and sealed interest-accrued exhaustion
+    composition for #6666 and #6665. ATLAS_AUTHORITY=NONE.'
+- id: REL:r_p1_liability_governance_witness_consumes_witness_foundation
+  source: RUNTIME_COMPONENT:p1_liability_event_class_governance_and_ratified_query_class_set_v1
+  type: CONSUMES
+  target: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/governed_productive_account_equity_authority_producer_v1/p1_liability_event_class_governance_and_ratified_query_class_set_v1.py
+  - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
+  - tests/ops/test_full_core_p1_liability_event_class_governance_v1.py
+  notes: 'P1 liability event-class governance witness persists ratified query-class set without global EQUITY_STOCK kind-set
+    uplift for #6666 LIABILITY root. ATLAS_AUTHORITY=NONE.'
+- id: REL:r_p1_bounded_traversal_witness_consumes_witness_foundation
+  source: RUNTIME_COMPONENT:p1_bounded_query_traversal_completeness_witness_v1
+  type: CONSUMES
+  target: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/governed_productive_account_equity_authority_producer_v1/p1_bounded_query_traversal_completeness_witness_v1.py
+  - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
+  - tests/ops/test_full_core_p1_bounded_query_traversal_completeness_witness_v1.py
+  notes: 'P1 bounded query traversal witness persists pagination and ordering roots from sealed interest-accrued packs for
+    #6666 and #6665. ATLAS_AUTHORITY=NONE.'
+- id: REL:r_p1_final_closeout_pr1_consumes_witness_foundation
+  source: RUNTIME_COMPONENT:p1_final_closeout_pr1_of_2_v1
+  type: CONSUMES
+  target: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/governed_productive_account_equity_authority_producer_v1/p1_final_closeout_pr1_of_2_v1.py
+  - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
+  - tests/ops/test_full_core_p1_final_closeout_pr1_of_2_v1.py
+  notes: 'P1 final closeout PR 1/2 persists freshness/time/restart witnesses and re-evaluates #6665 via foundation bundle.
+    ATLAS_AUTHORITY=NONE.'
+- id: REL:r_p1_negative_completeness_closeout_consumes_witness_foundation
+  source: RUNTIME_COMPONENT:p1_negative_completeness_closeout_contract_v1
+  type: CONSUMES
+  target: RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/governed_productive_account_equity_authority_producer_v1/p1_negative_completeness_closeout_contract_v1.py
+  - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
+  - tests/ops/test_full_core_p1_completeness_witness_foundation_v1.py
+  - tests/ops/test_full_core_p1_negative_completeness_closeout_contract_v1.py
+  notes: P1 negative closeout (#6665) maps sealed witness bundle flags into completeness requirement matrix fail-closed. No
+    trading authority. ATLAS_AUTHORITY=NONE.

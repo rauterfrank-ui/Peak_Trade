@@ -55,6 +55,9 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_o
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     CURSOR_FILENAME,
 )
+from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+    FinalOrderEnvelopeV1,
+)
 from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 import (
     STEP_29Q_PLAN_ONLY,
 )
@@ -173,6 +176,7 @@ class CurrentProductiveGovernedCycleResultV1:
     lock_released: str
     ledger_state: str
     transitions: tuple[str, ...]
+    final_order_envelope: FinalOrderEnvelopeV1 | None = None
     extra: dict[str, str] = field(default_factory=dict)
 
 
@@ -294,6 +298,17 @@ def bind_s5_governed_cycle_orchestrator_offline_v1(
         "direct_v5": DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT,
         "post_count": "0",
     }
+
+
+def _t2_n1_consumer_join_failure_v1(exc: BaseException) -> tuple[str, str] | None:
+    """Map T2 S7 join failures without importing invoke_join at module load (cycle break)."""
+    from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
+        FullAutonomyOccupiedLaneGovernedCycleN1ConsumerJoinError,
+    )
+
+    if isinstance(exc, FullAutonomyOccupiedLaneGovernedCycleN1ConsumerJoinError):
+        return str(exc.failure_code or "T2_JOIN_FAIL_CLOSED"), str(exc.detail or "")
+    return None
 
 
 def run_current_productive_governed_cycle_v1(
@@ -733,7 +748,36 @@ def run_current_productive_governed_cycle_v1(
                 c1_used=c1_used,
                 cursor_floor_before=cursor_floor_before,
             )
-        except Exception:
+        except Exception as exc:
+            join_failure = _t2_n1_consumer_join_failure_v1(exc)
+            if join_failure is not None:
+                first_blocker, detail = join_failure
+                detail = detail.strip()
+                ledger_extra: dict[str, str] = {"reason_code": first_blocker}
+                if detail:
+                    ledger_extra["t2_join_detail"] = detail[:512]
+                _write_ledger(state=STATE_FAILED_STOP, extra=ledger_extra)
+                return _result(
+                    disposition=DISPOSITION_FAIL_CLOSED,
+                    reason_code=first_blocker,
+                    terminal_class="T2_FAILURE",
+                    get_consumed=True,
+                    eg_consumed=True,
+                    occupancy_consumed=True,
+                    eg_dispatch_count=eg_dispatch_count,
+                    occupancy_disposition=occupancy_disposition,
+                    occupancy_used=occupancy_used,
+                    first_genuine_blocker=detail or first_blocker,
+                    blocker_class="UNKNOWN_OR_CONFLICTING",
+                    next_required_owner_decision=(
+                        "T2/V5 N=1 failed closed. Do not resume this partial cycle."
+                    ),
+                    lock_released=_token(True),
+                    ledger_state=STATE_FAILED_STOP,
+                    transitions=tuple(transitions + [STATE_FAILED_STOP]),
+                    c1_used=c1_used,
+                    cursor_floor_before=cursor_floor_before,
+                )
             first_blocker = "T2_CYCLE_EXCEPTION"
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": first_blocker})
             return _result(
@@ -766,6 +810,7 @@ def run_current_productive_governed_cycle_v1(
         venue_plan_status = str(getattr(t2_result, "venue_plan_status", "") or "")
         envelope_id = str(getattr(t2_result, "final_envelope_id", "") or "")
         envelope_digest = str(getattr(t2_result, "final_envelope_digest", "") or "")
+        final_order_envelope = getattr(t2_result, "final_order_envelope", None)
         permit_created = str(getattr(t2_result, "permit_created", FALSE_TOKEN)).lower() == "true"
         post_count = int(str(getattr(t2_result, "post_count", "0") or "0"))
         first_blocker = str(getattr(t2_result, "first_real_blocker", "") or "")
@@ -848,6 +893,9 @@ def run_current_productive_governed_cycle_v1(
             envelope_identity=(
                 f"envelope_id={envelope_id};digest={envelope_digest}" if envelope_id else ""
             ),
+            final_order_envelope=final_order_envelope
+            if isinstance(final_order_envelope, FinalOrderEnvelopeV1)
+            else None,
             first_genuine_blocker=first_blocker,
             blocker_class=blocker_class,
             next_required_owner_decision=next_owner,
@@ -900,6 +948,7 @@ def _result(
     venue_plan_status: str = "",
     envelope_created: bool = False,
     envelope_identity: str = "",
+    final_order_envelope: FinalOrderEnvelopeV1 | None = None,
     first_genuine_blocker: str = "",
     blocker_class: str = "",
     next_required_owner_decision: str = "",
@@ -935,6 +984,7 @@ def _result(
         venue_plan_status=venue_plan_status,
         envelope_created=envelope_created,
         envelope_identity=envelope_identity,
+        final_order_envelope=final_order_envelope,
         permit_created=False,
         post_count=0,
         external_effect_count=0,

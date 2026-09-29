@@ -1,9 +1,14 @@
 # ATLAS_AUTHORITY=NONE
 schema_version: system_atlas.v1
-origin_main_sha: 14e8a58f32dcb6b521be6b2559b388bf27360194
-navigation_rebind_sha: 14e8a58f32dcb6b521be6b2559b388bf27360194
+content_origin_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
+current_reviewed_at_sha: 7bf14311fc30f38bffbfe09738c8135c2e99508b
+origin_main_sha: 7bf14311fc30f38bffbfe09738c8135c2e99508b
+navigation_rebind_sha: 7bf14311fc30f38bffbfe09738c8135c2e99508b
 domain_census_payloads_bound_sha: 615de3b307132b73a60df33fd3bedfac811c8cce
 domain_census_payloads_fresh_exhaustive_recensus: false
+census_payload_role: BIBLIOGRAPHIC_DOD_HEADING_INVENTORY
+keep_noncurrent_reference: true
+stale_defect_if_head_differs: false
 docs_files_with_definition_of_done_heading: 66
 classification_rule: Not every heading is a FORMAL_DOD. Most PHASE_*/WP*/session docs are GENERIC_CHECKLIST or RUNBOOK_COMPLETION_CRITERIA.
 formal_dods_in_ontology:

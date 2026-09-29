@@ -54,6 +54,29 @@ secrets.toml
 !src/ops/k1_productive_macos_keychain_provisioning_authority_v1/**
 !tests/ops/test_k1_productive_macos_keychain_provisioning_authority_v1.py
 !docs/ops/specs/K1_PRODUCTIVE_MACOS_KEYCHAIN_PROVISIONING_AUTHORITY_V1.md
+!src/governance/real_keychain_access*
+!src/governance/governed_real_keychain_access*
+!tests/governance/test_real_keychain_access*
+!config/governance/real_keychain_access*
+!docs/ops/specs/REAL_KEYCHAIN_ACCESS*
+!src/governance/current_productive_k1_opaque_signing_handle*
+!src/governance/k1_opaque_signing_handle*
+!src/governance/governed_current_productive_k1_opaque_signing_handle*
+!src/governance/current_productive_k1_pre_post*
+!src/governance/current_productive_real_venue_post_admission*
+!tests/governance/test_current_productive_k1_opaque_signing_handle*
+!config/governance/current_productive_k1_opaque_signing_handle*
+!docs/ops/specs/CURRENT_PRODUCTIVE_K1_REAL_KEYCHAIN*
+!src/governance/post_6943*
+!scripts/ops/run_post_6943*
+!tests/governance/test_post_6943*
+!config/governance/post_6943*
+!docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_REAL_KEYCHAIN_MATERIAL_LOAD_SCOPED_PERFORM*
+!src/governance/post_6944*
+!scripts/ops/run_post_6944*
+!tests/governance/test_post_6944*
+!config/governance/post_6944*
+!docs/ops/specs/AUTHORITY_MAP_ATLAS_GUIDED_K1_OPAQUE_SIGNING_HANDLE_PRE_POST_SCOPED_PERFORM*
 
 # Logs
 *.log

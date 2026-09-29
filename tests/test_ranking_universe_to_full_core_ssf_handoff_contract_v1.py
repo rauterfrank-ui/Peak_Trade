@@ -2,6 +2,11 @@
 
 from __future__ import annotations
 
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    build_provenance_from_governed_synthetic_close_mark_and_index_v1,
+)
+
+
 import inspect
 from dataclasses import fields
 from pathlib import Path

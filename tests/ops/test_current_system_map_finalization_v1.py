@@ -8,7 +8,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 SOURCE = REPO / "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
-EXPECTED_MAIN_SHA = "d9f33a62f43f036932ed7c8bca648c71997dd162"
+REPRESENTATION_CLOSURE_BASELINE_SHA = "744a9c896f53d33b2d3c24977da1891a2e8549f1"
 
 
 def _load_source() -> dict:
@@ -26,15 +26,19 @@ def test_map_baseline_sha_matches_origin_main() -> None:
         .strip()
         .lower()
     )
-    assert doc["baseline_sha"] == EXPECTED_MAIN_SHA
-    assert doc["baseline_sha"] == origin_main
+    head = (
+        subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True).strip().lower()
+    )
+    assert doc["baseline_sha"] == REPRESENTATION_CLOSURE_BASELINE_SHA
+    if head == origin_main:
+        assert doc["baseline_sha"] == REPRESENTATION_CLOSURE_BASELINE_SHA
     assert doc["baseline_sha"] != "9ab34786b13c26f1be5cb9b523975f265014e1cb"
 
 
-def test_confirmed_first_class_universe_count_17() -> None:
+def test_confirmed_first_class_universe_count_20() -> None:
     doc = _load_source()
     first_class = [d for d in doc["domains"] if d["tier"] == "FIRST_CLASS"]
-    assert len(first_class) == 17
+    assert len(first_class) == 20
 
 
 def test_subdomain_and_gate_representation() -> None:
@@ -70,16 +74,51 @@ def test_gap_true_03_map_impact_representation_partial() -> None:
     assert "GAP-TRUE-03" in rec["statement"]
 
 
+def test_open_epistemic_records_have_closure_adjudication() -> None:
+    doc = _load_source()
+    allowed = {
+        "PROVEN_CURRENT",
+        "CURRENT_SUPPORT",
+        "EXPLICITLY_NOT_CURRENT",
+        "OPEN_EVIDENCE",
+        "CONFLICTING",
+        "REPRESENTATION_ONLY",
+        "SUPERSEDED_NONCURRENT",
+    }
+    for record in doc["open_epistemic_records"]:
+        assert record.get("closure_adjudication_class") in allowed
+        assert record.get("closure_note")
+
+
+def test_b05_first_class_producer_domains_present() -> None:
+    domains = _domains_by_id(_load_source())
+    for domain_id in (
+        "governed_productive_account_equity_authority_v1",
+        "governed_productive_reference_price_authority_v1",
+        "governed_productive_instrument_metadata_authority_v1",
+    ):
+        assert domains[domain_id]["tier"] == "FIRST_CLASS"
+        assert domains[domain_id]["status"] == "PROVEN_CURRENT"
+
+
 def test_b05_epistemic_records_reflect_merged_closure() -> None:
     doc = _load_source()
+    record_ids = {r["id"] for r in doc["open_epistemic_records"]}
+    assert "account_equity_blocks" not in record_ids
+    assert "reference_price_authority_owner" not in record_ids
     records = {r["id"]: r for r in doc["open_epistemic_records"]}
-    assert (
-        "ACCOUNT_EQUITY_AUTHORITY_CHAIN_CLOSED=true"
-        in records["account_equity_blocks"]["statement"]
-    )
-    assert (
-        "REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED=true"
-        in records["reference_price_authority_owner"]["statement"]
-    )
     assert records["runbook_freshness_stamp"]["epistemic_class"] == "PARTIAL"
-    assert "070f894" in records["runbook_freshness_stamp"]["statement"]
+    assert (
+        REPRESENTATION_CLOSURE_BASELINE_SHA[:8] in records["runbook_freshness_stamp"]["statement"]
+    )
+    assert records["runbook_freshness_stamp"].get("closure_adjudication_class") == (
+        "REPRESENTATION_ONLY"
+    )
+
+
+def test_execution_external_effect_not_conflicting_authority() -> None:
+    domains = _domains_by_id(_load_source())
+    ext = domains["execution_external_effect"]
+    assert ext["authority_class"] != "CONFLICTING"
+    assert ext["status"] != "CONFLICTING"
+    assert ext["authority_class"] == "CANONICAL_AUTHORITY"

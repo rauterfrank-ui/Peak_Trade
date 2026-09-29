@@ -36,6 +36,9 @@ from src.ops.p5_10_productive_activation_and_binding_v1.productive_cycle_bind_se
     ensure_productive_layered_core_episode_store_v1,
 )
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+from tests.ops._current_productive_canonical_price_test_helpers_v1 import (
+    provenance_for_bound_v1,
+)
 from trading.master_v2.double_play_composition_matrix_v1 import CompositionStatus
 from trading.master_v2.double_play_entry_exit_policy_v0 import (
     EntryExitDirectionState,
@@ -149,6 +152,45 @@ def governed_c1_candles_payload_from_enter_closes_v1(
         px = f"{float(close_px):.4f}"
         rows.append([ts, px, px, px, px, "10", "100", "USDT", "1"])
     return {"code": "0", "data": rows}
+
+
+def governed_c1_aligned_g17_dk_producer_v1(
+    *,
+    bound: BoundInstrumentV1,
+    anchor_event_ts_unix: float,
+    evidence_store_root: Path,
+    mark_closes: Sequence[float] | None = None,
+) -> object:
+    """Canonical G17-DK producer with mark history aligned to governed C1 event time."""
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1 import (
+        prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1,
+    )
+
+    last_ms = int(float(anchor_event_ts_unix) * 1000)
+    if mark_closes is not None and len(mark_closes) > 0:
+        raw = tuple(float(x) for x in mark_closes)
+        if len(raw) >= 61:
+            price_series = raw[-61:]
+        else:
+            pad = [raw[0]] * (61 - len(raw))
+            price_series = tuple(pad + list(raw))
+    else:
+        price_series = tuple(100.0 + float(index) for index in range(61))
+    rows: list[list[str]] = []
+    for index in range(61):
+        ts = str(last_ms - (60 - index) * 60_000)
+        px = str(price_series[index])
+        rows.append([ts, px, px, px, px, "1"])
+    payload = {"code": "0", "msg": "", "data": list(reversed(rows))}
+    join = prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1(
+        evidence_store_root=Path(evidence_store_root),
+        bound_instrument=bound,
+        mark_candles_payload=payload,
+        receive_or_capture_timestamp=str(last_ms),
+    )
+    if join.fail_closed or join.producer is None:
+        raise RuntimeError(join.reason_code or "G17_DK_ALIGNED_PRODUCER_FAIL_CLOSED")
+    return join.producer
 
 
 def governed_productive_c1_event_ts_unix_v1(*, offset_seconds: float = 120.0) -> float:
@@ -471,12 +513,14 @@ def _compose_layered_lane_cycle_v1(
     event_ts_unix: float,
     cycle_id_prefix: str,
 ) -> Any:
+    index_px = float(mark_px) * 0.995
+    bound = pair[1]
     return compose_occupied_lane_mv2_dp_durable_cycle_v1(
         {"LANE_1": pair},
         cycle_id_prefix=cycle_id_prefix,
         observed_unix=float(event_ts_unix) + 1.0,
         mark_px=float(mark_px),
-        index_px=float(mark_px),
+        index_px=index_px,
         bid_px=float(mark_px) - 0.5,
         ask_px=float(mark_px) + 0.5,
         volume=10.0,
@@ -487,6 +531,11 @@ def _compose_layered_lane_cycle_v1(
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
         g17_typed_vol_producers={"LANE_1": g17_typed_vol_producer},
+        canonical_price_provenance=provenance_for_bound_v1(
+            bound=bound,
+            mark_px=float(mark_px),
+            index_px=index_px,
+        ),
     )["LANE_1"].cycle_result
 
 
@@ -557,32 +606,14 @@ def run_layered_long_arm_then_enter_for_pre_external_v1(
     Seeds lane store through the arm cycle so a single subsequent governed invoke
     can consume the ARMED cursor.
     """
-    enter_ts = governed_productive_c1_event_ts_unix_v1()
-    path = strong_uptrend_closes_v1()
-    from tests.ops.test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1 import (
-        _cycle,
-    )
-
-    origin = _cycle(
-        cycle_id="layered-long-origin",
-        bound_instrument=bound,
+    _origin, upscope_candidate, path = run_upscope_candidate_progress_cycles_v1(
+        bound=bound,
         g17_typed_vol_producer=g17_typed_vol_producer,
-        mark_px=float(path[0]),
-        event_ts_unix=enter_ts - 120.0,
-        closes=path,
     )
-    upscope_candidate = _cycle(
-        cycle_id="layered-long-upscope-candidate",
-        bound_instrument=bound,
-        g17_typed_vol_producer=g17_typed_vol_producer,
-        incoming_cursor=origin.outgoing_cursor,
-        mark_px=float(path[-1]),
-        event_ts_unix=enter_ts - 60.0,
-        closes=path,
-    )
+    assert upscope_candidate.outgoing_cursor is not None
     arm_closes = natural_enter_long_closes_v1(path)
     arm_mark = float(arm_closes[-1])
-    arm_ts = enter_ts
+    arm_ts = NATURAL_ENTER_UPSCOPE_CONFIRM_TS_UNIX_V1
 
     pair = _lane_pair_v1(lane_state_root=lane_state_root, bound=bound)
     store_root = Path(pair[0].lane_state_root)
@@ -630,15 +661,51 @@ def run_layered_long_arm_then_enter_for_pre_external_v1(
     return arm_cycle, enter_cycle, enter_closes, enter_mark, enter_event_ts
 
 
+def bootstrap_minimal_productive_p5_store_for_lane_slot_v1(
+    *,
+    slot: IsolatedLaneSlotV1,
+    bound: BoundInstrumentV1,
+    g17_typed_vol_producer: object,
+) -> None:
+    """Seed P5.10 episode store so occupied-lane MV2/DP compose does not fail-closed."""
+    _origin, upscope_candidate, path = run_upscope_candidate_progress_cycles_v1(
+        bound=bound,
+        g17_typed_vol_producer=g17_typed_vol_producer,
+    )
+    if upscope_candidate.outgoing_cursor is None:
+        return
+    store_root = Path(slot.lane_state_root)
+    persist_current_productive_sidestate_confirmation_cursor_v1(
+        upscope_candidate.outgoing_cursor,
+        store_root=store_root,
+    )
+    closes = natural_enter_long_closes_v1(path)
+    ensure_productive_layered_core_episode_store_v1(
+        store_root=store_root,
+        bound_instrument=bound,
+        mark_price_m_t=float(closes[-1]),
+        finalized_closes=closes,
+        last_finalized_event_ts_unix=NATURAL_ENTER_UPSCOPE_CONFIRM_TS_UNIX_V1,
+        outgoing_cursor=upscope_candidate.outgoing_cursor,
+    )
+
+
 def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
     *,
     bound: BoundInstrumentV1,
     g17_typed_vol_producer: object,
     lane_state_root: Path,
-) -> tuple[Any, tuple[float, ...], float, float]:
+) -> tuple[Any, tuple[float, ...], float, float, object]:
     """Stop after layered ARM; leave store ready for one governed ENTER cycle."""
     enter_ts = governed_productive_c1_event_ts_unix_v1()
     path = strong_uptrend_closes_v1()
+    aligned_g17 = governed_c1_aligned_g17_dk_producer_v1(
+        bound=bound,
+        anchor_event_ts_unix=enter_ts,
+        evidence_store_root=Path(lane_state_root) / "g17-seed",
+        mark_closes=path,
+    )
+    g17_for_cycles = aligned_g17
     from tests.ops.test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1 import (
         _cycle,
     )
@@ -646,7 +713,7 @@ def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
     origin = _cycle(
         cycle_id="preext-long-origin",
         bound_instrument=bound,
-        g17_typed_vol_producer=g17_typed_vol_producer,
+        g17_typed_vol_producer=g17_for_cycles,
         mark_px=float(path[0]),
         event_ts_unix=enter_ts - 120.0,
         closes=path,
@@ -654,7 +721,7 @@ def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
     upscope_candidate = _cycle(
         cycle_id="preext-long-upscope-candidate",
         bound_instrument=bound,
-        g17_typed_vol_producer=g17_typed_vol_producer,
+        g17_typed_vol_producer=g17_for_cycles,
         incoming_cursor=origin.outgoing_cursor,
         mark_px=float(path[-1]),
         event_ts_unix=enter_ts - 60.0,
@@ -680,7 +747,7 @@ def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
     )
     arm_cycle = _compose_layered_lane_cycle_v1(
         pair=pair,
-        g17_typed_vol_producer=g17_typed_vol_producer,
+        g17_typed_vol_producer=g17_for_cycles,
         closes=arm_closes,
         mark_px=arm_mark,
         event_ts_unix=arm_ts,
@@ -697,7 +764,14 @@ def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
     enter_closes = tuple(list(arm_closes) + [arm_mark + NATURAL_ENTER_MARK_INCREMENT_V1])
     enter_mark = float(enter_closes[-1])
     enter_event_ts = arm_ts + NATURAL_ENTER_SHORT_AFTER_ARM_TS_DELTA_V1
-    return arm_cycle, enter_closes, enter_mark, enter_event_ts
+    invoke_g17 = governed_c1_aligned_g17_dk_producer_v1(
+        bound=bound,
+        anchor_event_ts_unix=enter_event_ts,
+        evidence_store_root=Path(lane_state_root) / "g17-invoke",
+        mark_closes=enter_closes,
+    )
+    _ = g17_typed_vol_producer
+    return arm_cycle, enter_closes, enter_mark, enter_event_ts, invoke_g17
 
 
 def run_natural_enter_long_sequence_for_governed_pre_external_v1(

@@ -33,6 +33,7 @@ from trading.market_state.observation_identity_v1 import (
     MarketObservationEpoch,
 )
 from trading.master_v2.directional_assessment_confirmation_integration_v1 import (
+    DirectionalConfirmationSideStateCarrierV1,
     non_advancing_observation_acceptance_result_v1,
 )
 from trading.master_v2.single_lane_confirmation_activation_v1 import (
@@ -282,11 +283,15 @@ def test_s2_bull_to_neutral_discards_long() -> None:
         acceptor=third,
     )
     assert discarded.presence.kind is SingleLanePresenceKindV1.INACTIVE
-    assert discarded.discarded_prior_authority is True
+    assert discarded.discarded_prior_authority is False
     assert discarded.selected_side is None
+    assert (
+        discarded.carrier_after_lifecycle.bull_confirmation_state.assessment_state
+        is ConfirmationAssessmentStateV1.CONFIRMED
+    )
 
 
-def test_s2_bull_to_bear_discards_long_activates_new_short() -> None:
+def test_s2_bull_to_bear_preserves_long_activates_short() -> None:
     c1 = initial_observation_acceptance_state_v1(bound_instrument_key=_key())
     first, c1 = _eval_c1(c1, _candidate(event_time=1000.0, mark=10.0))
     second, c1 = _eval_c1(c1, _candidate(event_time=1001.0, mark=11.0))
@@ -313,8 +318,12 @@ def test_s2_bull_to_bear_discards_long_activates_new_short() -> None:
         acceptor=third,
     )
     assert switched.selected_side is ConfirmationSideV1.SHORT
-    assert switched.discarded_prior_authority is True
+    assert switched.discarded_prior_authority is False
     assert switched.activated_new_sequence is True
+    assert (
+        switched.carrier_after_lifecycle.bull_confirmation_state.assessment_state
+        is ConfirmationAssessmentStateV1.CONFIRMED
+    )
     new_short = switched.presence.authoritative_confirmation_progress()
     assert new_short.side is ConfirmationSideV1.SHORT
     assert new_short.assessment_state is ConfirmationAssessmentStateV1.OBSERVE
@@ -370,10 +379,10 @@ def test_s2_bear_to_neutral_discards_short() -> None:
         acceptor=third,
     )
     assert discarded.presence.kind is SingleLanePresenceKindV1.INACTIVE
-    assert discarded.discarded_prior_authority is True
+    assert discarded.discarded_prior_authority is False
 
 
-def test_s2_bear_to_bull_discards_short_activates_new_long() -> None:
+def test_s2_bear_to_bull_preserves_short_activates_long() -> None:
     c1 = initial_observation_acceptance_state_v1(bound_instrument_key=_key())
     first, c1 = _eval_c1(c1, _candidate(event_time=1000.0, mark=12.0))
     second, c1 = _eval_c1(c1, _candidate(event_time=1001.0, mark=11.0))
@@ -393,8 +402,12 @@ def test_s2_bear_to_bull_discards_short_activates_new_long() -> None:
         acceptor=third,
     )
     assert switched.selected_side is ConfirmationSideV1.LONG
-    assert switched.discarded_prior_authority is True
+    assert switched.discarded_prior_authority is False
     assert switched.activated_new_sequence is True
+    assert (
+        switched.carrier_after_lifecycle.bear_confirmation_state.distinct_confirmation_observation_count
+        >= 0
+    )
     assert (
         switched.presence.authoritative_confirmation_progress().latest_accepted_market_observation_epoch
         == third.state_before.market_observation_epoch
@@ -405,7 +418,10 @@ def test_s2_inactivity_then_reactivation_does_not_manufacture_epoch_gap() -> Non
     c1 = initial_observation_acceptance_state_v1(bound_instrument_key=_key())
     first, c1 = _eval_c1(c1, _candidate(event_time=1000.0, mark=10.0))
     second, c1 = _eval_c1(c1, _candidate(event_time=1001.0, mark=11.0))
-    third, c1 = _eval_c1(c1, _candidate(event_time=1002.0, mark=11.0))
+    third = non_advancing_observation_acceptance_result_v1(
+        bound_instrument_key=_key(),
+        market_observation_epoch=second.state_after.market_observation_epoch,
+    )
     fourth, _ = _eval_c1(c1, _candidate(event_time=1003.0, mark=12.0))
     bull = _lifecycle(
         prior=inactive_single_lane_presence_v1(),
@@ -438,16 +454,27 @@ def test_s2_inactivity_then_reactivation_does_not_manufacture_epoch_gap() -> Non
         acceptor=third,
     )
     assert after_neutral.presence.kind is SingleLanePresenceKindV1.INACTIVE
-    reactivated = _lifecycle(
-        prior=after_neutral.presence,
+    assert (
+        after_neutral.carrier_after_lifecycle.bull_confirmation_state.assessment_state
+        is ConfirmationAssessmentStateV1.CANDIDATE
+    )
+    reactivated = apply_single_lane_confirmation_lifecycle_v1(
+        prior_carrier=after_neutral.carrier_after_lifecycle,
         elementary=evaluate_elementary_direction_from_observation_acceptance_v1(
             fourth, bound_instrument_key=_key(), current_mark=12.0
         ),
-        acceptor=fourth,
+        observation_acceptance_result=fourth,
+        session_id="sess-od1",
+        venue="okx_eea",
+        instrument=_key(),
     )
-    assert reactivated.activated_new_sequence is True
+    assert reactivated.activated_new_sequence is False
+    assert reactivated.reason_code in {
+        SingleLaneLifecycleReasonV1.SWITCH_RESUME_PERSISTENT_LANE.value,
+        SingleLaneLifecycleReasonV1.CONTINUE_SELECTED_LANE.value,
+    }
     assert reactivated.presence.authoritative_confirmation_progress().assessment_state is (
-        ConfirmationAssessmentStateV1.OBSERVE
+        ConfirmationAssessmentStateV1.CANDIDATE
     )
     resumed = evaluate_confirmation_progress_v1(
         ConfirmationProgressInputV1(
@@ -463,8 +490,8 @@ def test_s2_inactivity_then_reactivation_does_not_manufacture_epoch_gap() -> Non
     )
     assert resumed.fail_closed is False
     assert resumed.reason_code is not ConfirmationProgressReasonCodeV1.EPOCH_GAP
-    assert resumed.state_after.distinct_confirmation_observation_count == 1
-    assert resumed.state_after.assessment_state is ConfirmationAssessmentStateV1.CANDIDATE
+    assert resumed.state_after.distinct_confirmation_observation_count == 2
+    assert resumed.state_after.assessment_state is ConfirmationAssessmentStateV1.CONFIRMED
 
 
 def test_s2_identity_change_without_distinct_produces_no_activation() -> None:
@@ -505,3 +532,193 @@ def test_s2_dual_carrier_padding_is_not_authoritative() -> None:
     decoded = prior_presence_from_dual_carrier_v1(carrier)
     assert decoded.kind is SingleLanePresenceKindV1.INACTIVE
     assert decoded.confirmation_progress is None
+
+
+def _bear_candidate_one() -> ConfirmationProgressStateV1:
+    return ConfirmationProgressStateV1(
+        session_id="sess-od1",
+        venue="okx_eea",
+        instrument=_key(),
+        side=ConfirmationSideV1.SHORT,
+        assessment_state=ConfirmationAssessmentStateV1.CANDIDATE,
+        latest_accepted_market_observation_epoch=MarketObservationEpoch(value=2),
+        candidate_started_at_epoch=MarketObservationEpoch(value=2),
+        distinct_confirmation_observation_count=1,
+        last_processed_acceptor_result_fingerprint="bear-cand-1",
+    )
+
+
+def test_t1_bear_candidate_persists_on_distinct_elementary_bull() -> None:
+    carrier = DirectionalConfirmationSideStateCarrierV1(
+        bull_confirmation_state=initial_confirmation_progress_state_v1(
+            session_id="sess-od1",
+            venue="okx_eea",
+            instrument=_key(),
+            side=ConfirmationSideV1.LONG,
+        ),
+        bear_confirmation_state=_bear_candidate_one(),
+    )
+    c1 = initial_observation_acceptance_state_v1(bound_instrument_key=_key())
+    _, c1 = _eval_c1(c1, _candidate(event_time=1002.0, mark=13.0))
+    third, _ = _eval_c1(c1, _candidate(event_time=1003.0, mark=14.0))
+    elementary_bull = evaluate_elementary_direction_from_observation_acceptance_v1(
+        third, bound_instrument_key=_key(), current_mark=14.0
+    )
+    out = apply_single_lane_confirmation_lifecycle_v1(
+        prior_carrier=carrier,
+        elementary=elementary_bull,
+        observation_acceptance_result=third,
+        session_id="sess-od1",
+        venue="okx_eea",
+        instrument=_key(),
+    )
+    assert (
+        out.carrier_after_lifecycle.bear_confirmation_state.assessment_state
+        is ConfirmationAssessmentStateV1.CANDIDATE
+    )
+    assert (
+        out.carrier_after_lifecycle.bear_confirmation_state.distinct_confirmation_observation_count
+        == 1
+    )
+    assert out.selected_side is ConfirmationSideV1.LONG
+
+
+def test_t2_bull_candidate_persists_on_distinct_elementary_bear() -> None:
+    bull_cand = ConfirmationProgressStateV1(
+        session_id="sess-od1",
+        venue="okx_eea",
+        instrument=_key(),
+        side=ConfirmationSideV1.LONG,
+        assessment_state=ConfirmationAssessmentStateV1.CANDIDATE,
+        latest_accepted_market_observation_epoch=MarketObservationEpoch(value=2),
+        candidate_started_at_epoch=MarketObservationEpoch(value=2),
+        distinct_confirmation_observation_count=1,
+        last_processed_acceptor_result_fingerprint="bull-cand-1",
+    )
+    carrier = DirectionalConfirmationSideStateCarrierV1(
+        bull_confirmation_state=bull_cand,
+        bear_confirmation_state=initial_confirmation_progress_state_v1(
+            session_id="sess-od1",
+            venue="okx_eea",
+            instrument=_key(),
+            side=ConfirmationSideV1.SHORT,
+        ),
+    )
+    c1 = initial_observation_acceptance_state_v1(bound_instrument_key=_key())
+    _, c1 = _eval_c1(c1, _candidate(event_time=1002.0, mark=9.0))
+    third, _ = _eval_c1(c1, _candidate(event_time=1003.0, mark=8.0))
+    elementary_bear = evaluate_elementary_direction_from_observation_acceptance_v1(
+        third, bound_instrument_key=_key(), current_mark=8.0
+    )
+    out = apply_single_lane_confirmation_lifecycle_v1(
+        prior_carrier=carrier,
+        elementary=elementary_bear,
+        observation_acceptance_result=third,
+        session_id="sess-od1",
+        venue="okx_eea",
+        instrument=_key(),
+    )
+    assert (
+        out.carrier_after_lifecycle.bull_confirmation_state.assessment_state
+        is ConfirmationAssessmentStateV1.CANDIDATE
+    )
+    assert out.selected_side is ConfirmationSideV1.SHORT
+
+
+def test_t7_cursor_dual_state_restore_after_lane_switch() -> None:
+    carrier = DirectionalConfirmationSideStateCarrierV1(
+        bull_confirmation_state=initial_confirmation_progress_state_v1(
+            session_id="sess-od1",
+            venue="okx_eea",
+            instrument=_key(),
+            side=ConfirmationSideV1.LONG,
+        ),
+        bear_confirmation_state=_bear_candidate_one(),
+    )
+    persisted = persist_single_lane_into_dual_carrier_v1(
+        presence=active_single_lane_presence_v1(
+            selected_side=ConfirmationSideV1.LONG,
+            confirmation_progress=carrier.bull_confirmation_state,
+        ),
+        session_id="sess-od1",
+        venue="okx_eea",
+        instrument=_key(),
+        prior_carrier=carrier,
+    )
+    assert (
+        persisted.bear_confirmation_state.assessment_state
+        is ConfirmationAssessmentStateV1.CANDIDATE
+    )
+    restored = prior_presence_from_dual_carrier_v1(
+        persisted,
+        active_evaluation_side=ConfirmationSideV1.SHORT,
+    )
+    assert restored.selected_side is ConfirmationSideV1.SHORT
+    assert restored.kind is SingleLanePresenceKindV1.ACTIVE
+    assert (
+        restored.confirmation_progress is not None
+        and restored.confirmation_progress.assessment_state
+        is ConfirmationAssessmentStateV1.CANDIDATE
+    )
+
+
+def test_t8_proven_scenario_bear_after_a_and_b() -> None:
+    """Observation A bear qualify → candidate/1; B distinct bull → bear still candidate/1."""
+    c1 = initial_observation_acceptance_state_v1(bound_instrument_key=_key())
+    first, c1 = _eval_c1(c1, _candidate(event_time=1000.0, mark=12.0))
+    second, c1 = _eval_c1(c1, _candidate(event_time=1001.0, mark=11.0))
+    bear_a = apply_single_lane_confirmation_lifecycle_v1(
+        prior_carrier=None,
+        elementary=evaluate_elementary_direction_from_observation_acceptance_v1(
+            second, bound_instrument_key=_key(), current_mark=11.0
+        ),
+        observation_acceptance_result=second,
+        session_id="sess-od1",
+        venue="okx_eea",
+        instrument=_key(),
+    )
+    progressed = evaluate_confirmation_progress_v1(
+        ConfirmationProgressInputV1(
+            prior_state=bear_a.presence.authoritative_confirmation_progress(),
+            observation_acceptance_result=second,
+            session_id="sess-od1",
+            venue="okx_eea",
+            instrument=_key(),
+            side=ConfirmationSideV1.SHORT,
+            assessment_signal=ConfirmationAssessmentSignalV1.CANDIDATE,
+            confirmation_threshold=2,
+        )
+    )
+    carrier_a = persist_single_lane_into_dual_carrier_v1(
+        presence=active_single_lane_presence_v1(
+            selected_side=ConfirmationSideV1.SHORT,
+            confirmation_progress=progressed.state_after,
+        ),
+        session_id="sess-od1",
+        venue="okx_eea",
+        instrument=_key(),
+        prior_carrier=bear_a.carrier_after_lifecycle,
+    )
+    assert (
+        carrier_a.bear_confirmation_state.assessment_state
+        is ConfirmationAssessmentStateV1.CANDIDATE
+    )
+    third, _ = _eval_c1(c1, _candidate(event_time=1002.0, mark=13.0))
+    bear_b = apply_single_lane_confirmation_lifecycle_v1(
+        prior_carrier=carrier_a,
+        elementary=evaluate_elementary_direction_from_observation_acceptance_v1(
+            third, bound_instrument_key=_key(), current_mark=13.0
+        ),
+        observation_acceptance_result=third,
+        session_id="sess-od1",
+        venue="okx_eea",
+        instrument=_key(),
+    )
+    assert (
+        bear_b.carrier_after_lifecycle.bear_confirmation_state.assessment_state
+        is ConfirmationAssessmentStateV1.CANDIDATE
+    )
+    assert (
+        bear_b.carrier_after_lifecycle.bear_confirmation_state.distinct_confirmation_observation_count
+        == 1
+    )

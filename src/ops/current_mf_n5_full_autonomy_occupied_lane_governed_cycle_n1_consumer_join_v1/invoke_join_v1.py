@@ -71,6 +71,7 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consume
     UNIVERSE_ISOLATION_ENFORCED,
 )
 from src.ops.current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.addressing_join_v1 import (
+    FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError,
     OccupiedLaneMv2DpDecisionStateConsumerInvocationV1,
     bind_occupied_lane_governed_cycle_store_roots_v1,
     compose_occupied_lane_mv2_dp_durable_cycle_v1,
@@ -243,6 +244,31 @@ def _cursor_floor_or_zero(cursor_store_root: Path) -> float:
         return 0.0
 
 
+def _align_lane_s7_closes_to_injected_c1_v1(
+    lane_s7: Mapping[str, Any],
+    candles_payload: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Align S7 MV2 inputs to injected governed-cycle C1 (closes + cap61 floor)."""
+    aligned = dict(lane_s7)
+    extracted, last_ts = extract_finalized_candle_closes_v1(candles_payload)
+    if extracted:
+        aligned["finalized_closes"] = extracted
+    if last_ts is None:
+        return aligned
+    candle_last = float(last_ts)
+    aligned["last_finalized_event_ts_unix"] = candle_last - 60.0
+    aligned["observed_unix"] = max(float(lane_s7["observed_unix"]), candle_last + 0.001)
+    return aligned
+
+
+def _align_lane_s7_bootstrap_to_injected_c1_v1(
+    lane_s7: Mapping[str, Any],
+    candles_payload: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Bind MV2 cold-start cap61 floor strictly below injected governed-cycle C1."""
+    return _align_lane_s7_closes_to_injected_c1_v1(lane_s7, candles_payload)
+
+
 def _s7_kwargs(
     *,
     cycle_id_prefix: str,
@@ -259,12 +285,14 @@ def _s7_kwargs(
     venue_flat: bool,
     existing_position_side: ExistingPositionSide,
     g17_typed_vol_producers: Mapping[str, object] | None,
+    canonical_price_provenance: object,
 ) -> dict[str, Any]:
     return {
         "cycle_id_prefix": cycle_id_prefix,
         "observed_unix": observed_unix,
         "mark_px": mark_px,
         "index_px": index_px,
+        "canonical_price_provenance": canonical_price_provenance,
         "bid_px": bid_px,
         "ask_px": ask_px,
         "volume": volume,
@@ -302,6 +330,7 @@ def _t2_from_s7(
     live_29p_injected: CurrentProductiveEnterLive29PInjectedGetV1 | None,
     candles_payload: Mapping[str, Any],
     portfolio_budget_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
+    common_epoch_decision_epoch: str | None = None,
 ) -> Any:
     def _dispatch(**kwargs: Any) -> SimpleNamespace:
         observation = kwargs.get("observation")
@@ -317,15 +346,18 @@ def _t2_from_s7(
                 closes = extracted
             if last_ts is not None:
                 event_ts = float(last_ts)
-        composed = compose_occupied_lane_mv2_dp_durable_cycle_v1(
-            lane_pairs,
-            **{
-                **s7_base,
-                "finalized_closes": closes,
-                "last_finalized_event_ts_unix": event_ts,
-                "observed_unix": event_ts + 1.0,
-            },
-        )
+        try:
+            composed = compose_occupied_lane_mv2_dp_durable_cycle_v1(
+                lane_pairs,
+                **{
+                    **s7_base,
+                    "finalized_closes": closes,
+                    "last_finalized_event_ts_unix": event_ts,
+                    "observed_unix": event_ts + 1.0,
+                },
+            )
+        except FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError as exc:
+            _fail(exc.failure_code, exc.detail)
         if len(composed) != 1:
             _fail(FAILURE_OCCUPANCY, ",".join(sorted(composed)))
         invocation = next(iter(composed.values()))
@@ -333,7 +365,8 @@ def _t2_from_s7(
         if str(bound.venue_native_id or "").strip() != native_id:
             _fail(FAILURE_IDENTITY_MISMATCH, native_id)
         replay = invocation.cycle_result.replay
-        epoch = _iso_utc(float(s7_base["observed_unix"]))
+        bound_epoch = str(common_epoch_decision_epoch or "").strip()
+        epoch = bound_epoch if bound_epoch else _iso_utc(float(s7_base["observed_unix"]))
         portfolio_slot = None
         if portfolio_budget_owner is not None:
             evidence = getattr(replay, "evidence", None)
@@ -404,6 +437,7 @@ def _t2_from_s7(
                     venue_plan_status="BOUND",
                     final_envelope_id=str(envelope.envelope_id),
                     final_envelope_digest=str(envelope.envelope_digest),
+                    final_order_envelope=envelope,
                     permit_created=_FALSE,
                     post_count="0",
                     first_real_blocker="",
@@ -452,7 +486,9 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     occupancy_payloads: Mapping[str, Any] | None = None,
     live_29p_injected: CurrentProductiveEnterLive29PInjectedGetV1 | None = None,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
+    canonical_price_provenance: object | None = None,
     portfolio_budget_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
+    common_epoch_decision_epoch: str | None = None,
 ) -> dict[str, OccupiedLaneGovernedCycleN1ConsumerResultV1]:
     """Consume S8 roots and invoke the governed cycle once per occupied lane.
 
@@ -465,6 +501,8 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         _fail(FAILURE_ORIGIN_MAIN_SHA, OWNER)
     if candles_payload is None:
         _fail(FAILURE_INJECTED_C1_REQUIRED, OWNER)
+    if canonical_price_provenance is None:
+        _fail(FAILURE_AUTHORITY, "canonical_price_provenance")
     prefix = str(cycle_id_prefix or "").strip()
     if not prefix:
         _fail(FAILURE_AUTHORITY, "cycle_id_prefix")
@@ -496,6 +534,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         venue_flat=venue_flat,
         existing_position_side=existing_position_side,
         g17_typed_vol_producers=g17_typed_vol_producers,
+        canonical_price_provenance=canonical_price_provenance,
     )
     results: dict[str, OccupiedLaneGovernedCycleN1ConsumerResultV1] = {}
     for lane_id in LANE_IDS:
@@ -519,6 +558,10 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         cursor_path = Path(cursor_store_root) / CURSOR_FILENAME
         bootstrap_used = False
         if not cursor_path.is_file():
+            lane_s7 = _align_lane_s7_closes_to_injected_c1_v1(
+                lane_s7,
+                dict(candles_payload),
+            )
             compose_occupied_lane_mv2_dp_durable_cycle_v1(lane_pairs, **lane_s7)
             bootstrap_used = True
         expected_floor = _cursor_floor_or_zero(Path(cursor_store_root))
@@ -530,6 +573,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             live_29p_injected=live_29p_injected,
             candles_payload=dict(candles_payload),
             portfolio_budget_owner=portfolio_budget_owner,
+            common_epoch_decision_epoch=common_epoch_decision_epoch,
         )
         cycle_result = run_current_productive_governed_cycle_v1(
             authorization=CurrentProductiveGovernedCycleAuthorizationV1(

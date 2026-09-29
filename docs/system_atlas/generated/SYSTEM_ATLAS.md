@@ -25,7 +25,7 @@ SYSTEM_ATLAS_GRAPH_RELATIONS_BACKED_BY_MODEL=true
 
 Navigation: `README.md` explains Atlas authority. This file is the complete overview. Specialized generated files are drill-down. YAML under `docs/system_atlas/` is the source model. Canonical authority remains the Master Runbook, external to the Atlas.
 
-Census SHA: `14e8a58f32dcb6b521be6b2559b388bf27360194`. Worktree dirty records are not origin/main truth.
+Census SHA: `744a9c896f53d33b2d3c24977da1891a2e8549f1`. Worktree dirty records are not origin/main truth.
 
 ## Integrated current topology (model-backed)
 
@@ -45,7 +45,6 @@ flowchart TB
   n_CAPABILITY_cap_3_1_futures_accounting["CAPABILITY:cap_3_1_futures_accounting<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
   n_CAPABILITY_cap_4_1_pre_activation_closure["CAPABILITY:cap_4_1_pre_activation_closure<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
   n_CAPABILITY_cap_7_2_stateful_no_order["CAPABILITY:cap_7_2_stateful_no_order<br/>CURRENT_CANONICAL"]
-  n_FORENSIC_REFERENCE_information_corpus_persistence_base["FORENSIC_REFERENCE:information_corpus_persistence_base<br/>FORENSIC_ONLY"]
   n_FUNCTIONAL_CORE_double_play["FUNCTIONAL_CORE:double_play<br/>CURRENT_CANONICAL"]
   n_GATE_btc_exclusion["GATE:btc_exclusion<br/>CURRENT_CANONICAL"]
   n_GATE_flatten_execute_authority["GATE:flatten_execute_authority<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
@@ -80,7 +79,6 @@ flowchart TB
   n_VENUE_okx["VENUE:okx<br/>ADJUDICATED"]
   n_VENUE_okx_eea["VENUE:okx_eea<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
   n_VENUE_ENDPOINT_okx_public_instruments["VENUE_ENDPOINT:okx_public_instruments<br/>CURRENT_IMPLEMENTED_NONCANONICAL"]
-  n_FORENSIC_REFERENCE_information_corpus_persistence_base -->|"DOES_NOT_AUTHORIZE"| n_SYSTEM_peak_trade
   n_NAVIGATION_INDEX_map_of_truth -->|"DOCUMENTS"| n_RUNBOOK_canonical_master_runbook
   n_OWNER_DECISION_btc_excluded -->|"BINDS"| n_GATE_btc_exclusion
   n_OWNER_DECISION_cap23_exclusive_selection -->|"BINDS"| n_CAPABILITY_cap_2_3_single_selected_future
@@ -132,7 +130,6 @@ flowchart TB
   n_FUNCTIONAL_CORE_double_play -->|"CONTAINS (ADJUDICATED)"| n_RUNTIME_COMPONENT_dp_state
   n_FUNCTIONAL_CORE_double_play -->|"CONTAINS (ADJUDICATED)"| n_RUNTIME_COMPONENT_dp_suitability
   n_FUNCTIONAL_CORE_double_play -->|"CONTAINS (ADJUDICATED)"| n_RUNTIME_COMPONENT_dp_survival
-  n_FORENSIC_REFERENCE_information_corpus_persistence_base -->|"REFERENCE_OF"| n_SYSTEM_peak_trade
   n_NAVIGATION_INDEX_map_of_truth -->|"NAVIGATES_TO"| n_RUNBOOK_canonical_master_runbook
   n_SUBSYSTEM_master_v2 -->|"HAS_FUNCTIONAL_CORE (ADJUDICATED)"| n_FUNCTIONAL_CORE_double_play
   n_SUBSYSTEM_master_v2 -->|"CONTAINS"| n_RUNTIME_COMPONENT_dp_composition
@@ -155,11 +152,10 @@ flowchart TB
   n_SYSTEM_peak_trade -->|"HAS_CAPABILITY"| n_CAPABILITY_cap_7_2_stateful_no_order
   n_VENUE_okx -->|"CONTAINS"| n_VENUE_okx_eea
 ```
-Hub relations shown: `74`. Full graphs: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md), [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [AUTHORITY_GRAPH.md](AUTHORITY_GRAPH.md), [FULL_DEPENDENCY_GRAPH.md](FULL_DEPENDENCY_GRAPH.md).
+Hub relations shown: `72`. Full graphs: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md), [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [AUTHORITY_GRAPH.md](AUTHORITY_GRAPH.md), [FULL_DEPENDENCY_GRAPH.md](FULL_DEPENDENCY_GRAPH.md).
 
 | id | source | type | target | epistemic |
 | --- | --- | --- | --- | --- |
-| REL:a_forensic_does_not_authorize | FORENSIC_REFERENCE:information_corpus_persistence_base | DOES_NOT_AUTHORIZE | SYSTEM:peak_trade | STATUS=FORENSIC_RAW |
 | REL:a_map_documents_runbook | NAVIGATION_INDEX:map_of_truth | DOCUMENTS | RUNBOOK:canonical_master_runbook | STATUS=NAVIGATION_ONLY |
 | REL:a_owner_binds_btc | OWNER_DECISION:btc_excluded | BINDS | GATE:btc_exclusion | STATUS=CANONICAL_AUTHORITY |
 | REL:a_owner_binds_cap23 | OWNER_DECISION:cap23_exclusive_selection | BINDS | CAPABILITY:cap_2_3_single_selected_future | STATUS=CANONICAL_AUTHORITY |
@@ -211,7 +207,6 @@ Hub relations shown: `74`. Full graphs: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.m
 | REL:s_dp_contains_dp_state | FUNCTIONAL_CORE:double_play | CONTAINS | RUNTIME_COMPONENT:dp_state | STATUS=ADJUDICATED |
 | REL:s_dp_contains_dp_suitability | FUNCTIONAL_CORE:double_play | CONTAINS | RUNTIME_COMPONENT:dp_suitability | STATUS=ADJUDICATED |
 | REL:s_dp_contains_dp_survival | FUNCTIONAL_CORE:double_play | CONTAINS | RUNTIME_COMPONENT:dp_survival | STATUS=ADJUDICATED |
-| REL:s_forensic_reference_of_corpus | FORENSIC_REFERENCE:information_corpus_persistence_base | REFERENCE_OF | SYSTEM:peak_trade | STATUS=FORENSIC_RAW |
 | REL:s_map_navigates_runbook | NAVIGATION_INDEX:map_of_truth | NAVIGATES_TO | RUNBOOK:canonical_master_runbook | STATUS=NAVIGATION_ONLY |
 | REL:s_master_v2_has_dp | SUBSYSTEM:master_v2 | HAS_FUNCTIONAL_CORE | FUNCTIONAL_CORE:double_play | STATUS=ADJUDICATED |
 | REL:s_mv2_contains_dp_composition | SUBSYSTEM:master_v2 | CONTAINS | RUNTIME_COMPONENT:dp_composition | STATUS=FORENSIC_RAW |
@@ -258,7 +253,7 @@ Drill-down: [MASTER_V2_DOUBLE_PLAY_MAP.md](MASTER_V2_DOUBLE_PLAY_MAP.md).
 
 ## 3. System / subsystem hierarchy
 
-`SYSTEM:peak_trade` `CONTAINS` `SUBSYSTEM:master_v2`. Recorded `HAS_CAPABILITY` edges from the system entity are Caps 1.1, 2.1–2.4, 3.1, 4.1, 7.2, and 11.13.5. The seven `MASTER_V2_CAPABILITY_*.md` spec files (1.1, 2.1–2.4, 3.1, 4.1) are inventoried; Caps 7.2 and 11.13.5 are Master-Runbook capabilities without a numbered MASTER_V2 spec file. Structural relation count: `243`. Drill-down: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md).
+`SYSTEM:peak_trade` `CONTAINS` `SUBSYSTEM:master_v2`. Recorded `HAS_CAPABILITY` edges from the system entity are Caps 1.1, 2.1–2.4, 3.1, 4.1, 7.2, and 11.13.5. The seven `MASTER_V2_CAPABILITY_*.md` spec files (1.1, 2.1–2.4, 3.1, 4.1) are inventoried; Caps 7.2 and 11.13.5 are Master-Runbook capabilities without a numbered MASTER_V2 spec file. Structural relation count: `242`. Drill-down: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md).
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -266,7 +261,6 @@ Drill-down: [MASTER_V2_DOUBLE_PLAY_MAP.md](MASTER_V2_DOUBLE_PLAY_MAP.md).
 | HOST:cap72_stateful_host | HOST | Cap 7.2 stateful no-order host | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | HOST:wallclock_decision_economics_cycle | HOST | Wallclock decision-to-simulated-economics cycle | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | SUBSYSTEM:master_v2 | SUBSYSTEM | Master V2 | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| SUBSYSTEM:trading_decision_core | SUBSYSTEM | TRADING_DECISION_CORE | SUPERSEDED | STATUS=HISTORICAL |
 | SYSTEM:peak_trade | SYSTEM | Peak_Trade | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 
 ## 4. Family / Child / SSOT-CHILD / MMR model
@@ -332,7 +326,7 @@ Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md]
 
 ## 7. Runtime call / data flow
 
-Runtime relation count: `132`. Entrypoints recorded: `5`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
+Runtime relation count: `101`. Entrypoints recorded: `5`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
 
 Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md](ENTRYPOINT_RUNTIME_TRACES.md).
 
@@ -342,7 +336,7 @@ Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md]
 | EP:flatten_execute | Flatten execute authority | GATED_MUTATION_PATH | may_exist_downstream_NOT_activated |
 | EP:full_core_live_path_offline | Offline Core-to-Live composition path | GATED_OFFLINE_COMPOSITION_PATH | none_hard_stop_before_wire |
 | EP:gfu_producer | Governed Futures Universe producer | PRODUCTIVE_OFFLINE_PRODUCER | Discovery is offline/injected payload in GFU producer itself; public MD client i |
-| EP:landscape_dashboard_persistent_local_host_v1 | Landscape Dashboard V2 persistent loopback host | OPERATOR_LOCAL_LOOPBACK_SERVICE | loopback_http_only_127_0_0_1_8765 |
+| EP:landscape_dashboard_persistent_local_host_v1 | Landscape Dashboard V2 persistent loopback host (repo autostart off) | OPERATOR_LOCAL_LOOPBACK_SERVICE | loopback_http_only_127_0_0_1_8765 |
 
 ## 8. Safety / governance model
 
@@ -352,7 +346,6 @@ Fail-closed is the default. Live/Testnet/orders require scoped Owner-GO. Confirm
 | --- | --- | --- | --- | --- |
 | GATE:btc_exclusion | GATE | BTC_EXCLUDED | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | GATE:flatten_execute_authority | GATE | Flatten execute confirm-token authority | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:flatten_live_wire | GATE | DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED=false | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_capital_admission_v1 | GATE | Full-core Pre-Live Capital Admission seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_durable_filegate_join_v1 | GATE | Full-core durable FILEGATE join seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_fresh_pretrade_runtime_get_v1 | GATE | Full-core fresh pretrade runtime GET seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -363,21 +356,13 @@ Fail-closed is the default. Live/Testnet/orders require scoped Owner-GO. Confirm
 | GATE:full_core_live_path_restart_gate_v1 | GATE | Full-core live path restart gate v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_live_path_standing_live_gates_v1 | GATE | Full-core live path standing Live gates v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_owner_one_shot_permit_v1 | GATE | Full-core typed OWNER_ONE_SHOT permit seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:k1_productive_macos_credential_store_provisioning_authority_v1 | GATE | K1 productive macOS Keychain provisioning authority v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:kill_switch_durable_filegate_v1 | GATE | Durable execution-side kill-switch FILEGATE v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:live_authorized_false | GATE | LIVE_AUTHORIZED=false standing | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | GATE:max_positions_1 | GATE | CURRENT_MAX_POSITIONS=1 | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| GATE:pl_tf_002_network_evidence_contract_v1 | GATE | PL-TF-002 network evidence contract v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:pl_tf_002_productive_read_only_get_complete_v1 | GATE | PL-TF-002 productive read-only GET complete v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:pl_tf_002_productive_read_only_session_executor_v1 | GATE | PL-TF-002 productive read-only session executor v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:portfolio_capital_reservation_budget_v1 | GATE | Portfolio capital reservation budget owner v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:position_observation_freshness | GATE | POSITION_OBSERVATION_FRESHNESS | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:target_position_state | GATE | TARGET_POSITION_STATE | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:treasury_phase_1_offline_contracts_v1 | GATE | Treasury Phase-1 offline contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:treasury_phase_2_read_only_reconciliation_v1 | GATE | Treasury Phase-2 read-only reconciliation foundation v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:treasury_phase_3_shadow_enforcement_v1 | GATE | Treasury Phase-3 shadow read-only enforcement v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:treasury_productive_read_only_venue_observation_v1 | GATE | Treasury productive read-only venue observation v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GUARD:economic_diagnostic_optimization_boundary | GUARD | Economic diagnostic optimization boundary guard | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
 Safety chains recorded: `4`. Drill-down: [SAFETY_GOVERNANCE_MAP.md](SAFETY_GOVERNANCE_MAP.md).
 
@@ -402,8 +387,6 @@ SCHEMA is not automatically DATA_CONTRACT or dataclass. BoundInstrumentV1 carrie
 | DATA_CONTRACT:bound_instrument_v1 | DATA_CONTRACT | BoundInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:full_core_live_path_models_v1 | DATA_CONTRACT | Full-core live path typed contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:governed_universe_instrument_v1 | DATA_CONTRACT | GovernedUniverseInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| DATA_CONTRACT:pl_tf_002_network_evidence_bundle_v1 | DATA_CONTRACT | PL-TF-002 network evidence bundle v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| DATA_CONTRACT:treasury_phase_1_offline_contracts_v1 | DATA_CONTRACT | Treasury Phase-1 offline intent and lifecycle contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1 | DATA_CONTRACT | Treasury Phase-2 read-only reconciliation contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:treasury_shadow_enforcement_result_v1 | DATA_CONTRACT | Treasury shadow enforcement result v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
@@ -417,17 +400,14 @@ Product types below are Peak_Trade evidence, not generic OKX venue capability.
 
 | product_type | status | canonical_support | runtime_reachability |
 | --- | --- | --- | --- |
-| SWAP | IMPLEMENTED | PRODUCTIVE_GFU_SUPPORTED_INST_TYPES | GFU_AND_PUBLIC_MD |
-| FUTURES | IMPLEMENTED | PRODUCTIVE_GFU_SUPPORTED_INST_TYPES | GFU_SUPPORTED |
-| SPOT | UNSUPPORTED |  | EXPLICIT_GFU_REJECT |
-| MARGIN | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | NONE_AS_OKX_INSTTYPE |
-| OPTION | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | NONE_AS_OKX_INSTTYPE |
-| xperp | PARTIALLY_IMPLEMENTED | NOT_A_SEPARATE_INSTTYPE | CANARY_HARDCODED_NOT_GFU_MEMBERSHIP_PROVEN |
+| FUTURES | CURRENT_MODEL | venue/okx | CURRENT |
+| SWAP | CURRENT_MODEL | venue/okx | CURRENT |
+| XPERP_as_ruleType_or_instId_family | CURRENT_MODEL | venue/okx | CURRENT |
 
-- hosts: `8`
-- features: `33`
-- endpoints: `50`
-- fields: `40`
+- hosts: `0`
+- features: `1`
+- endpoints: `3`
+- fields: `3`
 - `OKX_CENSUS_COMPLETE=true`
 - `REPO_OKX_CENSUS_COMPLETE=true`
 
@@ -476,11 +456,10 @@ Architectural-kind count in this bucket: `30`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `168`.
+Architectural-kind count in this bucket: `38`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
-| ADAPTER:okx_europe_lifecycle_contract | ADAPTER | OKX Europe adapter lifecycle contract | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | ADAPTER:okx_public_md_client | ADAPTER | OkxPublicMarketDataClientV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | BINDER:bound_instrument_v1 | BINDER | BoundInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=ADJUDICATED |
 | CAPABILITY:cap_1_1_reconciliation | CAPABILITY | Productive Reconciliation Runtime Binding | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=CANONICAL_AUTHORITY |
@@ -490,20 +469,9 @@ Architectural-kind count in this bucket: `168`.
 | DATA_CONTRACT:bound_instrument_v1 | DATA_CONTRACT | BoundInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:full_core_live_path_models_v1 | DATA_CONTRACT | Full-core live path typed contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:governed_universe_instrument_v1 | DATA_CONTRACT | GovernedUniverseInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| DATA_CONTRACT:pl_tf_002_network_evidence_bundle_v1 | DATA_CONTRACT | PL-TF-002 network evidence bundle v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| DATA_CONTRACT:treasury_phase_1_offline_contracts_v1 | DATA_CONTRACT | Treasury Phase-1 offline intent and lifecycle contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1 | DATA_CONTRACT | Treasury Phase-2 read-only reconciliation contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:treasury_shadow_enforcement_result_v1 | DATA_CONTRACT | Treasury shadow enforcement result v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| FAMILY:dashboard_canonical_decision | FAMILY | dashboard family_id canonical_decision | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| FAMILY:dashboard_double_play | FAMILY | dashboard family_id double_play | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| FAMILY:dashboard_dynamic_scope | FAMILY | dashboard family_id dynamic_scope | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| FAMILY:dashboard_economic_summary | FAMILY | dashboard family_id economic_summary | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| FAMILY:dashboard_execution_reconciliation | FAMILY | dashboard family_id execution_reconciliation | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| FAMILY:dashboard_regime_bull_bear | FAMILY | dashboard family_id regime_bull_bear_switch | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| FAMILY:dashboard_risk_sizing_capital | FAMILY | dashboard family_id risk_sizing_capital | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| FAMILY:dashboard_safety_authority | FAMILY | dashboard family_id safety_authority | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:flatten_execute_authority | GATE | Flatten execute confirm-token authority | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:flatten_live_wire | GATE | DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED=false | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_capital_admission_v1 | GATE | Full-core Pre-Live Capital Admission seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_durable_filegate_join_v1 | GATE | Full-core durable FILEGATE join seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_fresh_pretrade_runtime_get_v1 | GATE | Full-core fresh pretrade runtime GET seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -514,39 +482,43 @@ Architectural-kind count in this bucket: `168`.
 | GATE:full_core_live_path_restart_gate_v1 | GATE | Full-core live path restart gate v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_live_path_standing_live_gates_v1 | GATE | Full-core live path standing Live gates v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:full_core_owner_one_shot_permit_v1 | GATE | Full-core typed OWNER_ONE_SHOT permit seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:k1_productive_macos_credential_store_provisioning_authority_v1 | GATE | K1 productive macOS Keychain provisioning authority v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:kill_switch_durable_filegate_v1 | GATE | Durable execution-side kill-switch FILEGATE v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:pl_tf_002_network_evidence_contract_v1 | GATE | PL-TF-002 network evidence contract v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:pl_tf_002_productive_read_only_get_complete_v1 | GATE | PL-TF-002 productive read-only GET complete v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| GATE:pl_tf_002_productive_read_only_session_executor_v1 | GATE | PL-TF-002 productive read-only session executor v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | GATE:portfolio_capital_reservation_budget_v1 | GATE | Portfolio capital reservation budget owner v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-
-Truncated to 40 of `168` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
+| GATE:treasury_phase_1_offline_contracts_v1 | GATE | Treasury Phase-1 offline contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:treasury_phase_2_read_only_reconciliation_v1 | GATE | Treasury Phase-2 read-only reconciliation foundation v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:treasury_phase_3_shadow_enforcement_v1 | GATE | Treasury Phase-3 shadow read-only enforcement v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| HOST:wallclock_decision_economics_cycle | HOST | Wallclock decision-to-simulated-economics cycle | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| PHASE:ddo_offline_foundation | PHASE | 11.13.5 Parallel-track DDO offline foundation | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| SCHEMA:bound_instrument_dataclass_v1 | SCHEMA | BoundInstrumentV1 dataclass shape | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| SCHEMA:gfu_snapshot_v1 | SCHEMA | governed_futures_universe_snapshot.v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| SCHEMA:ranking_snapshot_v1 | SCHEMA | productive_futures_ranking_snapshot.v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| SCHEMA:runtime_binding_v1 | SCHEMA | single_selected_future_runtime_binding.v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| SCHEMA:single_selected_future_selection_v1 | SCHEMA | single_selected_future_selection.v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| SELECTOR:productive_futures_ranking | SELECTOR | Productive futures ranking | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=ADJUDICATED |
+| SELECTOR:single_selected_future_policy | SELECTOR | Single selected future policy producer | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=ADJUDICATED |
+| UNIVERSE:governed_futures_universe | UNIVERSE | Governed Futures Universe snapshot | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=ADJUDICATED |
+| VENUE:okx_eea | VENUE | OKX EEA / Europe | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
 ### ADJUDICATED
 
-Architectural-kind count in this bucket: `4`.
+Architectural-kind count in this bucket: `2`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
-| DOD:cybersecurity_runbook | DOD | Cybersecurity Runbook Definition of Done | ADJUDICATED | STATUS=ADJUDICATED |
 | NAVIGATION_INDEX:map_of_truth | NAVIGATION_INDEX | Map of Truth | ADJUDICATED | STATUS=NAVIGATION_ONLY |
-| SCHEMA:atlas_v1 | SCHEMA | system_atlas.v1 | ADJUDICATED | STATUS=ADJUDICATED |
 | VENUE:okx | VENUE | OKX | ADJUDICATED | STATUS=ADJUDICATED |
 
 ### HISTORICAL_REFERENCE_ONLY
 
-Architectural-kind count in this bucket: `3`.
+Architectural-kind count in this bucket: `0`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
-| ADAPTER:kraken_live_client | ADAPTER | Historical Kraken live client | HISTORICAL_REFERENCE_ONLY | STATUS=HISTORICAL |
-| ADAPTER:okx_execution_mock_v1 | ADAPTER | OKXExecutionAdapterV1 mocks-only | HISTORICAL_REFERENCE_ONLY | STATUS=HISTORICAL |
-| DOD:pr_queue_per_pr | DOD | Definition of Done pro PR | HISTORICAL_REFERENCE_ONLY | STATUS=HISTORICAL |
+| _(none)_ | _ | _ | _ | _ |
 
 ### SUPERSEDED
 
-Architectural-kind count in this bucket: `5`.
+Architectural-kind count in this bucket: `4`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -554,7 +526,6 @@ Architectural-kind count in this bucket: `5`.
 | DOD:vollautonomie_safety_runtime | DOD | Definition of Done — Safety and Runtime | SUPERSEDED | STATUS=HISTORICAL |
 | DOD:vollautonomie_trading_logic | DOD | Definition of Done — Trading Logic | SUPERSEDED | STATUS=HISTORICAL |
 | RUNBOOK:vollautonomie_v4_4_12 | RUNBOOK | Kanonisches Vollautonomie-Runbook v4.4.12 | SUPERSEDED | STATUS=HISTORICAL |
-| SUBSYSTEM:trading_decision_core | SUBSYSTEM | TRADING_DECISION_CORE | SUPERSEDED | STATUS=HISTORICAL |
 
 ### REJECTED
 
@@ -566,20 +537,18 @@ Architectural-kind count in this bucket: `0`.
 
 ### FORENSIC_ONLY
 
-Architectural-kind count in this bucket: `2`.
+Architectural-kind count in this bucket: `0`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
-| SCHEMA:forensic_document_class | SCHEMA | DOCUMENT_CLASS forensic header | FORENSIC_ONLY | STATUS=FORENSIC_RAW |
-| SCHEMA:okx_public_get_envelope | SCHEMA | OKX public GET source envelope (forensic) | FORENSIC_ONLY | STATUS=FORENSIC_RAW |
+| _(none)_ | _ | _ | _ | _ |
 
 ### OPEN
 
-Architectural-kind count in this bucket: `2`.
+Architectural-kind count in this bucket: `1`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
-| DOD:roadmap_phase_generic | DOD | Historical phase/roadmap Definition of Done headings | OPEN | STATUS=OPEN (not proven) |
 | OBSERVER:post_action_canary | OBSERVER | Canary post-action evaluator | OPEN | STATUS=OPEN (not proven) |
 
 ### CONTRADICTED
@@ -640,6 +609,9 @@ Every remaining `*_COMPLETE=false` flag has exactly one primary incompleteness c
 
 | id | flag | primary_class | additional | remaining |
 | --- | --- | --- | --- | --- |
+| okx_historical_census_complete | false | HISTORICAL_SOURCE_UNAVAILABLE |  | ATLAS_LEGACY_ERADICATION_V1 removed historical domain census payloads; CURRENT OKX model uses venue/okx/* plus okx_current_tree.yaml. |
+| historical_terminology_census_complete | false | HISTORICAL_SOURCE_UNAVAILABLE |  | Historical terminology archaeology payload purged; CURRENT terminology remains in ontology/* and PROJECT_TERMINOLOGY view. |
+| master_v2_module_file_inventory_complete | false | HISTORICAL_SOURCE_UNAVAILABLE |  | Master V2 module inventory census payload purged; CURRENT Master V2 entities remain in catalog and MASTER_V2_DOUBLE_PLAY_MAP. |
 | acronym_census_complete | false | TERMINOLOGY_UNRESOLVED | SEARCHED_BUT_NO_EVIDENCE_FOUND | Inventory complete (acronym_census_inventory_complete=true). OPEN expansions searched on origin/main full history without inventing: EEA, OKX, XPERP, C1, C2, C3, PRE, PENDING. TERM_MEANING_KNOWN for venue/token usage; AC |
 | current_tree_search_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | OKX-named files (381) and /api/v5 literals inventoried on origin/main. Not every src/ path is an Atlas entity. |
 | git_history_search_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | origin/main full history searched for OKX/uly/auth/WS/deletions/OPEN expansions. Unmerged-only branches not treated as product SSOT. |
@@ -658,7 +630,7 @@ Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_RE
 
 ## 16. Orphan / missing-wiring findings
 
-Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `233`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
+Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `144`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
 
 | id | class | entity | epistemic |
 | --- | --- | --- | --- |
@@ -695,24 +667,11 @@ Drill-down: [BUILD_GUIDANCE.md](BUILD_GUIDANCE.md), [FULL_DEPENDENCY_GRAPH.md](F
 
 ## 18. Terminology / acronym summary
 
-Acronyms: `16`. Terminology collisions: `9`. Never invent expansions; `OPEN` means unproven. Family/MMR/C1/DoD collisions are preserved. Drill-down: [PROJECT_TERMINOLOGY.md](PROJECT_TERMINOLOGY.md), [ACRONYM_REGISTER.md](ACRONYM_REGISTER.md), [TERMINOLOGY_COLLISIONS.md](TERMINOLOGY_COLLISIONS.md).
+Acronyms: `3`. Terminology collisions: `9`. Never invent expansions; `OPEN` means unproven. Family/MMR/C1/DoD collisions are preserved. Drill-down: [PROJECT_TERMINOLOGY.md](PROJECT_TERMINOLOGY.md), [ACRONYM_REGISTER.md](ACRONYM_REGISTER.md), [TERMINOLOGY_COLLISIONS.md](TERMINOLOGY_COLLISIONS.md).
 
 | acronym | expansion | status |
 | --- | --- | --- |
-| C1 | OPEN | OPEN |
-| C2 | OPEN | OPEN |
-| C3 | OPEN | OPEN |
-| CAP | Capability | CURRENT_NONCANONICAL |
 | CAP23 | Capability 2.3 Single Selected Future Policy | CURRENT_CANONICAL |
-| DoD | Definition of Done | CURRENT_NONCANONICAL |
-| EEA | OPEN | CURRENT_NONCANONICAL |
-| FND | Finding | CURRENT_NONCANONICAL |
-| GFU | Governed Futures Universe | CURRENT_NONCANONICAL |
-| MMR | Maintenance Margin Requirement | CURRENT_NONCANONICAL |
-| OKX | OPEN | CURRENT_NONCANONICAL |
-| PENDING | OPEN | CURRENT_NONCANONICAL |
-| PIT | point-in-time | CURRENT_NONCANONICAL |
-| PRE | OPEN | OPEN |
 | SSOT | Single Source of Truth | CURRENT_NONCANONICAL |
 | XPERP | OPEN | CURRENT_NONCANONICAL |
 
@@ -723,31 +682,15 @@ DoD is a completion contract, not a synonym for tests. Mandatory Capability Clos
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
 | DOD:capability_closure_standard | DOD | Mandatory Capability Closure Standard | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| DOD:cybersecurity_runbook | DOD | Cybersecurity Runbook Definition of Done | ADJUDICATED | STATUS=ADJUDICATED |
-| DOD:pr_queue_per_pr | DOD | Definition of Done pro PR | HISTORICAL_REFERENCE_ONLY | STATUS=HISTORICAL |
 | DOD:program_final | DOD | Program Definition of Done | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
-| DOD:roadmap_phase_generic | DOD | Historical phase/roadmap Definition of Done headings | OPEN | STATUS=OPEN (not proven) |
 | DOD:vollautonomie_economic_validity | DOD | Definition of Done — Economic Validity | SUPERSEDED | STATUS=HISTORICAL |
 | DOD:vollautonomie_safety_runtime | DOD | Definition of Done — Safety and Runtime | SUPERSEDED | STATUS=HISTORICAL |
 | DOD:vollautonomie_trading_logic | DOD | Definition of Done — Trading Logic | SUPERSEDED | STATUS=HISTORICAL |
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
-| SCHEMA:atlas_v1 | SCHEMA | system_atlas.v1 | ADJUDICATED | STATUS=ADJUDICATED |
 | SCHEMA:bound_instrument_dataclass_v1 | SCHEMA | BoundInstrumentV1 dataclass shape | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:forensic_document_class | SCHEMA | DOCUMENT_CLASS forensic header | FORENSIC_ONLY | STATUS=FORENSIC_RAW |
 | SCHEMA:gfu_snapshot_v1 | SCHEMA | governed_futures_universe_snapshot.v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:okx_public_get_envelope | SCHEMA | OKX public GET source envelope (forensic) | FORENSIC_ONLY | STATUS=FORENSIC_RAW |
-| SCHEMA:pure_stack_numeric_policy_evidence_pack_v1 | SCHEMA | productive_pure_stack_numeric_policy_evidence_pack/v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:pure_stack_stage2_surface_b_owner_sta_candle_mark_instrument_authority | SCHEMA | productive_pure_stack_stage2_surface_b_owner_sta_candle_mark | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:pure_stack_stage2_surface_b_owner_sta_okx_public_pt1m | SCHEMA | productive_pure_stack_stage2_surface_b_owner_sta_okx_public_ | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_decisions | SCHEMA | productive_pure_stack_stage2_surface_b_owner_sta_raw_input_p | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:pure_stack_stage2_surface_b_owner_sta_raw_input_pack_materialization_execution | SCHEMA | productive_pure_stack_stage2_surface_b_owner_sta_raw_input_p | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:pure_stack_stage2_surface_b_owner_sta_raw_pt1m_observation | SCHEMA | productive_pure_stack_stage2_surface_b_owner_sta_raw_pt1m_ob | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:pure_stack_stage2_surface_b_owner_sta_regime_coverage_producer | SCHEMA | productive_pure_stack_stage2_surface_b_owner_sta_regime_cove | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:pure_stack_stage2_surface_b_owner_sta_regime_coverage_sta_open_inputs_closeout | SCHEMA | productive_pure_stack_stage2_surface_b_owner_sta_regime_cove | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:pure_stack_stage2_surface_b_raw_pt1m_input_pack | SCHEMA | productive_pure_stack_stage2_surface_b_raw_pt1m_input_pack_d | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
-| SCHEMA:pure_stack_stage2_surface_b_regime_coverage_and_dashboard_input_gap_closeout | SCHEMA | productive_pure_stack_stage2_surface_b_regime_coverage_and_d | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | SCHEMA:ranking_snapshot_v1 | SCHEMA | productive_futures_ranking_snapshot.v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | SCHEMA:runtime_binding_v1 | SCHEMA | single_selected_future_runtime_binding.v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | SCHEMA:single_selected_future_selection_v1 | SCHEMA | single_selected_future_selection.v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -757,11 +700,11 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 ## 20. Coverage / completeness status
 
 ```text
-CURRENT_ORIGIN_MAIN_SHA=14e8a58f32dcb6b521be6b2559b388bf27360194
-ENTITY_TOTAL=724
-HUB_RELATION_COUNT=74
-STRUCTURAL_RELATION_COUNT=243
-RUNTIME_RELATION_COUNT=132
+CURRENT_ORIGIN_MAIN_SHA=744a9c896f53d33b2d3c24977da1891a2e8549f1
+ENTITY_TOTAL=313
+HUB_RELATION_COUNT=72
+STRUCTURAL_RELATION_COUNT=242
+RUNTIME_RELATION_COUNT=101
 AUTHORITY_RELATION_COUNT=10
 UNRESOLVED_CONTRADICTION_COUNT=8
 OKX_CENSUS_COMPLETE=true
@@ -773,14 +716,14 @@ SSOT_CHILD_CENSUS_COMPLETE=true
 MMR_CENSUS_COMPLETE=true
 SCHEMA_FILE_INVENTORY_COMPLETE=true
 MASTER_V2_CAPABILITY_SPEC_INVENTORY_COMPLETE=true
-MASTER_V2_MODULE_FILE_INVENTORY_COMPLETE=true
+MASTER_V2_MODULE_FILE_INVENTORY_COMPLETE=false
 TERMINOLOGY_CENSUS_COMPLETE=true
 ACRONYM_CENSUS_COMPLETE=false
 DOD_CENSUS_COMPLETE=true
 SCHEMA_CENSUS_COMPLETE=true
-HISTORICAL_TERMINOLOGY_CENSUS_COMPLETE=true
+HISTORICAL_TERMINOLOGY_CENSUS_COMPLETE=false
 OKX_CURRENT_TREE_CENSUS_COMPLETE=true
-OKX_HISTORICAL_CENSUS_COMPLETE=true
+OKX_HISTORICAL_CENSUS_COMPLETE=false
 SCHEMA_FIELD_ENUMERATION_COMPLETE=true
 SYSTEM_ATLAS_MASTER_VIEW_COMPLETE=true
 GLOBAL_CENSUS_EXHAUSTED=false
@@ -807,7 +750,6 @@ Closed census domains (scoped search or file inventory done; not ontology-solved
 | mmr_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND | UNRESOLVED_CONTRADICTION | Venue/margin MMR proven. Architectural Master-V2 MMR kind not found (not invented). C-MMR-POLYVALENT-001 preserved. |
 | schema_file_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | Field-level enumeration is in census/schema_field_inventory.yaml (schema_field_enumeration_complete=true). Remaining src SCHEMA_VERSION tokens classified VERSION_TOKEN/TYPE_ONLY in census/schema_like_src.yaml. |
 | master_v2_capability_spec_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | Spec files inventoried and entity-mapped. Cap 7.2 and 11.13.5 have no MASTER_V2_CAPABILITY_* spec file. |
-| master_v2_module_file_inventory_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | File list inventoried. Semantic clusters in census/master_v2_semantic_map.yaml. |
 | master_v2_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | Adapter/Surface-P runtime reachability remains library/offline/bound-not-activated. Not live activation. |
 | double_play_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND | UNRESOLVED_CONTRADICTION | C-DP-ORDER-001 preserved. ops.double_play.evaluate_double_play remains quarantined projection. |
 | family_census_complete | true | UNRESOLVED_CONTRADICTION | TERMINOLOGY_UNRESOLVED | C-FAMILY-POLYVALENT-001 preserved. NO_FAMILY_ONTOLOGY blocker remains. |
@@ -815,8 +757,6 @@ Closed census domains (scoped search or file inventory done; not ontology-solved
 | schema_field_enumeration_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | Remaining SCHEMA_VERSION assignment lines are VERSION_TOKEN/TYPE_ONLY, not unadjudicated SCHEMA entities (schema_census_complete=true). |
 | okx_current_tree_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | Grep path noise (trailing dots, prefix stubs) not promoted to VENUE_ENDPOINT rows. Historical archaeology is separate (okx_historical_census_complete=true). |
 | dod_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | Individual PHASE_* heading criteria not copied verbatim. |
-| okx_historical_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | Unmerged feature-branch-only blobs and fixture bytes not enumerated. Non-okx-named /api/v5 callers sampled. |
-| historical_terminology_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND | TERMINOLOGY_UNRESOLVED | Not an exhaustive all-caps vocabulary of every deleted Peak_Trade-native token. OPEN expansions remain OPEN. |
 | system_atlas_master_view_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND | UNRESOLVED_CONTRADICTION | GLOBAL_CENSUS_EXHAUSTED=false. OPEN acronym expansions and owner-decision/runtime facts remain visible. In-repo fixture inspection is closed. External corpus is NOT_STARTED. Contradictions stay represented. |
 | terminology_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND | TERMINOLOGY_UNRESOLVED | Inventory of material current-project tokens is closed. Unresolved acronym expansions remain OPEN (acronym_census_complete=false). Not an exhaustive all-caps blob-history of every Peak_Trade-native token. |
 | schema_census_complete | true | SEARCHED_BUT_NO_EVIDENCE_FOUND |  | Per-field payloads of remaining SCHEMA_VERSION tokens are TYPE_ONLY/VERSION_TOKEN, not unadjudicated SCHEMA. |
@@ -826,51 +766,46 @@ Remaining census domains:
 
 | id | flag | primary_class | additional | remaining |
 | --- | --- | --- | --- | --- |
+| okx_historical_census_complete | false | HISTORICAL_SOURCE_UNAVAILABLE |  | ATLAS_LEGACY_ERADICATION_V1 removed historical domain census payloads; CURRENT OKX model uses venue/okx/* plus okx_current_tree.yaml. |
+| historical_terminology_census_complete | false | HISTORICAL_SOURCE_UNAVAILABLE |  | Historical terminology archaeology payload purged; CURRENT terminology remains in ontology/* and PROJECT_TERMINOLOGY view. |
+| master_v2_module_file_inventory_complete | false | HISTORICAL_SOURCE_UNAVAILABLE |  | Master V2 module inventory census payload purged; CURRENT Master V2 entities remain in catalog and MASTER_V2_DOUBLE_PLAY_MAP. |
 | acronym_census_complete | false | TERMINOLOGY_UNRESOLVED | SEARCHED_BUT_NO_EVIDENCE_FOUND | Inventory complete (acronym_census_inventory_complete=true). OPEN expansions searched on origin/main full history without inventing: EEA, OKX, XPERP, C1, C2, C3, PRE, PENDING. TERM_MEANING_KNOWN for venue/token usage; AC |
 
 | kind | count |
 | --- | --- |
-| ACRONYM | 16 |
-| ADAPTER | 4 |
+| ACRONYM | 3 |
+| ADAPTER | 1 |
 | AUTH_PRIMITIVE | 1 |
 | BINDER | 1 |
 | CAPABILITY | 20 |
-| CHILD | 1 |
-| CONTRACT | 46 |
-| DATA_CONTRACT | 8 |
-| DOD | 8 |
+| CONTRACT | 58 |
+| DATA_CONTRACT | 6 |
+| DOD | 5 |
 | EVIDENCE_ARTIFACT | 1 |
-| EXECUTION_COMPONENT | 1 |
-| EXPERIMENT | 2 |
-| FAMILY | 8 |
-| FORENSIC_REFERENCE | 2 |
+| EXPERIMENT | 1 |
+| FORENSIC_REFERENCE | 1 |
 | FUNCTIONAL_CORE | 1 |
-| GATE | 27 |
-| GUARD | 1 |
+| GATE | 19 |
 | HOST | 2 |
 | INVARIANT | 1 |
 | NAVIGATION_INDEX | 1 |
 | OBSERVER | 1 |
-| OKX_FEATURE | 33 |
-| OKX_HOST | 8 |
-| OKX_RESPONSE_SHAPE | 6 |
+| OKX_FEATURE | 1 |
 | OWNER_DECISION | 2 |
-| PHASE | 99 |
-| REGISTRY | 1 |
-| RUNBOOK | 5 |
-| RUNTIME_COMPONENT | 242 |
-| SCHEMA | 18 |
-| SCRIPT | 4 |
+| PHASE | 1 |
+| RUNBOOK | 2 |
+| RUNTIME_COMPONENT | 153 |
+| SCHEMA | 5 |
+| SCRIPT | 3 |
 | SELECTOR | 2 |
-| STRATEGY | 2 |
-| SUBSYSTEM | 2 |
+| SUBSYSTEM | 1 |
 | SYSTEM | 1 |
-| TERM | 52 |
+| TERM | 9 |
 | TEST | 1 |
 | UNIVERSE | 1 |
 | VENUE | 2 |
-| VENUE_ENDPOINT | 50 |
-| VENUE_FIELD | 40 |
+| VENUE_ENDPOINT | 3 |
+| VENUE_FIELD | 3 |
 
 One-question test: a new engineer can start here and see what exists, how hubs are wired, what Master V2/Double Play/Families/MMR mean (including polyvalence), where OKX/risk/safety live, which data crosses boundaries, current vs historical, and where to drill for proof. Remaining incompleteness is OPEN acronym expansions plus owner-decision/runtime facts that the Atlas faithfully records. External forensic corpus is `NOT_STARTED` and does not invalidate `REPO_ATLAS_CENSUS_COMPLETE`. Therefore `SYSTEM_ATLAS_MASTER_VIEW_COMPLETE=true` while `GLOBAL_CENSUS_EXHAUSTED=false`.
 

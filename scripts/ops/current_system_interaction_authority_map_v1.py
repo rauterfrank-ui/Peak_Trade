@@ -17,7 +17,7 @@ from pathlib import Path
 
 MAP_ID = "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1"
 AUTHORITY_EFFECT = "NONE"
-BASELINE_SHA = "32171b35e631cab767dca4f5fcd99b8a837caf23"
+BASELINE_SHA = "744a9c896f53d33b2d3c24977da1891a2e8549f1"
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MAP_ROOT = REPO_ROOT / "config/governance/current_system_interaction_authority_map_v1"
@@ -66,37 +66,36 @@ SEMANTIC_CLASS = {
 OPEN_CLASSES = ("UNKNOWN", "CONFLICTING", "PARTIAL")
 
 REQUIRED_UNKNOWN_IDS = (
-    "authority_flow_no_proven_current_instance",
-    "reselect_rerank_absence",
     "double_play_slot_crs_handoff",
-    "sealed_venue_number_29p",
-    "kill_switch_full_core_safety_owner",
     "offline_instrument_literal_quantity_effect",
     "test_or_script_only_diff_authority_edge",
 )
-REQUIRED_CONFLICTING_IDS = (
-    "zero_authorized_productive_targets",
-    "treasury_import_wording",
-    "live_authorized_cap2_vs_full_core",
-    "m4_nongoals_vs_modules",
-    "limit_names_vs_equity_collapse",
-    "mv2_decision_authority_map_tokens",
-)
+REQUIRED_CONFLICTING_IDS: tuple[str, ...] = ()
 REQUIRED_PARTIAL_IDS = (
     "ranking_activation",
     "mv2_proof_baseline_sha",
-    "safety_owner_unclosed",
     "p5_bind_without_cutover",
+    "productive_canonical_price_provenance_v1",
     "portfolio_budget",
     "replay_provenance_drop",
     "sizing_to_intent_plan_only",
     "learning_capture_hosts_and_ddo_durability",
+    "productive_learning_to_g2_primary_semantic_boundary",
+    "post_6938_whole_system_g2_primary_causal_e2e",
+    "post_6939_paper_g2_primary_run_metadata",
+    "post_6940_live_readiness_convergence_v1",
+    "post_6948_productive_continuous_run_authority_live_c1_convergence_v1",
+    "current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1",
+    "post_6941_pre_external_intent_to_execution_seam_adjudication_v1",
+    "post_6942_external_effect_authorization_full_chain_forensic_v1",
+    "post_6943_real_keychain_material_load_scoped_perform_v1",
+    "post_6944_k1_opaque_signing_handle_pre_post_scoped_perform_v1",
+    "pre_live_fresh_state_and_slice_baseline_convergence_v1",
+    "post_6946_actual_venue_post_baseline_rebind_and_next_gate_adjudication_v1",
     "optimization_surface_consumer_list",
     "m9_m10_enforcement",
     "productive_capital_context_offline_helper",
-    "account_equity_blocks",
     "account_equity_mapping_unbound",
-    "reference_price_authority_owner",
     "loops_a_and_b",
     "unified_blueprint_d02_inter_loop_matrix",
     "clean_trading_core_vs_p5",
@@ -115,9 +114,8 @@ REQUIRED_PARTIAL_IDS = (
     "whole_core_learning_q6_q8_none_ratification_v1",
     "whole_core_pre_external_egress_proof_closure_v1",
     "whole_core_productive_q0_q1_authority_ratification_v1",
-    "post_6828_universe_ranking_selection_binding_domain_v1",
-    "post_6828_c2_companion_blocking_boundary_v1",
-    "post_6828_portfolio_treasury_equity_boundary_v1",
+    "c2_companion_conversion_dependency_closure_v1",
+    "companion_c2_fraction_to_units_runtime_completion_v1",
     "g2_runtime_primary_offline_observation_projection_v1",
     "g2_runtime_learning_input_to_optimization_universe_binding_v1",
     "g2_runtime_g2_to_m4_m8_real_mechanical_continuation_v1",
@@ -128,9 +126,29 @@ REQUIRED_PARTIAL_IDS = (
     "f1_m9_scoped_owner_apply_execution_real_continuation_v1",
     "f1_m9_scoped_owner_productive_runtime_apply_start_v1",
     "f1_m9_productive_runtime_threshold_consumer_wiring_v1",
-    "b05_vs_singular_risk_owner",
-    "c2_canonical_risk_sizing_authority_closure_v1",
-    "c2_companion_conversion_dependency_closure_v1",
+    "productive_activation_boundary_forensic_review_v1",
+    "current_productive_activation_policy_v1",
+    "external_effect_boundary_forensic_review_v1",
+    "external_effect_authorization_policy_v1",
+    "standing_external_effect_lift_policy_v1",
+    "external_effect_permit_mint_policy_v1",
+    "checkout_independent_credential_access_policy_v1",
+    "real_keychain_access_or_credential_material_load_policy_v1",
+    "current_productive_k1_opaque_signing_handle_pre_post_policy_v1",
+    "current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1",
+    "current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1",
+    "current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1",
+    "current_productive_one_shot_enter_e2e_runtime_handoff_v1",
+    "current_productive_eea_universe_inventory_cap22_ranking_policy_binding_v1",
+    "current_productive_pre_external_wp1_cap21_public_inst_type_binding_v1",
+    "current_productive_pre_external_execute_network_mv2_market_handoff_v1",
+    "selected_future_persistent_scope_confirmation_authority_v1",
+    "current_productive_endgame_f1_m9_canonical_durable_bootstrap_v1",
+    "current_productive_post6908_cold_start_c1_floor_and_claims_guard_v1",
+    "current_productive_persistent_natural_enter_convergence_v1",
+    "current_productive_s6_s7_c1_cursor_ownership_seam_v1",
+    "treasury_import_wording",
+    "m4_nongoals_vs_modules",
 )
 
 
@@ -257,14 +275,27 @@ def validate_schema(doc: dict, schema: dict | None = None) -> list[str]:
             errors.append(f"{label} bad semantic_class")
         _expect_str_list(family.get("evidence_refs"), f"{label}.evidence_refs", errors)
         _expect_str_list(family.get("conflicts"), f"{label}.conflicts", errors)
+    record_optional = ("closure_adjudication_class", "closure_note")
+    record_allowed = set(record_required) | set(record_optional)
+    closure_enum = set(
+        schema["$defs"]["open_record"]["properties"]["closure_adjudication_class"]["enum"]
+    )
     for index, record in enumerate(doc.get("open_epistemic_records", [])):
         label = f"open_record[{index}]"
         if not isinstance(record, dict):
             errors.append(f"{label} not object")
             continue
-        _expect_keys(record, record_required, label, errors)
+        missing = [key for key in record_required if key not in record]
+        extra = set(record) - record_allowed
+        if missing:
+            errors.append(f"{label} missing keys: {missing}")
+        if extra:
+            errors.append(f"{label} unexpected keys: {sorted(extra)}")
         if record.get("epistemic_class") not in OPEN_CLASSES:
             errors.append(f"{label} bad epistemic_class")
+        closure_class = record.get("closure_adjudication_class")
+        if closure_class is not None and closure_class not in closure_enum:
+            errors.append(f"{label} bad closure_adjudication_class")
         _expect_str_list(record.get("evidence_refs"), f"{label}.evidence_refs", errors)
     return errors
 

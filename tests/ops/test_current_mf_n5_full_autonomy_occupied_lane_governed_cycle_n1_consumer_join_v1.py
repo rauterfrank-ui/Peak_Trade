@@ -177,7 +177,7 @@ def _called_names(source: str) -> set[str]:
 def _bound(*, lane_id: str) -> BoundInstrumentV1:
     return BoundInstrumentV1(
         instrument_id=f"INST-{lane_id}",
-        venue_native_id=f"VENUE-{lane_id[-1]}",
+        venue_native_id="VENUE-HARNESS",
         ranking_snapshot_id="rank-shared",
         ranking_integrity_digest="rank-digest-shared",
         universe_snapshot_id="uni-shared",
@@ -246,24 +246,36 @@ def _lane_g17(
 
 
 def _mv2_aligned_candles(*, last_ts_ms: int, mark_px: float) -> dict[str, object]:
-    """C1 payload whose closes match S7 mark_px (T2 extracts closes from observation)."""
+    """C1 payload whose last close matches S7 mark_px; prior bars differ for P5 init."""
     rows: list[list[str]] = []
-    px = f"{float(mark_px):.4f}"
+    base = float(mark_px)
     for index in range(8):
         ts = str(last_ts_ms - (7 - index) * 60_000)
+        close = base - (7 - index) * 0.5
+        px = f"{close:.4f}"
         rows.append([ts, px, px, px, px, "10", "100", "USDT", "1"])
     return {"code": "0", "data": rows}
 
 
 def _market_kwargs(*, cycle_id_prefix: str, last_ts: float = C1_TS) -> dict[str, object]:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+        build_provenance_from_governed_synthetic_close_mark_and_index_v1,
+    )
+
     mark_px = 100.0
+    index_px = 99.5
     event_ts = float(last_ts)
     return {
         "origin_main_sha": ORIGIN_SHA,
         "cycle_id_prefix": cycle_id_prefix,
         "observed_unix": float(PREVIOUS_C1_VENUE_EVENT_TIME) + 1.0,
         "mark_px": mark_px,
-        "index_px": 100.0,
+        "index_px": index_px,
+        "canonical_price_provenance": build_provenance_from_governed_synthetic_close_mark_and_index_v1(
+            venue_native_id="VENUE-HARNESS",
+            mark_px=mark_px,
+            index_px=index_px,
+        ),
         "bid_px": 99.5,
         "ask_px": 100.5,
         "volume": 10.0,
@@ -394,6 +406,26 @@ def test_forbidden_graph_and_v5_are_absent_from_join_calls() -> None:
     assert "run_current_productive_governed_cycle_v1(" not in ADDRESSING_JOIN_SOURCE
 
 
+def test_cold_start_aligns_mv2_floor_when_wall_last_finalized_ahead_of_c1(
+    tmp_path: Path,
+) -> None:
+    """Post-#6908 productive bind: observed_unix-60 must not outrun venue C1 close time."""
+    candle_last = float(C1_TS)
+    pairs, results = _invoke(
+        tmp_path,
+        ("LANE_1",),
+        cycle_id_prefix="n1-prod-time-bind",
+        last_ts=candle_last,
+        observed_unix=candle_last + 91.91008,
+        last_finalized_event_ts_unix=candle_last + 31.91008,
+    )
+    record = results["LANE_1"]
+    assert record.bootstrap_used is True
+    cycle = record.governed_cycle_result
+    assert cycle.disposition in SUCCESS_DISPOSITIONS, cycle.reason_code
+    assert cycle.reason_code != "STALE_C1"
+
+
 def test_n1_end_to_end_harness_hold_or_pre_external_effect(tmp_path: Path) -> None:
     pairs, results = _invoke(tmp_path, ("LANE_1",), cycle_id_prefix="n1-e2e")
     assert set(results) == {"LANE_1"}
@@ -435,13 +467,13 @@ def test_identity_native_id_is_bound_instrument_throughout(tmp_path: Path) -> No
     pairs, results = _invoke(tmp_path, ("LANE_3",), cycle_id_prefix="n1-id")
     bound = pairs["LANE_3"][1]
     record = results["LANE_3"]
-    assert record.native_id == bound.venue_native_id == "VENUE-3"
+    assert record.native_id == bound.venue_native_id == "VENUE-HARNESS"
     assert record.governed_cycle_result.disposition in SUCCESS_DISPOSITIONS, (
         record.governed_cycle_result.reason_code
     )
-    assert record.governed_cycle_result.c1_used.startswith("native_id=VENUE-3;")
+    assert record.governed_cycle_result.c1_used.startswith("native_id=VENUE-HARNESS;")
     assert record.s7_invocation is not None
-    assert record.s7_invocation.bound_instrument.venue_native_id == "VENUE-3"
+    assert record.s7_invocation.bound_instrument.venue_native_id == "VENUE-HARNESS"
 
 
 def test_restart_reloads_lane_cursor_and_runs_again(tmp_path: Path) -> None:
@@ -500,7 +532,8 @@ def test_lane_isolation_sequential_harness(tmp_path: Path) -> None:
     assert left.cursor_store_root != right.cursor_store_root
     assert left.lock_root != right.lock_root
     assert left.evidence_root != right.evidence_root
-    assert left.native_id != right.native_id
+    assert left.bound_instrument.instrument_id != right.bound_instrument.instrument_id
+    assert left.native_id == right.native_id == "VENUE-HARNESS"
     assert Path(left.cursor_store_root) / CURSOR_FILENAME != (
         Path(right.cursor_store_root) / CURSOR_FILENAME
     )

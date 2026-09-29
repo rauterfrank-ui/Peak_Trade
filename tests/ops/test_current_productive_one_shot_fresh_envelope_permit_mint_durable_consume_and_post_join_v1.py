@@ -31,6 +31,10 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     REAL_VENUE_POST_ALLOWED,
     current_productive_first_real_blocker_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_venue_post_owner_go_durable_consume_v1 import (
+    load_durable_post_owner_go_consume_v1,
+    persist_durable_post_owner_go_consume_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
     POST_GO_STATUS,
     POST_OWNER_GO,
@@ -86,6 +90,7 @@ FAKE_OPAQUE = json.dumps(
     separators=(",", ":"),
 ).encode("utf-8")
 NEXT_BLOCKER = "OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT"
+BASELINE_SHA = "fca07afa1fa74a94cdecde3876c9c30ad79ba828"
 
 
 class _FakeKeychainBackend:
@@ -162,14 +167,27 @@ def _envelope():
     )
 
 
+def _persist_post_go(store_root: Path) -> None:
+    if load_durable_post_owner_go_consume_v1(store_root=store_root).get("consumed") is not True:
+        persist_durable_post_owner_go_consume_v1(
+            store_root=store_root,
+            owner_go_token=POST_OWNER_GO,
+            baseline_origin_main_sha=BASELINE_SHA,
+        )
+
+
 def _attempt(tmp_path: Path, **kwargs: Any):
     opener = kwargs.pop("opener", _TimeoutOpener())
     probe = kwargs.pop("probe", OneShotJoinProbeV1())
     backend = kwargs.pop("backend", _FakeKeychainBackend())
+    store_root = kwargs.pop("store_root", tmp_path)
+    post_owner_go = kwargs.pop("post_owner_go", POST_OWNER_GO)
+    if kwargs.pop("persist_post_go", True) and str(post_owner_go) == POST_OWNER_GO:
+        _persist_post_go(store_root)
     attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
         envelope=kwargs.pop("envelope", _envelope()),
-        post_owner_go=kwargs.pop("post_owner_go", POST_OWNER_GO),
-        store_root=kwargs.pop("store_root", tmp_path),
+        post_owner_go=post_owner_go,
+        store_root=store_root,
         k1_backend=kwargs.pop("k1_backend", backend),
         opener_factory=kwargs.pop("opener_factory", lambda: opener),
         probe=probe,
@@ -206,7 +224,8 @@ def test_without_post_go_mints_nothing_and_does_not_post(tmp_path: Path) -> None
     assert probe.external_effect_count == 0
     assert probe.events == []
     assert opener.requests == []
-    assert list(tmp_path.iterdir()) == []
+    remaining = {p.name for p in tmp_path.iterdir()}
+    assert remaining <= {"full_core_current_productive_actual_venue_post_owner_go_consume_v1.json"}
 
 
 def test_request_shape_retry_second_submit_and_backflow_deny_before_mint(tmp_path: Path) -> None:
@@ -224,10 +243,11 @@ def test_request_shape_retry_second_submit_and_backflow_deny_before_mint(tmp_pat
         token = case["match"]
         kwargs = {key: value for key, value in case.items() if key != "match"}
         with pytest.raises(CurrentProductiveOneShotFreshEnvelopeJoinError, match=token):
-            _attempt(tmp_path, probe=probe, **kwargs)
+            _attempt(tmp_path, probe=probe, persist_post_go=False, **kwargs)
         assert probe.permit_minted is False
         assert probe.http_post_attempts == 0
-    assert list(tmp_path.iterdir()) == []
+    remaining = {p.name for p in tmp_path.iterdir()}
+    assert remaining <= {"full_core_current_productive_actual_venue_post_owner_go_consume_v1.json"}
 
 
 def test_envelope_id_and_digest_mismatch_deny_before_mint(tmp_path: Path) -> None:
@@ -237,7 +257,12 @@ def test_envelope_id_and_digest_mismatch_deny_before_mint(tmp_path: Path) -> Non
         CurrentProductiveOneShotFreshEnvelopeJoinError,
         match="ENVELOPE_ID_DIGEST_BINDING_MISMATCH",
     ):
-        _attempt(tmp_path, envelope=replace(envelope, envelope_id="env-not-bound"), probe=probe)
+        _attempt(
+            tmp_path,
+            envelope=replace(envelope, envelope_id="env-not-bound"),
+            probe=probe,
+            persist_post_go=False,
+        )
     assert probe.permit_minted is False
     probe_digest = OneShotJoinProbeV1()
     with pytest.raises(
@@ -247,9 +272,11 @@ def test_envelope_id_and_digest_mismatch_deny_before_mint(tmp_path: Path) -> Non
             tmp_path,
             envelope=replace(envelope, envelope_digest="0" * 64),
             probe=probe_digest,
+            persist_post_go=False,
         )
     assert probe_digest.permit_minted is False
-    assert list(tmp_path.iterdir()) == []
+    remaining = {p.name for p in tmp_path.iterdir()}
+    assert remaining <= {"full_core_current_productive_actual_venue_post_owner_go_consume_v1.json"}
 
 
 def test_forged_permit_constraints_deny() -> None:
@@ -291,10 +318,19 @@ def test_durable_consume_precedes_k1_and_http_and_timeout_is_single_unknown(
 ) -> None:
     opener = _TimeoutOpener()
     probe = OneShotJoinProbeV1()
-    with pytest.raises(CurrentProductiveOneShotFreshEnvelopeJoinError, match="UNKNOWN_OUTCOME"):
-        _attempt(tmp_path, probe=probe, opener=opener)
+    _persist_post_go(tmp_path)
+    join = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
+        envelope=_envelope(),
+        post_owner_go=POST_OWNER_GO,
+        store_root=tmp_path,
+        k1_backend=_FakeKeychainBackend(),
+        opener_factory=lambda: opener,
+        probe=probe,
+    )
+    assert join.unknown_outcome is True
     assert probe.events == [
         "PERMIT_MINTED",
+        "POST_ADMISSION_GRANTED",
         "DURABLE_CONSUME_OBSERVED",
         "K1_BOUND",
         "HTTP_POST_ENTER",
@@ -333,7 +369,7 @@ def test_durable_consume_precedes_k1_and_http_and_timeout_is_single_unknown(
     with pytest.raises(CurrentProductiveOneShotFreshEnvelopeJoinError, match="CONSUMED_PERMIT"):
         _attempt(tmp_path, probe=retry_probe, opener=opener)
     assert retry_probe.http_post_attempts == 0
-    assert retry_probe.events == ["PERMIT_MINTED"]
+    assert retry_probe.events == ["PERMIT_MINTED", "POST_ADMISSION_GRANTED"]
     assert len(opener.requests) == 1
 
 
@@ -361,7 +397,8 @@ def test_consume_failure_leaves_transport_unreached(
     assert "K1_BOUND" not in probe.events
     assert probe.http_post_attempts == 0
     assert opener.requests == []
-    assert list(tmp_path.iterdir()) == []
+    remaining = {p.name for p in tmp_path.iterdir()}
+    assert remaining <= {"full_core_current_productive_actual_venue_post_owner_go_consume_v1.json"}
 
 
 def test_k1_failure_after_consume_makes_post_unreachable(tmp_path: Path) -> None:
@@ -372,7 +409,12 @@ def test_k1_failure_after_consume_makes_post_unreachable(tmp_path: Path) -> None
         CurrentProductiveOneShotFreshEnvelopeJoinError, match="K1_SIGNING_HANDLE_UNAVAILABLE"
     ):
         _attempt(tmp_path, probe=probe, opener=opener, backend=backend)
-    assert probe.events == ["PERMIT_MINTED", "DURABLE_CONSUME_OBSERVED", "K1_FAILED"]
+    assert probe.events == [
+        "PERMIT_MINTED",
+        "POST_ADMISSION_GRANTED",
+        "DURABLE_CONSUME_OBSERVED",
+        "K1_FAILED",
+    ]
     assert probe.http_post_attempts == 0
     assert opener.requests == []
     assert probe.external_effect_count == 0
@@ -410,7 +452,10 @@ def test_callgraph_binds_existing_owners_and_not_a_second_port() -> None:
     assert "open_current_productive_k1_opaque_signing_handle_session_v1" in join_source
     assert "FullCoreProductiveHttpTradeOrderTransportV1" in join_source
     assert "construct_live_execution_port_v1" not in join_source
-    assert "one_shot_real_post=True" not in join_source
+    assert (
+        "one_shot_real_post=True"
+        not in join_source.split("evaluate_real_venue_post_admission_v1", 1)[0]
+    )
     assert "eea.okx.com" not in join_source
     assert "urlopen" not in join_source
     consume_at = seam_source.index("persist_external_effect_durable_consume_v1(")
@@ -447,8 +492,16 @@ def test_bypass_flags_are_false(tmp_path: Path) -> None:
     assert k1.http_post_attempts == 0
     opener = _TimeoutOpener()
     first = OneShotJoinProbeV1()
-    with pytest.raises(CurrentProductiveOneShotFreshEnvelopeJoinError, match="UNKNOWN_OUTCOME"):
-        _attempt(tmp_path / "once", probe=first, opener=opener)
+    _persist_post_go(tmp_path / "once")
+    first_join = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
+        envelope=_envelope(),
+        post_owner_go=POST_OWNER_GO,
+        store_root=tmp_path / "once",
+        k1_backend=_FakeKeychainBackend(),
+        opener_factory=lambda: opener,
+        probe=first,
+    )
+    assert first_join.unknown_outcome is True
     second = OneShotJoinProbeV1()
     with pytest.raises(CurrentProductiveOneShotFreshEnvelopeJoinError, match="CONSUMED_PERMIT"):
         _attempt(tmp_path / "once", probe=second, opener=opener)

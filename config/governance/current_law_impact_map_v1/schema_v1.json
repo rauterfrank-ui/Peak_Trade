@@ -1,0 +1,281 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "current_law_impact_map_v1",
+  "title": "CURRENT_LAW_IMPACT_MAP_V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "map_id",
+    "schema_version",
+    "authority_effect",
+    "map_authority",
+    "law_reference_is_normative",
+    "bootstrap_exhaustive",
+    "normalize_unknown_to_current",
+    "baseline_sha",
+    "law_references",
+    "semantic_objects",
+    "impact_edges",
+    "unknown_relations",
+    "conflicting_relations",
+    "reproof_index",
+    "semantic_divergence_index",
+    "unclassified_current_surfaces",
+    "surface_census_meta"
+  ],
+  "properties": {
+    "map_id": {"const": "CURRENT_LAW_IMPACT_MAP_V1"},
+    "schema_version": {"const": "1"},
+    "authority_effect": {"const": "NONE"},
+    "map_authority": {"const": "NONE"},
+    "law_reference_is_normative": {"const": false},
+    "bootstrap_exhaustive": {"const": false},
+    "normalize_unknown_to_current": {"const": false},
+    "baseline_sha": {"type": "string", "minLength": 40},
+    "law_references": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/law_reference"}
+    },
+    "semantic_objects": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/semantic_object"}
+    },
+    "impact_edges": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/impact_edge"}
+    },
+    "unknown_relations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/unknown_relation"}
+    },
+    "conflicting_relations": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/conflicting_relation"}
+    },
+    "reproof_index": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/reproof_index_entry"}
+    },
+    "semantic_divergence_index": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/semantic_divergence_record"}
+    },
+    "unclassified_current_surfaces": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/unclassified_surface_record"}
+    },
+    "surface_census_meta": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["census_id", "authority", "bootstrap_exhaustive", "census_method"],
+      "properties": {
+        "census_id": {"type": "string"},
+        "authority": {"const": "NONE"},
+        "bootstrap_exhaustive": {"const": false},
+        "census_method": {"type": "string"},
+        "unclassified_sample_cap": {"type": "integer"},
+        "notes": {"type": "string"}
+      }
+    }
+  },
+  "$defs": {
+    "current_status": {
+      "enum": [
+        "PROVEN_CURRENT",
+        "VIOLATED_CURRENT",
+        "UNKNOWN_CURRENT",
+        "CONFLICTING_CURRENT"
+      ]
+    },
+    "index_status": {
+      "enum": ["INDEXED", "STALE_ANCHOR", "MISSING_SOURCE"]
+    },
+    "semantic_class": {
+      "enum": [
+        "CURRENT_PRODUCTIVE_SEMANTIC",
+        "CANONICAL_MODEL_SEMANTIC",
+        "ENFORCEMENT_CONTRACT",
+        "NAVIGATION_ONLY",
+        "UNCLASSIFIED",
+        "UNKNOWN"
+      ]
+    },
+    "ref_list": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "source_authority_class": {
+      "enum": ["RUNBOOK", "CANONICAL_SPEC", "MODEL_CATALOG", "EVIDENCE_CENSUS", "ENFORCEMENT_TEST"]
+    },
+    "law_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "law_id",
+        "canonical_source",
+        "canonical_anchor",
+        "source_sha256",
+        "source_authority_class",
+        "index_status",
+        "law_reference_authority",
+        "evidence_refs"
+      ],
+      "properties": {
+        "law_id": {"type": "string", "minLength": 1},
+        "canonical_source": {"type": "string", "minLength": 1},
+        "canonical_anchor": {"type": "string", "minLength": 1},
+        "source_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "source_authority_class": {"$ref": "#/$defs/source_authority_class"},
+        "index_status": {"$ref": "#/$defs/index_status"},
+        "law_reference_authority": {"const": "NONE"},
+        "display_label": {"type": "string", "maxLength": 120},
+        "semantic_object_ids": {"$ref": "#/$defs/ref_list"},
+        "evidence_refs": {"$ref": "#/$defs/ref_list"}
+      }
+    },
+    "semantic_object": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "semantic_class",
+        "current_status",
+        "code_surfaces",
+        "config_surfaces",
+        "law_ref_ids",
+        "evidence_refs"
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "semantic_class": {"$ref": "#/$defs/semantic_class"},
+        "current_status": {"$ref": "#/$defs/current_status"},
+        "code_surfaces": {"$ref": "#/$defs/ref_list"},
+        "config_surfaces": {"$ref": "#/$defs/ref_list"},
+        "law_ref_ids": {"$ref": "#/$defs/ref_list"},
+        "atlas_entity_id": {"type": "string"},
+        "csia_record_id": {"type": "string"},
+        "evidence_refs": {"$ref": "#/$defs/ref_list"}
+      }
+    },
+    "impact_edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "edge_class", "from_id", "to_id", "evidence_refs"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "edge_class": {
+          "enum": [
+            "PRODUCES",
+            "CONSUMES",
+            "TRANSFORMS",
+            "BINDS",
+            "REFERENCES_LAW",
+            "REQUIRES_REPROOF",
+            "AUTHORIZED_BY",
+            "PERSISTS",
+            "REPLAYS",
+            "CONSTRAINS"
+          ]
+        },
+        "from_id": {"type": "string", "minLength": 1},
+        "to_id": {"type": "string", "minLength": 1},
+        "propagate_impact": {"type": "boolean"},
+        "evidence_refs": {"$ref": "#/$defs/ref_list"}
+      }
+    },
+    "unknown_relation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "unknown_class", "statement", "left_ref", "right_ref", "evidence_refs"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "unknown_class": {
+          "enum": [
+            "UNKNOWN_RELATION",
+            "NORMATIVE_BOUND_UNKNOWN",
+            "EVIDENCE_DISCOVERY_UNKNOWN"
+          ]
+        },
+        "statement": {"type": "string", "minLength": 1},
+        "left_ref": {"type": "string", "minLength": 1},
+        "right_ref": {"type": "string", "minLength": 1},
+        "evidence_refs": {"$ref": "#/$defs/ref_list"}
+      }
+    },
+    "conflicting_relation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "statement", "claim_a_ref", "claim_b_ref", "status", "evidence_refs"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "statement": {"type": "string", "minLength": 1},
+        "claim_a_ref": {"type": "string", "minLength": 1},
+        "claim_b_ref": {"type": "string", "minLength": 1},
+        "status": {"enum": ["OPEN", "EXTERNALLY_ADJUDICATED"]},
+        "external_adjudication_ref": {"type": "string"},
+        "evidence_refs": {"$ref": "#/$defs/ref_list"}
+      }
+    },
+    "semantic_divergence_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "adjudication",
+        "producer_ref",
+        "consumer_ref",
+        "statement",
+        "evidence_refs",
+        "reproof_required"
+      ],
+      "properties": {
+        "id": {"type": "string", "pattern": "^SEM-SURF-DIV-[0-9]{5}$"},
+        "adjudication": {
+          "enum": ["PROVEN_CURRENT", "VIOLATED_CURRENT", "UNKNOWN_CURRENT", "CONFLICTING_CURRENT"]
+        },
+        "producer_ref": {"type": "string"},
+        "consumer_ref": {"type": "string"},
+        "statement": {"type": "string"},
+        "expected_canonical_source": {"type": "string"},
+        "evidence_refs": {"$ref": "#/$defs/ref_list"},
+        "reproof_required": {"type": "boolean"},
+        "unknown_relation_id": {"type": ["string", "null"]}
+      }
+    },
+    "unclassified_surface_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "classification", "reason"],
+      "properties": {
+        "path": {"type": "string"},
+        "classification": {"const": "UNCLASSIFIED_CURRENT"},
+        "reason": {"type": "string"}
+      }
+    },
+    "reproof_index_entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "law_ref_ids",
+        "affected_semantic_object_ids",
+        "proof_refs",
+        "adjudication_status"
+      ],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "law_ref_ids": {"$ref": "#/$defs/ref_list"},
+        "affected_semantic_object_ids": {"$ref": "#/$defs/ref_list"},
+        "proof_refs": {"$ref": "#/$defs/ref_list"},
+        "base_sha": {"type": "string"},
+        "head_sha": {"type": "string"},
+        "adjudication_status": {
+          "enum": ["UNKNOWN_CURRENT", "INDEXED_EVIDENCE_ONLY"]
+        }
+      }
+    }
+  }
+}

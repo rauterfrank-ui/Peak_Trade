@@ -60,7 +60,7 @@ events:
     when: "census after unshallow"
     what: origin/main has zero deleted OKX-named paths (git log --diff-filter=D -- *okx*)
     epistemic_status: ADJUDICATED
-    evidence: docs/system_atlas/census/okx_historical.yaml
+    evidence: docs/system_atlas/census/okx_current_tree.yaml
   - id: OKX_CHRONO:shallow_artifact_corrected
     sort_key: "2026-08-30b"
     when: "2026-08-06 ec0e0272d was local shallow root, not first OKX introduction"

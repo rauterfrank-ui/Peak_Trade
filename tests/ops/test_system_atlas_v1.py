@@ -70,24 +70,20 @@ def test_generated_views_up_to_date(atlas: dict) -> None:
     assert drift == []
 
 
-def test_historical_nonlive_paths_are_model_driven(atlas: dict) -> None:
-    wiring = atlas["records"]["census/historical_wiring.yaml"]
-    edges = list(wiring.get("edges") or [])
-    relations = {str(edge.get("relation") or "") for edge in edges}
-    assert "REMOVED_CONSUMER" in relations
-    assert "RESTORED" in relations
-    nonlive = historical_nonlive_repo_paths(atlas)
-    for edge in edges:
-        source = str(edge.get("source") or "")
-        if source.endswith(".py"):
-            assert source in nonlive
+def test_historical_nonlive_paths_current_only_atlas(atlas: dict) -> None:
+    meta = atlas["records"]["census/census_meta.yaml"]
+    assert meta["historical_domain_census_payload_count"] == 0
+    assert historical_nonlive_repo_paths(atlas) == frozenset()
 
 
 def test_generated_views_independent_of_checkout_path_existence(
     atlas: dict, tmp_path: Path
 ) -> None:
     nonlive = historical_nonlive_repo_paths(atlas)
-    assert nonlive, "historical wiring must declare at least one file-like source"
+    if not nonlive:
+        views = generate_views_v1(atlas=atlas, repo_root=tmp_path)
+        assert "SYSTEM_ATLAS.md" in views
+        return
     present_root = tmp_path / "path_present"
     for rel in nonlive:
         target = present_root / rel
@@ -394,17 +390,17 @@ def test_incompleteness_register_covers_all_complete_flags(atlas: dict) -> None:
 
 
 def test_schema_json_files_are_inventoried(atlas: dict) -> None:
-    entities = iter_entities(atlas)
-    schema_sources = {
-        str(e.get("source") or "")
-        for e in entities
-        if str(e.get("kind")) == "SCHEMA" and str(e.get("schema_kind")) == "json_schema"
+    inventory = atlas["records"]["census/schema_field_inventory.yaml"]
+    schema_files = {
+        str(row.get("file") or "")
+        for row in inventory.get("schemas") or []
+        if str(row.get("file") or "").endswith(".schema.json")
     }
     files = sorted((REPO_ROOT / "docs" / "ops" / "schemas").glob("*.schema.json"))
     assert len(files) == 10
-    assert len(schema_sources) == 10
+    assert len(schema_files) == 10
     for path in files:
-        assert str(path.relative_to(REPO_ROOT)) in schema_sources
+        assert str(path.relative_to(REPO_ROOT)) in schema_files
 
 
 def test_capability_spec_and_hub_entities_present(atlas: dict) -> None:
@@ -427,15 +423,6 @@ def test_capability_spec_and_hub_entities_present(atlas: dict) -> None:
         "HAS_CAPABILITY",
         "CAPABILITY:cap_1_1_reconciliation",
     ) in rel_targets
-    inv = atlas["records"]["census/master_v2_module_inventory.yaml"]
-    assert inv["python_file_count"] == 103
-    assert inv["capability_spec_file_count"] == 7
-    assert inv["file_inventory_complete"] is True
-    assert inv["entity_mapping_complete"] is True
-    sem = atlas["records"]["census/master_v2_semantic_map.yaml"]
-    assert sem["python_file_count_inventoried"] == 103
-    assert sem["python_file_count_semantically_mapped"] == 103
-    assert sem["unmapped_file_count"] == 0
 
 
 def test_incompleteness_rendered_in_master_and_coverage(atlas: dict) -> None:
@@ -449,7 +436,6 @@ def test_incompleteness_rendered_in_master_and_coverage(atlas: dict) -> None:
         "HISTORICAL_SOURCE_UNAVAILABLE",
         "TERMINOLOGY_UNRESOLVED",
         "SCHEMA_FILE_INVENTORY_COMPLETE=true",
-        "MASTER_V2_MODULE_FILE_INVENTORY_COMPLETE=true",
         "SYSTEM_ATLAS_MASTER_VIEW_COMPLETE=true",
         "Caps 1.1, 2.1–2.4, 3.1, 4.1, 7.2, and 11.13.5",
     ):
@@ -466,81 +452,61 @@ def test_incompleteness_missing_reason_fails(atlas: dict) -> None:
         validate_atlas_v1(mutated)
 
 
-def test_historical_okx_census_after_unshallow(atlas: dict) -> None:
+def test_atlas_legacy_eradication_v1_current_okx_and_terminology(atlas: dict) -> None:
     meta = atlas["records"]["census/census_meta.yaml"]
-    hist = atlas["records"]["census/okx_historical.yaml"]
-    terms = atlas["records"]["census/historical_terminology.yaml"]
+    assert meta["navigation_rebind_kind"] == "POST_6925_CURRENT_NAVIGATION_BASELINE_REBIND_V1"
+    assert meta["historical_domain_census_payload_count"] == 0
+    assert meta["okx_historical_census_complete"] is False
+    assert meta["historical_terminology_census_complete"] is False
+    assert meta["okx_census_complete"] is True
     assert meta["git_is_shallow"] is False
-    assert meta["historical_fetch_performed"] is True
-    assert meta["okx_historical_census_complete"] is True
-    assert meta["okx_census_complete"] is True
-    assert meta["historical_terminology_census_complete"] is True
-    assert hist["okx_named_path_deletions_on_origin_main"] == 0
-    assert hist["xperp_historical_quote_mapping_found"] is False
-    assert hist["xperp_historical_uly_handler_found"] is True
-    assert hist["c_okx_quote_uly_status_changed"] is False
-    assert terms["ssot_child_literal_found_in_origin_main_history"] is False
-    views = generate_views_v1(atlas=atlas, repo_root=REPO_ROOT)
-    chrono = views["OKX_CHRONOLOGY.md"]
-    assert "5c588999731757f19cfb2ef9b85055af0eca760e" in chrono
-    assert "XPERP_HISTORICAL_QUOTE_MAPPING_FOUND=false" in chrono
-    assert "OKX_HISTORICAL_CENSUS_COMPLETE=true" in views["COVERAGE_REPORT.md"]
-    assert "GIT_IS_SHALLOW=false" in views["COVERAGE_REPORT.md"]
-
-
-def test_local_census_closure_surfaces(atlas: dict) -> None:
-    meta = atlas["records"]["census/census_meta.yaml"]
-    like = atlas["records"]["census/schema_like_src.yaml"]
-    ep = atlas["records"]["census/okx_endpoint_classification.yaml"]
-    fields = atlas["records"]["census/okx_field_census.yaml"]
-    fixtures = atlas["records"]["census/okx_fixture_census.yaml"]
-    assert meta["schema_census_complete"] is True
-    assert meta["terminology_census_complete"] is True
-    assert meta["acronym_census_complete"] is False
-    assert meta["okx_census_complete"] is True
-    assert meta["completeness_flags"]["endpoint_inventory_complete"] is True
-    assert meta["completeness_flags"]["field_inventory_complete"] is True
-    assert meta["completeness_flags"]["auth_inventory_complete"] is True
-    assert meta["completeness_flags"]["raw_response_fixture_search_complete"] is True
-    assert meta["completeness_flags"]["product_type_inventory_complete"] is True
-    assert like["src_unadjudicated_schema_candidate_count"] == 0
-    assert like["src_schema_candidate_count"] == 1626
-    assert like["src_accepted_schema_count"] == 5
-    assert ep["okx_raw_api_path_hit_count"] == 70
-    assert ep["okx_unique_endpoint_candidate_count"] == 49
-    assert ep["okx_modeled_endpoint_count"] == 50
-    assert ep["okx_grep_noise_count"] == 21
-    assert ep["okx_unclassified_endpoint_count"] == 0
-    assert len(ep["candidates"]) == 70
-    assert fields["okx_field_token_count"] == 42
-    assert fields["okx_modeled_field_count"] == 40
-    assert fields["okx_unclassified_material_field_count"] == 0
-    assert fixtures["okx_unclassified_fixture_count"] == 0
-    assert fixtures["raw_response_fixture_search_complete"] is True
-    assert fixtures["okx_fixture_bytes_or_structure_inspected_count"] == 147
-    assert fixtures["okx_uninspected_material_fixture_count"] == 0
-    assert fixtures["okx_confirmed_fixture_count"] == 16
-    assert fixtures["okx_raw_response_count"] == 2
-    assert fixtures["okx_distinct_response_shape_count"] == 6
     ids = {str(e.get("id")) for e in iter_entities(atlas)}
-    assert "SCHEMA:ranking_snapshot_v1" in ids
-    assert "VENUE_FIELD:baseCcy" in ids
-    assert "OKX_RESPONSE_SHAPE:mark_price_row" in ids
-    assert "OKX_RESPONSE_SHAPE:ticker_row" in ids
+    for eid in (
+        "SUBSYSTEM:master_v2",
+        "FUNCTIONAL_CORE:double_play",
+        "VENUE_FIELD:instId",
+        "ACRONYM:XPERP",
+        "SCHEMA:ranking_snapshot_v1",
+    ):
+        assert eid in ids
     views = generate_views_v1(atlas=atlas, repo_root=REPO_ROOT)
-    assert "SRC_SCHEMA_CANDIDATE_COUNT=1626" in views["COVERAGE_REPORT.md"]
-    assert "OKX_RAW_API_PATH_HIT_COUNT=70" in views["OKX_INTEGRATION_MAP.md"]
-    assert "SCHEMA_CENSUS_COMPLETE=true" in views["SCHEMA_MAP.md"]
-    assert "TERMINOLOGY_CENSUS_COMPLETE=true" in views["SYSTEM_ATLAS.md"]
-    assert "SCHEMA_CENSUS_COMPLETE=true" in views["SYSTEM_ATLAS.md"]
+    assert "ATLAS_LEGACY_ERADICATION_V1=true" in views["COVERAGE_REPORT.md"]
+    assert "Historical domain census payloads were eradicated" in views["OKX_CHRONOLOGY.md"]
+    assert "GIT_IS_SHALLOW=false" in views["COVERAGE_REPORT.md"]
+    assert "OKX_MODELED_ENDPOINT_COUNT=" in views["OKX_INTEGRATION_MAP.md"]
+    assert "schema_field_inventory.yaml" in views["SCHEMA_MAP.md"]
+
+
+def test_current_terminology_survival_after_historical_payload_removal(atlas: dict) -> None:
+    """Protection-set terms must remain defined outside removed historical_terminology.yaml."""
+    runbook = (REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md").read_text(
+        encoding="utf-8"
+    )
+    ratification = (
+        REPO_ROOT
+        / "docs/governance/FINAL_CURRENT_AUTHORITY_CLOSURE_LIMIT_EQUITY_AND_LAYERED_SAFETY_RATIFICATION_V1.md"
+    ).read_text(encoding="utf-8")
+    catalog = (REPO_ROOT / "docs/system_atlas/entities/catalog.yaml").read_text(encoding="utf-8")
+    needles = (
+        "Master V2",
+        "Double Play",
+        "STEP_29P",
+        "STEP_29Q",
+        "scope_capital_limit",
+        "per_trade_risk_limit",
+        "PRE_EXTERNAL",
+        "kill_switch",
+    )
+    for needle in needles:
+        assert needle in runbook or needle in ratification or needle in catalog, (
+            f"CURRENT terminology anchor missing: {needle}"
+        )
 
 
 def test_repo_atlas_v1_final_closure(atlas: dict) -> None:
     meta = atlas["records"]["census/census_meta.yaml"]
     repo = meta["repo_atlas_v1"]
     surface = meta["okx_surface_census"]
-    products = atlas["records"]["census/okx_product_types.yaml"]
-    resolution = atlas["records"]["census/repo_final_resolution.yaml"]
     overview = atlas["records"]["venue/okx/overview.yaml"]
     assert overview["okx_census_complete"] is True
     assert meta["okx_census_complete"] is True
@@ -559,42 +525,21 @@ def test_repo_atlas_v1_final_closure(atlas: dict) -> None:
     assert repo["repo_family_child_census_complete"] is True
     assert repo["repo_dod_census_complete"] is True
     assert repo["external_forensic_corpus_census_complete"] == "NOT_STARTED"
+    assert repo["external_forensic_corpus_blocks_current_e2e"] is False
+    assert repo["xperp_blocks_current_e2e"] is False
     assert surface["okx_docs_census_complete"] is True
     assert surface["okx_tests_census_complete"] is True
     assert surface["okx_config_census_complete"] is True
     assert surface["okx_scripts_census_complete"] is True
     assert surface["okx_evidence_census_complete"] is True
     assert surface["okx_product_type_census_complete"] is True
-    assert products["okx_product_type_census_complete"] is True
-    statuses = {
-        str(row.get("product_type")): str(row.get("status")) for row in products["product_types"]
-    }
-    assert statuses["SWAP"] == "IMPLEMENTED"
-    assert statuses["FUTURES"] == "IMPLEMENTED"
-    assert statuses["SPOT"] == "UNSUPPORTED"
-    assert statuses["MARGIN"] == "SEARCHED_BUT_NO_EVIDENCE_FOUND"
-    assert statuses["OPTION"] == "SEARCHED_BUT_NO_EVIDENCE_FOUND"
-    assert statuses["xperp"] == "PARTIALLY_IMPLEMENTED"
-    assert resolution["locally_resolvable_unsearched_count"] == 0
-    assert resolution["requires_external_corpus_count"] == 0
-    assert resolution["requires_owner_decision_count"] == 7
-    assert resolution["requires_runtime_observation_count"] == 1
-    assert resolution["requires_implementation_change_count"] == 2
-    assert resolution["unresolved_terminology_count"] == 14
     open_acronyms = [
         row
         for row in atlas["records"]["ontology/acronyms.yaml"]["acronyms"]
         if row.get("expansion") == "OPEN"
     ]
     assert {str(row.get("acronym")) for row in open_acronyms} == {
-        "EEA",
-        "OKX",
         "XPERP",
-        "C1",
-        "C2",
-        "C3",
-        "PRE",
-        "PENDING",
     }
     for row in open_acronyms:
         assert row.get("search_scope")
@@ -615,38 +560,26 @@ def test_repo_atlas_v1_final_closure(atlas: dict) -> None:
     assert "OKX_CENSUS_COMPLETE=true" in atlas_md
     assert "SEARCHED_BUT_NO_EVIDENCE_FOUND" in atlas_md
     assert "REPO_ATLAS_CENSUS_COMPLETE=true" in coverage
-    assert "OKX_UNINSPECTED_MATERIAL_FIXTURE_COUNT=0" in coverage
-    assert "OKX_PRODUCT_TYPE_CENSUS_COMPLETE=true" in okx_map
-    assert "PARTIALLY_IMPLEMENTED" in okx_map
+    assert "ATLAS_LEGACY_ERADICATION_V1=true" in coverage
+    assert "OKX_MODELED_ENDPOINT_COUNT=" in okx_map
     remaining_ids = {
         str(row.get("id"))
         for row in atlas["records"]["census/incompleteness.yaml"]["remaining_domains"]
     }
-    assert remaining_ids == {"acronym_census_complete"}
+    assert "acronym_census_complete" in remaining_ids
+    assert "okx_historical_census_complete" in remaining_ids
+    assert "historical_terminology_census_complete" in remaining_ids
 
 
-def test_census_navigation_rebind_distinct_from_domain_payloads(atlas: dict) -> None:
+def test_census_navigation_rebind_atlas_legacy_eradication_v1(atlas: dict) -> None:
     meta = atlas["records"]["census/census_meta.yaml"]
-    assert meta["origin_main_sha"] == "14e8a58f32dcb6b521be6b2559b388bf27360194"
-    assert meta["navigation_rebind_sha"] == "14e8a58f32dcb6b521be6b2559b388bf27360194"
-    assert meta["navigation_rebind_kind"] == "FRESH_NAVIGATION_REBIND_NOT_DOMAIN_RECENSUS"
-    assert meta["domain_census_payloads_bound_sha"] == "615de3b307132b73a60df33fd3bedfac811c8cce"
-    assert meta["origin_main_sha"] != meta["domain_census_payloads_bound_sha"]
-    assert meta["domain_census_payloads_fresh_exhaustive_recensus"] is False
-    inv = atlas["records"]["census/master_v2_module_inventory.yaml"]
-    assert inv["origin_main_sha"] == meta["origin_main_sha"]
-    assert inv["domain_census_payloads_fresh_exhaustive_recensus"] is False
-
-
-def test_hist_selector_policy_reverted_uses_proven_6166_sha(atlas: dict) -> None:
-    events = atlas["records"]["census/historical_architecture.yaml"]["events"]
-    by_id = {str(row["id"]): row for row in events}
-    revert = by_id["HIST:selector_policy_reverted"]
-    assert revert["commit"] == "afbae518b67eb1b789c835e219db37f5b15f308b"
-    assert revert["pr"] == "#6166"
-    wp = by_id["HIST:wp_fa_07"]
-    assert wp["commit"] == "615de3b307132b73a60df33fd3bedfac811c8cce"
-    assert wp["pr"] == "#6209"
+    reviewed = "744a9c896f53d33b2d3c24977da1891a2e8549f1"
+    assert meta["current_reviewed_at_sha"] == reviewed
+    assert meta["origin_main_sha"] == reviewed
+    assert meta["navigation_rebind_sha"] == reviewed
+    assert meta["navigation_rebind_kind"] == "POST_6925_CURRENT_NAVIGATION_BASELINE_REBIND_V1"
+    assert meta["domain_census_payloads_bound_sha"] is None
+    assert meta["historical_domain_census_payload_count"] == 0
 
 
 def test_ddo_navigation_is_observation_only_without_authority(atlas: dict) -> None:
@@ -695,11 +628,6 @@ def test_ddo_navigation_is_observation_only_without_authority(atlas: dict) -> No
         "REFERENCE_OF",
         "EXPERIMENT:canonical_experiment_identity_v1",
     ) in rel_triples
-    assert (
-        "FORENSIC_REFERENCE:information_corpus_persistence_base",
-        "HAS_CHILD",
-        "CHILD:nested_structural_child",
-    ) in rel_triples
     forbidden_targets = {
         "RUNTIME_COMPONENT:dp_composition",
         "RUNTIME_COMPONENT:dp_survival",
@@ -708,10 +636,7 @@ def test_ddo_navigation_is_observation_only_without_authority(atlas: dict) -> No
     }
     for r in ddo_out:
         assert str(r.get("target")) not in forbidden_targets
-    kraken = entities["ADAPTER:kraken_live_client"]
-    assert kraken["current_status"] == "REMOVED"
-    assert kraken["temporal_class"] == "HISTORICAL_ONLY"
-    assert "#6203" in str(kraken.get("notes") or "")
+    assert "ADAPTER:kraken_live_client" not in entities
     gaps = atlas["records"]["wiring/gaps.yaml"]["gaps"]
     gap_ids = {str(g.get("id")) for g in gaps}
     assert "GAP:ddo_declared_seams_without_host_decorator" in gap_ids

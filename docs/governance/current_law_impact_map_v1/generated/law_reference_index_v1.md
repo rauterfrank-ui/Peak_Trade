@@ -1,0 +1,47 @@
+<!-- GENERATED FILE. DO NOT EDIT BY HAND. SOURCE=config/governance/current_law_impact_map_v1/source_v1.json VIEW=law_reference_index AUTHORITY=NONE LAW_REFERENCE_IS_NORMATIVE=false -->
+
+# Law Reference Index
+
+LAW_REFERENCE_AUTHORITY=NONE
+LAW_REFERENCE_IS_NORMATIVE=false
+
+- law_id=B05-ACCOUNT-EQUITY-RATIFICATION-V1 source=config/governance/risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1.json anchor=risk_sizing_account_equity_authority_owner_full_core_track_ratification_v1 sha256=6d28478c7f07… index_status=INDEXED
+- law_id=B05-INSTRUMENT-METADATA-RATIFICATION-V1 source=config/governance/risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1.json anchor=risk_sizing_instrument_metadata_authority_owner_full_core_track_ratification_v1 sha256=377b939814ee… index_status=INDEXED
+- law_id=B05-REFERENCE-PRICE-RATIFICATION-V1 source=config/governance/risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.json anchor=risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1 sha256=b385f8875b23… index_status=INDEXED
+- law_id=CAP-SSF-HANDOFF-V1 source=docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md anchor=RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1 sha256=641f4b763b39… index_status=INDEXED
+- law_id=CAP21-GOVERNED-UNIVERSE-V1 source=src/ops/governed_futures_universe_producer_v1/constants_v1.py anchor=GOVERNED_FUTURES_UNIVERSE_PRODUCER_V1 sha256=465371e80921… index_status=INDEXED
+- law_id=CAP22-PRODUCTIVE-RANKING-V1 source=docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md anchor=MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1 sha256=64148629a14e… index_status=INDEXED
+- law_id=CAP23-SINGLE-SELECTED-FUTURE-V1 source=src/ops/single_selected_future_policy_v1/constants_v1.py anchor=SINGLE_SELECTED_FUTURE_POLICY_V1 sha256=d5651c05276a… index_status=INDEXED
+- law_id=CAP24-RUNTIME-BINDING-V1 source=src/ops/single_selected_future_runtime_binding_v1/constants_v1.py anchor=SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1 sha256=660b2b6bbb42… index_status=INDEXED
+- law_id=FULL-CORE-PRE-EXTERNAL-CLOSURE-V1 source=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md anchor=FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1 sha256=33138122c4f0… index_status=INDEXED
+- law_id=G17-TYPED-VOL-CMC-BIND-V1 source=src/ops/full_core_live_path_composition_root_v1/current_productive_g17_typed_vol_cmc_bind_v1.py anchor=apply_current_productive_g17_typed_vol_cmc_bind_v1 sha256=f5eebff8f7f3… index_status=INDEXED
+- law_id=M9-VOL-MAX-AGE-DECISION-V1 source=config/governance/m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1.json anchor=m9_volatility_numeric_max_age_numeric_productive_target_v1_decision_v1 sha256=7eeb4e818bc4… index_status=INDEXED
+- law_id=MV2-LAYER-L10_BULL_BEAR_STATE_SWITCH source=src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py anchor=L10_BULL_BEAR_STATE_SWITCH sha256=430348b6cd93… index_status=INDEXED
+- law_id=MV2-LAYER-L1_SELECTED_FUTURE source=src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py anchor=L1_SELECTED_FUTURE sha256=430348b6cd93… index_status=INDEXED
+- law_id=MV2-LAYER-L2_MARKET_OBSERVATION source=src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py anchor=L2_MARKET_OBSERVATION sha256=430348b6cd93… index_status=INDEXED
+- law_id=MV2-LAYER-L3_INITIAL_DIRECTION source=src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py anchor=L3_INITIAL_DIRECTION sha256=430348b6cd93… index_status=INDEXED
+- law_id=MV2-LAYER-L4_INITIAL_STATE_INITIALIZATION source=src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py anchor=L4_INITIAL_STATE_INITIALIZATION sha256=430348b6cd93… index_status=INDEXED
+- law_id=MV2-LAYER-L5_NULLLINE source=src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py anchor=L5_NULLLINE sha256=430348b6cd93… index_status=INDEXED
+- law_id=MV2-LAYER-L6_DYNAMIC_SCOPE_GENERATOR source=src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py anchor=L6_DYNAMIC_SCOPE_GENERATOR sha256=430348b6cd93… index_status=INDEXED
+- law_id=MV2-LAYER-L7_SCOPE_STATE source=src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py anchor=L7_SCOPE_STATE sha256=430348b6cd93… index_status=INDEXED
+- law_id=MV2-LAYER-L8_RUNNING_REFERENCE source=src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py anchor=L8_RUNNING_REFERENCE sha256=430348b6cd93… index_status=INDEXED
+- law_id=MV2-LAYER-L9_COUNTER_MOVE source=src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/layer_catalog_v1.py anchor=L9_COUNTER_MOVE sha256=430348b6cd93… index_status=INDEXED
+- law_id=OD-29P-FRESH-TRUSTED-NUMERIC-VENUE-BIND-ADJUDICATION-V1 source=config/governance/od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1.json anchor=od_29p_fresh_trusted_numeric_venue_bind_canonical_adjudication_v1 sha256=ff3a4fc82e32… index_status=INDEXED
+- law_id=OD-29P-NORMATIVE-PACK-V1 source=config/governance/od_29p_normative_pack_v1.json anchor=od_29p_normative_pack_v1 sha256=06cd22287f78… index_status=INDEXED
+- law_id=OD-ACCOUNT-EQUITY-SIZING-SOURCE-ADJUDICATION-V1 source=config/governance/od_account_equity_sizing_source_canonical_adjudication_v1.json anchor=od_account_equity_sizing_source_canonical_adjudication_v1 sha256=71e231d35613… index_status=INDEXED
+- law_id=OD-U01-P01-29P-SIZING-MINT-ADJUDICATION-V1 source=config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json anchor=od_u01_p01_29p_sizing_mint_canonical_adjudication_v1 sha256=f8bca9e15505… index_status=INDEXED
+- law_id=PROD-CANONICAL-PRICE-PROVENANCE-V1 source=src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py anchor=ProductiveCanonicalPriceProvenanceError sha256=cb7cd9839850… index_status=INDEXED
+- law_id=PUBLIC-MD-RUNTIME-POLICY-V1 source=config/governance/peak_trade_public_market_data_runtime_v1_policy_v1.json anchor=peak_trade_public_market_data_runtime_v1_policy_v1 sha256=fc2b9165d324… index_status=INDEXED
+- law_id=RUNBOOK-VENUE-PLAN-TDMODE-AUTHORITY-V1 source=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md anchor=CURRENT Venue-Plan tdMode and Order-Environment Authority sha256=4f7967ee48c9… index_status=INDEXED
+- law_id=SEM-DIV-00001 source=tests/ops/test_current_productive_semantic_enforcement_repair_v1.py anchor=test_natural_enter_rejects_candle_close_only_mark_without_payload sha256=8aaadaf5d51e… index_status=INDEXED
+- law_id=SEM-DIV-00002 source=tests/ops/test_current_productive_semantic_enforcement_repair_v1.py anchor=test_cycle_rejects_forbidden_candle_close_mark_source sha256=8aaadaf5d51e… index_status=INDEXED
+- law_id=SEM-DIV-00006 source=tests/ops/test_current_productive_semantic_enforcement_repair_v1.py anchor=test_observation_sidestate_seed_class_rejected_on_bind sha256=8aaadaf5d51e… index_status=INDEXED
+- law_id=SPEC-29P-LIVE-ACCOUNT-BOUND-V1 source=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_FOR_29P_V1.md anchor=FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_FOR_29P_V1 sha256=6e855708da42… index_status=INDEXED
+- law_id=SPEC-EXECUTION-ADMISSION-REMAINDER-V1 source=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_EXECUTION_ADMISSION_REMAINDER_V1.md anchor=FULL_CORE_CURRENT_PRODUCTIVE_EXECUTION_ADMISSION_REMAINDER_V1 sha256=89a3fb3eb54c… index_status=INDEXED
+- law_id=SPEC-LIVE-ARMED-STANDING-GATE-V1 source=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ARMED_STANDING_GATE_V1.md anchor=FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ARMED_STANDING_GATE_V1 sha256=d23781586003… index_status=INDEXED
+- law_id=SPEC-LIVE-ENABLED-STANDING-GATE-V1 source=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE_V1.md anchor=FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE_V1 sha256=17c0e90c6400… index_status=INDEXED
+- law_id=SPEC-LIVE-EXECUTION-PORT-V1 source=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION_V1.md anchor=FULL_CORE_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION_V1 sha256=29825d77f531… index_status=INDEXED
+- law_id=SPEC-P01-POLICY-REPLACEMENT-V1 source=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_P01_POLICY_REPLACEMENT_V1.md anchor=FULL_CORE_CURRENT_PRODUCTIVE_P01_POLICY_REPLACEMENT_V1 sha256=a2d2056da08c… index_status=INDEXED
+- law_id=SPEC-SUBMISSION-AUTHORIZED-V1 source=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_SUBMISSION_AUTHORIZED_V1.md anchor=FULL_CORE_CURRENT_PRODUCTIVE_SUBMISSION_AUTHORIZED_V1 sha256=f1b994aa7fff… index_status=INDEXED
+- law_id=SPEC-U01-ACCOUNT-MODE-RATIFICATION-V1 source=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_U01_ACCOUNT_MODE_SEMANTIC_RATIFICATION_V1.md anchor=FULL_CORE_CURRENT_PRODUCTIVE_U01_ACCOUNT_MODE_SEMANTIC_RATIFICATION_V1 sha256=fa1ac3892e43… index_status=INDEXED
+- law_id=SPEC-WIRE-SEND-STANDING-GATE-V1 source=docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_WIRE_SEND_PERMITTED_STANDING_GATE_V1.md anchor=FULL_CORE_CURRENT_PRODUCTIVE_WIRE_SEND_PERMITTED_STANDING_GATE_V1 sha256=dc92be5a080e… index_status=INDEXED

@@ -39,12 +39,21 @@ from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
     MockCurrentProductive29PIntegrityBackendV1,
 )
 from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
+    governed_c1_aligned_g17_dk_producer_v1,
     governed_c1_candles_payload_from_enter_closes_v1,
+    governed_productive_c1_event_ts_unix_v1,
     prepare_layered_long_armed_seed_for_pre_external_invoke_v1,
 )
+from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
+    invoke_occupied_lane_governed_cycle_n1_consumer_v1,
+)
 from tests.ops.test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1 import (
+    C1_TS,
     _invoke,
+    _lane_g17,
+    _market_kwargs,
     _mv2_aligned_candles,
+    _pair,
 )
 from tests.ops.test_full_core_current_productive_29p_common_epoch_handoff_v1 import (
     _EPOCH,
@@ -61,11 +70,13 @@ from tests.ops.test_full_core_current_productive_host_enter_29p_invalid_stop_pri
 from tests.ops.test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1 import (
     _bound as _oneshot_bound,
     _cycle,
-    _cycle_a_with_confirmation_progress,
-    _produced_g17_producer,
     _strong_uptrend_closes,
 )
+from tests.ops._pre_external_cap21_inst_type_test_helpers_v1 import (
+    write_cap21_productivity_root_for_inst_v1,
+)
 from tests.ops.test_full_core_current_productive_pre_external_closure_v1 import (
+    _TEST_INST,
     _bound,
     _origin_main_sha,
     _productive_transport,
@@ -76,15 +87,39 @@ PRODUCTIVE_TRANSPORT_CLASS_TESTDOUBLE = True
 PRODUCTIVE_REAL_GET_PROVEN = False
 
 
-def test_stale_flat_mark_upscope_confirm_cycle_does_not_natural_enter() -> None:
+def test_stale_flat_mark_upscope_confirm_cycle_does_not_natural_enter(tmp_path: Path) -> None:
     """Negative: flat mark on UPSCOPE_CONFIRM cycle fails C3 alignment (pre-V32 assumption)."""
+    bound = _bound()
     path = _strong_uptrend_closes()
-    cycle_a = _cycle_a_with_confirmation_progress()
+    event_ts = governed_productive_c1_event_ts_unix_v1()
+    g17 = governed_c1_aligned_g17_dk_producer_v1(
+        bound=bound,
+        anchor_event_ts_unix=event_ts,
+        evidence_store_root=tmp_path / "g17-stale-flat-probe",
+        mark_closes=path,
+    )
+    origin = _cycle(
+        cycle_id="wp2-stale-origin",
+        bound_instrument=bound,
+        g17_typed_vol_producer=g17,
+        mark_px=float(path[0]),
+        event_ts_unix=event_ts - 120.0,
+    )
+    cycle_a = _cycle(
+        cycle_id="wp2-stale-upscope-candidate",
+        bound_instrument=bound,
+        g17_typed_vol_producer=g17,
+        incoming_cursor=origin.outgoing_cursor,
+        mark_px=float(path[-1]),
+        event_ts_unix=event_ts - 60.0,
+    )
     cycle_b = _cycle(
         cycle_id="wp2-stale-flat-mark-probe",
+        bound_instrument=bound,
+        g17_typed_vol_producer=g17,
         incoming_cursor=cycle_a.outgoing_cursor,
         mark_px=float(path[-1]),
-        event_ts_unix=1_700_000_120.0,
+        event_ts_unix=event_ts,
     )
     assert cycle_b.decision_outcome not in {"enter_long", "enter_short"}
 
@@ -118,17 +153,31 @@ def test_wp2_execute_transport_bound_wp1_pass_governed_cycle_hold_fail_closed_sa
     bound = _bound()
     path = _strong_uptrend_closes()
     last_mark = float(path[-1])
-    candles = _mv2_aligned_candles(last_ts_ms=int(1_700_000_120_000), mark_px=last_mark)
-    g17 = _produced_g17_producer(instrument_id=bound.instrument_id)
+    event_ts = governed_productive_c1_event_ts_unix_v1()
+    candles = _mv2_aligned_candles(last_ts_ms=int(event_ts * 1000), mark_px=last_mark)
+    g17 = governed_c1_aligned_g17_dk_producer_v1(
+        bound=bound,
+        anchor_event_ts_unix=event_ts,
+        evidence_store_root=tmp_path / "g17-wp2-hold-compose",
+        mark_closes=path,
+    )
+    cap24_root = write_cap21_productivity_root_for_inst_v1(tmp_path, venue_native_id=_TEST_INST)
+    lanes_root = tmp_path / "lanes"
+    prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
+        bound=bound,
+        g17_typed_vol_producer=g17,
+        lane_state_root=lanes_root,
+    )
     result = execute_current_productive_full_core_pre_external_closure_v1(
         owner_go=OWNER_GO,
         origin_main_sha=origin_sha,
         bound_instrument=bound,
-        lane_state_root=tmp_path / "lanes",
+        lane_state_root=lanes_root,
         fresh_get_transport=_productive_transport(),
         execute_network=False,
         evidence_root=tmp_path / "evidence",
         candles_payload=candles,
+        cap24_productivity_root=cap24_root,
         market_kwargs={
             "cycle_id_prefix": "wp2-compose-hold",
             "mark_px": last_mark,
@@ -166,6 +215,7 @@ def test_wp2_untrusted_29p_avail_zero_blocks_wp1_admissibility(tmp_path: Path) -
         head=origin_sha,
     )
     bound = _bound()
+    cap24_root = write_cap21_productivity_root_for_inst_v1(tmp_path, venue_native_id=_TEST_INST)
     transport = _productive_transport(avail_eq="0")
     result = execute_current_productive_full_core_pre_external_closure_v1(
         owner_go=OWNER_GO,
@@ -177,6 +227,7 @@ def test_wp2_untrusted_29p_avail_zero_blocks_wp1_admissibility(tmp_path: Path) -
         evidence_root=tmp_path / "evidence",
         candles_payload=_mv2_aligned_candles(last_ts_ms=1_700_000_120_000, mark_px=100.0),
         execution_integrity_backend=integrity,
+        cap24_productivity_root=cap24_root,
     )
     assert result.wp1_status == "FAIL"
     assert result.admissibility_29p_status == "false"
@@ -200,7 +251,22 @@ def test_wp2_enter_join_denies_venue_plan_when_29p_not_pass() -> None:
 
 def test_wp2_consumer_compose_layered_store_then_c1_orchestrator_consumed(tmp_path: Path) -> None:
     """Real consumer join + S7/P5.10 path; terminal HOLD when MV2 does not ENTER."""
-    pairs, results = _invoke(tmp_path, ("LANE_1",), cycle_id_prefix="wp2-consumer-compose")
+    from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
+        bootstrap_minimal_productive_p5_store_for_lane_slot_v1,
+    )
+
+    pairs = {"LANE_1": _pair(tmp_path, "LANE_1")}
+    slot, bound = pairs["LANE_1"]
+    g17_map = _lane_g17(pairs)
+    bootstrap_minimal_productive_p5_store_for_lane_slot_v1(
+        slot=slot,
+        bound=bound,
+        g17_typed_vol_producer=g17_map["LANE_1"],
+    )
+    last_ts = float(C1_TS)
+    kwargs = _market_kwargs(cycle_id_prefix="wp2-consumer-compose", last_ts=last_ts)
+    kwargs["g17_typed_vol_producers"] = g17_map
+    results = invoke_occupied_lane_governed_cycle_n1_consumer_v1(pairs, **kwargs)
     record = results["LANE_1"]
     cycle = record.governed_cycle_result
     assert record.t2_s7_used is True
@@ -243,19 +309,20 @@ def test_wp2_deterministic_pre_external_effect_full_compose_transport_bound(
         head=origin_sha,
     )
     bound = _bound()
-    g17 = _produced_g17_producer(instrument_id=bound.instrument_id)
     lanes_root = tmp_path / "lanes"
-    _arm_cycle, enter_closes, mark_px, event_ts = (
+    _arm_cycle, enter_closes, mark_px, event_ts, aligned_g17 = (
         prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
             bound=bound,
-            g17_typed_vol_producer=g17,
+            g17_typed_vol_producer=object(),
             lane_state_root=lanes_root,
         )
     )
+    g17 = aligned_g17
     candles = governed_c1_candles_payload_from_enter_closes_v1(
         enter_closes=enter_closes,
         last_event_ts_unix=event_ts,
     )
+    cap24_root = write_cap21_productivity_root_for_inst_v1(tmp_path, venue_native_id=_TEST_INST)
     result = execute_current_productive_full_core_pre_external_closure_v1(
         owner_go=OWNER_GO,
         origin_main_sha=origin_sha,
@@ -265,6 +332,7 @@ def test_wp2_deterministic_pre_external_effect_full_compose_transport_bound(
         execute_network=False,
         evidence_root=tmp_path / "evidence",
         candles_payload=candles,
+        cap24_productivity_root=cap24_root,
         market_kwargs={
             "cycle_id_prefix": "wp2-pre-ext-enter",
             "mark_px": mark_px,

@@ -10,6 +10,7 @@
 #
 # No runtime / trading / authority effect.
 # LIVE_AUTHORIZED=false · ORDERS_ALLOWED=false · LOCALHOST_ONLY
+# PERSISTENT_AUTOSTART_ENABLED=false — operator host detached; explicit start only.
 #
 # Commands:
 #   ./scripts/webui/landscape_dashboard_persistent_local_host.sh \
@@ -204,7 +205,7 @@ render_plist() {
   <key>Label</key>
   <string>${LABEL}</string>
   <key>RunAtLoad</key>
-  <true/>
+  <false/>
   <key>KeepAlive</key>
   <true/>
   <key>ThrottleInterval</key>

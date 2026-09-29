@@ -1,0 +1,18 @@
+{
+  "workpackage_id": "CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1",
+  "owner_go": true,
+  "semantic_adjudication": "B",
+  "bridge_implementation_authorized": false,
+  "bridge_implementation_required": false,
+  "g2_primary_supported_modes": ["PAPER", "SHADOW", "TESTNET"],
+  "productive_runtime_class": "CURRENT_PRODUCTIVE_MV2_N5_DDO_OFFLINE_EXPORT",
+  "g2_primary_evidence_domain": "bounded_runtime_primary_evidence",
+  "lifecycle_state_fabricated": false,
+  "productive_optimization_join_authorized": false,
+  "productive_configuration_mutated": false,
+  "runtime_apply_started": false,
+  "external_effect": false,
+  "post_allowed": false,
+  "normative_spec": "docs/ops/specs/CURRENT_PRODUCTIVE_LEARNING_TO_G2_PRIMARY_EVIDENCE_CAUSAL_CLOSURE_V1.md",
+  "first_real_blocker_after_adjudication": "MISSING_INDEPENDENT_DURABLE_PAPER_SHADOW_TESTNET_PRIMARY_EVIDENCE_FOR_G2_INGRESS"
+}

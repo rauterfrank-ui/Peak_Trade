@@ -33,8 +33,9 @@ USER_AGENT = "PeakTrade-FullCore-CZ-Productive-ReadOnly-GET/1"
 DEFAULT_TIMEOUT_SECONDS = 20.0
 CONNECT_TIMEOUT_SECONDS = 10.0
 FORBIDDEN_METHODS = frozenset({"POST", "PUT", "DELETE", "PATCH"})
+# GET /api/v5/trade/order?instId=&clOrdId= is read-only exact-order lookup (not POST).
+READ_ONLY_EXACT_ORDER_LOOKUP_PATH = "/api/v5/trade/order"
 FORBIDDEN_ENDPOINTS = (
-    "/api/v5/trade/order",
     "/api/v5/trade/cancel-order",
     "/api/v5/asset/withdrawal",
     "/api/v5/asset/transfer",

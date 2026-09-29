@@ -235,8 +235,11 @@ S6 DURABLE HARNESS — occupied lanes only
         ▼
 S7 DURABLE COMPOSE — occupied lanes only
   reuse S6 restore (load + cycle)
-  persist the NEW outgoing_cursor under the same lane_state_root
-  S7 invocation persist_enabled=true
+  persist the NEW outgoing_cursor under the same lane_state_root only when the
+  productive cycle produced a valid non-null outgoing_cursor; otherwise S7
+  terminates fail-closed before persistence (upstream cycle diagnostics preserved;
+  no cursor fabrication)
+  S7 invocation persist_enabled=true when persist ran
   cap61_state_root_bound=false
   cycle still does not take store_root
         │

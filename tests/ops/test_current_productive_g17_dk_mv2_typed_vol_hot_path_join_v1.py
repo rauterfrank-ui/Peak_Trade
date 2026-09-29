@@ -2,6 +2,11 @@
 
 from __future__ import annotations
 
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    build_provenance_from_governed_synthetic_close_mark_and_index_v1,
+)
+
+
 from pathlib import Path
 
 import pytest
@@ -114,6 +119,11 @@ def test_incomplete_bound_identity_fail_closed(tmp_path: Path) -> None:
 
 
 def test_sufficient_marks_produce_estimate_and_mv2_accepts(tmp_path: Path) -> None:
+    from tests.ops._current_productive_f1_m9_durable_seam_fixture_v1 import (
+        materialize_f1_m9_runtime_applied_seam_ledgers_v1,
+    )
+
+    f1_m9 = materialize_f1_m9_runtime_applied_seam_ledgers_v1(tmp_path / "f1_m9")
     join = prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1(
         evidence_store_root=tmp_path,
         bound_instrument=_bound(),
@@ -127,12 +137,14 @@ def test_sufficient_marks_produce_estimate_and_mv2_accepts(tmp_path: Path) -> No
     assert port.outcome == TypedRuntimeProducerOutcomeV1.PRODUCED
     closes = tuple(100.0 + i * 0.01 for i in range(80))
     last = float(closes[-1])
+    index_px = last * 0.995
+    bound = _bound()
     cycle = run_current_productive_master_v2_runtime_cycle_v1(
-        bound_instrument=_bound(),
+        bound_instrument=bound,
         cycle_id="dk-g17-hot-path-proof",
         observed_unix=1_700_000_100.0,
         mark_px=last,
-        index_px=last,
+        index_px=index_px,
         bid_px=last - 0.5,
         ask_px=last + 0.5,
         volume=12_345.0,
@@ -143,10 +155,19 @@ def test_sufficient_marks_produce_estimate_and_mv2_accepts(tmp_path: Path) -> No
         venue_flat=True,
         existing_position_side=ExistingPositionSide.NONE,
         g17_typed_vol_producer=join.producer,
+        f1_m9_productive_apply_ledger_paths=f1_m9["apply_ledger_paths"],
+        f1_m9_threshold_ledger_paths=f1_m9["threshold_ledger_paths"],
+        canonical_price_provenance=build_provenance_from_governed_synthetic_close_mark_and_index_v1(
+            venue_native_id=str(bound.venue_native_id or bound.instrument_id),
+            mark_px=float(last),
+            index_px=float(index_px),
+        ),
     )
     assert cycle.input_blocker == ""
     assert cycle.replay is not None
     assert TYPED_VOLATILITY_ESTIMATE_MISSING_REASON not in cycle.fail_reasons
+    assert "GOVERNED_SEAM_RECORD_REQUIRED" not in cycle.fail_reasons
+    assert cycle.outgoing_cursor is not None
 
 
 def test_dk_cycle_payload_uses_same_sample_factory() -> None:

@@ -13,6 +13,9 @@ THIS_DOCUMENT_IS_NOT_A_SECOND_RUNBOOK=true
 THIS_DOCUMENT_IS_NOT_A_SECOND_SSOT=true
 PARALLEL_SSOT_CREATED=false
 RUNTIME_AUTHORIZATION_EFFECT=NONE
+CURRENT_ONLY_INVENTORY=false
+CURRENT_ONLY_INVENTORY_REASON=NAVIGATION_ONLY_DESIGN_MIXES_CURRENT_HISTORICAL_FORENSIC_TARGETS
+CURRENT_REVIEWED_AT_SHA=744a9c896f53d33b2d3c24977da1891a2e8549f1
 ```
 
 **Role:** discovery / path resolution only.  
@@ -94,10 +97,22 @@ in the Master Runbook and the named packages.
 | Cap 7.2 host activation binding implementation | `src/ops/single_future_stateful_no_order_runtime_activation_v1/host_binding_v1.py` |
 | Occupied-lane N=5 Full-Autonomy runtime completion | `src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/` |
 | `send_capable_adapter_v1` | `src/ops/governed_productive_account_equity_authority_producer_v1/` and Full-Core composition root |
+| B05 account-equity authority producer (Full-Core) | `src/ops/governed_productive_account_equity_authority_producer_v1/` |
+| B05 reference-price authority producer (Full-Core) | `src/ops/governed_productive_reference_price_authority_producer_v1/` |
+| B05 instrument-metadata authority producer (Full-Core) | `src/ops/governed_productive_instrument_metadata_authority_producer_v1/` |
 | K1 governed-cycle credential bind (navigation only) | `src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_governed_cycle_occupancy_bind_v1.py` |
 | K1 macOS Keychain backend kind (navigation only) | `src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_source_backend_kind_v1.py` |
-| Exactly-one governed cycle | `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py` |
-| `governed_continuous_cycle_orchestrator_v1` | `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py` |
+| S5 exactly-one governed cycle (`run_current_productive_governed_cycle_v1`) | `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py` |
+| S6 continuous-run orchestrator (`governed_continuous_cycle_orchestrator_v1`) | `src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py` / `docs/ops/specs/CURRENT_CONTINUOUS_RUN_POLICY_V1.md` |
+| Persistent Natural-ENTER convergence (fixed S8 lane + S6/S7 offline harness) | `src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py` / `docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_CONVERGENCE_V1.md` |
+| Post-6948 productive continuous-run authority / Live-C1 convergence (navigation) | `src/governance/post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py` / `docs/ops/specs/POST_6948_PRODUCTIVE_CONTINUOUS_RUN_AUTHORITY_LIVE_C1_CONVERGENCE_V1.md` |
+| Policy-governed persistent Natural-ENTER live Fresh-C1 continuous run (Owner-GO wiring) | `src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py` / `docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md` |
+| Side-state / confirmation cursor seam | `src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py` |
+| Productive Full-Core pre-external closure entry | `src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py` |
+| WP-A public market data runtime | `src/ops/peak_trade_public_market_data_runtime_v1/` / `docs/ops/specs/PEAK_TRADE_PUBLIC_MARKET_DATA_RUNTIME_V1.md` |
+| WP-B private account state runtime | `src/ops/okx_eea_private_account_state_runtime_v1/` / `docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md` |
+| WP-C public/private runtime convergence | `src/ops/market_data_private_state_runtime_convergence_v1/` / `docs/ops/specs/MARKET_DATA_PRIVATE_STATE_RUNTIME_CONVERGENCE_V1.md` |
+| Post-#6828 architecture closure (navigation) | `config/governance/post_6828_architecture_closure_v1.json` / `docs/governance/POST_6828_ARCHITECTURE_CLOSURE_V1.md` |
 | Venue-plan tdMode and order-environment authority (navigation only) | `src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py` |
 | Single Selected Future policy | `src/ops/single_selected_future_policy_v1/` |
 | Single Selected Future binding | `src/ops/single_selected_future_runtime_binding_v1/` |
@@ -203,6 +218,162 @@ DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_DURABLE_STORAGE_IMPLEMENTATION_AND_CRASH_
 
 ------------------------------------------------------------------------
 
+
+## 3.1 Full-Core CURRENT productive derived specs (navigation)
+
+Derived specs for Master Runbook §11.2.1 persist slices. Navigation only.
+
+| Label | Path |
+| --- | --- |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_ACCOUNT_EQUITY_AUTHORITY_OWNER_CONCRETE_ASSIGNMENT_RATIFICATION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_ACCOUNT_EQUITY_NEW_DISCRIMINATING_EVIDENCE_SURFACE_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_BIND_CONCRETE_U05_PRIMARY_PROOF_GET_SURFACE_FAIL_CLOSED_NONE_BINDABLE_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_BJ_FUTURE_ADMISSIBLE_EVIDENCE_AND_INCLUDE_EXCLUDE_QUALIFICATION_LAW_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_BORROW_OR_ACCOUNT_LIABILITY_STATE_AND_NON_ALGEBRAIC_EMBEDDING_IDENTITY_PRODUCER_FAIL_CLOSED_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_CAP24_BOUND_INSTRUMENT_PROVENANCE_HANDOFF_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_CHAIN_BASELINE_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_COMMON_EPOCH_HANDOFF_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_FRESH_TRUSTED_USDC_FREE_MARGIN_GET_AND_PRODUCE_SIZING_VALUE_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_MODEL_V1.md` |
+| 11.2.1.CR FULL_CORE_CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_ARCHITECTURE | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACCOUNT_EQUITY_SOURCE_ARCHITECTURE_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_BASE_BINDING_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_PRODUCER_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_SELECTION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITER_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_CAP72_HOST_JOIN_TO_LIVE_EXECUTION_PORT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_EEA_UNIVERSE_INVENTORY_TO_CAP24_AND_29P_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ENTER_LIVE_29P_JOIN_BEFORE_EXECUTABLE_EXTERNAL_EFFECT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEND_SEAM_V1.md` |
+| 11.2.1.DL Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_EXACT_OBJECT_DISPOSITION_TO_ONE_SHOT_FLATTEN_POST_BOUNDARY_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_EXECUTION_ADMISSION_REMAINDER_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_CAP23_CAP24_DECISION_AND_ONE_SHOT_REAL_POST_READINESS_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_EXECUTABLE_ENTER_FINAL_ORDER_ENVELOPE_RUNTIME_REACH_TO_ONE_SHOT_POST_JOIN_BOUNDARY_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_AFTER_FLATTEN_OCCUPANCY_ABSENT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_AFTER_NON_EXECUTABLE_DECISION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_AFTER_NON_EXECUTABLE_DECISION_V2.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_AFTER_NON_EXECUTABLE_DECISION_V3.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_CYCLE_TO_EXACT_ENVELOPE_BOUND_SINGLE_USE_POST_BOUNDARY_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_FROM_PERSISTED_CURSOR_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FRESH_RUNTIME_TO_PRE_EXTERNAL_EFFECT_APPLICABILITY_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_FULL_CORE_PRE_EXTERNAL_CLOSURE_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_G17_DK_MV2_TYPED_VOL_HOT_PATH_JOIN_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_GAP_TRUE_01_EXECUTABLE_ENVELOPE_PRE_EXTERNAL_EVIDENCE_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CYCLE_ORCHESTRATOR_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_NEXT_C1_TRIGGER_AND_EXACTLY_ONE_CYCLE_ORCHESTRATION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_HOST_ENTER_29P_INVALID_STOP_PRICE_REPAIR_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_K1_RUNTIME_BINDING_TO_ONE_SHOT_ACTUAL_VENUE_POST_PRE_LIVE_BOUNDARY_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ACCOUNT_BOUND_AND_INSTRUMENT_SCOPE_FOR_29P_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ARMED_STANDING_GATE_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_AUTHORIZED_AND_CAP_11_1_SEND_CAPABLE_ADAPTER_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_ENABLED_STANDING_GATE_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_LIVE_EXECUTION_PORT_CONSTRUCTION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONESHOT_SIDESTATE_CONFIRMATION_CURSOR_JOIN_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION_V2.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION_V3.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_RUNTIME_CYCLE_AFTER_NEW_FINALIZED_1M_C1_OBSERVATION_V4.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_SHOT_ENTER_E2E_RUNTIME_HANDOFF_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_P01_POLICY_REPLACEMENT_V1.md` |
+| 11.2.1.DM Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_POST_FLATTEN_EVIDENCE_ADJUDICATION_AND_CANONICAL_STATE_ADVANCE_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_SCOPED_ONE_SHOT_C1_OBSERVATION_SOURCE_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_SUBMISSION_AUTHORIZED_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_U01_ACCOUNT_MODE_SEMANTIC_RATIFICATION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_WIRE_SEND_PERMITTED_STANDING_GATE_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D4_BOUND_ACCOUNT_IDENTITY_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D5_CHECKPOINT_OBSERVATION_ACQUISITION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D6_ACCOUNT_EQUITY_SOURCE_MAPPING_RATIFICATION_WORKPACKAGE_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D6_BJ_SEMANTICS_BOUNDED_IMPLEMENTATION_WP1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D6_BK_BOUNDED_IMPLEMENTATION_WP1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D6_CLASSIFIED_KIND_SET_AND_EVENT_SOURCE_SEAM_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D6_COMPLETE_CLASSIFIED_EVENT_STREAM_ACQUISITION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D6_EQUITY_STOCK_NECESSARY_KIND_SET_CLOSEOUT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D6_EQ_IDENTITY_AND_F12_F13_LIABILITY_STOCK_KIND_RATIFICATION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D6_F12_F13_F16_F17_F18_NECESSARY_EQUITY_STOCK_KIND_RESOLUTION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D6_F12_F13_KIND_SET_REMAINING_UNKNOWN_PIN_AND_REOPEN_GATE_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D6_F12_F13_PRIMARY_LIABILITY_STOCK_OBSERVATION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D6_NAMED_REMAINING_UNKNOWN_KIND_SET_EVIDENCE_PERSIST_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D6_PATH_B_CLASS_C_PACKAGE_1_TRADING_ACCOUNT_OBSERVATION_RULES_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D6_PATH_B_D4_D5_GENESIS_REBASELINE_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D6_PATH_B_PACKAGE_1_D4_RUNTIME_BINDING_AND_D5_WINDOW_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D6_PATH_B_PACKAGE_1_OBSERVATION_EXECUTION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D6_PATH_B_PACKAGE_1_S6_MAPPING_CLASSIFICATION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D6_SCOPED_READ_ONLY_OBSERVATION_BOUNDARY_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_D6_SOURCE_MAPPING_AND_COMPLETE_EVENT_STREAM_ACQUISITION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_EQUITY_RECOVERY_PR1_GOVERNANCE_REOPEN_AND_CANDIDATE_CENSUS_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_FORENSIC_ACQUISITION_OF_U05_INDEPENDENT_LIABILITY_EVENT_AND_NON_ALGEBRAIC_EMBEDDING_IDENTITY_PRIMARY_PROOF_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_GOVERNED_RUNNING_ACCOUNT_EQUITY_SAMPLE_SCHEMA_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_KIND_SET_AND_ACCOUNT_EQUITY_SOURCE_MAPPING_ARCHITECTURE_RATIFICATION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_LIVE_CRITICAL_PATH_NEXT_BLOCKER_BOUNDED_WP1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_LIVE_ENABLED_STANDING_ADMISSION_SEAM_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_LIVE_EQUITY_STOCK_BOOTSTRAP_STOCK_ACQUISITION_WP1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_LIVE_EQUITY_STOCK_BOOTSTRAP_STOCK_PROVENANCE_WP1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_LIVE_EQUITY_STOCK_CHECKPOINT_STOCK_VALUE_CONTRACT_WP1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_LIVE_EQUITY_STOCK_KIND_SET_NEW_CANONICAL_DEFINITION_WP1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_LIVE_EQUITY_STOCK_OWNER_SUPPLIED_BOOTSTRAP_ARTIFACT_WP1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_LIVE_EQUITY_STOCK_TODAY_DECLARATION_GOVERNED_BINDING_CONTRACT_WP1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_LIVE_EQUITY_STOCK_TODAY_INITIAL_STOCK_ANCHOR_WP1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_LIVE_EQUITY_STOCK_TODAY_INITIAL_STOCK_KIND_SET_MEMBERSHIP_WP1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_LIVE_EQUITY_STOCK_TODAY_INITIAL_STOCK_RATIFICATION_WP1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_LIVE_EQUITY_STOCK_TODAY_INITIAL_STOCK_SOURCE_KIND_WP1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_LIVE_PATH_COMPOSITION_ROOT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_NON_EQ_EQUITY_STOCK_SOURCE_KIND_OR_COMPLETENESS_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_NON_EQ_EQUITY_STOCK_SOURCE_KIND_PRIMARY_PROOF_SURFACE_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_OPTION_D_GATE_A_INDEPENDENTLY_ATTESTED_PRODUCTIVE_NONZERO_LIABILITY_STOCK_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_OPTION_D_SSOT_CHECKPOINT_EVENT_TAXONOMY_AND_EQ_RECONCILIATION_TARGET_CONTRACTS_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_P1_BOUNDED_QUERY_TRAVERSAL_COMPLETENESS_WITNESS_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_P1_COMPLETENESS_WITNESS_FOUNDATION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_P1_CURRENCY_DOMAIN_COMPLETENESS_WITNESS_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_P1_FINAL_CLOSEOUT_PR1_OF_2_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_P1_LIABILITY_EVENT_CLASS_GOVERNANCE_AND_RATIFIED_QUERY_CLASS_SET_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_P1_MAX_EVIDENCE_CAMPAIGN_TO_NEXT_REAL_BLOCKER_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_P1_NEGATIVE_COMPLETENESS_CLOSEOUT_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_PRODUCTIVE_REMAINING_NECESSARY_EQUITY_STOCK_KIND_U06_AND_RESIDUAL_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_REMAINING_ADMISSION_CHAIN_CLOSEOUT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_REMAINING_NECESSARY_KIND_EVIDENCE_CLASSIFICATION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_RESIDUAL_POSITIVE_NECESSARY_KIND_EXHAUSTIVENESS_DURABLE_UNKNOWN_PIN_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_RESIDUAL_POSITIVE_NECESSARY_KIND_EXHAUSTIVENESS_PRIMARY_PROOF_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_RUNNING_EQUITY_AUTHORITY_ARCHITECTURE_RATIFICATION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_RUNNING_EQUITY_POLICY_SEMANTICS_RATIFICATION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_SOURCE_TO_SEMANTIC_MAPPING_AND_SIZING_PRODUCER_BIND_UNDER_PARALLEL_DECOUPLED_TRACKS_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_STEP_29P_ACCOUNT_EQUITY_MAPPING_OWNER_RATIFICATION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_STEP_29P_ACCOUNT_EQUITY_SOURCE_SEMANTIC_MAPPING_RATIFICATION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_STEP_29P_RISK_ADMISSIBILITY_PRE_CONSTRUCTION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_INTERNAL_RECONSTRUCTION_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_NORMALIZATION_INCLUSION_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_P01_APPLICABILITY_CLASS_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_P01_APPLICABILITY_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_P01_APPLICATION_PREDICATE_IDENTITY_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_P01_APPLICATION_PREDICATE_INPUT_DOMAIN_IDENTITY_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_P01_EMBEDDING_STATE_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_P01_EQUITY_BASE_INCLUSION_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_P01_EXACT_MEMBER_IDENTITY_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_P01_HAIRCUT_RESERVE_DEPLETION_SEMANTICS_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_P01_HAIRCUT_RESERVE_DEPLETION_TERM_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_P01_MEMBER_FRESHNESS_INHERITANCE_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_P01_NUMERIC_VALUE_PROVENANCE_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_P01_OVERLAP_WITH_U04_U05_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_P01_RECONSTRUCTION_SEMANTIC_AND_ALGEBRA_CLOSEOUT_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_P01_TERM_SET_AND_UNIT_CLASS_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_P01_VALUE_UNIT_CLASS_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_RECONSTRUCTION_ALGEBRA_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_TYPED_VENUE_WITNESS_OBSERVATION_CONTRACT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_U04_PENDING_ORDER_RESERVATION_OR_ACCOUNT_EQUITY_MAPPING_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_U05_DURABLE_UNKNOWN_EMBEDDING_IDENTITY_PIN_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_U05_INDEPENDENT_LIABILITY_EVENT_SURFACE_OR_EMBEDDING_WITNESS_QUALIFICATION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_U05_LEGACY_PROOF_RETIREMENT_AND_CANONICAL_REPLACEMENT_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_U05_P1_FUTURES_BOUND_INTEREST_ACCRUED_USDC_SCOPED_GET_ACQUISITION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_U05_PRIMARY_PROOF_BOUND_INTEREST_ACCRUED_GET_ACQUISITION_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_U06_EQUITY_STOCK_PLACEMENT_IDENTITY_DURABLE_UNKNOWN_PIN_V1.md` |
+| Full-Core derived spec (navigation) | `docs/ops/specs/FULL_CORE_U06_PAIRED_FEE_EVENT_AND_ONCE_ONLY_EQUITY_STOCK_EFFECT_PRIMARY_PROOF_SURFACE_BINDING_V1.md` |
 ## 4. Compatibility-only name navigation
 
 Some CURRENT files, claim keys, and evidence directories still use historical

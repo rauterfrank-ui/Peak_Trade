@@ -43,6 +43,10 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     CurrentProductiveU04P01EligibilityHostInputsV1,
     CurrentProductiveU04ReservationTypedEvidenceV1,
 )
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_available_for_sizing_producer_v1 import (
+    CurrentProductiveAccountEligibilityFactV1,
+    CurrentProductiveP01ReductionFactV1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_u04_p01_eligibility_inputs_for_ct_sizing_produce_binding_v1 import (
     bind_current_productive_u04_p01_eligibility_inputs_and_produce_v1,
 )
@@ -86,6 +90,8 @@ class CurrentProductiveTreasurySingleSourceCapitalHandoffV1:
     capital_admission: CapitalAdmissionEvidenceV1
     step_29p_claim: Step29PCapitalRiskAdmissibilityClaimV1
     step_29p_admissibility: Step29PCapitalRiskAdmissibilityV1
+    p01_fact: CurrentProductiveP01ReductionFactV1 | None
+    eligibility_fact: CurrentProductiveAccountEligibilityFactV1 | None
     reason_codes: Tuple[str, ...]
     fail_closed: bool
 
@@ -122,9 +128,23 @@ def execute_current_productive_treasury_single_source_capital_handoff_v1(
     """Delegate one margin observation through Treasury/E4/C08 then B05 29P produce."""
     if clear_treasury_idempotency:
         clear_treasury_reconciliation_idempotency_cache_v1()
-    host_inputs = u04_p01_host_inputs or build_default_full_core_u04_p01_eligibility_host_inputs_v1(
-        raw_acct_lv="2",
-    )
+    if u04_p01_host_inputs is None:
+        return _fail_closed(
+            reasons=(
+                "U04_P01_ELIGIBILITY_HOST_INPUTS_MISSING",
+                "U01_WITNESS_REQUIRED_NO_IMPLICIT_ACCT_LV_DEFAULT",
+            ),
+            treasury_class="",
+            ct_bound=False,
+        )
+    raw_acct_lv = str(u04_p01_host_inputs.u01_raw_acct_lv or "").strip()
+    if raw_acct_lv == "":
+        return _fail_closed(
+            reasons=("U01_RAW_ACCT_LV_WITNESS_MISSING",),
+            treasury_class="",
+            ct_bound=False,
+        )
+    host_inputs = u04_p01_host_inputs
     treasury_obs = build_treasury_venue_observation_from_trusted_account_balance_usdc_avail_eq_v1(
         avail_eq_raw=str(margin_observation.value),
         account_identity=str(margin_observation.bound_account_identity),
@@ -262,6 +282,8 @@ def execute_current_productive_treasury_single_source_capital_handoff_v1(
         capital_admission=capital,
         step_29p_claim=claim,
         step_29p_admissibility=admissibility,
+        p01_fact=p01,
+        eligibility_fact=eligibility,
         reason_codes=tuple(dict.fromkeys(reasons)),
         fail_closed=fail_closed,
     )
@@ -342,6 +364,8 @@ def _fail_closed(
         capital_admission=capital,
         step_29p_claim=claim,
         step_29p_admissibility=adm,
+        p01_fact=None,
+        eligibility_fact=None,
         reason_codes=reasons,
         fail_closed=True,
     )

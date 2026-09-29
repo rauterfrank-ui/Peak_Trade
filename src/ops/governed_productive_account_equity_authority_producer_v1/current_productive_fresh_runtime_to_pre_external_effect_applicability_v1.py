@@ -33,6 +33,17 @@ from src.ops.current_productive_eea_universe_inventory_acquisition_v1.transport_
 from src.ops.p5_10_productive_activation_and_binding_v1.productive_cycle_layered_core_bind_wiring_v1 import (
     productive_layered_core_bind_cycle_kwargs_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1 import (
+    prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_pt1m_mark_sample_adapter_v1 import (
+    ENDPOINT_HISTORY_MARK_PRICE_CANDLES,
+    mark_history_get_query_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    INDEX_SOURCE_OKX_MARK_IDX_PX,
+    build_provenance_from_resolved_cmc_mark_and_index_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     ENDPOINT_MARKET_CANDLES,
     ENDPOINT_MARKET_TICKER,
@@ -644,7 +655,8 @@ def execute_current_productive_fresh_runtime_to_pre_external_effect_applicabilit
             if pos_status == "FOREIGN_OPEN_POSITION_MAX_POSITIONS_1":
                 market_blocker = pos_status
             ticker_payload = candles_payload = oi_payload = funding_payload = None
-            ticker_err = candles_err = oi_err = funding_err = ""
+            mark_history_payload = None
+            ticker_err = candles_err = oi_err = funding_err = mark_history_err = ""
             if not market_blocker:
                 try:
                     ticker_payload, ticker_err = _transport_payload(
@@ -675,6 +687,13 @@ def execute_current_productive_fresh_runtime_to_pre_external_effect_applicabilit
                         auth_required=False,
                         native_id=native_id,
                     )
+                    mark_history_payload, mark_history_err = _transport_payload(
+                        fresh_get_transport,
+                        path=ENDPOINT_HISTORY_MARK_PRICE_CANDLES,
+                        query=mark_history_get_query_v1(venue_native_id=native_id),
+                        auth_required=False,
+                        native_id=native_id,
+                    )
                 except (
                     TypeError,
                     RuntimeError,
@@ -685,12 +704,16 @@ def execute_current_productive_fresh_runtime_to_pre_external_effect_applicabilit
                         market_blocker or f"MARKET_GET_FAIL_CLOSED:{type(exc).__name__}"
                     )
                     ticker_payload = candles_payload = oi_payload = funding_payload = None
-                    ticker_err = candles_err = oi_err = funding_err = type(exc).__name__
+                    mark_history_payload = None
+                    ticker_err = candles_err = oi_err = funding_err = mark_history_err = type(
+                        exc
+                    ).__name__
             market_payloads = {
                 "ticker_error": ticker_err,
                 "candles_error": candles_err,
                 "oi_error": oi_err,
                 "funding_error": funding_err,
+                "mark_history_error": mark_history_err,
             }
             mark_px, index_from_mark = extract_mark_and_index_from_payload_v1(
                 acquisition_result.mark_price_payload, native_id=native_id
@@ -729,11 +752,29 @@ def execute_current_productive_fresh_runtime_to_pre_external_effect_applicabilit
                 missing.append("FUNDING_RATE")
             if not closes or last_ts is None:
                 missing.append("FINALIZED_CANDLES")
-            if ticker_err or candles_err or oi_err or funding_err:
+            if ticker_err or candles_err or oi_err or funding_err or mark_history_err:
                 missing.append("MARKET_GET_ERROR")
+            g17_producer = None
+            if not missing and not market_blocker:
+                g17_join = prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1(
+                    evidence_store_root=store,
+                    bound_instrument=bound,
+                    mark_candles_payload=mark_history_payload,
+                    receive_or_capture_timestamp=str(int(observed_unix * 1000)),
+                )
+                market_payloads["g17_checkpoint_disposition"] = g17_join.checkpoint_disposition
+                market_payloads["g17_estimate_present"] = str(g17_join.estimate_present).lower()
+                if g17_join.fail_closed:
+                    market_blocker = "G17_TYPED_VOL_HOT_PATH_FAIL_CLOSED:" + (
+                        g17_join.reason_code or "UNKNOWN"
+                    )
+                elif not g17_join.estimate_present:
+                    market_blocker = "G17_TYPED_VOL_ESTIMATE_ABSENT"
+                else:
+                    g17_producer = g17_join.producer
             if missing and not market_blocker:
                 market_blocker = "MASTER_V2_REQUIRED_GET_INCOMPLETE:" + ",".join(missing)
-            elif not market_blocker:
+            elif not market_blocker and g17_producer is not None:
                 loaded_cursor = incoming_cursor
                 if loaded_cursor is None and cursor_store_root is not None:
                     try:
@@ -746,26 +787,39 @@ def execute_current_productive_fresh_runtime_to_pre_external_effect_applicabilit
                 cursor_state_before = _cursor_identity_v1(loaded_cursor)
                 if not market_blocker:
                     try:
-                        cycle_result = run_current_productive_master_v2_runtime_cycle_v1(
-                            bound_instrument=bound,
-                            cycle_id=f"dt-{native_id}-{package_started}",
-                            observed_unix=observed_unix,
-                            mark_px=float(mark_px),
-                            index_px=float(index_px),
-                            bid_px=float(bid),
-                            ask_px=float(ask),
-                            volume=float(volume),
-                            open_interest=float(oi),
-                            funding_rate=float(funding),
-                            finalized_closes=closes,
-                            last_finalized_event_ts_unix=float(last_ts),
-                            venue_flat=venue_flat,
-                            existing_position_side=existing_side,
-                            incoming_cursor=loaded_cursor,
-                            **productive_layered_core_bind_cycle_kwargs_v1(
-                                layered_core_store_root=cursor_store_root,
-                                incoming_cursor=loaded_cursor,
+                        cycle_kwargs: dict[str, object] = {
+                            "bound_instrument": bound,
+                            "cycle_id": f"dt-{native_id}-{package_started}",
+                            "observed_unix": observed_unix,
+                            "mark_px": float(mark_px),
+                            "index_px": float(index_px),
+                            "bid_px": float(bid),
+                            "ask_px": float(ask),
+                            "volume": float(volume),
+                            "open_interest": float(oi),
+                            "funding_rate": float(funding),
+                            "finalized_closes": closes,
+                            "last_finalized_event_ts_unix": float(last_ts),
+                            "venue_flat": venue_flat,
+                            "existing_position_side": existing_side,
+                            "g17_typed_vol_producer": g17_producer,
+                            "canonical_price_provenance": build_provenance_from_resolved_cmc_mark_and_index_v1(
+                                venue_native_id=native_id,
+                                mark_px=float(mark_px),
+                                index_px=float(index_px),
+                                index_source=INDEX_SOURCE_OKX_MARK_IDX_PX,
                             ),
+                        }
+                        if loaded_cursor is not None:
+                            cycle_kwargs["incoming_cursor"] = loaded_cursor
+                            cycle_kwargs.update(
+                                productive_layered_core_bind_cycle_kwargs_v1(
+                                    layered_core_store_root=cursor_store_root,
+                                    incoming_cursor=loaded_cursor,
+                                )
+                            )
+                        cycle_result = run_current_productive_master_v2_runtime_cycle_v1(
+                            **cycle_kwargs
                         )
                     except (TypeError, RuntimeError, ValueError) as exc:
                         market_blocker = f"MASTER_V2_RUNTIME_CYCLE_FAIL_CLOSED:{type(exc).__name__}"

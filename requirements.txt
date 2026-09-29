@@ -650,7 +650,9 @@ watchfiles==1.1.1
 wcwidth==0.8.2
     # via prettytable
 websocket-client==1.9.0
-    # via kubernetes
+    # via
+    #   kubernetes
+    #   peak-trade
 websockets==15.0.1
     # via uvicorn
 werkzeug==3.1.4

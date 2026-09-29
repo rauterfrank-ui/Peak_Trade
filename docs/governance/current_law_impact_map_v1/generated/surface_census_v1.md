@@ -1,0 +1,24 @@
+<!-- GENERATED FILE. DO NOT EDIT BY HAND. SOURCE=config/governance/current_law_impact_map_v1/source_v1.json VIEW=surface_census AUTHORITY=NONE LAW_REFERENCE_IS_NORMATIVE=false -->
+
+# Surface Census (navigation only)
+
+AUTHORITY=NONE
+unclassified_count=9
+divergence_count=4
+
+census_id=UCS_EVIDENCE_BINDING_V1
+
+- SEM-SURF-DIV-00001 adjudication=UNKNOWN_CURRENT producer=sobj_mv2_runtime_cycle_host consumer=sobj_mv2_layer_l5_nullline
+- SEM-SURF-DIV-00002 adjudication=UNKNOWN_CURRENT producer=sobj_canonical_price_provenance consumer=sobj_mv2_runtime_cycle_host
+- SEM-SURF-DIV-00003 adjudication=PROVEN_CURRENT producer=csia:account_equity_mapping_unbound consumer=sobj_nav_b05_account_equity_productive_chain
+- SEM-SURF-DIV-00004 adjudication=PROVEN_CURRENT producer=sobj_canonical_price_provenance consumer=current_productive_native_full_cycle_host_v1
+
+- UNCLASSIFIED src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py
+- UNCLASSIFIED src/ops/full_core_live_path_composition_root_v1/current_productive_occupancy_classify_and_c1_gate_v1.py
+- UNCLASSIFIED src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_v1.py
+- UNCLASSIFIED src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_risk_capital_model_v1.py
+- UNCLASSIFIED src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_reserved_productivity_root_guard_v1.py
+- UNCLASSIFIED src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_credential_join_v1.py
+- UNCLASSIFIED src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execute_network_read_credential_loader_v1.py
+- UNCLASSIFIED src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_p01_policy_v1.py
+- UNCLASSIFIED src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_u01_account_mode_adapter_v1.py

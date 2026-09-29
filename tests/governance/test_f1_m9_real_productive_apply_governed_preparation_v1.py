@@ -40,6 +40,7 @@ from src.governance.f1_m9_per_ingress_productive_authorization_binding_v1 import
 )
 from src.governance.f1_m9_productive_apply_durable_ledger_paths_v1 import (
     resolve_canonical_f1_m9_productive_apply_ledger_paths_v1,
+    resolve_canonical_f1_m9_threshold_value_authorization_ledger_paths_v1,
 )
 from src.governance.f1_m9_productive_apply_execution_boundary_v1 import (
     DECISION_CONFIG,
@@ -229,7 +230,14 @@ def test_owner_apply_record_materializes_when_canonical_candidate_resolved(
 def test_durable_ledger_paths_resolve_without_creating_files() -> None:
     paths = resolve_canonical_f1_m9_productive_apply_ledger_paths_v1(repo_root=REPO_ROOT)
     assert "f1_m9_scoped_owner_productive_apply_v1" in str(paths.apply_ledger_path)
-    assert not paths.apply_ledger_path.exists()
+    threshold_paths = resolve_canonical_f1_m9_threshold_value_authorization_ledger_paths_v1(
+        repo_root=REPO_ROOT
+    )
+    assert threshold_paths.threshold_ledger_path.parent == paths.apply_ledger_path.parent
+    assert "threshold_value_authorization_ledger.jsonl" in str(
+        threshold_paths.threshold_ledger_path
+    )
+    assert paths.apply_ledger_path.resolve().is_relative_to(REPO_ROOT.resolve())
 
 
 def test_decision_flag_alone_no_apply(tmp_path: Path) -> None:

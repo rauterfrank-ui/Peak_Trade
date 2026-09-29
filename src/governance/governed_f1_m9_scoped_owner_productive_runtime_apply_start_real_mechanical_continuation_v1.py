@@ -46,6 +46,7 @@ from src.governance.f1_m9_post_real_campaign_productive_handoff_bounded_completi
 from src.governance.f1_m9_productive_apply_execution_boundary_v1 import (
     F1M9ProductiveApplyExecutionPhaseV1,
     F1M9ProductiveApplyExecutionRequestV1,
+    STATUS_EXECUTION_READY,
     STATUS_PRODUCTIVE_APPLY_COMPLETED,
     evaluate_f1_m9_productive_apply_execution_boundary_v1,
 )
@@ -186,9 +187,29 @@ def _derive_runtime_apply_started_v1(
     productive_apply_occurred: bool,
     configuration_record: dict[str, Any] | None,
 ) -> bool:
-    if not productive_apply_occurred or configuration_record is None:
+    if configuration_record is None:
+        return False
+    if configuration_record.get("runtime_applied") is True:
+        return True
+    if not productive_apply_occurred:
         return False
     return configuration_record.get("runtime_applied") is True
+
+
+def _execution_boundary_idempotent_replay_ready_v1(
+    execution: object,
+) -> bool:
+    status = getattr(execution, "execution_status", None)
+    reasons = getattr(execution, "reason_codes", ())
+    config_after = getattr(execution, "configuration_after_execution", None)
+    record = None if config_after is None else getattr(config_after, "configuration_record", None)
+    if status != STATUS_EXECUTION_READY:
+        return False
+    if reasons != ("F1_M9_EXECUTION_BOUNDARY_OK",):
+        return False
+    if not isinstance(record, Mapping):
+        return False
+    return record.get("runtime_applied") is True
 
 
 def run_governed_f1_m9_scoped_owner_productive_runtime_apply_start_continuation_v1(
@@ -318,8 +339,10 @@ def run_governed_f1_m9_scoped_owner_productive_runtime_apply_start_continuation_
         ),
         repo_root=root,
     )
+    idempotent_replay = _execution_boundary_idempotent_replay_ready_v1(execution)
     if execution.execution_status != STATUS_PRODUCTIVE_APPLY_COMPLETED:
-        return _reject(tuple(execution.reason_codes))
+        if not idempotent_replay:
+            return _reject(tuple(execution.reason_codes))
 
     config_after_apply = execution.configuration_after_execution
     if config_after_apply is None or config_after_apply.configuration_record is None:

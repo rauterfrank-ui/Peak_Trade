@@ -13,6 +13,7 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -91,6 +92,8 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     require_current_productive_29p_bound_instrument_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap21_to_cap23_productive_persistence_v1 import (
+    CurrentProductiveCap21ToCap23PersistenceError,
+    assert_current_productive_cap22_ranking_policy_binding_v1,
     eea_mark_price_payload_to_map_by_native_id_v1,
     run_cap21_to_cap23_persist_productive_v1,
 )
@@ -100,7 +103,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.d4_d5_gene
 from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
     verify_manifest_sha256_v1,
 )
-from src.ops.productive_futures_ranking_producer_v1.constants_v1 import RANKING_POLICY_ID
 from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
     PortfolioTruthSnapshotV1,
 )
@@ -136,7 +138,28 @@ NEXT_OWNER_GO = (
     "OWNER_GO_REQUIRED_FOR_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT"
 )
 _SECRET_TOKENS = ("secret", "passphrase", "api_key", "apikey", "private_key")
+_CANONICAL_SYMBOLIC_CLAIM_VALUE_RE = re.compile(r"^SECTION_[A-Z0-9_]+$")
 _REPO_ROOT = Path(__file__).resolve().parents[3]
+
+
+def _iter_persisted_claim_string_values(payload: object) -> list[str]:
+    if isinstance(payload, str):
+        return [payload]
+    if isinstance(payload, Mapping):
+        out: list[str] = []
+        for value in payload.values():
+            out.extend(_iter_persisted_claim_string_values(value))
+        return out
+    if isinstance(payload, (list, tuple)):
+        out = []
+        for item in payload:
+            out.extend(_iter_persisted_claim_string_values(item))
+        return out
+    return []
+
+
+def _value_is_canonical_symbolic_claim_v1(value: str) -> bool:
+    return _CANONICAL_SYMBOLIC_CLAIM_VALUE_RE.fullmatch(str(value or "").strip()) is not None
 
 
 class CurrentProductiveFreshCap23Cap24ReadinessError(ValueError):
@@ -174,10 +197,15 @@ def _persist_json(*, path: Path, payload: Mapping[str, Any]) -> None:
 
 
 def _assert_no_secrets(payload: Mapping[str, Any]) -> None:
-    blob = _canonical_json(payload).lower()
-    for token in _SECRET_TOKENS:
-        if token in blob:
-            raise CurrentProductiveFreshCap23Cap24ReadinessError(f"SECRET_TOKEN_PRESENT:{token}")
+    for value in _iter_persisted_claim_string_values(payload):
+        if _value_is_canonical_symbolic_claim_v1(value):
+            continue
+        lower = value.lower()
+        for token in _SECRET_TOKENS:
+            if token in lower:
+                raise CurrentProductiveFreshCap23Cap24ReadinessError(
+                    f"SECRET_TOKEN_PRESENT:{token}"
+                )
 
 
 def _token(value: bool) -> str:
@@ -234,8 +262,10 @@ def _assert_standing_pins() -> None:
         raise CurrentProductiveFreshCap23Cap24ReadinessError(
             "P01_RUNTIME_INSTANCE_MUST_REMAIN_ABSENT"
         )
-    if RANKING_POLICY_ID != "productive_futures_universe_structural_ranking_v1":
-        raise CurrentProductiveFreshCap23Cap24ReadinessError("RANKING_POLICY_DRIFT")
+    try:
+        assert_current_productive_cap22_ranking_policy_binding_v1()
+    except CurrentProductiveCap21ToCap23PersistenceError as exc:
+        raise CurrentProductiveFreshCap23Cap24ReadinessError(str(exc)) from exc
     if SELECTION_AUTHORITY_OWNER != CAP23_ID:
         raise CurrentProductiveFreshCap23Cap24ReadinessError("SELECTION_OWNER_DRIFT")
     if int(MAX_POSITIONS_EFFECTIVE) != 1:

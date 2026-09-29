@@ -97,8 +97,11 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_execute_network_credential_join_v1 import (
     productive_fail_closed_credential_unavailable_v1 as _fail_closed_credential_unavailable_v1,
+    release_productive_credential_handle_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap21_to_cap23_productive_persistence_v1 import (
+    CurrentProductiveCap21ToCap23PersistenceError,
+    assert_current_productive_cap22_ranking_policy_binding_v1,
     eea_mark_price_payload_to_map_by_native_id_v1,
     run_cap21_to_cap23_persist_productive_v1,
 )
@@ -137,9 +140,6 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.d4_d5_gene
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.package_1_s6_mapping_classification_v1 import (
     verify_manifest_sha256_v1,
-)
-from src.ops.productive_futures_ranking_producer_v1.constants_v1 import (
-    RANKING_POLICY_ID,
 )
 from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
     PortfolioTruthSnapshotV1,
@@ -244,6 +244,7 @@ class CurrentProductiveEeaUniverseTo29PResultV1:
     post_count: str
     evidence_manifest: str
     manifest_verify_rc: int
+    bound_instrument: BoundInstrumentV1 | None = None
 
 
 def _utc_now_iso_v1() -> str:
@@ -325,8 +326,10 @@ def _assert_protected_surfaces_v1() -> None:
         raise CurrentProductiveEeaUniverseTo29PError(
             "RECONSTRUCTION_P01_RUNTIME_INSTANCE_MUST_REMAIN_FALSE"
         )
-    if RANKING_POLICY_ID != "productive_futures_universe_structural_ranking_v1":
-        raise CurrentProductiveEeaUniverseTo29PError("RANKING_POLICY_DRIFT")
+    try:
+        assert_current_productive_cap22_ranking_policy_binding_v1()
+    except CurrentProductiveCap21ToCap23PersistenceError as exc:
+        raise CurrentProductiveEeaUniverseTo29PError(str(exc)) from exc
     if SELECTION_AUTHORITY_OWNER != CAP23_ID:
         raise CurrentProductiveEeaUniverseTo29PError("SELECTION_OWNER_DRIFT")
     if int(MAX_POSITIONS_EFFECTIVE) != 1:
@@ -575,7 +578,7 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
         )
     finally:
         if handle is not None:
-            _fail_closed_credential_unavailable_v1(handle)
+            release_productive_credential_handle_v1(handle)
 
     get_evidence = handoff.get_evidence
     get_status = handoff.get_status
@@ -843,6 +846,7 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
         post_count="0",
         evidence_manifest=str(store / "MANIFEST.sha256"),
         manifest_verify_rc=manifest_rc,
+        bound_instrument=bound,
     )
 
 
@@ -952,6 +956,7 @@ def _persist_terminal_v1(
         post_count="0",
         evidence_manifest=str(store / "MANIFEST.sha256"),
         manifest_verify_rc=manifest_rc,
+        bound_instrument=None,
     )
 
 

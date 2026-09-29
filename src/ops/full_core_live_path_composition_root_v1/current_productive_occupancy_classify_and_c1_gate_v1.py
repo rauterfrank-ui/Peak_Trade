@@ -33,6 +33,15 @@ FALSE_TOKEN = "false"
 TRUE_TOKEN = "true"
 
 
+def productive_auth_free_flat_occupancy_payloads_v1() -> dict[str, object]:
+    """Flat-account occupancy injection when credential positions GET is out of scope."""
+    return {
+        "POSITIONS": {"code": "0", "data": []},
+        "PENDING": {"code": "0", "data": []},
+        "CONFIG": {"code": "0", "data": [{"acctLv": "2", "posMode": "net_mode"}]},
+    }
+
+
 def _token(value: bool) -> str:
     return TRUE_TOKEN if value is True else FALSE_TOKEN
 

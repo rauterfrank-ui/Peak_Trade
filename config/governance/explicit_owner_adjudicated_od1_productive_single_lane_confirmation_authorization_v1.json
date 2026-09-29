@@ -102,6 +102,7 @@
   },
   "mutation_purpose_class": "OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION",
   "notes": [
+    "Slice grant closed after merge. Historical slice_grant_id=SELECTED_FUTURE_PERSISTENT_SCOPE_CONFIRMATION_OD1_SLICE_V1. Historical bound_diff_base_sha=dc727b5ab8885ebd230b428496e5a57173356279. Historical authorized_evidence_digest=759b0a68db7fc4df12d5fe76220a1983b3687bda761c27c0d924c3191314c619.",
     "Slice grant closed after merge. Class remains; grant is inactive. Historical slice_grant_id=OD1_PRODUCTIVE_SINGLE_LANE_CONFIRMATION_BOUNDED_SLICE_V1. Historical bound_diff_base_sha=255450145660c68a98b1dbfd29952308d12932e2. Historical authorized_evidence_digest=f7da8710edd4de1dfceabd9ef3c54fb49b731aa747fed20abcab3ffa104714e6.",
     "Owner adjudication is necessary and not sufficient. Unknown JSON fields fail closed.",
     "Does not waive MASTER_V2_MUTATION_ALLOWED=false or CANONICAL_TRADING_LOGIC_MUTATION_ALLOWED=false.",

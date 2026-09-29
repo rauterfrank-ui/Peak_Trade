@@ -1,0 +1,11 @@
+{
+  "workpackage_id": "FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1",
+  "baseline_origin_main_sha": "fca07afa1fa74a94cdecde3876c9c30ad79ba828",
+  "admission_owner": "governance.current_productive_real_venue_post_admission_v1",
+  "post_admission_evaluator_bound": true,
+  "one_shot_join_admission_integrated": true,
+  "post_allowed": false,
+  "real_venue_post_allowed": false,
+  "target_milestone": "FIRST_BOUNDED_REAL_ENTER_VENUE_POST_PROVEN",
+  "next_genuine_blocker_after_milestone": "OWNER_GO_CURRENT_PRODUCTIVE_EXACT_OBJECT_DISPOSITION_TO_ONE_SHOT_FLATTEN_POST_BOUNDARY_V1"
+}

@@ -2,8 +2,13 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 from typing import Any
+
+_REPO_ROOT = Path(__file__).resolve().parents[3]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
 
 from scripts.ops.system_atlas_v1.constants_v1 import (
     ATLAS_PATH_PREFIXES,
@@ -184,6 +189,7 @@ def validate_atlas_v1(atlas: dict[str, Any]) -> list[str]:
 
     _validate_incompleteness(atlas, meta)
     _validate_master_v2_inventory(atlas, meta)
+    _validate_historical_domain_census_payloads(atlas, meta)
     _validate_reconciliation_if_present(atlas)
 
     return []
@@ -280,8 +286,51 @@ def _validate_incompleteness(atlas: dict[str, Any], meta: dict[str, Any]) -> Non
             raise AtlasValidationError(f"INCOMPLETENESS_FLAG_ORPHAN_REASON:{rid}")
 
 
+_HISTORICAL_DOMAIN_CENSUS_PAYLOADS = (
+    "census/historical_architecture.yaml",
+    "census/historical_terminology.yaml",
+    "census/historical_wiring.yaml",
+    "census/master_v2_module_inventory.yaml",
+    "census/master_v2_semantic_map.yaml",
+    "census/okx_endpoint_classification.yaml",
+    "census/okx_field_census.yaml",
+    "census/okx_fixture_census.yaml",
+    "census/okx_historical.yaml",
+    "census/okx_product_types.yaml",
+    "census/repo_final_resolution.yaml",
+    "census/schema_like_src.yaml",
+)
+
+
+def _validate_historical_domain_census_payloads(
+    atlas: dict[str, Any], meta: dict[str, Any]
+) -> None:
+    if int(meta.get("historical_domain_census_payload_count") or 0) == 0:
+        return
+    bound_sha = str(meta.get("domain_census_payloads_bound_sha") or "")
+    reviewed = str(meta.get("current_reviewed_at_sha") or meta.get("origin_main_sha") or "")
+    for rel in _HISTORICAL_DOMAIN_CENSUS_PAYLOADS:
+        row = atlas["records"].get(rel) or {}
+        if str(row.get("census_payload_role") or "") != "HISTORICAL_DOMAIN_CENSUS":
+            raise AtlasValidationError(f"HISTORICAL_CENSUS_ROLE_MISSING:{rel}")
+        if row.get("keep_noncurrent_reference") is not True:
+            raise AtlasValidationError(f"HISTORICAL_CENSUS_KEEP_REFERENCE:{rel}")
+        if row.get("stale_defect_if_head_differs") is not False:
+            raise AtlasValidationError(f"HISTORICAL_CENSUS_STALE_FLAG:{rel}")
+        content_origin = str(row.get("content_origin_sha") or row.get("origin_main_sha") or "")
+        if bound_sha and content_origin != bound_sha:
+            raise AtlasValidationError(f"HISTORICAL_CENSUS_CONTENT_ORIGIN:{rel}")
+        row_reviewed = str(row.get("current_reviewed_at_sha") or "")
+        if reviewed and row_reviewed and row_reviewed != reviewed:
+            raise AtlasValidationError(f"HISTORICAL_CENSUS_REVIEW_SHA:{rel}")
+
+
 def _validate_master_v2_inventory(atlas: dict[str, Any], meta: dict[str, Any]) -> None:
+    if meta.get("master_v2_module_file_inventory_complete") is not True:
+        return
     inv = atlas["records"].get("census/master_v2_module_inventory.yaml") or {}
+    if not inv:
+        return
     files = list(inv.get("files") or [])
     specs = list(inv.get("capability_spec_files") or [])
     if int(inv.get("python_file_count") or 0) != len(files):
@@ -291,8 +340,19 @@ def _validate_master_v2_inventory(atlas: dict[str, Any], meta: dict[str, Any]) -
     dp_named = sum(1 for row in files if row.get("double_play_named") is True)
     if int(inv.get("double_play_named_file_count") or 0) != dp_named:
         raise AtlasValidationError("MASTER_V2_DOUBLE_PLAY_NAMED_COUNT_MISMATCH")
-    if str(inv.get("origin_main_sha") or "") != str(meta.get("origin_main_sha") or ""):
-        raise AtlasValidationError("MASTER_V2_INVENTORY_SHA_MISMATCH")
+    content_origin = str(
+        inv.get("content_origin_sha")
+        or inv.get("domain_census_payloads_bound_sha")
+        or inv.get("origin_main_sha")
+        or ""
+    )
+    bound_sha = str(meta.get("domain_census_payloads_bound_sha") or "")
+    if content_origin and bound_sha and content_origin != bound_sha:
+        raise AtlasValidationError("MASTER_V2_INVENTORY_CONTENT_ORIGIN_MISMATCH")
+    reviewed = str(inv.get("current_reviewed_at_sha") or "")
+    meta_reviewed = str(meta.get("current_reviewed_at_sha") or meta.get("origin_main_sha") or "")
+    if reviewed and meta_reviewed and reviewed != meta_reviewed:
+        raise AtlasValidationError("MASTER_V2_INVENTORY_REVIEW_SHA_MISMATCH")
     for spec in specs:
         if not str(spec.get("entity") or "").startswith("CAPABILITY:"):
             raise AtlasValidationError(f"MASTER_V2_SPEC_ENTITY_MISSING:{spec.get('path')}")
@@ -316,3 +376,20 @@ def _validate_reconciliation_if_present(atlas: dict[str, Any]) -> None:
         validate_reconciliation_tree_v1(repo_root=repo_root)
     except ReconciliationValidationError as exc:
         raise AtlasValidationError(f"RECONCILIATION_INVALID:{exc}") from exc
+
+
+def main() -> int:
+    from scripts.ops.system_atlas_v1.load_v1 import load_atlas_v1
+
+    atlas = load_atlas_v1(repo_root=_REPO_ROOT)
+    try:
+        validate_atlas_v1(atlas)
+    except AtlasValidationError as exc:
+        print(f"ATLAS_VALIDATION_FAIL:{exc}", file=sys.stderr)
+        return 2
+    print("ATLAS_VALIDATE_OK")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,34 @@
+{
+  "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
+  "authority_effect": "NONE",
+  "base_sha": "6093436031fb27ce2cc0c91074efbab71a9369a3",
+  "changed_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/remaining_29_frozen_workset_v1.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
+    "config/governance/current_law_impact_map_v1/ucs_frozen_workset_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "docs/governance/current_law_impact_map_v1/generated/remaining_29_evidence_exhaustion_v1.md",
+    "docs/governance/current_law_impact_map_v1/generated/surface_census_v1.md",
+    "docs/governance/current_law_impact_map_v1/generated/ucs_workset_disposition_v1.md",
+    "scripts/ops/law_map_v1/remaining_29_evidence_exhaustion_v1.py",
+    "scripts/ops/law_map_v1/surface_census_v1.py",
+    "scripts/ops/law_map_v1/ucs_evidence_binding_v1.py",
+    "tests/ops/test_remaining_29_evidence_exhaustion_v1.py",
+    "tests/ops/test_stale_navigation_rebind_v1.py",
+    "tests/ops/test_ucs_evidence_binding_v1.py"
+  ],
+  "changed_paths_sha256": "d70e8c1d29cbb8e4279a35198cdfe839f013604495c2968a5b5767934ada76bc",
+  "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/source_v1.json",
+    "config/governance/current_law_impact_map_v1/ucs_frozen_workset_v1.json"
+  ],
+  "evidence_refs": [
+    "config/governance/current_law_impact_map_v1/source_v1.json",
+    "tests/ops/test_stale_navigation_rebind_v1.py"
+  ],
+  "selector_used_as_law_impact_authority": false,
+  "verdict": "LAW_MAP_UPDATE_REQUIRED",
+  "reason": "Stale navigation rebind (SN-001..SN-007): UCS/remaining-29 generators and derived law-map views aligned to OD account-equity and OD-29P normative pack; AUTHORITY=NONE."
+}

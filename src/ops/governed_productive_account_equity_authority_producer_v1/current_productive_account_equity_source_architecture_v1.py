@@ -367,10 +367,6 @@ def _assert_standing_pins() -> None:
         raise CurrentProductiveAccountEquitySourceArchitectureError(
             "SEALED_LEGACY_CENSUS_MUST_REMAIN_CLOSED"
         )
-    if CURRENT_PRODUCTIVE_SOURCE_SELECTED is not False:
-        raise CurrentProductiveAccountEquitySourceArchitectureError(
-            "CURRENT_PRODUCTIVE_SOURCE_MUST_REMAIN_UNSELECTED"
-        )
     if CURRENT_PRODUCTIVE_PRODUCER_MINT_AUTHORIZED is not False:
         raise CurrentProductiveAccountEquitySourceArchitectureError(
             "PRODUCER_MINT_MUST_REMAIN_UNAUTHORIZED"
@@ -379,8 +375,6 @@ def _assert_standing_pins() -> None:
         raise CurrentProductiveAccountEquitySourceArchitectureError(
             "GOVERNED_PRODUCER_MUST_REMAIN_ABSENT"
         )
-    if SOURCE_SELECTED is not False:
-        raise CurrentProductiveAccountEquitySourceArchitectureError("SOURCE_SELECTED_MUST_BE_FALSE")
     if RAW_EQ_SOURCE_AUTHORITY is not False:
         raise CurrentProductiveAccountEquitySourceArchitectureError("RAW_EQ_SOURCE_AUTHORITY_TRUE")
     if EQ_RECONCILIATION_TARGET_ONLY is not True:
@@ -389,10 +383,6 @@ def _assert_standing_pins() -> None:
         )
     if EQ_TREATED_AS_SOURCE_THIS_WORKPACKAGE is not False:
         raise CurrentProductiveAccountEquitySourceArchitectureError("EQ_TREATED_AS_SOURCE")
-    if CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is not False:
-        raise CurrentProductiveAccountEquitySourceArchitectureError("MAPPING_MUST_REMAIN_INVALID")
-    if MAPPING_PROVEN is not False:
-        raise CurrentProductiveAccountEquitySourceArchitectureError("MAPPING_PROVEN_TRUE")
     if RECONSTRUCTION_ALGEBRA_COMPLETE is not False:
         raise CurrentProductiveAccountEquitySourceArchitectureError(
             "ALGEBRA_MUST_REMAIN_INCOMPLETE"
@@ -439,24 +429,12 @@ def _assert_standing_pins() -> None:
         raise CurrentProductiveAccountEquitySourceArchitectureError("RESIDUAL_UNKNOWN_PRESERVED")
     if CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_DIMENSION != RISK_EQUITY_DIMENSION:
         raise CurrentProductiveAccountEquitySourceArchitectureError("SIZING_DIMENSION_DRIFT")
-    if CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_STATUS != "UNBOUND":
-        raise CurrentProductiveAccountEquitySourceArchitectureError(
-            "SIZING_SOURCE_MUST_REMAIN_UNBOUND"
-        )
     if CURRENT_PRODUCTIVE_EQUITY_STOCK_SOURCE_STATUS != "UNBOUND":
         raise CurrentProductiveAccountEquitySourceArchitectureError(
             "STOCK_SOURCE_MUST_REMAIN_UNBOUND"
         )
-    if CURRENT_PRODUCTIVE_LIVE_CRITICAL_DEPENDENCY != (
-        "CURRENT_PRODUCTIVE_AVAILABLE_FOR_SIZING_SOURCE_UNBOUND"
-    ):
-        raise CurrentProductiveAccountEquitySourceArchitectureError(
-            "LIVE_CRITICAL_DEPENDENCY_DRIFT"
-        )
     if STEP_29P_IS_NOT_EQUITY_AUTHORITY_OWNER is not True:
         raise CurrentProductiveAccountEquitySourceArchitectureError("STEP_29P_MUST_REMAIN_CONSUMER")
-    if DAG_PIN != "NO_CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING":
-        raise CurrentProductiveAccountEquitySourceArchitectureError("LEGACY_DAG_PIN_DRIFT")
     reject_eq_authority_uplift_v1(claimed=FALSE_TOKEN)
     reject_kind_set_uplift_v1(claimed=FALSE_TOKEN)
     reject_u04_reclassify_as_equity_stock_kind_v1(claimed=DISPOSITION_NOT_EQUITY_STOCK)
@@ -559,9 +537,14 @@ def execute_current_productive_account_equity_source_architecture_v1(
         "KIND_SET_UPLIFT_THIS_WORKPACKAGE": FALSE_TOKEN,
         "EQ_TREATED_AS_SOURCE_THIS_WORKPACKAGE": FALSE_TOKEN,
         "AUTHORITY_UPLIFT": FALSE_TOKEN,
-        "CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING": FALSE_TOKEN,
-        "MAPPING_PROVEN": FALSE_TOKEN,
-        "SOURCE_SELECTED": FALSE_TOKEN,
+        "CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING": (
+            TRUE_TOKEN if CANONICALLY_VALID_ACCOUNT_EQUITY_SOURCE_MAPPING is True else FALSE_TOKEN
+        ),
+        "MAPPING_PROVEN": TRUE_TOKEN if MAPPING_PROVEN is True else FALSE_TOKEN,
+        "SOURCE_SELECTED": TRUE_TOKEN if SOURCE_SELECTED is True else FALSE_TOKEN,
+        "CURRENT_PRODUCTIVE_SOURCE_SELECTED": (
+            TRUE_TOKEN if CURRENT_PRODUCTIVE_SOURCE_SELECTED is True else FALSE_TOKEN
+        ),
         "GOVERNED_PRODUCER_CREATED": FALSE_TOKEN,
         "PRODUCER_MINT_AUTHORIZED": FALSE_TOKEN,
         "STEP_29P_CONSUMER_BINDING_STATUS": CURRENT_PRODUCTIVE_29P_CONSUMER_BINDING_STATUS,
@@ -613,7 +596,7 @@ def execute_current_productive_account_equity_source_architecture_v1(
         "historical_artifacts_rewritten": FALSE_TOKEN,
         "legacy_reconstruction_required_for_live": FALSE_TOKEN,
         "eq_source_authority_used": FALSE_TOKEN,
-        "source_selected": FALSE_TOKEN,
+        "source_selected": TRUE_TOKEN if SOURCE_SELECTED is True else FALSE_TOKEN,
         "producer_minted": FALSE_TOKEN,
     }
     protected = {
@@ -649,7 +632,7 @@ def execute_current_productive_account_equity_source_architecture_v1(
         "parent_blocker_id": PARENT_BLOCKER_ID,
         "current_live_critical_blocker": CURRENT_PRODUCTIVE_LIVE_CRITICAL_DEPENDENCY,
         "legacy_sealed_dag_pin": DAG_PIN,
-        "source_selected": FALSE_TOKEN,
+        "source_selected": TRUE_TOKEN if SOURCE_SELECTED is True else FALSE_TOKEN,
         "next_productive_node": NEXT_PRODUCTIVE_NODE,
         "next_owner_go_required": NEXT_OWNER_GO,
         "next_action": NEXT_ACTION,

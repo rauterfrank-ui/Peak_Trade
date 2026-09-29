@@ -48,6 +48,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1 import (
     OCCUPANCY_OWNER_GO,
 )
+from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+    bind_final_order_envelope_from_venue_plan_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.models_v1 import VenuePlanCandidateV1
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     CURSOR_FILENAME,
     CURSOR_LINEAGE_ID,
@@ -150,15 +154,40 @@ def _t2_hold(**_kwargs: object) -> SimpleNamespace:
     )
 
 
+def _t2_enter_envelope():
+    plan = VenuePlanCandidateV1(
+        instrument_id=NATIVE_ID,
+        side="buy",
+        quantity="1",
+        order_type="market",
+        td_mode="cross",
+        reduce_only=False,
+        clordid="pt-fc-orchestrator-enter-v1",
+        venue_native_payload={"instId": NATIVE_ID, "ordType": "market", "side": "buy", "sz": "1"},
+        quantity_source="TEST_FIXTURE_NOT_LIVE_ENVELOPE",
+        side_source="TEST_FIXTURE_NOT_LIVE_ENVELOPE",
+        instrument_source="TEST_FIXTURE_NOT_LIVE_ENVELOPE",
+        path_kind="FULL_CORE_CURRENT_PRODUCTIVE",
+    )
+    return bind_final_order_envelope_from_venue_plan_v1(
+        plan,
+        admission_ref="TEST_ADMISSION_REF",
+        provenance_ref="TEST_PROVENANCE_REF",
+        creation_epoch="2026-09-27T00:00:00Z",
+    )
+
+
 def _t2_enter(**_kwargs: object) -> SimpleNamespace:
+    envelope = _t2_enter_envelope()
     return SimpleNamespace(
         runtime_cycle_count="1",
         decision_result="EXECUTABLE_VENUE_PLAN_BOUND",
         decision_execution_eligible="true",
         master_v2_decision="enter",
         venue_plan_status="BOUND",
-        final_envelope_id="env-fixture",
-        final_envelope_digest="0" * 64,
+        final_envelope_id=envelope.envelope_id,
+        final_envelope_digest=envelope.envelope_digest,
+        final_order_envelope=envelope,
         permit_created="false",
         post_count="0",
         first_real_blocker=POST_NEXT_OWNER_GO,
@@ -432,6 +461,8 @@ def test_natural_executable_stops_at_pre_external_effect(tmp_path: Path) -> None
     assert result.terminal_class == "PRE_EXTERNAL_EFFECT"
     assert result.t2_consume_count == 1
     assert result.envelope_created is True
+    assert result.final_order_envelope is not None
+    assert len(result.final_order_envelope.envelope_digest) == 64
     assert POST_NEXT_OWNER_GO in result.next_required_owner_decision
     assert "does not compose POST" in result.next_required_owner_decision
     _assert_zero_effect(result)

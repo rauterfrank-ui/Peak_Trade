@@ -57,6 +57,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     bind_s6_governed_continuous_cycle_orchestrator_offline_v1,
     mint_continuous_run_id_v1,
     mint_s5_cycle_consume_instance_id_v1,
+    _advance_persisted_c1_cursor_floor_v1,
     run_current_productive_governed_continuous_cycle_run_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
@@ -98,6 +99,16 @@ from tests.ops.test_full_core_current_productive_governed_next_c1_trigger_and_ex
 )
 from tests.ops.current_productive_c1_cycle_test_fixtures_v1 import (
     _candles,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1 import (
+    cursor_last_accepted_c1_venue_event_time_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
+    CURSOR_FILENAME,
+    CURSOR_LINEAGE_ID,
+)
+from tests.ops.test_full_core_current_productive_scoped_one_shot_c1_observation_source_v1 import (
+    TRACKED_CURSOR,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -382,7 +393,48 @@ def test_second_cycle_reuse_of_consumed_instance_stops(
     _assert_zero_effect(result)
 
 
-def test_stale_or_equal_c1_rejected_without_s5(tmp_path: Path) -> None:
+def _seed_lane_cursor_store(tmp_path: Path, *, event_time: float = CURSOR_FLOOR) -> Path:
+    payload = json.loads(TRACKED_CURSOR.read_text(encoding="utf-8"))
+    payload["lineage_id"] = CURSOR_LINEAGE_ID
+    payload["venue_native_id"] = NATIVE_ID
+    payload["schema_name"] = "current_productive_sidestate_confirmation_cursor.v1"
+    payload["cap61_confirmation_state"]["observation_acceptance_state"][
+        "last_accepted_observation_identity"
+    ]["venue_event_time"] = event_time
+    store = tmp_path / "LANE_1"
+    store.mkdir(parents=True, exist_ok=True)
+    (store / CURSOR_FILENAME).write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    return store
+
+
+def test_s6_cursor_advance_noop_when_s7_already_persisted_same_c1(tmp_path: Path) -> None:
+    store = _seed_lane_cursor_store(tmp_path, event_time=C1_A)
+    _advance_persisted_c1_cursor_floor_v1(cursor_store_root=store, venue_event_time=C1_A)
+
+
+def test_s6_cursor_advance_rejects_older_c1_after_s7_floor(tmp_path: Path) -> None:
+    store = _seed_lane_cursor_store(tmp_path, event_time=C1_B)
+    with pytest.raises(
+        CurrentProductiveGovernedContinuousCycleOrchestratorError,
+        match=REASON_STALE_OR_EQUAL_C1,
+    ):
+        _advance_persisted_c1_cursor_floor_v1(cursor_store_root=store, venue_event_time=C1_A)
+
+
+def test_s6_sequencing_reconciles_when_s7_already_committed_same_c1_floor(
+    tmp_path: Path,
+) -> None:
+    """Regression: pre-fix ``incoming == previous`` raised STALE_OR_EQUAL at cursor_advance."""
+    store = _seed_lane_cursor_store(tmp_path, event_time=C1_A)
+    _advance_persisted_c1_cursor_floor_v1(cursor_store_root=store, venue_event_time=C1_A)
+    _advance_persisted_c1_cursor_floor_v1(cursor_store_root=store, venue_event_time=C1_B)
+    loaded = json.loads((store / CURSOR_FILENAME).read_text(encoding="utf-8"))
+    assert cursor_last_accepted_c1_venue_event_time_v1(loaded) == C1_B
+
+
+def test_stale_or_equal_c1_waits_without_s5_until_max_duration(tmp_path: Path) -> None:
     s5_calls = {"n": 0}
 
     def _runner(**kwargs: object):
@@ -394,8 +446,8 @@ def test_stale_or_equal_c1_rejected_without_s5(tmp_path: Path) -> None:
         observation_source=_source(_obs(CURSOR_FLOOR)),
         s5_runner=_runner,
     )
-    assert result.disposition == DISPOSITION_FAIL_CLOSED
-    assert result.reason_code == REASON_STALE_OR_EQUAL_C1
+    assert result.disposition == DISPOSITION_MAX_DURATION
+    assert result.reason_code == "MAX_RUN_DURATION"
     assert result.s5_invoke_count == 0
     assert s5_calls["n"] == 0
     _assert_zero_effect(result)
@@ -540,13 +592,13 @@ def test_max_duration_and_stall_bounds_stop(tmp_path: Path) -> None:
         cursor_store_root=_seed_cursor(tmp_path / "stall_cursor", event_time=CURSOR_FLOOR),
         observation_source=_source(None, None, None, None, None),
         authorization=_auth(
-            max_run_duration_seconds=90.0,
+            max_run_duration_seconds=5.0,
             stall_seconds=2.0,
             max_wait_for_next_c1_seconds=60.0,
             wait_interval_seconds=1.0,
         ),
     )
-    assert stall.disposition == DISPOSITION_STALL
+    assert stall.disposition == DISPOSITION_MAX_DURATION
     assert stall.s5_invoke_count == 0
     _assert_zero_effect(duration)
     _assert_zero_effect(stall)
