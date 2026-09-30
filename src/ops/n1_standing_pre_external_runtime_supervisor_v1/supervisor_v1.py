@@ -291,6 +291,7 @@ def run_n1_standing_pre_external_supervisor_v1(
         trace.extra["wp02_ranking_snapshot_id"] = str(
             (chain_result.ranking_snapshot or {}).get("ranking_snapshot_id") or ""
         )
+        trace.extra["wp02"] = {"chain_result": chain_result}
 
     trace.pretrade_freshness_status = _refresh_pretrade_truth_v1(
         bound=bound,
