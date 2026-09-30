@@ -30,6 +30,9 @@ from src.ops.exit_policy_producer_binding_v1.host_binding_v1 import (
     HostExitPolicyBindingV1,
     evaluate_host_exit_policy_producers_v1,
 )
+from src.ops.hard_facts_system_closure_v1.durable_kill_switch_mv2_binding_v1 import (
+    resolve_durable_kill_switch_for_mv2_host_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_typed_vol_cmc_bind_v1 import (
     apply_current_productive_g17_typed_vol_cmc_bind_v1,
 )
@@ -574,6 +577,8 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     ddo_durable_evidence_ledger_path: Path | None = None,
     canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
     master_v2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1,
+    kill_switch_state_path: str | None = None,
+    explicit_killstate_active: bool = False,
 ) -> CurrentProductiveMasterV2CycleResultV1:
     instrument_id = str(bound_instrument.instrument_id or "").strip()
     venue_native_id = str(bound_instrument.venue_native_id or "").strip()
@@ -737,6 +742,10 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     position_state = (
         PositionState.FLAT_RECONCILED if venue_flat is True else PositionState.OPEN_FULL
     )
+    durable_kill = resolve_durable_kill_switch_for_mv2_host_v1(
+        kill_switch_state_path=kill_switch_state_path,
+        explicit_active=bool(explicit_killstate_active),
+    )
     exit_binding = HostExitPolicyBindingV1(instrument_id=instrument_id)
     _bundle, exit_signals, exit_safety_mode, exit_trading_gate = (
         evaluate_host_exit_policy_producers_v1(
@@ -752,6 +761,8 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             warmup_complete=bool(features.warmup_complete),
             regime_ok=bool(features.ok),
             price_basis_ok=bool(mark_px > 0),
+            killstate_active=bool(durable_kill.killstate_active),
+            killstate_trigger=str(durable_kill.killstate_trigger or ""),
         )
     )
     root = repo_root or _REPO_ROOT
