@@ -91,6 +91,10 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_live_account_bound_and_instrument_scope_v1 import (
     require_current_productive_29p_bound_instrument_v1,
 )
+from src.ops.economic_md_input_producer_v1.public_md_source_v1 import (
+    EconomicMdPublicSourceV1,
+    OkxPublicEconomicMdReadAdapterV1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap21_to_cap23_productive_persistence_v1 import (
     CurrentProductiveCap21ToCap23PersistenceError,
     assert_current_productive_cap22_ranking_policy_binding_v1,
@@ -284,6 +288,7 @@ def _run_cap21_to_cap24_v1(
     store: Path,
     repo_sha: str,
     observed_unix: float,
+    economic_md_public_source: EconomicMdPublicSourceV1,
 ) -> tuple[
     str,
     dict[str, str],
@@ -309,6 +314,7 @@ def _run_cap21_to_cap24_v1(
         repository_sha=repo_sha,
         observed_unix=observed_unix,
         session_id_prefix="current-productive-dj",
+        economic_md_public_source=economic_md_public_source,
     )
     if cap21_23.ok is not True or cap21_23.selection is None:
         return cap21_23.status, empty, None, cap21_23.selection, None
@@ -380,6 +386,7 @@ def execute_current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post
     vault_file: Path | str | None = None,
     acquisition_transport: EeaPublicUniverseGetPortV1 | None = None,
     acquisition_result: EeaUniverseAcquisitionResultV1 | None = None,
+    economic_md_public_source: EconomicMdPublicSourceV1 | None = None,
     fresh_get_transport: FullCoreFreshPretradeGetTransportV1 | None = None,
     replay: Optional[IntegratedOfflineReplayResultV1] = None,
     execute_network: bool = False,
@@ -418,11 +425,18 @@ def execute_current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post
         selection = None
         cap_status = first_blocker
     else:
+        capture_ts = datetime.fromtimestamp(observed_unix, tz=timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"
+        )
+        md_source = economic_md_public_source or OkxPublicEconomicMdReadAdapterV1(
+            capture_timestamp=capture_ts
+        )
         cap_status, identities, bound, selection, _admission = _run_cap21_to_cap24_v1(
             acquisition=acquisition_result,
             store=store,
             repo_sha=repo_sha,
             observed_unix=observed_unix,
+            economic_md_public_source=md_source,
         )
         first_blocker = cap_status if cap_status != "PASS" else ""
 

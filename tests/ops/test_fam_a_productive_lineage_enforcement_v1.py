@@ -24,6 +24,9 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     assert_standalone_capability_state_root_not_reserved_cap24_v1,
     reserved_cap24_productivity_root_v1,
 )
+from tests.ops._productive_economic_md_inject_helpers_v1 import (
+    injected_economic_md_source_for_venue_native_ids_v1,
+)
 from tests.ops.test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1 import (
     _eligible_rows,
     _okx_envelope,
@@ -57,6 +60,11 @@ def _acquisition() -> EeaUniverseAcquisitionResultV1:
     )
 
 
+def _economic_md_source():
+    rows = _eligible_rows()
+    return injected_economic_md_source_for_venue_native_ids_v1([r["instId"] for r in rows])
+
+
 def test_shared_chain_proceeds_with_valid_cap22_binding(tmp_path: Path) -> None:
     result = run_cap21_to_cap23_persist_productive_v1(
         acquisition=_acquisition(),
@@ -64,6 +72,7 @@ def test_shared_chain_proceeds_with_valid_cap22_binding(tmp_path: Path) -> None:
         repository_sha=BASE_SHA,
         observed_unix=1_700_000_100.0,
         session_id_prefix="fam-a-test",
+        economic_md_public_source=_economic_md_source(),
     )
     assert result.ok is True
     assert result.selection is not None
@@ -84,6 +93,7 @@ def test_shared_chain_fails_closed_on_cap22_binding_drift(tmp_path: Path) -> Non
                 repository_sha=BASE_SHA,
                 observed_unix=1_700_000_100.0,
                 session_id_prefix="fam-a-test",
+                economic_md_public_source=_economic_md_source(),
             )
 
 
@@ -101,6 +111,7 @@ def test_direct_chain_invocation_cannot_bypass_binding_assert(tmp_path: Path) ->
                 repository_sha=BASE_SHA,
                 observed_unix=1_700_000_100.0,
                 session_id_prefix="fam-a-test",
+                economic_md_public_source=_economic_md_source(),
             )
         mocked.assert_called_once()
 

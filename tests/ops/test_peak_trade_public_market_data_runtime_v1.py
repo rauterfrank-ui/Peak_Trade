@@ -33,6 +33,13 @@ from src.ops.peak_trade_public_market_data_runtime_v1.event_pipeline_v1 import (
     EventSequenceStateV1,
     process_public_events_v1,
 )
+from src.ops.peak_trade_public_market_data_runtime_v1.event_sequence_persistence_v1 import (
+    load_event_sequence_state_v1,
+    persist_event_sequence_state_v1,
+)
+from src.ops.peak_trade_public_market_data_runtime_v1.ws_channel_normalizers_v1 import (
+    normalize_ws_payload_to_canonical_facts_v1,
+)
 from src.ops.peak_trade_public_market_data_runtime_v1.freshness_v1 import (
     PublicFreshnessError,
     assert_no_global_trade_max_age_v1,
@@ -326,6 +333,55 @@ def test_gap_not_recovered_fail_closed() -> None:
             missing_interval_starts_ms=[BASE_TS],
             captured_at="2026-09-26T00:00:00Z",
         )
+
+
+def test_ws_channel_normalizers_mark_trade_bba() -> None:
+    inst = {
+        "canonical_instrument_id": "inst-eth",
+        "venue_native_id": "ETH-USDT-SWAP",
+        "venue": "okx_eea",
+        "instrument_type": "SWAP",
+        "settlement_asset": "USDT",
+        "mapping_provenance_digest": "d",
+    }
+    ticker = normalize_ws_payload_to_canonical_facts_v1(
+        {
+            "arg": {"channel": "tickers", "instId": "ETH-USDT-SWAP"},
+            "data": [{"instId": "ETH-USDT-SWAP", "markPx": "100.1", "ts": "1000"}],
+        },
+        instrument_ref=inst,
+        captured_at="2026-09-26T00:00:00Z",
+        session_id="s1",
+    )
+    assert ticker[0]["fact_kind"] == "MarkPriceFactV1"
+    trade = normalize_ws_payload_to_canonical_facts_v1(
+        {
+            "arg": {"channel": "trades"},
+            "data": [{"tradeId": "t1", "px": "99", "sz": "1", "side": "buy", "ts": "1001"}],
+        },
+        instrument_ref=inst,
+        captured_at="2026-09-26T00:00:00Z",
+        session_id="s1",
+    )
+    assert trade[0]["fact_kind"] == "TradeFactV1"
+    bba = normalize_ws_payload_to_canonical_facts_v1(
+        {
+            "arg": {"channel": "books5"},
+            "data": [{"bids": [["99", "1"]], "asks": [["101", "1"]], "ts": "1002"}],
+        },
+        instrument_ref=inst,
+        captured_at="2026-09-26T00:00:00Z",
+        session_id="s1",
+    )
+    assert bba[0]["fact_kind"] == "BestBidAskFactV1"
+
+
+def test_event_sequence_state_durable_round_trip(tmp_path: Path) -> None:
+    state = EventSequenceStateV1(last_event_ts_ms=5000, seen_ids={"a", "b"})
+    persist_event_sequence_state_v1(tmp_path, state)
+    loaded = load_event_sequence_state_v1(tmp_path)
+    assert loaded.last_event_ts_ms == 5000
+    assert loaded.seen_ids == {"a", "b"}
 
 
 def test_policy_config_present() -> None:

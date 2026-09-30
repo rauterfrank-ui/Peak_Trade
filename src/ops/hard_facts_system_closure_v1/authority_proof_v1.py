@@ -8,6 +8,8 @@ from src.ops.hard_facts_system_closure_v1.constants_v1 import (
     CAP22_RANKING_CONTEXT_ONLY,
     CAP23_SOLE_SELECTION_AUTHORITY,
     CAP24_BIND_ONLY,
+    CASE_SWITCH_CANONICAL_OWNER,
+    CASE_SWITCH_MODEL,
     DOUBLE_PLAY_TRADING_DECISION_SEMANTICS,
     EXTERNAL_EFFECT_AUTHORIZED,
     INTELLIGENCE_ZERO_TRADING_DECISION_AUTHORITY,
@@ -30,6 +32,8 @@ class HardFactsAuthorityProofResultV1:
 
 def prove_hard_facts_authority_invariants_v1() -> HardFactsAuthorityProofResultV1:
     matrix = {
+        "case_switch_model": CASE_SWITCH_MODEL == "COMPOSED_OWNER_CHAIN",
+        "case_switch_canonical_owner_none": CASE_SWITCH_CANONICAL_OWNER == "NONE",
         "cap22_ranking_context_only": CAP22_RANKING_CONTEXT_ONLY,
         "cap23_sole_selection_authority": CAP23_SOLE_SELECTION_AUTHORITY,
         "cap24_bind_only": CAP24_BIND_ONLY,

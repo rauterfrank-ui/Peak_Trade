@@ -2,6 +2,7 @@
 # Primary entity catalog. current_canonical requires external (non-Atlas) authority_sources.
 entities:
   - id: SYSTEM:peak_trade
+    # atlas_entity_review: PR #6983 — N=1 whole-system hard-facts integration WP (PRE_EXTERNAL terminal); composes existing owners; AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: B10_ROBUSTNESS_AND_STRESS_V1 proof-only; no authority change.
     kind: SYSTEM
     name: Peak_Trade
@@ -533,6 +534,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: CAPABILITY:cap_economic_md_input
+    # atlas_entity_review: PR #6983 — EEA-only productive REST host; offline inject bundles; Cap21→real B05 feature path; AUTHORITY=NONE; POST_COUNT=0.
     kind: CAPABILITY
     name: Persisted Multi-Instrument Economic Market Data Input
     epistemic_class: CANONICAL_AUTHORITY
@@ -554,11 +556,13 @@ entities:
       - src/ops/economic_md_input_producer_v1/single_writer_v1.py
       - src/ops/economic_md_input_producer_v1/universe_gate_v1.py
       - src/ops/economic_md_input_producer_v1/validation_v1.py
+      - src/ops/economic_md_input_producer_v1/offline_inject_bundles_v1.py
       - scripts/ops/run_economic_md_input_producer_v1.py
     evidence_sources:
       - docs/ops/specs/CAPABILITY_PERSISTED_MULTI_INSTRUMENT_ECONOMIC_MD_INPUT_V1.md
       - src/ops/economic_md_input_producer_v1/producer_v1.py
       - src/ops/cap22_economic_md_dual_input_contract_v1.py
+      - evidence/ops/n1_whole_system_hard_facts_integration_wp_v1/20260930T041500Z/N1_WHOLE_SYSTEM_HARD_FACTS_INTEGRATION_WP_V1.md
     notes: >-
       Implemented-not-wired Economic-MD-Input capability. Owner of its own
       Public-MD network reads, multi-instrument collection, persistence,
@@ -575,6 +579,7 @@ entities:
       Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: CAPABILITY:peak_trade_public_market_data_runtime_v1
+    # atlas_entity_review: PR #6983 — WS channel normalizers + durable event sequence persistence in orchestrator; AUTHORITY=NONE; POST_COUNT=0.
     kind: CAPABILITY
     name: OKX EEA Public Market Data Runtime (observation-only)
     epistemic_class: CANONICAL_AUTHORITY
@@ -591,6 +596,8 @@ entities:
       - src/ops/peak_trade_public_market_data_runtime_v1/consumer_adapters_v1.py
       - src/ops/peak_trade_public_market_data_runtime_v1/durable_store_v1.py
       - src/ops/peak_trade_public_market_data_runtime_v1/event_pipeline_v1.py
+      - src/ops/peak_trade_public_market_data_runtime_v1/event_sequence_persistence_v1.py
+      - src/ops/peak_trade_public_market_data_runtime_v1/ws_channel_normalizers_v1.py
       - src/ops/peak_trade_public_market_data_runtime_v1/facts_v1.py
       - src/ops/peak_trade_public_market_data_runtime_v1/freshness_v1.py
       - src/ops/peak_trade_public_market_data_runtime_v1/historical_query_v1.py
@@ -3615,6 +3622,7 @@ entities:
       (activation WP only); no productive bind; ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:hard_facts_system_closure_v1
+    # atlas_entity_review: PR #6983 — productive real B05 Cap22 bridge module; composed-owner constants; AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6982 — hard-facts deterministic closure (Cap22 handoff, identity, kill-switch MV2 bind); AUTHORITY=NONE; POST_COUNT=0.
     kind: CONTRACT
     name: Hard-facts system closure v1
@@ -3635,16 +3643,56 @@ entities:
       - src/ops/hard_facts_system_closure_v1/lane_health_membership_feedback_v1.py
       - src/ops/hard_facts_system_closure_v1/position_aware_rotation_v1.py
       - src/ops/hard_facts_system_closure_v1/productive_mf_n5_handoff_join_v1.py
+      - src/ops/hard_facts_system_closure_v1/productive_real_b05_cap22_v1.py
       - src/ops/hard_facts_system_closure_v1/treasury_restart_guard_v1.py
       - tests/ops/test_hard_facts_system_closure_v1.py
     evidence_sources:
       - evidence/ops/hard_facts_system_closure_v1/HARD_FACTS_SYSTEM_CLOSURE_V1.md
+      - evidence/ops/n1_whole_system_hard_facts_integration_wp_v1/20260930T041500Z/N1_WHOLE_SYSTEM_HARD_FACTS_INTEGRATION_WP_V1.md
       - tests/ops/test_hard_facts_system_closure_v1.py
     notes: >-
       Closes deterministic hard-facts wiring: Cap22 productive-real gate, POLICY_A MF-N5 handoff,
       instrument-sensitive identity adjudication, lane-health membership feedback, durable kill-switch
       to MV2 host exit producers. No new trading decision owner. PRE_EXTERNAL terminal.
       ATLAS_AUTHORITY=NONE.
+
+  - id: CONTRACT:n1_whole_system_hard_facts_integration_wp_v1
+    # atlas_entity_review: PR #6983 — N=1 whole-system hard-facts integration through PRE_EXTERNAL admission; orchestration-only supervisor; AUTHORITY=NONE; POST_COUNT=0.
+    kind: CONTRACT
+    name: N=1 whole-system hard-facts integration WP v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: N1_WHOLE_SYSTEM_HARD_FACTS_INTEGRATION_WP_V1
+    authority_sources:
+      - evidence/ops/n1_whole_system_hard_facts_integration_wp_v1/20260930T041500Z/N1_WHOLE_SYSTEM_HARD_FACTS_INTEGRATION_WP_V1.md
+      - evidence/ops/n1_whole_system_hard_facts_integration_wp_v1/20260930T041500Z/PRE_IMPLEMENTATION_OWNER_CLOSURE_V1.json
+    source_paths:
+      - evidence/ops/n1_whole_system_hard_facts_integration_wp_v1/20260930T041500Z/N1_WHOLE_SYSTEM_HARD_FACTS_INTEGRATION_WP_V1.md
+      - evidence/ops/n1_whole_system_hard_facts_integration_wp_v1/20260930T041500Z/PRE_EXTERNAL_AUTONOMY_ADMISSION_V1.json
+      - evidence/ops/n1_whole_system_hard_facts_integration_wp_v1/20260930T041500Z/PRE_IMPLEMENTATION_OWNER_CLOSURE_V1.json
+      - src/ops/n1_whole_system_hard_facts_integration_wp_v1/__init__.py
+      - src/ops/n1_whole_system_hard_facts_integration_wp_v1/backlog_matrix_v1.py
+      - src/ops/n1_whole_system_hard_facts_integration_wp_v1/composed_identity_custody_health_v1.py
+      - src/ops/n1_whole_system_hard_facts_integration_wp_v1/constants_v1.py
+      - src/ops/n1_whole_system_hard_facts_integration_wp_v1/execution_lifecycle_chain_v1.py
+      - src/ops/n1_whole_system_hard_facts_integration_wp_v1/golden_happy_path_trace_harness_v1.py
+      - src/ops/n1_whole_system_hard_facts_integration_wp_v1/pre_external_autonomy_admission_v1.py
+      - src/ops/n1_whole_system_hard_facts_integration_wp_v1/private_observation_chain_v1.py
+      - src/ops/n1_whole_system_hard_facts_integration_wp_v1/public_real_md_cap22_n1_chain_v1.py
+      - src/ops/n1_whole_system_hard_facts_integration_wp_v1/public_runtime_economic_md_adapter_v1.py
+      - src/ops/n1_whole_system_hard_facts_integration_wp_v1/standing_n1_pre_external_supervisor_v1.py
+      - src/ops/n1_whole_system_hard_facts_integration_wp_v1/unified_recovery_orchestration_v1.py
+      - tests/ops/test_n1_whole_system_hard_facts_integration_wp_v1.py
+    evidence_sources:
+      - evidence/ops/n1_whole_system_hard_facts_integration_wp_v1/20260930T041500Z/N1_WHOLE_SYSTEM_HARD_FACTS_INTEGRATION_WP_V1.md
+      - evidence/ops/n1_whole_system_hard_facts_integration_wp_v1/20260930T041500Z/PRE_EXTERNAL_AUTONOMY_ADMISSION_V1.json
+      - tests/ops/test_n1_whole_system_hard_facts_integration_wp_v1.py
+    notes: >-
+      Integration WP composing public MD, Economic-MD, Cap22 real B05, POLICY_A N=1 handoff,
+      composed identity/custody/health/safety, private observation, execution lifecycle,
+      unified recovery, standing PRE_EXTERNAL supervisor, and golden trace harness.
+      No new trading decision owner. POST forbidden. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:whole_system_connection_closure_bounded_wp_v1
     # atlas_entity_review: PR #6969 — classify native full-cycle MV2 state-advance caller in static proof only;
@@ -5921,6 +5969,7 @@ entities:
 
   # atlas_entity_review: PR6966 L019/DIV-001 synthetic canonical mark provenance (AUTHORITY=NONE)
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # atlas_entity_review: PR #6983 — Cap21→Cap23 productive persistence wires real B05 from Economic-MD (no synthetic ranking fallback); AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6982 — durable kill-switch file wired to MV2 HostExitPolicy killstate_active; no new kill owner; AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6974 — Productive reconciliation single-check + Master-V2 entry admission carrier; upstream Cap-1.1 provenance required; no second reconcile in MV2/DP; replay_reconciliation_state threading; AUTHORITY=NONE; POST_COUNT=0; RECONCILIATION_AUTHORITY_TRANSFER=false.
     # atlas_entity_review: Post-#6962 treasury single-source handoff fail-closed without explicit U01 acctLv witness (SEM-SURF-DIV-00004); enter-live still passes injected host inputs; MV2/DP unchanged; AUTHORITY=NONE; POST_COUNT=0.

@@ -72,6 +72,7 @@ relations:
   evidence_sources:
   - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
 - id: REL:s_system_has_public_market_data_runtime_v1
+  # atlas_entity_review: PR #6983 — public MD runtime WS normalization + sequence persistence; relation unchanged; AUTHORITY=NONE; POST_COUNT=0.
   source: SYSTEM:peak_trade
   type: HAS_CAPABILITY
   target: CAPABILITY:peak_trade_public_market_data_runtime_v1

@@ -1,0 +1,34 @@
+{
+  "schema_version": "n1_whole_system_hard_facts_integration_wp.v1",
+  "baseline_sha": "f1288b2a289b0cf21c85c746e92e62ee74bc871e",
+  "branch": "feat/n1-whole-system-hard-facts-integration-v1",
+  "pre_implementation_owner_closure": "CLOSED",
+  "implementation_wp_ready": true,
+  "rw_pub_g5": {
+    "status": "CLOSED_OWNER_DECISION",
+    "owner_decision": "OPTION_A_EEA_ONLY_PRODUCTIVE",
+    "public_rest_canonical_host": "eea.okx.com",
+    "public_ws_canonical_host": "wseea.okx.com",
+    "productive_economic_md_host": "eea.okx.com",
+    "www_productive_authority": false,
+    "silent_eea_to_www_fallback": false,
+    "dual_host_productive_policy": false
+  },
+  "rw_e6": {
+    "status": "PROVEN_CURRENT",
+    "case_switch_model": "COMPOSED_OWNER_CHAIN",
+    "case_switch_canonical_owner": "NONE",
+    "trading_eligibility_owner": "evaluate_host_exit_policy_producers_v1 → TradingGate/SafetyMode → double_play_entry_exit_policy_v0",
+    "membership_eligibility_owner": "run_isolated_selector_cycle_v1 + classify_lane_health_membership_feedback_v1 + evaluate_position_aware_rotation_v1",
+    "lane_health_owner": "classify_lane_health_membership_feedback_v1",
+    "mandatory_exit_owner": "double_play_entry_exit_policy_v0 + evaluate_exit_policy_producers_v1",
+    "open_position_custody_owner": "evaluate_position_aware_rotation_v1",
+    "global_halt_owner": "LaneHealthClass.GLOBAL_HALT + resolve_durable_kill_switch_for_mv2_host_v1"
+  },
+  "safety_boundary": {
+    "post_allowed": false,
+    "external_effect_authorized": false,
+    "real_venue_post_allowed": false,
+    "pre_external_terminal": true
+  }
+}

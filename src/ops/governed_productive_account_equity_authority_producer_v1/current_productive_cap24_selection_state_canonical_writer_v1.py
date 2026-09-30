@@ -34,6 +34,10 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.constants_
     P01_RUNTIME_INSTANCE_PRESENT,
     SEALED_LEGACY_CENSUS_REOPENED,
 )
+from src.ops.economic_md_input_producer_v1.public_md_source_v1 import (
+    EconomicMdPublicSourceV1,
+    OkxPublicEconomicMdReadAdapterV1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap21_to_cap23_productive_persistence_v1 import (
     CurrentProductiveCap21ToCap23PersistenceError,
     assert_current_productive_cap22_ranking_policy_binding_v1,
@@ -240,6 +244,7 @@ def execute_current_productive_cap24_selection_state_canonical_write_v1(
     owner_go: str,
     origin_main_sha: str,
     acquisition_result: EeaUniverseAcquisitionResultV1,
+    economic_md_public_source: EconomicMdPublicSourceV1 | None = None,
     productivity_root: Path | None = None,
     repository_sha: str | None = None,
     producer_observed_at_unix: float | None = None,
@@ -293,12 +298,19 @@ def execute_current_productive_cap24_selection_state_canonical_write_v1(
     staging_root = prod_root.parent / f".cap24_selection_state_staging_{uuid.uuid4().hex}"
     staging_root.mkdir(parents=True, exist_ok=True)
     try:
+        capture_ts = datetime.fromtimestamp(observed_unix, tz=timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%SZ"
+        )
+        md_source = economic_md_public_source or OkxPublicEconomicMdReadAdapterV1(
+            capture_timestamp=capture_ts
+        )
         cap21_23 = run_cap21_to_cap23_persist_productive_v1(
             acquisition=acquisition_result,
             store=staging_root,
             repository_sha=repo_sha,
             observed_unix=observed_unix,
             session_id_prefix="current-productive-cap24-writer",
+            economic_md_public_source=md_source,
         )
         if cap21_23.ok is not True or cap21_23.selection is None:
             raise CurrentProductiveCap24SelectionStateWriterError(cap21_23.status)

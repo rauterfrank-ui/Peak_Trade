@@ -5,10 +5,13 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from src.ops.economic_md_input_producer_v1.constants_v1 import (
     ALLOWED_PUBLIC_GET_PATHS,
     CALL_GRAPH,
     CAPABILITY_ID,
+    PUBLIC_HTTP_HOST,
     ECONOMIC_MD_PRODUCER_IMPLEMENTED,
     ECONOMIC_MD_PRODUCER_MAY_APPLY_POLICY_A,
     ECONOMIC_MD_PRODUCER_MAY_DEFINE_ACTIVE_SET,
@@ -39,6 +42,7 @@ from src.ops.economic_md_input_producer_v1.public_md_source_v1 import (
     InstrumentPublicMdBundleV1,
     RawMarkCandleV1,
     RawTickerQuoteV1,
+    assert_productive_economic_md_rest_host_v1,
     assert_public_get_path_allowed_v1,
 )
 from src.ops.economic_md_input_producer_v1.reason_codes_v1 import EconomicMdFailureCodeV1
@@ -439,3 +443,11 @@ def test_constants_and_schema_identity() -> None:
     assert "ECONOMIC_MD_PRODUCER_IMPLEMENTED=true" in text
     assert "ECONOMIC_MD_PRODUCER_PRODUCTIVELY_SCHEDULED=false" in text
     assert "ECONOMIC_MD_PRODUCER_MAY_RANK=false" in text
+
+
+def test_productive_economic_md_rest_host_eea_only() -> None:
+    assert PUBLIC_HTTP_HOST == "eea.okx.com"
+    assert_productive_economic_md_rest_host_v1("eea.okx.com")
+    assert_productive_economic_md_rest_host_v1("https://eea.okx.com/api/v5/market/ticker")
+    with pytest.raises(EconomicMdPublicSourceError):
+        assert_productive_economic_md_rest_host_v1("www.okx.com")

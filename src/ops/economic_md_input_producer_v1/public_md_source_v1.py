@@ -16,6 +16,7 @@ from src.ops.economic_md_input_producer_v1.constants_v1 import (
     ALLOWED_PUBLIC_GET_PATHS,
     FORBIDDEN_AUTH_HEADERS,
     FORBIDDEN_PATH_PREFIXES,
+    FORBIDDEN_PRODUCTIVE_PUBLIC_REST_HOSTS,
     HTTP_MAX_RESPONSE_BYTES,
     HTTP_MAX_RETRIES,
     HTTP_TIMEOUT_SECONDS,
@@ -23,7 +24,9 @@ from src.ops.economic_md_input_producer_v1.constants_v1 import (
     MARK_ENDPOINT_PATH,
     MARK_HISTORY_LIMIT,
     MARK_SOURCE_CLASS,
+    PRODUCTIVE_ECONOMIC_MD_REST_HOST,
     PUBLIC_HTTP_BASE_URL,
+    PUBLIC_HTTP_HOST,
     TICKER_ENDPOINT_PATH,
     TICKER_SOURCE_CLASS,
 )
@@ -137,8 +140,25 @@ def _default_public_get(
         ) from exc
 
 
+def assert_productive_economic_md_rest_host_v1(url_or_host: str) -> None:
+    host = (
+        str(url_or_host or "").replace("https://", "").replace("http://", "").split("/")[0].lower()
+    )
+    if host in FORBIDDEN_PRODUCTIVE_PUBLIC_REST_HOSTS:
+        raise EconomicMdPublicSourceError(
+            EconomicMdFailureCodeV1.FORBIDDEN_NETWORK_PATH.value,
+            f"PRODUCTIVE_PUBLIC_REST_HOST_FORBIDDEN:{host}",
+        )
+    if host != PRODUCTIVE_ECONOMIC_MD_REST_HOST:
+        raise EconomicMdPublicSourceError(
+            EconomicMdFailureCodeV1.FORBIDDEN_NETWORK_PATH.value,
+            f"PRODUCTIVE_PUBLIC_REST_HOST_NOT_EEA:{host}",
+        )
+
+
 def _build_url(path: str, params: Mapping[str, str]) -> str:
     assert_public_get_path_allowed_v1(path)
+    assert_productive_economic_md_rest_host_v1(PUBLIC_HTTP_HOST)
     query = parse.urlencode(dict(params))
     return f"{PUBLIC_HTTP_BASE_URL}{path}?{query}" if query else f"{PUBLIC_HTTP_BASE_URL}{path}"
 

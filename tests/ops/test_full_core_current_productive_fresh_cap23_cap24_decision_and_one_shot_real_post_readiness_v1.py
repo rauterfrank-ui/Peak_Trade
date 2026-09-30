@@ -79,8 +79,12 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
 )
+from tests.ops._productive_economic_md_inject_helpers_v1 import (
+    injected_economic_md_source_for_venue_native_ids_v1,
+)
 from tests.ops.test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1 import (
     InjectedPayloadsFreshGetTransportV1,
+    _eligible_rows,
     _eligible_transport,
     _identity_payloads,
 )
@@ -138,11 +142,15 @@ class _RecordingOneShotTransport:
 
 
 def _run(tmp_path: Path, **overrides):
+    rows = _eligible_rows()
     payload = {
         "owner_go": OWNER_GO,
         "origin_main_sha": EXPECTED_ORIGIN_MAIN_SHA,
         "evidence_root": tmp_path / "store",
         "acquisition_transport": _eligible_transport(),
+        "economic_md_public_source": injected_economic_md_source_for_venue_native_ids_v1(
+            [r["instId"] for r in rows]
+        ),
         "fresh_get_transport": InjectedPayloadsFreshGetTransportV1(payloads=_identity_payloads()),
         "execute_network": False,
         "producer_observed_at_unix": 1_700_000_100.0,

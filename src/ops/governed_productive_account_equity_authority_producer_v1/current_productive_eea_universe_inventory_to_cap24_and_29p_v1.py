@@ -37,6 +37,10 @@ from src.ops.current_productive_eea_universe_inventory_acquisition_v1.transport_
 from src.ops.economic_md_input_producer_v1.constants_v1 import (
     ECONOMIC_RANK_ACTIVATED,
 )
+from src.ops.economic_md_input_producer_v1.public_md_source_v1 import (
+    EconomicMdPublicSourceV1,
+    OkxPublicEconomicMdReadAdapterV1,
+)
 from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import (
     CapitalAdmissionClaimV1,
     evaluate_capital_admission_v1,
@@ -351,6 +355,7 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
     vault_file: Path | str | None = None,
     acquisition_transport: EeaPublicUniverseGetPortV1 | None = None,
     acquisition_result: EeaUniverseAcquisitionResultV1 | None = None,
+    economic_md_public_source: EconomicMdPublicSourceV1 | None = None,
     fresh_get_transport: FullCoreFreshPretradeGetTransportV1 | None = None,
     expected_account_identity: str = REUSED_BINDING_ACCOUNT_SCOPE,
     execute_network: bool = False,
@@ -430,12 +435,19 @@ def execute_current_productive_eea_universe_inventory_to_cap24_and_29p_v1(
             origin_main_sha=origin_main_sha,
         )
 
+    capture_ts = datetime.fromtimestamp(observed_unix, tz=timezone.utc).strftime(
+        "%Y-%m-%dT%H:%M:%SZ"
+    )
+    md_source = economic_md_public_source or OkxPublicEconomicMdReadAdapterV1(
+        capture_timestamp=capture_ts
+    )
     cap21_23 = run_cap21_to_cap23_persist_productive_v1(
         acquisition=acquisition_result,
         store=store,
         repository_sha=repo_sha,
         observed_unix=observed_unix,
         session_id_prefix="current-productive-eea",
+        economic_md_public_source=md_source,
     )
     if cap21_23.ok is not True or cap21_23.selection is None:
         return _persist_terminal_v1(
