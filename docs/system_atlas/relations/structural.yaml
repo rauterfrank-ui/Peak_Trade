@@ -1077,6 +1077,7 @@ relations:
 
     '
 - id: REL:s_fa_staged_control_plane_depends_on_productive_orchestrator
+  # atlas_entity_review: PR #6982 — optional hard_facts handoff before orchestrator; DEPENDS_ON semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   source: CONTRACT:current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1
   type: DEPENDS_ON
   target: CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1
@@ -1089,6 +1090,7 @@ relations:
 
     '
 - id: REL:s_fa_staged_control_plane_depends_on_portfolio_budget
+  # atlas_entity_review: PR #6982 — portfolio budget threading unchanged; AUTHORITY=NONE; POST_COUNT=0.
   source: CONTRACT:current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1
   type: DEPENDS_ON
   target: GATE:portfolio_capital_reservation_budget_v1

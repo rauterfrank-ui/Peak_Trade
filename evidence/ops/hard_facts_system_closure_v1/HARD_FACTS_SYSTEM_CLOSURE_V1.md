@@ -13,7 +13,7 @@
 - `Peak_Trade_CURRENT_TRADING_CRITICAL_QUALIFICATION_GUARDRAIL_VETO_STACK_FORENSIC_CLOSURE_V1.md`
 - `Peak_Trade_CURRENT_MF_N5_MEMBERSHIP_ROTATION_LANE_REPLACEMENT_FORENSIC_PROOF_V1.md`
 - `Peak_Trade_CURRENT_TREASURY_CAPITAL_EQUITY_RESERVATION_SETTLEMENT_FORENSIC_CLOSURE_V1.md`
-- `Peak_Trade_WHOLE_SYSTEM_FITNESS_MATRIX_V1/` (authority_matrix.json, README, graphs)
+- `Peak_Trade_WHOLE_SYSTEM_FITNESS_MATRIX_V1&#47;` (authority_matrix.json, README, graphs)
 - Additional golden-vector / matrix markdown siblings in the same Desktop folder
 
 Epistemic labels: **PROVEN_CURRENT | UNKNOWN_CURRENT | CONFLICTING_CURRENT | VIOLATED_CURRENT** — adjudicated against CURRENT code in this branch.
@@ -40,7 +40,7 @@ Epistemic labels: **PROVEN_CURRENT | UNKNOWN_CURRENT | CONFLICTING_CURRENT | VIO
 
 | Component | Change |
 |-----------|--------|
-| `src/ops/hard_facts_system_closure_v1/*` | New closure package: handoff, identity, health feedback, rotation, treasury/restart guards, kill-switch binding, authority proof |
+| `src&#47;ops&#47;hard_facts_system_closure_v1&#47;*` | New closure package: handoff, identity, health feedback, rotation, treasury/restart guards, kill-switch binding, authority proof |
 | `current_productive_master_v2_runtime_cycle_v1.py` | Durable kill-switch → `killstate_active` / `killstate_trigger` on exit producers |
 | `control_plane_v1.py` | Optional `hard_facts_cap22_handoff` → Cap22 → POLICY_A → topology before orchestrator |
 | `tests/ops/test_hard_facts_system_closure_v1.py` | Proof matrix (16 cases) |
