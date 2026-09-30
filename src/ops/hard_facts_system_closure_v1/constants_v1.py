@@ -33,6 +33,8 @@ SYNTHETIC_RANKING_MARKERS = (
 PRODUCTIVE_RANKING_CAPABILITY_ID = "CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1"
 PRODUCTIVE_RANKING_PRODUCER_VERSION = "productive_futures_ranking_producer.v1"
 
+CASE_SWITCH_MODEL = "COMPOSED_OWNER_CHAIN"
+CASE_SWITCH_CANONICAL_OWNER = "NONE"
 CASE_SWITCH_EQUIVALENTS = (
     "trading_gate",
     "safety_mode",
@@ -40,6 +42,13 @@ CASE_SWITCH_EQUIVALENTS = (
     "durable_kill_switch",
     "typed_vol_presence_gate",
     "s5_governed_cycle_orchestrator",
+    "evaluate_host_exit_policy_producers_v1",
+    "double_play_entry_exit_policy_v0",
+    "run_isolated_selector_cycle_v1",
+    "classify_lane_health_membership_feedback_v1",
+    "evaluate_position_aware_rotation_v1",
+    "evaluate_exit_policy_producers_v1",
+    "resolve_durable_kill_switch_for_mv2_host_v1",
 )
 
 __all__ = [

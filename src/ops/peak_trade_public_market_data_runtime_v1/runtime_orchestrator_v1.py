@@ -21,6 +21,13 @@ from src.ops.peak_trade_public_market_data_runtime_v1.event_pipeline_v1 import (
     EventSequenceStateV1,
     process_public_events_v1,
 )
+from src.ops.peak_trade_public_market_data_runtime_v1.event_sequence_persistence_v1 import (
+    load_event_sequence_state_v1,
+    persist_event_sequence_state_v1,
+)
+from src.ops.peak_trade_public_market_data_runtime_v1.ws_channel_normalizers_v1 import (
+    normalize_ws_payload_to_canonical_facts_v1,
+)
 from src.ops.peak_trade_public_market_data_runtime_v1.freshness_v1 import (
     classify_live_best_bid_ask_freshness_v1,
     classify_live_mark_price_freshness_v1,
@@ -55,13 +62,49 @@ class PublicMarketDataRuntimeV1:
         self.lifecycle_events.append({"phase": "bootstrap", "host": snap["host"]})
         return snap
 
-    def run_observation_cycle(self) -> list[Mapping[str, Any]]:
+    def load_durable_event_state(self) -> None:
+        self.event_state = load_event_sequence_state_v1(self.store_root)
+
+    def persist_durable_event_state(self) -> None:
+        persist_event_sequence_state_v1(self.store_root, self.event_state)
+
+    def run_observation_cycle(
+        self,
+        *,
+        captured_at: str = "2026-09-26T00:00:00Z",
+        session_id: str = "public_md_runtime_v1",
+        persist_normalized_facts: bool = True,
+    ) -> list[Mapping[str, Any]]:
         if self.ws_transport is None:
             return []
         msgs = self.ws_transport.poll_messages()
         envelopes, self.event_state, gaps = process_public_events_v1(
             events=msgs, state=self.event_state
         )
+        inst_ref = {
+            "canonical_instrument_id": self.canonical_instrument_id,
+            "venue_native_id": self.venue_native_id,
+            "venue": "okx_eea",
+            "instrument_type": "SWAP",
+            "settlement_asset": "USDT",
+            "mapping_provenance_digest": "runtime_v1",
+        }
+        if persist_normalized_facts:
+            paths = default_store_paths_v1(self.store_root)
+            for env in envelopes:
+                for raw in (env.payload,):
+                    if not isinstance(raw, Mapping):
+                        continue
+                    for fact in normalize_ws_payload_to_canonical_facts_v1(
+                        raw,
+                        instrument_ref=inst_ref,
+                        captured_at=captured_at,
+                        session_id=session_id,
+                        duplicate=env.duplicate,
+                        out_of_order=env.out_of_order,
+                    ):
+                        append_fact_v1(paths, fact)
+        self.persist_durable_event_state()
         if gaps and self.rest_fetch_json is not None:
             inst_ref = {
                 "canonical_instrument_id": self.canonical_instrument_id,

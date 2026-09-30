@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -40,8 +39,12 @@ from src.ops.single_selected_future_policy_v1.models_v1 import (
 from src.ops.single_selected_future_policy_v1.producer_v1 import (
     run_single_selected_future_policy_v1,
 )
-from src.ops.peak_trade_economic_ranking_runtime_v1.synthesize_ready_features_v1 import (
-    synthesize_ready_feature_production_snapshot_v1,
+from src.ops.economic_md_input_producer_v1.public_md_source_v1 import (
+    EconomicMdPublicSourceV1,
+)
+from src.ops.hard_facts_system_closure_v1.productive_real_b05_cap22_v1 import (
+    ProductiveRealB05Cap22Error,
+    build_cap22_feature_production_snapshot_from_economic_md_v1,
 )
 from src.ops.peak_trade_ranking_feature_production_v1.models_v1 import (
     RankingFeatureProductionSnapshotV1,
@@ -66,22 +69,21 @@ def assert_current_productive_cap22_ranking_policy_binding_v1() -> None:
 def build_cap22_feature_production_snapshot_for_cap21_universe_only_v1(
     *,
     universe_snapshot: Mapping[str, Any],
-    collection_cycle_id: str,
-    economic_input_snapshot_id: str,
-    observed_at_event_time: str,
+    public_md_source: EconomicMdPublicSourceV1,
+    collection_started_at_unix: float,
+    collection_completed_at_unix: float,
 ) -> RankingFeatureProductionSnapshotV1:
-    """B05 feature snapshot for Cap-2.2 when only Cap-2.1 universe input is available.
+    """B05 via scheduled Economic-MD collection (real ranking features; synthetic forbidden)."""
 
-    Aligns with ``CAP22_CURRENT_PRODUCTIVE_INPUT=CAP21_GOVERNED_FUTURES_UNIVERSE_SNAPSHOT_ONLY``
-    until persisted Economic-MD Input-2 is productively scheduled on this path.
-    """
-
-    return synthesize_ready_feature_production_snapshot_v1(
-        universe_snapshot,
-        collection_cycle_id=collection_cycle_id,
-        economic_input_snapshot_id=economic_input_snapshot_id,
-        observed_at_event_time=observed_at_event_time,
-    )
+    try:
+        return build_cap22_feature_production_snapshot_from_economic_md_v1(
+            universe_snapshot=universe_snapshot,
+            public_md_source=public_md_source,
+            collection_started_at_unix=collection_started_at_unix,
+            collection_completed_at_unix=collection_completed_at_unix,
+        )
+    except ProductiveRealB05Cap22Error as exc:
+        raise CurrentProductiveCap21ToCap23PersistenceError(str(exc)) from exc
 
 
 @dataclass(frozen=True)
@@ -151,6 +153,7 @@ def run_cap21_to_cap23_persist_productive_v1(
     repository_sha: str,
     observed_unix: float,
     session_id_prefix: str,
+    economic_md_public_source: EconomicMdPublicSourceV1,
 ) -> CurrentProductiveCap21ToCap23PersistResultV1:
     """Run Cap-2.1→2.3 producers into ``store/runtime_state/*`` (persisted)."""
 
@@ -206,14 +209,12 @@ def run_cap21_to_cap23_persist_productive_v1(
     uni_snapshot_dict = uni.get("snapshot")
     if not isinstance(uni_snapshot_dict, Mapping):
         return _result(ok=False, status="CAP21_SNAPSHOT_DICT_MISSING", selection=None)
-    observed_rfc = datetime.fromtimestamp(observed_unix, tz=timezone.utc).strftime(
-        "%Y-%m-%dT%H:%M:%SZ"
-    )
+    collection_started = observed_unix - 1.0
     feature_snap = build_cap22_feature_production_snapshot_for_cap21_universe_only_v1(
         universe_snapshot=uni_snapshot_dict,
-        collection_cycle_id=f"{session_id_prefix}-cap22-b05",
-        economic_input_snapshot_id=str(uni_snap.get("snapshot_id") or ""),
-        observed_at_event_time=observed_rfc,
+        public_md_source=economic_md_public_source,
+        collection_started_at_unix=collection_started,
+        collection_completed_at_unix=observed_unix,
     )
     ranking = run_productive_futures_ranking_producer_v1(
         state_root=rank_root,

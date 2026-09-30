@@ -81,6 +81,9 @@ from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
     MockCurrentProductive29PIntegrityBackendV1,
     TRUSTED_TEST_ORIGIN_MAIN_SHA,
 )
+from tests.ops._productive_economic_md_inject_helpers_v1 import (
+    injected_economic_md_source_for_venue_native_ids_v1,
+)
 from tests.ops.test_full_core_fresh_pretrade_runtime_get_seam_v1 import (
     InjectedFreshGetTransportV1,
 )
@@ -230,11 +233,15 @@ def _eligible_transport() -> FakeEeaPublicUniverseGetTransportV1:
 
 
 def _run(tmp_path: Path, **overrides):
+    rows = _eligible_rows()
     payload = {
         "owner_go": OWNER_GO,
         "origin_main_sha": TRUSTED_TEST_ORIGIN_MAIN_SHA,
         "evidence_root": tmp_path / "store",
         "acquisition_transport": _eligible_transport(),
+        "economic_md_public_source": injected_economic_md_source_for_venue_native_ids_v1(
+            [r["instId"] for r in rows]
+        ),
         "fresh_get_transport": InjectedPayloadsFreshGetTransportV1(payloads=_identity_payloads()),
         "execute_network": False,
         "producer_observed_at_unix": 1_700_000_100.0,

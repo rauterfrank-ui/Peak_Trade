@@ -45,6 +45,9 @@ from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
     MockCurrentProductive29PIntegrityBackendV1,
     TRUSTED_TEST_ORIGIN_MAIN_SHA,
 )
+from tests.ops._productive_economic_md_inject_helpers_v1 import (
+    injected_economic_md_source_for_venue_native_ids_v1,
+)
 from tests.ops.test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1 import (
     _eligible_rows,
     _okx_envelope,
@@ -80,6 +83,11 @@ def _mark_rows(ids: list[str]) -> dict:
 
 
 _OBSERVED_UNIX = 1_700_000_100.0
+
+
+def _economic_md_source():
+    rows = _eligible_rows()
+    return injected_economic_md_source_for_venue_native_ids_v1([r["instId"] for r in rows])
 
 
 def _acquisition(*, include_mark_for: str | None = None) -> EeaUniverseAcquisitionResultV1:
@@ -133,6 +141,7 @@ def test_writer_reuses_cap21_to_cap23_chain(tmp_path: Path) -> None:
             owner_go=OWNER_GO,
             origin_main_sha=BASE_SHA,
             acquisition_result=acq,
+            economic_md_public_source=_economic_md_source(),
             productivity_root=tmp_path / "prod",
             repository_sha=BASE_SHA,
             producer_observed_at_unix=_OBSERVED_UNIX,
@@ -150,6 +159,7 @@ def test_productivity_layout_and_handoff(tmp_path: Path) -> None:
         owner_go=OWNER_GO,
         origin_main_sha=BASE_SHA,
         acquisition_result=acq,
+        economic_md_public_source=_economic_md_source(),
         productivity_root=prod,
         repository_sha=BASE_SHA,
         producer_observed_at_unix=observed,
@@ -215,6 +225,7 @@ def test_stale_selection_handoff_fail_closed(tmp_path: Path) -> None:
         owner_go=OWNER_GO,
         origin_main_sha=BASE_SHA,
         acquisition_result=_acquisition(),
+        economic_md_public_source=_economic_md_source(),
         productivity_root=prod,
         repository_sha=BASE_SHA,
         producer_observed_at_unix=observed,
@@ -275,6 +286,7 @@ def test_handoff_no_reselection(tmp_path: Path) -> None:
         owner_go=OWNER_GO,
         origin_main_sha=BASE_SHA,
         acquisition_result=_acquisition(),
+        economic_md_public_source=_economic_md_source(),
         productivity_root=prod,
         repository_sha=BASE_SHA,
         producer_observed_at_unix=observed,

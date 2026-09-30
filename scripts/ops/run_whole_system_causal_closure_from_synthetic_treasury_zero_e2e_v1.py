@@ -97,6 +97,9 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
 from src.ops.current_productive_eea_universe_inventory_acquisition_v1.acquire_v1 import (
     acquire_eea_universe_inventory_v1,
 )
+from src.ops.economic_md_input_producer_v1.offline_inject_bundles_v1 import (
+    injected_economic_md_source_for_venue_native_ids_v1,
+)
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap21_to_cap23_productive_persistence_v1 import (
     run_cap21_to_cap23_persist_productive_v1,
 )
@@ -729,12 +732,19 @@ def main() -> int:
     )
 
     productive_store = PACK / "fresh_productive_store"
+    inst_rows = acquisition.instruments_payload.get("data") or []
+    venue_ids = [
+        str(row.get("instId"))
+        for row in inst_rows
+        if isinstance(row, dict) and str(row.get("instId") or "").strip()
+    ]
     cap21_23 = run_cap21_to_cap23_persist_productive_v1(
         acquisition=acquisition,
         store=productive_store,
         repository_sha=origin,
         observed_unix=observed_unix,
         session_id_prefix=E2E_RUN_ID,
+        economic_md_public_source=injected_economic_md_source_for_venue_native_ids_v1(venue_ids),
     )
     if not cap21_23.ok:
         (PACK / "FINAL_REPORT.json").write_text(
