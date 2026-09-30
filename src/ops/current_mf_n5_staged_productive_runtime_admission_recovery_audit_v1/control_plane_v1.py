@@ -60,6 +60,10 @@ from src.ops.mf_membership_context_artifact_contract_v1 import (
 from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
     PortfolioCapitalReservationBudgetOwnerV1,
 )
+from src.ops.hard_facts_system_closure_v1.productive_mf_n5_handoff_join_v1 import (
+    HardFactsCap22MembershipHandoffRequestV1,
+    resolve_membership_via_hard_facts_handoff_v1,
+)
 
 
 class StagedProductiveN5RuntimeControlPlaneError(ValueError):
@@ -117,10 +121,16 @@ def run_staged_productive_full_autonomy_n5_runtime_control_plane_v1(
     requested_target_cardinality: int,
     portfolio_budget_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
     architectural_composition_harness: bool = False,
+    hard_facts_cap22_handoff: HardFactsCap22MembershipHandoffRequestV1 | None = None,
     **cycle_kwargs: Any,
 ) -> StagedProductiveN5RuntimeControlPlaneResultV1:
     """Governed productive entry: staged admission → orchestrator → aggregate → audit."""
     _assert_control_plane_authority()
+    membership = resolve_membership_via_hard_facts_handoff_v1(
+        membership=membership,
+        handoff=hard_facts_cap22_handoff,
+        lane_assignment_writer=lane_assignment_writer,
+    )
     validate_membership_context_artifact_v1(membership)
     recovery = classify_productive_runtime_recovery_v1(membership=membership)
     cardinality = evaluate_staged_target_cardinality_v1(

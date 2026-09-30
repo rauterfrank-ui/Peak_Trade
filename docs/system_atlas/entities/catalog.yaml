@@ -385,6 +385,7 @@ entities:
 
   # atlas_entity_review: PR6966 L019/DIV-001 synthetic canonical mark provenance (AUTHORITY=NONE)
   - id: RUNTIME_COMPONENT:elementary_direction_v1
+    # atlas_entity_review: PR #6982 — hard-facts closure does not alter elementary_direction producer; AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # atlas_entity_review: PR #6937 — whole-system causal closure does not consume elementary_direction; semantics unchanged;
     # ATLAS_AUTHORITY=NONE; POST_COUNT=0.
@@ -1688,6 +1689,7 @@ entities:
       authority. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1
+    # atlas_entity_review: PR #6982 — optional hard_facts_cap22_handoff on control plane; POLICY_A handoff only; AUTHORITY=NONE; POST_COUNT=0.
     kind: CONTRACT
     name: CURRENT MF N=5 staged productive runtime admission recovery audit
     epistemic_class: CANONICAL_AUTHORITY
@@ -1719,6 +1721,7 @@ entities:
       ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1
+    # atlas_entity_review: PR #6982 — hard-facts handoff may feed membership before orchestrator invoke; orchestrator semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6976 — cap24_lane_canonical_price_provenance_compose_v1 derives per-lane ProductiveCycleCanonicalPriceProvenanceV1 from Cap24 mark sidecar + bound native id before N1 readiness; AUTHORITY=NONE; POST_COUNT=0.
     kind: CONTRACT
     name: CURRENT MF N=5 Full-Autonomy productive runtime orchestrator
@@ -3611,6 +3614,38 @@ entities:
       canonical SideState handoff to StateSwitchEvidenceV1. P5_10_ACTIVATION_READINESS=READY
       (activation WP only); no productive bind; ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:hard_facts_system_closure_v1
+    # atlas_entity_review: PR #6982 — hard-facts deterministic closure (Cap22 handoff, identity, kill-switch MV2 bind); AUTHORITY=NONE; POST_COUNT=0.
+    kind: CONTRACT
+    name: Hard-facts system closure v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: HARD_FACTS_SYSTEM_CLOSURE_V1
+    authority_sources:
+      - evidence/ops/hard_facts_system_closure_v1/HARD_FACTS_SYSTEM_CLOSURE_V1.md
+    source_paths:
+      - evidence/ops/hard_facts_system_closure_v1/HARD_FACTS_SYSTEM_CLOSURE_V1.md
+      - src/ops/hard_facts_system_closure_v1/__init__.py
+      - src/ops/hard_facts_system_closure_v1/authority_proof_v1.py
+      - src/ops/hard_facts_system_closure_v1/cap22_productive_real_gate_v1.py
+      - src/ops/hard_facts_system_closure_v1/constants_v1.py
+      - src/ops/hard_facts_system_closure_v1/durable_kill_switch_mv2_binding_v1.py
+      - src/ops/hard_facts_system_closure_v1/instrument_sensitive_identity_v1.py
+      - src/ops/hard_facts_system_closure_v1/lane_health_membership_feedback_v1.py
+      - src/ops/hard_facts_system_closure_v1/position_aware_rotation_v1.py
+      - src/ops/hard_facts_system_closure_v1/productive_mf_n5_handoff_join_v1.py
+      - src/ops/hard_facts_system_closure_v1/treasury_restart_guard_v1.py
+      - tests/ops/test_hard_facts_system_closure_v1.py
+    evidence_sources:
+      - evidence/ops/hard_facts_system_closure_v1/HARD_FACTS_SYSTEM_CLOSURE_V1.md
+      - tests/ops/test_hard_facts_system_closure_v1.py
+    notes: >-
+      Closes deterministic hard-facts wiring: Cap22 productive-real gate, POLICY_A MF-N5 handoff,
+      instrument-sensitive identity adjudication, lane-health membership feedback, durable kill-switch
+      to MV2 host exit producers. No new trading decision owner. PRE_EXTERNAL terminal.
+      ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:whole_system_connection_closure_bounded_wp_v1
     # atlas_entity_review: PR #6969 — classify native full-cycle MV2 state-advance caller in static proof only;
     # PRODUCTIVE_OCCUPIED_LANE_COMPOSED_CYCLE_CALLERS; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
@@ -4022,6 +4057,7 @@ entities:
 
   # atlas_entity_review: PR6966 L019/DIV-001 synthetic canonical mark provenance (AUTHORITY=NONE)
   - id: CONTRACT:p5_10_productive_activation_and_binding_v1
+    # atlas_entity_review: PR #6982 — hard-facts closure does not mutate P5.10 bind seam; AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # atlas_entity_review: PR #6954 — S7 scope-colocated episode bootstrap init-only (no duplicate P5 mechanical step);
     # composition/addressing seam only; MV2/Double Play unchanged; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
@@ -5885,6 +5921,7 @@ entities:
 
   # atlas_entity_review: PR6966 L019/DIV-001 synthetic canonical mark provenance (AUTHORITY=NONE)
   - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+    # atlas_entity_review: PR #6982 — durable kill-switch file wired to MV2 HostExitPolicy killstate_active; no new kill owner; AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6974 — Productive reconciliation single-check + Master-V2 entry admission carrier; upstream Cap-1.1 provenance required; no second reconcile in MV2/DP; replay_reconciliation_state threading; AUTHORITY=NONE; POST_COUNT=0; RECONCILIATION_AUTHORITY_TRANSFER=false.
     # atlas_entity_review: Post-#6962 treasury single-source handoff fail-closed without explicit U01 acctLv witness (SEM-SURF-DIV-00004); enter-live still passes injected host inputs; MV2/DP unchanged; AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
@@ -8601,6 +8638,7 @@ entities:
       Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 
   - id: GATE:portfolio_capital_reservation_budget_v1
+    # atlas_entity_review: PR #6982 — treasury_restart_guard reservation epoch helper only; budget owner unchanged; AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: Post-#6962 treasury U01 witness fail-closed; portfolio gate semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
     # TREASURY_FULL_CORE_C08_SINGLE_SOURCE_HANDOFF_V1 PR_6827: Q3 unchanged; TREASURY_BINDING_N5_CONFLICT=false.
