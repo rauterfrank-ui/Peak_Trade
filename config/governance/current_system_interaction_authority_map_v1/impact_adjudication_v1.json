@@ -12,6 +12,7 @@
     "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T051310Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
     "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T051317Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
     "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T052320Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
+    "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T052400Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
     "scripts/ops/run_n1_standing_pre_external_runtime_supervisor_v1.py",
     "scripts/ops/write_n1_standing_supervisor_wp01_closure_evidence_v1.py",
     "src/ops/n1_standing_pre_external_runtime_supervisor_v1/__init__.py",
@@ -25,7 +26,7 @@
     "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py",
     "tests/ops/test_n1_standing_supervisor_launcher_v1.py"
   ],
-  "changed_paths_sha256": "240207566dcc47e1b2f43ef95e464e5757d5711bf583b35d271691e192274782",
+  "changed_paths_sha256": "b81225208d51a05c1c05394a6ffb1e5062088ecdf84efaea705e3dc219d36b9a",
   "base_sha": "f770a434e5a3f3e95630b236fa29f3536dc9b855",
   "authority_effect": "NONE",
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
@@ -34,7 +35,7 @@
   "selector_used_as_map_impact_authority": false,
   "evidence_refs": [
     "docs/ops/specs/N1_STANDING_PRE_EXTERNAL_RUNTIME_SUPERVISOR_V1.md",
-    "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T052320Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
+    "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T052400Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json"
   ],
@@ -49,6 +50,7 @@
     "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T051310Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
     "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T051317Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
     "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T052320Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
+    "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T052400Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
     "scripts/ops/run_n1_standing_pre_external_runtime_supervisor_v1.py",
     "scripts/ops/write_n1_standing_supervisor_wp01_closure_evidence_v1.py",
     "src/ops/n1_standing_pre_external_runtime_supervisor_v1/__init__.py",
