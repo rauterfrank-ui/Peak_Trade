@@ -303,6 +303,16 @@ changes:
       PR #6980: Cap24 runtime binding witness epoch for productive PRE_EXTERNAL runner; Owner-GO decision
       baseline re-pinned to 7a3597e; live EEA reproof reached Double Play (no Natural-Enter in bounded window);
       MV2/DP strategy unchanged; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+  - id: CHANGE:pr_6989_ddo_meta_evidence_baseline_ci_debt_closure_v1
+    from: 89bda2857035ae104e6758eb582c8c892f3237d5
+    to: 60f76236b1975a2466b49048256c70c172d8cf03
+    type: DEPENDENCY_INVERSION
+    epistemic_status: FORENSIC_RAW
+    evidence: src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py
+    notes: >-
+      PR #6989: remove forbidden meta_evidence_v1→contract_safety_v1 import; reuse existing
+      DDO-local serialization_v0.compute_content_hash_v0; no Realm/Outcome-Provenance change;
+      RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED
