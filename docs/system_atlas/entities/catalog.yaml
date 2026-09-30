@@ -3694,6 +3694,39 @@ entities:
       unified recovery, standing PRE_EXTERNAL supervisor, and golden trace harness.
       No new trading decision owner. POST forbidden. ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:n1_standing_pre_external_runtime_supervisor_v1
+    # atlas_entity_review: PR #6984 — standing N=1 PRE_EXTERNAL runtime supervisor (launcher + orchestration); AUTHORITY=NONE; POST_COUNT=0.
+    kind: CONTRACT
+    name: N=1 standing PRE_EXTERNAL runtime supervisor v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: N1_STANDING_PRE_EXTERNAL_RUNTIME_SUPERVISOR_V1
+    authority_sources:
+      - docs/ops/specs/N1_STANDING_PRE_EXTERNAL_RUNTIME_SUPERVISOR_V1.md
+    source_paths:
+      - docs/ops/specs/N1_STANDING_PRE_EXTERNAL_RUNTIME_SUPERVISOR_V1.md
+      - scripts/ops/run_n1_standing_pre_external_runtime_supervisor_v1.py
+      - scripts/ops/write_n1_standing_supervisor_wp01_closure_evidence_v1.py
+      - src/ops/n1_standing_pre_external_runtime_supervisor_v1/__init__.py
+      - src/ops/n1_standing_pre_external_runtime_supervisor_v1/constants_v1.py
+      - src/ops/n1_standing_pre_external_runtime_supervisor_v1/errors_v1.py
+      - src/ops/n1_standing_pre_external_runtime_supervisor_v1/evidence_v1.py
+      - src/ops/n1_standing_pre_external_runtime_supervisor_v1/supervisor_v1.py
+      - src/ops/n1_standing_pre_external_runtime_supervisor_v1/trace_v1.py
+      - src/ops/n1_standing_pre_external_runtime_supervisor_v1/wp02_insertion_v1.py
+      - tests/ops/_n1_standing_supervisor_offline_inject_harness_v1.py
+      - tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py
+      - tests/ops/test_n1_standing_supervisor_launcher_v1.py
+    evidence_sources:
+      - docs/ops/specs/N1_STANDING_PRE_EXTERNAL_RUNTIME_SUPERVISOR_V1.md
+      - tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py
+      - tests/ops/test_n1_standing_supervisor_launcher_v1.py
+    notes: >-
+      Canonical standing supervisor session: unified recovery, public supply refresh,
+      pretrade refresh, policy-governed continuous PRE_EXTERNAL run. Launcher is
+      composition-only; offline inject mode for WP-01 proof. No POST. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:whole_system_connection_closure_bounded_wp_v1
     # atlas_entity_review: PR #6969 — classify native full-cycle MV2 state-advance caller in static proof only;
     # PRODUCTIVE_OCCUPIED_LANE_COMPOSED_CYCLE_CALLERS; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
