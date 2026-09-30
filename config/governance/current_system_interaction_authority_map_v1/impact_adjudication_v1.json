@@ -1,5 +1,7 @@
 {
   "changed_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
@@ -44,10 +46,21 @@
     "tests/ops/test_n1_whole_system_hard_facts_integration_wp_v1.py",
     "tests/ops/test_peak_trade_public_market_data_runtime_v1.py"
   ],
-  "changed_paths_sha256": "796bbd3d64d5c8d730d3c0abe28bc69b8ea3551cabcea25296eb9b06ed1c6804",
+  "changed_paths_sha256": "9123ad955387ebc0c12b2f30573c7fd4e1ceaaa4f337b0010566303913b64ac3",
   "base_sha": "f1288b2a289b0cf21c85c746e92e62ee74bc871e",
   "authority_effect": "NONE",
+  "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
+  "verdict": "NO_MAP_IMPACT",
+  "reason": "PR #6983: N=1 whole-system hard-facts integration WP \u2014 atlas/law impact surfaces rebound; no CSIA source_v1 semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
+  "selector_used_as_map_impact_authority": false,
+  "evidence_refs": [
+    "evidence/ops/n1_whole_system_hard_facts_integration_wp_v1/20260930T041500Z/N1_WHOLE_SYSTEM_HARD_FACTS_INTEGRATION_WP_V1.md",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json"
+  ],
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
@@ -89,15 +102,5 @@
     "tests/ops/test_full_core_current_productive_fresh_cap23_cap24_decision_and_one_shot_real_post_readiness_v1.py",
     "tests/ops/test_n1_whole_system_hard_facts_integration_wp_v1.py",
     "tests/ops/test_peak_trade_public_market_data_runtime_v1.py"
-  ],
-  "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "verdict": "NO_MAP_IMPACT",
-  "reason": "PR #6983: N=1 whole-system hard-facts integration WP \u2014 atlas catalog/relation review, regenerated views, map candidate surfaces; no CSIA source_v1 semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
-  "selector_used_as_map_impact_authority": false,
-  "evidence_refs": [
-    "evidence/ops/n1_whole_system_hard_facts_integration_wp_v1/20260930T041500Z/N1_WHOLE_SYSTEM_HARD_FACTS_INTEGRATION_WP_V1.md",
-    "evidence/ops/n1_whole_system_hard_facts_integration_wp_v1/20260930T041500Z/PRE_EXTERNAL_AUTONOMY_ADMISSION_V1.json",
-    "docs/system_atlas/entities/catalog.yaml",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json"
   ]
 }
