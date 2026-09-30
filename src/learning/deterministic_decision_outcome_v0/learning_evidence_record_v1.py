@@ -27,6 +27,9 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
 )
 from src.learning.deterministic_decision_outcome_v0.enums_v0 import UNKNOWN
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
+from src.learning.deterministic_decision_outcome_v0.outcome_evidence_provenance_v1 import (
+    validate_outcome_evidence_provenance_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.learning_state_record_v0 import (
     require_positive_int as require_state_positive_int,
 )
@@ -106,6 +109,41 @@ _EVIDENCE_EXTRA: Final[tuple[FieldSpecV0, ...]] = (
         "string|null",
         True,
         "Opaque token copy; not safety authority.",
+    ),
+    FieldSpecV0(
+        "outcome_semantic_class",
+        "REQUIRED",
+        "string",
+        True,
+        "Semantic class from outcome provenance.",
+    ),
+    FieldSpecV0(
+        "outcome_evidence_provenance_digest",
+        "REQUIRED",
+        "sha256",
+        True,
+        "Digest of embedded provenance block.",
+    ),
+    FieldSpecV0(
+        "outcome_evidence_provenance",
+        "REQUIRED",
+        "object",
+        True,
+        "Full provenance block for Optimization compatibility checks.",
+    ),
+    FieldSpecV0(
+        "evidence_pool_class",
+        "REQUIRED",
+        "string",
+        True,
+        "Must equal outcome_semantic_class for single-record pools.",
+    ),
+    FieldSpecV0(
+        "outcome_scalar_kind",
+        "OPTIONAL",
+        "string|null",
+        True,
+        "Scalar kind token when known.",
     ),
     FieldSpecV0(
         "universe_class",
@@ -208,8 +246,37 @@ def build_learning_evidence_record_v1(payload: Mapping[str, Any]) -> MappingProx
         "safety_score_label": optional_string_or_unknown(
             raw.get("safety_score_label"), "safety_score_label"
         ),
+        "outcome_semantic_class": require_non_empty_string_or_unknown(
+            raw.get("outcome_semantic_class"), "outcome_semantic_class"
+        ),
+        "outcome_evidence_provenance_digest": require_sha256_or_unknown(
+            raw.get("outcome_evidence_provenance_digest"),
+            "outcome_evidence_provenance_digest",
+        ),
+        "outcome_evidence_provenance": dict(
+            validate_outcome_evidence_provenance_v1(
+                require_mapping(
+                    raw.get("outcome_evidence_provenance"), "outcome_evidence_provenance"
+                )
+            )
+        ),
+        "evidence_pool_class": require_non_empty_string_or_unknown(
+            raw.get("evidence_pool_class"), "evidence_pool_class"
+        ),
+        "outcome_scalar_kind": optional_string_or_unknown(
+            raw.get("outcome_scalar_kind"), "outcome_scalar_kind"
+        ),
         **_require_false_authority(raw),
     }
+    if canonical["outcome_evidence_provenance_digest"] == UNKNOWN:
+        raise DdoValidationError("LEARNING_EVIDENCE_PROVENANCE_DIGEST_UNKNOWN_FORBIDDEN")
+    if canonical["outcome_semantic_class"] != canonical["evidence_pool_class"]:
+        raise DdoValidationError("LEARNING_EVIDENCE_POOL_CLASS_MISMATCH")
+    if (
+        str(canonical["outcome_evidence_provenance"]["provenance_digest"])
+        != canonical["outcome_evidence_provenance_digest"]
+    ):
+        raise DdoValidationError("LEARNING_EVIDENCE_PROVENANCE_DIGEST_MISMATCH")
     if canonical["evaluation_bundle_fingerprint"] == UNKNOWN:
         raise DdoValidationError("LEARNING_EVIDENCE_FINGERPRINT_UNKNOWN_FORBIDDEN")
     return finalize_record_v0(canonical, raw)

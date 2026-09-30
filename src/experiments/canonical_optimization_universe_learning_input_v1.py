@@ -17,6 +17,9 @@ from src.learning.deterministic_decision_outcome_v0.learning_evidence_record_v1 
     UNIVERSE_CLASS_SELF_LEARNING,
     validate_learning_evidence_record_v1,
 )
+from src.learning.deterministic_decision_outcome_v0.optimization_provenance_eligibility_v1 import (
+    evaluate_optimization_provenance_eligibility_v1,
+)
 from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256, is_valid_sha256_hex
 
 SCHEMA_VERSION: Final[str] = "canonical_optimization_universe_learning_input_v1"
@@ -42,6 +45,7 @@ STATUS_ACCEPTED_OFFLINE_RESEARCH_INPUT: Final[str] = "ACCEPTED_OFFLINE_RESEARCH_
 STATUS_REJECTED_INVALID_EVIDENCE: Final[str] = "REJECTED_INVALID_EVIDENCE"
 STATUS_REJECTED_AUTHORITY_BOUNDARY: Final[str] = "REJECTED_AUTHORITY_BOUNDARY"
 STATUS_REJECTED_UNSUPPORTED_EVIDENCE_CLASS: Final[str] = "REJECTED_UNSUPPORTED_EVIDENCE_CLASS"
+STATUS_REJECTED_PROVENANCE_INELIGIBLE: Final[str] = "REJECTED_PROVENANCE_INELIGIBLE"
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -114,6 +118,15 @@ def validate_canonical_optimization_universe_learning_input_v1(
             _result_payload(
                 status=STATUS_REJECTED_AUTHORITY_BOUNDARY,
                 reason="LEARNING_EVIDENCE_PRODUCTIVE_AUTHORITY_NOT_NONE",
+                learning_evidence_digest=str(evidence.get("content_hash")),
+            )
+        )
+    opt_eligibility = evaluate_optimization_provenance_eligibility_v1(evidence)
+    if not opt_eligibility.admitted:
+        return MappingProxyType(
+            _result_payload(
+                status=STATUS_REJECTED_PROVENANCE_INELIGIBLE,
+                reason=opt_eligibility.reason_code,
                 learning_evidence_digest=str(evidence.get("content_hash")),
             )
         )

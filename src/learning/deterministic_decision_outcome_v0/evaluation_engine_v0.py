@@ -43,6 +43,11 @@ from src.learning.deterministic_decision_outcome_v0.ledger_v0 import (
     AppendOnlyDdoLedgerV0,
     AppendResultV0,
 )
+from src.learning.deterministic_decision_outcome_v0.outcome_evidence_provenance_bindings_v1 import (
+    ProvenanceBindingContextV1,
+    ProvenanceProducerBindingV1,
+    resolve_provenance_for_binding_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.outcome_v0 import build_outcome_record_v0
 from src.learning.deterministic_decision_outcome_v0.real_outcome_horizon_contracts_v1 import (
     EVALUATION_RUNTIME_WIRING,
@@ -177,6 +182,8 @@ def evaluate_offline_bundle_v0(
     identity: Mapping[str, Any],
     ledger: AppendOnlyDdoLedgerV0 | None = None,
     records_by_id: Mapping[str, Mapping[str, Any]] | None = None,
+    provenance_binding: ProvenanceProducerBindingV1 | None = None,
+    provenance_context: ProvenanceBindingContextV1 | None = None,
 ) -> MappingProxyType[str, Any]:
     """Produce outcome, attribution, and counterfactual records offline.
 
@@ -308,37 +315,52 @@ def evaluate_offline_bundle_v0(
     incident_ref = None if incident is None else incident["record_id"]
     info_set = decision["decision_time_information_set_ref"]
 
-    outcome = build_outcome_record_v0(
-        {
-            "schema_name": "outcome_record",
-            "schema_version": "outcome_record_v0",
-            "record_id": ids["outcome_record_id"],
-            "decision_event_ref": decision["record_id"],
-            "incident_record_ref": incident_ref,
-            "evaluation_horizon": horizon,
-            "actual_outcome_ref": actual_outcome_ref,
-            "counterfactual_admissibility": admissibility,
-            "safety_score": safety_score,
-            "decision_score": decision_score,
-            "economic_score": economic_score,
-            "root_cause": root_cause,
-            "confidence": obs["confidence"] if obs["confidence"] is not None else UNKNOWN,
-            "event_time_utc": ids["event_time_utc"],
-            "correlation_id": ids["correlation_id"],
-            "cycle_id": decision["cycle_id"],
-            "causal_parent_ids": parent_ids,
-            "producer_id": EVALUATION_ENGINE_PRODUCER_ID,
-            "producer_version": EVALUATION_ENGINE_PRODUCER_VERSION,
-            "authority_owner": UNKNOWN,
-            "code_sha": ids["code_sha"],
-            "config_hash": ids["config_hash"],
-            "evidence_hash": evidence_hash,
-            "evidence_source_refs": [
-                decision["record_id"],
-                *([incident["record_id"]] if incident is not None else []),
-            ],
-        }
-    )
+    outcome_payload: dict[str, Any] = {
+        "schema_name": "outcome_record",
+        "schema_version": "outcome_record_v0",
+        "record_id": ids["outcome_record_id"],
+        "decision_event_ref": decision["record_id"],
+        "incident_record_ref": incident_ref,
+        "evaluation_horizon": horizon,
+        "actual_outcome_ref": actual_outcome_ref,
+        "counterfactual_admissibility": admissibility,
+        "safety_score": safety_score,
+        "decision_score": decision_score,
+        "economic_score": economic_score,
+        "root_cause": root_cause,
+        "confidence": obs["confidence"] if obs["confidence"] is not None else UNKNOWN,
+        "event_time_utc": ids["event_time_utc"],
+        "correlation_id": ids["correlation_id"],
+        "cycle_id": decision["cycle_id"],
+        "causal_parent_ids": parent_ids,
+        "producer_id": EVALUATION_ENGINE_PRODUCER_ID,
+        "producer_version": EVALUATION_ENGINE_PRODUCER_VERSION,
+        "authority_owner": UNKNOWN,
+        "code_sha": ids["code_sha"],
+        "config_hash": ids["config_hash"],
+        "evidence_hash": evidence_hash,
+        "evidence_source_refs": [
+            decision["record_id"],
+            *([incident["record_id"]] if incident is not None else []),
+        ],
+    }
+    if provenance_binding is None and horizon == REAL_OUTCOME_HORIZON_V1_REAL_CAPABLE_TOKEN:
+        provenance_binding = ProvenanceProducerBindingV1.PRODUCTIVE_PRE_EXTERNAL_N_BARS
+    if provenance_binding is not None:
+        ctx = provenance_context or ProvenanceBindingContextV1(
+            decision_event_ref=str(decision["record_id"]),
+            producer_id=EVALUATION_ENGINE_PRODUCER_ID,
+            producer_version=EVALUATION_ENGINE_PRODUCER_VERSION,
+            evaluation_horizon=horizon,
+            outcome_scalar_kind=str(obs.get("outcome_scalar_kind") or UNKNOWN),
+            decision_timestamp_utc=str(decision.get("event_time_utc") or ids["event_time_utc"]),
+            evaluation_timestamp_utc=str(obs.get("evaluation_time_utc") or ids["event_time_utc"]),
+        )
+        outcome_payload["outcome_evidence_provenance"] = resolve_provenance_for_binding_v1(
+            provenance_binding,
+            ctx,
+        )
+    outcome = build_outcome_record_v0(outcome_payload)
     attribution = build_attribution_record_v0(
         {
             "schema_name": "attribution_record",
