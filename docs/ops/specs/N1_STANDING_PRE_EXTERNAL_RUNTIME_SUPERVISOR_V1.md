@@ -18,6 +18,10 @@ Production/scoped runs require:
 
 The launcher performs **one supervisor session** (recovery → public refresh → pretrade refresh → policy-governed continuous run). It does not activate POST or flip `CONTINUOUS_RUN_AUTHORIZED`.
 
-## WP-02 seam
+## WP-02 seam (CURRENT-WP-02 closed)
 
-Optional hook type: `Wp02InsertionContextV1` / `Wp02HookV1` in `wp02_insertion_v1.py` — default no-op until CURRENT-WP-02.
+When `StandingSupervisorConfigV1.wp02_productive_default_enabled=true` (default) and
+universe inject payloads are configured, the supervisor invokes
+`build_default_wp02_hook_v1` → `run_wp02_productive_default_chain_v1` (Cap21 → real B05
+→ Cap22 → hard-facts handoff). Set `wp02_productive_default_enabled=false` for explicit
+no-op. See `docs/ops/specs/CURRENT_WP02_DEFAULT_PRODUCTIVE_UNIVERSE_HANDOFF_V1.md`.

@@ -19,6 +19,9 @@ class StandingSupervisorTraceV1:
     pretrade_truth_refreshed: bool = False
     pretrade_freshness_status: str = ""
     wp02_hook_invoked: bool = False
+    wp02_cap21_refresh_invoked: bool = False
+    wp02_hard_facts_handoff_invoked: bool = False
+    wp02_membership_persisted: bool = False
     continuous_admission_granted: bool = False
     continuous_admission_reasons: tuple[str, ...] = ()
     accepted_c1_count: int = 0
