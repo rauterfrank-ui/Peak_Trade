@@ -599,6 +599,7 @@ def test_evidence_writer_after_successful_run(tmp_path: Path) -> None:
         owner_go_consumed=result.owner_go_consumed,
         authority_invariants_ok=result.authority_invariants_ok,
         transport_scope="offline_inject",
+        launcher_invoked_supervisor=False,
         post_allowed=False,
         external_effect_authorized=False,
         real_venue_post_allowed=False,

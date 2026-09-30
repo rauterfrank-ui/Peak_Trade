@@ -31,6 +31,7 @@ def write_standing_supervisor_closure_evidence_v1(
     owner_go_consumed: bool,
     authority_invariants_ok: bool,
     transport_scope: str,
+    launcher_invoked_supervisor: bool,
     post_allowed: bool,
     external_effect_authorized: bool,
     real_venue_post_allowed: bool,
@@ -62,6 +63,7 @@ def write_standing_supervisor_closure_evidence_v1(
         "pretrade_truth_refreshed": trace.pretrade_truth_refreshed,
         "transport_scope": transport_scope,
         "authority_invariants_ok": authority_invariants_ok,
+        "launcher_invoked_supervisor": launcher_invoked_supervisor,
         "trace": asdict(trace),
     }
     if extra:
