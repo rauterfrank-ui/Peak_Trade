@@ -36,6 +36,8 @@
     "docs/ops/specs/RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1.md",
     "docs/ops/specs/WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/",
+    "docs/system_atlas/relations/",
     "docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
