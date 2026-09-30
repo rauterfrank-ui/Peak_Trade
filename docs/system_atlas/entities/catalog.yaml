@@ -5568,6 +5568,7 @@ entities:
       Phase 23 META_EVIDENCE_V1 dual routing closure; AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
   - id: RUNTIME_COMPONENT:meta_evidence_dual_router_v1
+    # atlas_entity_review: PR #6989 — replace forbidden contract_safety_v1 hash helper with existing DDO-local serialization_v0.compute_content_hash_v0; routing/consumer semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
     kind: RUNTIME_COMPONENT
     name: Meta evidence dual router v1
     epistemic_class: FORENSIC_RAW

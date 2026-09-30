@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
-ATLAS_CHANGED_RELATION_COUNT=5
+ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,18 +40,13 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
-| `CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1` |
+| `RUNTIME_COMPONENT:meta_evidence_dual_router_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget` |
-| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_s8_addressing` |
-| `REL:s_fa_productive_runtime_orchestrator_depends_on_mv2_dp_handoff` |
-| `REL:s_fa_productive_runtime_orchestrator_depends_on_n1_host_join_readiness` |
-| `REL:s_fa_productive_runtime_orchestrator_depends_on_portfolio_budget` |
+| _(none)_ |
 
 ## NEW_RELATIONS
 
@@ -97,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6980: Cap24 runtime binding witness epoch + Owner-GO baseline re-pin 7a3597e; productive PRE_EXTERNAL integration only; MV2/DP strategy unchanged; AUTHORITY=NONE; POST_COUNT=0.
+- PR #6989: meta_evidence_v1 hashing dependency inverted to existing DDO-local serialization_v0.compute_content_hash_v0; reviewed RUNTIME_COMPONENT:meta_evidence_dual_router_v1; no relation change; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_6980_NATURAL_ENTER_CAUSAL_BLOCKER_RESOLUTION_V1
+- modified_by=PR_6989_DDO_META_EVIDENCE_BASELINE_CI_DEBT_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
