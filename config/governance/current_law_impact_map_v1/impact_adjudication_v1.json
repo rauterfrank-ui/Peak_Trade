@@ -15,6 +15,7 @@
     "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T052400Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
     "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T052411Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
     "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T052445Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
+    "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T052722Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
     "scripts/ops/run_n1_standing_pre_external_runtime_supervisor_v1.py",
     "scripts/ops/write_n1_standing_supervisor_wp01_closure_evidence_v1.py",
     "src/ops/n1_standing_pre_external_runtime_supervisor_v1/__init__.py",
@@ -28,16 +29,14 @@
     "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py",
     "tests/ops/test_n1_standing_supervisor_launcher_v1.py"
   ],
-  "changed_paths_sha256": "23ab154e7fc8c94a68d19edf79bbab417ef126ad5de7390523691a4024f99670",
+  "changed_paths_sha256": "947979ce615c863269291cd39aacc02ac2e76fa5f2a9236389e77a0c7a061d43",
   "base_sha": "f770a434e5a3f3e95630b236fa29f3536dc9b855",
   "authority_effect": "NONE",
   "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
-  "verdict": "NO_LAW_IMPACT",
-  "reason": "PR #6984: N=1 standing PRE_EXTERNAL runtime supervisor WP-01 \u2014 orchestration/launcher only; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
-  "selector_used_as_law_impact_authority": false,
+  "reason": "PR #6984: N=1 standing PRE_EXTERNAL runtime supervisor WP-01 \u2014 orchestration/launcher only; atlas/law impact surfaces rebound; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
   "evidence_refs": [
     "docs/ops/specs/N1_STANDING_PRE_EXTERNAL_RUNTIME_SUPERVISOR_V1.md",
-    "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T052445Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
+    "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T052722Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json"
   ],
@@ -55,6 +54,7 @@
     "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T052400Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
     "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T052411Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
     "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T052445Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
+    "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T052722Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
     "scripts/ops/run_n1_standing_pre_external_runtime_supervisor_v1.py",
     "scripts/ops/write_n1_standing_supervisor_wp01_closure_evidence_v1.py",
     "src/ops/n1_standing_pre_external_runtime_supervisor_v1/__init__.py",
@@ -67,5 +67,7 @@
     "tests/ops/_n1_standing_supervisor_offline_inject_harness_v1.py",
     "tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py",
     "tests/ops/test_n1_standing_supervisor_launcher_v1.py"
-  ]
+  ],
+  "verdict": "NO_LAW_IMPACT",
+  "selector_used_as_law_impact_authority": false
 }
