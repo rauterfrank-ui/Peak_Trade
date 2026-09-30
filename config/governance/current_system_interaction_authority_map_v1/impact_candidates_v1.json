@@ -459,6 +459,7 @@
     "scripts/ops/run_n1_standing_pre_external_runtime_supervisor_v1.py",
     "scripts/ops/write_n1_standing_supervisor_wp01_closure_evidence_v1.py",
     "docs/ops/specs/N1_STANDING_PRE_EXTERNAL_RUNTIME_SUPERVISOR_V1.md",
+    "scripts/ops/write_current_wp02_closure_evidence_v1.py",
     "tests/ops/test_economic_md_input_producer_v1.py",
     "tests/ops/_productive_economic_md_inject_helpers_v1.py",
     "tests/ops/test_full_core_current_productive_cap24_selection_state_canonical_writer_v1.py",
