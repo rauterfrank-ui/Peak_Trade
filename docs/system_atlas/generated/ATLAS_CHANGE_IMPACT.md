@@ -95,7 +95,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6988 synchronized onto main+#6989: DDO outcome provenance metadata + learning/optimization eligibility gates only; reviewed RUNTIME_COMPONENT:ddo_capture_v0, ddo_current_decision_consumer_v1, ddo_learning_outcome_ingest_v1, ddo_ledger_v0 and REL:r_ddo_capture_persists_ledger; AUTHORITY=NONE; POST_COUNT=0.
+- PR #6988 synchronized onto main with merged #6989: DDO outcome provenance metadata + learning/optimization eligibility gates only; reviewed RUNTIME_COMPONENT:ddo_capture_v0, ddo_current_decision_consumer_v1, ddo_learning_outcome_ingest_v1, ddo_ledger_v0 and REL:r_ddo_capture_persists_ledger; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
 - modified_by=PR_6988_REALM_OUTCOME_PROVENANCE_CLOSURE_V1
 
