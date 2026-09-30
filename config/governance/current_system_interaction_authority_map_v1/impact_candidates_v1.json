@@ -438,6 +438,7 @@
     "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_eea_acquisition_productive_join_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_portfolio_budget_productive_join_v1.py",
+    "src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/",
     "src/ops/hard_facts_system_closure_v1/",
     "tests/ops/test_hard_facts_system_closure_v1.py",
     "evidence/ops/hard_facts_system_closure_v1/",
