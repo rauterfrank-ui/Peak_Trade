@@ -88,6 +88,16 @@ FORBIDDEN_SUBSTRINGS = (
     "canary",
 )
 
+# WP REALM_OUTCOME_PROVENANCE_CLOSURE: typed provenance enums legitimately name testnet/canary classes.
+PROVENANCE_VOCABULARY_MODULE_NAMES = frozenset(
+    {
+        "outcome_evidence_provenance_v1.py",
+        "outcome_evidence_provenance_bindings_v1.py",
+        "self_learning_provenance_eligibility_v1.py",
+        "optimization_provenance_eligibility_v1.py",
+    }
+)
+
 
 def _reason(code: str = UNKNOWN) -> dict[str, str | None]:
     return {
@@ -471,6 +481,7 @@ def test_no_forbidden_imports_or_network_or_section_dependency() -> None:
                     token in {"testnet", "canary"}
                     and "TESTNET_EFFECT" not in text
                     and "CANARY_EFFECT" not in text
+                    and path.name not in PROVENANCE_VOCABULARY_MODULE_NAMES
                 ):
                     hits.append(f"{path.name}:{token}")
     assert hits == []

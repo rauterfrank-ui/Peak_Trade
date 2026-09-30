@@ -488,6 +488,7 @@ relations:
   - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py
   notes: invoke_productive_learning_outcome_evidence_ingest_v1 after evaluation runtime. apply_learning_state_feedback_to_next_cycle_v1
     at cycle start. Non-authorizing; no trading, risk, execution, or promotion authority.
+# atlas_relation_review: PR #6988 — provenance metadata on persisted outcomes; PERSISTS edge unchanged; ATLAS_AUTHORITY=NONE.
 - id: REL:r_ddo_capture_persists_ledger
   source: RUNTIME_COMPONENT:ddo_capture_v0
   type: PERSISTS

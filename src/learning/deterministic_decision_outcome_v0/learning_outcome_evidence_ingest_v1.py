@@ -26,6 +26,10 @@ from src.learning.deterministic_decision_outcome_v0.learning_state_record_v0 imp
     validate_learning_state_record_v0,
 )
 from src.learning.deterministic_decision_outcome_v0.outcome_v0 import validate_outcome_record_v0
+from src.learning.deterministic_decision_outcome_v0.self_learning_provenance_eligibility_v1 import (
+    outcome_semantic_class_from_record_v1,
+    require_self_learning_provenance_eligibility_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.serialization_v0 import canonical_json_dumps_v0
 
 INGEST_ID: Final[str] = "peak_trade.learning.ddo.learning_outcome_evidence_ingest_v1"
@@ -62,6 +66,7 @@ def validate_evaluation_bundle_for_ingest_v1(
     counterfactual: Mapping[str, Any],
 ) -> dict[str, Any]:
     outcome_rec = validate_outcome_record_v0(outcome)
+    require_self_learning_provenance_eligibility_v1(outcome_rec)
     attr_rec = validate_attribution_record_v0(attribution)
     cf_rec = validate_counterfactual_record_v0(counterfactual)
     if attr_rec["outcome_record_ref"] != outcome_rec["record_id"]:
@@ -130,6 +135,12 @@ def reduce_learning_state_transition_v1(
     outcome = validated["outcome"]
     fingerprint = validated["evaluation_bundle_fingerprint"]
     outcome_time = str(outcome["event_time_utc"])
+    prior_class = str(prior_state["outcome_semantic_class"]) if prior_state is not None else None
+    eligibility = require_self_learning_provenance_eligibility_v1(
+        outcome, prior_outcome_semantic_class=prior_class
+    )
+    prov_block = outcome.get("outcome_evidence_provenance") or {}
+    outcome_scalar_kind = prov_block.get("outcome_scalar_kind")
 
     if prior_state is not None:
         if str(prior_state.get("evaluation_bundle_fingerprint")) == fingerprint:
@@ -166,6 +177,10 @@ def reduce_learning_state_transition_v1(
         "last_decision_score": outcome.get("decision_score"),
         "last_safety_score": outcome.get("safety_score"),
         "last_economic_score": outcome.get("economic_score"),
+        "outcome_semantic_class": eligibility.outcome_semantic_class,
+        "outcome_evidence_provenance_digest": eligibility.provenance_digest or UNKNOWN,
+        "outcome_evidence_provenance": dict(prov_block) if prov_block else {},
+        "outcome_scalar_kind": outcome_scalar_kind,
         "event_time_utc": event_time_utc,
         "correlation_id": correlation_id,
         "cycle_id": cycle_id,

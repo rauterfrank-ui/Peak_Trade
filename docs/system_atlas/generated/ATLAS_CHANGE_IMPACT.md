@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=4
+ATLAS_CHANGED_RELATION_COUNT=1
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,13 +40,16 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:meta_evidence_dual_router_v1` |
+| `RUNTIME_COMPONENT:ddo_capture_v0` |
+| `RUNTIME_COMPONENT:ddo_current_decision_consumer_v1` |
+| `RUNTIME_COMPONENT:ddo_learning_outcome_ingest_v1` |
+| `RUNTIME_COMPONENT:ddo_ledger_v0` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:r_ddo_capture_persists_ledger` |
 
 ## NEW_RELATIONS
 
@@ -92,8 +95,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6989: meta_evidence_v1 hashing dependency inverted to existing DDO-local serialization_v0.compute_content_hash_v0; reviewed RUNTIME_COMPONENT:meta_evidence_dual_router_v1; no relation change; AUTHORITY=NONE; POST_COUNT=0.
+- PR #6988 synchronized onto main with merged #6989: DDO outcome provenance metadata + learning/optimization eligibility gates only; reviewed RUNTIME_COMPONENT:ddo_capture_v0, ddo_current_decision_consumer_v1, ddo_learning_outcome_ingest_v1, ddo_ledger_v0 and REL:r_ddo_capture_persists_ledger; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_6989_DDO_META_EVIDENCE_BASELINE_CI_DEBT_CLOSURE_V1
+- modified_by=PR_6988_REALM_OUTCOME_PROVENANCE_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

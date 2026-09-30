@@ -90,8 +90,15 @@
     "src/live/web/app.py",
     "scripts/obs/ai_live_exporter.py",
     "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/",
+
+    "docs/ops/specs/CURRENT_OUTCOME_EVIDENCE_PROVENANCE_CONTRACT_V1.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/learning/deterministic_decision_outcome_v0/"
+    "evidence/ops/realm_outcome_provenance_closure_v1/",
+    "src/experiments/canonical_optimization_universe_learning_input_v1.py",
+    "src/learning/deterministic_decision_outcome_v0/",
+    "tests/learning/test_deterministic_decision_outcome_event_contract_v0.py",
+    "tests/learning/test_outcome_evidence_provenance_closure_v1.py"
+
   ]
 }
