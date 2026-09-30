@@ -1,0 +1,12 @@
+{
+  "continuous_run_authorized_pin_flipped": false,
+  "external_effect_authorized": false,
+  "note": "Program-level standing admission record after WP-04; does not authorize POST, live venue effect, or pin flips.",
+  "owner_scope": "PRE_EXTERNAL_STANDING_N1_EVIDENCE_ONLY",
+  "post_allowed": false,
+  "real_venue_post_allowed": false,
+  "record_kind": "STANDING_PRE_EXTERNAL_AUTONOMY_RECORD_V1",
+  "standing_runtime_admitted": true,
+  "tested_code_sha": "930881436a8d0cc67d49281f9c00ee706a5b2a80",
+  "utc_timestamp": "2026-09-30T06:43:57Z"
+}

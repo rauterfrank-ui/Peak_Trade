@@ -3776,6 +3776,30 @@ entities:
       bilateral LONG/SHORT/HOLD under scoped_readonly_inject; two-epoch confirmation.
       No MV2/DP/trading logic change. ATLAS_AUTHORITY=NONE.
 
+  - id: CONTRACT:current_wp04_standing_pre_external_admission_endgame_done_gate_v1
+    # atlas_entity_review: CURRENT-WP-04 — standing admission refresh + §12 done gate; AUTHORITY=NONE; POST_COUNT=0.
+    kind: CONTRACT
+    name: CURRENT-WP-04 standing PRE_EXTERNAL admission endgame done gate v1
+    epistemic_class: CANONICAL_AUTHORITY
+    current_canonical: true
+    current_status: CURRENT_CANONICAL
+    modified_by: CURRENT_WP04_STANDING_PRE_EXTERNAL_ADMISSION_ENDGAME_DONE_GATE_V1
+    authority_sources:
+      - docs/ops/specs/CURRENT_WP04_STANDING_PRE_EXTERNAL_ADMISSION_ENDGAME_DONE_GATE_V1.md
+    source_paths:
+      - docs/ops/specs/CURRENT_WP04_STANDING_PRE_EXTERNAL_ADMISSION_ENDGAME_DONE_GATE_V1.md
+      - scripts/ops/write_current_wp04_closure_evidence_v1.py
+      - src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/
+      - src/ops/n1_whole_system_hard_facts_integration_wp_v1/pre_external_autonomy_admission_v1.py
+      - tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py
+    evidence_sources:
+      - docs/ops/specs/CURRENT_WP04_STANDING_PRE_EXTERNAL_ADMISSION_ENDGAME_DONE_GATE_V1.md
+      - tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py
+    notes: >-
+      Governance evidence WP-04: regenerates standing PRE_EXTERNAL admission using WP-01..03
+      runtime proofs; records CI admission snapshot; evaluates mechanical §12 done gate.
+      No POST activation. ATLAS_AUTHORITY=NONE.
+
   - id: CONTRACT:whole_system_connection_closure_bounded_wp_v1
     # atlas_entity_review: PR #6969 — classify native full-cycle MV2 state-advance caller in static proof only;
     # PRODUCTIVE_OCCUPIED_LANE_COMPOSED_CYCLE_CALLERS; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
