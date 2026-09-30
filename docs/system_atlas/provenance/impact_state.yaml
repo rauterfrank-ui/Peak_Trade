@@ -2,17 +2,21 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: ATLAS_LEGACY_ERADICATION_V1
-modified_by: PR_6989_DDO_META_EVIDENCE_BASELINE_CI_DEBT_CLOSURE_V1
+modified_by: PR_6988_REALM_OUTCOME_PROVENANCE_CLOSURE_V1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #6989: meta_evidence_v1 hashing dependency inverted to existing DDO-local
-  serialization_v0.compute_content_hash_v0; reviewed
-  RUNTIME_COMPONENT:meta_evidence_dual_router_v1; no relation change;
-  AUTHORITY=NONE; POST_COUNT=0.
+  PR #6988 synchronized onto main with merged #6989: DDO outcome provenance metadata +
+  learning/optimization eligibility gates only; reviewed RUNTIME_COMPONENT:ddo_capture_v0,
+  ddo_current_decision_consumer_v1, ddo_learning_outcome_ingest_v1, ddo_ledger_v0 and
+  REL:r_ddo_capture_persists_ledger; AUTHORITY=NONE; POST_COUNT=0.
 changed_entities:
-  - RUNTIME_COMPONENT:meta_evidence_dual_router_v1
-changed_relations: []
+  - RUNTIME_COMPONENT:ddo_capture_v0
+  - RUNTIME_COMPONENT:ddo_current_decision_consumer_v1
+  - RUNTIME_COMPONENT:ddo_learning_outcome_ingest_v1
+  - RUNTIME_COMPONENT:ddo_ledger_v0
+changed_relations:
+  - REL:r_ddo_capture_persists_ledger
 changed_closures: []
 changed_wiring: []
 changed_venue: []

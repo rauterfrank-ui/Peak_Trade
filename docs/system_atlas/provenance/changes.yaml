@@ -313,6 +313,16 @@ changes:
       PR #6989: remove forbidden meta_evidence_v1→contract_safety_v1 import; reuse existing
       DDO-local serialization_v0.compute_content_hash_v0; no Realm/Outcome-Provenance change;
       RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+  - id: CHANGE:pr_6988_realm_outcome_provenance_closure_v1
+    from: cbce80bc2fb62c1218b143d36c55db8c5f609bc3
+    to: PENDING_SYNC_HEAD
+    type: LEARNING_PROVENANCE_METADATA
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/ops/specs/CURRENT_OUTCOME_EVIDENCE_PROVENANCE_CONTRACT_V1.md
+    notes: >-
+      PR #6988: orthogonal outcome_evidence_provenance_v1 on DDO→Learning→Optimization gates;
+      no universal realm_id; no trading/DP/MV2/Cap23/Cap24 authority change; CSIA/Atlas bookkeeping;
+      RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED

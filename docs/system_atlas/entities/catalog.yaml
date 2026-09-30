@@ -2664,6 +2664,7 @@ entities:
       not trading authority.
 
   - id: RUNTIME_COMPONENT:ddo_capture_v0
+    # atlas_entity_review: PR #6988 — outcome_evidence_provenance_v1 embed only; no capture authority change; POST_COUNT=0.
     # atlas_entity_review: PR #6933 — integrated replay join projection unchanged for DDO observe path; navigation only.
     kind: RUNTIME_COMPONENT
     name: DDO capture adapter v0
@@ -2807,6 +2808,7 @@ entities:
       authority. Not WP-FA-08.
 
   - id: RUNTIME_COMPONENT:ddo_current_decision_consumer_v1
+    # atlas_entity_review: PR #6988 — DDO provenance metadata only; consumer join semantics unchanged; AUTHORITY=NONE.
     kind: RUNTIME_COMPONENT
     name: DDO current decision learning consumer helpers v1
     epistemic_class: FORENSIC_RAW
@@ -2827,6 +2829,7 @@ entities:
       authority. TRADING_AUTHORITY=NONE. RUNTIME_EFFECT=NONE.
 
   - id: RUNTIME_COMPONENT:ddo_ledger_v0
+    # atlas_entity_review: PR #6988 — provenance digest carried on outcome records; ledger durability unchanged; AUTHORITY=NONE.
     kind: RUNTIME_COMPONENT
     name: DDO append-only ledger v0
     epistemic_class: FORENSIC_RAW
@@ -3018,6 +3021,7 @@ entities:
       LEARNING_PRODUCTIVE_AUTHORITY=NONE. EXTERNAL_EFFECT_AUTHORIZED=false.
 
   - id: RUNTIME_COMPONENT:ddo_learning_outcome_ingest_v1
+    # atlas_entity_review: PR #6988 — provenance eligibility gate at ingest; no trading/promotion authority; POST_COUNT=0.
     kind: RUNTIME_COMPONENT
     name: DDO learning outcome evidence ingest host
     epistemic_class: FORENSIC_RAW
