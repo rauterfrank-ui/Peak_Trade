@@ -315,7 +315,7 @@ changes:
       RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
   - id: CHANGE:pr_6988_realm_outcome_provenance_closure_v1
     from: cbce80bc2fb62c1218b143d36c55db8c5f609bc3
-    to: PENDING_SYNC_HEAD
+    to: ec7ea5f47e996c4cfe4d336af8d89abc730e0896
     type: LEARNING_PROVENANCE_METADATA
     epistemic_status: FORENSIC_RAW
     evidence: docs/ops/specs/CURRENT_OUTCOME_EVIDENCE_PROVENANCE_CONTRACT_V1.md
