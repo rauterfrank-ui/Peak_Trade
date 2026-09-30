@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
@@ -73,6 +74,10 @@ from tests.ops.test_current_productive_persistent_natural_enter_convergence_v1 i
     build_s8_occupied_lane_pairs_v1,
 )
 from tests.ops.test_okx_eea_private_account_state_runtime_v1 import _fixture_rest
+from tests.ops._wp02_universe_fixture_v1 import (
+    wp02_eth_only_mark_price_payload_v1,
+    wp02_eth_only_universe_source_payload_v1,
+)
 from tests.ops.test_current_productive_persistent_natural_enter_convergence_v1 import (
     _lane_g17,
 )
@@ -173,6 +178,8 @@ def _supervisor_config(tmp_path: Path) -> StandingSupervisorConfigV1:
         lane_state_root=tmp_path / "lane_state",
         evidence_root=tmp_path / "evidence",
         lock_root=tmp_path / "lock",
+        wp02_universe_source_payload=wp02_eth_only_universe_source_payload_v1(),
+        wp02_universe_mark_price_payload=wp02_eth_only_mark_price_payload_v1(),
     )
 
 
@@ -363,15 +370,7 @@ def test_t_plus_06_recovery_before_continuous_on_restart_flag(tmp_path: Path) ->
     _seed_public_marks(tmp_path / "public_store")
     bound, g17, pairs, native_id = _bootstrap_lane(tmp_path)
     floor = _cursor_floor_or_zero(Path(pairs["LANE_1"][0].lane_state_root))
-    cfg = _supervisor_config(tmp_path)
-    cfg = StandingSupervisorConfigV1(
-        public_store_root=cfg.public_store_root,
-        private_store_root=cfg.private_store_root,
-        lane_state_root=cfg.lane_state_root,
-        evidence_root=cfg.evidence_root,
-        lock_root=cfg.lock_root,
-        simulate_restart_before_continuous=True,
-    )
+    cfg = replace(_supervisor_config(tmp_path), simulate_restart_before_continuous=True)
     path = strong_uptrend_closes_v1()
     t0 = governed_productive_c1_event_ts_unix_v1(offset_seconds=120.0)
     auth = _continuous_auth(native_id=native_id, max_cycles=1)
@@ -518,15 +517,7 @@ def test_t_minus_02_kill_switch_file_present_run_stays_no_post(tmp_path: Path) -
     ks.write_text(json.dumps({"state": "KILLED"}), encoding="utf-8")
     bound, g17, pairs, native_id = _bootstrap_lane(tmp_path)
     floor = _cursor_floor_or_zero(Path(pairs["LANE_1"][0].lane_state_root))
-    cfg = _supervisor_config(tmp_path)
-    cfg = StandingSupervisorConfigV1(
-        public_store_root=cfg.public_store_root,
-        private_store_root=cfg.private_store_root,
-        lane_state_root=cfg.lane_state_root,
-        evidence_root=cfg.evidence_root,
-        lock_root=cfg.lock_root,
-        kill_switch_state_path=str(ks),
-    )
+    cfg = replace(_supervisor_config(tmp_path), kill_switch_state_path=str(ks))
     path = strong_uptrend_closes_v1()
     t0 = governed_productive_c1_event_ts_unix_v1(offset_seconds=120.0)
     auth = _continuous_auth(native_id=native_id, max_cycles=1)
