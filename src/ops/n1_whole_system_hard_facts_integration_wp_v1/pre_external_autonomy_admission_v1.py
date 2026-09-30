@@ -196,6 +196,7 @@ def run_full_admission_proof_bundle_v1(
     private_store_root: Path,
     golden: GoldenHarnessAggregateV1,
     pre_external_reached: bool,
+    supervisor: Any | None = None,
 ) -> PreExternalAutonomyAdmissionV1:
     safety = prove_composed_safety_chain_v1(kill_switch_state_path=kill_switch_state_path)
     private = prove_private_observation_chain_v1(
@@ -214,10 +215,11 @@ def run_full_admission_proof_bundle_v1(
         private_rest_fetch=default_private_rest_fetch_v1(),
         kill_switch_state_path=kill_switch_state_path,
     )
-    supervisor = prove_standing_n1_pre_external_supervisor_v1(
-        pre_external_reached=pre_external_reached,
-        post_count=0,
-    )
+    if supervisor is None:
+        supervisor = prove_standing_n1_pre_external_supervisor_v1(
+            pre_external_reached=pre_external_reached,
+            post_count=0,
+        )
     return prove_pre_external_autonomy_admission_v1(
         public_chain=public_chain,
         safety=safety,

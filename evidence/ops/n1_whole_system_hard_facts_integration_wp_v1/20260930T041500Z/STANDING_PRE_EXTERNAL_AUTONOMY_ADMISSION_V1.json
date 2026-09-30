@@ -1,0 +1,372 @@
+{
+  "ENDGAME_IMPLEMENTATION_COMPLETE": false,
+  "POST_ACTIVATION_IN_SCOPE": false,
+  "TESTED_CODE_SHA": "930881436a8d0cc67d49281f9c00ee706a5b2a80",
+  "admission": {
+    "cap22_real_b05": true,
+    "durable_kill_switch_bound": true,
+    "external_effect_authorized": false,
+    "instrument_epoch_safe": true,
+    "lane_health_bound": true,
+    "natural_long_proven": true,
+    "natural_short_proven": true,
+    "ok": true,
+    "policy_a_n1_handoff": true,
+    "position_custody_safe": true,
+    "post_allowed": false,
+    "post_count": 0,
+    "pre_external_terminal": true,
+    "private_observation_reconciled": true,
+    "public_real_md": true,
+    "real_venue_post_allowed": false,
+    "reservation_restart_safe": true,
+    "supervisor_standing": true,
+    "treasury_feedback_closed": true,
+    "unified_restart_safe": true
+  },
+  "artifact_kind": "STANDING_PRE_EXTERNAL_AUTONOMY_ADMISSION_V1",
+  "backlog_matrix": {
+    "BACKLOG_CLOSED": 26,
+    "BACKLOG_DEFERRED_BY_DESIGN": 0,
+    "BACKLOG_TOTAL": 26,
+    "BACKLOG_TRUE_BLOCKER": 0,
+    "rows": {
+      "RW-E1": {
+        "backlog_id": "RW-E1",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E10": {
+        "backlog_id": "RW-E10",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E11": {
+        "backlog_id": "RW-E11",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E12": {
+        "backlog_id": "RW-E12",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E13": {
+        "backlog_id": "RW-E13",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E14": {
+        "backlog_id": "RW-E14",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E15": {
+        "backlog_id": "RW-E15",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E16": {
+        "backlog_id": "RW-E16",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E17": {
+        "backlog_id": "RW-E17",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E18": {
+        "backlog_id": "RW-E18",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E19": {
+        "backlog_id": "RW-E19",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E2": {
+        "backlog_id": "RW-E2",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E20": {
+        "backlog_id": "RW-E20",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E21": {
+        "backlog_id": "RW-E21",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E22": {
+        "backlog_id": "RW-E22",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E23": {
+        "backlog_id": "RW-E23",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E3": {
+        "backlog_id": "RW-E3",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E4": {
+        "backlog_id": "RW-E4",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E5": {
+        "backlog_id": "RW-E5",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E6": {
+        "backlog_id": "RW-E6",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E7": {
+        "backlog_id": "RW-E7",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E8": {
+        "backlog_id": "RW-E8",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-E9": {
+        "backlog_id": "RW-E9",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-PUB-G1": {
+        "backlog_id": "RW-PUB-G1",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-PUB-G5": {
+        "backlog_id": "RW-PUB-G5",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      },
+      "RW-PUB-G9": {
+        "backlog_id": "RW-PUB-G9",
+        "changed_files": [
+          "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/"
+        ],
+        "notes": "CURRENT-WP-04 standing admission",
+        "status": "CLOSED",
+        "tests": [
+          "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py"
+        ]
+      }
+    }
+  },
+  "ci_admission_snapshot": {
+    "all_required_ci_green_at_admission": false,
+    "effective_required_contexts": [
+      "Guard tracked files in reports directories",
+      "Lint Gate",
+      "Policy Critic Gate",
+      "audit",
+      "dispatch-guard",
+      "docs-drift-guard",
+      "docs-reference-targets-gate",
+      "docs-token-policy-gate",
+      "repo-truth-claims",
+      "strategy-smoke",
+      "tests (3.11)",
+      "map-currency-gate"
+    ],
+    "schema_version": "1.0.0",
+    "verification_note": "Structural snapshot from config/ci/required_status_checks.json; terminal GREEN verified via GitHub required checks on PR."
+  },
+  "done_gate": {
+    "ACCOUNT_RECON_REFRESH_CLOSED": true,
+    "ALL_REQUIRED_CI_GREEN": false,
+    "AUTONOMOUS_C1_G17_CLOSED": true,
+    "CI_ADMISSION_SNAPSHOT_RECORDED": true,
+    "CONTINUOUS_GOVERNED_N1_CLOSED": true,
+    "EXIT_PATH_VALID": true,
+    "EXTERNAL_EFFECT_AUTHORIZED": false,
+    "HOLD_PATH_VALID": true,
+    "INSTRUMENT_STATE_ISOLATION_CLOSED": true,
+    "MAX_POSITIONS": 1,
+    "MEMBERSHIP_AUTONOMY_CLOSED": true,
+    "NATURAL_LONG_REACHABLE_TO_PRE_EXTERNAL": true,
+    "NATURAL_SHORT_REACHABLE_TO_PRE_EXTERNAL": true,
+    "POSITION_CUSTODY_CLOSED": true,
+    "POST_ALLOWED": false,
+    "POST_COUNT": 0,
+    "PRE_EXTERNAL_TERMINAL": true,
+    "REAL_CAP22_CLOSED": true,
+    "REAL_FACT_SUPPLY_CLOSED": true,
+    "REAL_VENUE_POST_ALLOWED": false,
+    "RESTART_RECOVERY_CLOSED": true,
+    "RUNTIME_SUPERVISOR_CLOSED": true,
+    "SAFETY_CHAIN_CLOSED": true,
+    "SELF_REFRESHING": true,
+    "SELF_STARTING": true,
+    "mechanical_ok": true,
+    "ok": false
+  },
+  "wp03_confirmation_two_epoch_proven": true,
+  "wp03_observation_scope": "scoped_readonly_inject"
+}
