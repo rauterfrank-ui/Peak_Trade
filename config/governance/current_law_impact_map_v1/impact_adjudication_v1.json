@@ -32,9 +32,9 @@
   "base_sha": "f770a434e5a3f3e95630b236fa29f3536dc9b855",
   "authority_effect": "NONE",
   "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
-  "verdict": "NO_MAP_IMPACT",
+  "verdict": "NO_LAW_IMPACT",
   "reason": "PR #6984: N=1 standing PRE_EXTERNAL runtime supervisor WP-01 \u2014 orchestration/launcher only; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
-  "selector_used_as_map_impact_authority": false,
+  "selector_used_as_law_impact_authority": false,
   "evidence_refs": [
     "docs/ops/specs/N1_STANDING_PRE_EXTERNAL_RUNTIME_SUPERVISOR_V1.md",
     "evidence/ops/n1_standing_pre_external_runtime_supervisor_v1/20260930T052445Z/STANDING_SUPERVISOR_CLOSURE_V1.json",
