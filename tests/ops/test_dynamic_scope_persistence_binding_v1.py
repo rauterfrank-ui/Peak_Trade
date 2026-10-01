@@ -359,4 +359,7 @@ def test_config_digest_stable() -> None:
         layer_c_derived_dynamic_scope_persistence_config_digest_v1,
     )
 
-    assert dynamic_scope_config_digest_v1() == layer_c_derived_dynamic_scope_persistence_config_digest_v1()
+    assert (
+        dynamic_scope_config_digest_v1()
+        == layer_c_derived_dynamic_scope_persistence_config_digest_v1()
+    )
