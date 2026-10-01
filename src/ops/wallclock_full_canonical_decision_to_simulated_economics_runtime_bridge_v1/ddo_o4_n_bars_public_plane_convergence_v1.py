@@ -82,8 +82,15 @@ def sync_session_producer_finalized_bars_to_wp_a_v1(state: Any) -> dict[str, Any
     }
 
 
-def build_wp_c_converged_o4_from_store_v1(store_root: Path) -> dict[str, Any]:
+def build_wp_c_converged_o4_from_store_v1(
+    store_root: Path,
+    *,
+    session_id: str | None = None,
+) -> dict[str, Any]:
     bars = load_finalized_pt1h_o4_bar_elements_v1(store_root)
+    if session_id is not None and str(session_id).strip():
+        scoped = tuple(bar for bar in bars if str(bar.get("session_id") or "") == str(session_id))
+        bars = scoped
     wp_a_o4 = o4_n_bars_envelope_from_historical_facts_v1(bars)
     return converged_o4_handoff_v1(wp_a_o4, consumer_id="o4_n_bars_learning")
 
@@ -131,8 +138,15 @@ def maybe_materialize_ddo_o4_n_bars_snapshot_from_public_plane_convergence_v1(
             "external_effect_authorized": EXTERNAL_EFFECT_AUTHORIZED,
         }
     sync_session_producer_finalized_bars_to_wp_a_v1(state)
+    producer = getattr(state, "ddo_canonical_public_md_bar_producer", None)
+    session_scope: str | None = None
+    if isinstance(producer, CanonicalPublicMdBarProducerV1):
+        session_scope = str(producer.session_id or "") or None
     try:
-        converged = build_wp_c_converged_o4_from_store_v1(store_root)
+        converged = build_wp_c_converged_o4_from_store_v1(
+            store_root,
+            session_id=session_scope,
+        )
         count = (
             n_bars if n_bars is not None else int(getattr(state, "ddo_n_bars_horizon_n_bars", 2))
         )

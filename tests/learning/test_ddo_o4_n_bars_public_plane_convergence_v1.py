@@ -61,6 +61,61 @@ from tests.learning.test_ddo_n_bars_productive_upstream_auto_bind_v1 import (
 )
 
 
+def test_wp_c_store_convergence_scopes_bars_to_active_producer_session(tmp_path: Path) -> None:
+    """Multi-cycle productive handoff uses per-cycle session_id; store must not mix sessions."""
+    producer_a = CanonicalPublicMdBarProducerV1(
+        session_id="cycle-session-a",
+        repository_sha="abc12345deadbeef",
+        config_digest="cfgdigest001",
+    )
+    first_a = producer_a.ingest_normalized_event(_norm(mark=100.0, event_ts=1_756_732_800.0))
+    producer_a.finalize_bar(
+        canonical_instrument_id="ETH-USDT-SWAP",
+        bar_open_time=float(first_a["envelope"]["bar_open_time"]),
+    )
+    second_a = producer_a.ingest_normalized_event(_norm(mark=101.0, event_ts=1_756_736_400.0))
+    producer_a.finalize_bar(
+        canonical_instrument_id="ETH-USDT-SWAP",
+        bar_open_time=float(second_a["envelope"]["bar_open_time"]),
+    )
+    sync_finalized_envelopes_to_wp_a_store_v1(
+        tmp_path,
+        producer_a.list_envelopes(),
+        finalized_states=frozenset({"FINALIZED_BAR", "CORRECTED_BAR"}),
+    )
+
+    producer_b = CanonicalPublicMdBarProducerV1(
+        session_id="cycle-session-b",
+        repository_sha="abc12345deadbeef",
+        config_digest="cfgdigest001",
+    )
+    first_b = producer_b.ingest_normalized_event(_norm(mark=200.0, event_ts=1_756_740_000.0))
+    producer_b.finalize_bar(
+        canonical_instrument_id="ETH-USDT-SWAP",
+        bar_open_time=float(first_b["envelope"]["bar_open_time"]),
+    )
+    second_b = producer_b.ingest_normalized_event(_norm(mark=210.0, event_ts=1_756_743_600.0))
+    producer_b.finalize_bar(
+        canonical_instrument_id="ETH-USDT-SWAP",
+        bar_open_time=float(second_b["envelope"]["bar_open_time"]),
+    )
+    sync_finalized_envelopes_to_wp_a_store_v1(
+        tmp_path,
+        producer_b.list_envelopes(),
+        finalized_states=frozenset({"FINALIZED_BAR", "CORRECTED_BAR"}),
+    )
+
+    assert len(load_finalized_pt1h_o4_bar_elements_v1(tmp_path)) == 4
+    converged_b = build_wp_c_converged_o4_from_store_v1(tmp_path, session_id="cycle-session-b")
+    snapshot_b = materialize_ddo_o4_snapshot_from_converged_public_plane_v1(
+        decision_event_ref="dec-session-scope-b",
+        converged_o4=converged_b,
+        n_bars=2,
+    )
+    session_ids = {str(bar["session_id"]) for bar in snapshot_b["o4_bars"]}
+    assert session_ids == {"cycle-session-b"}
+
+
 def test_parity_producer_path_matches_wp_a_wp_c_convergence_path(tmp_path: Path) -> None:
     producer = _producer_with_two_gapless_finalized_bars()
     direct = materialize_o4_n_bars_bar_evidence_snapshot_v1(
