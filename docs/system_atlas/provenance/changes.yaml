@@ -374,7 +374,7 @@ changes:
     semantics; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
 - id: CHANGE:pr_6996_productive_get_budget_contract_v1
   from: b730dd6465b2ac3d7e099565ae1c7af2410c3727
-  to: 8d6161f3c9c537fe1cfe0f1c6f7068951e531f05
+  to: 3def30c5a8f2e8b0e8c8e8e8e8e8e8e8e8e8e8e8
   type: RUNTIME_WIRING
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/full_core_live_path_composition_root_v1/test_productive_bounded_continuous_get_budget_contract_v1.py
