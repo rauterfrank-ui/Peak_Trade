@@ -495,6 +495,9 @@ def assert_architecture_guards_v1(*, repo_root: Optional[Path] = None) -> dict[s
         / "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2"
         / "hardening_cycle_bridge_v2.py"
     ).read_text(encoding="utf-8")
+    f1_m9_consumer_wiring_src = (
+        root / "src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py"
+    ).read_text(encoding="utf-8")
     replay_src = (
         root / "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
     ).read_text(encoding="utf-8")
@@ -533,8 +536,17 @@ def assert_architecture_guards_v1(*, repo_root: Optional[Path] = None) -> dict[s
     if "canonical_volatility_estimate.value" in scope_src:
         raise RuntimeError("LOCAL_TYPED_VALUE_EXTRACTION_IN_SCOPE_FORBIDDEN")
 
-    if "evaluate_double_play_runtime_typed_volatility_presence_gate_v1" not in bridge_src:
-        raise RuntimeError("PRESENCE_GATE_NOT_WIRED_IN_PRODUCTIVE_BRIDGE")
+    gate_symbol = "evaluate_double_play_runtime_typed_volatility_presence_gate_v1"
+    bridge_direct_gate = gate_symbol in bridge_src
+    bridge_f1_m9_consumer = (
+        "evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1" in bridge_src
+    )
+    f1_m9_delegates_gate = gate_symbol in f1_m9_consumer_wiring_src
+    if bridge_direct_gate and bridge_f1_m9_consumer:
+        raise RuntimeError("PRESENCE_GATE_DUPLICATE_AUTHORITY_BRIDGE_AND_F1_M9")
+    if not bridge_direct_gate:
+        if not bridge_f1_m9_consumer or not f1_m9_delegates_gate:
+            raise RuntimeError("PRESENCE_GATE_NOT_WIRED_IN_PRODUCTIVE_BRIDGE")
     if "require_productive_typed_volatility_presence_gate" not in bridge_src:
         raise RuntimeError("PRESENCE_GATE_FLAG_NOT_SET_IN_PRODUCTIVE_BRIDGE")
     if "require_productive_typed_volatility_presence_gate" not in replay_src:
