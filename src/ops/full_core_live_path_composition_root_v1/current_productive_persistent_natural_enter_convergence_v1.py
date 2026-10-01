@@ -57,11 +57,13 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_bounded_
     persist_bounded_continuous_run_owner_go_consume_v1,
     validate_bounded_continuous_run_owner_go_decision_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_continuous_observation_budget_v1 import (
+    ABSOLUTE_MAX_CYCLES_PER_RUN,
+    ABSOLUTE_MAX_RUN_DURATION_SECONDS,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
     CONTINUOUS_RUN_AUTHORIZED,
     DISPOSITION_PRE_EXTERNAL_EFFECT,
-    HARD_CAP_MAX_CYCLES_PER_RUN,
-    HARD_CAP_MAX_RUN_DURATION_SECONDS,
     CurrentProductiveGovernedContinuousCycleRunAuthorizationV1,
     CurrentProductiveGovernedContinuousCycleRunResultV1,
     ContinuousObservationSourceV1,
@@ -101,8 +103,8 @@ OFFLINE_HARNESS_OWNER_GO = (
     "OWNER_GO_CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_CONVERGENCE_OFFLINE_HARNESS_V1"
 )
 LANE_ID = "LANE_1"
-MAX_CYCLES_PER_RUN_CAP = HARD_CAP_MAX_CYCLES_PER_RUN
-MAX_RUN_DURATION_CAP = HARD_CAP_MAX_RUN_DURATION_SECONDS
+MAX_CYCLES_PER_RUN_CAP = ABSOLUTE_MAX_CYCLES_PER_RUN
+MAX_RUN_DURATION_CAP = ABSOLUTE_MAX_RUN_DURATION_SECONDS
 
 RECONCILIATION_SAME_INSTRUMENT_CONTINUATION = "SAME_INSTRUMENT_CONTINUATION"
 RECONCILIATION_SELECTION_ROTATION_FRESH_LANE = "SELECTION_ROTATION_FRESH_LANE"

@@ -29,6 +29,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     DISPOSITION_PRESENT,
     DISPOSITION_STALL,
     FULL_CORE_AUTONOMY_AUTHORITY_BOUNDARY,
+    ABSOLUTE_MAX_CYCLES_PER_RUN,
     HARD_CAP_MAX_CYCLES_PER_RUN,
     HARD_CAP_MAX_RUN_DURATION_SECONDS,
     JOIN_SEAM_ID,
@@ -684,7 +685,7 @@ def test_post_permit_and_network_pins(tmp_path: Path) -> None:
         CurrentProductiveGovernedContinuousCycleOrchestratorError,
         match=REASON_EXCEEDS_HARD_CAP,
     ):
-        _run(tmp_path, authorization=_auth(max_cycles_per_run=HARD_CAP_MAX_CYCLES_PER_RUN + 1))
+        _run(tmp_path, authorization=_auth(max_cycles_per_run=ABSOLUTE_MAX_CYCLES_PER_RUN + 1))
     _assert_post_guard()
 
 
