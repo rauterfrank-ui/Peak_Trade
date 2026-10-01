@@ -122,6 +122,21 @@ from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 imp
     bind_final_order_envelope_from_venue_plan_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.models_v1 import CompositionStatusV1
+from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.compose_v1 import (
+    InstrumentRuntimeIdentityClosureError,
+    compose_per_lane_n5_identity_closure_v1,
+)
+from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.reconciliation_admission_v1 import (
+    build_master_v2_reconciliation_admission_for_lane_v1,
+)
+from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.lane_generation_v1 import (
+    LaneGenerationError,
+    assert_cursor_matches_identity_or_absent_v1,
+    ensure_lane_generation_safe_v1,
+)
+from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
+    PortfolioTruthSnapshotV1,
+)
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
 
 _FALSE = "false"
@@ -483,6 +498,8 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     venue_flat: bool,
     existing_position_side: ExistingPositionSide,
     candles_payload: Mapping[str, Any] | None,
+    candles_payload_by_lane: Mapping[str, Mapping[str, Any]] | None = None,
+    observed_portfolio: PortfolioTruthSnapshotV1 | None = None,
     occupancy_payloads: Mapping[str, Any] | None = None,
     live_29p_injected: CurrentProductiveEnterLive29PInjectedGetV1 | None = None,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
@@ -500,7 +517,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
     _assert_non_authority()
     if not str(origin_main_sha or "").strip():
         _fail(FAILURE_ORIGIN_MAIN_SHA, OWNER)
-    if candles_payload is None:
+    if candles_payload is None and candles_payload_by_lane is None:
         _fail(FAILURE_INJECTED_C1_REQUIRED, OWNER)
     if canonical_price_provenance_by_lane is not None and canonical_price_provenance is not None:
         _fail(FAILURE_AUTHORITY, "dual_canonical_price_provenance_forbidden")
@@ -522,6 +539,20 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             _fail(FAILURE_OCCUPANCY, lane_id)
     addressed = bind_occupied_lane_governed_cycle_store_roots_v1(composed_pairs)
     occupancy = dict(occupancy_payloads) if occupancy_payloads is not None else _occupancy_absent()
+    try:
+        per_lane_ingress, _ownership = compose_per_lane_n5_identity_closure_v1(
+            composed_pairs,
+            candles_payload=candles_payload,
+            candles_payload_by_lane=candles_payload_by_lane,
+            occupancy_payloads=occupancy,
+            observed_portfolio=observed_portfolio,
+            venue_flat=venue_flat,
+            existing_position_side=existing_position_side,
+            last_finalized_event_ts_unix=last_finalized_event_ts_unix,
+            finalized_closes=tuple(finalized_closes),
+        )
+    except InstrumentRuntimeIdentityClosureError as exc:
+        _fail(exc.failure_code, exc.detail)
     base_mark_px = mark_px
     base_index_px = index_px
     base_provenance: object | None = canonical_price_provenance
@@ -565,7 +596,33 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         if not native_id:
             _fail(FAILURE_NATIVE_ID_MISSING, lane_id)
         lane_pairs = {lane_id: pair}
+        ingress = per_lane_ingress[lane_id]
+        try:
+            ensure_lane_generation_safe_v1(
+                lane_state_root=Path(cursor_store_root),
+                identity=ingress.identity,
+            )
+            assert_cursor_matches_identity_or_absent_v1(
+                cursor_store_root=Path(cursor_store_root),
+                identity=ingress.identity,
+            )
+        except LaneGenerationError as exc:
+            _fail(exc.failure_code, exc.detail)
         lane_s7 = dict(s7_base)
+        lane_s7["finalized_closes"] = ingress.finalized_closes
+        lane_s7["last_finalized_event_ts_unix"] = ingress.last_finalized_event_ts_unix
+        lane_s7["venue_flat"] = ingress.position.venue_flat
+        lane_s7["existing_position_side"] = ingress.position.existing_position_side
+        lane_s7["master_v2_reconciliation_admission"] = (
+            build_master_v2_reconciliation_admission_for_lane_v1(
+                identity=ingress.identity,
+                per_lane=ingress.reconciliation,
+                session_id=prefix,
+                repository_sha=str(origin_main_sha),
+                portfolio=observed_portfolio,
+            )
+        )
+        lane_candles = dict(ingress.candles_payload)
         if canonical_price_provenance_by_lane is not None:
             lane_prov = canonical_price_provenance_by_lane.get(lane_id)
             if lane_prov is None:
@@ -582,7 +639,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         if not cursor_path.is_file():
             lane_s7 = _align_lane_s7_closes_to_injected_c1_v1(
                 lane_s7,
-                dict(candles_payload),
+                lane_candles,
             )
             compose_occupied_lane_mv2_dp_durable_cycle_v1(lane_pairs, **lane_s7)
             bootstrap_used = True
@@ -593,7 +650,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             lane_id=lane_id,
             s7_base={**lane_s7, "cycle_id_prefix": f"{prefix}:{lane_id}"},
             live_29p_injected=live_29p_injected,
-            candles_payload=dict(candles_payload),
+            candles_payload=lane_candles,
             portfolio_budget_owner=portfolio_budget_owner,
             common_epoch_decision_epoch=common_epoch_decision_epoch,
         )
@@ -612,7 +669,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             cursor_store_root=Path(cursor_store_root),
             lock_root=Path(lock_root),
             evidence_root=Path(evidence_root),
-            candles_payload=dict(candles_payload),
+            candles_payload=lane_candles,
             occupancy_payloads=occupancy,
             execute_network=False,
             perform_get=False,

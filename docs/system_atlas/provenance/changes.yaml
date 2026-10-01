@@ -323,6 +323,17 @@ changes:
       PR #6988: orthogonal outcome_evidence_provenance_v1 on DDO→Learning→Optimization gates;
       no universal realm_id; no trading/DP/MV2/Cap23/Cap24 authority change; CSIA/Atlas bookkeeping;
       RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+  - id: CHANGE:pr_6990_n5_instrument_runtime_identity_closure_v1
+    from: 881efd47285ebccd83c0e57691e5832730c017a9
+    to: 4b5108e77926055cc5044a76ee1a9a5fc9224fa1
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/ops/specs/CURRENT_MF_N5_INSTRUMENT_RUNTIME_IDENTITY_CLOSURE_CONTRACT_V1.md
+    notes: >-
+      PR #6990: N5 instrument runtime identity closure package + orchestrator/N1/topology/recovered
+      ingress only; lane custody and bind-only compose; Cap23 selection/Cap24 bind/MV2 DP decision/POST
+      authority unchanged; CSIA/Atlas provenance follow-up; RUNTIME_SEMANTICS_CHANGED=false for authority
+      surfaces; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED

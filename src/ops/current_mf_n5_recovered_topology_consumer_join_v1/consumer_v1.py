@@ -54,7 +54,13 @@ from src.ops.current_mf_n5_recovered_topology_consumer_join_v1.constants_v1 impo
     OWNER,
     UNIVERSE_ISOLATION_ENFORCED,
 )
+from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.lifecycle_v1 import (
+    pin_open_positions_in_membership_v1,
+)
 from src.ops.mf_membership_context_artifact_contract_v1 import MembershipContextArtifactV1
+from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
+    PortfolioTruthSnapshotV1,
+)
 
 FAILURE_AUTHORITY = "LANE_CONSUMER_AUTHORITY_CLAIM_FORBIDDEN"
 FAILURE_BOOTSTRAP_RETURNED_PRIOR = "LANE_CONSUMER_BOOTSTRAP_RETURNED_PRIOR"
@@ -113,9 +119,14 @@ def consume_recovered_isolated_lane_topology_v1(
     ranking_snapshot: Mapping[str, Any],
     topology_state_root_base: Path | str,
     writer: DurableLaneAssignmentSingleWriterV1,
+    observed_portfolio: PortfolioTruthSnapshotV1 | None = None,
 ) -> IsolatedLaneTopologyV1:
     """Recover explicit prior topology, apply mapping, then persist the result."""
     _assert_non_authority()
+    membership = pin_open_positions_in_membership_v1(
+        membership,
+        portfolio=observed_portfolio,
+    )
     if membership.bootstrap:
         recovered = recover_durable_lane_assignment_v1(
             topology_state_root_base=topology_state_root_base,
@@ -139,6 +150,7 @@ def consume_recovered_isolated_lane_topology_v1(
         ranking_snapshot=ranking_snapshot,
         topology_state_root_base=topology_state_root_base,
         prior_topology=prior_topology,
+        open_position_custody_portfolio=observed_portfolio,
     )
     persist_durable_lane_assignment_v1(topology=topology, writer=writer)
     return topology
