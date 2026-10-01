@@ -3671,6 +3671,7 @@ entities:
       (activation WP only); no productive bind; ATLAS_AUTHORITY=NONE.
 
   - id: CONTRACT:hard_facts_system_closure_v1
+    # atlas_entity_review: PR #6991 — package __init__ lazy PEP-562 handoff re-export decouples N5 canonical entry import cycle; public API unchanged; AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6983 — productive real B05 Cap22 bridge module; composed-owner constants; AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #6982 — hard-facts deterministic closure (Cap22 handoff, identity, kill-switch MV2 bind); AUTHORITY=NONE; POST_COUNT=0.
     kind: CONTRACT

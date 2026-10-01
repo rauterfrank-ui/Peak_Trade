@@ -334,6 +334,16 @@ changes:
       ingress only; lane custody and bind-only compose; Cap23 selection/Cap24 bind/MV2 DP decision/POST
       authority unchanged; CSIA/Atlas provenance follow-up; RUNTIME_SEMANTICS_CHANGED=false for authority
       surfaces; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+  - id: CHANGE:pr_6991_n5_canonical_entry_import_cycle_decoupling_v1
+    from: c60ac741fad326fd9a7c61029989184671ac2687
+    to: c60ac741fad326fd9a7c61029989184671ac2687
+    type: IMPORT_CYCLE_DECOUPLING
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_n5_canonical_productive_entry_import_cycle_v1.py
+    notes: >-
+      PR #6991: PEP-562 lazy handoff re-export on hard_facts_system_closure_v1 __init__ breaks N5 canonical
+      productive entry ImportError cycle; public symbols unchanged; CSIA diff-bound NO_MAP_IMPACT only;
+      RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0. Atlas AUTHORITY=NONE.
   - id: CHANGE:execution_simple_removed_post_census_decouple
     from: src/execution_simple
     to: REMOVED
