@@ -3,25 +3,24 @@
   "authority_effect": "NONE",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT",
-  "reason": "PR #6996: productive GET budget contract repair; law candidate surfaces touched for diff-bound bookkeeping only; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #6997: selection rotation cursor reconciliation; law candidate catalog extended for new regression test path; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_get_budget_contract_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
-    "tests/ops/full_core_live_path_composition_root_v1/test_productive_bounded_continuous_get_budget_contract_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+    "tests/ops/test_current_productive_selection_rotation_cursor_reconciliation_v1.py"
   ],
-  "changed_paths_sha256": "94bef0f5873970c0bece8a5728742d14423f5692cd36e3ecbd01a30517660868",
-  "base_sha": "b730dd6465b2ac3d7e099565ae1c7af2410c3727",
+  "changed_paths_sha256": "aedd43cc5512909806336ed9f2ac51fabe2f7c854e52f38aee7ca3481d0724ad",
+  "base_sha": "04a15384f9bea72e35297fdfa674f012afd8a7e6",
   "evidence_refs": [
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "tests/ops/full_core_live_path_composition_root_v1/test_productive_bounded_continuous_get_budget_contract_v1.py"
+    "tests/ops/test_current_productive_selection_rotation_cursor_reconciliation_v1.py"
   ]
 }

@@ -383,3 +383,15 @@ changes:
     32 cap misaligned with dynamic-refresh S6 polls; offline regression only; Real-Venue
     budget repair effectiveness not reproven here; no trading/MV2/DP semantics;
     POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_6997_selection_rotation_cursor_reconciliation_v1
+  from: 04a15384f9bea72e35297fdfa674f012afd8a7e6
+  to: 04a15384f9bea72e35297fdfa674f012afd8a7e6
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_current_productive_selection_rotation_cursor_reconciliation_v1.py
+  notes: 'PR #6997: reconcile Cap23/Cap24 bound native_id with singleton sidestate
+    confirmation cursor before continuous S6; same instrument preserves cursor;
+    rotation archives superseded cursor and clears active lane for existing cold-lane
+    bootstrap; no cross-instrument confirmation/C1/scope carry; LINEAGE_MISMATCH guard
+    unchanged; Cap23 selection authority unchanged; offline regression only;
+    Real-Venue selection-rotation repair UNKNOWN_CURRENT; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
