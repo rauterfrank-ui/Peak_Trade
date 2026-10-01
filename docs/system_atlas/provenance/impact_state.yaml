@@ -1,12 +1,13 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: ATLAS_LEGACY_ERADICATION_V1
-modified_by: PR_6993_DYNAMIC_SCOPE_BRIDGE_CLOSURE_V1
+modified_by: PR_6994_OWNER_GO_REISSUANCE_GOVERNANCE_CURRENCY_V1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'PR #6993 post-main integration: dynamic scope + bridge boundary atlas review;
-  AUTHORITY=NONE; POST_COUNT=0.'
+note: 'PR #6994: Owner-GO baseline reissuance governance currency after #6993 cutover;
+  supervisor + bounded continuous-run atlas review; AUTHORITY=NONE; POST_COUNT=0.'
 changed_entities:
+- CONTRACT:n1_standing_pre_external_runtime_supervisor_v1
 - RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
 changed_relations: []
 changed_closures: []

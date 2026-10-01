@@ -2391,7 +2391,7 @@ entities:
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
-  modified_by: N1_STANDING_PRE_EXTERNAL_RUNTIME_SUPERVISOR_V1
+  modified_by: PR_6994_OWNER_GO_REISSUANCE_GOVERNANCE_CURRENCY_V1
   authority_sources:
   - docs/ops/specs/N1_STANDING_PRE_EXTERNAL_RUNTIME_SUPERVISOR_V1.md
   source_paths:
@@ -2412,7 +2412,7 @@ entities:
   - docs/ops/specs/N1_STANDING_PRE_EXTERNAL_RUNTIME_SUPERVISOR_V1.md
   - tests/ops/test_n1_standing_pre_external_runtime_supervisor_v1.py
   - tests/ops/test_n1_standing_supervisor_launcher_v1.py
-  notes: 'Canonical standing supervisor session: unified recovery, public supply refresh, pretrade refresh, policy-governed continuous PRE_EXTERNAL run. Launcher is composition-only; offline inject mode for WP-01 proof. No POST. ATLAS_AUTHORITY=NONE.'
+  notes: 'Canonical standing supervisor session: unified recovery, public supply refresh, pretrade refresh, policy-governed continuous PRE_EXTERNAL run. Launcher is composition-only; offline inject mode for WP-01 proof. No POST. ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6994 Owner-GO baseline reissuance wiring/harness rebind only; AUTHORITY=NONE; POST_COUNT=0.'
 - id: CONTRACT:current_wp02_default_productive_universe_handoff_v1
   kind: CONTRACT
   name: CURRENT-WP-02 default productive universe handoff v1
@@ -3600,7 +3600,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_6992_GOLDEN_HAPPY_VECTOR_OWNER_GO_LINEAGE_CLOSURE_V1
+  modified_by: PR_6994_OWNER_GO_REISSUANCE_GOVERNANCE_CURRENCY_V1
   source_paths:
   - scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py
@@ -3610,7 +3610,7 @@ entities:
   - config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json
   - docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md
   - tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py
-  notes: 'Owner-GO decision + consume evidence for bounded continuous run and public readonly Fresh-C1 GET; S6 observation poll only; PRE_EXTERNAL terminal; CONTINUOUS_RUN_AUTHORIZED=false; ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6951 productive entry script + cold-lane bootstrap; baseline rebind 27c3cd4; # ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6952 post-merge Owner-GO baseline lineage (ancestor bind + MV2/DP drift gate); # wiring-only; module pins unchanged; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6980 Cap24 witness epoch + Owner-GO re-pin 7a3597e; integration-only; # src/trading/master_v2 untouched; ATLAS_AUTHORITY=NONE; POST_COUNT=0.'
+  notes: 'Owner-GO decision + consume evidence for bounded continuous run and public readonly Fresh-C1 GET; S6 observation poll only; PRE_EXTERNAL terminal; CONTINUOUS_RUN_AUTHORIZED=false; ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6951 productive entry script + cold-lane bootstrap; baseline rebind 27c3cd4; # ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6952 post-merge Owner-GO baseline lineage (ancestor bind + MV2/DP drift gate); # wiring-only; module pins unchanged; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6980 Cap24 witness epoch + Owner-GO re-pin 7a3597e; integration-only; # src/trading/master_v2 untouched; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6994 Owner-GO baseline reissued to 049fc18 after #6993 Dynamic-Scope cutover; decision JSON + harness/supervisor baseline pins only; Golden-Happy inject-transport PRE_EXTERNAL proof; no live-market Natural Enter claim; AUTHORITY=NONE; POST_COUNT=0.'
 - id: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
   kind: RUNTIME_COMPONENT
   name: Governed M4-M8 to meta-learning optimization feedback real mechanical continuation v1
