@@ -26,6 +26,7 @@
     "src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/",
     "src/ops/hard_facts_system_closure_v1/",
     "tests/ops/test_hard_facts_system_closure_v1.py",
+    "tests/ops/test_n5_canonical_productive_entry_import_cycle_v1.py",
     "evidence/ops/hard_facts_system_closure_v1/",
     "src/ops/economic_md_input_producer_v1/",
     "src/ops/n1_whole_system_hard_facts_integration_wp_v1/",

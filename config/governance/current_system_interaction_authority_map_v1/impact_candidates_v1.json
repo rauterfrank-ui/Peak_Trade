@@ -426,6 +426,7 @@
     "tests/ops/test_cap24_lane_canonical_price_provenance_compose_v1.py",
     "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py",
     "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.py",
+    "tests/ops/test_n5_canonical_productive_entry_import_cycle_v1.py",
     "tests/ops/test_current_productive_f1_m9_clean_checkout_bootstrap_v1.py",
     "tests/ops/test_current_productive_f1_m9_seam_master_v2_cold_start_restart_v1.py",
     "tests/ops/test_current_productive_master_v2_ddo_learning_capture_join_v1.py",
