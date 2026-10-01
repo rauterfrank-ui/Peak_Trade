@@ -1,12 +1,12 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: ATLAS_LEGACY_ERADICATION_V1
-modified_by: PR_6999_GHV_FORENSIC_OBSERVABILITY_V1
+modified_by: PR_7001_GHV_SCOPE_DECISION_TRACE_OBSERVABILITY_V1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'PR #6999: Golden Happy Vector default-off forensic signal/entry-state observability
-  atlas review; ops-layer wiring only; no MV2/DP/trading semantics; Real-Venue not
-  executed; AUTHORITY=NONE; POST_COUNT=0.'
+note: 'PR #7001: Golden Happy Vector default-off scope-decision trace JSONL atlas
+  review; extends #6999 observability hook; ops-layer wiring only; no MV2/DP/scope
+  semantics; Real-Venue not executed; AUTHORITY=NONE; POST_COUNT=0.'
 changed_entities:
 - RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1
 - RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1

@@ -532,7 +532,9 @@ relations:
     / ScopeEvent / SideState / Entry consumption. AUTHORITY_EFFECT=NONE. Atlas is
     not trading authority. ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6999
     adjacent default-off forensic observability on runtime cycle path; observation-only;
-    AUTHORITY=NONE; POST_COUNT=0.'
+    AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7001 adds default-off
+    scope-decision trace append on same cycle hook; observation-only; AUTHORITY=NONE;
+    POST_COUNT=0.'
 - id: REL:r_full_core_path_calls_venue_translation
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CALLS
