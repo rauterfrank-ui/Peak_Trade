@@ -5,6 +5,7 @@
   "selector_modes_are_law_impact_authority": false,
   "surfaces": [
     "config/governance/current_law_impact_map_v1/source_v1.json",
+    "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
     "config/governance/risk_sizing_authority_decision_contract_freeze_v1.json",
     "config/governance/risk_sizing_bypass_fate_vocabulary_and_decision_authority_freeze_v1.json",
     "config/governance/risk_sizing_c2_blocking_authorities_and_canonical_sizing_owner_resolution_v1.json",
@@ -18,6 +19,7 @@
     "src/ops/governed_productive_",
     "src/ops/p5_10_productive_activation_and_binding_v1/",
     "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/",
+    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py",
     "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",
     "src/ops/governed_futures_universe_producer_v1/",
     "src/ops/productive_futures_ranking_producer_v1/",

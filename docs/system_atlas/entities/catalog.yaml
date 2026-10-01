@@ -5231,12 +5231,13 @@ entities:
   - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
     # atlas_review PR_6952
     # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1 (SEM-DIV-00001/00002/00006); composition-root canonical price provenance; SideState venue-seed forbidden; M_t/index fail-closed wiring; src/trading/master_v2 untouched; AUTHORITY=NONE; POST_COUNT=0; does not resolve UNKNOWN seal/L5 relations.
+    # atlas_entity_review: PR #6992 Owner-GO baseline re-pin 959039aa; immutable-surface lineage counts only src/trading/master_v2 (not evidence/double_play paths); wiring-only; MV2/Double Play unchanged; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
     kind: RUNTIME_COMPONENT
     name: CURRENT productive persistent Natural-ENTER policy-governed live Fresh-C1 continuous run v1
     epistemic_class: FORENSIC_RAW
     current_canonical: false
     current_status: CURRENT_NONCANONICAL
-    modified_by: PR_6952_POST_MERGE_OWNER_GO_BASELINE_LINEAGE_V1
+    modified_by: PR_6992_GOLDEN_HAPPY_VECTOR_OWNER_GO_LINEAGE_CLOSURE_V1
     source_paths:
       - scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py
       - src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py
