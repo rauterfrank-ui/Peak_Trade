@@ -775,7 +775,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     if f1_m9_cycle_evaluator is None:
         raise PersistentNaturalEnterConvergenceError("F1_M9_CYCLE_EVALUATOR_REQUIRED")
 
-    forensic_token = None
+    forensic_session_reset = None
     pairs = build_s8_occupied_lane_pairs_v1(
         lane_state_root=Path(lane_state_root),
         bound=bound,
@@ -805,7 +805,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
             continuous_run_id=run_id,
             repository_sha=str(origin_main_sha),
         )
-        forensic_token = bind_golden_happy_vector_forensic_observability_session_v1(
+        forensic_session_reset = bind_golden_happy_vector_forensic_observability_session_v1(
             forensic_session
         )
         cursor_floor_pre_obs = _cursor_floor_or_zero(cursor_store_root)
@@ -880,12 +880,12 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     except ContinuousRunRuntimeBindingError as exc:
         raise PersistentNaturalEnterConvergenceError(exc.reason_code, exc.detail) from exc
     finally:
-        if forensic_token is not None:
+        if forensic_session_reset is not None:
             from src.ops.full_core_live_path_composition_root_v1.productive_golden_happy_vector_forensic_observability_v1 import (
                 reset_golden_happy_vector_forensic_observability_session_v1,
             )
 
-            reset_golden_happy_vector_forensic_observability_session_v1(forensic_token)
+            reset_golden_happy_vector_forensic_observability_session_v1(forensic_session_reset)
 
     orch = result.orchestrator_result
     if orch.post_count != 0 or orch.permit_created or orch.external_effect_count != 0:
