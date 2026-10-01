@@ -283,13 +283,10 @@ def _main() -> int:
         print(json.dumps(out, sort_keys=True))
         return 2
 
-    transport = FullCoreProductiveReadOnlyGetTransportV1(max_request_count=32)
-    g17 = _resolve_g17_producer(
-        bound=bound,
-        transport=transport,
-        evidence_store=evidence_root / "g17_hot_path",
-        observed_unix=float(datetime.now(timezone.utc).timestamp()),
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_bounded_continuous_get_budget_contract_v1 import (
+        compute_productive_policy_governed_live_c1_shared_transport_max_request_count_v1,
     )
+
     pairs = build_s8_occupied_lane_pairs_v1(lane_state_root=lane_state_root, bound=bound)
     cursor_root = Path(pairs["LANE_1"][0].lane_state_root)
     floor = _cursor_floor_or_zero(cursor_root)
@@ -304,6 +301,17 @@ def _main() -> int:
         wait_interval_seconds=5.0,
         max_wait_for_next_c1_seconds=60.0,
         stall_seconds=60.0,
+    )
+    transport = FullCoreProductiveReadOnlyGetTransportV1(
+        max_request_count=compute_productive_policy_governed_live_c1_shared_transport_max_request_count_v1(
+            auth
+        ),
+    )
+    g17 = _resolve_g17_producer(
+        bound=bound,
+        transport=transport,
+        evidence_store=evidence_root / "g17_hot_path",
+        observed_unix=float(datetime.now(timezone.utc).timestamp()),
     )
     run_id = mint_continuous_run_id_v1(auth)
     obs_source = LiveFreshC1ContinuousObservationSourceV1(

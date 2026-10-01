@@ -63,6 +63,9 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestat
 from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 import (
     STEP_29Q_PLAN_ONLY,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_bounded_continuous_get_budget_contract_v1 import (
+    compute_max_canonical_continuous_poll_iterations_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_occupancy_classify_and_c1_gate_v1 import (
     POST_NEXT_OWNER_GO,
 )
@@ -560,13 +563,10 @@ def run_current_productive_governed_continuous_cycle_run_v1(
     cursor_floor_before = last_accepted
     s5_invoke_count = 0
     poll_iterations = 0
-    max_poll_iterations = (
-        int(
-            float(authorization.max_run_duration_seconds)
-            / float(authorization.wait_interval_seconds)
-        )
-        + int(authorization.max_cycles_per_run)
-        + 8
+    max_poll_iterations = compute_max_canonical_continuous_poll_iterations_v1(
+        max_run_duration_seconds=authorization.max_run_duration_seconds,
+        wait_interval_seconds=authorization.wait_interval_seconds,
+        max_cycles_per_run=authorization.max_cycles_per_run,
     )
     runner = s5_runner or run_current_productive_governed_cycle_v1
     disposition = DISPOSITION_FAIL_CLOSED
