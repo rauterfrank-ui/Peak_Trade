@@ -2,34 +2,34 @@
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
+    "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/hard_facts_system_closure_v1/__init__.py",
-    "tests/ops/test_n5_canonical_productive_entry_import_cycle_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py",
+    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py"
   ],
-  "changed_paths_sha256": "fe0338e56172e7351116d65d64ec9dd83c70bd9f69d086f98df3210ee7a849aa",
-  "base_sha": "c60ac741fad326fd9a7c61029989184671ac2687",
+  "changed_paths_sha256": "399acdc7efc78b339b610b72d2e296eecc3be07a3190afdd0c91f0b16b9b22d9",
+  "base_sha": "959039aa619e0fe8e7cb71fadb08d082d1f2e402",
   "authority_effect": "NONE",
   "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
-  "reason": "PR #6991: decouples canonical N5 productive entry import cycle via lazy hard-facts MF-N5 handoff re-export preserving public interface; Atlas edits are navigation/currentness bookkeeping only; no law semantics, canonical authority semantics, Golden Happy Vector, or Owner-GO change; AUTHORITY_EFFECT=NONE; POST_COUNT=0.",
+  "reason": "PR #6992: Owner-GO baseline re-pin and immutable-surface lineage bookkeeping; law candidate catalog extended for diff-bound NO_LAW_IMPACT; no law semantics or Golden Happy Vector authority change; AUTHORITY=NONE; POST_COUNT=0.",
   "evidence_refs": [
     "docs/system_atlas/entities/catalog.yaml",
-    "src/ops/hard_facts_system_closure_v1/__init__.py",
-    "tests/ops/test_n5_canonical_productive_entry_import_cycle_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py",
+    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py"
   ],
   "covered_candidate_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/hard_facts_system_closure_v1/__init__.py",
-    "tests/ops/test_n5_canonical_productive_entry_import_cycle_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py",
+    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py"
   ],
   "verdict": "NO_LAW_IMPACT",
   "selector_used_as_law_impact_authority": false

@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:hard_facts_system_closure_v1` |
+| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6991: Atlas entity review for hard_facts package __init__ import-cycle decoupling (lazy handoff re-export only); no runtime/authority semantics; CSIA NO_MAP_IMPACT; AUTHORITY=NONE; POST_COUNT=0.
+- PR #6992: Owner-GO baseline re-pin 959039aa + immutable-surface lineage gate (master_v2 only); productive Level-A re-proof path to S5/HOLD; no Natural Enter in bounded window; MV2/DP unchanged; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_6991_N5_CANONICAL_ENTRY_IMPORT_CYCLE_DECOUPLING_V1
+- modified_by=PR_6992_GOLDEN_HAPPY_VECTOR_OWNER_GO_LINEAGE_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
