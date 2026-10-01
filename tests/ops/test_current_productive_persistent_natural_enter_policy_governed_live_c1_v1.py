@@ -28,6 +28,7 @@ from src.governance.governed_f1_m9_productive_runtime_threshold_consumer_wiring_
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_bounded_continuous_run_owner_go_wiring_v1 import (
     DECISION_CONFIG,
+    _immutable_surface_touched_v1,
     owner_go_consumption_semantics_v1,
     validate_bounded_continuous_run_owner_go_decision_v1,
 )
@@ -69,9 +70,19 @@ from tests.trading.master_v2.test_double_play_runtime_typed_volatility_presence_
 )
 
 REPO = Path(__file__).resolve().parents[2]
-POST_MERGE_MAIN_SHA = "7b706117695e0ef79d1510ae98c335dd5bc8630b"
-CURRENT_MAIN_SHA = "7a3597e61966749a9e30d06f3514e23a9179fb9e"
+POST_MERGE_MAIN_SHA = "7a3597e61966749a9e30d06f3514e23a9179fb9e"
+CURRENT_MAIN_SHA = "959039aa619e0fe8e7cb71fadb08d082d1f2e402"
 BASELINE_SHA = CURRENT_MAIN_SHA
+
+
+def test_immutable_surface_lineage_ignores_evidence_double_play_paths() -> None:
+    assert (
+        _immutable_surface_touched_v1(
+            ("evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/x.json",)
+        )
+        is False
+    )
+    assert _immutable_surface_touched_v1(("src/trading/master_v2/double_play_state.py",)) is True
 
 
 def test_owner_go_decision_present_and_pins_unchanged() -> None:

@@ -15,8 +15,13 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
+<<<<<<< HEAD
 ATLAS_CHANGED_ENTITY_COUNT=13
 ATLAS_CHANGED_RELATION_COUNT=7
+=======
+ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_RELATION_COUNT=0
+>>>>>>> origin/main
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,6 +45,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+<<<<<<< HEAD
 | `CAPABILITY:market_data_private_state_runtime_convergence_v1` |
 | `CONTRACT:p5_10_productive_activation_and_binding_v1` |
 | `HOST:wallclock_decision_economics_cycle` |
@@ -53,11 +59,15 @@ Do not manually patch generated Markdown.
 | `RUNTIME_COMPONENT:mv2_canonical_scope` |
 | `RUNTIME_COMPONENT:mv2_integrated_replay` |
 | `SUBSYSTEM:master_v2` |
+=======
+| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
+>>>>>>> origin/main
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
+<<<<<<< HEAD
 | `REL:r_ddo_capture_observes_integrated_replay` |
 | `REL:r_full_core_cycle_observes_elementary_direction` |
 | `REL:r_wallclock_calls_ddo_cycle_capture` |
@@ -65,6 +75,9 @@ Do not manually patch generated Markdown.
 | `REL:r_wallclock_injects_ddo_capture_session` |
 | `REL:r_wallclock_materializes_ddo_o4_via_wp_c_public_plane` |
 | `REL:s_wp_c_o4_n_bars_learning_handoff_to_wallclock_ddo` |
+=======
+| _(none)_ |
+>>>>>>> origin/main
 
 ## NEW_RELATIONS
 
@@ -110,8 +123,14 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
+<<<<<<< HEAD
 - PR #6993: dynamic scope authority + productive bridge boundary atlas review; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
 - modified_by=PR_6993_DYNAMIC_SCOPE_BRIDGE_CLOSURE_V1
+=======
+- PR #6992: Owner-GO baseline re-pin 959039aa + immutable-surface lineage gate (master_v2 only); productive Level-A re-proof path to S5/HOLD; no Natural Enter in bounded window; MV2/DP unchanged; AUTHORITY=NONE; POST_COUNT=0.
+- introduced_by=ATLAS_LEGACY_ERADICATION_V1
+- modified_by=PR_6992_GOLDEN_HAPPY_VECTOR_OWNER_GO_LINEAGE_CLOSURE_V1
+>>>>>>> origin/main
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

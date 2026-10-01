@@ -86,9 +86,13 @@ def _changed_paths_between_commits_v1(
 
 
 def _immutable_surface_touched_v1(paths: tuple[str, ...]) -> bool:
+    """True only when ``src/trading/master_v2/`` trading semantics changed.
+
+    Evidence or ops paths containing ``double_play`` in the name are not Master V2.
+    """
     for path in paths:
         for prefix in _IMMUTABLE_SURFACE_PATH_PREFIXES:
-            if path.startswith(prefix) or "/double_play" in path:
+            if path.startswith(prefix):
                 return True
     return False
 

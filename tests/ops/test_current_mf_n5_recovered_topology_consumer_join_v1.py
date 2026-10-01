@@ -272,6 +272,7 @@ def test_authority_bounds_and_forbidden_call_graph() -> None:
         "ranking_snapshot",
         "topology_state_root_base",
         "writer",
+        "observed_portfolio",
     ]
     assert "prior_topology" not in sig.parameters
     assert "recovery_mode" not in sig.parameters

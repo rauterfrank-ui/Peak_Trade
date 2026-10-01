@@ -28,6 +28,9 @@ from src.learning.deterministic_decision_outcome_v0.common_v0 import (
 )
 from src.learning.deterministic_decision_outcome_v0.enums_v0 import UNKNOWN
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
+from src.learning.deterministic_decision_outcome_v0.outcome_evidence_provenance_v1 import (
+    validate_outcome_evidence_provenance_v1,
+)
 
 LEARNING_STATE_PRODUCTIVE_AUTHORITY: Final[str] = "NONE"
 
@@ -134,6 +137,34 @@ _STATE_EXTRA: Final[tuple[FieldSpecV0, ...]] = (
         True,
         "Observation-only opaque token from outcome. Not numeric calibration.",
     ),
+    FieldSpecV0(
+        "outcome_semantic_class",
+        "REQUIRED",
+        "string",
+        True,
+        "Copied from outcome provenance; UNKNOWN only for legacy replay.",
+    ),
+    FieldSpecV0(
+        "outcome_evidence_provenance_digest",
+        "REQUIRED",
+        "sha256|UNKNOWN",
+        True,
+        "Digest of outcome_evidence_provenance at ingest.",
+    ),
+    FieldSpecV0(
+        "outcome_scalar_kind",
+        "OPTIONAL",
+        "string|null",
+        True,
+        "Copied provenance scalar kind when present.",
+    ),
+    FieldSpecV0(
+        "outcome_evidence_provenance",
+        "REQUIRED",
+        "object",
+        True,
+        "Full provenance block copied from outcome at ingest.",
+    ),
     FieldSpecV0("productive_authority", "REQUIRED", "string", True, "Must be NONE."),
     FieldSpecV0("runtime_reachability", "REQUIRED", "bool", True, "Must be false."),
     FieldSpecV0("can_auto_promote", "REQUIRED", "bool", True, "Must be false."),
@@ -237,6 +268,23 @@ def build_learning_state_record_v0(payload: Mapping[str, Any]) -> MappingProxyTy
         ),
         "last_economic_score": optional_string_or_unknown(
             raw.get("last_economic_score"), "last_economic_score"
+        ),
+        "outcome_semantic_class": require_non_empty_string_or_unknown(
+            raw.get("outcome_semantic_class"), "outcome_semantic_class"
+        ),
+        "outcome_evidence_provenance_digest": require_sha256_or_unknown(
+            raw.get("outcome_evidence_provenance_digest"),
+            "outcome_evidence_provenance_digest",
+        ),
+        "outcome_scalar_kind": optional_string_or_unknown(
+            raw.get("outcome_scalar_kind"), "outcome_scalar_kind"
+        ),
+        "outcome_evidence_provenance": dict(
+            validate_outcome_evidence_provenance_v1(
+                require_mapping(
+                    raw.get("outcome_evidence_provenance"), "outcome_evidence_provenance"
+                )
+            )
         ),
         **_require_false_authority(raw),
     }

@@ -1,4 +1,5 @@
 changes:
+<<<<<<< HEAD
 - id: CHANGE:master_runbook_supersedes_vollautonomie
   from: RUNBOOK:vollautonomie_v4_4_12
   to: RUNBOOK:canonical_master_runbook
@@ -301,3 +302,369 @@ changes:
   evidence: docs/ops/specs/CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1.md
   notes: 'PR #6993: dynamic scope + bridge boundaries; atlas/CSIA/seal governance
     closure; ATLAS_AUTHORITY=NONE; POST_COUNT=0.'
+=======
+  - id: CHANGE:master_runbook_supersedes_vollautonomie
+    from: RUNBOOK:vollautonomie_v4_4_12
+    to: RUNBOOK:canonical_master_runbook
+    type: SUPERSEDES
+    epistemic_status: CANONICAL_AUTHORITY
+    evidence: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+  - id: CHANGE:signed_rest_after_july17_audit
+    from: docs/audits/OKX_INTEGRATION_READ_ONLY_AUDIT_2026-07-17.md
+    to: src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_okx_venue_auth_headers_v1.py
+    type: SUPERSESSION
+    epistemic_status: ADJUDICATED
+    evidence: C-OKX-AUDIT-SIGNED-REST-001
+  - id: CHANGE:historical_okx_removals
+    from: OPEN
+    to: OPEN
+    type: REMOVAL_SEARCH
+    epistemic_status: OPEN
+    evidence: docs/system_atlas/census/census_meta.yaml
+  - id: CHANGE:pr6181_non_okx_runtime_removed
+    from: CURRENT_NONCANONICAL
+    to: REMOVED
+    type: REMOVAL
+    epistemic_status: ADJUDICATED
+    evidence: src/exchange/operative_venue_boundary_v1.py
+    notes: Current-tree non-OKX runtime adapters/clients removed. Sole operative venue remains OKX EEA. Historical names are not restated as current components. Atlas is not trading authority.
+  - id: CHANGE:atlas_hist_selector_revert_sha_corrected
+    from: HIST:selector_policy_reverted
+    to: HIST:selector_policy_reverted
+    type: CORRECTION
+    epistemic_status: FORENSIC_RAW
+    evidence: git log afbae518b67eb1b789c835e219db37f5b15f308b
+    notes: >-
+      Corrected HIST:selector_policy_reverted from WP-FA-07 SHA 615de3b3 to
+      git-proven revert #6166 SHA afbae518b. WP-FA-07 retained separately as
+      HIST:wp_fa_07 / #6209. Atlas is not trading authority.
+  - id: CHANGE:atlas_post_6210_navigation_rebind
+    from: 615de3b307132b73a60df33fd3bedfac811c8cce
+    to: 46d2c1734746d6d1332de0dfb03840d3bd8c31b1
+    type: NAVIGATION_REBIND
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/system_atlas/census/census_meta.yaml
+    notes: >-
+      Fresh navigation rebind after #6210. Domain census payloads were not
+      freshly exhaustively rerun. Atlas is not trading authority.
+  - id: CHANGE:atlas_post_6215_navigation_rebind
+    from: 46d2c1734746d6d1332de0dfb03840d3bd8c31b1
+    to: 14e8a58f32dcb6b521be6b2559b388bf27360194
+    type: NAVIGATION_REBIND
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/system_atlas/census/census_meta.yaml
+    notes: >-
+      Fresh navigation rebind of CURRENT_REPO_SHA after WP-FS-B1 git merge
+      #6215. HISTORICAL_EVIDENCE_SHA / domain census payloads remain
+      615de3b307132b73a60df33fd3bedfac811c8cce (WP-FA-07) and were not
+      freshly exhaustively rerun. Does not define WP-FA-08. Atlas is not
+      trading authority.
+  - id: CHANGE:post_6922_representation_closure_navigation_rebind
+    from: 528246fc0463bbc99494439ea1b0b265cb64802a
+    to: 528246fc0463bbc99494439ea1b0b265cb64802a
+    type: NAVIGATION_REBIND
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/system_atlas/census/census_meta.yaml
+    notes: >-
+      POST_6922 representation closure (#6923): mechanical review-SHA rebind for
+      Runbook, Map of Truth, and Atlas census_meta; B05 FIRST_CLASS CSIA domains;
+      open-record closure adjudication metadata only. RUNTIME_SEMANTICS_CHANGED=false.
+      Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6923_authority_open_evidence_closure_census_navigation_rebind
+    from: 7c9e00b57a85a39841bfbedcc5c743fbcf5b955d
+    to: 7c9e00b57a85a39841bfbedcc5c743fbcf5b955d
+    type: NAVIGATION_REBIND
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/system_atlas/census/census_meta.yaml
+    notes: >-
+      POST_6923 authority/open-evidence closure census (#6924): CSIA mechanical
+      open-record closures; execution_external_effect representation fix; non-blocking
+      forensic/XPERP census markers; navigation-only review-SHA rebind. RUNTIME_SEMANTICS_CHANGED=false.
+      Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6924_companion_c2_runtime_completion_navigation_rebind
+    from: 3899cc8518e1fc963369daa2ca3a165dab9d78c4
+    to: 3899cc8518e1fc963369daa2ca3a165dab9d78c4
+    type: NAVIGATION_REBIND
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/system_atlas/census/census_meta.yaml
+    notes: >-
+      POST_6924 companion C2 runtime completion scaffold: fail-closed runtime module;
+      CSIA open record; baseline_sha/navigation rebind; no shadow/live producer binding.
+      RUNTIME_SEMANTICS_CHANGED=false. Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6925_current_navigation_baseline_rebind
+    from: 3899cc8518e1fc963369daa2ca3a165dab9d78c4
+    to: 744a9c896f53d33b2d3c24977da1891a2e8549f1
+    type: NAVIGATION_REBIND
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/system_atlas/census/census_meta.yaml
+    notes: >-
+      POST_6925 CURRENT navigation baseline rebind after squash-merge #6925: Master Runbook,
+      Map of Truth, CSIA baseline_sha, Atlas census/provenance; no runtime/authority/policy change.
+      RUNTIME_SEMANTICS_CHANGED=false. Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6926_maximal_bounded_current_system_wp_v1
+    from: 744a9c896f53d33b2d3c24977da1891a2e8549f1
+    to: 744a9c896f53d33b2d3c24977da1891a2e8549f1
+    type: NAVIGATION_REBIND
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/system_atlas/census/census_meta.yaml
+    notes: >-
+      POST_6926 maximal bounded CURRENT system WP (PR #6927): Master Runbook §11.2.1 CW–DU
+      persist reinsert; MOT §3.1 navigation; DT/DU PRE_EXTERNAL G17 hot-path runtime wiring;
+      CSIA/Atlas bookkeeping only. CURRENT_REVIEWED_AT_SHA unchanged (744a9c896). RUNTIME_SEMANTICS_CHANGED=false.
+      Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6927_gap_true_01_pre_external_test_contract_repair_v1
+    from: 8f8d7c11a91d0728a45a31aa1980db8cc4a62400
+    to: 8f8d7c11a91d0728a45a31aa1980db8cc4a62400
+    type: TEST_CONTRACT_ALIGNMENT
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py
+    notes: >-
+      POST_6927 PR #6928: GAP-TRUE-01 evidence test ↔ WP-2 PRE_EXTERNAL G17/DK seed contract;
+      CSIA/Atlas diff-bound NO_MAP_IMPACT bookkeeping only. RUNTIME_SEMANTICS_CHANGED=false.
+      Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6929_pre_external_same_process_test_isolation_v1
+    from: dc438f370495fadd42032a98db31824e239e7271
+    to: dc438f370495fadd42032a98db31824e239e7271
+    type: TEST_ISOLATION
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/_current_productive_pre_external_test_process_isolation_v1.py
+    notes: >-
+      PR #6929 POST_6928: PRE_EXTERNAL same-process test isolation (F1/M9 ledger, Master-V2 import
+      binding, 29P base-binding cache reset); CSIA/Atlas diff-bound NO_MAP_IMPACT only.
+      RUNTIME_SEMANTICS_CHANGED=false. Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6930_pre_external_e2e_handoff_composition_proof_v1
+    from: fb7bc6e7a6bed4f1b8a1320f28e712fb7a682d7a
+    to: fb7bc6e7a6bed4f1b8a1320f28e712fb7a682d7a
+    type: TEST_COMPOSITION_PROOF
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_current_productive_one_shot_enter_e2e_runtime_handoff_v1.py
+    notes: >-
+      POST_6930: WP-2 PRE_EXTERNAL layered ENTER composed into one-shot E2E handoff prepare;
+      same-process batch + conftest isolation needles; CSIA/Atlas diff-bound NO_MAP_IMPACT only.
+      RUNTIME_SEMANTICS_CHANGED=false. Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6931_post_first_real_attempt_safety_closure_v1
+    from: cf3aa15f098827a9e60de8eb84e5bdd9eb54cca2
+    to: cf3aa15f098827a9e60de8eb84e5bdd9eb54cca2
+    type: RUNTIME_SAFETY_CLOSURE
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py
+    notes: >-
+      PR #6931: POST-first-real-attempt safety closure — baseline cf3aa15, pre-POST freshness,
+      HTTP POST outcome phases, read-only exact-order GET, UNKNOWN reconciliation; CSIA
+      MAP_UPDATE_REQUIRED; no new Owner-GO venue POST in WP. Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6932_productive_pre_external_execute_network_mv2_market_handoff_v1
+    from: 093b481458c86af5fa8a5105d202935fde30c521
+    to: 093b481458c86af5fa8a5105d202935fde30c521
+    type: RUNTIME_HANDOFF_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_full_core_current_productive_pre_external_closure_v1.py
+    notes: >-
+      PR #6932: PRE_EXTERNAL execute_network binds MV2 mark_px and finalized_closes from governed
+      live GETs; replay defaults only on execute_network=false; fail-closed on missing market fields;
+      CSIA MAP_UPDATE_REQUIRED partial statement; no Master-V2/Double-Play change; POST_COUNT=0.
+      Atlas AUTHORITY=NONE.
+  - id: CHANGE:selected_future_persistent_scope_confirmation_authority_v1
+    from: dc727b5ab8885ebd230b428496e5a57173356279
+    to: dc727b5ab8885ebd230b428496e5a57173356279
+    type: AUTHORITY_CONTRACT_AND_OD1_BINDING
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/trading/master_v2/test_single_lane_confirmation_activation_v1.py
+    notes: >-
+      PR #6933: Owner policy persistent Selected-Future Bull/Bear confirmation lifecycle; OD1
+      active-lane routing only; Cap 6.1 dual carrier preserves opposite-side cursor; scope/L10
+      invalidation UNRESOLVED; CSIA MAP_UPDATE_REQUIRED partial statement; Atlas entity review;
+      CLEAN_CORE_SEAL join projection update; no selection change; POST_COUNT=0. Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6933_od1_economic_guard_slice_grant_closure_v1
+    from: 43b3786ce5cd7a0d517ffebe1c158616b7e8c644
+    to: 43b3786ce5cd7a0d517ffebe1c158616b7e8c644
+    type: GOVERNANCE_GRANT_CLOSURE
+    epistemic_status: FORENSIC_RAW
+    evidence: config/governance/explicit_owner_adjudicated_od1_productive_single_lane_confirmation_authorization_v1.json
+    notes: >-
+      Post PR #6933: deactivate temporary eighth-class OD1 Economic Guard slice grant
+      (grant_active=false); CSIA partial statement notes closed grant; merged Master-V2 OD1
+      implementation unchanged; Atlas entity review on CSIA-coupled navigation surfaces only;
+      POST_COUNT=0. Atlas AUTHORITY=NONE.
+  - id: CHANGE:post_6934_selected_future_dual_carrier_replay_proof_v1
+    from: e0ae34a73ab1aeeb9da44429fc0234c6bba47d29
+    to: e0ae34a73ab1aeeb9da44429fc0234c6bba47d29
+    type: GOVERNANCE_EVIDENCE_PROOF
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/governance/test_selected_future_persistent_scope_confirmation_authority_v1.py
+    notes: >-
+      Post PR #6934 baseline: refresh selected-future Owner policy bound_origin_main_sha;
+      governance-hosted integrated-replay regression for post-#6933 dual-carrier bear cursor
+      persistence; CSIA MAP_UPDATE_REQUIRED partial statement; Atlas entity review on CSIA-coupled
+      navigation/MI/sidestate surfaces only; no Master-V2 mutation; POST_COUNT=0. Atlas AUTHORITY=NONE.
+  - id: CHANGE:pr_6936_loop_a_productive_mv2_ddo_learning_capture_join_v1
+    from: 6f893759b7b69c6ca06d67de66f032060bc41741
+    to: 6f893759b7b69c6ca06d67de66f032060bc41741
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py
+    notes: >-
+      PR #6936: optional observe-only DDO learning capture bind on Full-Core productive MV2 cycle and N5
+      addressing join ledger path; CSIA MAP_UPDATE_REQUIRED partial statement + learning_capture edge refresh;
+      Atlas entity review on touched MV2/N5/full_core navigation surfaces; PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false;
+      no promotion/M10; POST_COUNT=0. Atlas AUTHORITY=NONE.
+  - id: CHANGE:pr_6937_whole_system_causal_closure_synthetic_treasury_v1
+    from: 055f4bf4a18b49a8e080b6d54a7e78a80c02bb25
+    to: 055f4bf4a18b49a8e080b6d54a7e78a80c02bb25
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py
+    notes: >-
+      PR #6937: synthetic treasury whole-system causal closure — 29P→EEA/budget productive joins plus MV2 same-cycle
+      DDO capture→offline export to ACCEPTED_OFFLINE_RESEARCH_INPUT; landscape/presentation dashboard OUT_OF_SCOPE;
+      PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=false; POST_COUNT=0. Atlas AUTHORITY=NONE.
+  - id: CHANGE:productive_learning_to_g2_primary_evidence_case_b_closure_v1
+    from: b3af49d714cf0f248a572b5799bb5edef4b45fa6
+    to: b3af49d714cf0f248a572b5799bb5edef4b45fa6
+    type: ADJUDICATION
+    epistemic_status: ADJUDICATED
+    evidence: src/governance/governed_productive_learning_to_g2_primary_evidence_causal_closure_v1.py
+    notes: >-
+      Case B closure: productive DDO ACCEPTED_OFFLINE_RESEARCH_INPUT cannot become G2 primary evidence;
+      CSIA NOT_APPLICABLE edge + partial statement; Atlas entity; legitimate G2→M4–M8 reference only;
+      bridge forbidden; PRODUCTIVE_OPTIMIZATION_JOIN=false; POST_COUNT=0. Atlas AUTHORITY=NONE.
+  - id: CHANGE:pr_6948_current_productive_persistent_natural_enter_convergence_v1
+    from: 419da45141aacc8a563e6314b0d1e5bf6cb68fe7
+    to: 419da45141aacc8a563e6314b0d1e5bf6cb68fe7
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py
+    notes: >-
+      PR #6948: offline persistent Natural-ENTER convergence (S8→S6→S7→PRE_EXTERNAL); fixed lane-root;
+      N5 occupied-lane bootstrap C1/mark alignment; CSIA MAP_UPDATE_REQUIRED partial statement;
+      CONTINUOUS_RUN_AUTHORIZED=false; POST unreachable; Atlas entity review; POST_COUNT=0. Atlas AUTHORITY=NONE.
+  - id: CHANGE:pr_6949_post_6948_productive_continuous_run_authority_live_c1_convergence_v1
+    from: 85581ee6ca095f8533e5f0b09299d8596d61cc81
+    to: 85581ee6ca095f8533e5f0b09299d8596d61cc81
+    type: ADJUDICATION
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/governance/test_post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py
+    notes: >-
+      PR #6949 navigation WP after #6948: continuous-run authority vs Live-C1 GET convergence;
+      Owner decision schema; RUNTIME_OWNER_GO and Fresh-C1 GET GO DEFINED_NOT_CONSUMED;
+      CSIA MAP_UPDATE_REQUIRED; no runtime/GET/POST; Atlas AUTHORITY=NONE.
+  - id: CHANGE:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
+    from: 45ddc791cf81606c5e2c3949e9d1dd1dcc04752d
+    to: 45ddc791cf81606c5e2c3949e9d1dd1dcc04752d
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py
+    notes: >-
+      Owner-GO wiring for bounded continuous run + public readonly Fresh-C1 GET in S6 poll;
+      policy-governed admission; PRE_EXTERNAL terminal; module pins unchanged; no venue POST.
+  - id: CHANGE:pr_6951_live_fresh_c1_pre_external_convergence_wiring_v1
+    from: 27c3cd4aa21e181282b19a89a9e2187b30ed93f4
+    to: 27c3cd4aa21e181282b19a89a9e2187b30ed93f4
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py
+    notes: >-
+      PR #6951: productive PRE_EXTERNAL-only runner; S6 stale-C1 poll liveness; cold-lane bootstrap;
+      auth-free occupancy; baseline Owner-GO rebind 27c3cd4; productive evidence run without POST;
+      MV2/Double Play unchanged; ATLAS_AUTHORITY=NONE.
+  - id: CHANGE:pr_6954_s7_scope_colocated_episode_bootstrap_v1
+    from: 95480ded1c2dc5b39f5c84515020248f57fd220e
+    to: 95480ded1c2dc5b39f5c84515020248f57fd220e
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_productive_layered_core_episode_store_bootstrap_v1.py
+    notes: >-
+      PR #6954: S7 cold compose scope-colocated P5 episode store bootstrap uses initialization-only
+      persist (no duplicate mechanical step after MV2 replay); fixes intermittent JoinError on live
+      PRE_EXTERNAL observation; MV2/Double Play unchanged; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+  - id: CHANGE:pr_6953_e2e_convergence_current_productive_mechanical_fixpoint_v1
+    from: 6fa8969b345d2da7cd85d41e3babbba4e966fbd6
+    to: 6fa8969b345d2da7cd85d41e3babbba4e966fbd6
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_full_core_current_productive_pre_external_closure_wp2_composition_v1.py
+    notes: >-
+      PR #6953: mechanical E2E convergence — treasury handoff→enter-live portfolio seam; data_safety_admission
+      on standing gates; gap_dag Treasury CURRENT pin; §11.2.1.CR runbook persist; test harness only;
+      MV2/Double Play immutable; POST_COUNT=0; AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
+  - id: CHANGE:pr_6952_post_merge_owner_go_baseline_lineage_v1
+    from: 7b706117695e0ef79d1510ae98c335dd5bc8630b
+    to: 7b706117695e0ef79d1510ae98c335dd5bc8630b
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py
+    notes: >-
+      PR #6952: consume adjudicated Owner-GO when live origin/main is descendant of decision baseline;
+      fail-closed MV2/DP drift gate; enables post-#6951 productive C1 run on main; no POST/credentials;
+      ATLAS_AUTHORITY=NONE.
+  - id: CHANGE:pr_6980_natural_enter_causal_blocker_resolution_v1
+    from: 7a3597e61966749a9e30d06f3514e23a9179fb9e
+    to: 7a3597e61966749a9e30d06f3514e23a9179fb9e
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: evidence/ops/natural_enter_causal_blocker_resolution_loop_v1/20260929T213000Z/WP_NATURAL_ENTER_CAUSAL_BLOCKER_RESOLUTION_LOOP_V1.json
+    notes: >-
+      PR #6980: Cap24 runtime binding witness epoch for productive PRE_EXTERNAL runner; Owner-GO decision
+      baseline re-pinned to 7a3597e; live EEA reproof reached Double Play (no Natural-Enter in bounded window);
+      MV2/DP strategy unchanged; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+  - id: CHANGE:pr_6989_ddo_meta_evidence_baseline_ci_debt_closure_v1
+    from: 89bda2857035ae104e6758eb582c8c892f3237d5
+    to: 60f76236b1975a2466b49048256c70c172d8cf03
+    type: DEPENDENCY_INVERSION
+    epistemic_status: FORENSIC_RAW
+    evidence: src/learning/deterministic_decision_outcome_v0/meta_evidence_v1.py
+    notes: >-
+      PR #6989: remove forbidden meta_evidence_v1→contract_safety_v1 import; reuse existing
+      DDO-local serialization_v0.compute_content_hash_v0; no Realm/Outcome-Provenance change;
+      RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+  - id: CHANGE:pr_6988_realm_outcome_provenance_closure_v1
+    from: cbce80bc2fb62c1218b143d36c55db8c5f609bc3
+    to: ec7ea5f47e996c4cfe4d336af8d89abc730e0896
+    type: LEARNING_PROVENANCE_METADATA
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/ops/specs/CURRENT_OUTCOME_EVIDENCE_PROVENANCE_CONTRACT_V1.md
+    notes: >-
+      PR #6988: orthogonal outcome_evidence_provenance_v1 on DDO→Learning→Optimization gates;
+      no universal realm_id; no trading/DP/MV2/Cap23/Cap24 authority change; CSIA/Atlas bookkeeping;
+      RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+  - id: CHANGE:pr_6990_n5_instrument_runtime_identity_closure_v1
+    from: 881efd47285ebccd83c0e57691e5832730c017a9
+    to: 4b5108e77926055cc5044a76ee1a9a5fc9224fa1
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: docs/ops/specs/CURRENT_MF_N5_INSTRUMENT_RUNTIME_IDENTITY_CLOSURE_CONTRACT_V1.md
+    notes: >-
+      PR #6990: N5 instrument runtime identity closure package + orchestrator/N1/topology/recovered
+      ingress only; lane custody and bind-only compose; Cap23 selection/Cap24 bind/MV2 DP decision/POST
+      authority unchanged; CSIA/Atlas provenance follow-up; RUNTIME_SEMANTICS_CHANGED=false for authority
+      surfaces; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+  - id: CHANGE:pr_6991_n5_canonical_entry_import_cycle_decoupling_v1
+    from: c60ac741fad326fd9a7c61029989184671ac2687
+    to: c60ac741fad326fd9a7c61029989184671ac2687
+    type: IMPORT_CYCLE_DECOUPLING
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_n5_canonical_productive_entry_import_cycle_v1.py
+    notes: >-
+      PR #6991: PEP-562 lazy handoff re-export on hard_facts_system_closure_v1 __init__ breaks N5 canonical
+      productive entry ImportError cycle; public symbols unchanged; CSIA diff-bound NO_MAP_IMPACT only;
+      RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0. Atlas AUTHORITY=NONE.
+  - id: CHANGE:pr_6992_golden_happy_vector_owner_go_lineage_closure_v1
+    from: 959039aa619e0fe8e7cb71fadb08d082d1f2e402
+    to: 959039aa619e0fe8e7cb71fadb08d082d1f2e402
+    type: RUNTIME_WIRING
+    epistemic_status: FORENSIC_RAW
+    evidence: tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py
+    notes: >-
+      PR #6992: Owner-GO baseline re-pin post-#6991 merge; immutable-surface lineage gate limited to
+      src/trading/master_v2; productive Level-A live re-proof to S5/HOLD without Natural Enter in bounded
+      window; MV2/Double Play unchanged; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+  - id: CHANGE:execution_simple_removed_post_census_decouple
+    from: src/execution_simple
+    to: REMOVED
+    type: REMOVAL
+    epistemic_status: FORENSIC_RAW
+    evidence: src/risk_layer/order_input.py
+    notes: >-
+      Parallel execution_simple package removed after risk_layer decoupled to
+      src/risk_layer/order_input.py. Legacy runtime entrypoint guard identifiers
+      retained. Atlas is not trading authority.
+>>>>>>> origin/main

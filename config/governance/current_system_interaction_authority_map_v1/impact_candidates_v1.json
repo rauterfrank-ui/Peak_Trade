@@ -426,6 +426,7 @@
     "tests/ops/test_cap24_lane_canonical_price_provenance_compose_v1.py",
     "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py",
     "tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1.py",
+    "tests/ops/test_n5_canonical_productive_entry_import_cycle_v1.py",
     "tests/ops/test_current_productive_f1_m9_clean_checkout_bootstrap_v1.py",
     "tests/ops/test_current_productive_f1_m9_seam_master_v2_cold_start_restart_v1.py",
     "tests/ops/test_current_productive_master_v2_ddo_learning_capture_join_v1.py",
@@ -471,6 +472,14 @@
     "scripts/ops/write_current_wp04_closure_evidence_v1.py",
     "docs/ops/specs/CURRENT_WP04_STANDING_PRE_EXTERNAL_ADMISSION_ENDGAME_DONE_GATE_V1.md",
     "tests/ops/test_current_wp04_standing_pre_external_admission_endgame_done_gate_v1.py",
+    "docs/ops/specs/CURRENT_MF_N5_INSTRUMENT_RUNTIME_IDENTITY_CLOSURE_CONTRACT_V1.md",
+    "evidence/ops/n5_instrument_runtime_identity_closure_v1/",
+    "src/ops/current_mf_n5_instrument_runtime_identity_closure_v1/",
+    "src/ops/current_mf_n5_isolated_lane_instance_topology_v1/",
+    "src/ops/current_mf_n5_recovered_topology_consumer_join_v1/",
+    "tests/ops/test_current_mf_n5_instrument_runtime_identity_closure_scope_v1.py",
+    "tests/ops/test_current_mf_n5_instrument_runtime_identity_closure_v1.py",
+    "tests/ops/test_current_mf_n5_recovered_topology_consumer_join_v1.py",
     "tests/ops/test_economic_md_input_producer_v1.py",
     "tests/ops/_productive_economic_md_inject_helpers_v1.py",
     "tests/ops/test_full_core_current_productive_cap24_selection_state_canonical_writer_v1.py",
@@ -545,9 +554,14 @@
     "src/live/web/app.py",
     "scripts/obs/ai_live_exporter.py",
     "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
+    "docs/ops/specs/CURRENT_OUTCOME_EVIDENCE_PROVENANCE_CONTRACT_V1.md",
     "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
     "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
     "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py",
-    "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/"
+    "evidence/ops/double_play_natural_enter_bilateral_golden_vector_proof_v1/",
+    "evidence/ops/realm_outcome_provenance_closure_v1/",
+    "src/experiments/canonical_optimization_universe_learning_input_v1.py",
+    "tests/learning/test_deterministic_decision_outcome_event_contract_v0.py",
+    "tests/learning/test_outcome_evidence_provenance_closure_v1.py"
   ]
 }

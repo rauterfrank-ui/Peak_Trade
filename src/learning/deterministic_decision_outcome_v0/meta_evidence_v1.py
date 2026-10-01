@@ -19,7 +19,6 @@ from src.learning.deterministic_decision_outcome_v0.serialization_v0 import (
     compute_content_hash_v0,
     is_valid_sha256_hex_v0,
 )
-from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256
 
 SCHEMA_VERSION: Final[str] = "meta_evidence_v1"
 META_EVIDENCE_DOMAIN: Final[str] = "peak_trade.learning.ddo.meta_evidence.v1"
@@ -66,7 +65,7 @@ def derive_meta_evidence_record_id_v1(*, identity_body: Mapping[str, Any]) -> st
 
 
 def derive_route_identity_v1(*, meta_evidence_record_id: str, semantic_routing_class: str) -> str:
-    return compute_content_sha256(
+    return compute_content_hash_v0(
         {
             "meta_evidence_record_id": meta_evidence_record_id,
             "semantic_routing_class": semantic_routing_class,
@@ -147,8 +146,9 @@ def build_meta_evidence_v1(
         "automatic_consumer_feedback_authorized": routing_class not in _FAIL_CLOSED_CLASSES,
         "meta_broadcast_forbidden": True,
     }
-    digest = compute_content_sha256(
-        {key: body[key] for key in sorted(body) if key != "content_digest"}
+    digest = compute_content_hash_v0(
+        {key: body[key] for key in sorted(body) if key != "content_digest"},
+        extra_excluded_fields=frozenset({"content_digest"}),
     )
     if not is_valid_sha256_hex_v0(digest):
         raise MetaEvidenceValidationError("CONTENT_DIGEST_INVALID")

@@ -37,6 +37,9 @@ from src.learning.deterministic_decision_outcome_v0.enums_v0 import (
     OUTCOME_ROOT_CAUSE_V0,
 )
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
+from src.learning.deterministic_decision_outcome_v0.outcome_evidence_provenance_v1 import (
+    validate_outcome_evidence_provenance_v1,
+)
 
 OUTCOME_REF_FIELD_SPECS_V0: Final[tuple[FieldSpecV0, ...]] = (
     FieldSpecV0("schema_name", "REQUIRED", "string", True, "outcome_ref identity."),
@@ -122,6 +125,13 @@ OUTCOME_RECORD_FIELD_SPECS_V0: Final[tuple[FieldSpecV0, ...]] = (
         "counterfactual_refs", "OPTIONAL", "record_id[]", True, "Forward refs; empty allowed."
     ),
     FieldSpecV0("candidate_refs", "OPTIONAL", "record_id[]", True, "Forward refs; empty allowed."),
+    FieldSpecV0(
+        "outcome_evidence_provenance",
+        "OPTIONAL",
+        "object|null",
+        True,
+        "Canonical orthogonal provenance block v1. Absent on legacy records only.",
+    ),
     FieldSpecV0("content_hash", "REQUIRED", "sha256", False, "Computed; excluded from hash scope."),
 )
 
@@ -239,6 +249,11 @@ def build_outcome_record_v0(payload: Mapping[str, Any]) -> MappingProxyType[str,
         ),
         "candidate_refs": require_id_list(raw.get("candidate_refs"), "candidate_refs"),
     }
+    prov_raw = raw.get("outcome_evidence_provenance")
+    if prov_raw is not None:
+        canonical["outcome_evidence_provenance"] = dict(
+            validate_outcome_evidence_provenance_v1(prov_raw)
+        )
     hashed = attach_content_hash(canonical)
     if "content_hash" in raw and raw["content_hash"] != hashed["content_hash"]:
         raise DdoValidationError("CONTENT_HASH_MISMATCH")

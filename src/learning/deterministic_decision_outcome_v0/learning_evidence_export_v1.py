@@ -19,6 +19,9 @@ from src.learning.deterministic_decision_outcome_v0.learning_evidence_record_v1 
 from src.learning.deterministic_decision_outcome_v0.learning_state_record_v0 import (
     validate_learning_state_record_v0,
 )
+from src.learning.deterministic_decision_outcome_v0.outcome_evidence_provenance_v1 import (
+    OutcomeSemanticClassV1,
+)
 
 EXPORT_ID: Final[str] = "peak_trade.learning.ddo.learning_evidence_export_v1"
 EXTERNAL_EFFECT_AUTHORIZED: Final[bool] = False
@@ -46,6 +49,12 @@ def export_learning_evidence_from_state_v1(
 ) -> dict[str, Any]:
     """Project one validated learning state snapshot into learning evidence."""
     state = validate_learning_state_record_v0(learning_state)
+    if str(state.get("outcome_semantic_class") or UNKNOWN) in {
+        OutcomeSemanticClassV1.UNKNOWN.value,
+        OutcomeSemanticClassV1.AMBIGUOUS.value,
+        UNKNOWN,
+    }:
+        raise DdoValidationError("LEARNING_EXPORT_LEGACY_OR_UNKNOWN_PROVENANCE")
     fingerprint = str(state["evaluation_bundle_fingerprint"])
     source_ref = str(state["record_id"])
     evidence_id = record_id or derive_learning_evidence_record_id_v1(
@@ -70,6 +79,11 @@ def export_learning_evidence_from_state_v1(
         "actual_outcome_ref": str(state["last_actual_outcome_ref"]),
         "decision_score_label": state.get("last_decision_score"),
         "safety_score_label": state.get("last_safety_score"),
+        "outcome_semantic_class": str(state["outcome_semantic_class"]),
+        "outcome_evidence_provenance_digest": str(state["outcome_evidence_provenance_digest"]),
+        "outcome_evidence_provenance": dict(state["outcome_evidence_provenance"]),
+        "evidence_pool_class": str(state["outcome_semantic_class"]),
+        "outcome_scalar_kind": state.get("outcome_scalar_kind"),
         "universe_class": UNIVERSE_CLASS_SELF_LEARNING,
         "evidence_class": EVIDENCE_CLASS_LEARNING,
         "event_time_utc": event_time,

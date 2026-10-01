@@ -32,6 +32,10 @@ from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.cap2
     Cap24LaneCanonicalPriceProvenanceComposeError,
     build_n5_lane_canonical_price_provenance_from_cap24_v1,
 )
+from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.cap24_lane_mv2_candles_payload_compose_v1 import (
+    Cap24LaneMv2CandlesPayloadComposeError,
+    build_n5_lane_candles_payload_from_cap24_v1,
+)
 from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.constants_v1 import (
     AUTONOMY_TRADING_DECISION_AUTHORITY,
     EXECUTION_SCHEDULE,
@@ -95,6 +99,9 @@ from src.ops.portfolio_capital_reservation_budget_v1.contract_v1 import (
 )
 from src.ops.single_selected_future_policy_v1.models_v1 import SingleSelectedFutureSelectionV1
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
+from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.lifecycle_v1 import (
+    pin_open_positions_in_membership_v1,
+)
 from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
     PortfolioTruthSnapshotV1,
 )
@@ -239,6 +246,41 @@ def _inject_cap24_lane_canonical_price_provenance_v1(
         readiness_kwargs["index_px"] = float(only.index_px)
 
 
+def _inject_cap24_lane_candles_payload_by_lane_v1(
+    selected_pairs: Mapping[str, tuple[Any, BoundInstrumentV1]],
+    cap24_bind: ProductiveFullAutonomyCap24BindContextV1,
+    readiness_kwargs: dict[str, Any],
+) -> None:
+    """Fan out C1 candles per lane when multi-lane identity closure requires it."""
+
+    if readiness_kwargs.get("candles_payload_by_lane") is not None:
+        return
+    if len(selected_pairs) <= 1:
+        return
+    last_ts = readiness_kwargs.get("last_finalized_event_ts_unix")
+    if last_ts is None:
+        _fail(FAILURE_CAP24_PROVENANCE, "last_finalized_event_ts_unix_required")
+    last_candle_ts_unix = float(last_ts) + 60.0
+    template = readiness_kwargs.get("candles_payload")
+    if isinstance(template, Mapping):
+        data = template.get("data")
+        if isinstance(data, list) and data:
+            try:
+                last_candle_ts_unix = float(int(str(data[-1][0])) / 1000.0)
+            except (IndexError, TypeError, ValueError):
+                pass
+    try:
+        by_lane = build_n5_lane_candles_payload_from_cap24_v1(
+            selected_pairs,
+            cap24_bind.mark_price_by_native_id,
+            last_finalized_event_ts_unix=last_candle_ts_unix,
+        )
+    except Cap24LaneMv2CandlesPayloadComposeError as exc:
+        _fail(FAILURE_CAP24_PROVENANCE, str(exc))
+    readiness_kwargs["candles_payload"] = None
+    readiness_kwargs["candles_payload_by_lane"] = by_lane
+
+
 def _rollup_from_readiness(
     projections: Mapping[str, OccupiedLaneN1HostJoinReadinessProjectionV1],
 ) -> tuple[ProductiveFullAutonomyN5LaneRollupV1, ...]:
@@ -294,6 +336,10 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
     if not str(origin_main_sha or "").strip():
         _fail(FAILURE_AUTHORITY, "origin_main_sha")
     validate_membership_context_artifact_v1(membership)
+    membership = pin_open_positions_in_membership_v1(
+        membership,
+        portfolio=cap24_bind.observed_portfolio,
+    )
 
     selections: dict[str, SingleSelectedFutureSelectionV1] = (
         produce_occupied_lane_cap23_n1_selections_v1(
@@ -318,6 +364,7 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
         ranking_snapshot=ranking_snapshot,
         topology_state_root_base=topology_state_root_base,
         writer=lane_assignment_writer,
+        observed_portfolio=cap24_bind.observed_portfolio,
     )
     bound_by_lane = bind_occupied_lane_cap24_n1_instruments_v1(
         selections=selections,
@@ -342,7 +389,13 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
     )
     readiness_kwargs = dict(cycle_kwargs)
     readiness_kwargs["origin_main_sha"] = origin_main_sha
+    readiness_kwargs.setdefault("observed_portfolio", cap24_bind.observed_portfolio)
     _inject_cap24_lane_canonical_price_provenance_v1(
+        selected_pairs,
+        cap24_bind,
+        readiness_kwargs,
+    )
+    _inject_cap24_lane_candles_payload_by_lane_v1(
         selected_pairs,
         cap24_bind,
         readiness_kwargs,
@@ -368,6 +421,11 @@ def run_productive_full_autonomy_n5_runtime_orchestrator_v1(
             k: v for k, v in cycle_kwargs.items() if k not in FORBIDDEN_COMPOSE_KWARGS
         }
         _inject_cap24_lane_canonical_price_provenance_v1(
+            selected_pairs,
+            cap24_bind,
+            completion_kwargs,
+        )
+        _inject_cap24_lane_candles_payload_by_lane_v1(
             selected_pairs,
             cap24_bind,
             completion_kwargs,
