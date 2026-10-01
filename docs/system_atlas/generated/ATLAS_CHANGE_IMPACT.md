@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,6 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `CONTRACT:n1_standing_pre_external_runtime_supervisor_v1` |
 | `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
 
 ## CHANGED_RELATIONS
@@ -92,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6993 post-main integration: dynamic scope + bridge boundary atlas review; AUTHORITY=NONE; POST_COUNT=0.
+- PR #6994: Owner-GO baseline reissuance governance currency after #6993 cutover; supervisor + bounded continuous-run atlas review; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_6993_DYNAMIC_SCOPE_BRIDGE_CLOSURE_V1
+- modified_by=PR_6994_OWNER_GO_REISSUANCE_GOVERNANCE_CURRENCY_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

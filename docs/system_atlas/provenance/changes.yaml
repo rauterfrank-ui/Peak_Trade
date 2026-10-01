@@ -349,3 +349,15 @@ changes:
   evidence: docs/ops/specs/CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1.md
   notes: 'PR #6993: dynamic scope + bridge boundaries; atlas/CSIA/seal governance
     closure; ATLAS_AUTHORITY=NONE; POST_COUNT=0.'
+- id: CHANGE:pr_6994_owner_go_reissuance_governance_currency_v1
+  from: 049fc18cdf8061707185b075ec04dfb61a116c0c
+  to: 049fc18cdf8061707185b075ec04dfb61a116c0c
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json
+  notes: 'PR #6994: CURRENT Owner-GO baseline reissued after Dynamic-Scope immutable-surface
+    cutover (#6993); supervisor/WP-03 baseline bindings reconciled to CURRENT Owner-GO
+    baseline 049fc18; governance/provenance bookkeeping only; Golden-Happy PRE_EXTERNAL
+    proof via offline inject-transport (not live-market Natural Enter); no new runtime
+    authority; no external-effect authority; POST_COUNT=0; keychain authority unchanged;
+    ATLAS_AUTHORITY=NONE.'

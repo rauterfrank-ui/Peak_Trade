@@ -70,7 +70,7 @@ from tests.trading.master_v2.test_double_play_runtime_typed_volatility_presence_
 )
 
 # Owner-GO decision pins this baseline; descendant SHAs fail immutable-surface drift check.
-OWNER_GO_BASELINE_SHA = "7a3597e61966749a9e30d06f3514e23a9179fb9e"
+OWNER_GO_BASELINE_SHA = "049fc18cdf8061707185b075ec04dfb61a116c0c"
 BASE_TS = 1_757_631_540_000
 
 
