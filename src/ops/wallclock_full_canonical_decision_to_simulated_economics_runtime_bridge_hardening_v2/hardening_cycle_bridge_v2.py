@@ -132,9 +132,15 @@ from trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1 imp
 from trading.master_v2.canonical_scope_initialization_v1 import (
     CANONICAL_SCOPE_INITIALIZATION_LAYER_VERSION,
     CanonicalScopeInitializationPolicyV1,
+    SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION,
     SCOPE_INITIALIZATION_POLICY_VERSION,
     ScopeInitializationPrerequisitesV1,
     ScopeReinitializationGuardV1,
+    default_instrument_relative_scope_initialization_policy_v1,
+)
+from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
+    layer_c_derived_exit_policy_adverse_config_digest_v1,
+    resolve_layer_c_event_distances_from_canonical_market_context_v1,
 )
 from trading.master_v2.canonical_trading_decision_evidence_v1 import (
     CANONICAL_TRADING_DECISION_EVIDENCE_LAYER_VERSION,
@@ -405,11 +411,7 @@ def ensure_pt1m_mark_observation_finalizer_v1(
 
 def _default_policies() -> IntegratedOfflineReplayPoliciesV1:
     return IntegratedOfflineReplayPoliciesV1(
-        scope_initialization=CanonicalScopeInitializationPolicyV1(
-            min_scope_band=50.0,
-            max_scope_band=500.0,
-            policy_version=SCOPE_INITIALIZATION_POLICY_VERSION,
-        ),
+        scope_initialization=default_instrument_relative_scope_initialization_policy_v1(),
         scope_event_generator=ScopeEventGeneratorPolicyV1(
             hard_max_scope_distance=1000.0,
             hard_max_adverse_distance=500.0,
@@ -466,7 +468,7 @@ def _component_versions() -> dict[str, str]:
 
 def _policy_versions() -> dict[str, str]:
     return {
-        "scope_initialization": SCOPE_INITIALIZATION_POLICY_VERSION,
+        "scope_initialization": SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION,
         "scope_event_generator": SCOPE_EVENT_GENERATOR_POLICY_VERSION,
         "directional": DIRECTIONAL_ASSESSMENT_POLICY_VERSION,
         "survival": SURVIVAL_ASSESSMENT_POLICY_VERSION,
@@ -670,54 +672,6 @@ def run_hardened_bridge_cycle_v2(
     features = compute_feature_regime_from_mid_prices_v2(state.mid_prices)
     metrics0 = state.portfolio.economic_metrics()
     has_open_position, position_side, entry_price = _portfolio_position_fields_v2(state)
-    ensure_host_exit_policy_binding_v1(
-        state.exit_policy_binding,
-        instrument_id=state.instrument_id,
-        repository_sha=str(
-            state.decision_config_repository_sha or _HARDENING_V2_DECISION_CONFIG_REPOSITORY_SHA
-        ),
-        config_digest=exit_policy_config_digest_v1(
-            adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
-            profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
-        ),
-        state_root=None,
-    )
-    _exit_bundle, exit_signals, _exit_safety_mode, _exit_trading_gate = (
-        evaluate_host_exit_policy_producers_v1(
-            state.exit_policy_binding,
-            mark_price=float(features.mark_price or basis.mid_price),
-            event_ts_unix=float(event_ts_unix),
-            observation_digest="",
-            has_open_position=has_open_position,
-            existing_position_side=position_side,
-            entry_price=entry_price,
-            entry_event_time=(
-                float(state.exit_policy_binding.entry_event_time)
-                if state.exit_policy_binding.entry_event_time is not None
-                else float(event_ts_unix)
-                if has_open_position
-                else None
-            ),
-            entry_trading_epoch=(
-                int(state.exit_policy_binding.entry_trading_epoch)
-                if state.exit_policy_binding.entry_trading_epoch is not None
-                else int(state.trading_epoch)
-                if has_open_position
-                else None
-            ),
-            data_integrity_trusted=True,
-            adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
-            profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
-            killstate_active=bool(state.killstate_active),
-            killstate_trigger=str(state.killstate_trigger or ""),
-            warmup_complete=bool(features.warmup_complete),
-            regime_ok=bool(features.ok),
-            price_basis_ok=bool(basis.mid_price > 0),
-            max_drawdown=float(metrics0.drawdown),
-        )
-    )
-    _ = (_exit_safety_mode, _exit_trading_gate)
-    safety = _safety_evaluation_from_cap65_bundle_v2(_exit_bundle)
 
     params = state.portfolio.model.params
     config_digest = build_config_bundle_digest(
@@ -732,10 +686,6 @@ def run_hardened_bridge_cycle_v2(
     if state.config_digest and state.config_digest != config_digest:
         raise RuntimeError(f"CONFIG_DRIFT:{state.config_digest}:{config_digest}")
     state.config_digest = config_digest
-
-    decision_id = make_scoped_id("decision", session_id, cycle_id, state.trading_epoch)
-    risk_decision_id = make_scoped_id("risk", decision_id, safety.safety_result)
-    intent_id = make_scoped_id("intent", risk_decision_id, features.feature_digest)
 
     price_path = tuple(state.mid_prices[-FEATURE_WINDOW_MIN:])
     if len(price_path) < 2:
@@ -855,6 +805,68 @@ def run_hardened_bridge_cycle_v2(
         features_ok=features.ok,
     )
 
+    layer_c_event_distances = resolve_layer_c_event_distances_from_canonical_market_context_v1(
+        market_context
+    )
+    if not layer_c_event_distances.ok:
+        codes = ":".join(layer_c_event_distances.failure_codes or ("layer_c_binding_failed",))
+        raise RuntimeError(f"LAYER_C_EVENT_DISTANCE_BINDING_FAILED:{codes}")
+    cycle_up_distance = float(layer_c_event_distances.up_distance)
+    cycle_adverse_exit_distance = float(layer_c_event_distances.adverse_exit_distance)
+    cycle_reversal_distance = float(layer_c_event_distances.reversal_distance)
+
+    ensure_host_exit_policy_binding_v1(
+        state.exit_policy_binding,
+        instrument_id=state.instrument_id,
+        repository_sha=str(
+            state.decision_config_repository_sha or _HARDENING_V2_DECISION_CONFIG_REPOSITORY_SHA
+        ),
+        config_digest=layer_c_derived_exit_policy_adverse_config_digest_v1(
+            profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
+        ),
+        state_root=None,
+    )
+    _exit_bundle, exit_signals, _exit_safety_mode, _exit_trading_gate = (
+        evaluate_host_exit_policy_producers_v1(
+            state.exit_policy_binding,
+            mark_price=float(features.mark_price or basis.mid_price),
+            event_ts_unix=float(event_ts_unix),
+            observation_digest="",
+            has_open_position=has_open_position,
+            existing_position_side=position_side,
+            entry_price=entry_price,
+            entry_event_time=(
+                float(state.exit_policy_binding.entry_event_time)
+                if state.exit_policy_binding.entry_event_time is not None
+                else float(event_ts_unix)
+                if has_open_position
+                else None
+            ),
+            entry_trading_epoch=(
+                int(state.exit_policy_binding.entry_trading_epoch)
+                if state.exit_policy_binding.entry_trading_epoch is not None
+                else int(state.trading_epoch)
+                if has_open_position
+                else None
+            ),
+            data_integrity_trusted=True,
+            adverse_exit_distance=cycle_adverse_exit_distance,
+            profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
+            killstate_active=bool(state.killstate_active),
+            killstate_trigger=str(state.killstate_trigger or ""),
+            warmup_complete=bool(features.warmup_complete),
+            regime_ok=bool(features.ok),
+            price_basis_ok=bool(basis.mid_price > 0),
+            max_drawdown=float(metrics0.drawdown),
+        )
+    )
+    _ = (_exit_safety_mode, _exit_trading_gate)
+    safety = _safety_evaluation_from_cap65_bundle_v2(_exit_bundle)
+
+    decision_id = make_scoped_id("decision", session_id, cycle_id, state.trading_epoch)
+    risk_decision_id = make_scoped_id("risk", decision_id, safety.safety_result)
+    intent_id = make_scoped_id("intent", risk_decision_id, features.feature_digest)
+
     replay_input = build_integrated_offline_replay_input_v1(
         replay_id=f"{session_id}-{cycle_id}",
         instrument_id=state.instrument_id,
@@ -879,9 +891,9 @@ def run_hardened_bridge_cycle_v2(
             remaining_epochs=0,
             policy_version=SCOPE_EVENT_GENERATOR_POLICY_VERSION,
         ),
-        up_distance=float(decision_cfg.up_distance),
-        adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
-        reversal_distance=float(decision_cfg.reversal_distance),
+        up_distance=cycle_up_distance,
+        adverse_exit_distance=cycle_adverse_exit_distance,
+        reversal_distance=cycle_reversal_distance,
         confirmation_epochs=int(decision_cfg.confirmation_epochs),
         current_price=mark,
         price_path=price_path,
@@ -1079,6 +1091,7 @@ def run_hardened_bridge_cycle_v2(
         "reason_codes": list(replay.evidence.reason_codes),
         "blockers": list(features.blockers),
         "call_graph": list(CALL_GRAPH_V2),
+        # Cap6.3 numeric fields: LEGACY_FROZEN_CONFIG_EVIDENCE in cycle payload — not Layer-C runtime authority.
         "decision_config_binding": {
             "initialized": bool(state.decision_config_binding.initialized),
             "config_version": str(decision_cfg.config_version),

@@ -408,7 +408,7 @@ def build_capability_evidence_v1(
     cap62 = dynamic_scope_config_digest_v1()
     # Predecessor digest stability (same values → same Cap 6.1/6.2 digests).
     expected_cap61 = "06ca8fabf72c34c4cff86dccdf1c2fc2a99a21f764dbf5f27ed93b7bc5f31791"
-    expected_cap62 = "808a1c920f895f81c3ddc7431349c3272f77d2e5da66825c9d92919ed6ddce3e"
+    expected_cap62 = "66a6a677a83a71983c17abd8f8db0472632ef5acfb809a41281cf70eac760f7b"
 
     claims = {
         "CONFIG_RUNTIME_DRIFT_FALSE": True,

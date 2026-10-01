@@ -355,8 +355,8 @@ def test_productive_host_integration_and_evidence(tmp_path: Path) -> None:
 
 
 def test_config_digest_stable() -> None:
-    assert dynamic_scope_config_digest_v1() == dynamic_scope_config_digest_v1(
-        up_distance=200.0,
-        adverse_exit_distance=80.0,
-        reversal_distance=120.0,
+    from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
+        layer_c_derived_dynamic_scope_persistence_config_digest_v1,
     )
+
+    assert dynamic_scope_config_digest_v1() == layer_c_derived_dynamic_scope_persistence_config_digest_v1()

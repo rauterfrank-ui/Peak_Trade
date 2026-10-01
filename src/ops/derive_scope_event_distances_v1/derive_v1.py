@@ -1,7 +1,10 @@
-"""Pure unbound derive_scope_event_distances_v1.
+"""Pure derive_scope_event_distances_v1 (OQ-C2 ratio mapping only).
 
-Unbound: productive hosts/generators must not import or call this module.
-No config mutation, no venue/clock/IO, no Dual Envelope substitution.
+Productive runtime must not import this module directly. The authorized
+productive adapter is
+``trading.master_v2.layer_c_scope_event_distance_binding_v1`` (Owner-GO
+Layer-C cutover). No config mutation, no venue/clock/IO, no Dual Envelope
+substitution.
 """
 
 from __future__ import annotations

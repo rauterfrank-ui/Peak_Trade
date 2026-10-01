@@ -57,9 +57,21 @@ Clarified mapping wording here is **not** runtime materialization.
 Safety posture unchanged:
 
 - Global HOLD / no-order program boundary unchanged
-- Cap 6.3 frozen distances remain the productive numeric owner
+- Cap 6.3 TOML (200/80/120) remains **legacy frozen config evidence**; productive Layer-C
+  event distances are derived at runtime via the authorized binding seam (below)
 - Evidence does not authorize runtime
 - Dashboard does not authorize trades or side switches
+
+## 2.1 Productive Layer-C runtime binding (authorized seam)
+
+```text
+PRODUCTIVE_LAYER_C_BINDING_SEAM=trading.master_v2.layer_c_scope_event_distance_binding_v1
+DERIVE_FUNCTION=src.ops.derive_scope_event_distances_v1.derive_scope_event_distances_v1
+DIRECT_PRODUCTIVE_DERIVE_IMPORTS=PROHIBITED
+SCOPE_MAGNITUDE_AUTHORITY=canonical_scope_initialization_v1 (σ×P); Layer C does not select instrument
+LAYER_C_RATIOS=1.0 / 0.4 / 0.6 × D_t
+CAP62_CAP65_CONFIG_DIGEST=stable derivation-mode identity (not per-tick numeric distances)
+```
 
 Owner persist
 [`CAP63_DISTANCE_UNIT_CLASS_AND_VALUE_SCOPE_OWNER_DECISION_V1.md`](CAP63_DISTANCE_UNIT_CLASS_AND_VALUE_SCOPE_OWNER_DECISION_V1.md)

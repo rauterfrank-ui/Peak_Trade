@@ -28,7 +28,17 @@ from trading.master_v2.canonical_market_context_v1 import (
 
 CANONICAL_SCOPE_INITIALIZATION_LAYER_VERSION = "v1"
 SCOPE_INITIALIZATION_POLICY_VERSION = "canonical_scope_initialization_policy_v1"
+SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION = (
+    "canonical_scope_initialization_policy_instrument_relative_v1"
+)
 _RECONCILED_STATUS = "RECONCILED"
+
+_SCOPE_INITIALIZATION_POLICY_VERSIONS = frozenset(
+    {
+        SCOPE_INITIALIZATION_POLICY_VERSION,
+        SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION,
+    }
+)
 
 
 class CanonicalScopeLifecycleState(str, Enum):
@@ -162,9 +172,46 @@ def validate_scope_initialization_policy(
         and policy.max_scope_band < policy.min_scope_band
     ):
         blocks.append(CanonicalScopeBlockReason.MAX_SCOPE_BAND_LT_MIN)
-    if not policy.policy_version or policy.policy_version != SCOPE_INITIALIZATION_POLICY_VERSION:
+    if (
+        not policy.policy_version
+        or policy.policy_version not in _SCOPE_INITIALIZATION_POLICY_VERSIONS
+    ):
         blocks.append(CanonicalScopeBlockReason.MARKET_CONTEXT_FIELD_INVALID)
     return tuple(dict.fromkeys(blocks))
+
+
+def scope_initialization_policy_uses_instrument_relative_magnitude_v1(
+    policy: CanonicalScopeInitializationPolicyV1,
+) -> bool:
+    return policy.policy_version == SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION
+
+
+def snapshot_uses_instrument_relative_scope_magnitude_v1(
+    snapshot: CanonicalScopeSnapshotV1,
+) -> bool:
+    return snapshot.policy_version == SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION
+
+
+def resolve_authoritative_scope_band_v1(
+    initial_volatility_distance: float,
+    policy: CanonicalScopeInitializationPolicyV1,
+) -> float:
+    """Layer-A Dynamic Scope magnitude: σ×P, optionally legacy-clamped by absolute policy bounds."""
+    raw = float(initial_volatility_distance)
+    if scope_initialization_policy_uses_instrument_relative_magnitude_v1(policy):
+        return raw
+    return clamp_scope_band(raw, policy.min_scope_band, policy.max_scope_band)
+
+
+def default_instrument_relative_scope_initialization_policy_v1() -> (
+    CanonicalScopeInitializationPolicyV1
+):
+    """Productive/replay default: σ×P magnitude without legacy 50/500 economic clamp."""
+    return CanonicalScopeInitializationPolicyV1(
+        min_scope_band=1.0,
+        max_scope_band=1.0,
+        policy_version=SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION,
+    )
 
 
 def clamp_scope_band(
@@ -178,6 +225,83 @@ def clamp_scope_band(
     if hi < lo:
         return lo
     return max(lo, min(hi, float(initial_volatility_distance)))
+
+
+PRODUCTIVE_RAW_SCOPE_DISTANCE_PRODUCER_ID = (
+    "trading.master_v2.canonical_scope_initialization_v1/raw_volatility_times_price/v1"
+)
+
+
+@dataclass(frozen=True)
+class RawVolatilityTimesPriceScopeDistanceResultV1:
+    """Instrument-relative σ×P magnitude at current canonical mark (no USDT clamp)."""
+
+    distance: Optional[float]
+    mark_price: Optional[float]
+    volatility_estimate: Optional[float]
+    failure_codes: Tuple[str, ...]
+
+
+def compute_raw_volatility_times_price_scope_distance_v1(
+    market_context: CanonicalMarketContextV1,
+) -> RawVolatilityTimesPriceScopeDistanceResultV1:
+    """
+    Canonical productive Dynamic Scope magnitude: current volatility_estimate × current mark.
+
+    Does not apply legacy absolute min/max scope band clamps (50/500). Fail-closed when σ or P
+    are unavailable or non-positive.
+    """
+    from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
+        resolve_legacy_volatility_float_for_consumer_v1,
+    )
+
+    failures: list[str] = []
+    if not _positive_finite(market_context.mark_price):
+        failures.append("mark_price_non_positive")
+        return RawVolatilityTimesPriceScopeDistanceResultV1(
+            distance=None,
+            mark_price=None,
+            volatility_estimate=None,
+            failure_codes=tuple(failures),
+        )
+
+    mark_price = float(market_context.mark_price)
+    try:
+        volatility_estimate = float(resolve_legacy_volatility_float_for_consumer_v1(market_context))
+    except Exception:
+        failures.append("volatility_unavailable")
+        return RawVolatilityTimesPriceScopeDistanceResultV1(
+            distance=None,
+            mark_price=mark_price,
+            volatility_estimate=None,
+            failure_codes=tuple(failures),
+        )
+
+    if not _positive_finite(volatility_estimate):
+        failures.append("volatility_non_positive")
+        return RawVolatilityTimesPriceScopeDistanceResultV1(
+            distance=None,
+            mark_price=mark_price,
+            volatility_estimate=volatility_estimate,
+            failure_codes=tuple(failures),
+        )
+
+    distance = volatility_estimate * mark_price
+    if not _positive_finite(distance):
+        failures.append("scope_distance_invalid")
+        return RawVolatilityTimesPriceScopeDistanceResultV1(
+            distance=None,
+            mark_price=mark_price,
+            volatility_estimate=volatility_estimate,
+            failure_codes=tuple(failures),
+        )
+
+    return RawVolatilityTimesPriceScopeDistanceResultV1(
+        distance=distance,
+        mark_price=mark_price,
+        volatility_estimate=volatility_estimate,
+        failure_codes=(),
+    )
 
 
 def _derive_scope_id(instrument_id: str, trading_epoch: int, context_id: str) -> str:
@@ -358,11 +482,7 @@ def _build_initialized_scope(
     # Typed present → single owned adapter; typed absent → legacy float unchanged.
     volatility_estimate = float(resolve_legacy_volatility_float_for_consumer_v1(bound_context))
     initial_volatility_distance = volatility_estimate * reference_price
-    scope_band = clamp_scope_band(
-        initial_volatility_distance,
-        policy.min_scope_band,
-        policy.max_scope_band,
-    )
+    scope_band = resolve_authoritative_scope_band_v1(initial_volatility_distance, policy)
     neutral_upper_boundary = reference_price + scope_band
     neutral_lower_boundary = reference_price - scope_band
     trailing_anchor = reference_price

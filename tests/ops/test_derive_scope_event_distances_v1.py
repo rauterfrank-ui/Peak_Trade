@@ -39,6 +39,19 @@ _FORBIDDEN_MODULE_PREFIXES: tuple[str, ...] = (
     "ops.derive_scope_event_distances_v1",
 )
 
+_ALLOWED_PRODUCTIVE_DERIVE_IMPORT_REL_PATHS: frozenset[str] = frozenset(
+    {
+        "src/trading/master_v2/layer_c_scope_event_distance_binding_v1.py",
+    }
+)
+
+# Productive bridges must import layer_c binding, not derive_scope_event_distances_v1 directly.
+_ALLOWED_LAYER_C_BINDING_IMPORT_REL_PREFIXES: tuple[str, ...] = (
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/",
+    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
+)
+
 
 def _independent_formula(band: float) -> tuple[float, float, float]:
     up_distance = band
@@ -188,9 +201,12 @@ def test_productive_consumer_callgraph_is_unbound() -> None:
     hits: list[str] = []
     for root in PRODUCTIVE_CONSUMER_ROOTS:
         for path in _iter_python_files(REPO_ROOT / root):
+            rel = str(path.relative_to(REPO_ROOT))
+            if rel in _ALLOWED_PRODUCTIVE_DERIVE_IMPORT_REL_PATHS:
+                continue
             for module in _imported_modules(path):
                 if _is_forbidden_import(module):
-                    hits.append(f"{path.relative_to(REPO_ROOT)}:{module}")
+                    hits.append(f"{rel}:{module}")
     assert hits == []
 
 
@@ -199,9 +215,12 @@ def test_no_src_tree_outside_package_imports_the_function() -> None:
     for path in _iter_python_files(REPO_ROOT / "src"):
         if PACKAGE_ROOT in path.parents or path.parent == PACKAGE_ROOT:
             continue
+        rel = str(path.relative_to(REPO_ROOT))
+        if rel in _ALLOWED_PRODUCTIVE_DERIVE_IMPORT_REL_PATHS:
+            continue
         for module in _imported_modules(path):
             if _is_forbidden_import(module):
-                hits.append(f"{path.relative_to(REPO_ROOT)}:{module}")
+                hits.append(f"{rel}:{module}")
     assert hits == []
 
 

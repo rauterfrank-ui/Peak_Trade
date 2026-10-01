@@ -20,11 +20,11 @@ from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
 
 from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
-    CANONICAL_ADVERSE_EXIT_DISTANCE,
     CANONICAL_CONFIRMATION_EPOCHS,
     CANONICAL_DECISION_CONFIG_DIGEST,
-    CANONICAL_REVERSAL_DISTANCE,
-    CANONICAL_UP_DISTANCE,
+)
+from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
+    resolve_layer_c_event_distances_from_canonical_market_context_v1,
 )
 from src.ops.exit_policy_producer_binding_v1.host_binding_v1 import (
     HostExitPolicyBindingV1,
@@ -713,6 +713,18 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         producer=g17_typed_vol_producer,
     )
     market_context = g17_cmc_bind.context
+    typed_volatility_eligibility = evaluate_typed_volatility_binding_eligibility_v1(market_context)
+    layer_c_event_distances = resolve_layer_c_event_distances_from_canonical_market_context_v1(
+        market_context
+    )
+    if not layer_c_event_distances.ok:
+        codes = ",".join(layer_c_event_distances.failure_codes or ("layer_c_binding_failed",))
+        return _blocked_cycle_result(
+            cycle_id=cycle_id,
+            fail_reason=f"layer_c_event_distance_binding_failed:{codes}",
+            provenance="layer_c_event_distance_binding_v1",
+            cursor_restore_status=restore.disposition.value,
+        )
     side_state = SideState.NEUTRAL_OBSERVE
     direction_state = EntryExitDirectionState.NEUTRAL
     position_mgmt = PositionManagementContext.FLAT
@@ -758,6 +770,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             entry_price=None,
             entry_event_time=None,
             entry_trading_epoch=None,
+            adverse_exit_distance=float(layer_c_event_distances.adverse_exit_distance),
             warmup_complete=bool(features.warmup_complete),
             regime_ok=bool(features.ok),
             price_basis_ok=bool(mark_px > 0),
@@ -778,7 +791,6 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             provenance=seam_blocker,
             cursor_restore_status=restore.disposition.value,
         )
-    typed_volatility_eligibility = evaluate_typed_volatility_binding_eligibility_v1(market_context)
     replay_id = f"{cycle_id}-master-v2"
     input_material = {
         "cycle_id": cycle_id,
@@ -811,9 +823,9 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             remaining_epochs=0,
             policy_version=SCOPE_EVENT_GENERATOR_POLICY_VERSION,
         ),
-        up_distance=float(CANONICAL_UP_DISTANCE),
-        adverse_exit_distance=float(CANONICAL_ADVERSE_EXIT_DISTANCE),
-        reversal_distance=float(CANONICAL_REVERSAL_DISTANCE),
+        up_distance=float(layer_c_event_distances.up_distance),
+        adverse_exit_distance=float(layer_c_event_distances.adverse_exit_distance),
+        reversal_distance=float(layer_c_event_distances.reversal_distance),
         confirmation_epochs=int(CANONICAL_CONFIRMATION_EPOCHS),
         current_price=float(mark_px),
         price_path=closes,
