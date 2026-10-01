@@ -163,6 +163,14 @@ def _main() -> int:
         action="store_true",
         help="Append-only capture of natural read-only GET payloads under evidence-root",
     )
+    parser.add_argument(
+        "--enable-golden-happy-vector-forensic-observability-v1",
+        action="store_true",
+        help=(
+            "Forensic Golden Happy Vector observability: entry-state snapshot + "
+            "directional signal_strength/threshold evidence (default off)"
+        ),
+    )
     args = parser.parse_args()
 
     from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
@@ -349,6 +357,12 @@ def _main() -> int:
             evidence_root=evidence_root,
             f1_m9_cycle_evaluator=_build_f1_m9_evaluator(ledger_root=evidence_root / "f1_m9"),
             repo_root=REPO_ROOT,
+            enable_golden_happy_vector_forensic_observability_v1=(
+                args.enable_golden_happy_vector_forensic_observability_v1
+            ),
+            selection_id=str(handoff.selection_id or ""),
+            binding_epoch=str(binding_epoch or ""),
+            cap24_reselection_performed=bool(handoff.reselection_performed),
         )
     except PersistentNaturalEnterConvergenceError as exc:
         out = {
