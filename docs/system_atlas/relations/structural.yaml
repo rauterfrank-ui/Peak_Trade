@@ -180,7 +180,9 @@ relations:
   - src/ops/peak_trade_public_market_data_runtime_v1/wp_c_converged_o4_public_handoff_v1.py
   notes: 'WP-C converged_o4_handoff_v1 is the sole productive O4→N_BARS read path
     for wallclock DDO snapshot materialization; WP-A FinalizedPt1hO4BarFactV1 only.
-    Observation-only; NO_N_BARS_TO_PROMOTION_BINDING unchanged. ATLAS_AUTHORITY=NONE.
+    Observation-only; NO_N_BARS_TO_PROMOTION_BINDING unchanged. PR #7002: WP-A read
+    scoped to active per-cycle producer session_id for multi-cycle productive DDO;
+    fixes O4_PROVENANCE_SESSION_MISMATCH; ATLAS_AUTHORITY=NONE.
 
     '
 - id: REL:s_wp_c_preserves_cap23_selection_owner

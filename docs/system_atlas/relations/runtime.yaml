@@ -496,7 +496,9 @@ relations:
   notes: "Productive DDO O4→N_BARS snapshot reads WP-A facts via WP-C converged_o4_handoff_v1\
     \ only. CanonicalPublicMdBarProducerV1 remains a bounded writer to WP-A facts,\
     \ not a competing productive O4 session read. Fail-closed when history is insufficient.\
-    \ Observation-only.\n  PR #6993: WP-C facade handoff indexed; ATLAS_AUTHORITY=NONE."
+    \ Observation-only.\n  PR #6993: WP-C facade handoff indexed; ATLAS_AUTHORITY=NONE.\
+    \ PR #7002: WP-A read scoped to active per-cycle producer session_id to prevent\
+    \ O4_PROVENANCE_SESSION_MISMATCH on multi-cycle productive runs; observation-only."
 - id: REL:r_wallclock_calls_learning_outcome_ingest
   source: HOST:wallclock_decision_economics_cycle
   type: CALLS
