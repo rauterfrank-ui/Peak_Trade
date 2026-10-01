@@ -110,6 +110,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_canonica
     ProductiveCycleCanonicalPriceProvenanceV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_reconciliation_admission_v1 import (
+    ProductiveMasterV2ReconciliationAdmissionV1,
     build_explicit_non_productive_bounded_harness_master_v2_reconciliation_admission_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
@@ -333,6 +334,23 @@ def bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(
     return bound_seam
 
 
+def _resolve_mv2_reconciliation_admission_v1(
+    *,
+    bound: BoundInstrumentV1,
+    prefix: str,
+    lane_id: str,
+    override: ProductiveMasterV2ReconciliationAdmissionV1 | None,
+) -> ProductiveMasterV2ReconciliationAdmissionV1:
+    if override is not None:
+        override.validate_for_productive_master_v2_entry_v1(instrument_id=bound.instrument_id)
+        return override
+    return build_explicit_non_productive_bounded_harness_master_v2_reconciliation_admission_v1(
+        bound_instrument_id=str(bound.instrument_id),
+        session_id=f"{prefix}:{lane_id}",
+        repository_sha="bounded-harness-lane-isolated",
+    )
+
+
 def _resolve_lane_g17_producers(
     occupied_lane_ids: Sequence[str],
     producers: Mapping[str, object] | None,
@@ -416,6 +434,7 @@ def invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
     incoming_cursor: object | None = None,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
     canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
+    master_v2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1 | None = None,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Lane-isolated bounded harness invoke of the existing N=1 MV2+DP cycle.
 
@@ -439,12 +458,11 @@ def invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
         if item is None:
             continue
         bound, store_root, cursor_address = item
-        harness_admission = (
-            build_explicit_non_productive_bounded_harness_master_v2_reconciliation_admission_v1(
-                bound_instrument_id=str(bound.instrument_id),
-                session_id=f"{prefix}:{lane_id}",
-                repository_sha="bounded-harness-lane-isolated",
-            )
+        harness_admission = _resolve_mv2_reconciliation_admission_v1(
+            bound=bound,
+            prefix=prefix,
+            lane_id=lane_id,
+            override=master_v2_reconciliation_admission,
         )
         cycle_result = run_current_productive_master_v2_runtime_cycle_v1(
             bound_instrument=bound,
@@ -503,6 +521,7 @@ def carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
     existing_position_side: ExistingPositionSide,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
     canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
+    master_v2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1 | None = None,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Pass each occupied lane's prior outgoing cursor as the next incoming cursor.
 
@@ -551,12 +570,11 @@ def carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
             continue
         bound, store_root, cursor_address = item
         lane_cursor = lane_cursors[lane_id]
-        harness_admission = (
-            build_explicit_non_productive_bounded_harness_master_v2_reconciliation_admission_v1(
-                bound_instrument_id=str(bound.instrument_id),
-                session_id=f"{prefix}:{lane_id}",
-                repository_sha="bounded-harness-lane-isolated",
-            )
+        harness_admission = _resolve_mv2_reconciliation_admission_v1(
+            bound=bound,
+            prefix=prefix,
+            lane_id=lane_id,
+            override=master_v2_reconciliation_admission,
         )
         cycle_result = run_current_productive_master_v2_runtime_cycle_v1(
             bound_instrument=bound,
@@ -688,6 +706,7 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
     existing_position_side: ExistingPositionSide,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
     canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
+    master_v2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1 | None = None,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Reload each lane's cursor file and pass it as that lane's next incoming cursor.
 
@@ -711,12 +730,11 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
         bound, store_root, cursor_address = item
         payload = load_current_productive_sidestate_confirmation_cursor_v1(Path(store_root))
         incoming = _incoming_from_loaded_cursor(lane_id=lane_id, bound=bound, payload=payload)
-        harness_admission = (
-            build_explicit_non_productive_bounded_harness_master_v2_reconciliation_admission_v1(
-                bound_instrument_id=str(bound.instrument_id),
-                session_id=f"{prefix}:{lane_id}",
-                repository_sha="bounded-harness-lane-isolated",
-            )
+        harness_admission = _resolve_mv2_reconciliation_admission_v1(
+            bound=bound,
+            prefix=prefix,
+            lane_id=lane_id,
+            override=master_v2_reconciliation_admission,
         )
         cycle_result = run_current_productive_master_v2_runtime_cycle_v1(
             bound_instrument=bound,
@@ -812,6 +830,7 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
     existing_position_side: ExistingPositionSide,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
     canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
+    master_v2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1 | None = None,
 ) -> dict[str, OccupiedLaneMv2DpDecisionStateConsumerInvocationV1]:
     """Load, run the existing N=1 cycle, then persist when outgoing_cursor is produced.
 
@@ -838,6 +857,7 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
         existing_position_side=existing_position_side,
         g17_typed_vol_producers=g17_typed_vol_producers,
         canonical_price_provenance=canonical_price_provenance,
+        master_v2_reconciliation_admission=master_v2_reconciliation_admission,
     )
     _require_s7_outgoing_cursors_before_persist_v1(composed_pairs, restored)
     bound_seam = bind_occupied_lane_mv2_dp_decision_state_consumption_seam_v1(composed_pairs)

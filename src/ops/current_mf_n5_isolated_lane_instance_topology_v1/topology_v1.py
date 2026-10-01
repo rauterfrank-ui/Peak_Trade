@@ -460,6 +460,7 @@ def apply_isolated_lane_topology_v1(
     replacement_ranking_snapshot: Mapping[str, Any] | None = None,
     fallback_ranking_snapshot: Mapping[str, Any] | None = None,
     underfill_ranking_snapshot: Mapping[str, Any] | None = None,
+    open_position_custody_portfolio: object | None = None,
 ) -> IsolatedLaneTopologyV1:
     """Assign governed members to opaque LANE_1..LANE_5 slots.
 
@@ -499,6 +500,15 @@ def apply_isolated_lane_topology_v1(
 
     decided = validate_membership_context_artifact_v1(membership)
     current_ids = list(decided.ordered_instrument_ids)
+    if open_position_custody_portfolio is not None and prior_topology is not None:
+        from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.lifecycle_v1 import (
+            open_position_instrument_ids_v1,
+        )
+
+        prior_map = prior_topology.instrument_to_lane()
+        for inst in sorted(open_position_instrument_ids_v1(open_position_custody_portfolio)):
+            if inst in prior_map and inst not in current_ids:
+                current_ids.append(inst)
     if len(current_ids) > MAX_LANE_COUNT:
         _fail(FAILURE_CARDINALITY_EXCEEDS_MAX, str(len(current_ids)))
     if len(set(current_ids)) != len(current_ids):
