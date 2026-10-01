@@ -12,7 +12,7 @@ from src.ops.canonical_public_md_and_ohlcv_transport_reconciliation_v1.constants
     BAR_STATE_CORRECTED,
     BAR_STATE_FINALIZED,
 )
-from src.ops.market_data_private_state_runtime_convergence_v1.public_handoff_v1 import (
+from src.ops.peak_trade_public_market_data_runtime_v1.wp_c_converged_o4_public_handoff_v1 import (
     converged_o4_handoff_v1,
 )
 from src.ops.peak_trade_public_market_data_runtime_v1.consumer_adapters_v1 import (

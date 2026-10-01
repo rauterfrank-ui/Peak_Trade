@@ -133,6 +133,24 @@ def test_volatility_distance_computed_correctly() -> None:
     assert result.scope.initial_volatility_distance == pytest.approx(250.0)
 
 
+def test_instrument_relative_policy_scope_band_is_raw_sigma_times_price() -> None:
+    from trading.master_v2.canonical_scope_initialization_v1 import (
+        SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION,
+    )
+
+    result = _initialize(
+        market_context=_context(mark_price=100.0, volatility_estimate=0.01),
+        policy=_policy(
+            min_scope_band=50.0,
+            max_scope_band=500.0,
+            policy_version=SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION,
+        ),
+    )
+    assert result.scope is not None
+    assert result.scope.initial_volatility_distance == pytest.approx(1.0)
+    assert result.scope.scope_band == pytest.approx(1.0)
+
+
 def test_scope_band_clamped_to_minimum() -> None:
     result = _initialize(
         market_context=_context(mark_price=100.0, volatility_estimate=0.01),

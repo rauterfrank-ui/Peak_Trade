@@ -51,6 +51,22 @@ def dynamic_scope_config_digest_v1(
     adverse_exit_distance: float = FROZEN_ADVERSE_EXIT_DISTANCE,
     reversal_distance: float = FROZEN_REVERSAL_DISTANCE,
 ) -> str:
+    """Cap 6.2 session digest: derived Layer-C configuration semantics (not per-tick D_t)."""
+    _ = (up_distance, adverse_exit_distance, reversal_distance)
+    from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
+        layer_c_derived_dynamic_scope_persistence_config_digest_v1,
+    )
+
+    return layer_c_derived_dynamic_scope_persistence_config_digest_v1()
+
+
+def legacy_frozen_cap62_numeric_config_digest_v1(
+    *,
+    up_distance: float = FROZEN_UP_DISTANCE,
+    adverse_exit_distance: float = FROZEN_ADVERSE_EXIT_DISTANCE,
+    reversal_distance: float = FROZEN_REVERSAL_DISTANCE,
+) -> str:
+    """Historical Cap6.3-frozen numeric digest material (evidence/parity only; not runtime authority)."""
     material = (
         f"cap62-config:up={float(up_distance)}:"
         f"adverse={float(adverse_exit_distance)}:"

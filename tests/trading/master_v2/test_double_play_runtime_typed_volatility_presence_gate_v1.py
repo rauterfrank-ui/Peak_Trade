@@ -638,7 +638,16 @@ def test_e_architecture_guards() -> None:
         / "hardening_cycle_bridge_v2.py"
     ).read_text(encoding="utf-8")
     assert "require_productive_typed_volatility_presence_gate=True" in bridge
-    assert "evaluate_double_play_runtime_typed_volatility_presence_gate_v1" in bridge
+    f1_m9_wiring = (
+        ROOT / "src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py"
+    ).read_text(encoding="utf-8")
+    bridge_direct_gate = "evaluate_double_play_runtime_typed_volatility_presence_gate_v1" in bridge
+    bridge_f1_m9 = "evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1" in bridge
+    f1_m9_delegates_gate = (
+        "evaluate_double_play_runtime_typed_volatility_presence_gate_v1" in f1_m9_wiring
+    )
+    assert bridge_direct_gate or (bridge_f1_m9 and f1_m9_delegates_gate)
+    assert "ensure_hardened_bridge_session_governed_productive_parameter_seam_bound_v1" in bridge
 
     spec = (
         ROOT / "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_RUNTIME_TYPED_VOLATILITY_PRESENCE_GATE_V1.md"

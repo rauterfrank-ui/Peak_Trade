@@ -132,9 +132,20 @@ from trading.master_v2.double_play_runtime_typed_volatility_presence_gate_v1 imp
 from trading.master_v2.canonical_scope_initialization_v1 import (
     CANONICAL_SCOPE_INITIALIZATION_LAYER_VERSION,
     CanonicalScopeInitializationPolicyV1,
+    SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION,
     SCOPE_INITIALIZATION_POLICY_VERSION,
     ScopeInitializationPrerequisitesV1,
     ScopeReinitializationGuardV1,
+    default_instrument_relative_scope_initialization_policy_v1,
+)
+from trading.master_v2.canonical_volatility_default_quarantine_v1 import (
+    quarantine_explicit_replay_default_volatility_v1,
+    require_admitted_legacy_volatility_float_v1,
+)
+from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
+    layer_c_derived_exit_policy_adverse_config_digest_v1,
+    resolve_layer_c_event_distances_from_canonical_market_context_v1,
+    resolve_layer_c_event_distances_from_mark_and_volatility_v1,
 )
 from trading.master_v2.canonical_trading_decision_evidence_v1 import (
     CANONICAL_TRADING_DECISION_EVIDENCE_LAYER_VERSION,
@@ -405,11 +416,7 @@ def ensure_pt1m_mark_observation_finalizer_v1(
 
 def _default_policies() -> IntegratedOfflineReplayPoliciesV1:
     return IntegratedOfflineReplayPoliciesV1(
-        scope_initialization=CanonicalScopeInitializationPolicyV1(
-            min_scope_band=50.0,
-            max_scope_band=500.0,
-            policy_version=SCOPE_INITIALIZATION_POLICY_VERSION,
-        ),
+        scope_initialization=default_instrument_relative_scope_initialization_policy_v1(),
         scope_event_generator=ScopeEventGeneratorPolicyV1(
             hard_max_scope_distance=1000.0,
             hard_max_adverse_distance=500.0,
@@ -466,7 +473,7 @@ def _component_versions() -> dict[str, str]:
 
 def _policy_versions() -> dict[str, str]:
     return {
-        "scope_initialization": SCOPE_INITIALIZATION_POLICY_VERSION,
+        "scope_initialization": SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION,
         "scope_event_generator": SCOPE_EVENT_GENERATOR_POLICY_VERSION,
         "directional": DIRECTIONAL_ASSESSMENT_POLICY_VERSION,
         "survival": SURVIVAL_ASSESSMENT_POLICY_VERSION,
@@ -623,6 +630,116 @@ def _update_session_state_from_replay(state: HardenedBridgeSessionStateV2, *, re
     state.trading_epoch += 1
 
 
+_REPO_ROOT = Path(__file__).resolve().parents[3]
+
+_HARDENING_V2_LAYER_C_VOL_QUARANTINE = quarantine_explicit_replay_default_volatility_v1(
+    source_file_or_component=(
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/"
+        "hardening_cycle_bridge_v2.py:_HARDENING_V2_LAYER_C_VOL_QUARANTINE"
+    ),
+)
+
+
+def _resolve_hardening_v2_layer_c_volatility_estimate_v1(raw_volatility_estimate: float) -> float:
+    vol = float(raw_volatility_estimate)
+    if vol > 0.0 and vol == vol:
+        return vol
+    return require_admitted_legacy_volatility_float_v1(_HARDENING_V2_LAYER_C_VOL_QUARANTINE)
+
+
+def _resolve_governed_seam_record_for_hardening_v2_session_bind_v1(
+    *,
+    repo_root: Path,
+) -> tuple[Mapping[str, Any] | None, str]:
+    """Canonical F1/M9 runtime-applied seam for Hardening-V2 session bind (no parallel authority)."""
+    from src.governance.f1_m9_productive_apply_durable_ledger_paths_v1 import (
+        F1M9DurableLedgerPathsError,
+        resolve_canonical_f1_m9_productive_apply_ledger_paths_v1,
+        resolve_canonical_f1_m9_threshold_value_authorization_ledger_paths_v1,
+    )
+    from src.governance.f1_m9_productive_runtime_threshold_consumer_wiring_v1 import (
+        consumer_wiring_authorized_v1,
+    )
+    from src.governance.governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1 import (
+        GovernedF1M9ThresholdConsumerWiringRequestV1,
+        resolve_runtime_applied_seam_for_consumer_wiring_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_f1_m9_canonical_durable_bootstrap_v1 import (
+        ensure_canonical_f1_m9_runtime_applied_seam_materialized_v1,
+    )
+
+    if not consumer_wiring_authorized_v1(repo_root=repo_root):
+        return None, ""
+    try:
+        apply_paths = resolve_canonical_f1_m9_productive_apply_ledger_paths_v1(repo_root=repo_root)
+        threshold_paths = resolve_canonical_f1_m9_threshold_value_authorization_ledger_paths_v1(
+            repo_root=repo_root
+        )
+    except F1M9DurableLedgerPathsError as exc:
+        return None, str(exc)
+    wiring_request = GovernedF1M9ThresholdConsumerWiringRequestV1(
+        apply_ledger_paths=apply_paths,
+        threshold_ledger_paths=threshold_paths,
+        repo_root=repo_root,
+    )
+    seam = resolve_runtime_applied_seam_for_consumer_wiring_v1(wiring_request)
+    if seam is None:
+        bootstrap = ensure_canonical_f1_m9_runtime_applied_seam_materialized_v1(
+            repo_root=repo_root,
+            apply_ledger_paths=apply_paths,
+            threshold_ledger_paths=threshold_paths,
+        )
+        if bootstrap.status == "REJECTED":
+            reason = (
+                bootstrap.blocking_reasons[0]
+                if bootstrap.blocking_reasons
+                else "F1_M9_DURABLE_BOOTSTRAP_REJECTED"
+            )
+            return None, str(reason)
+        seam = resolve_runtime_applied_seam_for_consumer_wiring_v1(wiring_request)
+    if seam is None:
+        return None, "RUNTIME_APPLIED_SEAM_UNAVAILABLE"
+    return seam, ""
+
+
+def ensure_hardened_bridge_session_governed_productive_parameter_seam_bound_v1(
+    state: HardenedBridgeSessionStateV2,
+    *,
+    session_id: str,
+    repo_root: Path | None = None,
+) -> None:
+    """Session-bind authorized productive parameter seam before F1/M9 consumer evaluation."""
+    from src.governance.f1_m9_productive_runtime_threshold_consumer_wiring_v1 import (
+        consumer_wiring_authorized_v1,
+    )
+    from src.governance.governed_productive_runtime_parameter_seam_session_bind_v1 import (
+        STATUS_BOUND,
+        bind_governed_authorized_productive_parameter_seam_to_hardened_bridge_session_v1,
+        read_session_bound_seam_for_runtime_transport_v1,
+    )
+
+    root = repo_root or _REPO_ROOT
+    if not consumer_wiring_authorized_v1(repo_root=root):
+        return
+    if read_session_bound_seam_for_runtime_transport_v1(state) is not None:
+        return
+    seam, fail_reason = _resolve_governed_seam_record_for_hardening_v2_session_bind_v1(
+        repo_root=root
+    )
+    if seam is None:
+        code = fail_reason or "GOVERNED_SEAM_RECORD_UNAVAILABLE"
+        raise RuntimeError(f"HARDENING_V2_GOVERNED_SEAM_BIND_UNAVAILABLE:{code}")
+    state, bind = bind_governed_authorized_productive_parameter_seam_to_hardened_bridge_session_v1(
+        state,
+        seam,
+        session_id=session_id,
+    )
+    if bind.bind_status != STATUS_BOUND:
+        raise RuntimeError(
+            "HARDENING_V2_GOVERNED_SEAM_SESSION_BIND_DENIED:" + ":".join(bind.reason_codes)
+        )
+
+
 def run_hardened_bridge_cycle_v2(
     state: HardenedBridgeSessionStateV2,
     *,
@@ -641,6 +758,10 @@ def run_hardened_bridge_cycle_v2(
     if state.session_id and state.session_id != session_id:
         raise RuntimeError("SESSION_ID_MUTATION_FORBIDDEN_NO_IMPLICIT_RESUME")
     state.session_id = session_id
+    ensure_hardened_bridge_session_governed_productive_parameter_seam_bound_v1(
+        state,
+        session_id=session_id,
+    )
     state.cycle_index += 1
     state.append_mid(mid_price)
     cycle_id = make_scoped_id("cycle", session_id, state.cycle_index)
@@ -670,54 +791,6 @@ def run_hardened_bridge_cycle_v2(
     features = compute_feature_regime_from_mid_prices_v2(state.mid_prices)
     metrics0 = state.portfolio.economic_metrics()
     has_open_position, position_side, entry_price = _portfolio_position_fields_v2(state)
-    ensure_host_exit_policy_binding_v1(
-        state.exit_policy_binding,
-        instrument_id=state.instrument_id,
-        repository_sha=str(
-            state.decision_config_repository_sha or _HARDENING_V2_DECISION_CONFIG_REPOSITORY_SHA
-        ),
-        config_digest=exit_policy_config_digest_v1(
-            adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
-            profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
-        ),
-        state_root=None,
-    )
-    _exit_bundle, exit_signals, _exit_safety_mode, _exit_trading_gate = (
-        evaluate_host_exit_policy_producers_v1(
-            state.exit_policy_binding,
-            mark_price=float(features.mark_price or basis.mid_price),
-            event_ts_unix=float(event_ts_unix),
-            observation_digest="",
-            has_open_position=has_open_position,
-            existing_position_side=position_side,
-            entry_price=entry_price,
-            entry_event_time=(
-                float(state.exit_policy_binding.entry_event_time)
-                if state.exit_policy_binding.entry_event_time is not None
-                else float(event_ts_unix)
-                if has_open_position
-                else None
-            ),
-            entry_trading_epoch=(
-                int(state.exit_policy_binding.entry_trading_epoch)
-                if state.exit_policy_binding.entry_trading_epoch is not None
-                else int(state.trading_epoch)
-                if has_open_position
-                else None
-            ),
-            data_integrity_trusted=True,
-            adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
-            profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
-            killstate_active=bool(state.killstate_active),
-            killstate_trigger=str(state.killstate_trigger or ""),
-            warmup_complete=bool(features.warmup_complete),
-            regime_ok=bool(features.ok),
-            price_basis_ok=bool(basis.mid_price > 0),
-            max_drawdown=float(metrics0.drawdown),
-        )
-    )
-    _ = (_exit_safety_mode, _exit_trading_gate)
-    safety = _safety_evaluation_from_cap65_bundle_v2(_exit_bundle)
 
     params = state.portfolio.model.params
     config_digest = build_config_bundle_digest(
@@ -732,10 +805,6 @@ def run_hardened_bridge_cycle_v2(
     if state.config_digest and state.config_digest != config_digest:
         raise RuntimeError(f"CONFIG_DRIFT:{state.config_digest}:{config_digest}")
     state.config_digest = config_digest
-
-    decision_id = make_scoped_id("decision", session_id, cycle_id, state.trading_epoch)
-    risk_decision_id = make_scoped_id("risk", decision_id, safety.safety_result)
-    intent_id = make_scoped_id("intent", risk_decision_id, features.feature_digest)
 
     price_path = tuple(state.mid_prices[-FEATURE_WINDOW_MIN:])
     if len(price_path) < 2:
@@ -841,19 +910,95 @@ def run_hardened_bridge_cycle_v2(
     )
     presence_gate = consumer_path.presence_gate
     if presence_gate is None:
-        raise RuntimeError("PRODUCTIVE_THRESHOLD_CONSUMER_PRESENCE_GATE_UNAVAILABLE")
-    state.last_f1_m9_threshold_consumer_wiring = consumer_path.to_dict()
-    effective_trading_gate = safety.trading_gate_enum
-    if not consumer_path.alpha_scope_entry_authority_allowed:
-        effective_trading_gate = demote_trading_gate_for_typed_presence_failure_v1(
-            safety.trading_gate_enum
+        codes = consumer_path.reason_codes or (
+            "PRODUCTIVE_THRESHOLD_CONSUMER_PRESENCE_GATE_UNAVAILABLE",
         )
+        raise RuntimeError(f"F1_M9_THRESHOLD_CONSUMER_PATH_DENIED:{':'.join(codes)}")
+    state.last_f1_m9_threshold_consumer_wiring = consumer_path.to_dict()
 
     # Window completeness ≠ regime acceptance. Keep features.ok / unclassified separate.
     required_window_complete = derive_required_window_complete_v2(
         warmup_complete=features.warmup_complete,
         features_ok=features.ok,
     )
+
+    layer_c_event_distances = resolve_layer_c_event_distances_from_canonical_market_context_v1(
+        market_context
+    )
+    if not layer_c_event_distances.ok:
+        codes = tuple(layer_c_event_distances.failure_codes or ())
+        if codes == ("volatility_non_positive",):
+            layer_c_vol = _resolve_hardening_v2_layer_c_volatility_estimate_v1(
+                float(features.volatility_estimate)
+            )
+            layer_c_event_distances = resolve_layer_c_event_distances_from_mark_and_volatility_v1(
+                mark_price=float(market_context.mark_price),
+                volatility_estimate=layer_c_vol,
+            )
+    if not layer_c_event_distances.ok:
+        codes = ":".join(layer_c_event_distances.failure_codes or ("layer_c_binding_failed",))
+        raise RuntimeError(f"LAYER_C_EVENT_DISTANCE_BINDING_FAILED:{codes}")
+    cycle_up_distance = float(layer_c_event_distances.up_distance)
+    cycle_adverse_exit_distance = float(layer_c_event_distances.adverse_exit_distance)
+    cycle_reversal_distance = float(layer_c_event_distances.reversal_distance)
+
+    ensure_host_exit_policy_binding_v1(
+        state.exit_policy_binding,
+        instrument_id=state.instrument_id,
+        repository_sha=str(
+            state.decision_config_repository_sha or _HARDENING_V2_DECISION_CONFIG_REPOSITORY_SHA
+        ),
+        config_digest=layer_c_derived_exit_policy_adverse_config_digest_v1(
+            profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
+        ),
+        state_root=None,
+    )
+    _exit_bundle, exit_signals, _exit_safety_mode, _exit_trading_gate = (
+        evaluate_host_exit_policy_producers_v1(
+            state.exit_policy_binding,
+            mark_price=float(features.mark_price or basis.mid_price),
+            event_ts_unix=float(event_ts_unix),
+            observation_digest="",
+            has_open_position=has_open_position,
+            existing_position_side=position_side,
+            entry_price=entry_price,
+            entry_event_time=(
+                float(state.exit_policy_binding.entry_event_time)
+                if state.exit_policy_binding.entry_event_time is not None
+                else float(event_ts_unix)
+                if has_open_position
+                else None
+            ),
+            entry_trading_epoch=(
+                int(state.exit_policy_binding.entry_trading_epoch)
+                if state.exit_policy_binding.entry_trading_epoch is not None
+                else int(state.trading_epoch)
+                if has_open_position
+                else None
+            ),
+            data_integrity_trusted=True,
+            adverse_exit_distance=cycle_adverse_exit_distance,
+            profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
+            killstate_active=bool(state.killstate_active),
+            killstate_trigger=str(state.killstate_trigger or ""),
+            warmup_complete=bool(features.warmup_complete),
+            regime_ok=bool(features.ok),
+            price_basis_ok=bool(basis.mid_price > 0),
+            max_drawdown=float(metrics0.drawdown),
+        )
+    )
+    _ = (_exit_safety_mode, _exit_trading_gate)
+    safety = _safety_evaluation_from_cap65_bundle_v2(_exit_bundle)
+
+    effective_trading_gate = safety.trading_gate_enum
+    if not consumer_path.alpha_scope_entry_authority_allowed:
+        effective_trading_gate = demote_trading_gate_for_typed_presence_failure_v1(
+            safety.trading_gate_enum
+        )
+
+    decision_id = make_scoped_id("decision", session_id, cycle_id, state.trading_epoch)
+    risk_decision_id = make_scoped_id("risk", decision_id, safety.safety_result)
+    intent_id = make_scoped_id("intent", risk_decision_id, features.feature_digest)
 
     replay_input = build_integrated_offline_replay_input_v1(
         replay_id=f"{session_id}-{cycle_id}",
@@ -879,9 +1024,9 @@ def run_hardened_bridge_cycle_v2(
             remaining_epochs=0,
             policy_version=SCOPE_EVENT_GENERATOR_POLICY_VERSION,
         ),
-        up_distance=float(decision_cfg.up_distance),
-        adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
-        reversal_distance=float(decision_cfg.reversal_distance),
+        up_distance=cycle_up_distance,
+        adverse_exit_distance=cycle_adverse_exit_distance,
+        reversal_distance=cycle_reversal_distance,
         confirmation_epochs=int(decision_cfg.confirmation_epochs),
         current_price=mark,
         price_path=price_path,
@@ -1079,6 +1224,7 @@ def run_hardened_bridge_cycle_v2(
         "reason_codes": list(replay.evidence.reason_codes),
         "blockers": list(features.blockers),
         "call_graph": list(CALL_GRAPH_V2),
+        # Cap6.3 numeric fields: LEGACY_FROZEN_CONFIG_EVIDENCE in cycle payload — not Layer-C runtime authority.
         "decision_config_binding": {
             "initialized": bool(state.decision_config_binding.initialized),
             "config_version": str(decision_cfg.config_version),

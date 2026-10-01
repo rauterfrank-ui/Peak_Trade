@@ -32,13 +32,15 @@ from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.durable_state_v1 im
 from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.l6_dynamic_scope_generator_v1 import (
     ExplicitPassthroughDynamicScopeGeneratorV1,
 )
-from trading.master_v2.naked_mv2_dp_explicit_layered_core_v1.orchestrator_v1 import (
-    MechanicalStepSpecV1,
-)
 from trading.master_v2.naked_mv2_dp_regime_v1 import NakedRegimeV1
+from trading.master_v2.canonical_scope_initialization_v1 import (
+    PRODUCTIVE_RAW_SCOPE_DISTANCE_PRODUCER_ID,
+    compute_raw_volatility_times_price_scope_distance_v1,
+)
 
-from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
-    CANONICAL_UP_DISTANCE,
+from src.ops.p4_l6_explicit_d_t_proposal_v1.models_v1 import (
+    ExplicitDtProposalV1,
+    P4ExplicitDtProposalIdentityContextV1,
 )
 from src.ops.p5_10_productive_activation_and_binding_v1.constants_v1 import (
     PRODUCTIVE_BIND_SEAM_OWNER,
@@ -268,10 +270,40 @@ def prepare_productive_layered_core_replay_bind_v1(
     if seed_class is SideStateSeedClassV1.CORE_REGIME_AUTHORITY_CLAIM:
         return replay_input, _fail_carry("venue_cursor_cannot_claim_core_regime_authority")
 
-    mechanical_step = MechanicalStepSpecV1(
-        mark_price_m_t=float(mark_price_m_t),
-        proposed_d_t=float(CANONICAL_UP_DISTANCE),
+    scope_magnitude = compute_raw_volatility_times_price_scope_distance_v1(
+        replay_input.canonical_market_context
     )
+    if scope_magnitude.failure_codes or scope_magnitude.distance is None:
+        return replay_input, _fail_carry(
+            *(scope_magnitude.failure_codes or ("dynamic_scope_magnitude_unavailable",))
+        )
+
+    cmc = replay_input.canonical_market_context
+    lineage_id = str(cmc.input_digest or cmc.context_id or "").strip()
+    if not lineage_id:
+        return replay_input, _fail_carry("canonical_market_context_lineage_missing")
+
+    p4_identity = P4ExplicitDtProposalIdentityContextV1(
+        instrument_id=instrument_id,
+        venue=DEFAULT_VENUE,
+        venue_instrument_id=venue_native_id,
+    )
+    explicit_dt_proposal = ExplicitDtProposalV1(
+        value=float(scope_magnitude.distance),
+        producer_id=PRODUCTIVE_RAW_SCOPE_DISTANCE_PRODUCER_ID,
+        instrument_id=instrument_id,
+        venue=DEFAULT_VENUE,
+        venue_instrument_id=venue_native_id,
+        observation_lineage_id=lineage_id,
+        proposal_id=f"productive-dynamic-scope-{lineage_id[:48]}",
+        parameter_provenance={
+            "formula": "volatility_estimate_times_mark_price",
+            "mark_price": float(scope_magnitude.mark_price),
+            "volatility_estimate": float(scope_magnitude.volatility_estimate),
+            "global_usdt_clamp": "none",
+        },
+    )
+
     selected = SelectedFutureInputV1(
         instrument_id=instrument_id,
         instrument_key=instrument_key,
@@ -295,7 +327,8 @@ def prepare_productive_layered_core_replay_bind_v1(
         store_root=store_root,
         selected=selected,
         mark_price_m_t=float(mark_price_m_t),
-        mechanical_step=mechanical_step,
+        explicit_dt_proposal=explicit_dt_proposal,
+        p4_identity_context=p4_identity,
         restore_existing=restore_existing,
         initialization_observations=observations if not restore_existing else None,
     )

@@ -82,6 +82,13 @@ identity; not retired Cap 6.3 generator numerics; not cycle-varying floats.
 That persist does **not** change productive `200.0` / `80.0` / `120.0`,
 bind MODEL_C, or authorize a freeze-exception.
 
+**Current productive note (Dynamic Scope authority closure):** session
+`dynamic_scope_config_digest_v1()` identifies stable Layer-C derivation-mode
+semantics (`derive_scope_event_distances_v1` at 1.0/0.4/0.6) via
+`layer_c_derived_dynamic_scope_persistence_config_digest_v1`; it does **not**
+hash per-tick σ×P magnitudes. Cap 6.3 frozen numerics remain legacy config
+evidence only.
+
 Master Runbook §9.2.4 and
 `docs/ops/specs/CAP63_DYNAMIC_DERIVATION_FREEZE_EXCEPTION_PRECONDITIONS_V1.md`
 record freeze-exception **preconditions** (docs-only). A later freeze-exception

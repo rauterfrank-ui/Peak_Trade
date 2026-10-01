@@ -190,18 +190,22 @@ def test_session_id_mismatch_rejected(tmp_path: Path) -> None:
     assert "SESSION_ID_MISMATCH" in bind.reason_codes
 
 
-def test_bridge_without_bind_stays_unresolved_presence_age(tmp_path: Path) -> None:
+def test_bridge_auto_session_bind_ratified_presence_age_when_consumer_wiring_authorized(
+    tmp_path: Path,
+) -> None:
+    """Canonical Hardening-V2 cycle binds governed seam before F1/M9 when wiring is authorized."""
     state = HardenedBridgeSessionStateV2()
     state.typed_volatility_persistence_path = tmp_path / "hist2.json"
     last = run_hardened_bridge_cycle_v2(
         state,
         mid_price=_price_at(0),
         event_ts_unix=T0,
-        session_id="no-seam",
+        session_id="auto-seam-bind",
         finalized_pt1m_mark_sample=_sample(0),
     )
+    assert state.governed_authorized_productive_parameter_seam_record is not None
     gate = last["double_play_typed_volatility_presence_gate"]
-    assert gate["max_age_policy_evidence"]["threshold_status"] == THRESHOLD_STATUS_UNRESOLVED
+    assert gate["max_age_policy_evidence"]["threshold_status"] == THRESHOLD_STATUS_RATIFIED_NUMERIC
 
 
 def test_optimization_cannot_bind_session_seam_directly() -> None:

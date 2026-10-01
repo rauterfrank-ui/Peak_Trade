@@ -27,7 +27,8 @@ PARALLEL_SSOT_CREATED=false
 NUMERIC_BEHAVIOR_CHANGE=false
 SWITCH_EVENT_UP_DISTANCE_EFFECTIVE_VALUE=200.0
 PROFIT_PROTECTION_DISTANCE_EFFECTIVE_VALUE=200.0
-MODEL_C_DERIVATION_RUNTIME_BINDING_AUTHORIZED=false
+MODEL_C_DERIVATION_RUNTIME_BINDING_AUTHORIZED=layer_c_scope_event_distance_binding_v1_seam_only
+DIRECT_PRODUCTIVE_DERIVE_IMPORTS=PROHIBITED
 MODEL_C_FREEZE_EXCEPTION_AUTHORIZED=true
 RESEARCH_DISTANCE_REWRITE_AUTHORIZED=false
 HYSTERESIS_MULTIPLIER_RUNTIME_BINDING_AUTHORIZED=false
@@ -96,7 +97,9 @@ Historical Cap 6.5 evidence JSON may retain the prior reuse wording.
 
 ## 4. Not authorized here
 
-- MODEL_C `derive_scope_event_distances_v1` runtime bind
+- Ad-hoc MODEL_C `derive_scope_event_distances_v1` imports outside
+  `trading.master_v2.layer_c_scope_event_distance_binding_v1` (see
+  MODEL_C_DYNAMIC_SCOPE_DERIVED_SWITCH_EVENT_THRESHOLDS_CONTRACT_V1 §2.1)
 - Cap 6.2 / 6.3 / 6.5 freeze exception
 - Research BPS rewrite
 - `hysteresis_multiplier` runtime

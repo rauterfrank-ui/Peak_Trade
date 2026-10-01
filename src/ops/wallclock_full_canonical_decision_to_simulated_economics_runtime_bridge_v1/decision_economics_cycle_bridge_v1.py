@@ -215,9 +215,20 @@ from trading.master_v2.canonical_market_context_v1 import (
 from trading.master_v2.canonical_scope_initialization_v1 import (
     CANONICAL_SCOPE_INITIALIZATION_LAYER_VERSION,
     CanonicalScopeInitializationPolicyV1,
+    SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION,
     SCOPE_INITIALIZATION_POLICY_VERSION,
     ScopeInitializationPrerequisitesV1,
     ScopeReinitializationGuardV1,
+    default_instrument_relative_scope_initialization_policy_v1,
+)
+from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
+    layer_c_derived_dynamic_scope_persistence_config_digest_v1,
+    layer_c_derived_exit_policy_adverse_config_digest_v1,
+    resolve_layer_c_event_distances_from_mark_and_volatility_v1,
+)
+from trading.master_v2.canonical_volatility_default_quarantine_v1 import (
+    quarantine_explicit_replay_default_volatility_v1,
+    require_admitted_legacy_volatility_float_v1,
 )
 from trading.master_v2.canonical_trading_decision_evidence_v1 import (
     CANONICAL_TRADING_DECISION_EVIDENCE_LAYER_VERSION,
@@ -280,14 +291,24 @@ _IMPL_DIGEST = hashlib.sha256(
     b"wallclock-full-canonical-decision-to-simulated-economics-runtime-bridge-v1-impl"
 ).hexdigest()
 
+_LAYER_C_VOL_QUARANTINE = quarantine_explicit_replay_default_volatility_v1(
+    source_file_or_component=(
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/"
+        "decision_economics_cycle_bridge_v1.py:_LAYER_C_VOL_QUARANTINE"
+    ),
+)
+
+
+def _resolve_layer_c_volatility_estimate_v1(raw_volatility_estimate: float) -> float:
+    vol = float(raw_volatility_estimate)
+    if vol > 0.0 and vol == vol:
+        return vol
+    return require_admitted_legacy_volatility_float_v1(_LAYER_C_VOL_QUARANTINE)
+
 
 def _default_policies() -> IntegratedOfflineReplayPoliciesV1:
     return IntegratedOfflineReplayPoliciesV1(
-        scope_initialization=CanonicalScopeInitializationPolicyV1(
-            min_scope_band=50.0,
-            max_scope_band=500.0,
-            policy_version=SCOPE_INITIALIZATION_POLICY_VERSION,
-        ),
+        scope_initialization=default_instrument_relative_scope_initialization_policy_v1(),
         scope_event_generator=ScopeEventGeneratorPolicyV1(
             hard_max_scope_distance=1000.0,
             hard_max_adverse_distance=500.0,
@@ -344,7 +365,7 @@ def _component_versions() -> dict[str, str]:
 
 def _policy_versions() -> dict[str, str]:
     return {
-        "scope_initialization": SCOPE_INITIALIZATION_POLICY_VERSION,
+        "scope_initialization": SCOPE_INITIALIZATION_POLICY_INSTRUMENT_RELATIVE_VERSION,
         "scope_event_generator": SCOPE_EVENT_GENERATOR_POLICY_VERSION,
         "directional": DIRECTIONAL_ASSESSMENT_POLICY_VERSION,
         "survival": SURVIVAL_ASSESSMENT_POLICY_VERSION,
@@ -1155,17 +1176,13 @@ def run_bridge_cycle_v1(
         ),
         state_root=(Path(state.confirmation_state_root) if state.confirmation_state_root else None),
     )
-    # Capability 6.2: reload prior RuntimeScopeState / CanonicalScopeSnapshot before decision.
+    # Capability 6.2: load persisted RuntimeScopeState before restart cursor reconstruction.
     ensure_host_dynamic_scope_binding_v1(
         state.dynamic_scope_binding,
         instrument_id=state.instrument_id,
         venue=DYNAMIC_SCOPE_DEFAULT_VENUE,
         repository_sha=repository_sha,
-        config_digest=dynamic_scope_config_digest_v1(
-            up_distance=float(decision_cfg.up_distance),
-            adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
-            reversal_distance=float(decision_cfg.reversal_distance),
-        ),
+        config_digest=layer_c_derived_dynamic_scope_persistence_config_digest_v1(),
         state_root=(
             Path(state.dynamic_scope_state_root) if state.dynamic_scope_state_root else None
         ),
@@ -1173,21 +1190,6 @@ def run_bridge_cycle_v1(
     if state.dynamic_scope_binding.alpha_blocked:
         raise RuntimeError(
             "DYNAMIC_SCOPE_ALPHA_BLOCKED:" + state.dynamic_scope_binding.alpha_block_reason
-        )
-    # Capability 6.5: reload pending exit-policy state before producer evaluation.
-    ensure_host_exit_policy_binding_v1(
-        state.exit_policy_binding,
-        instrument_id=state.instrument_id,
-        repository_sha=repository_sha,
-        config_digest=exit_policy_config_digest_v1(
-            adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
-            profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
-        ),
-        state_root=(Path(state.exit_policy_state_root) if state.exit_policy_state_root else None),
-    )
-    if state.exit_policy_binding.alpha_blocked:
-        raise RuntimeError(
-            "EXIT_POLICY_ALPHA_BLOCKED:" + state.exit_policy_binding.alpha_block_reason
         )
     # Restart restore of host cursors required for scope continuity (no silent re-seed).
     if (
@@ -1261,6 +1263,32 @@ def run_bridge_cycle_v1(
         WarmupStatus.WARMUP_COMPLETE if features.warmup_complete else WarmupStatus.WARMUP_REQUIRED
     )
     mark = float(features.mark_price or mid_price)
+    layer_c_vol = _resolve_layer_c_volatility_estimate_v1(float(features.volatility_estimate))
+    layer_c_event_distances = resolve_layer_c_event_distances_from_mark_and_volatility_v1(
+        mark_price=mark,
+        volatility_estimate=layer_c_vol,
+    )
+    if not layer_c_event_distances.ok:
+        codes = ":".join(layer_c_event_distances.failure_codes or ("layer_c_binding_failed",))
+        raise RuntimeError(f"LAYER_C_EVENT_DISTANCE_BINDING_FAILED:{codes}")
+    cycle_up_distance = float(layer_c_event_distances.up_distance)
+    cycle_adverse_exit_distance = float(layer_c_event_distances.adverse_exit_distance)
+    cycle_reversal_distance = float(layer_c_event_distances.reversal_distance)
+
+    ensure_host_exit_policy_binding_v1(
+        state.exit_policy_binding,
+        instrument_id=state.instrument_id,
+        repository_sha=repository_sha,
+        config_digest=layer_c_derived_exit_policy_adverse_config_digest_v1(
+            profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
+        ),
+        state_root=(Path(state.exit_policy_state_root) if state.exit_policy_state_root else None),
+    )
+    if state.exit_policy_binding.alpha_blocked:
+        raise RuntimeError(
+            "EXIT_POLICY_ALPHA_BLOCKED:" + state.exit_policy_binding.alpha_block_reason
+        )
+
     input_material = json.dumps(
         {
             "capability_id": CAPABILITY_ID,
@@ -1322,7 +1350,7 @@ def run_bridge_cycle_v1(
             ),
             confirmation_binding=state.confirmation_binding,
             data_integrity_trusted=True,
-            adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
+            adverse_exit_distance=cycle_adverse_exit_distance,
             profit_protection_distance=float(FROZEN_PROFIT_PROTECTION_DISTANCE),
             warmup_complete=bool(features.warmup_complete),
             regime_ok=bool(features.ok),
@@ -1387,9 +1415,9 @@ def run_bridge_cycle_v1(
             remaining_epochs=0,
             policy_version=SCOPE_EVENT_GENERATOR_POLICY_VERSION,
         ),
-        up_distance=float(decision_cfg.up_distance),
-        adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
-        reversal_distance=float(decision_cfg.reversal_distance),
+        up_distance=cycle_up_distance,
+        adverse_exit_distance=cycle_adverse_exit_distance,
+        reversal_distance=cycle_reversal_distance,
         confirmation_epochs=int(decision_cfg.confirmation_epochs),
         current_price=mark,
         price_path=price_path,
@@ -1626,6 +1654,7 @@ def run_bridge_cycle_v1(
             fill_key = str(fill_dict["fill_id"])
         cfg_state = None
         if state.decision_config_binding.initialized:
+            # Cap6.3 TOML fields below: LEGACY_FROZEN_CONFIG_EVIDENCE only — not Layer-C runtime authority.
             cfg_state = DecisionConfigBindingStateV1(
                 state_version="v1",
                 config_version=str(decision_cfg.config_version),
@@ -1641,11 +1670,7 @@ def run_bridge_cycle_v1(
                 predecessor_config_digest_cap61=confirmation_config_digest_v1(
                     confirmation_epochs=int(decision_cfg.confirmation_epochs)
                 ),
-                predecessor_config_digest_cap62=dynamic_scope_config_digest_v1(
-                    up_distance=float(decision_cfg.up_distance),
-                    adverse_exit_distance=float(decision_cfg.adverse_exit_distance),
-                    reversal_distance=float(decision_cfg.reversal_distance),
-                ),
+                predecessor_config_digest_cap62=layer_c_derived_dynamic_scope_persistence_config_digest_v1(),
                 commit_sequence=int(state.decision_config_binding.commit_sequence or 0),
                 source_path=str(getattr(decision_cfg, "source_path", "") or ""),
             )

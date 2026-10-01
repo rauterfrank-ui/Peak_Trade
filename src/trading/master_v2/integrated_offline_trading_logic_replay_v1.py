@@ -54,6 +54,10 @@ from trading.master_v2.canonical_scope_initialization_v1 import (
     ScopeInitializationPrerequisitesV1,
     ScopeReinitializationGuardV1,
     initialize_canonical_scope,
+    snapshot_uses_instrument_relative_scope_magnitude_v1,
+)
+from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
+    resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1,
 )
 from src.governance.capital_risk_sizing_v1 import CapitalRiskSizingDecisionV1
 from src.governance.canonical_order_intent_v1 import CanonicalOrderIntentV1
@@ -918,7 +922,10 @@ def _seed_runtime_scope_from_snapshot_v1(
 ) -> RuntimeScopeState:
     """Initialize trailing envelope from identity snapshot — first cycle / reset only."""
     anchor = float(snapshot.trailing_anchor)
-    band = max(float(snapshot.scope_band), float(snapshot.min_scope_band), 1.0)
+    if snapshot_uses_instrument_relative_scope_magnitude_v1(snapshot):
+        band = float(snapshot.scope_band)
+    else:
+        band = max(float(snapshot.scope_band), float(snapshot.min_scope_band), 1.0)
     return RuntimeScopeState(
         anchor_price=anchor,
         current_upscope_boundary=float(snapshot.neutral_upper_boundary),
@@ -959,15 +966,25 @@ def _resolve_runtime_scope_state_for_cycle_v1(
 
 def _runtime_envelope_containing_scope_v1(
     snapshot: CanonicalScopeSnapshotV1,
+    *,
+    rules: Optional[DynamicScopeRules] = None,
 ) -> RuntimeEnvelope:
     """Static envelope that contains the snapshot window; does not invent a ceiling.
 
-    Canonical productive snapshot identity is ``min_scope_band``/``max_scope_band``
-    (hosts: 50/500). Default static/rules maxima must not shrink that window to a
-    constant. ``live_authorization`` stays False.
+    Legacy clamp hosts use ``min_scope_band``/``max_scope_band`` (50/500). Instrument-relative
+    magnitude uses σ×P on the snapshot without that economic window. ``live_authorization`` False.
     """
-    snap_lo = float(snapshot.min_scope_band)
-    snap_hi = float(snapshot.max_scope_band)
+    if snapshot_uses_instrument_relative_scope_magnitude_v1(snapshot):
+        snap_lo = float(_DEFAULT_STATIC_LIMITS.min_band_width)
+        rules_hi = float(rules.max_band_width) if rules is not None else 0.0
+        snap_hi = max(
+            float(_DEFAULT_STATIC_LIMITS.max_band_width),
+            float(snapshot.scope_band),
+            rules_hi,
+        )
+    else:
+        snap_lo = float(snapshot.min_scope_band)
+        snap_hi = float(snapshot.max_scope_band)
     static_lo = min(float(_DEFAULT_STATIC_LIMITS.min_band_width), snap_lo)
     static_hi = max(float(_DEFAULT_STATIC_LIMITS.max_band_width), snap_hi)
     return RuntimeEnvelope(
@@ -1016,13 +1033,25 @@ def _rules_for_cycle_v1(
         ),
     )
     volatility_estimate = require_admitted_legacy_volatility_float_v1(admitted)
-    # Snapshot window is the allowed band identity. Do not min() against the
-    # quarantined constructor default (50.0), which collapsed productive 50/500.
+    if snapshot_uses_instrument_relative_scope_magnitude_v1(snapshot):
+        mark = (
+            float(bound_context.mark_price)
+            if bound_context is not None
+            else float(snapshot.reference_price)
+        )
+        live_raw_band = float(volatility_estimate) * mark
+        max_band_width = max(live_raw_band, float(snapshot.scope_band), 0.0)
+        min_band_width = 0.0
+    else:
+        # Snapshot window is the allowed band identity. Do not min() against the
+        # quarantined constructor default (50.0), which collapsed productive 50/500.
+        min_band_width = max(float(snapshot.min_scope_band), _DEFAULT_SCOPE_RULES.min_band_width)
+        max_band_width = float(snapshot.max_scope_band)
     return DynamicScopeRules(
         downscope_band_multiplier=_DEFAULT_SCOPE_RULES.downscope_band_multiplier,
         upscope_band_multiplier=_DEFAULT_SCOPE_RULES.upscope_band_multiplier,
-        min_band_width=max(float(snapshot.min_scope_band), _DEFAULT_SCOPE_RULES.min_band_width),
-        max_band_width=float(snapshot.max_scope_band),
+        min_band_width=min_band_width,
+        max_band_width=max_band_width,
         min_switch_cooldown_ticks=_DEFAULT_SCOPE_RULES.min_switch_cooldown_ticks,
         volatility_estimate=volatility_estimate,
         max_switches_per_window=_DEFAULT_SCOPE_RULES.max_switches_per_window,
@@ -1611,6 +1640,21 @@ def run_integrated_offline_trading_logic_replay_v1(
             if delegated_ctx.runtime_scope_pre.anchor_price > 0
             else float(current_scope.trailing_anchor)
         )
+        delegated_layer_c = resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1(
+            float(delegated_ctx.runtime_scope_pre.current_hysteresis_band)
+        )
+        if not delegated_layer_c.ok:
+            reasons = delegated_layer_c.failure_codes or ("layer_c_event_distance_binding_failed",)
+            evidence = _blocked_evidence(inp, fail_reasons=reasons)
+            return _annotated_replay_result(
+                inp,
+                replay_pass=False,
+                fail_reasons=reasons,
+                evidence=evidence,
+            )
+        cycle_up_distance = float(delegated_layer_c.up_distance)
+        cycle_adverse_exit_distance = float(delegated_layer_c.adverse_exit_distance)
+        cycle_reversal_distance = float(delegated_layer_c.reversal_distance)
     else:
         scope_init = initialize_canonical_scope(
             bound_context,
@@ -1651,7 +1695,7 @@ def run_integrated_offline_trading_logic_replay_v1(
                 fail_reasons=reasons,
                 evidence=evidence,
             )
-        runtime_envelope = _runtime_envelope_containing_scope_v1(current_scope)
+        runtime_envelope = _runtime_envelope_containing_scope_v1(current_scope, rules=rules)
         runtime_scope_before, runtime_scope_reinitialized = (
             _resolve_runtime_scope_state_for_cycle_v1(
                 instrument_id=inp.instrument_id,
@@ -1677,6 +1721,24 @@ def run_integrated_offline_trading_logic_replay_v1(
         )
         effective_scope_direction = scope_direction_from_side_state_v1(inp.side_state)
 
+        layer_c_event_distances = resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1(
+            float(runtime_scope_pre.current_hysteresis_band)
+        )
+        if not layer_c_event_distances.ok:
+            reasons = layer_c_event_distances.failure_codes or (
+                "layer_c_event_distance_binding_failed",
+            )
+            evidence = _blocked_evidence(inp, fail_reasons=reasons)
+            return _annotated_replay_result(
+                inp,
+                replay_pass=False,
+                fail_reasons=reasons,
+                evidence=evidence,
+            )
+        cycle_up_distance = float(layer_c_event_distances.up_distance)
+        cycle_adverse_exit_distance = float(layer_c_event_distances.adverse_exit_distance)
+        cycle_reversal_distance = float(layer_c_event_distances.reversal_distance)
+
         scope_event_inp = ScopeEventGeneratorInputV1(
             instrument_id=inp.instrument_id,
             trading_epoch=inp.trading_epoch,
@@ -1687,9 +1749,9 @@ def run_integrated_offline_trading_logic_replay_v1(
             reference_price=float(bound_context.mark_price),
             current_price=float(inp.current_price),
             trailing_anchor=trailing_anchor_used,
-            up_distance=float(inp.up_distance),
-            adverse_exit_distance=float(inp.adverse_exit_distance),
-            reversal_distance=float(inp.reversal_distance),
+            up_distance=cycle_up_distance,
+            adverse_exit_distance=cycle_adverse_exit_distance,
+            reversal_distance=cycle_reversal_distance,
             confirmation_epochs=int(inp.confirmation_epochs),
             confirmation_state=inp.scope_confirmation_state,
             cooldown_state=inp.scope_cooldown_state,
@@ -2032,7 +2094,7 @@ def run_integrated_offline_trading_logic_replay_v1(
     protective_stop_price = _crs_binding.derive_protective_stop_price_from_adverse_exit_v0(
         selected_side=str(evidence.selected_side),
         reference_price=reference_price,
-        adverse_exit_distance=inp.adverse_exit_distance,
+        adverse_exit_distance=cycle_adverse_exit_distance,
     )
     _boundary_sf = inp.current_instrument_capital_risk_sizing_boundary_state_file
     if _boundary_sf is not None and getattr(
@@ -2046,7 +2108,7 @@ def run_integrated_offline_trading_logic_replay_v1(
         dynamic_price = build_mv2_offline_boundary_dynamic_price_context_v1(
             mark_price=reference_price,
             selected_side=str(evidence.selected_side),
-            adverse_exit_distance=inp.adverse_exit_distance,
+            adverse_exit_distance=cycle_adverse_exit_distance,
         )
         capital_context = build_mv2_dynamic_boundary_capital_context_v1(
             state_file=_boundary_sf,

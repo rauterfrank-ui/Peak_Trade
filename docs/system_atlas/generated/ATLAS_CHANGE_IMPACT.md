@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6992: Owner-GO baseline re-pin 959039aa + immutable-surface lineage gate (master_v2 only); productive Level-A re-proof path to S5/HOLD; no Natural Enter in bounded window; MV2/DP unchanged; AUTHORITY=NONE; POST_COUNT=0.
+- PR #6993 post-main integration: dynamic scope + bridge boundary atlas review; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_6992_GOLDEN_HAPPY_VECTOR_OWNER_GO_LINEAGE_CLOSURE_V1
+- modified_by=PR_6993_DYNAMIC_SCOPE_BRIDGE_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -74,7 +74,7 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
 
 REPO_SHA = "0003c493a66f27a619638e88e3b58b05b64ce02e"
 CAP61_DIGEST = "06ca8fabf72c34c4cff86dccdf1c2fc2a99a21f764dbf5f27ed93b7bc5f31791"
-CAP62_DIGEST = "808a1c920f895f81c3ddc7431349c3272f77d2e5da66825c9d92919ed6ddce3e"
+CAP62_DIGEST = "66a6a677a83a71983c17abd8f8db0472632ef5acfb809a41281cf70eac760f7b"
 
 
 def test_constants_and_call_graph_bound() -> None:

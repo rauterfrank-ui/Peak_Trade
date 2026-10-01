@@ -767,6 +767,9 @@
     "src/trading/master_v2/canonical_market_context_v1.py",
     "src/trading/master_v2/canonical_trading_decision_evidence_v1.py",
     "src/trading/master_v2/canonical_scope_initialization_v1.py",
+    "tests/trading/master_v2/test_canonical_scope_initialization_v1.py",
+    "src/trading/master_v2/layer_c_scope_event_distance_binding_v1.py",
+    "tests/trading/master_v2/test_dynamic_trailing_reversal_scope_owner_v1.py",
     "tests/trading/master_v2/test_canonical_volatility_binding_and_provenance_transport_v1.py",
     "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_BINDING_AND_PROVENANCE_TRANSPORT_V1.md",
     "src/trading/master_v2/canonical_volatility_default_quarantine_v1.py",
@@ -1256,6 +1259,7 @@
     "MASTER_V2_INTEGRATED_REPLAY_APPENDIX_A_CORE_LOGIC_PARITY_POST_6135_V1 exact-file allowlist for the proof-only Appendix A core-logic parity contract test (test-only; semantics-neutral; no runtime authority; no restoration-slice expansion).",
     "MASTER_V2_DOUBLE_PLAY_HOST_GRAPH_SSOT_AND_OWNER_COMPOSED_FULL_CHAIN_PROOF_V1 exact-file allowlist for the proof-only host-graph SSOT spec and owner-composed full-chain consumption test (docs/test-only; semantics-neutral; no runtime authority; no restoration-slice expansion).",
     "CHARACTERIZATION_TEST_EXACT_FILE_ADMISSION exact-file allowlist for the existing three-file forbidden characterization test set (test-only; semantics-neutral; no runtime/economic mutation; no restoration/decommission/mapping-bind/nonproductive-grant use).",
-    "M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_V1: authorize exact-file passive M9-S1 market session observation ledger, fail-safe bridge delegation to productive accumulation, offline 8-candidate counterfactual replay, owner-review artifacts, focused tests and docs. Reuses productive/join ledgers. No numeric max-age selection, enforcement, Alpha/presence gate semantic change, or external effect."
+    "M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_V1: authorize exact-file passive M9-S1 market session observation ledger, fail-safe bridge delegation to productive accumulation, offline 8-candidate counterfactual replay, owner-review artifacts, focused tests and docs. Reuses productive/join ledgers. No numeric max-age selection, enforcement, Alpha/presence gate semantic change, or external effect.",
+    "PR6993_DYNAMIC_SCOPE_PRODUCTIVE_BRIDGE_BOUNDARIES_V1: authorize exact-file Layer-C scope event distance binding, canonical scope initialization continuity, integrated replay scope wiring, typed volatility presence gate bridge consumption, and focused Master-V2 scope tests for dynamic scope magnitude + Cap 6.2 restart continuity + WP1/WP2 productive bridge boundaries. CORE_SEMANTICS unchanged at governance boundary; no live/testnet/orders."
   ]
 }
