@@ -1,4 +1,5 @@
 # atlas_entity_review: PR #6993 — dynamic scope + bridge boundaries; AUTHORITY=NONE; POST_COUNT=0.
+# atlas_entity_review: PR #6995 — Fresh-C1 dynamic GET cache policy; transport liveness only; AUTHORITY=NONE; POST_COUNT=0.
 entities:
 - id: SYSTEM:peak_trade
   kind: SYSTEM
@@ -3600,7 +3601,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_6994_OWNER_GO_REISSUANCE_GOVERNANCE_CURRENCY_V1
+  modified_by: PR_6995_FRESH_C1_DYNAMIC_GET_CACHE_REPAIR_V1
   source_paths:
   - scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py
@@ -3610,7 +3611,7 @@ entities:
   - config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json
   - docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md
   - tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py
-  notes: 'Owner-GO decision + consume evidence for bounded continuous run and public readonly Fresh-C1 GET; S6 observation poll only; PRE_EXTERNAL terminal; CONTINUOUS_RUN_AUTHORIZED=false; ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6951 productive entry script + cold-lane bootstrap; baseline rebind 27c3cd4; # ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6952 post-merge Owner-GO baseline lineage (ancestor bind + MV2/DP drift gate); # wiring-only; module pins unchanged; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6980 Cap24 witness epoch + Owner-GO re-pin 7a3597e; integration-only; # src/trading/master_v2 untouched; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6994 Owner-GO baseline reissued to 049fc18 after #6993 Dynamic-Scope cutover; decision JSON + harness/supervisor baseline pins only; Golden-Happy inject-transport PRE_EXTERNAL proof; no live-market Natural Enter claim; AUTHORITY=NONE; POST_COUNT=0.'
+  notes: 'Owner-GO decision + consume evidence for bounded continuous run and public readonly Fresh-C1 GET; S6 observation poll only; PRE_EXTERNAL terminal; CONTINUOUS_RUN_AUTHORIZED=false; ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6951 productive entry script + cold-lane bootstrap; baseline rebind 27c3cd4; # ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6952 post-merge Owner-GO baseline lineage (ancestor bind + MV2/DP drift gate); # wiring-only; module pins unchanged; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6980 Cap24 witness epoch + Owner-GO re-pin 7a3597e; integration-only; # src/trading/master_v2 untouched; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6994 Owner-GO baseline reissued to 049fc18 after #6993 Dynamic-Scope cutover; decision JSON + harness/supervisor baseline pins only; Golden-Happy inject-transport PRE_EXTERNAL proof; no live-market Natural Enter claim; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6995 Fresh-C1 dynamic GET cache policy on productive transport for S6 candle polls only; observation transport liveness; offline proof; Real-Venue effectiveness UNKNOWN pre-merge; AUTHORITY=NONE; POST_COUNT=0.'
 - id: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
   kind: RUNTIME_COMPONENT
   name: Governed M4-M8 to meta-learning optimization feedback real mechanical continuation v1
@@ -4323,7 +4324,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_6993_DYNAMIC_SCOPE_BRIDGE_CLOSURE_V1
+  modified_by: PR_6995_FRESH_C1_DYNAMIC_GET_CACHE_REPAIR_V1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/__init__.py
   - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
@@ -5031,7 +5032,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CURRENT_PRODUCTIVE_LAB_PRETRADE_TRUSTED_ACCOUNT_CONFIG_U01_CLOSURE_V1
+  modified_by: PR_6995_FRESH_C1_DYNAMIC_GET_CACHE_REPAIR_V1
   fail_closed: true
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
@@ -5057,10 +5058,11 @@ entities:
   - tests/ops/test_full_core_current_productive_29p_fresh_get_binding_repair_v1.py
   - tests/ops/full_core_live_path_composition_root_v1/test_s1_datasafety_source_kind_stamp_at_productive_get_transport_v1.py
   - tests/ops/full_core_live_path_composition_root_v1/test_s2c_datasafetygate_productive_admission_join_v1.py
+  - tests/ops/full_core_live_path_composition_root_v1/test_golden_happy_fresh_c1_dynamic_get_cache_repair_v1.py
   - docs/ops/specs/FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md
   - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_FRESH_TRUSTED_USDC_FREE_MARGIN_GET_AND_PRODUCE_SIZING_VALUE_V1.md
   notes: 'Joins decision-bound Fresh Pretrade GET evidence into Full-Core admission. Injectable GET-only port. Does not arm Live. Does not POST. Does not admit. Does not override FILEGATE or permit. Injected test doubles cannot claim venue contact. Canary HTTP is not Full-Core transport. S1: FreshPretradeGetTransportResultV1.data_safety_source_kind is an explicit provenance carrier (default None=UNBOUND). REAL is stamped only by FullCoreProductiveReadOnlyGetTransportV1.get under direct eea.okx.com acquisition evidence. No VENUE_NATIVE remap. No DataSafetyGate/usage_context join in S1. S2B: ratified Full-Core composition-root binder may compose DataSafetyContext(REAL, LIVE_TRADE) from the S1 stamp at this result type before A1/A2/A3 unwrap. Fail-closed unbound when stamp is None. S2C: DataSafetyGate.check is a fail-closed conjunct of evaluate_execution_admission_v1. DataSafetyGate=CONJUNCT_NOT_OWNER. ALLOW is not admission. No second admission owner. No activation/POST/wire. Prior S2B DATASAFETYGATE_JOIN=false
-    / S2C_UNAUTHORIZED notes are superseded for this implemented coupling. 11.2.1.Q productive GETs live in a sibling package, not this seam. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.'
+    / S2C_UNAUTHORIZED notes are superseded for this implemented coupling. 11.2.1.Q productive GETs live in a sibling package, not this seam. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6995 typed GET cache policy GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED for S6 Fresh-C1 candle polls; default CACHEABLE_SNAPSHOT preserved; no POST/keychain; Real-Venue cache effectiveness proof deferred post-merge; AUTHORITY=NONE; POST_COUNT=0.'
 - id: GATE:full_core_live_account_bound_v1
   kind: GATE
   name: Full-core LIVE_ACCOUNT_BOUND seam v1

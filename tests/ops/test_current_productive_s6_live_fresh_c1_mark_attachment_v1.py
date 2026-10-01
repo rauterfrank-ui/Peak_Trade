@@ -47,9 +47,14 @@ class _RoutingMockTransport:
         self.calls: list[str] = []
 
     def get(
-        self, *, endpoint: str, auth_required: bool, pretrade_decision_id: str
+        self,
+        *,
+        endpoint: str,
+        auth_required: bool,
+        pretrade_decision_id: str,
+        get_cache_policy: str = "",
     ) -> _MockGetResult:
-        del pretrade_decision_id
+        del pretrade_decision_id, get_cache_policy
         assert auth_required is False
         self.calls.append(endpoint)
         path = endpoint.split("?", 1)[0]

@@ -361,3 +361,14 @@ changes:
     proof via offline inject-transport (not live-market Natural Enter); no new runtime
     authority; no external-effect authority; POST_COUNT=0; keychain authority unchanged;
     ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_6995_fresh_c1_dynamic_get_cache_repair_v1
+  from: 663dfc352cc44ae05311ce8846167eb47165d28a
+  to: 663dfc352cc44ae05311ce8846167eb47165d28a
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/full_core_live_path_composition_root_v1/test_golden_happy_fresh_c1_dynamic_get_cache_repair_v1.py
+  notes: 'PR #6995: S6 Fresh-C1 candle GET uses typed GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED
+    on FullCoreProductiveReadOnlyGetTransportV1; bypasses endpoint-keyed stale cache on
+    repeated polls; snapshot callers unchanged; offline regression only; Real-Venue
+    effectiveness UNKNOWN until post-merge reproof on origin/main; no trading/MV2/DP
+    semantics; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

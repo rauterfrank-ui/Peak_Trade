@@ -19,6 +19,8 @@ from src.ops.full_core_live_path_composition_root_v1.checkout_independent_creden
     build_k1_okx_venue_auth_headers_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
+    GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
     METHOD_GET,
     TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
     FreshPretradeGetTransportResultV1,
@@ -72,9 +74,16 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         endpoint: str,
         auth_required: bool,
         pretrade_decision_id: str,
+        get_cache_policy: str = GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
     ) -> FreshPretradeGetTransportResultV1:
         del pretrade_decision_id
-        cached = self._cache.get(str(endpoint))
+        cacheable = get_cache_policy == GET_CACHE_POLICY_CACHEABLE_SNAPSHOT
+        if get_cache_policy not in (
+            GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
+            GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+        ):
+            raise FullCoreProductiveReadOnlyGetError("INVALID_GET_CACHE_POLICY")
+        cached = self._cache.get(str(endpoint)) if cacheable else None
         if cached is not None:
             return cached
         if self.request_count >= self.max_request_count:
@@ -156,7 +165,8 @@ class FullCoreProductiveReadOnlyGetTransportV1:
             body_sha256=hashlib.sha256(body).hexdigest() if body else "",
             data_safety_source_kind=data_safety_source_kind,
         )
-        self._cache[str(endpoint)] = result
+        if cacheable:
+            self._cache[str(endpoint)] = result
         path_only = str(endpoint).split("?", 1)[0]
         self.payloads_by_path[path_only] = payload
         return result
