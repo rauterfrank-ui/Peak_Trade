@@ -10,7 +10,7 @@ import json
 import os
 import tempfile
 from contextvars import ContextVar
-from contextvars import Token as ContextVarResetToken
+from contextvars import Token as _CtxReset
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -109,14 +109,14 @@ class GoldenHappyVectorForensicObservabilitySessionV1:
 
 def bind_golden_happy_vector_forensic_observability_session_v1(
     session: GoldenHappyVectorForensicObservabilitySessionV1 | None,
-) -> ContextVarResetToken:
+) -> _CtxReset:
     return _session_var.set(session)
 
 
 def reset_golden_happy_vector_forensic_observability_session_v1(
-    reset_token: ContextVarResetToken,
+    ctx_reset_handle: _CtxReset,
 ) -> None:
-    _session_var.reset(reset_token)
+    _session_var.reset(ctx_reset_handle)
 
 
 def active_forensic_observability_session_v1() -> (
