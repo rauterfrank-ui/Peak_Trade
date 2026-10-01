@@ -9,7 +9,8 @@ from __future__ import annotations
 import json
 import os
 import tempfile
-from contextvars import ContextVar, Token
+from contextvars import ContextVar
+from contextvars import Token as ContextVarResetToken
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -108,12 +109,14 @@ class GoldenHappyVectorForensicObservabilitySessionV1:
 
 def bind_golden_happy_vector_forensic_observability_session_v1(
     session: GoldenHappyVectorForensicObservabilitySessionV1 | None,
-) -> Token:
+) -> ContextVarResetToken:
     return _session_var.set(session)
 
 
-def reset_golden_happy_vector_forensic_observability_session_v1(token: Token) -> None:
-    _session_var.reset(token)
+def reset_golden_happy_vector_forensic_observability_session_v1(
+    reset_token: ContextVarResetToken,
+) -> None:
+    _session_var.reset(reset_token)
 
 
 def active_forensic_observability_session_v1() -> (

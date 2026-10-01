@@ -406,3 +406,14 @@ changes:
     JSONL; no trading/threshold/config/budget/selection change; no extra venue GETs;
     CORRELATION_STATUS=PARTIAL; Real-Venue capture not executed in PR; POST_COUNT=0;
     ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_6999_ghv_forensic_observability_v1
+  from: ba4391ec0647ee0a6929ea8b5e42b94d6f405784
+  to: ba4391ec0647ee0a6929ea8b5e42b94d6f405784
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_productive_golden_happy_vector_forensic_observability_v1.py
+  notes: 'PR #6999: default-off Golden Happy forensic observability for directional
+    signal_strength/threshold JSONL and immutable entry-state JSON snapshot; reads
+    productive replay intermediate; no signal recompute; no trading/threshold/budget/GET
+    semantic change; src/trading/master_v2 net diff zero; Real-Venue not executed;
+    POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

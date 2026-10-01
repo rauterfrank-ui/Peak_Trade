@@ -110,7 +110,7 @@ def test_signal_capture_persists_runtime_signal_strength(tmp_path: Path) -> None
         run_id="run-1",
         continuous_run_id="run-1",
     )
-    token = bind_golden_happy_vector_forensic_observability_session_v1(session)
+    session_reset = bind_golden_happy_vector_forensic_observability_session_v1(session)
     try:
         with patch(
             "trading.master_v2.directional_assessment_v1.compute_signal_strength",
@@ -124,7 +124,7 @@ def test_signal_capture_persists_runtime_signal_strength(tmp_path: Path) -> None
                 side="LONG",
             )
     finally:
-        reset_golden_happy_vector_forensic_observability_session_v1(token)
+        reset_golden_happy_vector_forensic_observability_session_v1(session_reset)
     lines = (tmp_path / DIRECTIONAL_SIGNAL_LEDGER_FILENAME).read_text(encoding="utf-8").splitlines()
     assert len(lines) == 1
     row = json.loads(lines[0])
@@ -180,7 +180,7 @@ def test_replay_decision_identity_with_and_without_observability_hook() -> None:
         run_id="run-x",
         continuous_run_id="run-x",
     )
-    token = bind_golden_happy_vector_forensic_observability_session_v1(session)
+    session_reset = bind_golden_happy_vector_forensic_observability_session_v1(session)
     try:
         with patch(
             "src.ops.full_core_live_path_composition_root_v1."
@@ -188,7 +188,7 @@ def test_replay_decision_identity_with_and_without_observability_hook() -> None:
         ):
             observed = run_integrated_offline_trading_logic_replay_v1(inp)
     finally:
-        reset_golden_happy_vector_forensic_observability_session_v1(token)
+        reset_golden_happy_vector_forensic_observability_session_v1(session_reset)
     assert observed.evidence.decision_outcome == baseline.evidence.decision_outcome
     assert observed.replay_pass == baseline.replay_pass
     assert observed.fail_reasons == baseline.fail_reasons

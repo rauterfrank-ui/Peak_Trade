@@ -1,17 +1,21 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: ATLAS_LEGACY_ERADICATION_V1
-modified_by: PR_6998_GHV_NATURAL_MARKET_DATA_CAPTURE_V1
+modified_by: PR_6999_GHV_FORENSIC_OBSERVABILITY_V1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'PR #6998: Golden Happy Vector optional natural market-data GET capture atlas
-  review; default-off product entry wiring; observation-only transport wrapper;
-  no MV2/DP/trading semantics; Real-Venue capture not executed; AUTHORITY=NONE;
-  POST_COUNT=0.'
+note: 'PR #6999: Golden Happy Vector default-off forensic signal/entry-state observability
+  atlas review; ops-layer wiring only; no MV2/DP/trading semantics; Real-Venue not
+  executed; AUTHORITY=NONE; POST_COUNT=0.'
 changed_entities:
+- RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1
 - RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
-- RUNTIME_COMPONENT:productive_natural_market_data_capture_sink_v1
-changed_relations: []
+- RUNTIME_COMPONENT:productive_golden_happy_vector_forensic_observability_v1
+- RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+- RUNTIME_COMPONENT:elementary_direction_v1
+- CONTRACT:p5_10_productive_activation_and_binding_v1
+changed_relations:
+- REL:r_full_core_cycle_observes_elementary_direction
 changed_closures: []
 changed_wiring: []
 changed_venue: []
