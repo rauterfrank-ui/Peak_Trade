@@ -395,3 +395,14 @@ changes:
     bootstrap; no cross-instrument confirmation/C1/scope carry; LINEAGE_MISMATCH guard
     unchanged; Cap23 selection authority unchanged; offline regression only;
     Real-Venue selection-rotation repair UNKNOWN_CURRENT; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_6998_ghv_natural_market_data_capture_v1
+  from: 9b713d2a0116f8ae842d941aa4534eb602d0210d
+  to: 9b713d2a0116f8ae842d941aa4534eb602d0210d
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_productive_natural_market_data_capture_sink_v1.py
+  notes: 'PR #6998: optional default-off delegating transport capture for verbatim
+    natural read-only GET payloads under run evidence_root; observation-only append-only
+    JSONL; no trading/threshold/config/budget/selection change; no extra venue GETs;
+    CORRELATION_STATUS=PARTIAL; Real-Venue capture not executed in PR; POST_COUNT=0;
+    ATLAS_AUTHORITY=NONE.'

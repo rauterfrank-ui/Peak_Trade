@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,9 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
 | `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `RUNTIME_COMPONENT:productive_natural_market_data_capture_sink_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -94,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6997: selection rotation vs sidestate cursor reconciliation atlas review; startup wiring only; no MV2/DP/trading semantics; Real-Venue effectiveness not reproven; AUTHORITY=NONE; POST_COUNT=0.
+- PR #6998: Golden Happy Vector optional natural market-data GET capture atlas review; default-off product entry wiring; observation-only transport wrapper; no MV2/DP/trading semantics; Real-Venue capture not executed; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_6997_SELECTION_ROTATION_CURSOR_RECONCILIATION_V1
+- modified_by=PR_6998_GHV_NATURAL_MARKET_DATA_CAPTURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -158,6 +158,11 @@ def _main() -> int:
         action="store_true",
         help="Record execution at current HEAD while Owner-GO baseline stays origin/main",
     )
+    parser.add_argument(
+        "--enable-natural-market-data-capture-v1",
+        action="store_true",
+        help="Append-only capture of natural read-only GET payloads under evidence-root",
+    )
     args = parser.parse_args()
 
     from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
@@ -302,18 +307,29 @@ def _main() -> int:
         max_wait_for_next_c1_seconds=60.0,
         stall_seconds=60.0,
     )
+    run_id = mint_continuous_run_id_v1(auth)
     transport = FullCoreProductiveReadOnlyGetTransportV1(
         max_request_count=compute_productive_policy_governed_live_c1_shared_transport_max_request_count_v1(
             auth
         ),
     )
+    if args.enable_natural_market_data_capture_v1:
+        from src.ops.full_core_live_path_composition_root_v1.productive_natural_market_data_capture_sink_v1 import (
+            wrap_productive_transport_with_natural_market_data_capture_v1,
+        )
+
+        transport = wrap_productive_transport_with_natural_market_data_capture_v1(
+            transport,
+            evidence_root=evidence_root,
+            run_id=run_id,
+            native_id=native_id,
+        )
     g17 = _resolve_g17_producer(
         bound=bound,
         transport=transport,
         evidence_store=evidence_root / "g17_hot_path",
         observed_unix=float(datetime.now(timezone.utc).timestamp()),
     )
-    run_id = mint_continuous_run_id_v1(auth)
     obs_source = LiveFreshC1ContinuousObservationSourceV1(
         cursor_store_root=cursor_root,
         evidence_root=evidence_root,
