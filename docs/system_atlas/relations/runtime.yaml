@@ -496,8 +496,7 @@ relations:
   notes: "Productive DDO O4→N_BARS snapshot reads WP-A facts via WP-C converged_o4_handoff_v1\
     \ only. CanonicalPublicMdBarProducerV1 remains a bounded writer to WP-A facts,\
     \ not a competing productive O4 session read. Fail-closed when history is insufficient.\
-    \ Observation-only.\n  PR #6993: WP-C facade handoff path indexed; observation-only;\
-    \ ATLAS_AUTHORITY=NONE."
+    \ Observation-only.\n  PR #6993: WP-C facade handoff indexed; ATLAS_AUTHORITY=NONE."
 - id: REL:r_wallclock_calls_learning_outcome_ingest
   source: HOST:wallclock_decision_economics_cycle
   type: CALLS
@@ -506,15 +505,9 @@ relations:
   evidence_sources:
   - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
   - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py
-<<<<<<< HEAD
   notes: invoke_productive_learning_outcome_evidence_ingest_v1 after evaluation runtime.
     apply_learning_state_feedback_to_next_cycle_v1 at cycle start. Non-authorizing;
     no trading, risk, execution, or promotion authority.
-=======
-  notes: invoke_productive_learning_outcome_evidence_ingest_v1 after evaluation runtime. apply_learning_state_feedback_to_next_cycle_v1
-    at cycle start. Non-authorizing; no trading, risk, execution, or promotion authority.
-# atlas_relation_review: PR #6988 — provenance metadata on persisted outcomes; PERSISTS edge unchanged; ATLAS_AUTHORITY=NONE.
->>>>>>> origin/main
 - id: REL:r_ddo_capture_persists_ledger
   source: RUNTIME_COMPONENT:ddo_capture_v0
   type: PERSISTS
