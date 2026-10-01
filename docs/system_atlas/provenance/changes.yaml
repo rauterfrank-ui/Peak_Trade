@@ -417,3 +417,13 @@ changes:
     productive replay intermediate; no signal recompute; no trading/threshold/budget/GET
     semantic change; src/trading/master_v2 net diff zero; Real-Venue not executed;
     POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7001_ghv_scope_decision_trace_observability_v1
+  from: f447f771010d3bc197b9353199f84d37e7d42eda
+  to: 1870e13a2891c4c8860e67fc4e4b5f866e751d5d
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_golden_happy_scope_decision_trace_observability_v1.py
+  notes: 'PR #7001: default-off golden_happy_scope_decision_trace_v1.jsonl after
+    productive replay; G17/CMC/resolver/Layer-C causal refs only; same enable flag
+    as #6999; no scope/trading/threshold recompute; Real-Venue not executed;
+    POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

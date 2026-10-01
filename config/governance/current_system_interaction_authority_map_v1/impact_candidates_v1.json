@@ -565,6 +565,7 @@
     "tests/ops/test_productive_golden_happy_vector_forensic_observability_v1.py",
     "scripts/ops/run_golden_happy_natural_data_offline_witness_adjudication_v1.py",
     "tests/ops/test_golden_happy_offline_replay_g17_provision_parity_v1.py",
+    "tests/ops/test_golden_happy_scope_decision_trace_observability_v1.py",
     "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py",
     "tests/ops/test_current_productive_selection_rotation_cursor_reconciliation_v1.py",
     "tests/ops/full_core_live_path_composition_root_v1/",

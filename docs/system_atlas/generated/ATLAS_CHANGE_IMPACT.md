@@ -97,8 +97,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6999: Golden Happy Vector default-off forensic signal/entry-state observability atlas review; ops-layer wiring only; no MV2/DP/trading semantics; Real-Venue not executed; AUTHORITY=NONE; POST_COUNT=0.
+- PR #7001: Golden Happy Vector default-off scope-decision trace JSONL atlas review; extends #6999 observability hook; ops-layer wiring only; no MV2/DP/scope semantics; Real-Venue not executed; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_6999_GHV_FORENSIC_OBSERVABILITY_V1
+- modified_by=PR_7001_GHV_SCOPE_DECISION_TRACE_OBSERVABILITY_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

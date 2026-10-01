@@ -708,12 +708,24 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             input_digest="",
         )
     )
+    cmc_pre_bind_volatility = float(market_context.volatility_estimate)
     g17_cmc_bind = apply_current_productive_g17_typed_vol_cmc_bind_v1(
         market_context,
         producer=g17_typed_vol_producer,
     )
     market_context = g17_cmc_bind.context
     typed_volatility_eligibility = evaluate_typed_volatility_binding_eligibility_v1(market_context)
+    scope_resolved_volatility: float | None = None
+    try:
+        from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
+            resolve_legacy_volatility_float_for_consumer_v1,
+        )
+
+        scope_resolved_volatility = float(
+            resolve_legacy_volatility_float_for_consumer_v1(market_context)
+        )
+    except (ValueError, TypeError):
+        scope_resolved_volatility = None
     layer_c_event_distances = resolve_layer_c_event_distances_from_canonical_market_context_v1(
         market_context
     )
@@ -977,6 +989,49 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         observation_acceptance_result=observation_acceptance_result,
         confirmation_side_carrier_before=cap61_binding.confirmation_side_carrier,
         instrument_id=instrument_id,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.productive_golden_happy_vector_forensic_observability_v1 import (
+        append_scope_decision_trace_from_productive_cycle_v1,
+    )
+
+    append_scope_decision_trace_from_productive_cycle_v1(
+        cycle_id=cycle_id,
+        replay_id=replay_id,
+        instrument_id=instrument_id,
+        venue_native_id=str(venue_native_id or ""),
+        trading_epoch=int(trading_epoch),
+        now_tick=int(now_tick),
+        observation_event_time_unix=float(last_finalized_event_ts_unix),
+        cmc_pre_bind_volatility=cmc_pre_bind_volatility,
+        g17_cmc_bind_outcome=str(g17_cmc_bind.outcome),
+        g17_cmc_bind_performed=bool(g17_cmc_bind.bind_performed),
+        g17_estimate_present=bool(g17_cmc_bind.estimate_present),
+        g17_typed_vol_producer=g17_typed_vol_producer,
+        cmc_post_bind_volatility=float(market_context.volatility_estimate),
+        scope_resolved_volatility=scope_resolved_volatility,
+        layer_c_up_distance=(
+            float(layer_c_event_distances.up_distance)
+            if layer_c_event_distances.up_distance is not None
+            else None
+        ),
+        layer_c_adverse_exit_distance=(
+            float(layer_c_event_distances.adverse_exit_distance)
+            if layer_c_event_distances.adverse_exit_distance is not None
+            else None
+        ),
+        layer_c_reversal_distance=(
+            float(layer_c_event_distances.reversal_distance)
+            if layer_c_event_distances.reversal_distance is not None
+            else None
+        ),
+        layer_c_dynamic_scope_magnitude=(
+            float(layer_c_event_distances.dynamic_scope_magnitude)
+            if layer_c_event_distances.dynamic_scope_magnitude is not None
+            else None
+        ),
+        side_state_before=str(side_state.value),
+        scope_direction=str(scope_direction_from_side_state_v1(side_state).value),
+        replay=replay,
     )
     if replay.intermediate is not None:
         commit_host_confirmation_after_replay_v1(

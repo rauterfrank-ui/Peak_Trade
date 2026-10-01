@@ -3,24 +3,39 @@
   "authority_effect": "NONE",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT",
-  "reason": "PR #7000: offline forensic Golden Happy G17 replay provision parity; law candidate catalog extended for ops script/test; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "GHV G17/Scope causal trace observability and System Atlas review only; law candidate catalog extended; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "scripts/ops/run_golden_happy_natural_data_offline_witness_adjudication_v1.py",
-    "tests/ops/test_golden_happy_offline_replay_g17_provision_parity_v1.py"
+    "docs/ops/specs/CURRENT_PRODUCTIVE_GOLDEN_HAPPY_VECTOR_FORENSIC_OBSERVABILITY_V1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "docs/system_atlas/relations/runtime.yaml",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/productive_golden_happy_vector_forensic_observability_v1.py",
+    "tests/ops/test_golden_happy_scope_decision_trace_observability_v1.py"
   ],
-  "changed_paths_sha256": "d23b4024263d6568be6e214f5cbcc859615c2a6f8f96a00f8ec3a72aa4ac6d08",
-  "base_sha": "45c4455288184ccd391bdd72b554a73518725e82",
+  "changed_paths_sha256": "8ae278cfe021a7f823475bdc2f6df45c8cbdb7bb25cf2c91f87e6b345235758c",
+  "base_sha": "f447f771010d3bc197b9353199f84d37e7d42eda",
   "evidence_refs": [
-    "tests/ops/test_golden_happy_offline_replay_g17_provision_parity_v1.py"
+    "docs/ops/specs/CURRENT_PRODUCTIVE_GOLDEN_HAPPY_VECTOR_FORENSIC_OBSERVABILITY_V1.md",
+    "tests/ops/test_golden_happy_scope_decision_trace_observability_v1.py"
   ],
   "covered_candidate_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "scripts/ops/run_golden_happy_natural_data_offline_witness_adjudication_v1.py",
-    "tests/ops/test_golden_happy_offline_replay_g17_provision_parity_v1.py"
+    "docs/ops/specs/CURRENT_PRODUCTIVE_GOLDEN_HAPPY_VECTOR_FORENSIC_OBSERVABILITY_V1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "docs/system_atlas/relations/runtime.yaml",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/productive_golden_happy_vector_forensic_observability_v1.py",
+    "tests/ops/test_golden_happy_scope_decision_trace_observability_v1.py"
   ]
 }
