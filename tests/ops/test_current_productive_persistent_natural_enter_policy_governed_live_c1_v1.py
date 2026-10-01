@@ -126,9 +126,14 @@ class _MockTransport:
         self.calls = 0
 
     def get(
-        self, *, endpoint: str, auth_required: bool, pretrade_decision_id: str
+        self,
+        *,
+        endpoint: str,
+        auth_required: bool,
+        pretrade_decision_id: str,
+        get_cache_policy: str = "",
     ) -> _MockGetResult:
-        del endpoint, pretrade_decision_id
+        del endpoint, pretrade_decision_id, get_cache_policy
         assert auth_required is False
         self.calls += 1
         return _MockGetResult(
@@ -156,9 +161,14 @@ def test_live_fresh_c1_cold_lane_bootstrap_poll_with_mock_transport(tmp_path: Pa
             self.calls = 0
 
         def get(
-            self, *, endpoint: str, auth_required: bool, pretrade_decision_id: str
+            self,
+            *,
+            endpoint: str,
+            auth_required: bool,
+            pretrade_decision_id: str,
+            get_cache_policy: str = "",
         ) -> _MockGetResult:
-            del pretrade_decision_id
+            del pretrade_decision_id, get_cache_policy
             assert auth_required is False
             self.calls += 1
             path = endpoint.split("?", 1)[0]
@@ -205,9 +215,14 @@ def test_live_fresh_c1_observation_source_poll_with_mock_transport(tmp_path: Pat
             self.calls = 0
 
         def get(
-            self, *, endpoint: str, auth_required: bool, pretrade_decision_id: str
+            self,
+            *,
+            endpoint: str,
+            auth_required: bool,
+            pretrade_decision_id: str,
+            get_cache_policy: str = "",
         ) -> _MockGetResult:
-            del pretrade_decision_id
+            del pretrade_decision_id, get_cache_policy
             assert auth_required is False
             self.calls += 1
             path = endpoint.split("?", 1)[0]

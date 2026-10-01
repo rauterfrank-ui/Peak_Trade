@@ -49,6 +49,9 @@ TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET = "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V
 TRANSPORT_CLASS_MISSING = "TRANSPORT_MISSING"
 METHOD_GET = "GET"
 
+GET_CACHE_POLICY_CACHEABLE_SNAPSHOT = "CACHEABLE_SNAPSHOT"
+GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED = "DYNAMIC_REFRESH_REQUIRED"
+
 ENDPOINT_PUBLIC_INSTRUMENTS = "/api/v5/public/instruments"
 ENDPOINT_PUBLIC_PRICE_LIMIT = "/api/v5/public/price-limit"
 ENDPOINT_ACCOUNT_MAX_SIZE = "/api/v5/account/max-size"
@@ -126,6 +129,7 @@ class FullCoreFreshPretradeGetTransportV1(Protocol):
         endpoint: str,
         auth_required: bool,
         pretrade_decision_id: str,
+        get_cache_policy: str = GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
     ) -> FreshPretradeGetTransportResultV1:
         """Issue exactly one GET. Must not POST."""
 

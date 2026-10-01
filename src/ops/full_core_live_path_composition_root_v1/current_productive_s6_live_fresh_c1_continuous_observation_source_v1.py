@@ -44,6 +44,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v
     extract_mark_and_index_from_payload_v1,
     resolve_index_ticker_inst_id_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
+    GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+)
 from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
     FullCoreProductiveReadOnlyGetTransportV1,
 )
@@ -62,6 +66,7 @@ class LiveFreshC1GetTransportV1(Protocol):
         endpoint: str,
         auth_required: bool,
         pretrade_decision_id: str,
+        get_cache_policy: str = GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
     ) -> Any: ...
 
 
@@ -155,6 +160,7 @@ class LiveFreshC1ContinuousObservationSourceV1:
             endpoint=endpoint,
             auth_required=False,
             pretrade_decision_id=f"continuous-run-{self.run_id}-poll-{poll_index}",
+            get_cache_policy=GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
         )
         get_performed = bool(getattr(result, "get_performed", False))
         append_fresh_c1_get_owner_go_consumption_v1(
