@@ -81,13 +81,16 @@ def test_default_off_no_evidence_files(tmp_path: Path) -> None:
         acceptor=acceptor,
         price_path=(3500.0, 3550.0),
     )
-    assert append_directional_signal_observability_v1(
-        c3_result=c3,
-        policy=_policy(),
-        observation_acceptance_result=acceptor,
-        instrument_id="ETH-USD-SWAP-CANON",
-        side="LONG",
-    ) is None
+    assert (
+        append_directional_signal_observability_v1(
+            c3_result=c3,
+            policy=_policy(),
+            observation_acceptance_result=acceptor,
+            instrument_id="ETH-USD-SWAP-CANON",
+            side="LONG",
+        )
+        is None
+    )
 
 
 def test_signal_capture_persists_runtime_signal_strength(tmp_path: Path) -> None:
@@ -160,7 +163,9 @@ def test_threshold_flags_match_same_strength_and_policy() -> None:
         side="LONG",
     )
     strength = float(c3.assessment.signal_strength)
-    assert record["candidate_threshold_met"] is (strength >= float(policy.candidate_signal_threshold))
+    assert record["candidate_threshold_met"] is (
+        strength >= float(policy.candidate_signal_threshold)
+    )
     assert record["confirmation_threshold_met"] is (
         strength >= float(policy.confirmation_signal_threshold)
     )

@@ -1830,17 +1830,6 @@ def run_integrated_offline_trading_logic_replay_v1(
                 side=selected_side,
             )
         )
-        from src.ops.full_core_live_path_composition_root_v1.productive_golden_happy_vector_forensic_observability_v1 import (
-            append_directional_signal_observability_v1,
-        )
-
-        append_directional_signal_observability_v1(
-            c3_result=selected_c3,
-            policy=inp.policies.directional,
-            observation_acceptance_result=observation_acceptance_result,
-            instrument_id=inp.instrument_id,
-            side=da_side.value,
-        )
         presence_after = active_single_lane_presence_v1(
             selected_side=selected_side,
             confirmation_progress=selected_c3.confirmation_progress_after,

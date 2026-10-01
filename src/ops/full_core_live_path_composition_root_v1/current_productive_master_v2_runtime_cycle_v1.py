@@ -967,6 +967,17 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         venue_flat=bool(venue_flat),
         existing_position_side=existing_position_side,
     )
+    from src.ops.full_core_live_path_composition_root_v1.productive_golden_happy_vector_forensic_observability_v1 import (
+        append_directional_signal_from_productive_replay_v1,
+    )
+
+    append_directional_signal_from_productive_replay_v1(
+        replay=replay,
+        policy=replay_input.policies.directional,
+        observation_acceptance_result=observation_acceptance_result,
+        confirmation_side_carrier_before=cap61_binding.confirmation_side_carrier,
+        instrument_id=instrument_id,
+    )
     if replay.intermediate is not None:
         commit_host_confirmation_after_replay_v1(
             cap61_binding,

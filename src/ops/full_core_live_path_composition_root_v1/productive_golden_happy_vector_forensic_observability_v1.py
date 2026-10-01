@@ -35,10 +35,19 @@ from trading.market_state.directional_confirmation_progress_v1 import (
 from trading.market_state.distinct_market_observation_acceptor_v1 import (
     ObservationAcceptanceResultV1,
 )
+from trading.market_state.directional_confirmation_progress_v1 import ConfirmationSideV1
 from trading.master_v2.directional_assessment_confirmation_integration_v1 import (
     DirectionalAssessmentConfirmationIntegrationResultV1,
+    DirectionalConfirmationSideStateCarrierV1,
+    map_signal_strength_to_confirmation_assessment_signal_v1,
 )
-from trading.master_v2.directional_assessment_v1 import DirectionalAssessmentPolicyV1
+from trading.master_v2.directional_assessment_v1 import (
+    DirectionalAssessmentPolicyV1,
+    DirectionalAssessmentSide,
+)
+from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
+    IntegratedOfflineReplayResultV1,
+)
 
 OWNER = (
     "full_core_live_path_composition_root_v1."
@@ -58,8 +67,8 @@ ENTRY_STATE_SNAPSHOT_FAILURE_POLICY = "FAIL_CLOSED_BEFORE_FIRST_OBSERVATION"
 MISSING_BY_DESIGN_AFTER_ROTATION = "MISSING_BY_DESIGN_AFTER_ROTATION"
 EXPECTED_BUT_NOT_AVAILABLE = "EXPECTED_BUT_NOT_AVAILABLE"
 
-_session_var: ContextVar[Optional["GoldenHappyVectorForensicObservabilitySessionV1"]] = (
-    ContextVar("golden_happy_vector_forensic_observability_session_v1", default=None)
+_session_var: ContextVar[Optional["GoldenHappyVectorForensicObservabilitySessionV1"]] = ContextVar(
+    "golden_happy_vector_forensic_observability_session_v1", default=None
 )
 
 
@@ -107,7 +116,9 @@ def reset_golden_happy_vector_forensic_observability_session_v1(token: Token) ->
     _session_var.reset(token)
 
 
-def active_forensic_observability_session_v1() -> GoldenHappyVectorForensicObservabilitySessionV1 | None:
+def active_forensic_observability_session_v1() -> (
+    GoldenHappyVectorForensicObservabilitySessionV1 | None
+):
     session = _session_var.get()
     if session is None or not session.enabled:
         return None
@@ -229,6 +240,106 @@ def build_directional_signal_observability_record_v1(
         "reason_codes": reason_codes,
         "owner": OWNER,
     }
+
+
+def _directional_side_to_confirmation_side_v1(
+    side: DirectionalAssessmentSide,
+) -> ConfirmationSideV1:
+    if side is DirectionalAssessmentSide.LONG:
+        return ConfirmationSideV1.LONG
+    return ConfirmationSideV1.SHORT
+
+
+def append_directional_signal_from_productive_replay_v1(
+    *,
+    replay: IntegratedOfflineReplayResultV1,
+    policy: DirectionalAssessmentPolicyV1,
+    observation_acceptance_result: ObservationAcceptanceResultV1,
+    confirmation_side_carrier_before: DirectionalConfirmationSideStateCarrierV1 | None,
+    instrument_id: str,
+) -> dict[str, Any] | None:
+    """Observe selected-lane assessment already materialized on replay intermediate."""
+    session = active_forensic_observability_session_v1()
+    if session is None or replay.intermediate is None:
+        return None
+    intermediate = replay.intermediate
+    assessment = intermediate.bull_assessment or intermediate.bear_assessment
+    if assessment is None:
+        return None
+    carrier_after = intermediate.directional_confirmation_progress_after
+    if confirmation_side_carrier_before is None or carrier_after is None:
+        return None
+    conf_side = _directional_side_to_confirmation_side_v1(assessment.side)
+    progress_before = confirmation_side_carrier_before.for_side(conf_side)
+    progress_after = carrier_after.for_side(conf_side)
+    strength = float(assessment.signal_strength)
+    candidate_met, confirmation_met = _threshold_flags_from_assessment_signal_v1(
+        signal_strength=strength,
+        policy=policy,
+    )
+    assessment_signal = map_signal_strength_to_confirmation_assessment_signal_v1(strength, policy)
+    obs_id = observation_acceptance_result.observation_identity
+    record: dict[str, Any] = {
+        "schema_version": DIRECTIONAL_SIGNAL_OBSERVABILITY_SCHEMA_VERSION,
+        "capture_timestamp": _utc_now_iso_v1(),
+        "run_id": session.run_id,
+        "continuous_run_id": session.continuous_run_id,
+        "repository_sha": session.repository_sha,
+        "cycle_index": session.cycle_index,
+        "cycle_instance_id": session.cycle_instance_id,
+        "c1_venue_event_time": session.c1_venue_event_time,
+        "instrument_id": instrument_id,
+        "canonical_instrument_id": instrument_id,
+        "venue_instrument_id": str(
+            observation_acceptance_result.state_before.bound_instrument_key.venue_instrument_id
+        ),
+        "observation_classification": str(observation_acceptance_result.classification.value),
+        "observation_reason_code": str(observation_acceptance_result.reason_code),
+        "strategy_advance_allowed": bool(observation_acceptance_result.strategy_advance_allowed),
+        "market_observation_epoch": int(
+            observation_acceptance_result.state_after.market_observation_epoch.value
+        ),
+        "observation_identity_digest": (
+            None if obs_id is None else str(getattr(obs_id, "semantic_digest", "") or "")
+        ),
+        "signal_strength": strength,
+        "candidate_signal_threshold": float(policy.candidate_signal_threshold),
+        "confirmation_signal_threshold": float(policy.confirmation_signal_threshold),
+        "confirmation_epochs": int(policy.confirmation_epochs),
+        "assessment_signal": assessment_signal.value,
+        "direction_side": assessment.side.value,
+        "assessment_status": assessment.status.value,
+        "candidate_threshold_met": candidate_met,
+        "confirmation_threshold_met": confirmation_met,
+        "confirmation_state_before": _confirmation_state_dict_v1(progress_before),
+        "confirmation_state_after": _confirmation_state_dict_v1(progress_after),
+        "distinct_confirmation_count_before": int(
+            progress_before.distinct_confirmation_observation_count
+        ),
+        "distinct_confirmation_count_after": int(
+            progress_after.distinct_confirmation_observation_count
+        ),
+        "confirmation_advanced": (
+            progress_after.distinct_confirmation_observation_count
+            > progress_before.distinct_confirmation_observation_count
+            or progress_after.assessment_state != progress_before.assessment_state
+        ),
+        "state_changed": progress_after != progress_before,
+        "fail_closed": False,
+        "reason_codes": list(assessment.reason_codes),
+        "capture_source": "productive_replay_intermediate_v1",
+        "owner": OWNER,
+    }
+    path = session.product_evidence_root / DIRECTIONAL_SIGNAL_LEDGER_FILENAME
+    try:
+        _append_jsonl_v1(path=path, record=record)
+    except OSError as exc:
+        if OBSERVABILITY_CAPTURE_FAILURE_CHANGES_DECISION:
+            raise GoldenHappyVectorForensicObservabilityError(str(exc)) from exc
+        record = {**record, "capture_error": str(exc), "capture_ok": False}
+    else:
+        record = {**record, "capture_ok": True}
+    return record
 
 
 def append_directional_signal_observability_v1(
@@ -357,7 +468,9 @@ def persist_continuous_run_entry_state_snapshot_v1(
     cap24_reselection_performed: bool = False,
 ) -> Path:
     if session._entry_snapshot_written:
-        raise GoldenHappyVectorForensicObservabilityError("ENTRY_STATE_SNAPSHOT_DUPLICATE_FORBIDDEN")
+        raise GoldenHappyVectorForensicObservabilityError(
+            "ENTRY_STATE_SNAPSHOT_DUPLICATE_FORBIDDEN"
+        )
     path = session.product_evidence_root / ENTRY_STATE_SNAPSHOT_FILENAME
     payload = build_continuous_run_entry_state_snapshot_v1(
         session=session,
@@ -388,6 +501,7 @@ __all__ = [
     "OBSERVABILITY_DEFAULT_ENABLED",
     "OWNER",
     "active_forensic_observability_session_v1",
+    "append_directional_signal_from_productive_replay_v1",
     "append_directional_signal_observability_v1",
     "bind_golden_happy_vector_forensic_observability_session_v1",
     "build_continuous_run_entry_state_snapshot_v1",
