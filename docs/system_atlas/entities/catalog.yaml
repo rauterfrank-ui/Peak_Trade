@@ -2,6 +2,8 @@
 # atlas_entity_review: PR #6995 — Fresh-C1 dynamic GET cache policy; transport liveness only; AUTHORITY=NONE; POST_COUNT=0.
 # atlas_entity_review: PR #6996 — productive GET budget derived from bounded S6 poll contract; wiring-only; AUTHORITY=NONE; POST_COUNT=0.
 # atlas_entity_review: PR #6997 — Cap23 selection rotation reconciled to singleton sidestate cursor before S6; archive+fresh lane; no cross-instrument handoff; AUTHORITY=NONE; POST_COUNT=0.
+# atlas_entity_review: PR #6998 — optional default-off natural GET capture wrapper; observation-only; AUTHORITY=NONE; POST_COUNT=0.
+# atlas_entity_review: PR #6999 — default-off Golden Happy forensic signal/entry-state observability; ops wiring only; src/trading/master_v2 net diff zero; AUTHORITY=NONE; POST_COUNT=0.
 entities:
 - id: SYSTEM:peak_trade
   kind: SYSTEM
@@ -173,17 +175,18 @@ entities:
   current_canonical: false
   current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
   semantic_authority: false
-  modified_by: PR_6993_DYNAMIC_SCOPE_BRIDGE_CLOSURE_V1
+  modified_by: PR_6999_GHV_FORENSIC_OBSERVABILITY_V1
   source_paths:
   - src/trading/market_state/elementary_direction_v1.py
   - src/trading/market_state/__init__.py
   evidence_sources:
   - src/trading/market_state/elementary_direction_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/productive_golden_happy_vector_forensic_observability_v1.py
   - docs/ops/specs/ELEMENTARY_DIRECTION_PRIMITIVE_V1.md
   - tests/trading/market_state/test_elementary_direction_v1.py
   - tests/ops/test_elementary_direction_passive_cycle_join_v1.py
-  notes: "Passive cycle-evidence identity only. previous=C1 state_before.last_accepted_observation_identity.mark_price; current=bound selected-Future markPx. None/equal=NEUTRAL; greater=BULL; lower=BEAR. Invalid numeric fail-closed via C1 convention. Not Replay input. Not Double Play rewire. AUTHORITY_EFFECT=NONE. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.\n      PR #6993 atlas review: dynamic scope + bridge boundary closure; topology/navigation only; ATLAS_AUTHORITY=NONE; POST_COUNT=0."
+  notes: "Passive cycle-evidence identity only. previous=C1 state_before.last_accepted_observation_identity.mark_price; current=bound selected-Future markPx. None/equal=NEUTRAL; greater=BULL; lower=BEAR. Invalid numeric fail-closed via C1 convention. Not Replay input. Not Double Play rewire. AUTHORITY_EFFECT=NONE. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.\n      PR #6993 atlas review: dynamic scope + bridge boundary closure; topology/navigation only; ATLAS_AUTHORITY=NONE; POST_COUNT=0.\n      PR #6999 atlas review: adjacent ops-layer forensic observability reads productive replay intermediate only; elementary_direction semantics unchanged; AUTHORITY=NONE; POST_COUNT=0."
 - id: FORENSIC_REFERENCE:information_corpus_persistence_base
   kind: FORENSIC_REFERENCE
   name: Information Corpus Persistence Base
@@ -2826,7 +2829,7 @@ entities:
   - src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_bind_seam_v1.py
   - src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_layered_core_bind_wiring_v1.py
   - tests/ops/test_productive_layered_core_episode_store_bootstrap_v1.py
-  notes: "Owner-GO productive bind: P5 seal, CZ-4 delegation, P5.10B POST_CANONICAL_NEXT_SIDE_STATE handoff via single seam; explicit caller wiring (store colocated with cursor + scope carrier gate). PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED=true; cutover flags false; REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED=true; EXTERNAL_EFFECT_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.\n      PR #6993 atlas review: dynamic scope + bridge boundary closure; topology/navigation only; ATLAS_AUTHORITY=NONE; POST_COUNT=0."
+  notes: "Owner-GO productive bind: P5 seal, CZ-4 delegation, P5.10B POST_CANONICAL_NEXT_SIDE_STATE handoff via single seam; explicit caller wiring (store colocated with cursor + scope carrier gate). PRODUCTIVE_CYCLE_LAYERED_CORE_BIND_ENABLED=true; cutover flags false; REGIME_SIDESTATE_MAPPING_CONTRACT_AUTHORIZED=true; EXTERNAL_EFFECT_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.\n      PR #6993 atlas review: dynamic scope + bridge boundary closure; topology/navigation only; ATLAS_AUTHORITY=NONE; POST_COUNT=0.\n      PR #6999 atlas review: post-replay ops hook appends default-off forensic signal evidence only; P5.10 bind semantics unchanged; AUTHORITY=NONE; POST_COUNT=0."
 - id: RUNTIME_COMPONENT:dp_dynamic_scope_empirical_calibration_research
   kind: RUNTIME_COMPONENT
   name: Dynamic Scope empirical calibration research harness v1
@@ -3587,24 +3590,25 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_6997_SELECTION_ROTATION_CURSOR_RECONCILIATION_V1
+  modified_by: PR_6999_GHV_FORENSIC_OBSERVABILITY_V1
   source_paths:
   - scripts/ops/run_current_productive_persistent_natural_enter_convergence_offline_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/productive_golden_happy_vector_forensic_observability_v1.py
   evidence_sources:
   - docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_CONVERGENCE_V1.md
   - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py
   - src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py
   - tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py
   - tests/ops/test_current_productive_selection_rotation_cursor_reconciliation_v1.py
-  notes: 'Offline S8 fixed lane-root through S6/S7 to PRE_EXTERNAL; CONTINUOUS_RUN_AUTHORIZED=false; POST_COUNT=0; N5 bootstrap C1/mark alignment join fix; not productive activation; ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6951 cursor-floor rebind after S7 bootstrap; live 1m bid/ask from bar low/high; # orchestration-only; MV2/DP immutable; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6997 startup reconciliation when Cap23 selection native_id rotates vs persisted sidestate cursor; archive superseded cursor and clear active lane for existing cold-lane bootstrap; LINEAGE_MISMATCH guard unchanged; no Cap23/Cap24 authority change; AUTHORITY=NONE; POST_COUNT=0.'
+  notes: 'Offline S8 fixed lane-root through S6/S7 to PRE_EXTERNAL; CONTINUOUS_RUN_AUTHORIZED=false; POST_COUNT=0; N5 bootstrap C1/mark alignment join fix; not productive activation; ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6951 cursor-floor rebind after S7 bootstrap; live 1m bid/ask from bar low/high; # orchestration-only; MV2/DP immutable; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6997 startup reconciliation when Cap23 selection native_id rotates vs persisted sidestate cursor; archive superseded cursor and clear active lane for existing cold-lane bootstrap; LINEAGE_MISMATCH guard unchanged; no Cap23/Cap24 authority change; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6999 default-off forensic entry-state snapshot after rotation reconciliation and before first poll; observation-only; AUTHORITY=NONE; POST_COUNT=0.'
 - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
   kind: RUNTIME_COMPONENT
   name: CURRENT productive persistent Natural-ENTER policy-governed live Fresh-C1 continuous run v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_6998_GHV_NATURAL_MARKET_DATA_CAPTURE_V1
+  modified_by: PR_6999_GHV_FORENSIC_OBSERVABILITY_V1
   source_paths:
   - scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_get_budget_contract_v1.py
@@ -3612,15 +3616,18 @@ entities:
   - src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py
   - src/ops/full_core_live_path_composition_root_v1/productive_natural_market_data_capture_sink_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/productive_golden_happy_vector_forensic_observability_v1.py
   evidence_sources:
   - config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json
   - docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md
   - docs/ops/specs/CURRENT_PRODUCTIVE_NATURAL_MARKET_DATA_CAPTURE_V1.md
+  - docs/ops/specs/CURRENT_PRODUCTIVE_GOLDEN_HAPPY_VECTOR_FORENSIC_OBSERVABILITY_V1.md
   - tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py
   - tests/ops/full_core_live_path_composition_root_v1/test_productive_bounded_continuous_get_budget_contract_v1.py
   - tests/ops/test_current_productive_selection_rotation_cursor_reconciliation_v1.py
   - tests/ops/test_productive_natural_market_data_capture_sink_v1.py
-  notes: 'Owner-GO decision + consume evidence for bounded continuous run and public readonly Fresh-C1 GET; S6 observation poll only; PRE_EXTERNAL terminal; CONTINUOUS_RUN_AUTHORIZED=false; ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6951 productive entry script + cold-lane bootstrap; baseline rebind 27c3cd4; # ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6952 post-merge Owner-GO baseline lineage (ancestor bind + MV2/DP drift gate); # wiring-only; module pins unchanged; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6980 Cap24 witness epoch + Owner-GO re-pin 7a3597e; integration-only; # src/trading/master_v2 untouched; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6994 Owner-GO baseline reissued to 049fc18 after #6993 Dynamic-Scope cutover; decision JSON + harness/supervisor baseline pins only; Golden-Happy inject-transport PRE_EXTERNAL proof; no live-market Natural Enter claim; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6995 Fresh-C1 dynamic GET cache policy on productive transport for S6 candle polls only; observation transport liveness; offline proof; Real-Venue effectiveness UNKNOWN pre-merge; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6996 shared transport max_request_count derived from bounded continuous poll contract SSOT; no cache/transport semantic change; offline regression only; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6997 pre-S6 selection-vs-cursor reconciliation for legitimate Cap23 instrument rotation; archive superseded cursor; fresh lane via existing bootstrap; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6998 optional default-off delegating transport capture for verbatim natural GET payloads under evidence_root; observation-only; no trading/threshold/budget change; AUTHORITY=NONE; POST_COUNT=0.'
+  - tests/ops/test_productive_golden_happy_vector_forensic_observability_v1.py
+  notes: 'Owner-GO decision + consume evidence for bounded continuous run and public readonly Fresh-C1 GET; S6 observation poll only; PRE_EXTERNAL terminal; CONTINUOUS_RUN_AUTHORIZED=false; ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6951 productive entry script + cold-lane bootstrap; baseline rebind 27c3cd4; # ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6952 post-merge Owner-GO baseline lineage (ancestor bind + MV2/DP drift gate); # wiring-only; module pins unchanged; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6980 Cap24 witness epoch + Owner-GO re-pin 7a3597e; integration-only; # src/trading/master_v2 untouched; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6994 Owner-GO baseline reissued to 049fc18 after #6993 Dynamic-Scope cutover; decision JSON + harness/supervisor baseline pins only; Golden-Happy inject-transport PRE_EXTERNAL proof; no live-market Natural Enter claim; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6995 Fresh-C1 dynamic GET cache policy on productive transport for S6 candle polls only; observation transport liveness; offline proof; Real-Venue effectiveness UNKNOWN pre-merge; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6996 shared transport max_request_count derived from bounded continuous poll contract SSOT; no cache/transport semantic change; offline regression only; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6997 pre-S6 selection-vs-cursor reconciliation for legitimate Cap23 instrument rotation; archive superseded cursor; fresh lane via existing bootstrap; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6998 optional default-off delegating transport capture for verbatim natural GET payloads under evidence_root; observation-only; no trading/threshold/budget change; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6999 default-off Golden Happy forensic observability CLI for directional signal_strength/threshold evidence and immutable entry-state snapshot; observation-only; src/trading/master_v2 net diff zero; AUTHORITY=NONE; POST_COUNT=0.'
 - id: RUNTIME_COMPONENT:productive_natural_market_data_capture_sink_v1
   kind: RUNTIME_COMPONENT
   name: Productive natural market-data GET capture sink v1
@@ -3634,6 +3641,20 @@ entities:
   - docs/ops/specs/CURRENT_PRODUCTIVE_NATURAL_MARKET_DATA_CAPTURE_V1.md
   - tests/ops/test_productive_natural_market_data_capture_sink_v1.py
   notes: Append-only evidence wrapper around FullCoreProductiveReadOnlyGetTransportV1; 1:1 delegate GET passthrough; default disabled at product entry; CORRELATION_STATUS=PARTIAL; no poll-bundle claim; AUTHORITY=NONE; POST_COUNT=0.
+- id: RUNTIME_COMPONENT:productive_golden_happy_vector_forensic_observability_v1
+  kind: RUNTIME_COMPONENT
+  name: Productive Golden Happy Vector forensic observability v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: PR_6999_GHV_FORENSIC_OBSERVABILITY_V1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/productive_golden_happy_vector_forensic_observability_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
+  evidence_sources:
+  - docs/ops/specs/CURRENT_PRODUCTIVE_GOLDEN_HAPPY_VECTOR_FORENSIC_OBSERVABILITY_V1.md
+  - tests/ops/test_productive_golden_happy_vector_forensic_observability_v1.py
+  notes: Default-off session-bound append-only directional signal_strength/threshold JSONL plus single entry-state JSON snapshot; reads productive replay intermediate and cursor carrier; no signal recompute; no trading/threshold/budget/GET semantic change; CORRELATION_STATUS=PARTIAL; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
   kind: RUNTIME_COMPONENT
   name: Governed M4-M8 to meta-learning optimization feedback real mechanical continuation v1
@@ -4346,7 +4367,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_6997_SELECTION_ROTATION_CURSOR_RECONCILIATION_V1
+  modified_by: PR_6999_GHV_FORENSIC_OBSERVABILITY_V1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/__init__.py
   - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
@@ -4550,6 +4571,7 @@ entities:
   - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_capture_to_offline_export_join_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_reconciliation_admission_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/productive_golden_happy_vector_forensic_observability_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_eea_acquisition_productive_join_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_step_29p_to_portfolio_budget_productive_join_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py

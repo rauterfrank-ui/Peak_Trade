@@ -513,6 +513,7 @@ def make_n1_occupied_lane_s5_runner_v1(
     composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
     g17_producers: Mapping[str, object],
     cycle_id_prefix_base: str,
+    forensic_observability_enabled: bool = False,
 ) -> Callable[..., CurrentProductiveGovernedCycleResultV1]:
     """Adapt S6 S5 slot to occupied-lane N1 consumer (S7 T2 durable compose)."""
 
@@ -549,6 +550,16 @@ def make_n1_occupied_lane_s5_runner_v1(
         native_id = str(authorization.native_id or "").strip()
         if mark_price_payload is None or not native_id:
             raise PersistentNaturalEnterConvergenceError("CMC_MARK_PRICE_PAYLOAD_REQUIRED")
+        if forensic_observability_enabled:
+            from src.ops.full_core_live_path_composition_root_v1.productive_golden_happy_vector_forensic_observability_v1 import (
+                active_forensic_observability_session_v1,
+            )
+
+            obs_session = active_forensic_observability_session_v1()
+            if obs_session is not None:
+                obs_session.with_cycle_from_s5_evidence_root_v1(
+                    s5_evidence_root=Path(evidence_root),
+                )
         mk = _market_kwargs_from_observation_v1(
             candles_payload=candles_payload,
             mark_price_payload=mark_price_payload,
@@ -738,6 +749,10 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     cycle_id_prefix_base: str = "persistent-natural-enter-live-c1",
     time_fn: Callable[[], float] | None = None,
     sleep_fn: Callable[[float], None] | None = None,
+    enable_golden_happy_vector_forensic_observability_v1: bool = False,
+    selection_id: str = "",
+    binding_epoch: str = "",
+    cap24_reselection_performed: bool = False,
 ) -> PolicyGovernedContinuousRunResultV1:
     """S8→policy binding→S6 (live or test observation source)→N1/S5/S7→PRE_EXTERNAL."""
     assert_module_pins_unchanged_v1()
@@ -760,6 +775,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     if f1_m9_cycle_evaluator is None:
         raise PersistentNaturalEnterConvergenceError("F1_M9_CYCLE_EVALUATOR_REQUIRED")
 
+    forensic_session_reset = None
     pairs = build_s8_occupied_lane_pairs_v1(
         lane_state_root=Path(lane_state_root),
         bound=bound,
@@ -769,12 +785,40 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     if cursor_store_root.resolve() != Path(pairs[LANE_ID][0].lane_state_root).resolve():
         raise PersistentNaturalEnterConvergenceError("FIXED_LANE_ROOT_VIOLATION")
 
-    reconcile_selection_rotation_with_persisted_cursor_v1(
+    reconciliation = reconcile_selection_rotation_with_persisted_cursor_v1(
         cursor_store_root=cursor_store_root,
         bound=bound,
     )
 
     run_id = mint_continuous_run_id_v1(authorization)
+    if enable_golden_happy_vector_forensic_observability_v1:
+        from src.ops.full_core_live_path_composition_root_v1.productive_golden_happy_vector_forensic_observability_v1 import (
+            GoldenHappyVectorForensicObservabilitySessionV1,
+            bind_golden_happy_vector_forensic_observability_session_v1,
+            persist_continuous_run_entry_state_snapshot_v1,
+        )
+
+        forensic_session = GoldenHappyVectorForensicObservabilitySessionV1(
+            enabled=True,
+            product_evidence_root=Path(evidence_root),
+            run_id=run_id,
+            continuous_run_id=run_id,
+            repository_sha=str(origin_main_sha),
+        )
+        forensic_session_reset = bind_golden_happy_vector_forensic_observability_session_v1(
+            forensic_session
+        )
+        cursor_floor_pre_obs = _cursor_floor_or_zero(cursor_store_root)
+        persist_continuous_run_entry_state_snapshot_v1(
+            session=forensic_session,
+            bound=bound,
+            reconciliation=reconciliation,
+            cursor_store_root=cursor_store_root,
+            expected_cursor_floor=float(cursor_floor_pre_obs),
+            selection_id=selection_id,
+            binding_epoch=binding_epoch,
+            cap24_reselection_performed=cap24_reselection_performed,
+        )
     persist_bounded_continuous_run_owner_go_consume_v1(
         evidence_root=Path(evidence_root),
         run_id=run_id,
@@ -814,6 +858,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
         composed_pairs=pairs,
         g17_producers=g17_producers,
         cycle_id_prefix_base=cycle_id_prefix_base,
+        forensic_observability_enabled=enable_golden_happy_vector_forensic_observability_v1,
     )
     lock = lock_root or (Path(evidence_root) / "continuous_lock")
     root = repo_root or Path(__file__).resolve().parents[3]
@@ -834,6 +879,13 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
         )
     except ContinuousRunRuntimeBindingError as exc:
         raise PersistentNaturalEnterConvergenceError(exc.reason_code, exc.detail) from exc
+    finally:
+        if forensic_session_reset is not None:
+            from src.ops.full_core_live_path_composition_root_v1.productive_golden_happy_vector_forensic_observability_v1 import (
+                reset_golden_happy_vector_forensic_observability_session_v1,
+            )
+
+            reset_golden_happy_vector_forensic_observability_session_v1(forensic_session_reset)
 
     orch = result.orchestrator_result
     if orch.post_count != 0 or orch.permit_created or orch.external_effect_count != 0:
