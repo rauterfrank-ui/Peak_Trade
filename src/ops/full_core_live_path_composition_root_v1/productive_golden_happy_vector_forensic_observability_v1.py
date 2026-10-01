@@ -57,9 +57,11 @@ OWNER = (
 
 DIRECTIONAL_SIGNAL_OBSERVABILITY_SCHEMA_VERSION = "directional_signal_observability.v1"
 ENTRY_STATE_SNAPSHOT_SCHEMA_VERSION = "continuous_run_entry_state_snapshot.v1"
+SCOPE_DECISION_TRACE_SCHEMA_VERSION = "golden_happy_scope_decision_trace.v1"
 
 DIRECTIONAL_SIGNAL_LEDGER_FILENAME = "directional_signal_observability_v1.jsonl"
 ENTRY_STATE_SNAPSHOT_FILENAME = "continuous_run_entry_state_snapshot_v1.json"
+SCOPE_DECISION_TRACE_LEDGER_FILENAME = "golden_happy_scope_decision_trace_v1.jsonl"
 
 OBSERVABILITY_DEFAULT_ENABLED = False
 OBSERVABILITY_CAPTURE_FAILURE_CHANGES_DECISION = False
@@ -459,6 +461,249 @@ def build_continuous_run_entry_state_snapshot_v1(
     }
 
 
+def _g17_history_trace_summary_v1(producer: object | None) -> dict[str, Any] | None:
+    if producer is None:
+        return None
+    history = getattr(producer, "history", None)
+    if history is None:
+        return None
+    last_et = getattr(history, "last_accepted_event_time", None)
+    oldest_et = getattr(history, "oldest_accepted_event_time", None)
+    return {
+        "history_digest": getattr(history, "history_digest", None),
+        "observation_count_prices": getattr(history, "observation_count_prices", None),
+        "last_accepted_event_time_unix": (
+            None if last_et is None else getattr(last_et, "unix_seconds", None)
+        ),
+        "oldest_observation_event_time_unix": (
+            None if oldest_et is None else getattr(oldest_et, "unix_seconds", None)
+        ),
+    }
+
+
+def _scope_confirmation_dict_v1(state: object | None) -> dict[str, Any] | None:
+    if state is None:
+        return None
+    kind = getattr(state, "candidate_kind", None)
+    return {
+        "candidate_kind": None if kind is None else str(getattr(kind, "value", kind)),
+        "candidate_count": int(getattr(state, "candidate_count", 0)),
+        "last_evaluated_trading_epoch": int(getattr(state, "last_evaluated_trading_epoch", 0)),
+    }
+
+
+def _runtime_scope_state_dict_v1(state: object | None) -> dict[str, Any] | None:
+    if state is None:
+        return None
+    return {
+        "anchor_price": float(getattr(state, "anchor_price", 0.0) or 0.0),
+        "current_hysteresis_band": float(getattr(state, "current_hysteresis_band", 0.0) or 0.0),
+        "current_upscope_boundary": float(getattr(state, "current_upscope_boundary", 0.0) or 0.0),
+        "current_downscope_boundary": float(
+            getattr(state, "current_downscope_boundary", 0.0) or 0.0
+        ),
+        "now_tick": int(getattr(state, "now_tick", 0)),
+    }
+
+
+def build_scope_decision_trace_record_v1(
+    *,
+    session: GoldenHappyVectorForensicObservabilitySessionV1,
+    cycle_id: str,
+    replay_id: str,
+    instrument_id: str,
+    venue_native_id: str,
+    trading_epoch: int,
+    now_tick: int,
+    observation_event_time_unix: float,
+    cmc_pre_bind_volatility: float,
+    g17_cmc_bind_outcome: str,
+    g17_cmc_bind_performed: bool,
+    g17_estimate_present: bool,
+    g17_typed_volatility: float | None,
+    g17_output_port_outcome: str | None,
+    g17_history_summary: dict[str, Any] | None,
+    cmc_post_bind_volatility: float,
+    scope_resolved_volatility: float | None,
+    layer_c_up_distance: float | None,
+    layer_c_adverse_exit_distance: float | None,
+    layer_c_reversal_distance: float | None,
+    layer_c_dynamic_scope_magnitude: float | None,
+    side_state_before: str,
+    scope_direction: str,
+    replay: IntegratedOfflineReplayResultV1,
+) -> dict[str, Any] | None:
+    """Serialize already-computed productive cycle values (observe-only)."""
+    if replay.intermediate is None:
+        return None
+    intermediate = replay.intermediate
+    scope_ev = intermediate.scope_event
+    binding = scope_ev.semantic_binding
+    thresholds = scope_ev.evaluated_thresholds
+    mark = float(binding.current_price)
+    anchor = float(binding.trailing_anchor)
+    effective_band = float(intermediate.runtime_scope_state_before.current_hysteresis_band)
+    raw_distance = (
+        float(layer_c_dynamic_scope_magnitude)
+        if layer_c_dynamic_scope_magnitude is not None
+        else None
+    )
+    comp = intermediate.composition_result
+    entry = intermediate.entry_exit_decision
+    switch = intermediate.state_switch
+    evidence = replay.evidence
+    return {
+        "schema_version": SCOPE_DECISION_TRACE_SCHEMA_VERSION,
+        "capture_timestamp": _utc_now_iso_v1(),
+        "run_id": session.run_id,
+        "continuous_run_id": session.continuous_run_id,
+        "repository_sha": session.repository_sha,
+        "cycle_id": cycle_id,
+        "replay_id": replay_id,
+        "cycle_index": session.cycle_index,
+        "cycle_instance_id": session.cycle_instance_id,
+        "c1_venue_event_time": session.c1_venue_event_time,
+        "instrument_id": instrument_id,
+        "canonical_instrument_id": instrument_id,
+        "venue_instrument_id": venue_native_id,
+        "observation_event_time_unix": float(observation_event_time_unix),
+        "trading_epoch": int(trading_epoch),
+        "now_tick": int(now_tick),
+        "g17_history": g17_history_summary,
+        "g17_output_port_outcome": g17_output_port_outcome,
+        "g17_typed_volatility": g17_typed_volatility,
+        "g17_cmc_bind_outcome": g17_cmc_bind_outcome,
+        "g17_cmc_bind_performed": bool(g17_cmc_bind_performed),
+        "g17_estimate_present": bool(g17_estimate_present),
+        "cmc_pre_bind_volatility": float(cmc_pre_bind_volatility),
+        "cmc_post_bind_volatility": float(cmc_post_bind_volatility),
+        "scope_resolved_volatility": scope_resolved_volatility,
+        "scope_direction_context": scope_direction,
+        "scope_lifecycle_before": str(intermediate.current_scope.lifecycle_state.value),
+        "decision_input_mark": mark,
+        "decision_input_anchor": anchor,
+        "decision_input_volatility": scope_resolved_volatility,
+        "trailing_anchor_used": float(intermediate.trailing_anchor_used),
+        "raw_scope_distance": raw_distance,
+        "effective_hysteresis_band": effective_band,
+        "layer_c_up_distance": layer_c_up_distance,
+        "layer_c_adverse_exit_distance": layer_c_adverse_exit_distance,
+        "layer_c_reversal_distance": layer_c_reversal_distance,
+        "evaluated_up_candidate_threshold": float(thresholds.up_candidate_threshold),
+        "evaluated_downscope_candidate_threshold": float(thresholds.downscope_candidate_threshold),
+        "evaluated_adverse_exit_threshold": float(thresholds.adverse_exit_threshold),
+        "evaluated_reversal_candidate_threshold": float(thresholds.reversal_candidate_threshold),
+        "matched_scope_conditions": list(scope_ev.matched_conditions),
+        "scope_blocked_reasons": list(scope_ev.blocked_reasons),
+        "scope_event_type": str(scope_ev.event_type.value),
+        "scope_confirmation_before": _scope_confirmation_dict_v1(
+            scope_ev.previous_confirmation_state
+        ),
+        "scope_confirmation_after": _scope_confirmation_dict_v1(scope_ev.next_confirmation_state),
+        "scope_candidate_count_before": int(scope_ev.candidate_count_before),
+        "scope_candidate_count_after": int(scope_ev.candidate_count_after),
+        "runtime_scope_state_before": _runtime_scope_state_dict_v1(
+            intermediate.runtime_scope_state_before
+        ),
+        "runtime_scope_state_after": _runtime_scope_state_dict_v1(
+            intermediate.runtime_scope_state_after
+        ),
+        "side_state_before": side_state_before,
+        "side_state_after": str(switch.next_side_state),
+        "direction_state_before": str(evidence.previous_direction_state or ""),
+        "direction_state_after": str(evidence.next_direction_state or ""),
+        "composition_status": str(comp.composition_status.value),
+        "composition_selected_side": str(comp.selected_side.value),
+        "entry_policy_decision_outcome": str(entry.decision_outcome.value),
+        "entry_policy_selected_side": str(entry.selected_side.value),
+        "selected_side_evidence": str(evidence.selected_side or ""),
+        "master_v2_decision_outcome": str(evidence.decision_outcome or ""),
+        "replay_pass": bool(replay.replay_pass),
+        "fail_reasons": list(replay.fail_reasons or ()),
+        "natural_enter_observed": False,
+        "pre_external_reached": False,
+        "capture_source": "productive_master_v2_cycle_v1",
+        "owner": OWNER,
+    }
+
+
+def append_scope_decision_trace_from_productive_cycle_v1(
+    *,
+    cycle_id: str,
+    replay_id: str,
+    instrument_id: str,
+    venue_native_id: str,
+    trading_epoch: int,
+    now_tick: int,
+    observation_event_time_unix: float,
+    cmc_pre_bind_volatility: float,
+    g17_cmc_bind_outcome: str,
+    g17_cmc_bind_performed: bool,
+    g17_estimate_present: bool,
+    g17_typed_vol_producer: object | None,
+    cmc_post_bind_volatility: float,
+    scope_resolved_volatility: float | None,
+    layer_c_up_distance: float | None,
+    layer_c_adverse_exit_distance: float | None,
+    layer_c_reversal_distance: float | None,
+    layer_c_dynamic_scope_magnitude: float | None,
+    side_state_before: str,
+    scope_direction: str,
+    replay: IntegratedOfflineReplayResultV1,
+) -> dict[str, Any] | None:
+    session = active_forensic_observability_session_v1()
+    if session is None:
+        return None
+    g17_typed: float | None = None
+    g17_outcome: str | None = None
+    if g17_typed_vol_producer is not None:
+        port = getattr(g17_typed_vol_producer, "output_port_v1", None)
+        if callable(port):
+            output = port()
+            g17_outcome = str(getattr(getattr(output, "outcome", None), "value", output.outcome))
+            est = getattr(output, "estimate", None)
+            if est is not None:
+                g17_typed = float(getattr(est, "value", est))
+    record = build_scope_decision_trace_record_v1(
+        session=session,
+        cycle_id=cycle_id,
+        replay_id=replay_id,
+        instrument_id=instrument_id,
+        venue_native_id=venue_native_id,
+        trading_epoch=trading_epoch,
+        now_tick=now_tick,
+        observation_event_time_unix=observation_event_time_unix,
+        cmc_pre_bind_volatility=cmc_pre_bind_volatility,
+        g17_cmc_bind_outcome=g17_cmc_bind_outcome,
+        g17_cmc_bind_performed=g17_cmc_bind_performed,
+        g17_estimate_present=g17_estimate_present,
+        g17_typed_volatility=g17_typed,
+        g17_output_port_outcome=g17_outcome,
+        g17_history_summary=_g17_history_trace_summary_v1(g17_typed_vol_producer),
+        cmc_post_bind_volatility=cmc_post_bind_volatility,
+        scope_resolved_volatility=scope_resolved_volatility,
+        layer_c_up_distance=layer_c_up_distance,
+        layer_c_adverse_exit_distance=layer_c_adverse_exit_distance,
+        layer_c_reversal_distance=layer_c_reversal_distance,
+        layer_c_dynamic_scope_magnitude=layer_c_dynamic_scope_magnitude,
+        side_state_before=side_state_before,
+        scope_direction=scope_direction,
+        replay=replay,
+    )
+    if record is None:
+        return None
+    path = session.product_evidence_root / SCOPE_DECISION_TRACE_LEDGER_FILENAME
+    try:
+        _append_jsonl_v1(path=path, record=record)
+    except OSError as exc:
+        if OBSERVABILITY_CAPTURE_FAILURE_CHANGES_DECISION:
+            raise GoldenHappyVectorForensicObservabilityError(str(exc)) from exc
+        record = {**record, "capture_error": str(exc), "capture_ok": False}
+    else:
+        record = {**record, "capture_ok": True}
+    return record
+
+
 def persist_continuous_run_entry_state_snapshot_v1(
     *,
     session: GoldenHappyVectorForensicObservabilitySessionV1,
@@ -496,6 +741,8 @@ __all__ = [
     "ENTRY_STATE_SNAPSHOT_FAILURE_POLICY",
     "ENTRY_STATE_SNAPSHOT_FILENAME",
     "ENTRY_STATE_SNAPSHOT_SCHEMA_VERSION",
+    "SCOPE_DECISION_TRACE_LEDGER_FILENAME",
+    "SCOPE_DECISION_TRACE_SCHEMA_VERSION",
     "EXPECTED_BUT_NOT_AVAILABLE",
     "GoldenHappyVectorForensicObservabilityError",
     "GoldenHappyVectorForensicObservabilitySessionV1",
@@ -506,6 +753,8 @@ __all__ = [
     "active_forensic_observability_session_v1",
     "append_directional_signal_from_productive_replay_v1",
     "append_directional_signal_observability_v1",
+    "append_scope_decision_trace_from_productive_cycle_v1",
+    "build_scope_decision_trace_record_v1",
     "bind_golden_happy_vector_forensic_observability_session_v1",
     "build_continuous_run_entry_state_snapshot_v1",
     "build_directional_signal_observability_record_v1",

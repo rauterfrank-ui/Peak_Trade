@@ -32,6 +32,7 @@ or product budgets.
 | Product | Path (under `--evidence-root`) | When |
 |---------|--------------------------------|------|
 | Directional signal rows | `directional_signal_observability_v1.jsonl` | Per MV2 cycle with selected-lane assessment (session ON) |
+| Scope/G17 causal trace | `golden_happy_scope_decision_trace_v1.jsonl` | Per MV2 cycle when session ON; observes G17→CMC→Scope→downstream refs |
 | Entry state snapshot | `continuous_run_entry_state_snapshot_v1.json` | Once after rotation reconciliation, before first `poll()` |
 
 ## 3. Enablement
@@ -43,7 +44,16 @@ DEFAULT=false
 INDEPENDENT_OF=--enable-natural-market-data-capture-v1
 ```
 
-## 4. Signal capture semantics
+## 4. Scope / G17 causal trace (`golden_happy_scope_decision_trace.v1`)
+
+- Observes **already computed** productive values at the MV2 cycle seam: G17 bind
+  outcomes, CMC pre/post bind volatility, resolver consumption, Layer-C distances,
+  scope generator evaluated thresholds, confirmation before/after, SideState switch,
+  composition and entry policy refs.
+- **No** duplicate scope math, **no** feedback into trading; capture failure does not
+  change decisions.
+
+## 5. Signal capture semantics
 
 - `signal_strength` is read from `IntegratedOfflineReplayIntermediateV1` bull/bear
   assessment (selected lane only); **no** second `compute_signal_strength` in the
