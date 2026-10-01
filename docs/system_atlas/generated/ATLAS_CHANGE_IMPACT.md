@@ -16,7 +16,7 @@ This view is topology change-coupling, not canonical authority.
 ```text
 ATLAS_IMPACT=UPDATED
 ATLAS_CHANGED_ENTITY_COUNT=6
-ATLAS_CHANGED_RELATION_COUNT=1
+ATLAS_CHANGED_RELATION_COUNT=2
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,18 +40,19 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `RUNTIME_COMPONENT:current_productive_continuous_observation_budget_v1` |
 | `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
 | `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
-| `RUNTIME_COMPONENT:productive_golden_happy_vector_forensic_observability_v1` |
 | `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
-| `RUNTIME_COMPONENT:elementary_direction_v1` |
-| `CONTRACT:p5_10_productive_activation_and_binding_v1` |
+| `HOST:wallclock_decision_economics_cycle` |
+| `CAPABILITY:market_data_private_state_runtime_convergence_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:r_full_core_cycle_observes_elementary_direction` |
+| `REL:r_wallclock_materializes_ddo_o4_via_wp_c_public_plane` |
+| `REL:s_wp_c_o4_n_bars_learning_handoff_to_wallclock_ddo` |
 
 ## NEW_RELATIONS
 
@@ -97,8 +98,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7001: Golden Happy Vector default-off scope-decision trace JSONL atlas review; extends #6999 observability hook; ops-layer wiring only; no MV2/DP/scope semantics; Real-Venue not executed; AUTHORITY=NONE; POST_COUNT=0.
+- PR #7002: bounded continuous observation budget (4/180 default, 12/900 explicit ceiling) plus productive DDO O4 WP-A session scoping for multi-cycle T2; fixes uncaught DdoValidationError O4_PROVENANCE_SESSION_MISMATCH; no MV2/DP/trading threshold change; Real-Venue not re-run in PR; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_7001_GHV_SCOPE_DECISION_TRACE_OBSERVABILITY_V1
+- modified_by=PR_7002_GHV_OBSERVATION_BUDGET_AND_T2_DDO_O4_SESSION_SCOPE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

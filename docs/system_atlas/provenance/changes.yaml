@@ -427,3 +427,13 @@ changes:
     productive replay; G17/CMC/resolver/Layer-C causal refs only; same enable flag
     as #6999; no scope/trading/threshold recompute; Real-Venue not executed;
     POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7002_ghv_observation_budget_and_t2_ddo_o4_session_scope_v1
+  from: c460d40c8c2acb6465aa39403ec004a37e03287c
+  to: c3566f2233ddb61830c730884adb4abbd84479a4
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_golden_happy_t2_cycle2_ddo_o4_session_scope_regression_v1.py
+  notes: 'PR #7002: bounded S6 observation budget (default 4/180; explicit max 12/900)
+    plus DDO O4 WP-A session scoping on multi-cycle productive handoff; fixes T2_CYCLE_EXCEPTION
+    from O4_PROVENANCE_SESSION_MISMATCH; no trading/threshold/POST change; one Real-Venue
+    run pre-repair only; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

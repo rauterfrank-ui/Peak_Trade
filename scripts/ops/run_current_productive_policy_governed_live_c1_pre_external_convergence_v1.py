@@ -171,7 +171,44 @@ def _main() -> int:
             "directional signal_strength/threshold evidence (default off)"
         ),
     )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_continuous_observation_budget_v1 import (
+        ContinuousObservationBudgetError,
+        PRODUCTIVE_DEFAULT_MAX_CYCLES_PER_RUN,
+        PRODUCTIVE_DEFAULT_MAX_RUN_DURATION_SECONDS,
+        resolve_continuous_observation_budget_v1,
+    )
+
+    parser.add_argument(
+        "--max-cycles",
+        type=int,
+        default=PRODUCTIVE_DEFAULT_MAX_CYCLES_PER_RUN,
+        help=(
+            f"Bounded S6 cycle cap for this run (default {PRODUCTIVE_DEFAULT_MAX_CYCLES_PER_RUN})"
+        ),
+    )
+    parser.add_argument(
+        "--max-run-duration-seconds",
+        type=float,
+        default=PRODUCTIVE_DEFAULT_MAX_RUN_DURATION_SECONDS,
+        help=(
+            "Bounded wall-clock run duration in seconds "
+            f"(default {PRODUCTIVE_DEFAULT_MAX_RUN_DURATION_SECONDS})"
+        ),
+    )
     args = parser.parse_args()
+    try:
+        observation_budget = resolve_continuous_observation_budget_v1(
+            max_cycles=int(args.max_cycles),
+            max_run_duration_seconds=float(args.max_run_duration_seconds),
+        )
+    except ContinuousObservationBudgetError as exc:
+        out = {
+            "status": "FAIL",
+            "blocker": exc.reason_code,
+            "detail": exc.detail,
+        }
+        print(json.dumps(out, sort_keys=True))
+        return 2
 
     from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
         _cursor_floor_or_zero,
@@ -185,8 +222,6 @@ def _main() -> int:
     from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
         CONTINUOUS_RUN_AUTHORIZED,
         DISPOSITION_PRE_EXTERNAL_EFFECT,
-        HARD_CAP_MAX_CYCLES_PER_RUN,
-        HARD_CAP_MAX_RUN_DURATION_SECONDS,
         RUNTIME_OWNER_GO,
         CurrentProductiveGovernedContinuousCycleRunAuthorizationV1,
     )
@@ -309,8 +344,8 @@ def _main() -> int:
         native_id=native_id,
         bar="1m",
         expected_cursor_floor=float(floor),
-        max_cycles_per_run=HARD_CAP_MAX_CYCLES_PER_RUN,
-        max_run_duration_seconds=HARD_CAP_MAX_RUN_DURATION_SECONDS,
+        max_cycles_per_run=observation_budget.effective_max_cycles,
+        max_run_duration_seconds=observation_budget.effective_max_run_duration_seconds,
         wait_interval_seconds=5.0,
         max_wait_for_next_c1_seconds=60.0,
         stall_seconds=60.0,
@@ -403,6 +438,14 @@ def _main() -> int:
     report = {
         "BASELINE_SHA": origin_sha,
         "EXECUTION_HEAD_SHA": execution_head_sha,
+        "REQUESTED_MAX_CYCLES": observation_budget.requested_max_cycles,
+        "EFFECTIVE_MAX_CYCLES": observation_budget.effective_max_cycles,
+        "REQUESTED_MAX_RUN_DURATION_SECONDS": (
+            observation_budget.requested_max_run_duration_seconds
+        ),
+        "EFFECTIVE_MAX_RUN_DURATION_SECONDS": (
+            observation_budget.effective_max_run_duration_seconds
+        ),
         "RUN_ID": run_id,
         "EVIDENCE_ROOT": str(evidence_root),
         "NATIVE_ID": native_id,

@@ -14,6 +14,7 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 from __future__ import annotations
 
 import json
+import math
 import time
 from dataclasses import dataclass, field
 from hashlib import sha256
@@ -65,6 +66,14 @@ from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 im
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_bounded_continuous_get_budget_contract_v1 import (
     compute_max_canonical_continuous_poll_iterations_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_continuous_observation_budget_v1 import (
+    ABSOLUTE_MAX_CYCLES_PER_RUN,
+    ABSOLUTE_MAX_RUN_DURATION_SECONDS,
+    HARD_CAP_MAX_CYCLES_PER_RUN,
+    HARD_CAP_MAX_RUN_DURATION_SECONDS,
+    PRODUCTIVE_DEFAULT_MAX_CYCLES_PER_RUN,
+    PRODUCTIVE_DEFAULT_MAX_RUN_DURATION_SECONDS,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_occupancy_classify_and_c1_gate_v1 import (
     POST_NEXT_OWNER_GO,
@@ -136,9 +145,8 @@ REASON_S5_INVOKE_COUNT_DRIFT = "S5_INVOKE_COUNT_NOT_ONE_PER_ACCEPTED_C1"
 FALSE_TOKEN = "false"
 TRUE_TOKEN = "true"
 DEFAULT_MAX_CYCLES_PER_RUN = 2
-HARD_CAP_MAX_CYCLES_PER_RUN = 4
 DEFAULT_MAX_RUN_DURATION_SECONDS = 90.0
-HARD_CAP_MAX_RUN_DURATION_SECONDS = 180.0
+# Productive policy defaults and absolute validation ceiling: observation budget module.
 DEFAULT_WAIT_INTERVAL_SECONDS = 1.0
 HARD_CAP_WAIT_INTERVAL_SECONDS = 15.0
 DEFAULT_MAX_WAIT_FOR_NEXT_C1_SECONDS = 30.0
@@ -336,6 +344,10 @@ def _require_positive_seconds(*, name: str, value: float, hard_cap: float) -> No
         raise CurrentProductiveGovernedContinuousCycleOrchestratorError(
             REASON_UNBOUNDED_OR_INVALID_BOUND, name
         ) from exc
+    if not math.isfinite(numeric):
+        raise CurrentProductiveGovernedContinuousCycleOrchestratorError(
+            REASON_UNBOUNDED_OR_INVALID_BOUND, name
+        )
     if numeric <= 0 or numeric < MIN_POSITIVE_SECONDS:
         raise CurrentProductiveGovernedContinuousCycleOrchestratorError(
             REASON_UNBOUNDED_OR_INVALID_BOUND, name
@@ -374,12 +386,12 @@ def _validate_authorization(
     _require_positive_int(
         name="MAX_CYCLES_PER_RUN",
         value=authorization.max_cycles_per_run,
-        hard_cap=HARD_CAP_MAX_CYCLES_PER_RUN,
+        hard_cap=ABSOLUTE_MAX_CYCLES_PER_RUN,
     )
     _require_positive_seconds(
         name="MAX_RUN_DURATION_SECONDS",
         value=authorization.max_run_duration_seconds,
-        hard_cap=HARD_CAP_MAX_RUN_DURATION_SECONDS,
+        hard_cap=ABSOLUTE_MAX_RUN_DURATION_SECONDS,
     )
     _require_positive_seconds(
         name="WAIT_INTERVAL_SECONDS",
@@ -424,9 +436,13 @@ def bind_s6_governed_continuous_cycle_orchestrator_offline_v1(
         "continuous_run_authorized": FALSE_TOKEN,
         "continuous_run_executed": FALSE_TOKEN,
         "max_cycles_per_run_default": str(DEFAULT_MAX_CYCLES_PER_RUN),
-        "max_cycles_per_run_hard_cap": str(HARD_CAP_MAX_CYCLES_PER_RUN),
+        "max_cycles_per_run_hard_cap": str(ABSOLUTE_MAX_CYCLES_PER_RUN),
         "max_run_duration_seconds_default": str(DEFAULT_MAX_RUN_DURATION_SECONDS),
-        "max_run_duration_seconds_hard_cap": str(HARD_CAP_MAX_RUN_DURATION_SECONDS),
+        "max_run_duration_seconds_hard_cap": str(ABSOLUTE_MAX_RUN_DURATION_SECONDS),
+        "productive_policy_max_cycles_per_run": str(PRODUCTIVE_DEFAULT_MAX_CYCLES_PER_RUN),
+        "productive_policy_max_run_duration_seconds": str(
+            PRODUCTIVE_DEFAULT_MAX_RUN_DURATION_SECONDS
+        ),
         "bounds_class": BOUNDS_CLASS,
         "post_count": "0",
     }
