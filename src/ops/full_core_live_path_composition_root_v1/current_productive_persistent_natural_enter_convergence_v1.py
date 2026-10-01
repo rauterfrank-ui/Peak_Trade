@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import inspect
 import json
+import re
 from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Callable, Mapping, Sequence
@@ -101,6 +102,13 @@ LANE_ID = "LANE_1"
 MAX_CYCLES_PER_RUN_CAP = HARD_CAP_MAX_CYCLES_PER_RUN
 MAX_RUN_DURATION_CAP = HARD_CAP_MAX_RUN_DURATION_SECONDS
 
+RECONCILIATION_SAME_INSTRUMENT_CONTINUATION = "SAME_INSTRUMENT_CONTINUATION"
+RECONCILIATION_SELECTION_ROTATION_FRESH_LANE = "SELECTION_ROTATION_FRESH_LANE"
+RECONCILIATION_NO_PERSISTED_CURSOR = "NO_PERSISTED_CURSOR"
+SUPERSEDED_CURSOR_FILENAME_PREFIX = (
+    "current_productive_sidestate_confirmation_cursor_v1.superseded_selection_rotation_"
+)
+
 
 class PersistentNaturalEnterConvergenceError(ValueError):
     """Fail-closed persistent convergence violation."""
@@ -109,6 +117,14 @@ class PersistentNaturalEnterConvergenceError(ValueError):
         self.reason_code = reason_code
         self.detail = detail
         super().__init__(f"{reason_code}:{detail}" if detail else reason_code)
+
+
+@dataclass(frozen=True)
+class SelectionRotationCursorReconciliationV1:
+    action: str
+    persisted_native_id: str
+    selected_native_id: str
+    archived_cursor_path: str = ""
 
 
 @dataclass(frozen=True)
@@ -121,6 +137,8 @@ class PersistentNaturalEnterPreflightV1:
     cursor_store_root: str
     selection_id: str
     cap24_reselection_performed: bool
+    cursor_reconciliation_action: str = ""
+    cursor_reconciliation_archived_path: str = ""
 
 
 @dataclass(frozen=True)
@@ -169,6 +187,83 @@ def adjudicate_existing_owner_go_reuse_read_only_v1(
         post_owner_go_present=present,
         post_owner_go_consumed=consumed,
         post_consumer_reachable_from_runner=not assert_post_path_unreachable_from_runner_source_v1(),
+    )
+
+
+def persisted_cursor_venue_native_id_v1(cursor_payload: Mapping[str, Any]) -> str:
+    """Canonical native id for continuous C1 lineage checks (top-level cursor field first)."""
+    native = str(cursor_payload.get("venue_native_id") or "").strip()
+    if native:
+        return native
+    cap61 = cursor_payload.get("cap61_confirmation_state")
+    if isinstance(cap61, Mapping):
+        oas = cap61.get("observation_acceptance_state")
+        if isinstance(oas, Mapping):
+            for key in ("bound_instrument_key", "instrument_key"):
+                ikey = oas.get(key)
+                if isinstance(ikey, Mapping):
+                    vid = str(ikey.get("venue_instrument_id") or "").strip()
+                    if vid:
+                        return vid
+    return ""
+
+
+def _superseded_cursor_archive_path_v1(*, cursor_store_root: Path, old_native_id: str) -> Path:
+    safe = re.sub(r"[^A-Za-z0-9._-]+", "_", old_native_id.strip()) or "unknown"
+    base = cursor_store_root / f"{SUPERSEDED_CURSOR_FILENAME_PREFIX}{safe}.json"
+    if not base.is_file():
+        return base
+    for index in range(1, 1000):
+        candidate = cursor_store_root / (f"{SUPERSEDED_CURSOR_FILENAME_PREFIX}{safe}.{index}.json")
+        if not candidate.is_file():
+            return candidate
+    raise PersistentNaturalEnterConvergenceError("SUPERSEDED_CURSOR_ARCHIVE_EXHAUSTED")
+
+
+def reconcile_selection_rotation_with_persisted_cursor_v1(
+    *,
+    cursor_store_root: Path,
+    bound: BoundInstrumentV1,
+) -> SelectionRotationCursorReconciliationV1:
+    """Align singleton lane cursor with Cap24-bound selection without cross-instrument carry."""
+    selected = str(bound.venue_native_id or "").strip()
+    if not selected:
+        raise PersistentNaturalEnterConvergenceError("NATIVE_ID_MISSING")
+    root = Path(cursor_store_root)
+    active = root / CURSOR_FILENAME
+    if not active.is_file():
+        return SelectionRotationCursorReconciliationV1(
+            action=RECONCILIATION_NO_PERSISTED_CURSOR,
+            persisted_native_id="",
+            selected_native_id=selected,
+        )
+    payload = load_current_productive_sidestate_confirmation_cursor_v1(root)
+    if payload is None or not isinstance(payload, Mapping):
+        raise PersistentNaturalEnterConvergenceError("CURSOR_LOAD_FAIL_CLOSED")
+    persisted = persisted_cursor_venue_native_id_v1(payload)
+    if not persisted:
+        raise PersistentNaturalEnterConvergenceError("CURSOR_NATIVE_ID_UNREADABLE")
+    if persisted == selected:
+        return SelectionRotationCursorReconciliationV1(
+            action=RECONCILIATION_SAME_INSTRUMENT_CONTINUATION,
+            persisted_native_id=persisted,
+            selected_native_id=selected,
+        )
+    archive_path = _superseded_cursor_archive_path_v1(
+        cursor_store_root=root,
+        old_native_id=persisted,
+    )
+    archive_path.parent.mkdir(parents=True, exist_ok=True)
+    archive_path.write_text(
+        json.dumps(dict(payload), indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    active.unlink()
+    return SelectionRotationCursorReconciliationV1(
+        action=RECONCILIATION_SELECTION_ROTATION_FRESH_LANE,
+        persisted_native_id=persisted,
+        selected_native_id=selected,
+        archived_cursor_path=str(archive_path),
     )
 
 
@@ -260,29 +355,22 @@ def preflight_current_productive_persistent_natural_enter_v1(
             selection_id=handoff.selection_id,
             cap24_reselection_performed=handoff.reselection_performed,
         )
-    cursor_payload = load_current_productive_sidestate_confirmation_cursor_v1(
-        Path(cursor_store_root)
-    )
-    if cursor_payload is not None:
-        cap61 = cursor_payload.get("cap61_confirmation_state")
-        cursor_native = ""
-        if isinstance(cap61, Mapping):
-            oas = cap61.get("observation_acceptance_state")
-            if isinstance(oas, Mapping):
-                ikey = oas.get("instrument_key")
-                if isinstance(ikey, Mapping):
-                    cursor_native = str(ikey.get("venue_instrument_id") or "")
-        if cursor_native and cursor_native != native_id:
-            return PersistentNaturalEnterPreflightV1(
-                ok=False,
-                reason_code="CURSOR_INSTRUMENT_MISMATCH",
-                bound_instrument=bound,
-                native_id=native_id,
-                lane_state_root=lane_root,
-                cursor_store_root=str(cursor_store_root),
-                selection_id=handoff.selection_id,
-                cap24_reselection_performed=handoff.reselection_performed,
-            )
+    try:
+        reconciliation = reconcile_selection_rotation_with_persisted_cursor_v1(
+            cursor_store_root=Path(cursor_store_root),
+            bound=bound,
+        )
+    except PersistentNaturalEnterConvergenceError as exc:
+        return PersistentNaturalEnterPreflightV1(
+            ok=False,
+            reason_code=exc.reason_code,
+            bound_instrument=bound,
+            native_id=native_id,
+            lane_state_root=lane_root,
+            cursor_store_root=str(cursor_store_root),
+            selection_id=handoff.selection_id,
+            cap24_reselection_performed=handoff.reselection_performed,
+        )
     return PersistentNaturalEnterPreflightV1(
         ok=True,
         reason_code="",
@@ -292,6 +380,8 @@ def preflight_current_productive_persistent_natural_enter_v1(
         cursor_store_root=str(cursor_store_root),
         selection_id=handoff.selection_id,
         cap24_reselection_performed=handoff.reselection_performed,
+        cursor_reconciliation_action=reconciliation.action,
+        cursor_reconciliation_archived_path=reconciliation.archived_cursor_path,
     )
 
 
@@ -638,6 +728,11 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     if cursor_store_root.resolve() != Path(pairs[LANE_ID][0].lane_state_root).resolve():
         raise PersistentNaturalEnterConvergenceError("FIXED_LANE_ROOT_VIOLATION")
 
+    reconcile_selection_rotation_with_persisted_cursor_v1(
+        cursor_store_root=cursor_store_root,
+        bound=bound,
+    )
+
     run_id = mint_continuous_run_id_v1(authorization)
     persist_bounded_continuous_run_owner_go_consume_v1(
         evidence_root=Path(evidence_root),
@@ -740,7 +835,13 @@ __all__ = [
     "build_s8_occupied_lane_pairs_v1",
     "make_n1_occupied_lane_s5_runner_v1",
     "preflight_current_productive_persistent_natural_enter_v1",
+    "persisted_cursor_venue_native_id_v1",
+    "reconcile_selection_rotation_with_persisted_cursor_v1",
     "read_sidestate_continuity_snapshot_v1",
+    "RECONCILIATION_NO_PERSISTED_CURSOR",
+    "RECONCILIATION_SAME_INSTRUMENT_CONTINUATION",
+    "RECONCILIATION_SELECTION_ROTATION_FRESH_LANE",
+    "SelectionRotationCursorReconciliationV1",
     "run_offline_persistent_natural_enter_convergence_v1",
     "run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1",
 ]
