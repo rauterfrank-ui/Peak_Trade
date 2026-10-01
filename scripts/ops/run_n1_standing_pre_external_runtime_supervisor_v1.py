@@ -115,7 +115,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    owner_go_baseline = "7a3597e61966749a9e30d06f3514e23a9179fb9e"
+    owner_go_baseline = "049fc18cdf8061707185b075ec04dfb61a116c0c"
     origin_for_owner_go = args.origin_main_sha or owner_go_baseline
 
     if args.dry_run_config:

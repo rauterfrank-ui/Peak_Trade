@@ -71,7 +71,7 @@ from tests.trading.master_v2.test_double_play_runtime_typed_volatility_presence_
 
 REPO = Path(__file__).resolve().parents[2]
 POST_MERGE_MAIN_SHA = "7a3597e61966749a9e30d06f3514e23a9179fb9e"
-CURRENT_MAIN_SHA = "959039aa619e0fe8e7cb71fadb08d082d1f2e402"
+CURRENT_MAIN_SHA = "049fc18cdf8061707185b075ec04dfb61a116c0c"
 BASELINE_SHA = CURRENT_MAIN_SHA
 
 

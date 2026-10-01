@@ -17,7 +17,7 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
 
 REPO = Path(__file__).resolve().parents[2]
 LAUNCHER = REPO / "scripts/ops/run_n1_standing_pre_external_runtime_supervisor_v1.py"
-OWNER_GO_BASELINE_SHA = "7a3597e61966749a9e30d06f3514e23a9179fb9e"
+OWNER_GO_BASELINE_SHA = "049fc18cdf8061707185b075ec04dfb61a116c0c"
 
 
 def _run_launcher(*args: str) -> subprocess.CompletedProcess[str]:
