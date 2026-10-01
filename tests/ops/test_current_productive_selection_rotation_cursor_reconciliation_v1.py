@@ -13,9 +13,11 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     evaluate_current_productive_c1_reject_reason_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
+    PersistentNaturalEnterConvergenceError,
     RECONCILIATION_NO_PERSISTED_CURSOR,
     RECONCILIATION_SAME_INSTRUMENT_CONTINUATION,
     RECONCILIATION_SELECTION_ROTATION_FRESH_LANE,
+    _atomic_write_json_file_v1,
     persisted_cursor_venue_native_id_v1,
     reconcile_selection_rotation_with_persisted_cursor_v1,
 )
@@ -187,6 +189,66 @@ def test_selection_authority_remains_bound_b_native_id(tmp_path: Path) -> None:
 def test_single_active_future_invariants_unchanged() -> None:
     assert MAX_POSITIONS_EFFECTIVE == 1
     assert MULTI_FUTURE_RUNTIME_AUTHORIZED is False
+
+
+def test_archive_failure_leaves_active_cursor_fail_closed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    store = _seed_native_cursor(tmp_path, native_id=INSTRUMENT_A, event_time=C1_A)
+    before = (store / CURSOR_FILENAME).read_text(encoding="utf-8")
+
+    def _fail_write(*_args: object, **_kwargs: object) -> None:
+        raise PersistentNaturalEnterConvergenceError("CURSOR_ARCHIVE_WRITE_FAIL_CLOSED")
+
+    monkeypatch.setattr(
+        "src.ops.full_core_live_path_composition_root_v1."
+        "current_productive_persistent_natural_enter_convergence_v1._atomic_write_json_file_v1",
+        _fail_write,
+    )
+    with pytest.raises(PersistentNaturalEnterConvergenceError, match="CURSOR_ARCHIVE_WRITE"):
+        reconcile_selection_rotation_with_persisted_cursor_v1(
+            cursor_store_root=store,
+            bound=_bound_native(native_id=INSTRUMENT_B),
+        )
+    assert (store / CURSOR_FILENAME).read_text(encoding="utf-8") == before
+
+
+def test_active_removal_failure_fail_closed_after_archive(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    store = _seed_native_cursor(tmp_path, native_id=INSTRUMENT_A, event_time=C1_A)
+
+    def _fail_unlink(self: Path, *args: object, **kwargs: object) -> None:
+        if self.name == CURSOR_FILENAME:
+            raise OSError("simulated unlink failure")
+        return Path.unlink(self, *args, **kwargs)  # type: ignore[arg-type]
+
+    monkeypatch.setattr(Path, "unlink", _fail_unlink, raising=False)
+    with pytest.raises(PersistentNaturalEnterConvergenceError, match="CURSOR_ACTIVE_REMOVAL"):
+        reconcile_selection_rotation_with_persisted_cursor_v1(
+            cursor_store_root=store,
+            bound=_bound_native(native_id=INSTRUMENT_B),
+        )
+    assert (store / CURSOR_FILENAME).is_file()
+
+
+def test_superseded_archive_uses_incrementing_path_not_overwrite(tmp_path: Path) -> None:
+    store = _seed_native_cursor(tmp_path, native_id=INSTRUMENT_A, event_time=C1_A)
+    first_archive = store / (
+        "current_productive_sidestate_confirmation_cursor_v1."
+        "superseded_selection_rotation_SYNTH-A-USDT-SWAP.json"
+    )
+    _atomic_write_json_file_v1(path=first_archive, payload={"marker": "first"})
+    reconcile_selection_rotation_with_persisted_cursor_v1(
+        cursor_store_root=store,
+        bound=_bound_native(native_id=INSTRUMENT_B),
+    )
+    assert json.loads(first_archive.read_text(encoding="utf-8")) == {"marker": "first"}
+    second = store / (
+        "current_productive_sidestate_confirmation_cursor_v1."
+        "superseded_selection_rotation_SYNTH-A-USDT-SWAP.1.json"
+    )
+    assert second.is_file()
 
 
 def test_generic_native_ids_not_hardcoded_apr_at(tmp_path: Path) -> None:

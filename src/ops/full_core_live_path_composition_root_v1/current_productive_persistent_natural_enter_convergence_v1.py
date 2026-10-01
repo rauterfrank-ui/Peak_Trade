@@ -13,7 +13,9 @@ from __future__ import annotations
 
 import inspect
 import json
+import os
 import re
+import tempfile
 from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Callable, Mapping, Sequence
@@ -220,6 +222,41 @@ def _superseded_cursor_archive_path_v1(*, cursor_store_root: Path, old_native_id
     raise PersistentNaturalEnterConvergenceError("SUPERSEDED_CURSOR_ARCHIVE_EXHAUSTED")
 
 
+def _atomic_write_json_file_v1(*, path: Path, payload: Mapping[str, Any]) -> None:
+    text = json.dumps(dict(payload), indent=2, sort_keys=True) + "\n"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp_name = tempfile.mkstemp(
+        prefix=".superseded_cursor_",
+        suffix=".tmp",
+        dir=str(path.parent),
+    )
+    tmp_path = Path(tmp_name)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            handle.write(text)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(tmp_path, path)
+    except OSError as exc:
+        try:
+            tmp_path.unlink(missing_ok=True)
+        except OSError:
+            pass
+        raise PersistentNaturalEnterConvergenceError(
+            "CURSOR_ARCHIVE_WRITE_FAIL_CLOSED",
+            str(exc),
+        ) from exc
+    if not path.is_file():
+        raise PersistentNaturalEnterConvergenceError("CURSOR_ARCHIVE_WRITE_FAIL_CLOSED")
+    try:
+        json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise PersistentNaturalEnterConvergenceError(
+            "CURSOR_ARCHIVE_VERIFY_FAIL_CLOSED",
+            str(exc),
+        ) from exc
+
+
 def reconcile_selection_rotation_with_persisted_cursor_v1(
     *,
     cursor_store_root: Path,
@@ -253,12 +290,16 @@ def reconcile_selection_rotation_with_persisted_cursor_v1(
         cursor_store_root=root,
         old_native_id=persisted,
     )
-    archive_path.parent.mkdir(parents=True, exist_ok=True)
-    archive_path.write_text(
-        json.dumps(dict(payload), indent=2, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
-    active.unlink()
+    _atomic_write_json_file_v1(path=archive_path, payload=payload)
+    try:
+        active.unlink()
+    except OSError as exc:
+        raise PersistentNaturalEnterConvergenceError(
+            "CURSOR_ACTIVE_REMOVAL_FAIL_CLOSED",
+            str(exc),
+        ) from exc
+    if active.is_file():
+        raise PersistentNaturalEnterConvergenceError("CURSOR_ACTIVE_REMOVAL_FAIL_CLOSED")
     return SelectionRotationCursorReconciliationV1(
         action=RECONCILIATION_SELECTION_ROTATION_FRESH_LANE,
         persisted_native_id=persisted,
