@@ -2,11 +2,10 @@
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "authority_effect": "NONE",
   "selector_used_as_map_impact_authority": false,
-  "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "PR #6998: optional default-off natural market-data GET capture wrapper at Golden Happy Vector product entry; append-only evidence JSONL; observation-only transport passthrough; Atlas entity review for capture sink + policy-governed entry wiring; no trading/threshold/config/budget change; AUTHORITY=NONE; POST_COUNT=0.",
+  "verdict": "NO_MAP_IMPACT",
+  "reason": "PR #6998: optional default-off natural market-data GET capture wrapper; observation-only append-only evidence; Atlas entity review recorded; no CSIA source_v1.json semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/ops/specs/CURRENT_PRODUCTIVE_NATURAL_MARKET_DATA_CAPTURE_V1.md",
@@ -21,7 +20,7 @@
     "src/ops/full_core_live_path_composition_root_v1/productive_natural_market_data_capture_sink_v1.py",
     "tests/ops/test_productive_natural_market_data_capture_sink_v1.py"
   ],
-  "changed_paths_sha256": "7a1307a1aefcca1861a9222dc49727cec1543167cc7d75ce73d9195b57cc2607",
+  "changed_paths_sha256": "da797fd253e6d68fab474ab0bb0dc207b5f2b50547c555dd0036e5049341715c",
   "base_sha": "9b713d2a0116f8ae842d941aa4534eb602d0210d",
   "evidence_refs": [
     "docs/ops/specs/CURRENT_PRODUCTIVE_NATURAL_MARKET_DATA_CAPTURE_V1.md",
@@ -29,5 +28,18 @@
     "docs/system_atlas/provenance/impact_state.yaml",
     "tests/ops/test_productive_natural_market_data_capture_sink_v1.py"
   ],
-  "covered_candidate_paths": []
+  "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "docs/ops/specs/CURRENT_PRODUCTIVE_NATURAL_MARKET_DATA_CAPTURE_V1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/productive_natural_market_data_capture_sink_v1.py",
+    "tests/ops/test_productive_natural_market_data_capture_sink_v1.py"
+  ]
 }
