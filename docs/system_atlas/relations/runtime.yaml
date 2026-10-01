@@ -34,10 +34,11 @@ relations:
   - src/ops/single_selected_future_policy_v1/policy_v1.py
   - src/ops/single_selected_future_policy_v1/producer_v1.py
   - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
-  notes: 'B08: Cap 2.3 consumes the authoritative upstream Cap 2.2 ranked order and applies anti-churn/selection overlay only.
-    It does not rescore, rerank, reconstruct economic features, use Future Profile fields for selection, or fall back to venue-native
-    ordering. Optional pin still selects from the same full Cap 2.2 snapshot. No second ranking, no cross-universe candidate
-    pool. ATLAS_AUTHORITY=NONE.'
+  notes: 'B08: Cap 2.3 consumes the authoritative upstream Cap 2.2 ranked order and
+    applies anti-churn/selection overlay only. It does not rescore, rerank, reconstruct
+    economic features, use Future Profile fields for selection, or fall back to venue-native
+    ordering. Optional pin still selects from the same full Cap 2.2 snapshot. No second
+    ranking, no cross-universe candidate pool. ATLAS_AUTHORITY=NONE.'
 - id: REL:r_current_mf_member_pinned_cap23_n1_adapter_validates_same_universe_pin
   source: CONTRACT:current_mf_member_to_pinned_cap23_n1_adapter_v1
   type: VALIDATES
@@ -46,8 +47,8 @@ relations:
   evidence_sources:
   - src/ops/current_mf_member_to_pinned_cap23_n1_adapter_v1/adapter_v1.py
   - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
-  notes: Same-universe pin constraint only. Not PRODUCES/SELECTS/BINDS. CROSS_UNIVERSE_* remain false. No MF domain edge.
-    ATLAS_AUTHORITY=NONE.
+  notes: Same-universe pin constraint only. Not PRODUCES/SELECTS/BINDS. CROSS_UNIVERSE_*
+    remain false. No MF domain edge. ATLAS_AUTHORITY=NONE.
 - id: REL:r_current_mf_n5_lane_topology_calls_pinned_cap23_adapter
   source: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
   type: CALLS
@@ -56,7 +57,8 @@ relations:
   evidence_sources:
   - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
   - src/ops/current_mf_member_to_pinned_cap23_n1_adapter_v1/adapter_v1.py
-  notes: Pin factory reuse only. Not PRODUCES/SELECTS/BINDS. Not Cap23 writer. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+  notes: Pin factory reuse only. Not PRODUCES/SELECTS/BINDS. Not Cap23 writer. CROSS_UNIVERSE_*
+    remain false. ATLAS_AUTHORITY=NONE.
 - id: REL:r_current_mf_n5_lane_topology_consumes_mf_membership_semantics
   source: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
   type: CONSUMES
@@ -65,8 +67,8 @@ relations:
   evidence_sources:
   - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
   - src/ops/mf_membership_context_artifact_contract_v1.py
-  notes: Consumes governed membership identity and derived enter/retain/exit occupancy. Rank order is not lane identity. Not
-    membership authority. ATLAS_AUTHORITY=NONE.
+  notes: Consumes governed membership identity and derived enter/retain/exit occupancy.
+    Rank order is not lane identity. Not membership authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_durable_lane_assignment_persistence_persists_n5_lane_topology
   source: CONTRACT:current_mf_n5_durable_lane_assignment_persistence_v1
   type: PERSISTS
@@ -75,8 +77,8 @@ relations:
   evidence_sources:
   - src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py
   - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
-  notes: Records exact prior governed topology. Does not call apply_isolated_lane_topology_v1. Not PRODUCES/SELECTS/BINDS.
-    CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+  notes: Records exact prior governed topology. Does not call apply_isolated_lane_topology_v1.
+    Not PRODUCES/SELECTS/BINDS. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
 - id: REL:r_durable_lane_assignment_persistence_loads_n5_lane_topology
   source: CONTRACT:current_mf_n5_durable_lane_assignment_persistence_v1
   type: LOADS
@@ -85,8 +87,8 @@ relations:
   evidence_sources:
   - src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py
   - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
-  notes: Recovers exact IsolatedLaneTopologyV1 as explicit prior topology. Recovery stops there. Missing/corrupt restart state
-    must not bootstrap. ATLAS_AUTHORITY=NONE.
+  notes: Recovers exact IsolatedLaneTopologyV1 as explicit prior topology. Recovery
+    stops there. Missing/corrupt restart state must not bootstrap. ATLAS_AUTHORITY=NONE.
 - id: REL:r_recovered_topology_consumer_calls_n5_lane_topology
   source: CONTRACT:current_mf_n5_recovered_topology_consumer_join_v1
   type: CALLS
@@ -95,8 +97,8 @@ relations:
   evidence_sources:
   - src/ops/current_mf_n5_recovered_topology_consumer_join_v1/consumer_v1.py
   - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
-  notes: Calls apply_isolated_lane_topology_v1 with recovered prior_topology or None. Not PRODUCES/SELECTS/BINDS. Not Cap23
-    writer. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+  notes: Calls apply_isolated_lane_topology_v1 with recovered prior_topology or None.
+    Not PRODUCES/SELECTS/BINDS. Not Cap23 writer. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
 - id: REL:r_recovered_topology_consumer_calls_durable_lane_assignment
   source: CONTRACT:current_mf_n5_recovered_topology_consumer_join_v1
   type: CALLS
@@ -105,7 +107,8 @@ relations:
   evidence_sources:
   - src/ops/current_mf_n5_recovered_topology_consumer_join_v1/consumer_v1.py
   - src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py
-  notes: Calls recover then persist. Does not map lanes. Not PRODUCES/SELECTS/BINDS. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+  notes: Calls recover then persist. Does not map lanes. Not PRODUCES/SELECTS/BINDS.
+    CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
 - id: REL:r_occupied_lane_pin_consumer_calls_recovered_topology_consumer
   source: CONTRACT:current_mf_n5_occupied_lane_pin_consumer_join_v1
   type: CALLS
@@ -114,8 +117,9 @@ relations:
   evidence_sources:
   - src/ops/current_mf_n5_occupied_lane_pin_consumer_join_v1/consumer_v1.py
   - src/ops/current_mf_n5_recovered_topology_consumer_join_v1/consumer_v1.py
-  notes: Calls consume_recovered_isolated_lane_topology_v1 and uses that return as pin-builder topology. Not PRODUCES/SELECTS/BINDS.
-    Not Cap23 writer. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+  notes: Calls consume_recovered_isolated_lane_topology_v1 and uses that return as
+    pin-builder topology. Not PRODUCES/SELECTS/BINDS. Not Cap23 writer. CROSS_UNIVERSE_*
+    remain false. ATLAS_AUTHORITY=NONE.
 - id: REL:r_occupied_lane_pin_consumer_calls_n5_lane_topology
   source: CONTRACT:current_mf_n5_occupied_lane_pin_consumer_join_v1
   type: CALLS
@@ -124,8 +128,9 @@ relations:
   evidence_sources:
   - src/ops/current_mf_n5_occupied_lane_pin_consumer_join_v1/consumer_v1.py
   - src/ops/current_mf_n5_isolated_lane_instance_topology_v1/topology_v1.py
-  notes: Calls build_occupied_lane_pins_v1 with the exact consume return and the same current ranking snapshot. Not PRODUCES/SELECTS/BINDS.
-    Not Cap23 writer. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
+  notes: Calls build_occupied_lane_pins_v1 with the exact consume return and the same
+    current ranking snapshot. Not PRODUCES/SELECTS/BINDS. Not Cap23 writer. CROSS_UNIVERSE_*
+    remain false. ATLAS_AUTHORITY=NONE.
 - id: REL:r_ranking_domain_occupied_lane_cap23_produce_join_calls_occupied_lane_pin_consumer
   source: CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1
   type: CALLS
@@ -134,8 +139,8 @@ relations:
   evidence_sources:
   - src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/produce_join_v1.py
   - src/ops/current_mf_n5_occupied_lane_pin_consumer_join_v1/consumer_v1.py
-  notes: Calls consume_occupied_lane_pins_v1 exactly once. Not PRODUCES/SELECTS/BINDS. Not a second Cap23 writer. CROSS_UNIVERSE_*
-    remain false. ATLAS_AUTHORITY=NONE.
+  notes: Calls consume_occupied_lane_pins_v1 exactly once. Not PRODUCES/SELECTS/BINDS.
+    Not a second Cap23 writer. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
 - id: REL:r_ranking_domain_occupied_lane_cap23_produce_join_calls_cap23
   source: CONTRACT:current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1
   type: CALLS
@@ -144,9 +149,9 @@ relations:
   evidence_sources:
   - src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/produce_join_v1.py
   - src/ops/single_selected_future_policy_v1/producer_v1.py
-  notes: Calls existing run_single_selected_future_policy_v1 once per occupied lane with that lane's governed pin and lane_state_root.
-    Join is not selection owner. CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
-  # atlas_entity_review: PR #6974 — BINDS unchanged; binding_gate reconciliation_result evidence_digest witness only; AUTHORITY=NONE.
+  notes: Calls existing run_single_selected_future_policy_v1 once per occupied lane
+    with that lane's governed pin and lane_state_root. Join is not selection owner.
+    CROSS_UNIVERSE_* remain false. ATLAS_AUTHORITY=NONE.
 - id: REL:r_cap24_binds
   source: BINDER:bound_instrument_v1
   type: BINDS
@@ -155,8 +160,9 @@ relations:
   evidence_sources:
   - src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py
   - src/ops/single_selected_future_runtime_binding_v1/models_v1.py
-  notes: 'B08: Cap 2.4 binds the selected identity emitted by Cap 2.3 and carries ranking/selection provenance forward. It
-    does not rank, rerank, reselect, or reinterpret instrument choice. ATLAS_AUTHORITY=NONE.'
+  notes: 'B08: Cap 2.4 binds the selected identity emitted by Cap 2.3 and carries
+    ranking/selection provenance forward. It does not rank, rerank, reselect, or reinterpret
+    instrument choice. ATLAS_AUTHORITY=NONE.'
 - id: REL:r_host72_consumes_binding
   source: HOST:cap72_stateful_host
   type: CONSUMES
@@ -275,8 +281,9 @@ relations:
   evidence_sources:
   - src/ops/governed_futures_universe_producer_v1/producer_v1.py
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-  notes: Host decorator observe_after_producer_v0 seam selection.universe. No-op unless an enabled DdoCaptureBindingV0 session
-    is bound. Does not mutate the producer result. Not PRODUCES/CONSUMES/CALLS.
+  notes: Host decorator observe_after_producer_v0 seam selection.universe. No-op unless
+    an enabled DdoCaptureBindingV0 session is bound. Does not mutate the producer
+    result. Not PRODUCES/CONSUMES/CALLS.
 - id: REL:r_ddo_capture_observes_ranking
   source: RUNTIME_COMPONENT:ddo_capture_v0
   type: OBSERVES
@@ -285,8 +292,8 @@ relations:
   evidence_sources:
   - src/ops/productive_futures_ranking_producer_v1/producer_v1.py
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-  notes: Host decorator observe_after_producer_v0 seam selection.ranking. No-op unless an enabled capture session is bound.
-    Not PRODUCES/CONSUMES/CALLS.
+  notes: Host decorator observe_after_producer_v0 seam selection.ranking. No-op unless
+    an enabled capture session is bound. Not PRODUCES/CONSUMES/CALLS.
 - id: REL:r_ddo_capture_observes_selection
   source: RUNTIME_COMPONENT:ddo_capture_v0
   type: OBSERVES
@@ -296,9 +303,9 @@ relations:
   - src/ops/single_selected_future_policy_v1/selection_v1.py
   - src/ops/single_selected_future_policy_v1/models_v1.py
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-  notes: Host decorator observe_after_producer_v0 seam selection.single_future. No-op unless an enabled capture session is
-    bound. Not PRODUCES/CONSUMES/CALLS. Cap23 governed pin does not confer DDO selection or routing authority.
-  # atlas_entity_review: PR #6974 — OBSERVES unchanged; binding_gate digest witness only; AUTHORITY=NONE.
+  notes: Host decorator observe_after_producer_v0 seam selection.single_future. No-op
+    unless an enabled capture session is bound. Not PRODUCES/CONSUMES/CALLS. Cap23
+    governed pin does not confer DDO selection or routing authority.
 - id: REL:r_ddo_capture_observes_binding
   source: RUNTIME_COMPONENT:ddo_capture_v0
   type: OBSERVES
@@ -307,8 +314,8 @@ relations:
   evidence_sources:
   - src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-  notes: Host decorator observe_after_producer_v0 seam selection.runtime_binding. No-op unless an enabled capture session
-    is bound. Not Cap-2.4 BINDS.
+  notes: Host decorator observe_after_producer_v0 seam selection.runtime_binding.
+    No-op unless an enabled capture session is bound. Not Cap-2.4 BINDS.
 - id: REL:r_ddo_capture_observes_recon_startup
   source: RUNTIME_COMPONENT:ddo_capture_v0
   type: OBSERVES
@@ -317,8 +324,8 @@ relations:
   evidence_sources:
   - src/ops/productive_reconciliation_runtime_binding_v1/startup_gate_v1.py
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-  notes: Host decorator observe_after_producer_v0 seam recon.startup_gate. No-op unless an enabled capture session is bound.
-    DDO does not own recon.
+  notes: Host decorator observe_after_producer_v0 seam recon.startup_gate. No-op unless
+    an enabled capture session is bound. DDO does not own recon.
 - id: REL:r_ddo_capture_observes_sim_exec
   source: RUNTIME_COMPONENT:ddo_capture_v0
   type: OBSERVES
@@ -327,8 +334,8 @@ relations:
   evidence_sources:
   - src/ops/single_future_stateful_no_order_runtime_activation_v1/simulated_execution_port_v1.py
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-  notes: Host decorator observe_after_producer_v0 seam execution.simulated_outcome. No-op unless an enabled capture session
-    is bound. Not venue submit.
+  notes: Host decorator observe_after_producer_v0 seam execution.simulated_outcome.
+    No-op unless an enabled capture session is bound. Not venue submit.
 - id: REL:r_ddo_capture_observes_wallclock_cycle_producers
   source: RUNTIME_COMPONENT:ddo_capture_v0
   type: OBSERVES
@@ -340,8 +347,9 @@ relations:
   - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/intended_action_mapper_v1.py
   - src/ops/exit_policy_producer_binding_v1/producers_v1.py
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-  notes: WP-FS-B1 host decorators for c1.observation_acceptance, feature.regime, feature.typed_volatility, mapper.intended_action,
-    and core.exit_policy. Mapper consumes typed ReplayExecutionSafetyV1 when present. Observation only. Not PRODUCES/CONSUMES/CALLS.
+  notes: WP-FS-B1 host decorators for c1.observation_acceptance, feature.regime, feature.typed_volatility,
+    mapper.intended_action, and core.exit_policy. Mapper consumes typed ReplayExecutionSafetyV1
+    when present. Observation only. Not PRODUCES/CONSUMES/CALLS.
 - id: REL:r_ddo_capture_observes_directional
   source: RUNTIME_COMPONENT:ddo_capture_v0
   type: OBSERVES
@@ -350,7 +358,8 @@ relations:
   evidence_sources:
   - src/trading/master_v2/directional_assessment_v1.py
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-  notes: Host decorator observe_after_producer_v0 seam core.bull_bear. No-op unless an enabled capture session is bound.
+  notes: Host decorator observe_after_producer_v0 seam core.bull_bear. No-op unless
+    an enabled capture session is bound.
 - id: REL:r_ddo_capture_observes_confirmation
   source: RUNTIME_COMPONENT:ddo_capture_v0
   type: OBSERVES
@@ -359,7 +368,8 @@ relations:
   evidence_sources:
   - src/ops/stateful_confirmation_and_c1_productive_binding_v1/host_binding_v1.py
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-  notes: Host decorator observe_after_producer_v0 seam confirmation.state. No-op unless an enabled capture session is bound.
+  notes: Host decorator observe_after_producer_v0 seam confirmation.state. No-op unless
+    an enabled capture session is bound.
 - id: REL:r_ddo_capture_observes_integrated_replay
   source: RUNTIME_COMPONENT:ddo_capture_v0
   type: OBSERVES
@@ -369,9 +379,9 @@ relations:
   evidence_sources:
   - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-  notes: Host decorator observe_after_producer_v0 seam core.master_v2_evidence. No-op unless an enabled capture session is
-    bound. Not a second total decision owner. OD1 single-lane replay join does not change this observation-only relation.
-    ATLAS_AUTHORITY=NONE.
+  notes: Host decorator observe_after_producer_v0 seam core.master_v2_evidence. No-op
+    unless an enabled capture session is bound. Not a second total decision owner.
+    OD1 single-lane replay join does not change this observation-only relation. ATLAS_AUTHORITY=NONE.
 - id: REL:r_ddo_capture_observes_entry_exit
   source: RUNTIME_COMPONENT:ddo_capture_v0
   type: OBSERVES
@@ -381,9 +391,10 @@ relations:
   - src/trading/master_v2/double_play_entry_exit_policy_v0.py
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
   - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
-  notes: Host decorator observe_after_producer_v0 seam core.double_play_entry_exit. Typed producer observation is projected
-    into double_play_entry_exit_observation_v1. Exact producer tokens remain producer-owned. Generic DDO DecisionResult is
-    not a second trading enum. Sibling producer-input evidence is projected into double_play_entry_exit_policy_input_evidence_v1.
+  notes: Host decorator observe_after_producer_v0 seam core.double_play_entry_exit.
+    Typed producer observation is projected into double_play_entry_exit_observation_v1.
+    Exact producer tokens remain producer-owned. Generic DDO DecisionResult is not
+    a second trading enum. Sibling producer-input evidence is projected into double_play_entry_exit_policy_input_evidence_v1.
     Observation only.
 - id: REL:r_ddo_capture_observes_entry_exit_input
   source: RUNTIME_COMPONENT:ddo_capture_v0
@@ -393,8 +404,8 @@ relations:
   evidence_sources:
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
   - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
-  notes: Host decorator observe_after_producer_v0 seam core.double_play_entry_exit persists sibling producer-input evidence.
-    Observation only. Not trading authority.
+  notes: Host decorator observe_after_producer_v0 seam core.double_play_entry_exit
+    persists sibling producer-input evidence. Observation only. Not trading authority.
 - id: REL:r_ddo_input_evidence_reads_entry_exit_policy
   source: RUNTIME_COMPONENT:ddo_double_play_input_evidence_v1
   type: READS
@@ -403,8 +414,9 @@ relations:
   evidence_sources:
   - src/learning/deterministic_decision_outcome_v0/double_play_input_evidence_v1.py
   - src/trading/master_v2/double_play_entry_exit_policy_v0.py
-  notes: Reuses producer types plus serialize_entry_exit_policy_input_canonical and compute_entry_exit_policy_input_digest.
-    Does not call evaluate_double_play_entry_exit_policy_v0. Not a second policy owner.
+  notes: Reuses producer types plus serialize_entry_exit_policy_input_canonical and
+    compute_entry_exit_policy_input_digest. Does not call evaluate_double_play_entry_exit_policy_v0.
+    Not a second policy owner.
 - id: REL:r_ddo_semantic_replay_reads_entry_exit_observation
   source: RUNTIME_COMPONENT:ddo_double_play_semantic_replay_v1
   type: READS
@@ -413,8 +425,8 @@ relations:
   evidence_sources:
   - src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py
   - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
-  notes: Offline reconstruction reads immutable typed observation evidence. Does not mutate capture, ledger, or producer results.
-    Not trading authority.
+  notes: Offline reconstruction reads immutable typed observation evidence. Does not
+    mutate capture, ledger, or producer results. Not trading authority.
 - id: REL:r_ddo_semantic_replay_reads_entry_exit_policy
   source: RUNTIME_COMPONENT:ddo_double_play_semantic_replay_v1
   type: READS
@@ -423,8 +435,9 @@ relations:
   evidence_sources:
   - src/learning/deterministic_decision_outcome_v0/double_play_semantic_replay_v1.py
   - src/trading/master_v2/double_play_entry_exit_policy_v0.py
-  notes: Reuses producer types plus serialize_entry_exit_policy_decision_canonical and compute_entry_exit_policy_semantic_digest.
-    Does not call evaluate_double_play_entry_exit_policy_v0. Not a second policy owner.
+  notes: Reuses producer types plus serialize_entry_exit_policy_decision_canonical
+    and compute_entry_exit_policy_semantic_digest. Does not call evaluate_double_play_entry_exit_policy_v0.
+    Not a second policy owner.
 - id: REL:r_ddo_capture_observes_scope_events
   source: RUNTIME_COMPONENT:ddo_capture_v0
   type: OBSERVES
@@ -433,7 +446,8 @@ relations:
   evidence_sources:
   - src/trading/master_v2/deterministic_scope_event_generator_v1.py
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-  notes: Host decorator observe_after_producer_v0 seam core.dynamic_scope. Observation only.
+  notes: Host decorator observe_after_producer_v0 seam core.dynamic_scope. Observation
+    only.
 - id: REL:r_ddo_capture_observes_safety_kernel
   source: RUNTIME_COMPONENT:ddo_capture_v0
   type: OBSERVES
@@ -442,8 +456,8 @@ relations:
   evidence_sources:
   - src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-  notes: Host decorator observe_after_producer_v0 seams safety.kernel and safety.killswitch_blocked_flag. Observation only.
-    Not killswitch authority.
+  notes: Host decorator observe_after_producer_v0 seams safety.kernel and safety.killswitch_blocked_flag.
+    Observation only. Not killswitch authority.
 - id: REL:r_wallclock_injects_ddo_capture_session
   source: HOST:wallclock_decision_economics_cycle
   type: INJECTS
@@ -452,8 +466,10 @@ relations:
   evidence_sources:
   - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-  notes: with_ddo_capture_session_v0 binds DdoCaptureBindingV0 into a ContextVar for the cycle. bind_host_cycle_capture_context_v0
-    shares cycle identity with in-cycle producer decorators. Ontology has no CAPTURES type. Session bind is not trading authority.
+  notes: with_ddo_capture_session_v0 binds DdoCaptureBindingV0 into a ContextVar for
+    the cycle. bind_host_cycle_capture_context_v0 shares cycle identity with in-cycle
+    producer decorators. Ontology has no CAPTURES type. Session bind is not trading
+    authority.
 - id: REL:r_wallclock_calls_ddo_cycle_capture
   source: HOST:wallclock_decision_economics_cycle
   type: CALLS
@@ -463,9 +479,10 @@ relations:
   - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
   - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
-  notes: Direct call to record_productive_cycle_capture_v0. No-op if binding is missing or disabled. Observation of already-computed
-    cycle objects. Does not alter the productive cycle. PR 6634 also invokes learning outcome ingest after evaluation runtime;
-    non-authorizing observation only.
+  notes: Direct call to record_productive_cycle_capture_v0. No-op if binding is missing
+    or disabled. Observation of already-computed cycle objects. Does not alter the
+    productive cycle. PR 6634 also invokes learning outcome ingest after evaluation
+    runtime; non-authorizing observation only.
 - id: REL:r_wallclock_materializes_ddo_o4_via_wp_c_public_plane
   source: HOST:wallclock_decision_economics_cycle
   type: CALLS
@@ -475,9 +492,12 @@ relations:
   - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_public_plane_convergence_v1.py
   - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
   - src/ops/market_data_private_state_runtime_convergence_v1/o4_n_bars_learning_caller_closure_v1.py
-  notes: Productive DDO O4→N_BARS snapshot reads WP-A facts via WP-C converged_o4_handoff_v1 only. CanonicalPublicMdBarProducerV1
-    remains a bounded writer to WP-A facts, not a competing productive O4 session read. Fail-closed when history is insufficient.
-    Observation-only.
+  - src/ops/peak_trade_public_market_data_runtime_v1/wp_c_converged_o4_public_handoff_v1.py
+  notes: "Productive DDO O4→N_BARS snapshot reads WP-A facts via WP-C converged_o4_handoff_v1\
+    \ only. CanonicalPublicMdBarProducerV1 remains a bounded writer to WP-A facts,\
+    \ not a competing productive O4 session read. Fail-closed when history is insufficient.\
+    \ Observation-only.\n  PR #6993: WP-C facade handoff path indexed; observation-only;\
+    \ ATLAS_AUTHORITY=NONE."
 - id: REL:r_wallclock_calls_learning_outcome_ingest
   source: HOST:wallclock_decision_economics_cycle
   type: CALLS
@@ -486,8 +506,9 @@ relations:
   evidence_sources:
   - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
   - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py
-  notes: invoke_productive_learning_outcome_evidence_ingest_v1 after evaluation runtime. apply_learning_state_feedback_to_next_cycle_v1
-    at cycle start. Non-authorizing; no trading, risk, execution, or promotion authority.
+  notes: invoke_productive_learning_outcome_evidence_ingest_v1 after evaluation runtime.
+    apply_learning_state_feedback_to_next_cycle_v1 at cycle start. Non-authorizing;
+    no trading, risk, execution, or promotion authority.
 - id: REL:r_ddo_capture_persists_ledger
   source: RUNTIME_COMPONENT:ddo_capture_v0
   type: PERSISTS
@@ -497,14 +518,10 @@ relations:
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
   - src/learning/deterministic_decision_outcome_v0/ledger_v0.py
   - src/learning/deterministic_decision_outcome_v0/learning_outcome_evidence_ingest_v1.py
-  notes: 'Ontology has no MAY_PERSIST type. PERSISTS is optional at runtime: append occurs only when ledger_path is set on
-    an enabled capture binding. In-memory captured_records still accumulate without a path.'
-  # atlas_entity_review: PR #6936 — OBSERVES unchanged; DDO capture does not feed elementary_direction; ATLAS_AUTHORITY=NONE.
-  # atlas_entity_review: PR #6937 — OBSERVES unchanged; DDO offline export handoff does not feed elementary_direction; ATLAS_AUTHORITY=NONE.
-  # atlas_entity_review: PR #6974 — OBSERVES unchanged; MV2 admission gate does not alter elementary_direction relation; AUTHORITY=NONE.
+  notes: 'Ontology has no MAY_PERSIST type. PERSISTS is optional at runtime: append
+    occurs only when ledger_path is set on an enabled capture binding. In-memory captured_records
+    still accumulate without a path.'
 - id: REL:r_full_core_cycle_observes_elementary_direction
-  # atlas_entity_review: PR #6982 — kill-switch MV2 wiring only; elementary_direction OBSERVES relation unchanged; AUTHORITY=NONE; POST_COUNT=0.
-  # atlas_entity_review: PR #6955 — Semantic Enforcement Repair V1; canonical_price_provenance threading only; relation semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: OBSERVES
   target: RUNTIME_COMPONENT:elementary_direction_v1
@@ -512,8 +529,9 @@ relations:
   evidence_sources:
   - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
   - src/trading/market_state/elementary_direction_v1.py
-  notes: Passive cycle-result evidence field only. Not Replay input. Not Double Play / ScopeEvent / SideState / Entry consumption.
-    AUTHORITY_EFFECT=NONE. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: Passive cycle-result evidence field only. Not Replay input. Not Double Play
+    / ScopeEvent / SideState / Entry consumption. AUTHORITY_EFFECT=NONE. Atlas is
+    not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_path_calls_venue_translation
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CALLS
@@ -522,7 +540,8 @@ relations:
   evidence_sources:
   - src/ops/full_core_live_path_composition_root_v1/path_v1.py
   - src/ops/full_core_live_path_composition_root_v1/venue_translation_v1.py
-  notes: Offline path calls translator-only venue mapping. Not wire send. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: Offline path calls translator-only venue mapping. Not wire send. Atlas is
+    not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_path_calls_frozen_pretrade
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CALLS
@@ -531,7 +550,8 @@ relations:
   evidence_sources:
   - src/ops/full_core_live_path_composition_root_v1/path_v1.py
   - src/ops/full_core_live_path_composition_root_v1/pretrade_conjunction_v1.py
-  notes: Offline path evaluates frozen pretrade evidence. Not a GET. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: Offline path evaluates frozen pretrade evidence. Not a GET. Atlas is not
+    trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_path_calls_execution_boundary
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CALLS
@@ -542,9 +562,10 @@ relations:
   - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
   - src/ops/full_core_live_path_composition_root_v1/live_execution_port_construction_admission_v1.py
   - src/ops/full_core_live_path_composition_root_v1/cap72_host_join_to_live_execution_port_v1.py
-  notes: Offline path always halts before wire. Typed ExecutionAdmissionDecisionV1 is consumed at this same join point. Construction
-    admission remains required. Host-join attaches the fail-closed LiveExecutionPort handle and is not submission. Not a second
-    execution boundary. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: Offline path always halts before wire. Typed ExecutionAdmissionDecisionV1
+    is consumed at this same join point. Construction admission remains required.
+    Host-join attaches the fail-closed LiveExecutionPort handle and is not submission.
+    Not a second execution boundary. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_path_calls_restart_gate
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CALLS
@@ -552,7 +573,8 @@ relations:
   epistemic_status: FORENSIC_RAW
   evidence_sources:
   - src/ops/full_core_live_path_composition_root_v1/overclaim_guards_v1.py
-  notes: Restart-test surface remains unauthorized. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: Restart-test surface remains unauthorized. Atlas is not trading authority.
+    ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_path_calls_canary_isolation
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CALLS
@@ -560,7 +582,8 @@ relations:
   epistemic_status: FORENSIC_RAW
   evidence_sources:
   - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
-  notes: Canary venue-proof remains distinct from FULL_CORE_LIVE_PATH. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: Canary venue-proof remains distinct from FULL_CORE_LIVE_PATH. Atlas is not
+    trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_path_consumes_models
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CONSUMES
@@ -569,7 +592,8 @@ relations:
   evidence_sources:
   - src/ops/full_core_live_path_composition_root_v1/models_v1.py
   - src/ops/full_core_live_path_composition_root_v1/path_v1.py
-  notes: Offline path consumes TYPE_ONLY dataclasses. Not a wire SCHEMA. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: Offline path consumes TYPE_ONLY dataclasses. Not a wire SCHEMA. Atlas is
+    not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_path_calls_standing_live_gates
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CALLS
@@ -579,9 +603,10 @@ relations:
   - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
   - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
   - src/ops/full_core_live_path_composition_root_v1/live_execution_port_construction_admission_v1.py
-  notes: Package-local LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED remain false. LIVE_ENABLED and LIVE_ARMED standing
-    admission seams do not automatically admit. WIRE_SEND_PERMITTED remains independently fail-closed. Does not supersede
-    GATE:live_authorized_false. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: Package-local LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED remain false.
+    LIVE_ENABLED and LIVE_ARMED standing admission seams do not automatically admit.
+    WIRE_SEND_PERMITTED remains independently fail-closed. Does not supersede GATE:live_authorized_false.
+    Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_path_calls_path_identity
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CALLS
@@ -590,9 +615,10 @@ relations:
   evidence_sources:
   - src/ops/full_core_live_path_composition_root_v1/path_identity_v1.py
   - src/ops/full_core_live_path_composition_root_v1/live_admission_gap_dag_v1.py
-  notes: Productive Live-path identity is FULL_CORE_LIVE_PATH. Next-pointer authority primary is full_core_live_path_authority_v1
-    (SECTION_11_2_1 / 11.2.1 historical compatibility only). Canary / §11.14 remain evidence-domain only. Atlas is not trading
-    authority. ATLAS_AUTHORITY=NONE.
+  notes: Productive Live-path identity is FULL_CORE_LIVE_PATH. Next-pointer authority
+    primary is full_core_live_path_authority_v1 (SECTION_11_2_1 / 11.2.1 historical
+    compatibility only). Canary / §11.14 remain evidence-domain only. Atlas is not
+    trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_path_calls_durable_filegate_join
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CALLS
@@ -601,7 +627,8 @@ relations:
   evidence_sources:
   - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
   - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
-  notes: Halt joins durable FILEGATE as typed admission evidence. Does not admit Live. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: Halt joins durable FILEGATE as typed admission evidence. Does not admit Live.
+    Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_path_calls_owner_one_shot_permit
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CALLS
@@ -610,8 +637,8 @@ relations:
   evidence_sources:
   - src/ops/full_core_live_path_composition_root_v1/owner_one_shot_permit_v1.py
   - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
-  notes: Halt joins typed OWNER_ONE_SHOT permit evidence. Does not admit Live. Does not override FILEGATE. Atlas is not trading
-    authority. ATLAS_AUTHORITY=NONE.
+  notes: Halt joins typed OWNER_ONE_SHOT permit evidence. Does not admit Live. Does
+    not override FILEGATE. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_path_calls_fresh_pretrade_runtime_get
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CALLS
@@ -621,10 +648,12 @@ relations:
   - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
   - src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py
   - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
-  notes: Halt joins typed Fresh Pretrade GET evidence. Does not admit Live. Does not POST. Does not override FILEGATE or permit.
-    S1 data_safety_source_kind stamp does not change this CALLS edge. S2B LIVE_TRADE DataSafetyContext bind is composition-root
-    owned and does not change this CALLS edge. S2C DataSafetyGate.check conjunct does not change this CALLS edge. DataSafetyGate=CONJUNCT_NOT_OWNER.
-    evaluate_execution_admission_v1 remains the sole admission owner. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: Halt joins typed Fresh Pretrade GET evidence. Does not admit Live. Does not
+    POST. Does not override FILEGATE or permit. S1 data_safety_source_kind stamp does
+    not change this CALLS edge. S2B LIVE_TRADE DataSafetyContext bind is composition-root
+    owned and does not change this CALLS edge. S2C DataSafetyGate.check conjunct does
+    not change this CALLS edge. DataSafetyGate=CONJUNCT_NOT_OWNER. evaluate_execution_admission_v1
+    remains the sole admission owner. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_path_calls_live_account_bound
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CALLS
@@ -633,8 +662,9 @@ relations:
   evidence_sources:
   - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
   - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
-  notes: Halt joins typed LIVE_ACCOUNT_BOUND evidence. Does not admit Live. Does not POST. Does not override FILEGATE, permit,
-    or GET. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: Halt joins typed LIVE_ACCOUNT_BOUND evidence. Does not admit Live. Does not
+    POST. Does not override FILEGATE, permit, or GET. Atlas is not trading authority.
+    ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_live_account_bound_composes_fresh_get
   source: GATE:full_core_live_account_bound_v1
   type: CONSUMES
@@ -643,8 +673,9 @@ relations:
   evidence_sources:
   - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
   - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
-  notes: LIVE_ACCOUNT_BOUND seam consumes Fresh GET identity extracts. Bound cannot override GET, permit, or FILEGATE. S1
-    data_safety_source_kind stamp does not change this CONSUMES edge. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: LIVE_ACCOUNT_BOUND seam consumes Fresh GET identity extracts. Bound cannot
+    override GET, permit, or FILEGATE. S1 data_safety_source_kind stamp does not change
+    this CONSUMES edge. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_path_calls_capital_admission
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CALLS
@@ -653,8 +684,9 @@ relations:
   evidence_sources:
   - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
   - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
-  notes: Halt joins typed Capital Admission evidence. Does not admit Live. Does not POST. Does not override FILEGATE, permit,
-    GET, or LIVE_ACCOUNT_BOUND. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: Halt joins typed Capital Admission evidence. Does not admit Live. Does not
+    POST. Does not override FILEGATE, permit, GET, or LIVE_ACCOUNT_BOUND. Atlas is
+    not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_capital_admission_composes_live_account_bound
   source: GATE:full_core_capital_admission_v1
   type: CONSUMES
@@ -663,8 +695,8 @@ relations:
   evidence_sources:
   - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
   - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
-  notes: Capital Admission seam composes LIVE_ACCOUNT_BOUND join. Bound identity is not capital authority. Atlas is not trading
-    authority. ATLAS_AUTHORITY=NONE.
+  notes: Capital Admission seam composes LIVE_ACCOUNT_BOUND join. Bound identity is
+    not capital authority. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_treasury_phase_1_consumes_capital_admission
   source: GATE:treasury_phase_1_offline_contracts_v1
   type: CONSUMES
@@ -673,8 +705,8 @@ relations:
   evidence_sources:
   - src/ops/treasury_phase_1_offline_contracts_v1/capital_boundary_v1.py
   - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
-  notes: Treasury Phase-1 reuses Capital Admission semantics and does not mint RISK_ADMISSIBLE. Atlas is not trading authority.
-    ATLAS_AUTHORITY=NONE.
+  notes: Treasury Phase-1 reuses Capital Admission semantics and does not mint RISK_ADMISSIBLE.
+    Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_treasury_phase_2_consumes_capital_admission
   source: GATE:treasury_phase_2_read_only_reconciliation_v1
   type: CONSUMES
@@ -683,8 +715,8 @@ relations:
   evidence_sources:
   - src/ops/treasury_phase_2_read_only_reconciliation_v1/join_v1.py
   - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
-  notes: Phase-2 read-only reconciliation join calls evaluate_capital_admission_v1 only. No STEP-29P or execution authority.
-    ATLAS_AUTHORITY=NONE.
+  notes: Phase-2 read-only reconciliation join calls evaluate_capital_admission_v1
+    only. No STEP-29P or execution authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_treasury_e1_binding_consumes_funding_balance_read
   source: RUNTIME_COMPONENT:treasury_phase_2_read_only_venue_observation_binding_v1
   type: CONSUMES
@@ -693,7 +725,8 @@ relations:
   evidence_sources:
   - src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/producer_v1.py
   - src/ops/offline_funding_balance_read_producer_v1/producer_v1.py
-  notes: 'E1 edge: single allowlisted funding balance GET via existing offline producer. No POST or transfer. ATLAS_AUTHORITY=NONE.'
+  notes: 'E1 edge: single allowlisted funding balance GET via existing offline producer.
+    No POST or transfer. ATLAS_AUTHORITY=NONE.'
 - id: REL:r_treasury_e1_binding_feeds_phase_2_observation
   source: RUNTIME_COMPONENT:treasury_phase_2_read_only_venue_observation_binding_v1
   type: PRODUCES
@@ -702,8 +735,8 @@ relations:
   evidence_sources:
   - src/ops/treasury_phase_2_read_only_venue_observation_binding_v1/producer_v1.py
   - src/ops/treasury_phase_2_read_only_reconciliation_v1/models_v1.py
-  notes: Emits TreasuryVenueObservationV1 for Phase-2 reconciliation only. Does not evaluate reconciliation or capital admission
-    here. ATLAS_AUTHORITY=NONE.
+  notes: Emits TreasuryVenueObservationV1 for Phase-2 reconciliation only. Does not
+    evaluate reconciliation or capital admission here. ATLAS_AUTHORITY=NONE.
 - id: REL:r_treasury_s1_decrease_binding_consumes_funding_balance_read
   source: RUNTIME_COMPONENT:treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1
   type: CONSUMES
@@ -712,8 +745,8 @@ relations:
   evidence_sources:
   - src/ops/treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1/producer_v1.py
   - src/ops/offline_funding_balance_read_producer_v1/producer_v1.py
-  notes: 'S1 edge: single allowlisted funding balance GET via existing offline producer. No POST, transfer, or withdrawal
-    send. ATLAS_AUTHORITY=NONE.'
+  notes: 'S1 edge: single allowlisted funding balance GET via existing offline producer.
+    No POST, transfer, or withdrawal send. ATLAS_AUTHORITY=NONE.'
 - id: REL:r_treasury_s1_decrease_binding_feeds_phase_2_observation
   source: RUNTIME_COMPONENT:treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1
   type: PRODUCES
@@ -722,7 +755,8 @@ relations:
   evidence_sources:
   - src/ops/treasury_phase_2_read_only_external_capital_decrease_observation_binding_v1/producer_v1.py
   - src/ops/treasury_phase_2_read_only_reconciliation_v1/models_v1.py
-  notes: Emits TreasuryVenueObservationV1 with conservative external depletion mapping for Phase-2 reconciliation only. ATLAS_AUTHORITY=NONE.
+  notes: Emits TreasuryVenueObservationV1 with conservative external depletion mapping
+    for Phase-2 reconciliation only. ATLAS_AUTHORITY=NONE.
 - id: REL:r_treasury_s2_decrease_consumes_s1_observation
   source: RUNTIME_COMPONENT:treasury_external_capital_decrease_s2_admission_runtime_join_v1
   type: CONSUMES
@@ -740,7 +774,8 @@ relations:
   evidence_sources:
   - src/ops/treasury_external_capital_decrease_s2_admission_runtime_join_v1/join_v1.py
   - src/ops/treasury_phase_2_read_only_reconciliation_v1/join_v1.py
-  notes: S2 reuses join_treasury_reconciliation_into_capital_admission_v1; no parallel capital authority. ATLAS_AUTHORITY=NONE.
+  notes: S2 reuses join_treasury_reconciliation_into_capital_admission_v1; no parallel
+    capital authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_treasury_s2_decrease_feeds_productive_capital_admission_seam
   source: RUNTIME_COMPONENT:treasury_external_capital_decrease_s2_admission_runtime_join_v1
   type: PRODUCES
@@ -749,8 +784,8 @@ relations:
   evidence_sources:
   - src/ops/treasury_external_capital_decrease_s2_admission_runtime_join_v1/join_v1.py
   - src/ops/full_core_live_path_composition_root_v1/capital_admission_v1.py
-  notes: Productive runtime join into join_capital_admission_into_admission_inputs_v1 optional decrease observation path.
-    ATLAS_AUTHORITY=NONE.
+  notes: Productive runtime join into join_capital_admission_into_admission_inputs_v1
+    optional decrease observation path. ATLAS_AUTHORITY=NONE.
 - id: REL:r_treasury_e4_consumes_phase2_capital_admission_join
   source: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_v1
   type: CONSUMES
@@ -759,8 +794,8 @@ relations:
   evidence_sources:
   - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/join_v1.py
   - src/ops/treasury_phase_2_read_only_reconciliation_v1/join_v1.py
-  notes: 'E4 edge: consumes TreasuryCapitalAdmissionJoinV1 from Phase-2 capital admission join. Does not re-evaluate capital
-    admission. ATLAS_AUTHORITY=NONE.'
+  notes: 'E4 edge: consumes TreasuryCapitalAdmissionJoinV1 from Phase-2 capital admission
+    join. Does not re-evaluate capital admission. ATLAS_AUTHORITY=NONE.'
 - id: REL:r_treasury_e4_feeds_account_equity_orchestration_ingress
   source: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_v1
   type: PRODUCES
@@ -769,7 +804,8 @@ relations:
   evidence_sources:
   - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/join_v1.py
   - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/models_v1.py
-  notes: Emits AccountEquityOrchestrationIngressV1 for governed account-equity orchestration only. No equity value mint. ATLAS_AUTHORITY=NONE.
+  notes: Emits AccountEquityOrchestrationIngressV1 for governed account-equity orchestration
+    only. No equity value mint. ATLAS_AUTHORITY=NONE.
 - id: REL:r_treasury_e4_productive_host_consumes_e4_orchestration
   source: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1
   type: CONSUMES
@@ -778,7 +814,8 @@ relations:
   evidence_sources:
   - src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py
   - src/ops/treasury_capital_admission_to_account_equity_orchestration_v1/join_v1.py
-  notes: Productive host join reuses E4 orchestration join output; no parallel E4 owner. ATLAS_AUTHORITY=NONE.
+  notes: Productive host join reuses E4 orchestration join output; no parallel E4
+    owner. ATLAS_AUTHORITY=NONE.
 - id: REL:r_treasury_e4_productive_host_consumes_orchestration_ingress
   source: RUNTIME_COMPONENT:treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1
   type: CONSUMES
@@ -787,8 +824,8 @@ relations:
   evidence_sources:
   - src/ops/governed_productive_account_equity_authority_producer_v1/evaluate_treasury_capital_admission_orchestration_ingress_at_productive_host_v1.py
   - src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py
-  notes: Productive host evaluation consumes E4 AccountEquityOrchestrationIngressV1 at ops.governed_productive_account_equity_authority_producer_v1
-    boundary. ATLAS_AUTHORITY=NONE.
+  notes: Productive host evaluation consumes E4 AccountEquityOrchestrationIngressV1
+    at ops.governed_productive_account_equity_authority_producer_v1 boundary. ATLAS_AUTHORITY=NONE.
 - id: REL:r_treasury_phase_3_consumes_phase_2_reconciliation
   source: GATE:treasury_phase_3_shadow_enforcement_v1
   type: CONSUMES
@@ -797,8 +834,8 @@ relations:
   evidence_sources:
   - src/ops/treasury_phase_3_shadow_enforcement_v1/join_v1.py
   - src/ops/treasury_phase_2_read_only_reconciliation_v1/reconciliation_v1.py
-  notes: Phase-3 reuses evaluate_treasury_read_only_reconciliation_v1 only. Does not call capital admission join or STEP-29P.
-    ATLAS_AUTHORITY=NONE.
+  notes: Phase-3 reuses evaluate_treasury_read_only_reconciliation_v1 only. Does not
+    call capital admission join or STEP-29P. ATLAS_AUTHORITY=NONE.
 - id: REL:r_treasury_phase_3_consumes_separation_gate
   source: GATE:treasury_phase_3_shadow_enforcement_v1
   type: CONSUMES
@@ -808,8 +845,8 @@ relations:
   - src/ops/treasury_phase_3_shadow_enforcement_v1/join_v1.py
   - src/ops/treasury_phase_3_shadow_enforcement_v1/shadow_http_v1.py
   - src/ops/treasury_separation_gate.py
-  notes: Reuses evaluate_treasury_policy for bot-role treasury mutation deny. Wired on §11.13 read-only HTTP clients only.
-    ATLAS_AUTHORITY=NONE.
+  notes: Reuses evaluate_treasury_policy for bot-role treasury mutation deny. Wired
+    on §11.13 read-only HTTP clients only. ATLAS_AUTHORITY=NONE.
 - id: REL:r_treasury_phase_3_produces_shadow_enforcement_result
   source: GATE:treasury_phase_3_shadow_enforcement_v1
   type: PRODUCES
@@ -818,7 +855,8 @@ relations:
   evidence_sources:
   - src/ops/treasury_phase_3_shadow_enforcement_v1/join_v1.py
   - src/ops/treasury_phase_3_shadow_enforcement_v1/models_v1.py
-  notes: Shadow observe/enforce result only. capital_uplift_permitted remains false. ATLAS_AUTHORITY=NONE.
+  notes: Shadow observe/enforce result only. capital_uplift_permitted remains false.
+    ATLAS_AUTHORITY=NONE.
 - id: REL:r_treasury_phase_3_wires_shadow_http_surfaces
   source: GATE:treasury_phase_3_shadow_enforcement_v1
   type: CONSUMES
@@ -828,8 +866,8 @@ relations:
   - src/ops/section_11_13_2_live_private_read_only_v1/http_client_v1.py
   - src/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_v1/http_client_v1.py
   - src/ops/section_11_13_4_live_dry_run_order_plan_v1/http_client_v1.py
-  notes: Binding is limited to §11.13 read-only/shadow HTTP allowlist checks. Full-Core composition root productive authority
-    graph unchanged. ATLAS_AUTHORITY=NONE.
+  notes: Binding is limited to §11.13 read-only/shadow HTTP allowlist checks. Full-Core
+    composition root productive authority graph unchanged. ATLAS_AUTHORITY=NONE.
 - id: REL:r_treasury_pdf_rebind_census_consumes_treasury_phases
   source: RUNTIME_COMPONENT:treasury_pdf_current_head_rebind_and_census_v1
   type: CONSUMES
@@ -838,7 +876,8 @@ relations:
   evidence_sources:
   - src/ops/treasury_pdf_current_head_rebind_and_census_v1/census_v1.py
   - tests/ops/test_treasury_pdf_current_head_rebind_and_census_v1.py
-  notes: Offline census reads Phase-1/2/3 constants and interference proof only. Does not authorize network or mutation. ATLAS_AUTHORITY=NONE.
+  notes: Offline census reads Phase-1/2/3 constants and interference proof only. Does
+    not authorize network or mutation. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_standing_live_gates_deny_treasury_mutation
   source: GATE:full_core_live_path_standing_live_gates_v1
   type: DENIES
@@ -847,8 +886,8 @@ relations:
   evidence_sources:
   - src/ops/treasury_phase_1_offline_contracts_v1/authority_v1.py
   - src/ops/full_core_live_path_composition_root_v1/constants_v1.py
-  notes: LIVE_ENABLED, LIVE_ARMED, and WIRE_SEND_PERMITTED cannot mint Treasury mutation authority. Atlas is not trading authority.
-    ATLAS_AUTHORITY=NONE.
+  notes: LIVE_ENABLED, LIVE_ARMED, and WIRE_SEND_PERMITTED cannot mint Treasury mutation
+    authority. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_fresh_pretrade_get_composes_permit
   source: GATE:full_core_fresh_pretrade_runtime_get_v1
   type: CONSUMES
@@ -857,8 +896,9 @@ relations:
   evidence_sources:
   - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
   - src/ops/full_core_live_path_composition_root_v1/owner_one_shot_permit_v1.py
-  notes: Fresh GET seam composes OWNER_ONE_SHOT permit join. GET cannot override permit or FILEGATE. S1 data_safety_source_kind
-    stamp does not change this CONSUMES edge. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: Fresh GET seam composes OWNER_ONE_SHOT permit join. GET cannot override permit
+    or FILEGATE. S1 data_safety_source_kind stamp does not change this CONSUMES edge.
+    Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_owner_one_shot_permit_composes_filegate
   source: GATE:full_core_owner_one_shot_permit_v1
   type: CONSUMES
@@ -867,7 +907,8 @@ relations:
   evidence_sources:
   - src/ops/full_core_live_path_composition_root_v1/owner_one_shot_permit_v1.py
   - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
-  notes: Permit seam composes FILEGATE join. Permit cannot override FILEGATE. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: Permit seam composes FILEGATE join. Permit cannot override FILEGATE. Atlas
+    is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_filegate_join_reads_filegate
   source: GATE:full_core_durable_filegate_join_v1
   type: CONSUMES
@@ -876,7 +917,8 @@ relations:
   evidence_sources:
   - src/ops/full_core_live_path_composition_root_v1/durable_filegate_join_v1.py
   - src/ops/gates/risk_gate.py
-  notes: Single FILEGATE authority. Join does not write StatePersistence. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: Single FILEGATE authority. Join does not write StatePersistence. Atlas is
+    not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_step_29p_fresh_get_fetches_okx_eea
   source: RUNTIME_COMPONENT:full_core_step_29p_fresh_venue_evidence_v1
   type: FETCHES
@@ -885,8 +927,8 @@ relations:
   evidence_sources:
   - src/ops/full_core_step_29p_fresh_venue_evidence_v1/execute_v1.py
   - src/ops/full_core_live_path_composition_root_v1/step_29p_capital_risk_admissibility_v1.py
-  notes: GET-only sibling produces typed observation for 29P evaluation. Observation is not 29P equity authority. Does not
-    POST. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: GET-only sibling produces typed observation for 29P evaluation. Observation
+    is not 29P equity authority. Does not POST. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_step_29p_fresh_get_denies_wire
   source: RUNTIME_COMPONENT:full_core_step_29p_fresh_venue_evidence_v1
   type: DENIES
@@ -895,7 +937,8 @@ relations:
   evidence_sources:
   - src/ops/full_core_step_29p_fresh_venue_evidence_v1/execute_v1.py
   - src/ops/full_core_live_path_composition_root_v1/execution_boundary_v1.py
-  notes: Fresh GET execute cannot halt-bypass or construct LiveExecutionPort. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: Fresh GET execute cannot halt-bypass or construct LiveExecutionPort. Atlas
+    is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_portfolio_capital_reservation_budget_consumes_sizing
   source: GATE:portfolio_capital_reservation_budget_v1
   type: CONSUMES
@@ -904,8 +947,9 @@ relations:
   evidence_sources:
   - src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py
   - src/governance/capital_risk_sizing_v1.py
-  notes: Portfolio budget calls the existing quantity owner after a snapshot. It does not become a second sizing authority.
-    N>1 stays unauthorized. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+  notes: Portfolio budget calls the existing quantity owner after a snapshot. It does
+    not become a second sizing authority. N>1 stays unauthorized. Atlas is not trading
+    authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_enter_live_29p_join_consumes_portfolio_budget
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CONSUMES
@@ -920,8 +964,9 @@ relations:
   - tests/ops/test_full_core_current_productive_enter_live_29p_portfolio_join_v1.py
   - tests/ops/test_current_productive_mv2_capital_context_rebind_v1.py
   - tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py
-  notes: ENTER Live-29P join optionally calls admit_sized_slot_reservation_v1 when portfolio_budget_owner and slot context
-    are paired. PR_6744 rebinds MV2 capital context from typed 29P equity before sizing; legacy path unchanged without the
+  notes: ENTER Live-29P join optionally calls admit_sized_slot_reservation_v1 when
+    portfolio_budget_owner and slot context are paired. PR_6744 rebinds MV2 capital
+    context from typed 29P equity before sizing; legacy path unchanged without the
     pair. Does not authorize external effect or N>1. ATLAS_AUTHORITY=NONE.
 - id: REL:r_p1_max_evidence_campaign_consumes_witness_foundation
   source: RUNTIME_COMPONENT:p1_max_evidence_campaign_to_next_real_blocker_v1
@@ -932,8 +977,8 @@ relations:
   - src/ops/governed_productive_account_equity_authority_producer_v1/p1_max_evidence_campaign_to_next_real_blocker_v1.py
   - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
   - tests/ops/test_full_core_p1_max_evidence_campaign_to_next_real_blocker_v1.py
-  notes: 'Bounded read-only P1 evidence campaign persists witness adjudication and consumes sealed #6666 witness foundation
-    for #6665 re-evaluation. ATLAS_AUTHORITY=NONE.'
+  notes: 'Bounded read-only P1 evidence campaign persists witness adjudication and
+    consumes sealed #6666 witness foundation for #6665 re-evaluation. ATLAS_AUTHORITY=NONE.'
 - id: REL:r_p1_currency_domain_witness_consumes_witness_foundation
   source: RUNTIME_COMPONENT:p1_currency_domain_completeness_witness_v1
   type: CONSUMES
@@ -943,8 +988,8 @@ relations:
   - src/ops/governed_productive_account_equity_authority_producer_v1/p1_currency_domain_completeness_witness_v1.py
   - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
   - tests/ops/test_full_core_p1_currency_domain_completeness_witness_v1.py
-  notes: 'P1 currency-domain completeness witness persists closed-world enumeration and sealed interest-accrued exhaustion
-    composition for #6666 and #6665. ATLAS_AUTHORITY=NONE.'
+  notes: 'P1 currency-domain completeness witness persists closed-world enumeration
+    and sealed interest-accrued exhaustion composition for #6666 and #6665. ATLAS_AUTHORITY=NONE.'
 - id: REL:r_p1_liability_governance_witness_consumes_witness_foundation
   source: RUNTIME_COMPONENT:p1_liability_event_class_governance_and_ratified_query_class_set_v1
   type: CONSUMES
@@ -954,8 +999,8 @@ relations:
   - src/ops/governed_productive_account_equity_authority_producer_v1/p1_liability_event_class_governance_and_ratified_query_class_set_v1.py
   - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
   - tests/ops/test_full_core_p1_liability_event_class_governance_v1.py
-  notes: 'P1 liability event-class governance witness persists ratified query-class set without global EQUITY_STOCK kind-set
-    uplift for #6666 LIABILITY root. ATLAS_AUTHORITY=NONE.'
+  notes: 'P1 liability event-class governance witness persists ratified query-class
+    set without global EQUITY_STOCK kind-set uplift for #6666 LIABILITY root. ATLAS_AUTHORITY=NONE.'
 - id: REL:r_p1_bounded_traversal_witness_consumes_witness_foundation
   source: RUNTIME_COMPONENT:p1_bounded_query_traversal_completeness_witness_v1
   type: CONSUMES
@@ -965,8 +1010,8 @@ relations:
   - src/ops/governed_productive_account_equity_authority_producer_v1/p1_bounded_query_traversal_completeness_witness_v1.py
   - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
   - tests/ops/test_full_core_p1_bounded_query_traversal_completeness_witness_v1.py
-  notes: 'P1 bounded query traversal witness persists pagination and ordering roots from sealed interest-accrued packs for
-    #6666 and #6665. ATLAS_AUTHORITY=NONE.'
+  notes: 'P1 bounded query traversal witness persists pagination and ordering roots
+    from sealed interest-accrued packs for #6666 and #6665. ATLAS_AUTHORITY=NONE.'
 - id: REL:r_p1_final_closeout_pr1_consumes_witness_foundation
   source: RUNTIME_COMPONENT:p1_final_closeout_pr1_of_2_v1
   type: CONSUMES
@@ -976,8 +1021,8 @@ relations:
   - src/ops/governed_productive_account_equity_authority_producer_v1/p1_final_closeout_pr1_of_2_v1.py
   - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
   - tests/ops/test_full_core_p1_final_closeout_pr1_of_2_v1.py
-  notes: 'P1 final closeout PR 1/2 persists freshness/time/restart witnesses and re-evaluates #6665 via foundation bundle.
-    ATLAS_AUTHORITY=NONE.'
+  notes: 'P1 final closeout PR 1/2 persists freshness/time/restart witnesses and re-evaluates
+    #6665 via foundation bundle. ATLAS_AUTHORITY=NONE.'
 - id: REL:r_p1_negative_completeness_closeout_consumes_witness_foundation
   source: RUNTIME_COMPONENT:p1_negative_completeness_closeout_contract_v1
   type: CONSUMES
@@ -988,5 +1033,5 @@ relations:
   - src/ops/governed_productive_account_equity_authority_producer_v1/p1_completeness_witness_foundation_v1.py
   - tests/ops/test_full_core_p1_completeness_witness_foundation_v1.py
   - tests/ops/test_full_core_p1_negative_completeness_closeout_contract_v1.py
-  notes: P1 negative closeout (#6665) maps sealed witness bundle flags into completeness requirement matrix fail-closed. No
-    trading authority. ATLAS_AUTHORITY=NONE.
+  notes: P1 negative closeout (#6665) maps sealed witness bundle flags into completeness
+    requirement matrix fail-closed. No trading authority. ATLAS_AUTHORITY=NONE.

@@ -5420,6 +5420,25 @@
       ],
       "closure_adjudication_class": "OPEN_EVIDENCE",
       "closure_note": "Activation boundary forensic review; fail-closed."
+    },
+    {
+      "id": "pr_6993_dynamic_scope_authority_and_productive_bridge_boundaries_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #6993: Dynamic Scope productive magnitude uses canonical mark × canonical volatility; Layer-C derives event distances from that single dynamic magnitude; Cap 6.2 restart continuity restored. WP1 closes governed F1/M9 productive-parameter seam / delegated presence-gate wiring on hardened bridge. WP2 routes WP-C O4 handoff via peak_trade_public_market_data_runtime_v1 facade (no private-state bridge import). CLEAN_CORE_SEAL_V1 manifest re-pin for reviewed Master-V2 scope/replay census paths only. Diff-bound MAP_UPDATE_REQUIRED + Atlas topology review; does not alter CURRENT interaction authority edges, owners, safety gates, or trading semantics. AUTHORITY=NONE; POST_COUNT=0.",
+      "evidence_refs": [
+        "docs/ops/specs/CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1.md",
+        "docs/ops/specs/MODEL_C_DYNAMIC_SCOPE_DERIVED_SWITCH_EVENT_THRESHOLDS_CONTRACT_V1.md",
+        "docs/ops/specs/MODEL_C_UP_DISTANCE_SWITCH_VS_PROFIT_PROTECTION_AUTHORITY_SPLIT_V1.md",
+        "src/trading/master_v2/canonical_scope_initialization_v1.py",
+        "src/trading/master_v2/layer_c_scope_event_distance_binding_v1.py",
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py",
+        "src/ops/peak_trade_public_market_data_runtime_v1/wp_c_converged_o4_public_handoff_v1.py",
+        "tests/ops/test_dynamic_scope_persistence_binding_v1.py",
+        "tests/trading/master_v2/test_double_play_runtime_typed_volatility_presence_gate_v1.py",
+        "tests/ops/test_wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.py"
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "Governance/map/atlas/seal closure for reviewed productive wiring; AUTHORITY=NONE."
     }
   ]
 }

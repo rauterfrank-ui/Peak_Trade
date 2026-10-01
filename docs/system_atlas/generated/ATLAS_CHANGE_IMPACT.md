@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
-ATLAS_CHANGED_RELATION_COUNT=5
+ATLAS_CHANGED_ENTITY_COUNT=13
+ATLAS_CHANGED_RELATION_COUNT=7
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,18 +40,31 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
-| `CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1` |
+| `CAPABILITY:market_data_private_state_runtime_convergence_v1` |
+| `CONTRACT:p5_10_productive_activation_and_binding_v1` |
+| `HOST:wallclock_decision_economics_cycle` |
+| `NAVIGATION_INDEX:map_of_truth` |
+| `RUNTIME_COMPONENT:ddo_capture_v0` |
+| `RUNTIME_COMPONENT:ddo_learning_outcome_ingest_v1` |
+| `RUNTIME_COMPONENT:dp_volatility_presence_gate` |
+| `RUNTIME_COMPONENT:elementary_direction_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `RUNTIME_COMPONENT:m10_productive_parameter_lineage_closure_v1` |
+| `RUNTIME_COMPONENT:mv2_canonical_scope` |
+| `RUNTIME_COMPONENT:mv2_integrated_replay` |
+| `SUBSYSTEM:master_v2` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget` |
-| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_s8_addressing` |
-| `REL:s_fa_productive_runtime_orchestrator_depends_on_mv2_dp_handoff` |
-| `REL:s_fa_productive_runtime_orchestrator_depends_on_n1_host_join_readiness` |
-| `REL:s_fa_productive_runtime_orchestrator_depends_on_portfolio_budget` |
+| `REL:r_ddo_capture_observes_integrated_replay` |
+| `REL:r_full_core_cycle_observes_elementary_direction` |
+| `REL:r_wallclock_calls_ddo_cycle_capture` |
+| `REL:r_wallclock_calls_learning_outcome_ingest` |
+| `REL:r_wallclock_injects_ddo_capture_session` |
+| `REL:r_wallclock_materializes_ddo_o4_via_wp_c_public_plane` |
+| `REL:s_wp_c_o4_n_bars_learning_handoff_to_wallclock_ddo` |
 
 ## NEW_RELATIONS
 
@@ -97,8 +110,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6980: Cap24 runtime binding witness epoch + Owner-GO baseline re-pin 7a3597e; productive PRE_EXTERNAL integration only; MV2/DP strategy unchanged; AUTHORITY=NONE; POST_COUNT=0.
+- PR #6993: dynamic scope authority + productive bridge boundary atlas review; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_6980_NATURAL_ENTER_CAUSAL_BLOCKER_RESOLUTION_V1
+- modified_by=PR_6993_DYNAMIC_SCOPE_BRIDGE_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

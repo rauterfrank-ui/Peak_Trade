@@ -148,7 +148,7 @@
       "id": "SEAL_CORE_11",
       "path": "src/trading/master_v2/canonical_scope_initialization_v1.py",
       "mode": "WHOLE_FILE",
-      "content_sha256": "c1e2fb95bd2a6c47498bf2f7a4375413c02f3965774607f355b1b2f248c6e21e"
+      "content_sha256": "e9820c03c66720e9a64f810706f125649453cd0bb8422bb6ff9d97647957b617"
     },
     {
       "id": "SEAL_CORE_12",
@@ -298,7 +298,7 @@
         "compute_entry_exit_policy_input_digest",
         "evaluate_double_play_entry_exit_policy_v0"
       ],
-      "ast_sha256": "90f89ec65cb906d47bc519c33cc4a361f6cd489cee9ece620751f5e779d13f64"
+      "ast_sha256": "017693b48e4fd4225e24602e63958b8b55d4d3b0d6954fc30d126fbed67e306f"
     },
     {
       "id": "SEAL_CORE_17",
