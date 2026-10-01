@@ -3,28 +3,24 @@
   "authority_effect": "NONE",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT",
-  "reason": "PR #6995: Fresh-C1 dynamic GET cache repair; law candidate surfaces touched for diff-bound bookkeeping only; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #6996: productive GET budget contract repair; law candidate surfaces touched for diff-bound bookkeeping only; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py",
-    "tests/ops/full_core_live_path_composition_root_v1/test_golden_happy_fresh_c1_dynamic_get_cache_repair_v1.py",
-    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py",
-    "tests/ops/test_current_productive_s6_live_fresh_c1_mark_attachment_v1.py"
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_get_budget_contract_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+    "tests/ops/full_core_live_path_composition_root_v1/test_productive_bounded_continuous_get_budget_contract_v1.py"
   ],
-  "changed_paths_sha256": "ba43858c3be543c444d134f8872cd27922d118956aef7f51f15c98011fb7d547",
-  "base_sha": "663dfc352cc44ae05311ce8846167eb47165d28a",
+  "changed_paths_sha256": "b5a60c8f7db8dc2a5388fe87b83dc1890b97a847e347200f2c75d57b82f65349",
+  "base_sha": "b730dd6465b2ac3d7e099565ae1c7af2410c3727",
   "evidence_refs": [
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "tests/ops/full_core_live_path_composition_root_v1/test_golden_happy_fresh_c1_dynamic_get_cache_repair_v1.py"
+    "tests/ops/full_core_live_path_composition_root_v1/test_productive_bounded_continuous_get_budget_contract_v1.py"
   ]
 }
