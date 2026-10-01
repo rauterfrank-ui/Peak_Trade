@@ -118,6 +118,8 @@
     "docs/ops/specs/CURRENT_PRODUCTIVE_GOLDEN_HAPPY_VECTOR_FORENSIC_OBSERVABILITY_V1.md",
     "src/ops/full_core_live_path_composition_root_v1/productive_golden_happy_vector_forensic_observability_v1.py",
     "tests/ops/test_productive_golden_happy_vector_forensic_observability_v1.py",
+    "scripts/ops/run_golden_happy_natural_data_offline_witness_adjudication_v1.py",
+    "tests/ops/test_golden_happy_offline_replay_g17_provision_parity_v1.py",
     "tests/ops/full_core_live_path_composition_root_v1/",
     "tests/ops/test_current_productive_s6_live_fresh_c1_mark_attachment_v1.py",
     "tests/ops/test_current_productive_semantic_enforcement_repair_v1.py",

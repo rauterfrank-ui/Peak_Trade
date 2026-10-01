@@ -3,51 +3,24 @@
   "authority_effect": "NONE",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT",
-  "reason": "PR #6999: default-off forensic signal/entry-state observability; Atlas entity review recorded; no CSIA source_v1.json semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #7000: offline forensic Golden Happy G17 replay provision parity (harness vs same-observation natural checkpoint); tests only; no CSIA source_v1.json semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "docs/ops/specs/CURRENT_PRODUCTIVE_GOLDEN_HAPPY_VECTOR_FORENSIC_OBSERVABILITY_V1.md",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "docs/system_atlas/relations/runtime.yaml",
-    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/productive_golden_happy_vector_forensic_observability_v1.py",
-    "tests/ops/test_productive_golden_happy_vector_forensic_observability_v1.py"
+    "scripts/ops/run_golden_happy_natural_data_offline_witness_adjudication_v1.py",
+    "tests/ops/test_golden_happy_offline_replay_g17_provision_parity_v1.py"
   ],
-  "changed_paths_sha256": "29c622aaefbe069c634178688a580c5817cb8ff31143cca4a3f2528af5edad69",
-  "base_sha": "ba4391ec0647ee0a6929ea8b5e42b94d6f405784",
+  "changed_paths_sha256": "d23b4024263d6568be6e214f5cbcc859615c2a6f8f96a00f8ec3a72aa4ac6d08",
+  "base_sha": "45c4455288184ccd391bdd72b554a73518725e82",
   "evidence_refs": [
-    "docs/ops/specs/CURRENT_PRODUCTIVE_GOLDEN_HAPPY_VECTOR_FORENSIC_OBSERVABILITY_V1.md",
-    "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "tests/ops/test_productive_golden_happy_vector_forensic_observability_v1.py"
+    "tests/ops/test_golden_happy_offline_replay_g17_provision_parity_v1.py"
   ],
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "docs/ops/specs/CURRENT_PRODUCTIVE_GOLDEN_HAPPY_VECTOR_FORENSIC_OBSERVABILITY_V1.md",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "docs/system_atlas/relations/runtime.yaml",
-    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/productive_golden_happy_vector_forensic_observability_v1.py",
-    "tests/ops/test_productive_golden_happy_vector_forensic_observability_v1.py"
+    "scripts/ops/run_golden_happy_natural_data_offline_witness_adjudication_v1.py",
+    "tests/ops/test_golden_happy_offline_replay_g17_provision_parity_v1.py"
   ]
 }
