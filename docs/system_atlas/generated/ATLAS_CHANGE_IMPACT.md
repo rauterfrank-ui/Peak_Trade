@@ -40,9 +40,9 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `GATE:full_core_fresh_pretrade_runtime_get_v1` |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
 | `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -94,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #6996: productive GET budget contract atlas review; bounded poll wiring only; no cache policy change; Real-Venue budget repair not reproven; AUTHORITY=NONE; POST_COUNT=0.
+- PR #6997: selection rotation vs sidestate cursor reconciliation atlas review; startup wiring only; no MV2/DP/trading semantics; Real-Venue effectiveness not reproven; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_6996_PRODUCTIVE_GET_BUDGET_CONTRACT_V1
+- modified_by=PR_6997_SELECTION_ROTATION_CURSOR_RECONCILIATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
