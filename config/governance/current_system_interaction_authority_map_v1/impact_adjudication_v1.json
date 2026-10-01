@@ -2,19 +2,28 @@
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "src/ops/hard_facts_system_closure_v1/__init__.py",
     "tests/ops/test_n5_canonical_productive_entry_import_cycle_v1.py"
   ],
-  "changed_paths_sha256": "7cd97902c1629e6d2e071122804bbbfcafceab1387ba474e0655e4e90a8d8c1b",
+  "changed_paths_sha256": "0e273289658737fc9e6de3f346da4479e3ec9ce2eaeae5aef5ce584a1b4ae02b",
   "base_sha": "c60ac741fad326fd9a7c61029989184671ac2687",
   "authority_effect": "NONE",
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
-  "reason": "PR #6991: canonical N5 entry import-cycle decoupling only (lazy hard-facts MF-N5 handoff re-export in package __init__); regression test classification. No interaction-authority semantic change; AUTHORITY=NONE.",
+  "reason": "PR #6991: N5 canonical entry import-cycle decoupling (lazy hard-facts MF-N5 handoff re-export) plus Atlas navigation-only entity review and regenerated ATLAS_CHANGE_IMPACT; no CSIA interaction-authority semantic change; AUTHORITY=NONE.",
   "evidence_refs": [
+    "docs/system_atlas/entities/catalog.yaml",
     "src/ops/hard_facts_system_closure_v1/__init__.py",
     "tests/ops/test_n5_canonical_productive_entry_import_cycle_v1.py"
   ],
   "covered_candidate_paths": [
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "src/ops/hard_facts_system_closure_v1/__init__.py",
     "tests/ops/test_n5_canonical_productive_entry_import_cycle_v1.py"
   ],
