@@ -3,24 +3,29 @@
   "authority_effect": "NONE",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT",
-  "reason": "PR #6997: selection rotation cursor reconciliation; law candidate catalog extended for new regression test path; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #6998: natural market-data capture is observation-only ops wiring; no law semantic mutation; Atlas/map currency closure only; AUTHORITY=NONE; POST_COUNT=0.",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "docs/ops/specs/CURRENT_PRODUCTIVE_NATURAL_MARKET_DATA_CAPTURE_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
-    "tests/ops/test_current_productive_selection_rotation_cursor_reconciliation_v1.py"
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/productive_natural_market_data_capture_sink_v1.py",
+    "tests/ops/test_productive_natural_market_data_capture_sink_v1.py"
   ],
-  "changed_paths_sha256": "aedd43cc5512909806336ed9f2ac51fabe2f7c854e52f38aee7ca3481d0724ad",
-  "base_sha": "04a15384f9bea72e35297fdfa674f012afd8a7e6",
+  "changed_paths_sha256": "7a1307a1aefcca1861a9222dc49727cec1543167cc7d75ce73d9195b57cc2607",
+  "base_sha": "9b713d2a0116f8ae842d941aa4534eb602d0210d",
   "evidence_refs": [
+    "docs/ops/specs/CURRENT_PRODUCTIVE_NATURAL_MARKET_DATA_CAPTURE_V1.md",
     "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "tests/ops/test_current_productive_selection_rotation_cursor_reconciliation_v1.py"
+    "tests/ops/test_productive_natural_market_data_capture_sink_v1.py"
   ]
 }
