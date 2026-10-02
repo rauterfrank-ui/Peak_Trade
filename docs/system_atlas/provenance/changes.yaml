@@ -512,3 +512,12 @@ changes:
   notes: 'PR #7012: rebind Safety/KS typed evidence when forensic synthetic enter_short overlay
     applies; offline GHV harness proves PRE_EXTERNAL terminal with fresh-pretrade fixtures;
     no POST/threshold/GHV semantic change; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_venue_plan_runtime_object_identity_v1
+  from: 0282076d39c76d98b674e721571d887877d3fb45
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_ghv_observe_shaped_venue_plan_object_identity_v1.py
+  notes: 'Venue-plan object identity: reapply PR7012 safety reprojection on post-live-29p replay
+    before try_bind_current_productive_venue_plan_v1; observe-shaped product-parity regression;
+    no POST/safety bypass; ATLAS_AUTHORITY=NONE.'

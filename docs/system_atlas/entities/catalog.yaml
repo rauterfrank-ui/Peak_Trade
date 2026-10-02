@@ -982,13 +982,13 @@ entities:
   notes: 'S8_HARNESS_BIND_OCCUPIED_LANE_GOVERNED_CYCLE_ROOTS_WITHOUT_INVOKE harness-only path bind: reuse S3 lane_state_root as cursor_store_root and address distinct lock_root plus evidence_root under that same root. Does not invoke the governed cycle, write disk, or mutate S7 compose. N=1 global cursor path is rejected. Cap61 remains state_root=None and persist=False inside the existing cycle. NEW_STATE_OWNER_CREATED=false. CAP61_STATE_ROOT_BOUND=false. HOST_JOIN=false. MF_PRODUCTIVE_JOIN=false. MAY_INVOKE_GOVERNED_CYCLE=false. RUNTIME_AUTHORITY_EFFECT=NONE. No cursor schema change. P5_10_PRODUCTIVE_ACTIVATION_AND_BINDING_V1: when bind enabled, uses productive_layered_core_bind_cycle_kwargs_v1 (scope carrier + store gate) into cycle. Not ranking, selection, trading-authority, runtime-activation, or execution authority. MAX_POSITIONS_EFFECTIVE remains 1. MULTI_FUTURE_RUNTIME_AUTHORIZED=false. EXECUTION_CONCURRENCY_AUTHORIZED=false. PREPARED_BOUND_CARDINALITY remains 0..5. PRODUCTIVE_RUNTIME_CARDINALITY
     remains 1_UNJOINED. CROSS_UNIVERSE_* remain false. Shared mutable state remains false. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.'
 - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
-  # atlas_entity_review: PR #7011 T2 classifies ENTER from post-synthetic-overlay replay; sync cycle_result; no POST change.
+  # atlas_entity_review: PR venue-plan object-identity — reapply PR7012 safety reprojection on live_29p.replay before venue plan.
   kind: CONTRACT
   name: CURRENT MF N=5 Full-Autonomy occupied-lane governed-cycle N=1 consumer join
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
-  modified_by: PR_7011_GHV_SYNTHETIC_ENTER_S5_PROPAGATION_V1
+  modified_by: PR_VENUE_PLAN_RUNTIME_OBJECT_IDENTITY_V1
   authority_sources:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_GOVERNED_CYCLE_N1_CONSUMER_JOIN_CONTRACT_V1.md
@@ -1004,6 +1004,7 @@ entities:
   - tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py
   - tests/ops/test_golden_happy_t2_cycle1_ghv_synthetic_regression_v1.py
   - tests/ops/test_ghv_synthetic_enter_s5_propagation_v1.py
+  - tests/ops/test_ghv_observe_shaped_venue_plan_object_identity_v1.py
   notes: GOVERNED_CYCLE_N1_CONSUMER_JOIN_TO_PRE_EXTERNAL_EFFECT consumes S8 lane-local cursor_store_root, lock_root, and evidence_root and invokes the existing governed cycle once per occupied lane. EG is NON-V5. T2 is S7 compose_occupied_lane_mv2_dp_durable_cycle_v1. native_id is BoundInstrumentV1.venue_native_id. Cap61 stays state_root=None persist=False. Cursor owner remains the existing sidestate confirmation cursor. N1 global cursor is rejected. Optional portfolio_budget_owner threads slot-scoped reservations through ENTER Live-29P join without enabling N>1. Default-off forensic synthetic ENTER overlay may replace replay decision_outcome once per run at LIVE-29P join seam only when armed; does not weaken POST/credential gates. HOST_JOIN=false. MF_PRODUCTIVE_JOIN=false. PRODUCTIVE_RUNTIME_CARDINALITY remains 1_UNJOINED. MAX_POSITIONS_EFFECTIVE remains 1. MULTI_FUTURE_RUNTIME_AUTHORIZED=false. EXECUTION_CONCURRENCY_AUTHORIZED=false. No POST, permit, V5, Cap21-24 reinvoke, host join, or cardinality raise. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1
   kind: CONTRACT
@@ -3724,13 +3725,13 @@ entities:
   - tests/ops/test_golden_happy_scope_decision_trace_observability_v1.py
   notes: Default-off session-bound append-only directional signal_strength/threshold JSONL, golden_happy_scope_decision_trace_v1.jsonl (G17→Scope causal refs), plus single entry-state JSON snapshot; reads productive replay intermediate and cursor carrier; no signal/scope recompute; no trading/threshold/budget/GET semantic change; CORRELATION_STATUS=PARTIAL; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:current_productive_synthetic_enter_forensic_v1
-  # atlas_entity_review: PR #7012 rebind Safety/KS typed evidence on overlay for venue-plan/PRE_EXTERNAL offline proof.
+  # atlas_entity_review: PR venue-plan object-identity — export canonical reapply helper for post-live-29p replay.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive synthetic ENTER forensic overlay v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7012_GHV_PRE_EXTERNAL_OFFLINE_CONVERGENCE_V1
+  modified_by: PR_VENUE_PLAN_RUNTIME_OBJECT_IDENTITY_V1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/current_productive_synthetic_enter_forensic_v1.py
   - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py
@@ -3740,6 +3741,7 @@ entities:
   - tests/ops/test_ghv_protective_stop_synthetic_enter_live_29p_join_v1.py
   - tests/ops/test_ghv_synthetic_enter_s5_propagation_v1.py
   - tests/ops/test_ghv_pre_external_offline_convergence_v1.py
+  - tests/ops/test_ghv_observe_shaped_venue_plan_object_identity_v1.py
   notes: Default-off forensic-only synthetic ENTER overlay at LIVE-29P join seam before enter_live_29p join; explicit SYNTHETIC_FORENSIC evidence; does not set NATURAL_ENTER_OBSERVED; no threshold/market-data mutation; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
   kind: RUNTIME_COMPONENT

@@ -204,6 +204,31 @@ class SyntheticEnterForensicApplyResultV1:
     record: dict[str, Any] | None
 
 
+def is_forensic_synthetic_enter_outcome_v1(replay: IntegratedOfflineReplayResultV1 | None) -> bool:
+    """True when replay evidence decision is forensic synthetic enter_long/enter_short."""
+    if replay is None:
+        return False
+    evidence = replay.evidence
+    if evidence is None:
+        return False
+    raw_outcome = evidence.decision_outcome
+    outcome = str(getattr(raw_outcome, "value", raw_outcome) or "").strip().lower()
+    return outcome in ALLOWED_SYNTHETIC_SIDES
+
+
+def reapply_forensic_synthetic_safety_reprojection_on_replay_v1(
+    replay: IntegratedOfflineReplayResultV1,
+) -> IntegratedOfflineReplayResultV1:
+    """Re-run PR7012 Safety/KS reprojection on a post-live-29p replay for venue-plan consume."""
+    evidence = replay.evidence
+    if evidence is None:
+        return replay
+    return _rebind_replay_for_forensic_synthetic_enter_overlay_v1(
+        replay,
+        new_evidence=evidence,
+    )
+
+
 def maybe_apply_synthetic_enter_forensic_overlay_v1(
     replay: IntegratedOfflineReplayResultV1,
     *,
@@ -361,7 +386,9 @@ __all__ = [
     "active_synthetic_enter_forensic_session_v1",
     "bind_synthetic_enter_forensic_session_v1",
     "build_synthetic_enter_forensic_session_v1",
+    "is_forensic_synthetic_enter_outcome_v1",
     "maybe_apply_synthetic_enter_forensic_overlay_v1",
+    "reapply_forensic_synthetic_safety_reprojection_on_replay_v1",
     "read_cycle_index_from_s5_evidence_root_v1",
     "reset_synthetic_enter_forensic_session_v1",
 ]

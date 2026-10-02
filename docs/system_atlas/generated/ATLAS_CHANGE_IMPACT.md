@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,9 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
 | `RUNTIME_COMPONENT:current_productive_synthetic_enter_forensic_v1` |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -94,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- GHV synthetic enter_short offline PRE_EXTERNAL convergence; forensic Safety/KS reprojection on overlay; Atlas + CSIA diff-bound bookkeeping; fail-closed preserved; AUTHORITY=NONE; POST_COUNT=0.
+- Forensic synthetic ENTER: reapply PR7012 Safety/KS reprojection on live_29p.replay before venue plan; observe-shaped product-parity regression; fail-closed preserved; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_7012_GHV_PRE_EXTERNAL_OFFLINE_CONVERGENCE_V1
+- modified_by=PR_VENUE_PLAN_RUNTIME_OBJECT_IDENTITY_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
