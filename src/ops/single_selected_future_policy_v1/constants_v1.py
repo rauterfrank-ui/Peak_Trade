@@ -53,6 +53,10 @@ DEFAULT_HYSTERESIS_RANK_IMPROVEMENT = 1
 DEFAULT_MIN_HISTORY_SAMPLES = 1
 DEFAULT_MIN_DATA_QUALITY_STATUS = "PASS"
 
+# Default-off; productive activation requires scoped Owner-GO + runtime config.
+CAP23_RESIDENCY_ELIGIBILITY_GATE_ENABLED = False
+CONFIG_KEY_CAP23_RESIDENCY_ELIGIBILITY_GATE = "cap23_residency_eligibility_gate_enabled"
+
 SELECTION_FILENAME = "single_selected_future_selection_v1.json"
 EVIDENCE_FILENAME = "single_selected_future_selection_evidence_v1.json"
 WRITER_LOCK_FILENAME = "single_selected_future_selection_writer.lock"

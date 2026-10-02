@@ -65,10 +65,17 @@ from src.ops.single_selected_future_policy_v1.constants_v1 import (
 from src.ops.single_selected_future_policy_v1.persistence_v1 import (
     load_and_validate_selection_v1,
 )
+from src.ops.single_selected_future_policy_v1.residency_eligibility_gate_v1 import (
+    Cap23ResidencyEligibilityGateConfigV1,
+)
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
     MULTI_FUTURE_RUNTIME_AUTHORIZED,
     SELECTION_AUTHORITY_OWNER,
+)
+from src.ops.top20_opportunity_evaluation_residency_v1.models_v1 import ResidencyRuntimeConfigV1
+from src.ops.top20_opportunity_evaluation_residency_v1.scoped_productive_residency_evaluation_completion_v1 import (
+    ScopedResidencyIntegratedEvaluationConfigV1,
 )
 
 OWNER_GO = "CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITE_V1"
@@ -251,6 +258,11 @@ def execute_current_productive_cap24_selection_state_canonical_write_v1(
     decision_epoch: str | None = None,
     allow_default_productivity_root: bool = False,
     execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
+    residency_runtime_config: ResidencyRuntimeConfigV1 | None = None,
+    cap23_residency_eligibility_gate: Cap23ResidencyEligibilityGateConfigV1 | None = None,
+    scoped_top20_evaluation_residency_v1: bool = False,
+    scoped_residency_integrated_evaluation: ScopedResidencyIntegratedEvaluationConfigV1
+    | None = None,
 ) -> CurrentProductiveCap24SelectionStateWriteResultV1:
     if owner_go not in ALLOWED_OWNER_GOS:
         raise CurrentProductiveCap24SelectionStateWriterError("OWNER_GO_MISMATCH")
@@ -311,6 +323,10 @@ def execute_current_productive_cap24_selection_state_canonical_write_v1(
             observed_unix=observed_unix,
             session_id_prefix="current-productive-cap24-writer",
             economic_md_public_source=md_source,
+            residency_runtime_config=residency_runtime_config,
+            cap23_residency_eligibility_gate=cap23_residency_eligibility_gate,
+            scoped_top20_evaluation_residency_v1=scoped_top20_evaluation_residency_v1,
+            scoped_residency_integrated_evaluation=scoped_residency_integrated_evaluation,
         )
         if cap21_23.ok is not True or cap21_23.selection is None:
             raise CurrentProductiveCap24SelectionStateWriterError(cap21_23.status)

@@ -503,6 +503,7 @@ def run_productive_futures_ranking_producer_v1(
     legacy_ranker_payload: Mapping[str, Any] | None = None,
     residency_config: Any | None = None,
     residency_universe_snapshot: Mapping[str, Any] | None = None,
+    scoped_top20_evaluation_residency_v1: bool = False,
 ) -> dict[str, Any]:
     """Full productive call graph: produce → persist → verify (no selection/alpha)."""
     writer = ProductiveRankingSingleWriterV1(state_root=Path(state_root), session_id=session_id)
@@ -612,6 +613,7 @@ def run_productive_futures_ranking_producer_v1(
                 producer_observed_at_unix=producer_observed_at_unix,
                 config=residency_config,
                 universe_snapshot=residency_universe_snapshot,
+                scoped_productive_activation=scoped_top20_evaluation_residency_v1,
             )
         return {
             "ok": produced.ok and bool(persistence.get("ok")) and bool(restart.get("ok")),
