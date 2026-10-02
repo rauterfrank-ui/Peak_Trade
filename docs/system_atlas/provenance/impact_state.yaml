@@ -1,16 +1,16 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: ATLAS_LEGACY_ERADICATION_V1
-modified_by: PR_GHV_PROTECTIVE_STOP_MARKET_STATE_V1
+modified_by: PR_7011_GHV_SYNTHETIC_ENTER_S5_PROPAGATION_V1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'GHV synthetic enter_short protective-stop sizing-side bind at LIVE-29P join; Atlas +
-  CSIA diff-bound bookkeeping only; fail-closed preserved; AUTHORITY=NONE; POST_COUNT=0.'
+note: 'GHV synthetic enter_short T2/S5 propagation fix; Atlas + CSIA diff-bound bookkeeping;
+  fail-closed preserved; AUTHORITY=NONE; POST_COUNT=0.'
 changed_entities:
-- RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1
-- RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
-- RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-changed_relations: []
+- CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
+- RUNTIME_COMPONENT:current_productive_synthetic_enter_forensic_v1
+changed_relations:
+- REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_s8_addressing
 changed_closures: []
 changed_wiring: []
 changed_venue: []
