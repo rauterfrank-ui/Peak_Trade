@@ -437,3 +437,12 @@ changes:
     plus DDO O4 WP-A session scoping on multi-cycle productive handoff; fixes T2_CYCLE_EXCEPTION
     from O4_PROVENANCE_SESSION_MISMATCH; no trading/threshold/POST change; one Real-Venue
     run pre-repair only; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7003_ghv_productive_mark_dynamic_refresh_contract_repair_v1
+  from: 4f1b245295034c92e165e60048a43bfd36b8575a
+  to: ad0b4498115e34d87b39a4050e954faa4952f375
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_current_productive_s6_live_fresh_c1_mark_attachment_v1.py
+  notes: 'PR #7003: productive S6 mark-price GET explicitly requests DYNAMIC_REFRESH_REQUIRED
+    (parity with candle polls); closes proven CACHEABLE_SNAPSHOT stale mark reuse on shared
+    transport; transport default/cache implementation unchanged; no Universe/Ranking/Selection/Elementary/Lane/C3/Confirmation/Entry change; Real-Venue GHV reproof deferred post-merge; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
