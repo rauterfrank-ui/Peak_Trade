@@ -13,12 +13,18 @@ ANTI_HANG_POLL_ITERATION_MARGIN = 8
 
 # Worst-case charged GETs on the Product shared transport before/during S6.
 PRODUCTIVE_SHARED_TRANSPORT_G17_CHARGED_GETS = 1
-# Cold bootstrap poll(): one dynamic candle + mark + optional index (cache miss each).
+# Cold bootstrap poll(): one dynamic candle + mark + optional index (first index wire).
 PRODUCTIVE_COLD_BOOTSTRAP_WORST_CASE_CHARGED_GETS = 3
-# Each S6 observation poll() issues one dynamic-refresh candle GET (cache bypass).
+# Each S6 observation poll() issues dynamic-refresh candle + mark GETs (cache bypass).
 PRODUCTIVE_S6_DYNAMIC_CANDLE_GETS_PER_POLL = 1
+PRODUCTIVE_S6_DYNAMIC_MARK_GETS_PER_POLL = 1
 # Small finite margin for charged wire attempts beyond idealized happy path.
 FINITE_GET_BUDGET_SAFETY_MARGIN = 1
+
+
+def productive_s6_dynamic_wire_gets_per_poll_v1() -> int:
+    """Charged DYNAMIC_REFRESH_REQUIRED wire GETs per S6 poll (index excluded; snapshot-cacheable)."""
+    return PRODUCTIVE_S6_DYNAMIC_CANDLE_GETS_PER_POLL + PRODUCTIVE_S6_DYNAMIC_MARK_GETS_PER_POLL
 
 
 def compute_max_canonical_continuous_poll_iterations_v1(
@@ -47,10 +53,11 @@ def compute_worst_case_legitimate_shared_transport_charged_gets_v1(
         wait_interval_seconds=wait_interval_seconds,
         max_cycles_per_run=max_cycles_per_run,
     )
+    dynamic_per_poll = productive_s6_dynamic_wire_gets_per_poll_v1()
     return (
         PRODUCTIVE_SHARED_TRANSPORT_G17_CHARGED_GETS
         + PRODUCTIVE_COLD_BOOTSTRAP_WORST_CASE_CHARGED_GETS
-        + poll_cap * PRODUCTIVE_S6_DYNAMIC_CANDLE_GETS_PER_POLL
+        + poll_cap * dynamic_per_poll
         + FINITE_GET_BUDGET_SAFETY_MARGIN
     )
 
@@ -71,8 +78,10 @@ __all__ = [
     "FINITE_GET_BUDGET_SAFETY_MARGIN",
     "PRODUCTIVE_COLD_BOOTSTRAP_WORST_CASE_CHARGED_GETS",
     "PRODUCTIVE_S6_DYNAMIC_CANDLE_GETS_PER_POLL",
+    "PRODUCTIVE_S6_DYNAMIC_MARK_GETS_PER_POLL",
     "PRODUCTIVE_SHARED_TRANSPORT_G17_CHARGED_GETS",
     "compute_max_canonical_continuous_poll_iterations_v1",
     "compute_productive_policy_governed_live_c1_shared_transport_max_request_count_v1",
     "compute_worst_case_legitimate_shared_transport_charged_gets_v1",
+    "productive_s6_dynamic_wire_gets_per_poll_v1",
 ]

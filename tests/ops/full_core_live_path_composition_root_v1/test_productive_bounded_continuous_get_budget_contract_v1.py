@@ -9,10 +9,12 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_bounded_
     FINITE_GET_BUDGET_SAFETY_MARGIN,
     PRODUCTIVE_COLD_BOOTSTRAP_WORST_CASE_CHARGED_GETS,
     PRODUCTIVE_S6_DYNAMIC_CANDLE_GETS_PER_POLL,
+    PRODUCTIVE_S6_DYNAMIC_MARK_GETS_PER_POLL,
     PRODUCTIVE_SHARED_TRANSPORT_G17_CHARGED_GETS,
     compute_max_canonical_continuous_poll_iterations_v1,
     compute_productive_policy_governed_live_c1_shared_transport_max_request_count_v1,
     compute_worst_case_legitimate_shared_transport_charged_gets_v1,
+    productive_s6_dynamic_wire_gets_per_poll_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
     HARD_CAP_MAX_CYCLES_PER_RUN,
@@ -68,19 +70,47 @@ def test_derived_budget_finite_and_above_legacy_32() -> None:
     assert budget < 10_000
 
 
-def test_derived_budget_covers_forensic_worst_case_53() -> None:
+def test_derived_budget_covers_forensic_worst_case_default_4_180() -> None:
+    poll_cap = compute_max_canonical_continuous_poll_iterations_v1(
+        max_run_duration_seconds=180.0,
+        wait_interval_seconds=5.0,
+        max_cycles_per_run=4,
+    )
+    dynamic_per_poll = productive_s6_dynamic_wire_gets_per_poll_v1()
     budget = compute_worst_case_legitimate_shared_transport_charged_gets_v1(
         max_run_duration_seconds=180.0,
         wait_interval_seconds=5.0,
         max_cycles_per_run=4,
     )
-    assert budget >= 53
+    assert dynamic_per_poll == (
+        PRODUCTIVE_S6_DYNAMIC_CANDLE_GETS_PER_POLL + PRODUCTIVE_S6_DYNAMIC_MARK_GETS_PER_POLL
+    )
     assert budget == (
         PRODUCTIVE_SHARED_TRANSPORT_G17_CHARGED_GETS
         + PRODUCTIVE_COLD_BOOTSTRAP_WORST_CASE_CHARGED_GETS
-        + 48 * PRODUCTIVE_S6_DYNAMIC_CANDLE_GETS_PER_POLL
+        + poll_cap * dynamic_per_poll
         + FINITE_GET_BUDGET_SAFETY_MARGIN
     )
+    assert budget > 53
+
+
+def test_12_900_budget_covers_candle_mark_dynamic_topology() -> None:
+    poll_cap = compute_max_canonical_continuous_poll_iterations_v1(
+        max_run_duration_seconds=900.0,
+        wait_interval_seconds=5.0,
+        max_cycles_per_run=12,
+    )
+    assert poll_cap == 200
+    dynamic_per_poll = productive_s6_dynamic_wire_gets_per_poll_v1()
+    budget = compute_worst_case_legitimate_shared_transport_charged_gets_v1(
+        max_run_duration_seconds=900.0,
+        wait_interval_seconds=5.0,
+        max_cycles_per_run=12,
+    )
+    assert budget == 1 + 3 + poll_cap * dynamic_per_poll + 1
+    assert budget == 405
+    # Post-PR7003 runtime proof: 102 candle + 101 mark + 1 index + 1 G17 <= budget.
+    assert budget >= 102 + 101 + 1 + 1
 
 
 def test_budget_scales_with_duration_and_cycles() -> None:
