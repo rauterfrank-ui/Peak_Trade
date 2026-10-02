@@ -304,14 +304,27 @@ def test_10_epoch_regression_fail_closed() -> None:
     assert out.state_after == c2
 
 
-def test_11_epoch_gap_fail_closed() -> None:
+def test_11_epoch_gap_fail_closed_observe_signal() -> None:
     chain = _accept_distinct_chain(3)
     # Skip epoch 1 result; jump to epoch 2 from empty C2 at epoch 0
-    out = _progress(_c2_state(), chain[1])
+    out = _progress(
+        _c2_state(),
+        chain[1],
+        signal=ConfirmationAssessmentSignalV1.OBSERVE,
+    )
     assert chain[1].state_after.market_observation_epoch.value == 2
     assert out.reason_code == ConfirmationProgressReasonCodeV1.EPOCH_GAP
     assert out.fail_closed is True
     assert out.state_after == _c2_state()
+
+
+def test_11b_epoch_gap_qualifying_signal_recovers() -> None:
+    chain = _accept_distinct_chain(3)
+    out = _progress(_c2_state(), chain[1])
+    assert out.reason_code == ConfirmationProgressReasonCodeV1.ACCEPTED_DISTINCT_GAP_RECOVERY
+    assert out.fail_closed is False
+    assert out.state_after.distinct_confirmation_observation_count == 1
+    assert out.state_after.latest_accepted_market_observation_epoch.value == 2
 
 
 # ---------------------------------------------------------------------------

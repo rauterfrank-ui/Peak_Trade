@@ -93,6 +93,15 @@ Confirmation may advance only when all of the following hold:
 5. acceptor-result fingerprint was not already processed
 6. prior-state invariants are valid
 
+When `current MarketObservationEpoch - prior.latest_accepted > 1` (epoch gap) and the
+assessment signal is `CANDIDATE` or `CONFIRMED`, C2 performs **gap recovery**: prior
+partial progress is discarded, the side is rebased to OBSERVE at `current - 1`, and the
+qualifying signal is applied as a contiguous step at `current`. This prevents an
+absorbing `EPOCH_GAP` state under single-lane scheduling while still requiring two
+distinct qualifying progress steps to reach `CONFIRMED` when `confirmation_threshold`
+is 2. Non-qualifying (`OBSERVE`) signals on a gap remain fail-closed `EPOCH_GAP` with
+no state mutation.
+
 Non-distinct C1 classifications:
 
 - complete state unchanged
@@ -124,6 +133,7 @@ not bind configs and does not recommend productive threshold values.
 | `NON_DISTINCT_NOOP` | false | none |
 | `IDEMPOTENT_REPLAY` | false | none |
 | `EPOCH_GAP` | true | none |
+| `ACCEPTED_DISTINCT_GAP_RECOVERY` | false | yes (qualifying signal only) |
 | `EPOCH_REGRESSION` | true | none |
 | `SESSION_MISMATCH` | true | none |
 | `INSTRUMENT_MISMATCH` | true | none |
@@ -142,6 +152,7 @@ Accepted-distinct success reasons:
 - `ACCEPTED_DISTINCT_RESET`
 - `ACCEPTED_DISTINCT_CONFIRMED`
 - `ACCEPTED_DISTINCT_HOLD_CONFIRMED`
+- `ACCEPTED_DISTINCT_GAP_RECOVERY`
 
 ## 7. Idempotency
 
