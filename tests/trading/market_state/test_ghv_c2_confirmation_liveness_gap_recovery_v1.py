@@ -137,7 +137,9 @@ def test_ghv_geometry_long_e_opposite_e_plus_one_long_e_plus_two_gap_recovery() 
     assert step_e.state_after.distinct_confirmation_observation_count == 1
 
     step_e_plus_2 = _long_progress(step_e.state_after, e3)  # opposite @ E+1 skipped
-    assert step_e_plus_2.reason_code is ConfirmationProgressReasonCodeV1.ACCEPTED_DISTINCT_GAP_RECOVERY
+    assert (
+        step_e_plus_2.reason_code is ConfirmationProgressReasonCodeV1.ACCEPTED_DISTINCT_GAP_RECOVERY
+    )
     assert step_e_plus_2.fail_closed is False
     assert step_e_plus_2.state_after.distinct_confirmation_observation_count == 1
     assert (
@@ -150,9 +152,7 @@ def test_ghv_geometry_not_poisoned_after_first_gap_two_step_confirm() -> None:
     c1 = initial_observation_acceptance_state_v1(bound_instrument_key=_key())
     acceptors = []
     for idx in range(5):
-        result, c1 = _eval_c1(
-            c1, _candidate(event_time=1000.0 + idx, mark=10.0 + idx)
-        )
+        result, c1 = _eval_c1(c1, _candidate(event_time=1000.0 + idx, mark=10.0 + idx))
         acceptors.append(result)
     e, e1, e2, e3, e4 = acceptors
     long_state = _long_state()
