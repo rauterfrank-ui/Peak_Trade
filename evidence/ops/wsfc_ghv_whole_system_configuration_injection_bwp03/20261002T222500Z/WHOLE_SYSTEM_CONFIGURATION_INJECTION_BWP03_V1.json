@@ -90,13 +90,20 @@
   "PRODUCTIVE_RUNTIME_PROOF": false,
   "LINEAGE": {
     "BWP02_DISCOVERY": "evidence/ops/wsfc_ghv_static_whole_system_cartography_bwp02/20261002T221600Z/",
-    "BWP03_INJECTION": "evidence/ops/wsfc_ghv_whole_system_configuration_injection_bwp03/20261002T222500Z/"
+    "BWP03_INJECTION": "evidence/ops/wsfc_ghv_whole_system_configuration_injection_bwp03/20261002T222500Z/",
+    "ORIGINAL_BWP03_IMPLEMENTATION_BASE": "459ff66b3c79f4cdd2bf1dc5dc7ad2dda27a1772",
+    "POST_7027_CANONICAL_BASE": "2f4daa86ca09e622d70d624e2e8862c14ad5917d",
+    "PRE_REBASE_HEAD": "295e6e52dbadcee55568556feeb2d8084d372f15",
+    "POST_REBASE_HEAD": null,
+    "POST_7027_REBASE": true,
+    "PR7027_MERGE_SHA": "2f4daa86ca09e622d70d624e2e8862c14ad5917d"
   },
   "GIT": {
-    "BRANCH_AT_IMPLEMENTATION": "wsfc-ghv-post-cartography-bwp01",
-    "PR_7027_LINEAGE_MATCH": false,
-    "PR_7027_REASON": "PR #7027 is BWP-01 post-cartography adjudication; BWP-03 injection belongs on separate branch/PR",
+    "BRANCH_AT_IMPLEMENTATION": "wsfc-ghv-configuration-injection-bwp03",
+    "PR_7027_LINEAGE_MATCH": true,
+    "PR_7027_REASON": "PR #7027 (BWP-01) merged to main before BWP-03 rebase; injection remains on PR #7028",
+    "PR_7028": true,
     "COMMIT": null,
-    "PR_CREATED": false
+    "PR_CREATED": true
   }
 }
