@@ -421,6 +421,8 @@ def _main() -> int:
             selection_id=str(handoff.selection_id or ""),
             binding_epoch=str(binding_epoch or ""),
             cap24_reselection_performed=bool(handoff.reselection_performed),
+            fresh_pretrade_get_transport=transport,
+            cap24_productivity_root=productivity_root,
         )
     except PersistentNaturalEnterConvergenceError as exc:
         out = {

@@ -17,6 +17,7 @@ import os
 import re
 import tempfile
 from dataclasses import dataclass, replace
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Mapping, Sequence
 
@@ -510,6 +511,68 @@ def _market_kwargs_from_observation_v1(
     }
 
 
+def resolve_live_29p_injected_for_productive_s5_cycle_v1(
+    *,
+    bound: BoundInstrumentV1,
+    fresh_pretrade_get_transport: Any | None,
+    productivity_root: Path | None,
+    decision_epoch: str,
+) -> Any | None:
+    """Build enter-live-29p injected carrier from shared fresh-pretrade GET transport.
+
+    Uses the same common-epoch compose + handoff path as pre-external closure.
+    Returns None when transport is absent or handoff/injection fail-closed (ENTER
+    then fails at LIVE_29P join with GET_MISSING). Does not POST or activate credentials.
+    """
+    if fresh_pretrade_get_transport is None:
+        return None
+    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
+        CurrentProductive29PCommonEpochHandoffError,
+        compose_current_productive_29p_common_epoch_handoff_v1,
+        _resolve_public_inst_type_for_bound_instrument_v1,
+    )
+    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_common_epoch_to_enter_live_29p_handoff_v1 import (
+        CurrentProductiveCommonEpochToEnterLive29PHandoffError,
+        build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v1,
+    )
+
+    epoch = str(decision_epoch or "").strip()
+    if not epoch:
+        return None
+    prod_root = Path(productivity_root) if productivity_root is not None else None
+    try:
+        inst_type = _resolve_public_inst_type_for_bound_instrument_v1(
+            bound=bound,
+            productivity_root=prod_root,
+            cap21_public_inst_type=None,
+        )
+        handoff = compose_current_productive_29p_common_epoch_handoff_v1(
+            decision_epoch=epoch,
+            bound_instrument=bound,
+            fresh_get_transport=fresh_pretrade_get_transport,
+            inst_type=inst_type,
+        )
+        if handoff.evaluator_29p is not True:
+            return None
+        return build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v1(
+            handoff=handoff,
+            transport=fresh_pretrade_get_transport,
+        )
+    except (
+        CurrentProductive29PCommonEpochHandoffError,
+        CurrentProductiveCommonEpochToEnterLive29PHandoffError,
+    ):
+        return None
+    except Exception as exc:
+        from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
+            FullCoreProductiveReadOnlyGetError,
+        )
+
+        if isinstance(exc, FullCoreProductiveReadOnlyGetError):
+            return None
+        raise
+
+
 def make_n1_occupied_lane_s5_runner_v1(
     *,
     composed_pairs: Mapping[str, tuple[IsolatedLaneSlotV1, BoundInstrumentV1]],
@@ -517,6 +580,8 @@ def make_n1_occupied_lane_s5_runner_v1(
     cycle_id_prefix_base: str,
     forensic_observability_enabled: bool = False,
     synthetic_enter_forensic_enabled: bool = False,
+    fresh_pretrade_get_transport: Any | None = None,
+    cap24_productivity_root: Path | None = None,
 ) -> Callable[..., CurrentProductiveGovernedCycleResultV1]:
     """Adapt S6 S5 slot to occupied-lane N1 consumer (S7 T2 durable compose)."""
 
@@ -581,15 +646,23 @@ def make_n1_occupied_lane_s5_runner_v1(
         s7_base["g17_typed_vol_producers"] = {LANE_ID: g17_producers[LANE_ID]}
         if synthetic_enter_forensic_enabled:
             s7_base["cycle_evidence_root"] = str(Path(evidence_root).resolve())
+        _bound = composed_pairs[LANE_ID][1]
+        decision_epoch = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        live_29p_injected = resolve_live_29p_injected_for_productive_s5_cycle_v1(
+            bound=_bound,
+            fresh_pretrade_get_transport=fresh_pretrade_get_transport,
+            productivity_root=cap24_productivity_root,
+            decision_epoch=decision_epoch,
+        )
         t2_dispatch = _t2_from_s7(
             lane_pairs=lane_pairs,
             native_id=native_id,
             lane_id=LANE_ID,
             s7_base={**s7_base, "cycle_id_prefix": f"{prefix}:{LANE_ID}"},
-            live_29p_injected=None,
+            live_29p_injected=live_29p_injected,
             candles_payload=dict(candles_payload),
             portfolio_budget_owner=None,
-            common_epoch_decision_epoch=None,
+            common_epoch_decision_epoch=decision_epoch,
         )
         return run_current_productive_governed_cycle_v1(
             authorization=authorization,
@@ -761,6 +834,8 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     selection_id: str = "",
     binding_epoch: str = "",
     cap24_reselection_performed: bool = False,
+    fresh_pretrade_get_transport: Any | None = None,
+    cap24_productivity_root: Path | None = None,
 ) -> PolicyGovernedContinuousRunResultV1:
     """S8→policy binding→S6 (live or test observation source)→N1/S5/S7→PRE_EXTERNAL."""
     assert_module_pins_unchanged_v1()
@@ -883,6 +958,8 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
         cycle_id_prefix_base=cycle_id_prefix_base,
         forensic_observability_enabled=enable_golden_happy_vector_forensic_observability_v1,
         synthetic_enter_forensic_enabled=enable_synthetic_enter_forensic_v1,
+        fresh_pretrade_get_transport=fresh_pretrade_get_transport,
+        cap24_productivity_root=cap24_productivity_root,
     )
     lock = lock_root or (Path(evidence_root) / "continuous_lock")
     root = repo_root or Path(__file__).resolve().parents[3]
@@ -957,6 +1034,7 @@ __all__ = [
     "bootstrap_s8_lane_via_s7_compose_v1",
     "build_s8_occupied_lane_pairs_v1",
     "make_n1_occupied_lane_s5_runner_v1",
+    "resolve_live_29p_injected_for_productive_s5_cycle_v1",
     "preflight_current_productive_persistent_natural_enter_v1",
     "persisted_cursor_venue_native_id_v1",
     "reconcile_selection_rotation_with_persisted_cursor_v1",
