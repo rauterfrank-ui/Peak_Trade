@@ -71,7 +71,7 @@ def test_synthetic_overlay_applies_once_and_persists_evidence(tmp_path: Path) ->
         product_evidence_root=tmp_path,
         continuous_run_id="run-test",
     )
-    token = bind_synthetic_enter_forensic_session_v1(session)
+    session_reset = bind_synthetic_enter_forensic_session_v1(session)
     try:
         first = maybe_apply_synthetic_enter_forensic_overlay_v1(
             enter_replay,
@@ -84,7 +84,7 @@ def test_synthetic_overlay_applies_once_and_persists_evidence(tmp_path: Path) ->
             cycle_evidence_root=s5_root,
         )
     finally:
-        reset_synthetic_enter_forensic_session_v1(token)
+        reset_synthetic_enter_forensic_session_v1(session_reset)
 
     assert first.applied is True
     assert second.applied is False
@@ -115,14 +115,14 @@ def test_synthetic_does_not_overlay_when_natural_enter_already_present(
         product_evidence_root=tmp_path,
         continuous_run_id="run-test",
     )
-    token = bind_synthetic_enter_forensic_session_v1(session)
+    session_reset = bind_synthetic_enter_forensic_session_v1(session)
     try:
         result = maybe_apply_synthetic_enter_forensic_overlay_v1(
             cycle_b,
             cycle_index=1,
         )
     finally:
-        reset_synthetic_enter_forensic_session_v1(token)
+        reset_synthetic_enter_forensic_session_v1(session_reset)
     assert result.applied is False
     assert str(cycle_b.evidence.decision_outcome or "").lower() in {"enter_long", "enter_short"}
 
@@ -136,7 +136,7 @@ def test_synthetic_overlay_reaches_live_29p_join_without_get(tmp_path: Path) -> 
         product_evidence_root=tmp_path,
         continuous_run_id="run-live29p",
     )
-    token = bind_synthetic_enter_forensic_session_v1(session)
+    session_reset = bind_synthetic_enter_forensic_session_v1(session)
     try:
         overlay = maybe_apply_synthetic_enter_forensic_overlay_v1(
             observe_replay,
@@ -149,7 +149,7 @@ def test_synthetic_overlay_reaches_live_29p_join_without_get(tmp_path: Path) -> 
             decision_epoch=EPOCH,
         )
     finally:
-        reset_synthetic_enter_forensic_session_v1(token)
+        reset_synthetic_enter_forensic_session_v1(session_reset)
 
     assert overlay.applied is True
     assert join.called is True
