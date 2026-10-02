@@ -5,6 +5,7 @@
   "selector_modes_are_map_impact_authority": false,
   "surfaces": [
     "config/ci/required_status_checks.json",
+    "config/governance/clean_core_seal_manifest_v1.json",
     "config/governance/canonical_volatility_numeric_max_age_productive_campaign_active_binding_v1.json",
     "config/governance/companion_fraction_to_units_contract_v1.json",
     "config/governance/companion_c2_fraction_to_units_runtime_completion_v1_decision_v1.json",

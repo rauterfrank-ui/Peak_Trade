@@ -3,9 +3,11 @@
   "authority_effect": "NONE",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT",
-  "reason": "PR #7005: C2 qualifying-signal EPOCH_GAP recovery (ACCEPTED_DISTINCT_GAP_RECOVERY) restores single-lane confirmation liveness; confirmation_epochs=2 unchanged; System Atlas entity bookkeeping only; no CSIA source_v1.json semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #7005: C2 qualifying-signal EPOCH_GAP recovery (ACCEPTED_DISTINCT_GAP_RECOVERY) restores single-lane confirmation liveness; confirmation_epochs=2 unchanged; System Atlas + clean-core seal digest bookkeeping only; no CSIA source_v1.json semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
   "changed_paths": [
+    "config/governance/clean_core_seal_manifest_v1.json",
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/ops/specs/MV2_C2_DIRECTIONAL_CONFIRMATION_PROGRESS_V1.md",
@@ -20,14 +22,17 @@
     "tests/trading/market_state/test_ghv_c2_confirmation_liveness_gap_recovery_v1.py",
     "tests/trading/master_v2/test_directional_assessment_confirmation_integration_v1.py"
   ],
-  "changed_paths_sha256": "c930cccf91f07ef56031680958889595628305b9c5c3d20109668e34c89c1b4f",
+  "changed_paths_sha256": "cf4a2e014d9f59858cb1d19df60d6fee804ceb81d84279543221f3a7625e9a73",
   "base_sha": "59e9138b90e7e2c1073e7cf2b543422d0ecf783f",
   "evidence_refs": [
     "tests/trading/market_state/test_ghv_c2_confirmation_liveness_gap_recovery_v1.py",
     "tests/trading/market_state/test_directional_confirmation_progress_v1.py"
   ],
   "covered_candidate_paths": [
+    "config/governance/clean_core_seal_manifest_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "docs/ops/specs/MV2_C2_DIRECTIONAL_CONFIRMATION_PROGRESS_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
