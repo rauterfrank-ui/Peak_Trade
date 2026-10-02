@@ -2,6 +2,7 @@
   "authority_effect": "NONE",
   "base_sha": "e8ca5f67ae46606845a0be9b14013d9ee86a6020",
   "changed_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
@@ -14,8 +15,9 @@
     "src/ops/top20_opportunity_evaluation_residency_v1/scoped_residency_integrated_evaluation_propagation_v1.py",
     "tests/ops/test_scoped_residency_integrated_evaluation_propagation_v1.py"
   ],
-  "changed_paths_sha256": "98bce229df04edb071d6f35fed8f2b4b340ea1f2896e0248eb3eec35e90e4e2c",
+  "changed_paths_sha256": "3e43f5adb87d12eefaf3362afc997b407217f463c34ccb242c464742e85281ad",
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "docs/ops/evidence/WHOLE_SYSTEM_FORENSIC_CARTOGRAPHY_GHV_FIXPOINT_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
