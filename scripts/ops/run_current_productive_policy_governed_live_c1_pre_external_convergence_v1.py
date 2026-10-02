@@ -371,68 +371,109 @@ def _main() -> int:
         stall_seconds=60.0,
     )
     run_id = mint_continuous_run_id_v1(auth)
-    transport = FullCoreProductiveReadOnlyGetTransportV1(
-        max_request_count=compute_productive_policy_governed_live_c1_shared_transport_max_request_count_v1(
-            auth
-        ),
+    max_request_count = (
+        compute_productive_policy_governed_live_c1_shared_transport_max_request_count_v1(auth)
     )
-    if args.enable_natural_market_data_capture_v1:
-        from src.ops.full_core_live_path_composition_root_v1.productive_natural_market_data_capture_sink_v1 import (
-            wrap_productive_transport_with_natural_market_data_capture_v1,
-        )
-
-        transport = wrap_productive_transport_with_natural_market_data_capture_v1(
-            transport,
-            evidence_root=evidence_root,
-            run_id=run_id,
-            native_id=native_id,
-        )
-    g17 = _resolve_g17_producer(
-        bound=bound,
-        transport=transport,
-        evidence_store=evidence_root / "g17_hot_path",
-        observed_unix=float(datetime.now(timezone.utc).timestamp()),
-    )
-    obs_source = LiveFreshC1ContinuousObservationSourceV1(
-        cursor_store_root=cursor_root,
-        evidence_root=evidence_root,
-        run_id=run_id,
-        native_id=native_id,
-        transport=transport,
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1 import (
+        GovernedLiveC1GetOnlyFreshPretradeTransportBindError,
+        open_governed_live_c1_get_only_fresh_pretrade_transport_v1,
     )
 
     try:
-        result = run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
-            authorization=auth,
-            origin_main_sha=origin_sha,
-            lane_state_root=lane_state_root,
-            bound=bound,
-            g17_producers=g17,
-            observation_source=obs_source,
-            evidence_root=evidence_root,
-            f1_m9_cycle_evaluator=_build_f1_m9_evaluator(ledger_root=evidence_root / "f1_m9"),
-            repo_root=REPO_ROOT,
-            enable_golden_happy_vector_forensic_observability_v1=(
-                args.enable_golden_happy_vector_forensic_observability_v1
-            ),
-            enable_synthetic_enter_forensic_v1=bool(args.enable_synthetic_enter_forensic_v1),
-            synthetic_enter_forensic_side=str(args.synthetic_enter_forensic_side),
-            synthetic_enter_forensic_cycle_index=int(args.synthetic_enter_forensic_cycle_index),
-            selection_id=str(handoff.selection_id or ""),
-            binding_epoch=str(binding_epoch or ""),
-            cap24_reselection_performed=bool(handoff.reselection_performed),
-            fresh_pretrade_get_transport=transport,
-            cap24_productivity_root=productivity_root,
-        )
-    except PersistentNaturalEnterConvergenceError as exc:
+        with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
+            max_request_count=max_request_count,
+        ) as (transport, credential_bind_proof):
+            (evidence_root / "get_only_credential_transport_bind_proof_v1.json").write_text(
+                json.dumps(credential_bind_proof, sort_keys=True, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            if args.enable_natural_market_data_capture_v1:
+                from src.ops.full_core_live_path_composition_root_v1.productive_natural_market_data_capture_sink_v1 import (
+                    wrap_productive_transport_with_natural_market_data_capture_v1,
+                )
+
+                transport = wrap_productive_transport_with_natural_market_data_capture_v1(
+                    transport,
+                    evidence_root=evidence_root,
+                    run_id=run_id,
+                    native_id=native_id,
+                )
+            g17 = _resolve_g17_producer(
+                bound=bound,
+                transport=transport,
+                evidence_store=evidence_root / "g17_hot_path",
+                observed_unix=float(datetime.now(timezone.utc).timestamp()),
+            )
+            obs_source = LiveFreshC1ContinuousObservationSourceV1(
+                cursor_store_root=cursor_root,
+                evidence_root=evidence_root,
+                run_id=run_id,
+                native_id=native_id,
+                transport=transport,
+            )
+
+            try:
+                result = run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
+                    authorization=auth,
+                    origin_main_sha=origin_sha,
+                    lane_state_root=lane_state_root,
+                    bound=bound,
+                    g17_producers=g17,
+                    observation_source=obs_source,
+                    evidence_root=evidence_root,
+                    f1_m9_cycle_evaluator=_build_f1_m9_evaluator(
+                        ledger_root=evidence_root / "f1_m9"
+                    ),
+                    repo_root=REPO_ROOT,
+                    enable_golden_happy_vector_forensic_observability_v1=(
+                        args.enable_golden_happy_vector_forensic_observability_v1
+                    ),
+                    enable_synthetic_enter_forensic_v1=bool(
+                        args.enable_synthetic_enter_forensic_v1
+                    ),
+                    synthetic_enter_forensic_side=str(args.synthetic_enter_forensic_side),
+                    synthetic_enter_forensic_cycle_index=int(
+                        args.synthetic_enter_forensic_cycle_index
+                    ),
+                    selection_id=str(handoff.selection_id or ""),
+                    binding_epoch=str(binding_epoch or ""),
+                    cap24_reselection_performed=bool(handoff.reselection_performed),
+                    fresh_pretrade_get_transport=transport,
+                    cap24_productivity_root=productivity_root,
+                )
+            except PersistentNaturalEnterConvergenceError as exc:
+                out = {
+                    "status": "FAIL",
+                    "blocker": exc.reason_code,
+                    "detail": exc.detail,
+                    "origin_main_sha": origin_sha,
+                }
+                print(json.dumps(out, sort_keys=True))
+                return 2
+    except GovernedLiveC1GetOnlyFreshPretradeTransportBindError as exc:
         out = {
             "status": "FAIL",
-            "blocker": exc.reason_code,
-            "detail": exc.detail,
+            "blocker": "GET_ONLY_CREDENTIAL_TRANSPORT_BIND_FAIL_CLOSED",
+            "detail": str(exc),
             "origin_main_sha": origin_sha,
         }
         print(json.dumps(out, sort_keys=True))
         return 2
+    except Exception as exc:
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1 import (
+            CurrentProductiveK1OpaqueSigningHandleError,
+        )
+
+        if isinstance(exc, CurrentProductiveK1OpaqueSigningHandleError):
+            out = {
+                "status": "FAIL",
+                "blocker": "K1_CREDENTIAL_ACQUISITION_FAIL_CLOSED",
+                "detail": str(exc),
+                "origin_main_sha": origin_sha,
+            }
+            print(json.dumps(out, sort_keys=True))
+            return 2
+        raise
 
     orch = result.orchestrator_result
     dpo = _extract_latest_dpo_cycle2(lane_state_root)
