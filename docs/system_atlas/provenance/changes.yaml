@@ -604,3 +604,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_scoped_productive_residency_evaluation_completion_v1.py
   notes: 'PR #7023 GHV fixpoint: scoped productive residency integrated evaluation completion; lane/OBSERVE_HOLD→witness HOLD disposition adapter; Cap2.3 read-only residency eligibility gate + evidence ref; Cap21→24 propagation only; Golden Happy Vector B01–B09 structural reproof; no Cap2.3 selection-authority transfer; no Cap2.4 binding-authority change; no MV2/DP/trading-threshold change; Natural Enter/B10 out of scope; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7025_scoped_residency_integrated_evaluation_propagation_v1
+  from: e8ca5f67ae46606845a0be9b14013d9ee86a6020
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_scoped_residency_integrated_evaluation_propagation_v1.py
+  notes: 'PR #7025: scoped residency integrated evaluation config coalesce + identity validation; Whole-System GHV forensic fixpoint doc (AUTHORITY=NONE); no placement/threshold/trading-policy change; POST_COUNT=0.'

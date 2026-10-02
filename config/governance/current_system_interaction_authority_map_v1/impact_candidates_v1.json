@@ -603,6 +603,7 @@
     "tests/ops/test_cap23_residency_eligibility_gate_v1.py",
     "tests/ops/test_lane_evaluation_witness_disposition_v1.py",
     "tests/ops/test_scoped_productive_residency_evaluation_completion_v1.py",
+    "tests/ops/test_scoped_residency_integrated_evaluation_propagation_v1.py",
     "scripts/ops/run_ghv_b06_productive_closure_forensic_drive_v1.py",
     "tests/ops/test_golden_happy_scope_decision_trace_observability_v1.py",
     "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py",

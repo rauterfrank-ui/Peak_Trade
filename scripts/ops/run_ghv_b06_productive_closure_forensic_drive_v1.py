@@ -160,6 +160,7 @@ def _run_upstream(
             max_duration_seconds=180.0,
             g17_provision="natural_checkpoint",
         )
+    # When eval_cfg is None, cap21_23 coalesces from ranked identity + registered datasets.
 
     persist = run_cap21_to_cap23_persist_productive_v1(
         acquisition=acq,
@@ -175,8 +176,6 @@ def _run_upstream(
     )
     out.boundaries.append(BoundaryRecord("B01-B05", persist.ok or "COMPLETION" in persist.status))
     b06 = persist.ok or "COMPLETION" not in str(persist.status)
-    if not integrated_eval:
-        b06 = False
     if persist.ok:
         res_root = store / "runtime_state/ranking/top20_evaluation_residency_v1"
         completed = any(
@@ -211,7 +210,7 @@ def main() -> int:
         store0 = Path(td) / "pass0"
         store0.mkdir()
         p0 = _run_upstream(store=store0, integrated_eval=False, on_only=True)
-        report["GHV_PASS0"] = asdict(p0)
+        report["GHV_PASS0_AUTO_DERIVE"] = asdict(p0)
 
     with tempfile.TemporaryDirectory() as td:
         store1 = Path(td) / "pass1"
