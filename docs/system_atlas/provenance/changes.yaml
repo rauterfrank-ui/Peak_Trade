@@ -456,3 +456,13 @@ changes:
     per S6 poll (candle+mark); 12/900 max_request_count 205→405; closes MAX_REQUEST_COUNT_EXCEEDED
     after PR #7003 mark refresh; no trading/threshold/selection change; Real-Venue reproof
     deferred post-merge; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7007_ghv_synthetic_t2_cycle1_compose_kwarg_v1
+  from: 9e6c2b31862fb3bc4e3b302cdaee979d1941ca8e
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_golden_happy_t2_cycle1_ghv_synthetic_regression_v1.py
+  notes: 'PR #7007: strip cycle_evidence_root from S7 compose kwargs when synthetic forensic
+    sets overlay root on s7_base; fixes TypeError surfaced as T2_CYCLE_EXCEPTION before
+    LIVE-29P join; GHV+synthetic cycle-1 offline regression; no threshold/POST change;
+    POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

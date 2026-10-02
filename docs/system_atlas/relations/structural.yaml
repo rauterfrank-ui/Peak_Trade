@@ -1070,8 +1070,9 @@ relations:
   - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py
   notes: 'This consumer consumes S8 bind_occupied_lane_governed_cycle_store_roots_v1
     and does not reopen S8 or flip MAY_INVOKE_GOVERNED_CYCLE on the producer. PR
-    #7006 optional synthetic ENTER overlay applies after S7 compose replay only.
-    Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+    #7006 optional synthetic ENTER overlay applies after S7 compose replay only. PR
+    #7007 filters cycle_evidence_root out of S7 compose kwargs only. Atlas is not
+    runtime authority. ATLAS_AUTHORITY=NONE.
 
     '
 - id: REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget

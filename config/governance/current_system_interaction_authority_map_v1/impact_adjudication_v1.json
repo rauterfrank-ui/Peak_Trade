@@ -3,7 +3,7 @@
   "authority_effect": "NONE",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT",
-  "reason": "PR #7006: default-off forensic synthetic ENTER overlay at LIVE-29P join seam; wiring-only through N1 consumer and productive continuous run entry; System Atlas entity/relation bookkeeping; no CSIA source_v1.json semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #7007: filter forensic cycle_evidence_root from S7 compose kwargs in N1 consumer; fixes GHV+synthetic T2 cycle-1 TypeError before LIVE-29P join; Atlas/CSIA diff-bound bookkeeping only; no CSIA source_v1.json semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -11,36 +11,26 @@
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+    "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/relations/structural.yaml",
-    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
     "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_synthetic_enter_forensic_v1.py",
-    "tests/ops/test_current_productive_synthetic_enter_forensic_v1.py"
+    "tests/ops/test_golden_happy_t2_cycle1_ghv_synthetic_regression_v1.py"
   ],
-  "changed_paths_sha256": "26850cbf1249023e1c63faed2f22b6191d628ea14f2a747eff22f6f94dd9eb98",
-  "base_sha": "5c23fed4f1bc72005488f03e70585340851cbc83",
+  "changed_paths_sha256": "d5403819445f96cca73af542e6237750dfde74ce2294f4e435450f609df6cd77",
+  "base_sha": "9e6c2b31862fb3bc4e3b302cdaee979d1941ca8e",
   "evidence_refs": [
-    "tests/ops/test_current_productive_synthetic_enter_forensic_v1.py"
+    "tests/ops/test_golden_happy_t2_cycle1_ghv_synthetic_regression_v1.py"
   ],
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+    "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/relations/structural.yaml",
-    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
     "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_synthetic_enter_forensic_v1.py",
-    "tests/ops/test_current_productive_synthetic_enter_forensic_v1.py"
+    "tests/ops/test_golden_happy_t2_cycle1_ghv_synthetic_regression_v1.py"
   ]
 }

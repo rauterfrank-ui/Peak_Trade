@@ -574,6 +574,7 @@
     "tests/ops/test_current_productive_synthetic_enter_forensic_v1.py",
     "scripts/ops/run_golden_happy_natural_data_offline_witness_adjudication_v1.py",
     "tests/ops/test_golden_happy_offline_replay_g17_provision_parity_v1.py",
+    "tests/ops/test_golden_happy_t2_cycle1_ghv_synthetic_regression_v1.py",
     "tests/ops/test_golden_happy_t2_cycle2_ddo_o4_session_scope_regression_v1.py",
     "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py",
     "tests/learning/test_ddo_o4_n_bars_public_plane_convergence_v1.py",
