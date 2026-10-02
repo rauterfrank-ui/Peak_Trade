@@ -3,7 +3,7 @@
   "authority_effect": "NONE",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT",
-  "reason": "PR #7003: mark transport freshness callsite repair + Atlas/CSIA diff-bound bookkeeping; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #7004: productive GET budget fuse alignment + Atlas/CSIA diff-bound bookkeeping; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
@@ -11,13 +11,13 @@
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py",
-    "tests/ops/test_current_productive_s6_live_fresh_c1_mark_attachment_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_get_budget_contract_v1.py",
+    "tests/ops/full_core_live_path_composition_root_v1/test_productive_bounded_continuous_get_budget_contract_v1.py"
   ],
-  "changed_paths_sha256": "2bf4971808c1f9a16e740e79fc8a23bdb903382ddc0139747aaaab4f494f4561",
-  "base_sha": "4f1b245295034c92e165e60048a43bfd36b8575a",
+  "changed_paths_sha256": "e1b51e18d73888f2b4db90029b355390a568ffeae30423b0a210e74d73bea9b9",
+  "base_sha": "1a7235f20515aaa54b9dcb77ff0bc0f42e2df1a2",
   "evidence_refs": [
-    "tests/ops/test_current_productive_s6_live_fresh_c1_mark_attachment_v1.py"
+    "tests/ops/full_core_live_path_composition_root_v1/test_productive_bounded_continuous_get_budget_contract_v1.py"
   ],
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
@@ -25,7 +25,7 @@
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py",
-    "tests/ops/test_current_productive_s6_live_fresh_c1_mark_attachment_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_get_budget_contract_v1.py",
+    "tests/ops/full_core_live_path_composition_root_v1/test_productive_bounded_continuous_get_budget_contract_v1.py"
   ]
 }
