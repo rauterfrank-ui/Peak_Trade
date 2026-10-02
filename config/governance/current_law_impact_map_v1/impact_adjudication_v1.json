@@ -1,30 +1,21 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "69826a7a5f6724d1cdd57a87f1cd07b3de10b6bc",
+  "base_sha": "dd6e40b77583f89b6f184b674823b7e33161aa88",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "docs/ops/evidence/WHOLE_SYSTEM_EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_FIXPOINT_V1.md",
-    "evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1/20261002T232000Z/EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_SUMMARY_V1.json",
-    "evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1/20261002T232000Z/EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_V1.json",
-    "evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1/20261002T232000Z/EXHAUSTIVE_REPOSITORY_CLOSURE_FINAL_REPORT_V1.json"
+    "tests/ops/test_current_productive_m01_f1_m9_g17_production_closure_v1.py"
   ],
-  "changed_paths_sha256": "041ba76f9aee88eec8594f76bd89823cbf7effc945622ab88073085245d89fd4",
+  "changed_paths_sha256": "b715735041dd84bc97da4f6afc71040de1690daab530a5a0d9d78b64ed130e1b",
   "covered_candidate_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "docs/ops/evidence/WHOLE_SYSTEM_EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_FIXPOINT_V1.md",
-    "evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1/20261002T232000Z/EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_SUMMARY_V1.json",
-    "evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1/20261002T232000Z/EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_V1.json",
-    "evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1/20261002T232000Z/EXHAUSTIVE_REPOSITORY_CLOSURE_FINAL_REPORT_V1.json"
+    "tests/ops/test_current_productive_m01_f1_m9_g17_production_closure_v1.py"
   ],
   "evidence_refs": [
-    "docs/ops/evidence/WHOLE_SYSTEM_EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_FIXPOINT_V1.md",
-    "evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1/20261002T232000Z/EXHAUSTIVE_REPOSITORY_CLOSURE_FINAL_REPORT_V1.json"
+    "evidence/ops/whole_system_radiograph_coherence_adjudication_v1/20261002T233600Z/REP_WSRC_001_PRE_REPAIR_FORENSIC_ADJUDICATION_V1.json",
+    "tests/ops/test_current_productive_m01_f1_m9_g17_production_closure_v1.py"
   ],
-  "reason": "PR #7029: exhaustive static cartography fixpoint evidence + map/law currency bindings only; NO_LAW_IMPACT; no law map source semantic change; POST_COUNT=0.",
+  "reason": "PR #7030: TEST_ONLY M01 F1/M9↔G17 production-closure regression lock (INJ-001); NO_LAW_IMPACT; no law map source semantic change; POST_COUNT=0.",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT"
 }
