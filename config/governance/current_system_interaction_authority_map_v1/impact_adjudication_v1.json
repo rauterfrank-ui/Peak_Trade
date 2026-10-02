@@ -2,6 +2,8 @@
   "authority_effect": "NONE",
   "base_sha": "459ff66b3c79f4cdd2bf1dc5dc7ad2dda27a1772",
   "changed_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
@@ -39,8 +41,10 @@
     "tests/ops/test_peak_trade_post_restoration_venue_pretrade_limit_gates_adjudication_v1.py",
     "tests/ops/test_peak_trade_post_restoration_venue_pretrade_metadata_binding_alignment_adjudication_v1.py"
   ],
-  "changed_paths_sha256": "114d6d8c361721c14a30e579188dd5941f7c99ee42ec676ab9798811f14eac68",
+  "changed_paths_sha256": "5b684fb9ce28f7df2323735d66b38f9d946d9c3251a1d3d91a5e1ccd10376df3",
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
     "docs/ops/evidence/WHOLE_SYSTEM_FORENSIC_CARTOGRAPHY_GHV_FIXPOINT_V1.md",
     "docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md",
@@ -80,7 +84,7 @@
     "docs/ops/evidence/WHOLE_SYSTEM_FORENSIC_CARTOGRAPHY_GHV_FIXPOINT_V1.md",
     "evidence/ops/wsfc_ghv_post_cartography_bwp01/20261002T200015Z/BWP01_MANDATORY_SUMMARY_V1.json"
   ],
-  "reason": "PR #7027: BWP-01 post-cartography GHV finding adjudication, bounded stale governance test repair, atlas review; NO_MAP_IMPACT; no CSIA source semantic change; POST_COUNT=0.",
+  "reason": "PR #7027: BWP-01 post-cartography GHV finding adjudication, bounded stale governance test repair, atlas and law-map currency bindings; NO_MAP_IMPACT; no CSIA source semantic change; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

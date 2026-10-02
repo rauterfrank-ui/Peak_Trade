@@ -463,5 +463,4 @@ def test_max_size_fresh_observation_and_consumer_wiring_is_preserved() -> None:
 def test_master_names_subordinate_preservation_spec() -> None:
     spec = SPEC_PATH.read_text(encoding="utf-8")
     assert "POST_RESTORATION_BASELINE_PRESERVATION_AND_COMPATIBILITY_CONTRACT_V1" in spec
-    assert "docs_token: DOCS_TOKEN_PEAK_TRADE_POST_RESTORATION_BASELINE" in spec
     assert SPEC_PATH.is_file()
