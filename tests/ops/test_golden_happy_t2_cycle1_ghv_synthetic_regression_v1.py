@@ -233,4 +233,7 @@ def test_cycle1_ghv_and_synthetic_forensic_t2_consumed(tmp_path: Path) -> None:
     assert result.first_genuine_blocker is not None
     assert "LIVE_29P" in str(result.first_genuine_blocker or "")
     assert result.first_genuine_blocker != "T2_CYCLE_EXCEPTION"
+    assert str(result.first_genuine_blocker or "") != "HOLD"
+    assert str(result.reason_code or "") != "HOLD"
+    assert syn_payload.get("selected_side_after_overlay") == "short"
     _ = STATUS_MISSING
