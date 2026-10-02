@@ -1,0 +1,739 @@
+{
+  "count": 112,
+  "edges": [
+    {
+      "id": "GHV-E-CMP-CMP-A01-CMP-A02",
+      "source": "CMP-A01",
+      "dest": "CMP-A02",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-A02-CMP-G02",
+      "source": "CMP-A02",
+      "dest": "CMP-G02",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-A03-CMP-G01",
+      "source": "CMP-A03",
+      "dest": "CMP-G01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-A03-CMP-I01",
+      "source": "CMP-A03",
+      "dest": "CMP-I01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-A04-CMP-G01",
+      "source": "CMP-A04",
+      "dest": "CMP-G01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-B01-CMP-B05",
+      "source": "CMP-B01",
+      "dest": "CMP-B05",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-B01-CMP-C02",
+      "source": "CMP-B01",
+      "dest": "CMP-C02",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-B02-CMP-B01",
+      "source": "CMP-B02",
+      "dest": "CMP-B01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-B03-CMP-B01",
+      "source": "CMP-B03",
+      "dest": "CMP-B01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-B04-CMP-C02",
+      "source": "CMP-B04",
+      "dest": "CMP-C02",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-B05-CMP-F03",
+      "source": "CMP-B05",
+      "dest": "CMP-F03",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-B06-CMP-G01",
+      "source": "CMP-B06",
+      "dest": "CMP-G01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-B07-CMP-E01",
+      "source": "CMP-B07",
+      "dest": "CMP-E01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-B08-CMP-E01",
+      "source": "CMP-B08",
+      "dest": "CMP-E01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-B09-CMP-E01",
+      "source": "CMP-B09",
+      "dest": "CMP-E01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-C01-CMP-C02",
+      "source": "CMP-C01",
+      "dest": "CMP-C02",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-C00-CMP-C01",
+      "source": "CMP-C00",
+      "dest": "CMP-C01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-C02-CMP-C03",
+      "source": "CMP-C02",
+      "dest": "CMP-C03",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-C02-CMP-C04",
+      "source": "CMP-C02",
+      "dest": "CMP-C04",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-C03-CMP-C05",
+      "source": "CMP-C03",
+      "dest": "CMP-C05",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-C04-CMP-C05",
+      "source": "CMP-C04",
+      "dest": "CMP-C05",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-C05-CMP-C06",
+      "source": "CMP-C05",
+      "dest": "CMP-C06",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-C06-CMP-D01",
+      "source": "CMP-C06",
+      "dest": "CMP-D01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-C06-CMP-E01",
+      "source": "CMP-C06",
+      "dest": "CMP-E01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-C07-CMP-C05",
+      "source": "CMP-C07",
+      "dest": "CMP-C05",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-D01-CMP-D02",
+      "source": "CMP-D01",
+      "dest": "CMP-D02",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-D02-CMP-D03",
+      "source": "CMP-D02",
+      "dest": "CMP-D03",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-D03-CMP-G01",
+      "source": "CMP-D03",
+      "dest": "CMP-G01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-D04-CMP-E03",
+      "source": "CMP-D04",
+      "dest": "CMP-E03",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-E01-CMP-E02",
+      "source": "CMP-E01",
+      "dest": "CMP-E02",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-E02-CMP-D04",
+      "source": "CMP-E02",
+      "dest": "CMP-D04",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-E02-CMP-F01",
+      "source": "CMP-E02",
+      "dest": "CMP-F01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-E03-CMP-I01",
+      "source": "CMP-E03",
+      "dest": "CMP-I01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-E04-CMP-E02",
+      "source": "CMP-E04",
+      "dest": "CMP-E02",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-F01-CMP-F02",
+      "source": "CMP-F01",
+      "dest": "CMP-F02",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-F02-CMP-I01",
+      "source": "CMP-F02",
+      "dest": "CMP-I01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-F03-CMP-F01",
+      "source": "CMP-F03",
+      "dest": "CMP-F01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-F04-CMP-G01",
+      "source": "CMP-F04",
+      "dest": "CMP-G01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-G01-CMP-I01",
+      "source": "CMP-G01",
+      "dest": "CMP-I01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-G02-CMP-G01",
+      "source": "CMP-G02",
+      "dest": "CMP-G01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-G03-CMP-G02",
+      "source": "CMP-G03",
+      "dest": "CMP-G02",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-G04-CMP-G01",
+      "source": "CMP-G04",
+      "dest": "CMP-G01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-I01-CMP-I02",
+      "source": "CMP-I01",
+      "dest": "CMP-I02",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-I02-CMP-I03",
+      "source": "CMP-I02",
+      "dest": "CMP-I03",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-I03-CMP-I04",
+      "source": "CMP-I03",
+      "dest": "CMP-I04",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-I05-CMP-I02",
+      "source": "CMP-I05",
+      "dest": "CMP-I02",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-M01-CMP-G02",
+      "source": "CMP-M01",
+      "dest": "CMP-G02",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-M02-CMP-I01",
+      "source": "CMP-M02",
+      "dest": "CMP-I01",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-M03-CMP-C07",
+      "source": "CMP-M03",
+      "dest": "CMP-C07",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-CMP-CMP-M04-CMP-G04",
+      "source": "CMP-M04",
+      "dest": "CMP-G04",
+      "class": "CMP_DOWNSTREAM"
+    },
+    {
+      "id": "GHV-E-FIT-universe_to_ranking",
+      "source": "universe_cap21",
+      "dest": "ranking_cap22",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    },
+    {
+      "id": "GHV-E-FIT-ranking_to_selection",
+      "source": "ranking_cap22",
+      "dest": "selection_cap23",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    },
+    {
+      "id": "GHV-E-FIT-ranking_context_to_future_profile_b07",
+      "source": "ranking_cap22",
+      "dest": "future_profile_snapshot_b07",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-ranking_economics_to_b09_parity_proof",
+      "source": "ranking_cap22",
+      "dest": "cap22_research_backtest_live_parity_b09",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-b09_parity_proof_preserves_selection_authority",
+      "source": "cap22_research_backtest_live_parity_b09",
+      "dest": "selection_cap23",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-selection_reference_to_future_profile_b07",
+      "source": "selection_cap23",
+      "dest": "future_profile_snapshot_b07",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-selection_to_binding",
+      "source": "selection_cap23",
+      "dest": "runtime_binding_cap24",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    },
+    {
+      "id": "GHV-E-FIT-binding_cap24_to_operator_profile_b11",
+      "source": "runtime_binding_cap24",
+      "dest": "operator_profile_explainability_b11",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-selection_cap23_to_operator_profile_b11",
+      "source": "selection_cap23",
+      "dest": "operator_profile_explainability_b11",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-ranking_witness_b06_to_operator_profile_b11",
+      "source": "ranking_cap22",
+      "dest": "operator_profile_explainability_b11",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-future_profile_b07_to_operator_profile_b11",
+      "source": "future_profile_snapshot_b07",
+      "dest": "operator_profile_explainability_b11",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-parity_b09_to_closure_b12",
+      "source": "cap22_research_backtest_live_parity_b09",
+      "dest": "ranking_selection_profile_closure_b12",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-robustness_b10_to_closure_b12",
+      "source": "cap22_robustness_and_stress_b10",
+      "dest": "ranking_selection_profile_closure_b12",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-operator_profile_b11_to_closure_b12",
+      "source": "operator_profile_explainability_b11",
+      "dest": "ranking_selection_profile_closure_b12",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-public_md_runtime_adapter_to_ranking_cap22",
+      "source": "peak_trade_public_market_data_runtime_wp_a",
+      "dest": "ranking_cap22",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    },
+    {
+      "id": "GHV-E-FIT-public_md_runtime_preserves_cap23_selection_owner",
+      "source": "peak_trade_public_market_data_runtime_wp_a",
+      "dest": "selection_cap23",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    },
+    {
+      "id": "GHV-E-FIT-private_state_runtime_adapts_fresh_pretrade_get",
+      "source": "okx_eea_private_account_state_runtime_wp_b",
+      "dest": "full_core_fresh_pretrade_runtime_get",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    },
+    {
+      "id": "GHV-E-FIT-private_state_runtime_preserves_cap23_selection_owner",
+      "source": "okx_eea_private_account_state_runtime_wp_b",
+      "dest": "selection_cap23",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    },
+    {
+      "id": "GHV-E-FIT-wp_c_converged_public_ranking_handoff",
+      "source": "market_data_private_state_runtime_convergence_wp_c",
+      "dest": "ranking_cap22",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    },
+    {
+      "id": "GHV-E-FIT-wp_c_effective_authorization_readmodel",
+      "source": "market_data_private_state_runtime_convergence_wp_c",
+      "dest": "full_core_live_path_composition_root",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-wp_c_preserves_cap23_selection_owner",
+      "source": "market_data_private_state_runtime_convergence_wp_c",
+      "dest": "selection_cap23",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    },
+    {
+      "id": "GHV-E-FIT-wp_c_converged_o4_to_ddo_learning",
+      "source": "market_data_private_state_runtime_convergence_wp_c",
+      "dest": "learning_ddo",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    },
+    {
+      "id": "GHV-E-FIT-mi_offline_compose_ddo_n_bars_outcome",
+      "source": "market_intelligence_forecast_calibration_offline_stack_d03",
+      "dest": "learning_ddo",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    },
+    {
+      "id": "GHV-E-FIT-mi_offline_typed_export_to_learning_path",
+      "source": "market_intelligence_forecast_calibration_offline_stack_d03",
+      "dest": "learning_ddo",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-mi_offline_to_optimization_research_input",
+      "source": "market_intelligence_forecast_calibration_offline_stack_d03",
+      "dest": "optimization_universe",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-mi_offline_to_multi_cycle_m5_m8_replay",
+      "source": "market_intelligence_forecast_calibration_offline_stack_d03",
+      "dest": "optimization_universe",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-mi_offline_durable_evidence_store_loop_b",
+      "source": "market_intelligence_forecast_calibration_offline_stack_d03",
+      "dest": "market_intelligence_forecast_calibration_offline_stack_d03",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-binding_to_mv2",
+      "source": "runtime_binding_cap24",
+      "dest": "run_current_productive_master_v2_runtime_cycle_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    },
+    {
+      "id": "GHV-E-FIT-replay_provenance_drop",
+      "source": "runtime_binding_cap24",
+      "dest": "run_integrated_offline_trading_logic_replay_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    },
+    {
+      "id": "GHV-E-FIT-mv2_to_sizing",
+      "source": "current_productive_enter_live_29p_join_v1",
+      "dest": "capital_risk_sizing",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    },
+    {
+      "id": "GHV-E-FIT-sizing_to_intent",
+      "source": "capital_risk_sizing",
+      "dest": "canonical_order_intent_owner_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    },
+    {
+      "id": "GHV-E-FIT-safety_signals_into_integrated_replay",
+      "source": "current_productive_master_v2_runtime_cycle_v1",
+      "dest": "run_integrated_offline_trading_logic_replay_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-integrated_replay_safety_gate_before_intent",
+      "source": "run_integrated_offline_trading_logic_replay_v1",
+      "dest": "canonical_order_intent_owner_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-intent_to_execution",
+      "source": "order_intent",
+      "dest": "execution_external_effect",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    },
+    {
+      "id": "GHV-E-FIT-portfolio_to_enter",
+      "source": "portfolio_reservation",
+      "dest": "current_productive_enter_live_29p_join_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-treasury_to_admission",
+      "source": "current_productive_treasury_single_source_capital_handoff_v1",
+      "dest": "evaluate_step_29p_capital_risk_admissibility_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    },
+    {
+      "id": "GHV-E-FIT-g2_primary_evidence_to_offline_projection",
+      "source": "validate_durable_primary_evidence_root",
+      "dest": "run_governed_runtime_primary_to_offline_observation_projection_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-g2_runtime_learning_to_optimization_input_binding",
+      "source": "build_runtime_to_learning_input_v1",
+      "dest": "bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_input_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-g2_binding_to_canonical_optimization_learning_input",
+      "source": "bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_input_v1",
+      "dest": "validate_canonical_optimization_universe_learning_input_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-g2_m4_m8_fixture_continuation",
+      "source": "export_learning_evidence_from_state_v1",
+      "dest": "run_m4_m8_evidence_return_loop_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-g2_runtime_to_m4_m8_real_mechanical_continuation",
+      "source": "run_g2_runtime_to_m4_m8_evidence_return_continuation_v1",
+      "dest": "run_m4_m8_evidence_return_loop_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-real_runtime_m4_m8_to_meta_learning_ingest",
+      "source": "run_m4_m8_evidence_return_loop_v1",
+      "dest": "ingest_meta_learning_evidence_from_return_input_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-real_runtime_meta_learning_to_optimization_feedback",
+      "source": "validate_meta_to_optimization_feedback_input_v1",
+      "dest": "validate_meta_to_optimization_feedback_input_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-real_runtime_g2_to_meta_optimization_feedback_continuation",
+      "source": "run_real_runtime_g2_to_meta_learning_optimization_feedback_continuation_v1",
+      "dest": "validate_real_m4_m8_cycle_meta_optimization_feedback_join_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-real_runtime_p5_optimization_envelope_to_adjudicator_a",
+      "source": "bridge_m5_to_optimization_envelope_evidence_v1",
+      "dest": "adjudicate_evidence_intake_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-real_runtime_p5_meta_learning_routed_to_adjudicator_a",
+      "source": "bridge_m6_to_meta_learning_routed_evidence_v1",
+      "dest": "adjudicate_evidence_intake_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-real_runtime_g2_to_p5_adjudicator_a_continuation",
+      "source": "run_real_runtime_to_p5_evidence_adjudicator_a_continuation_v1",
+      "dest": "terminate_optimization_envelope_at_a_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-real_runtime_component_a_admit_to_p3_binder",
+      "source": "terminate_optimization_envelope_at_a_v1",
+      "dest": "bind_layer_input_from_adjudication_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-real_runtime_p3_binder_to_p4_l6_productive_seam",
+      "source": "bind_layer_input_from_adjudication_v1",
+      "dest": "run_productive_l6_seam_from_prior_adjudication_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-real_runtime_g2_to_p3_p4_l6_productive_seam_continuation",
+      "source": "run_real_runtime_to_p3_p4_l6_productive_seam_continuation_v1",
+      "dest": "run_productive_l6_seam_from_prior_adjudication_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-real_runtime_p4_l6_seam_to_runtime_apply_materialization",
+      "source": "run_real_runtime_p4_l6_to_runtime_apply_materialization_continuation_v1",
+      "dest": "evaluate_runtime_apply_materialization_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-real_p4_materialization_to_f1_m9_join_evaluate",
+      "source": "run_governed_f1_m9_scoped_owner_apply_execution_continuation_v1",
+      "dest": "evaluate_real_p4_to_f1_m9_apply_join_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-governance_promotion_to_f1_m9_scoped_owner_apply_execution",
+      "source": "execute_f1_m9_scoped_owner_apply_execution_proof_v1",
+      "dest": "evaluate_f1_m9_productive_apply_execution_boundary_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-learning_capture",
+      "source": "producer_result",
+      "dest": "existing_ddo_record",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    },
+    {
+      "id": "GHV-E-FIT-learning_evidence_export_to_optimization",
+      "source": "learning_evidence_export_v1",
+      "dest": "validate_canonical_optimization_universe_learning_input_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-step29m_consumes_selection",
+      "source": "selection_cap23",
+      "dest": "step29m",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-optimization_to_governance",
+      "source": "optimization_universe",
+      "dest": "governance_promotion",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-authorization_to_seam",
+      "source": "governance_promotion",
+      "dest": "evaluate_canonical_volatility_estimate_age_policy_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-dashboard_read",
+      "source": "read_model",
+      "dest": "dashboard",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-equity_value_unbound",
+      "source": "treasury_29p",
+      "dest": "sizing_context",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-meta_search_backflow",
+      "source": "meta_learning",
+      "dest": "optimization_universe",
+      "class": "FITNESS_MATRIX",
+      "productive": false
+    },
+    {
+      "id": "GHV-E-FIT-fa_compose_cap23_produce_join",
+      "source": "run_productive_full_autonomy_n5_runtime_orchestrator_v1",
+      "dest": "produce_occupied_lane_cap23_n1_selections_v1",
+      "class": "FITNESS_MATRIX",
+      "productive": true
+    }
+  ]
+}

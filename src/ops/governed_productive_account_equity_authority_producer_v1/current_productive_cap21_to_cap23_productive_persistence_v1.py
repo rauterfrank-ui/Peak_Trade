@@ -167,6 +167,7 @@ def run_cap21_to_cap23_persist_productive_v1(
     scoped_top20_evaluation_residency_v1: bool = False,
     scoped_residency_integrated_evaluation: ScopedResidencyIntegratedEvaluationConfigV1
     | None = None,
+    cap21_coalesce_repo_root: Path | None = None,
 ) -> CurrentProductiveCap21ToCap23PersistResultV1:
     """Run Cap-2.1→2.3 producers into ``store/runtime_state/*`` (persisted)."""
 
@@ -261,6 +262,7 @@ def run_cap21_to_cap23_persist_productive_v1(
         repository_sha=repository_sha,
         universe_snapshot=uni_snapshot_dict,
         ranking_snapshot=rank_snap,
+        repo_root=cap21_coalesce_repo_root,
     )
     if (
         is_scoped_residency_completion_required_v1(gate=gate_cfg, residency_config=residency_cfg)

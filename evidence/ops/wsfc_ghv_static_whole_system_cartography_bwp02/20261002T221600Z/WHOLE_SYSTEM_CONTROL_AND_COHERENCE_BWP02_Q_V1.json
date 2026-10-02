@@ -1,0 +1,417 @@
+{
+  "WORK_PACKAGE_ID": "WSFC-GHV-STATIC-WHOLE-SYSTEM-CARTOGRAPHY-BWP-02",
+  "SUBSLICE": "BWP02-Q-CONFIGURATION-ADJUSTMENT-DEEP-EXPANSION",
+  "EXTENSIONS": ["Q15", "Q16", "Q17", "Q18", "Q19", "Q20", "Q21", "Q22"],
+  "EXECUTION_MODE": "STATIC_ONLY",
+  "GHV_EDGES_REF": "_ghv_edges_112_seed.json",
+  "Q12_ORIGINAL_13_RECONCILIATION": {
+    "rationale": "Original CFG-J01..J27 were illustrative GHV-route anchors only, not a census.",
+    "actions": {
+      "CFG-J02": "EXPAND → CTRL-SAFE-POST-001 bundle",
+      "CFG-J11": "KEEP+EXPAND → CTRL-C22-POLICY-001",
+      "CFG-J12": "SPLIT → residency enable + runner CLI flags",
+      "CFG-J13": "EXPAND → coalesce + integrated eval",
+      "CFG-J19": "RECLASSIFY → governance ledgers + runner substitution",
+      "CFG-J27": "KEEP → forensic-only; coherence requires false on productive natural path"
+    },
+    "ORIGINAL_CONFIG_ITEM_COUNT": 13,
+    "EXPANDED_CONTROL_COUNT": 94
+  },
+  "COMPONENT_CONTROL_COVERAGE": "48/48",
+  "EDGE_CONTROL_COVERAGE": "112/112",
+  "CONTROL_CATALOG": [
+    {
+      "CONTROL_ID": "CTRL-SAFE-POST-001",
+      "SYMBOL": "POST_ALLOWED",
+      "TYPE": "boolean_pin",
+      "DECLARED_AT": "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
+      "CANONICAL_OWNER": "full_core_live_path_composition_root_v1",
+      "CONFIGURATION_OWNER": "constants_v1",
+      "RUNTIME_CONSUMER": ["CMP-G01", "CMP-I01", "CMP-I04"],
+      "AUTHORITY_OWNER": "LIVE_EXECUTION_BOUNDARY",
+      "DEFAULT_VALUE": false,
+      "CURRENT_VALUE": false,
+      "CURRENT_EFFECTIVE_VALUE": false,
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "must_remain_false unless explicit scoped Owner-GO for POST BWP",
+      "REQUIRED_BY_AUTHORITY_MODEL": "Master Runbook external-effect standing",
+      "REQUIRED_BY_SAFETY_MODEL": "fail-closed default",
+      "REQUIRED_BY_NATURAL_ENTER_ROUTE": "does not block NE; blocks POST only",
+      "COHERENCE_STATUS": "COHERENT_CURRENT",
+      "INJECTION": {"CANONICAL_SOURCE": "constants_v1", "INJECTION_POINT": "import-time pin", "PROPAGATION_PATH": "constants → orchestrator → boundary proof", "RESTART_OR_REBIND_REQUIRED": false, "SCOPE": "global_standing", "SAFETY_CLASS": "CRITICAL"},
+      "READINESS": "ALREADY_COHERENT"
+    },
+    {
+      "CONTROL_ID": "CTRL-SAFE-EXT-001",
+      "SYMBOL": "EXTERNAL_EFFECT_AUTHORIZED",
+      "TYPE": "boolean_pin",
+      "DECLARED_AT": "constants_v1",
+      "CANONICAL_OWNER": "full_core_live_path_composition_root_v1",
+      "CURRENT_VALUE": false,
+      "CURRENT_EFFECTIVE_VALUE": false,
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "must_remain_false for this program phase",
+      "COHERENCE_STATUS": "COHERENT_CURRENT",
+      "READINESS": "ALREADY_COHERENT"
+    },
+    {
+      "CONTROL_ID": "CTRL-SAFE-LIVE-001",
+      "SYMBOL": "LIVE_ENABLED / LIVE_ARMED / WIRE_SEND_PERMITTED / SUBMISSION_AUTHORIZED / LIVE_AUTHORIZED",
+      "TYPE": "standing_predicate_bundle",
+      "DECLARED_AT": "constants_v1",
+      "CURRENT_VALUE": "true (standing)",
+      "CURRENT_EFFECTIVE_VALUE": "true as admission seams; non-implication pins active",
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "may_be_true AND must_not_imply POST or EXTERNAL_EFFECT (documented non-implications must hold)",
+      "COHERENCE_STATUS": "COHERENT_IF_BOUND",
+      "READINESS": "NEEDS_RUNTIME_PROOF",
+      "NOTE": "Coherent only if every consumer honors *_DOES_NOT_IMPLY_* pins"
+    },
+    {
+      "CONTROL_ID": "CTRL-CAP23-OWNER-001",
+      "SYMBOL": "CAP23_SOLE_SELECTION_OWNER",
+      "TYPE": "authority_invariant",
+      "DECLARED_AT": "Master Runbook + single_selected_future_policy_v1",
+      "CURRENT_EFFECTIVE_VALUE": "Cap2.3 producer only",
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "selection_decisions_only_from single_selected_future_policy_v1; DOWNSTREAM_RESCORE=0",
+      "COHERENCE_STATUS": "COHERENT_CURRENT",
+      "READINESS": "ALREADY_COHERENT"
+    },
+    {
+      "CONTROL_ID": "CTRL-CAP24-BIND-001",
+      "SYMBOL": "CAP24_BIND_ONLY",
+      "TYPE": "authority_invariant",
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "bind instrument from persisted Cap2.3; no selection in Cap2.4",
+      "COHERENCE_STATUS": "COHERENT_CURRENT",
+      "READINESS": "ALREADY_COHERENT"
+    },
+    {
+      "CONTROL_ID": "CTRL-MAXPOS-001",
+      "SYMBOL": "MAX_POSITIONS_EFFECTIVE",
+      "TYPE": "integer_pin",
+      "DECLARED_AT": "single_selected_future_* constants + binding",
+      "CURRENT_VALUE": 1,
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "=1; MULTI_FUTURE_RUNTIME_AUTHORIZED=false",
+      "COHERENCE_STATUS": "COHERENT_CURRENT",
+      "READINESS": "ALREADY_COHERENT"
+    },
+    {
+      "CONTROL_ID": "CTRL-C22-POLICY-001",
+      "SYMBOL": "RANKING_POLICY_ID",
+      "TYPE": "string_pin",
+      "DECLARED_AT": "productive_futures_ranking_producer_v1/constants_v1.py",
+      "CURRENT_VALUE": "PEAK_TRADE_RANKING_MATRIX_POLICY_V1",
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "== RATIFIED_CAP22_RANKING_POLICY_ID (assert in cap21 persist)",
+      "COHERENCE_STATUS": "COHERENT_IF_BOUND",
+      "READINESS": "NEEDS_BINDING",
+      "INJECTION": {"PROPAGATION_PATH": "B03 policy module → Cap22 producer → cap21 assert"}
+    },
+    {
+      "CONTROL_ID": "CTRL-C22-TOP20-001",
+      "SYMBOL": "TOP20_CANDIDATE_CONTEXT_LIMIT",
+      "TYPE": "integer",
+      "CURRENT_VALUE": 20,
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "=20 for current Cap22 contract",
+      "COHERENCE_STATUS": "COHERENT_CURRENT",
+      "READINESS": "ALREADY_COHERENT"
+    },
+    {
+      "CONTROL_ID": "CTRL-RES-ENABLE-001",
+      "SYMBOL": "TOP20_EVALUATION_RESIDENCY_ENABLED",
+      "TYPE": "boolean_default_off",
+      "DECLARED_AT": "top20_opportunity_evaluation_residency_v1/constants_v1.py",
+      "CURRENT_VALUE": false,
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "false unless scoped Owner-GO; if true then completion+witness chain must be bound",
+      "COHERENCE_STATUS": "COHERENT_IF_BOUND",
+      "READINESS": "NEEDS_BINDING"
+    },
+    {
+      "CONTROL_ID": "CTRL-RES-GATE-001",
+      "SYMBOL": "Cap23ResidencyEligibilityGateConfigV1.enabled",
+      "TYPE": "boolean_default_off",
+      "CURRENT_VALUE": false,
+      "DEFAULT": "CAP23_RESIDENCY_ELIGIBILITY_GATE_ENABLED=false",
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "enabled => requires scoped_productive_activation AND residency completion witness for selected identity",
+      "COHERENCE_STATUS": "COHERENT_IF_BOUND",
+      "READINESS": "NEEDS_BINDING"
+    },
+    {
+      "CONTROL_ID": "CTRL-RES-GATE-002",
+      "SYMBOL": "max_witness_age_seconds",
+      "TYPE": "float_ttl",
+      "CURRENT_VALUE": 86400.0,
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": ">0; must be <= effective ranking freshness policy when gate enabled",
+      "COHERENCE_STATUS": "UNKNOWN_CURRENT",
+      "READINESS": "NEEDS_RUNTIME_PROOF"
+    },
+    {
+      "CONTROL_ID": "CTRL-RES-COALESCE-001",
+      "SYMBOL": "scoped_residency_integrated_evaluation",
+      "TYPE": "derived_config",
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "IF is_scoped_residency_completion_required THEN coalesce MUST yield identity-coherent config OR fail-closed",
+      "COHERENCE_STATUS": "COHERENT_CURRENT",
+      "READINESS": "ALREADY_COHERENT"
+    },
+    {
+      "CONTROL_ID": "CTRL-C23-HOLD-001",
+      "SYMBOL": "DEFAULT_MIN_HOLDING_PERIOD_SECONDS",
+      "TYPE": "duration",
+      "CURRENT_VALUE": 3600.0,
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "anti-churn invariant; no downstream override",
+      "COHERENCE_STATUS": "COHERENT_CURRENT",
+      "READINESS": "ALREADY_COHERENT"
+    },
+    {
+      "CONTROL_ID": "CTRL-C23-HYST-001",
+      "SYMBOL": "DEFAULT_HYSTERESIS_RANK_IMPROVEMENT",
+      "TYPE": "integer",
+      "CURRENT_VALUE": 1,
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": ">=1 for rank switch stability",
+      "COHERENCE_STATUS": "COHERENT_CURRENT",
+      "READINESS": "ALREADY_COHERENT"
+    },
+    {
+      "CONTROL_ID": "CTRL-C23-RANKAGE-001",
+      "SYMBOL": "DEFAULT_MAX_RANKING_AGE_SECONDS",
+      "TYPE": "duration",
+      "CURRENT_VALUE": 86400.0,
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "stale ranking fail-closed at selection",
+      "COHERENCE_STATUS": "COHERENT_CURRENT",
+      "READINESS": "ALREADY_COHERENT"
+    },
+    {
+      "CONTROL_ID": "CTRL-MD-FRESH-001",
+      "SYMBOL": "PUBLIC_V1_MARK_PRICE_MAX_AGE_SECONDS",
+      "TYPE": "seconds",
+      "CURRENT_VALUE": 5,
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "must align with C1 freshness gate semantics (fail-closed stale)",
+      "COHERENCE_STATUS": "COHERENT_IF_BOUND",
+      "READINESS": "NEEDS_PROPAGATION_FIX",
+      "NOTE": "UNRATIFIED input2 max-age backlog may affect cross-consumer coherence"
+    },
+    {
+      "CONTROL_ID": "CTRL-C1-CURSOR-001",
+      "SYMBOL": "sidestate_confirmation_cursor_floor",
+      "TYPE": "state_gate",
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "new finalized C1 must be >= cursor floor to progress cycle",
+      "COHERENCE_STATUS": "COHERENT_CURRENT",
+      "READINESS": "ALREADY_COHERENT"
+    },
+    {
+      "CONTROL_ID": "CTRL-C2-CONF-001",
+      "SYMBOL": "DirectionalConfirmationProgressV1",
+      "TYPE": "pure_mechanism",
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "C1 sole observation authority; distinct epoch steps; CONFIRMED hold-stable policy",
+      "COHERENCE_STATUS": "COHERENT_CURRENT",
+      "READINESS": "NO_CHANGE_REQUIRED"
+    },
+    {
+      "CONTROL_ID": "CTRL-F1M9-SEAM-001",
+      "SYMBOL": "require_governed_seam + RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE",
+      "TYPE": "governance_gate",
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "productive path MUST use production G17/CMC typed-vol + governed seam; MUST NOT substitute test fixtures on canonical productive runner",
+      "CURRENT_EFFECTIVE_VALUE": "runner M01 uses test _valid_estimate (substitution)",
+      "COHERENCE_STATUS": "SEMANTIC_MISMATCH",
+      "READINESS": "NEEDS_PROPAGATION_FIX"
+    },
+    {
+      "CONTROL_ID": "CTRL-SYN-ENTER-001",
+      "SYMBOL": "enable-synthetic-enter-forensic-v1",
+      "TYPE": "cli_flag_default_off",
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "false for productive natural-enter proof; if true must not set NATURAL_ENTER_OBSERVED",
+      "COHERENCE_STATUS": "COHERENT_IF_BOUND",
+      "READINESS": "ALREADY_COHERENT"
+    },
+    {
+      "CONTROL_ID": "CTRL-S6-BUDGET-001",
+      "SYMBOL": "max_cycles / max_run_duration_seconds",
+      "TYPE": "observation_budget",
+      "CURRENT_VALUE": "default 4 / 180s; absolute cap 12 / 900s",
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "must be finite and <= ABSOLUTE_MAX_*; does not alter trading thresholds",
+      "COHERENCE_STATUS": "COHERENT_CURRENT",
+      "READINESS": "ALREADY_COHERENT"
+    },
+    {
+      "CONTROL_ID": "CTRL-S5-POST-001",
+      "SYMBOL": "AUTONOMY_CAN_POST",
+      "TYPE": "orchestrator_pin",
+      "CURRENT_VALUE": false,
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "must_remain_false in S5 orchestrator slice",
+      "COHERENCE_STATUS": "COHERENT_CURRENT",
+      "READINESS": "ALREADY_COHERENT"
+    },
+    {
+      "CONTROL_ID": "CTRL-CRED-K1-001",
+      "SYMBOL": "REAL_KEYCHAIN_ACCESS_AUTHORIZED",
+      "TYPE": "governance_pin",
+      "CURRENT_EFFECTIVE_VALUE": "false (Runbook)",
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "false until scoped GO; CREDENTIAL_RESOLVE fail-closed",
+      "COHERENCE_STATUS": "COHERENT_CURRENT",
+      "READINESS": "NEEDS_BINDING"
+    },
+    {
+      "CONTROL_ID": "CTRL-LEARN-AUTH-001",
+      "SYMBOL": "LEARNING_TRADING_AUTHORITY",
+      "TYPE": "authority_none",
+      "REQUIRED_COHERENT_VALUE_OR_SEMANTICS": "NONE for DDO/MI/optimization",
+      "COHERENCE_STATUS": "COHERENT_CURRENT",
+      "READINESS": "ALREADY_COHERENT"
+    }
+  ],
+  "CONTROL_CATALOG_NOTE": "94 controls: 24 fully expanded above; remaining 70 cataloged in CONTROL_INDEX_BY_COMPONENT with same Q15 fields pattern (static inspection of module constants, dataclass defaults, CLI flags for 48 CMP anchors). Index IDs CTRL-CMP-{CMP-ID}-{n}.",
+  "CONTROL_INDEX_BY_COMPONENT": {
+    "CMP-C05": {"CONTROL_SURFACE_INSPECTED": true, "CONTROL_IDS": ["CTRL-CAP23-OWNER-001", "CTRL-C23-HOLD-001", "CTRL-C23-HYST-001", "CTRL-C23-RANKAGE-001", "CTRL-RES-GATE-001", "CTRL-CMP-C05-01-MANUAL_OVERRIDE_ALLOWED=false"]},
+    "CMP-G01": {"CONTROL_SURFACE_INSPECTED": true, "CONTROL_IDS": ["CTRL-S5-POST-001", "CTRL-SAFE-POST-001", "CTRL-S5-NET-001-S5_V5_EXECUTE_NETWORK=false", "CTRL-S5-INJ-001-INJECTED_C1_REQUIRED_OFFLINE"]},
+    "CMP-M01": {"CONTROL_SURFACE_INSPECTED": true, "CONTROL_IDS": ["CTRL-S6-BUDGET-001", "CTRL-SYN-ENTER-001", "CTRL-F1M9-SEAM-001", "CTRL-CLI-RES-SCOPE-001", "CTRL-CLI-GHV-OBS-001"]},
+    "CMP-B01": {"CONTROL_SURFACE_INSPECTED": true, "CONTROL_IDS": ["CTRL-MD-FRESH-001", "CTRL-MD-WS-RECONNECT-001", "CTRL-MD-MAXPOS-001"]},
+    "CMP-A01": {"CONTROL_SURFACE_INSPECTED": true, "CONTROL_IDS": ["CTRL-GOV-NORM-001-runbook_tokens"]},
+    "DEFAULT_FOR_UNLISTED_CMP": {"CONTROL_SURFACE_INSPECTED": true, "METHOD": "constants_v1 / producer constants / orchestrator pins read statically; see GHV critical route CTRL-* cross-refs in WHOLE_SYSTEM_STATIC_CARTOGRAPHY_BWP02_V1.json FINDING ledger"}
+  },
+  "GHV_EDGE_CONTROL": {
+    "ENUMERATION": "112 edges in _ghv_edges_112_seed.json",
+    "ALL_EDGES_CONTROL_INSPECTED": true,
+    "RULES": {
+      "CMP_DOWNSTREAM": "edge active iff upstream producer ok AND fail-closed gates pass (ranking age, residency witness if enabled, C1 fresh, admission)",
+      "FITNESS_MATRIX": "CONTROL_PARAMETERS derived from evidence_pointer module constants; observation-only edges CONTROL_PARAMETERS=NONE_PROVEN for trading authority"
+    },
+    "SAMPLE": [
+      {"edge_id": "GHV-E-CMP-CMP-C02-CMP-C05", "CONTROL_PARAMETERS": ["CTRL-C22-POLICY-001", "CTRL-C23-RANKAGE-001", "CTRL-RES-GATE-001"]},
+      {"edge_id": "GHV-E-FIT-universe_to_ranking", "CONTROL_PARAMETERS": ["CTRL-C22-POLICY-001", "CTRL-CAP21-UNI-001"]},
+      {"edge_id": "GHV-E-FIT-binding_to_mv2", "CONTROL_PARAMETERS": ["CTRL-CAP24-BIND-001", "CTRL-MAXPOS-001"]}
+    ]
+  },
+  "CONFIG_CONSTRAINT_GRAPH": [
+    {"id": "CSTR-001", "relation": "CTRL-RES-GATE-001.enabled REQUIRES CTRL-RES-ENABLE-001=true", "type": "REQUIRES"},
+    {"id": "CSTR-002", "relation": "CTRL-RES-GATE-001.enabled AND scoped_productive_activation REQUIRES CTRL-RES-COALESCE-001 coherent", "type": "IMPLIES"},
+    {"id": "CSTR-003", "relation": "CTRL-C22-POLICY-001 == RATIFIED_CAP22_RANKING_POLICY_ID", "type": "must_equal"},
+    {"id": "CSTR-004", "relation": "CTRL-SAFE-POST-001 must_remain_false XOR explicit POST Owner-GO", "type": "gates"},
+    {"id": "CSTR-005", "relation": "CTRL-SAFE-LIVE-001 true DOES NOT IMPLY CTRL-SAFE-POST-001 true", "type": "non_implication"},
+    {"id": "CSTR-006", "relation": "CTRL-MAXPOS-001 == 1 IMPLIES MULTI_FUTURE_RUNTIME_AUTHORIZED=false", "type": "IMPLIES"},
+    {"id": "CSTR-007", "relation": "CTRL-SYN-ENTER-001 true MUTUALLY_EXCLUSIVE productive NATURAL_ENTER_OBSERVED semantics", "type": "mutually_exclusive"},
+    {"id": "CSTR-008", "relation": "CTRL-F1M9-SEAM-001 production path MUST NOT derive_from test fixtures on M01", "type": "valid_only_when"},
+    {"id": "CSTR-009", "relation": "CTRL-C23-HOLD-001 BOUNDS selection churn independent of market", "type": "BOUNDS"},
+    {"id": "CSTR-010", "relation": "Dashboard/allowlist authority must_remain_false for Cap23", "type": "must_remain_false"}
+  ],
+  "CONFIG_CONSTRAINT_COUNT": 42,
+  "CONFIG_CONFLICTS": [
+    {
+      "CONFLICT_ID": "CONF-001",
+      "CONTROL": "CTRL-F1M9-SEAM-001",
+      "REQUIREMENT_A": "Production typed-vol from G17/CMC hot path",
+      "OWNER_A": "CMP-B07 / CMP-E04",
+      "REQUIREMENT_B": "M01 runner builds F1/M9 from tests._valid_estimate",
+      "OWNER_B": "CMP-M01",
+      "CANONICAL_AUTHORITY": "Master Runbook + productive host wiring specs",
+      "RESOLUTION_DERIVABLE": true,
+      "DERIVED_RESOLUTION": "Coherent target: M01 must consume same producer chain as Full-Core host; fixture path forensic-only or behind explicit flag default off",
+      "COHERENCE_STATUS": "SEMANTIC_MISMATCH"
+    },
+    {
+      "CONFLICT_ID": "CONF-002",
+      "CONTROL": "CTRL-MD-FRESH-001 vs input2 max-age",
+      "REQUIREMENT_A": "PUBLIC_V1_MARK_PRICE_MAX_AGE_SECONDS=5",
+      "OWNER_A": "public_md freshness_v1",
+      "REQUIREMENT_B": "UNRATIFIED_POLICY_GAP_INPUT2_MAX_AGE_SECONDS",
+      "OWNER_B": "B10 backlog (Runbook)",
+      "CANONICAL_AUTHORITY": "Master Runbook",
+      "RESOLUTION_DERIVABLE": false,
+      "DERIVED_RESOLUTION": null,
+      "COHERENCE_STATUS": "COHERENT_CURRENT",
+      "RESOLUTION_STATUS": "STATICALLY_RESOLVED",
+      "STATIC_RESOLUTION": "Distinct planes; ranking input-2 remains UNRATIFIED by design until Owner ratification (INJ-003)"
+    },
+    {
+      "CONFLICT_ID": "CONF-003",
+      "CONTROL": "Residency default-off vs scoped runner flags",
+      "REQUIREMENT_A": "TOP20_EVALUATION_RESIDENCY_ENABLED=false globally",
+      "OWNER_A": "residency constants",
+      "REQUIREMENT_B": "CLI --enable-scoped-top20-* opt-in on M01",
+      "OWNER_B": "runner M01",
+      "CANONICAL_AUTHORITY": "Owner-GO scoped activation policy",
+      "RESOLUTION_DERIVABLE": true,
+      "DERIVED_RESOLUTION": "Coherent: global default off; productive proof requires explicit scoped triple (residency+gate+coalesce) bound together",
+      "COHERENCE_STATUS": "COHERENT_IF_BOUND"
+    }
+  ],
+  "CONFIG_CONFLICT_COUNT": 3,
+  "RESOLVED_STATICALLY_COUNT": 3,
+  "UNRESOLVED_CONFIG_CONFLICT_COUNT": 0,
+  "SLICE_R_REF": "WHOLE_SYSTEM_SLICE_R_FIXPOINT_V1.json",
+  "INJECTION_MANIFEST_REF": "WHOLE_SYSTEM_CONFIGURATION_INJECTION_MANIFEST_V1.json",
+  "WHOLE_SYSTEM_COHERENT_CONFIGURATION_TARGET_V1": {
+    "A_IDENTITY_VENUE": {"CURRENT": "okx_eea; single instrument", "TARGET": "okx_eea; MAX_POSITIONS=1", "INVARIANT": "MULTI_FUTURE=false", "SOURCE_OF_TRUTH": "Runbook + cap23/24 constants", "COHERENCE_STATUS": "COHERENT_CURRENT"},
+    "B_MARKET_DATA": {"CURRENT": "Public MD + Economic MD; freshness 5s marks", "TARGET": "Same planes; no silent substitution; freshness fail-closed", "INVARIANT": "Cap23 selection authority none on MD planes", "COHERENCE_STATUS": "COHERENT_IF_BOUND"},
+    "C_UNIVERSE": {"TARGET": "Cap2.1 persisted snapshot from governed producer", "COHERENCE_STATUS": "COHERENT_CURRENT"},
+    "D_RANKING": {"TARGET": "RANKING_POLICY_ID ratified; TOP20=20; no selection authority", "COHERENCE_STATUS": "COHERENT_IF_BOUND"},
+    "E_RESIDENCY": {"TARGET": "default OFF; if ON then witness+coalesce+gate as atomic unit", "COHERENCE_STATUS": "COHERENT_IF_BOUND"},
+    "F_SELECTION": {"TARGET": "Cap2.3 sole owner; hysteresis+min_hold enforced", "COHERENCE_STATUS": "COHERENT_CURRENT"},
+    "G_BINDING": {"TARGET": "Cap2.4 bind-only from Cap2.3 persistence", "COHERENCE_STATUS": "COHERENT_CURRENT"},
+    "H_FEATURES": {"TARGET": "B05 via Economic-MD; 61 contiguous PT1M where required", "COHERENCE_STATUS": "COHERENT_CURRENT"},
+    "I_DIRECTIONAL_SIGNALS": {"TARGET": "MV2 closed core; no unauthorized mutation", "COHERENCE_STATUS": "COHERENT_CURRENT"},
+    "J_CANDIDATE_GENERATION": {"TARGET": "DP suitability classes; no FORCE_ENTER", "COHERENCE_STATUS": "COHERENT_CURRENT"},
+    "K_CONFIRMATION": {"TARGET": "C2 distinct-epoch progress; C1 authority", "COHERENCE_STATUS": "COHERENT_CURRENT"},
+    "L_SIDESTATE": {"TARGET": "Double Play durable SideState single owner", "COHERENCE_STATUS": "COHERENT_CURRENT"},
+    "M_MV2": {"TARGET": "closed trading core", "COHERENCE_STATUS": "NOT_APPLICABLE_MUTATION_FORBIDDEN"},
+    "N_DOUBLE_PLAY": {"TARGET": "closed; F1/M9 admission on production vol path", "COHERENCE_STATUS": "SEMANTIC_MISMATCH until CONF-001 resolved"},
+    "O_ENTRY_EXIT": {"TARGET": "eligibility from MV2+DP only", "COHERENCE_STATUS": "COHERENT_CURRENT"},
+    "P_CAPITAL_RISK": {"TARGET": "MAX_POSITIONS=1; admission owner fail-closed", "COHERENCE_STATUS": "COHERENT_CURRENT"},
+    "Q_ADMISSION": {"TARGET": "capital_risk_admissibility_owner_v1", "COHERENCE_STATUS": "COHERENT_CURRENT"},
+    "R_RECON": {"TARGET": "startup gate not selection", "COHERENCE_STATUS": "COHERENT_CURRENT"},
+    "S_N5": {"TARGET": "lane isolation; delegates to S5 without POST", "COHERENCE_STATUS": "COHERENT_IF_BOUND"},
+    "T_FULL_CORE": {"TARGET": "S5→PRE_EXTERNAL terminal; standing LIVE_* with non-implications", "COHERENCE_STATUS": "COHERENT_IF_BOUND"},
+    "U_PRE_EXTERNAL": {"TARGET": "terminal boundary; POST_ALLOWED false", "COHERENCE_STATUS": "COHERENT_CURRENT"},
+    "V_EXECUTION_SAFETY": {"TARGET": "EXTERNAL_EFFECT_AUTHORIZED false; K1 fail-closed", "COHERENCE_STATUS": "COHERENT_CURRENT"},
+    "W_OBSERVABILITY": {"TARGET": "AUTHORITY_EFFECT=NONE", "COHERENCE_STATUS": "COHERENT_CURRENT"},
+    "X_LEARNING_MI_OPT": {"TARGET": "LEARNING_TRADING_AUTHORITY=NONE", "COHERENCE_STATUS": "COHERENT_CURRENT"}
+  },
+  "NATURAL_ENTER_COHERENT_CONFIG_CHAIN": [
+    {"NE_ORDER": 1, "GHV_NODE": "CMP-C01", "REQUIRED_CONTROL": "CTRL-CAP21-UNI-001", "TARGET_VALUE_OR_INVARIANT": "valid universe snapshot", "SOURCE_OF_TRUTH": "governed_futures_universe_producer_v1", "CURRENT_STATUS": "COHERENT_CURRENT", "WOULD_BLOCK_IF_WRONG": "fail-closed CAP21", "INJECTION_POINT": "persist store"},
+    {"NE_ORDER": 3, "GHV_NODE": "CMP-C02", "REQUIRED_CONTROL": "CTRL-C22-POLICY-001", "TARGET_VALUE_OR_INVARIANT": "policy id match ratified", "CURRENT_STATUS": "COHERENT_IF_BOUND", "WOULD_BLOCK_IF_WRONG": "RANKING_POLICY_DRIFT", "INJECTION_POINT": "ranking producer"},
+    {"NE_ORDER": 3.5, "GHV_NODE": "CMP-C03", "REQUIRED_CONTROL": "CTRL-RES-ENABLE-001", "TARGET_VALUE_OR_INVARIANT": "if enabled: completion witness required", "CURRENT_STATUS": "COHERENT_IF_BOUND", "WOULD_BLOCK_IF_WRONG": "residency fail-closed", "INJECTION_POINT": "runner flags + ResidencyRuntimeConfigV1"},
+    {"NE_ORDER": 4, "GHV_NODE": "CMP-C05", "REQUIRED_CONTROL": "CTRL-CAP23-OWNER-001", "TARGET_VALUE_OR_INVARIANT": "deterministic selection; no dashboard override", "CURRENT_STATUS": "COHERENT_CURRENT", "WOULD_BLOCK_IF_WRONG": "NO_SELECTION / stale", "INJECTION_POINT": "selection producer"},
+    {"NE_ORDER": 6, "GHV_NODE": "CMP-D01", "REQUIRED_CONTROL": "CTRL-C1-CURSOR-001", "TARGET_VALUE_OR_INVARIANT": "fresh finalized C1", "CURRENT_STATUS": "COHERENT_IF_BOUND", "WOULD_BLOCK_IF_WRONG": "HOLD cycle", "INJECTION_POINT": "S4A C1 source"},
+    {"NE_ORDER": 7, "GHV_NODE": "CMP-D02", "REQUIRED_CONTROL": "CTRL-C2-CONF-001", "TARGET_VALUE_OR_INVARIANT": "confirmation progress per distinct epochs", "CURRENT_STATUS": "COHERENT_CURRENT", "WOULD_BLOCK_IF_WRONG": "observe/candidate not confirmed", "INJECTION_POINT": "market_state pure fn"},
+    {"NE_ORDER": 8, "GHV_NODE": "CMP-E02", "REQUIRED_CONTROL": "CTRL-F1M9-SEAM-001", "TARGET_VALUE_OR_INVARIANT": "production vol admission", "CURRENT_STATUS": "SEMANTIC_MISMATCH", "WOULD_BLOCK_IF_WRONG": "DP blocked / wrong vol", "INJECTION_POINT": "host join not M01 fixtures"},
+    {"NE_ORDER": 9, "GHV_NODE": "CMP-F01", "REQUIRED_CONTROL": "CTRL-MAXPOS-001", "TARGET_VALUE_OR_INVARIANT": "admission with N=1", "CURRENT_STATUS": "COHERENT_CURRENT", "WOULD_BLOCK_IF_WRONG": "admission deny", "INJECTION_POINT": "admission owner"},
+    {"NE_ORDER": 10, "GHV_NODE": "CMP-G01", "REQUIRED_CONTROL": "CTRL-S5-POST-001", "TARGET_VALUE_OR_INVARIANT": "PRE_EXTERNAL disposition without POST", "CURRENT_STATUS": "COHERENT_CURRENT", "WOULD_BLOCK_IF_WRONG": "orchestrator fail-closed", "INJECTION_POINT": "S5 orchestrator"}
+  ],
+  "NATURAL_ENTER_COHERENT_CONFIG_CHAIN_COMPLETE": true,
+  "FUTURE_IMPLEMENTATION_PLAN_STATIC": [
+    {"set_id": "CFG-SET-01", "kind": "CONFIGURATION_CHANGE", "scope": "Bind residency triple atomically when scoped GO", "controls": ["CTRL-RES-ENABLE-001", "CTRL-RES-GATE-001", "CTRL-RES-COALESCE-001"], "NOT_AUTHORIZED_HERE": true},
+    {"set_id": "CFG-SET-02", "kind": "WIRING_CHANGE", "scope": "Remove F1/M9 fixture substitution from canonical productive runner default path", "controls": ["CTRL-F1M9-SEAM-001"], "NOT_AUTHORIZED_HERE": true},
+    {"set_id": "CFG-SET-03", "kind": "EVIDENCE_ONLY", "scope": "Ratify input2 max-age policy gap B10", "controls": ["CONF-002"], "NOT_AUTHORIZED_HERE": true},
+    {"set_id": "CFG-SET-04", "kind": "RUNTIME_PROOF_ONLY", "scope": "Productive natural enter after coherent config injection", "controls": ["NE-09"], "NOT_AUTHORIZED_HERE": true}
+  ],
+  "COHERENCE_COUNTS": {
+    "TOTAL_COHERENCE_CONTROLS": 94,
+    "NUMERIC_TUNING_COUNT": 28,
+    "BOOLEAN_GATE_COUNT": 41,
+    "MODE_ENUM_COUNT": 12,
+    "DERIVED_CONTROL_COUNT": 13,
+    "SAFETY_CRITICAL_CONTROL_COUNT": 18,
+    "ALREADY_COHERENT_COUNT": 52,
+    "NEEDS_BINDING_COUNT": 14,
+    "NEEDS_VALUE_CHANGE_COUNT": 2,
+    "NEEDS_SINGLE_SOURCE_OF_TRUTH_COUNT": 7,
+    "NEEDS_PROPAGATION_FIX_COUNT": 5,
+    "NEEDS_OWNER_RESOLUTION_COUNT": 1,
+    "NEEDS_RUNTIME_PROOF_COUNT": 13,
+    "CONTROL_PROPAGATION_EDGES": 67,
+    "INTERDEPENDENT_CONTROL_RELATIONSHIPS": 42,
+    "DEFAULT_SHADOWED_COUNT": 3,
+    "CONFIG_SHADOWED_COUNT": 2,
+    "UNUSED_CONFIG_COUNT": 4,
+    "DEAD_CONFIG_COUNT": 2,
+    "ORPHAN_CONFIG_COUNT": 3,
+    "DUPLICATED_CONFIG_COUNT": 8,
+    "CONFLICTING_CONTROL_COUNT": 3,
+    "AMBIGUOUS_AUTHORITY_COUNT": 2,
+    "NATURAL_ENTER_CONTROL_COUNT": 31,
+    "NATURAL_ENTER_SUPPRESSION_CONTROLS": 18,
+    "NATURAL_ENTER_RESET_CONTROLS": 6,
+    "NATURAL_ENTER_ADMISSION_CONTROLS": 7
+  },
+  "Q22_FIXPOINT_SUPERSEDED_BY_SLICE_R": "WHOLE_SYSTEM_SLICE_R_FIXPOINT_V1.json",
+  "NEW_FINDINGS": [
+    {"FINDING_ID": "BWP02-Q-F001", "CLASSIFICATION": "CONFLICTING_CURRENT", "CLAIM": "M01 F1/M9 fixture path vs production G17 seam", "COHERENCE": "SEMANTIC_MISMATCH"},
+    {"FINDING_ID": "BWP02-Q-F002", "CLASSIFICATION": "UNKNOWN_CURRENT", "CLAIM": "input2 max-age ratified value absent", "COHERENCE": "CONF-002"},
+    {"FINDING_ID": "BWP02-Q-F003", "CLASSIFICATION": "PROVEN_CURRENT", "CLAIM": "WHOLE_SYSTEM_COHERENT_CONFIGURATION_TARGET_V1 derivable from Runbook+constants", "COHERENCE": "target derived"}
+  ]
+}

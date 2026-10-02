@@ -263,6 +263,7 @@ def execute_current_productive_cap24_selection_state_canonical_write_v1(
     scoped_top20_evaluation_residency_v1: bool = False,
     scoped_residency_integrated_evaluation: ScopedResidencyIntegratedEvaluationConfigV1
     | None = None,
+    cap21_coalesce_repo_root: Path | None = None,
 ) -> CurrentProductiveCap24SelectionStateWriteResultV1:
     if owner_go not in ALLOWED_OWNER_GOS:
         raise CurrentProductiveCap24SelectionStateWriterError("OWNER_GO_MISMATCH")
@@ -327,6 +328,7 @@ def execute_current_productive_cap24_selection_state_canonical_write_v1(
             cap23_residency_eligibility_gate=cap23_residency_eligibility_gate,
             scoped_top20_evaluation_residency_v1=scoped_top20_evaluation_residency_v1,
             scoped_residency_integrated_evaluation=scoped_residency_integrated_evaluation,
+            cap21_coalesce_repo_root=cap21_coalesce_repo_root,
         )
         if cap21_23.ok is not True or cap21_23.selection is None:
             raise CurrentProductiveCap24SelectionStateWriterError(cap21_23.status)
