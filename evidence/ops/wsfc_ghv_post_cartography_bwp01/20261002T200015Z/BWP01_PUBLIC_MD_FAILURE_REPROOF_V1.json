@@ -1,0 +1,17 @@
+{
+  "SHUTDOWN_DURING_POLL": {
+    "POLL_STATE_BEFORE": {
+      "connected": true,
+      "subscribed": true,
+      "reconnect_count": 0
+    },
+    "SHUTDOWN_TRIGGER": "PublicWsTransportV1.close",
+    "STATE_AFTER": {
+      "connected": false,
+      "subscribed": false,
+      "reconnect_count": 0
+    },
+    "IN_FLIGHT_REQUEST_BEHAVIOR": "poll_completed_before_close",
+    "FAIL_CLOSED_BEHAVIOR": "connected_false_subscribed_false"
+  }
+}

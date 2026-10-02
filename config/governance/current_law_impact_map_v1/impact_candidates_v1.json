@@ -193,6 +193,13 @@
     "tests/ops/test_integrated_offline_replay_and_correctness_head_bound_v1.py",
     "evidence/ops/whole_system_forensic_cartography_golden_happy_vector_bulk03_v1/",
     "evidence/ops/whole_system_forensic_cartography_golden_happy_vector_bulk04_v1/",
-    "evidence/ops/whole_system_forensic_cartography_golden_happy_vector_bulk05_v1/"
+    "evidence/ops/whole_system_forensic_cartography_golden_happy_vector_bulk05_v1/",
+    "evidence/ops/wsfc_ghv_post_cartography_bwp01/",
+    "docs/ops/evidence/WHOLE_SYSTEM_FORENSIC_CARTOGRAPHY_GHV_FIXPOINT_V1.md",
+    "docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md",
+    "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
+    "docs/system_atlas/",
+    "tests/ops/_post_restoration_runbook_section_anchor_v1.py",
+    "tests/ops/"
   ]
 }

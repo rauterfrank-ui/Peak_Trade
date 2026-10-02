@@ -6,6 +6,7 @@
 # atlas_entity_review: PR #6999 — default-off Golden Happy forensic signal/entry-state observability; ops wiring only; src/trading/master_v2 net diff zero; AUTHORITY=NONE; POST_COUNT=0.
 # atlas_entity_review: PR #7004 — productive continuous GET budget counts candle+mark dynamic wire GETs per S6 poll; fuse 12/900→405; wiring-only; AUTHORITY=NONE; POST_COUNT=0.
 # atlas_entity_review: PR #7005 — C2 directional confirmation progress + qualifying EPOCH_GAP recovery; pure market_state C2; AUTHORITY=NONE; POST_COUNT=0.
+# atlas_entity_review: PR #7027 — BWP-01 post-cartography GHV finding adjudication + bounded stale-governance test repair; docs/evidence only; FULL_CORE identity spec clarification; AUTHORITY=NONE; POST_COUNT=0; Residency default OFF; F1/M9 fixture wiring deferred to BWP-03 PR #7028.
 entities:
 - id: SYSTEM:peak_trade
   kind: SYSTEM
@@ -77,6 +78,7 @@ entities:
   - docs/ops/specs/PEAK_TRADE_BIND_CURRENT_SUI_L4_FAIL_CLOSED_MAX_AVAILABLE_ZERO_END_STATE_NO_REPAIR_V1.md
   notes: Canonical CURRENT operational SSOT. Describes what the system is now; historical Cap/Phase/Step/Section development chronology is not operational authority. CURRENT_CLEAN_TRADING_CORE_STATUS=CLOSED; EARLIEST_REMAINING_CORE_GAP=NONE. Primary semantic identities include capital_risk_admissibility_owner_v1, canonical_order_intent_owner_v1, stateful_no_order_host_join_v1, send_capable_adapter_v1, full_core_live_path_authority_v1, and governed_continuous_cycle_orchestrator_v1. Standing LIVE_* predicates do not imply EXTERNAL_EFFECT or venue POST. BOUND_ORIGIN_MAIN_SHA tracks revalidated origin/main head (document header 06ba8e88 as of Phase 16 rebind). Separate CURRENT boundaries document Learning/DDO, STEP29M, and Optimization Universe with authority NONE. Atlas is not canonical authority and not runtime authority.
 - id: NAVIGATION_INDEX:map_of_truth
+  # atlas_entity_review: PR #7027 BWP-01 navigation-only GHV fixpoint evidence; AUTHORITY=NONE.
   kind: NAVIGATION_INDEX
   name: Map of Truth
   epistemic_class: NAVIGATION_ONLY
@@ -3319,6 +3321,7 @@ entities:
   - docs/system_atlas/census/master_v2_semantic_map.yaml
   notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Offline KS binder produces post-29Q evidence/mode fields with runtime_authority_effect=NONE (no execution/FILEGATE permission). Typed consumption is POST_29Q_CONSUMPTION_GUARD in ReplayExecutionSafetyV1. Implementation is not activation.
 - id: RUNTIME_COMPONENT:unified_blueprint_d01_d02_topology_adjudication_v1
+  # atlas_entity_review: PR #7027 BWP-01 config JSON sync only; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Unified Blueprint D01/D02 topology adjudication v1
   epistemic_class: FORENSIC_RAW
@@ -4648,6 +4651,7 @@ entities:
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   # atlas_entity_review: PR #7014 optional predicate_trace_collector wiring for default-off flight recorder; observation-only.
+  # atlas_entity_review: PR #7027 BWP-01 indirect atlas touch via identity/admission spec only; no composition-root code change; AUTHORITY=NONE.
   kind: RUNTIME_COMPONENT
   name: Offline Core-to-Live composition root v1
   epistemic_class: FORENSIC_RAW
@@ -5300,6 +5304,7 @@ entities:
   - docs/ops/specs/FULL_CORE_LIVE_ADMISSION_TO_PRE_WIRE_BOUNDARY_V1.md
   notes: 'Package-local standing constants inventory. LIVE_ENABLED=false, LIVE_ARMED=false, WIRE_SEND_PERMITTED=false, STANDING_LIVE_AUTHORIZATION=false. 11.2.1.Q: RISK_ADMISSIBLE does not imply these standing gates. 11.2.1.R: RISK_ADMISSIBLE still does not imply these standing gates. 11.2.1.S: RISK_ADMISSIBLE still does not imply these standing gates. LIVE_ENABLED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true. LIVE_ARMED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true. WIRE_SEND_PERMITTED_STANDING_ADMISSION_SEAM_IMPLEMENTED=true. LIVE_ENABLED=true is not automatic admission and does not imply LIVE_ARMED, WIRE_SEND_PERMITTED, or LiveExecutionPort construction. LIVE_ARMED=true is not automatic admission and does not imply RISK_ADMISSIBLE, WIRE_SEND_PERMITTED, or LiveExecutionPort construction. Does not supersede GATE:live_authorized_false. Does not authorize Live, Testnet, canary, or orders. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.'
 - id: GATE:full_core_live_path_identity_v1
+  # atlas_entity_review: PR #7027 BWP-01 spec/test anchor repair only; no gate semantics change; AUTHORITY=NONE.
   kind: GATE
   name: Full-core productive Live-path identity gate v1
   epistemic_class: FORENSIC_RAW

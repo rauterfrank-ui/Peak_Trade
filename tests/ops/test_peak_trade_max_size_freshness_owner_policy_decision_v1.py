@@ -68,9 +68,12 @@ EXPECTED_ORIGIN_MAIN_SHA = "ae302d2b4c0425c4d42ece494d1b5996a9e54243"
 
 
 def _section_5_3(text: str) -> str:
-    start = text.index("## 5.3 Canonical productive no-order call graph")
-    end = text.index("## 5.4 Closed or materially established baseline capabilities")
-    return text[start:end]
+    del text
+    from tests.ops._post_restoration_runbook_section_anchor_v1 import (
+        canonical_productive_no_order_call_graph_section_v1,
+    )
+
+    return canonical_productive_no_order_call_graph_section_v1()
 
 
 def _latest_persist(section: str) -> str:

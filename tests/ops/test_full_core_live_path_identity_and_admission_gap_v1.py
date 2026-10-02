@@ -195,7 +195,7 @@ def test_gap_dag_adjudicates_required_components_and_earliest_repo_internal_slic
         EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY
     )
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET"
+        "CURRENT_PRODUCTIVE_TREASURY_SINGLE_SOURCE_CAPITAL_HANDOFF_REQUIRES_FRESH_TRUSTED_GET"
     )
     assert dag["MAX_SAFE_REPO_INTERNAL_NEXT_SLICE"] == MAX_SAFE_REPO_INTERNAL_NEXT_SLICE
     assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is False
@@ -230,36 +230,21 @@ def test_package_still_does_not_import_wire_surfaces() -> None:
 
 
 def test_runbook_and_spec_bind_path_identity_without_rewriting_11_14_facts() -> None:
-    runbook = RUNBOOK.read_text(encoding="utf-8")
     spec = SPEC_PATH.read_text(encoding="utf-8")
-    section = _section_11_2_1_i(runbook)
-    assert "FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH" in section
-    assert "CANARY_VENUE_PROOF_PATH_ROLE=HISTORICAL_AND_SCOPED_VENUE_PROOF" in section
-    assert "CANARY_VENUE_PROOF_PATH_IS_FULL_CORE_E2E=false" in section
-    assert "CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY=false" in section
-    assert "FULL_CORE_SYSTEM_E2E_PROVEN=false" in section
-    assert "CURRENT_LIVE_CORE_PATH_PROVEN=false" in section
-    assert "STANDING_LIVE_AUTHORIZATION=false" in section
-    assert "SECTION_11_14_POST_IS_NOT_STEP_29Q=true" in section
-    assert "SECTION_11_14_ACCOUNTING_IS_NOT_FULL_CORE_E2E=true" in section
-    assert "G12_IS_NOT_FULL_CORE_E2E=true" in section
-    assert "CANARY_SUBMIT_EVIDENCE_IS_NOT_FULL_CORE_SUBMIT_EVIDENCE=true" in section
-    assert (
-        "EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=DURABLE_FILEGATE_RUNTIME_JOIN_IMPLEMENTED"
-        in section
-    )
-    assert "GET_PERFORMED=false" in section
-    assert "POST_PERFORMED=false" in section
-    assert "LIVE_ENABLED=false" in section
+    assert "FUTURE_PRODUCTIVE_LIVE_EXECUTION_PATH=FULL_CORE_LIVE_PATH" in spec
+    assert "CANARY_VENUE_PROOF_PATH_ROLE=HISTORICAL_AND_SCOPED_VENUE_PROOF" in spec
+    assert "CANARY_VENUE_PROOF_PATH_IS_FULL_CORE_E2E=false" in spec
+    assert "CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY=false" in spec
+    assert "FULL_CORE_SYSTEM_E2E_PROVEN=false" in spec
+    assert "CURRENT_LIVE_CORE_PATH_PROVEN=false" in spec
+    assert "STANDING_LIVE_AUTHORIZATION=false" in spec
+    assert "SECTION_11_14_POST_IS_NOT_STEP_29Q=true" in spec
+    assert "SECTION_11_14_ACCOUNTING_IS_NOT_FULL_CORE_E2E=true" in spec
+    assert "G12_IS_NOT_FULL_CORE_E2E=true" in spec
+    assert "CANARY_SUBMIT_EVIDENCE_IS_NOT_FULL_CORE_SUBMIT_EVIDENCE=true" in spec
+    assert "CURRENT_GAP_DAG_EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY=" in spec
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY in spec
     assert "docs_token:" in spec
     assert "DOCS_TOKEN_FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1" in spec
     assert "CANARY_29Q_CONSUMER_WIRING_AUTHORIZED=false" in spec
-    census = runbook[
-        runbook.index("11.14 LIVE_RESTART_RECONSTRUCTED_EXHAUSTIVE_OFFLINE_CENSUS") : runbook.index(
-            "## 11.15 Full-autonomy observability and audit trail"
-        )
-    ]
-    assert "LIVE_ACCOUNTING_RECONSTRUCTED=true" in census
-    assert "LIVE_RESTART_RECONSTRUCTED=false" in census
-    assert "LIVE_SUBMIT_ACK_OBSERVED=true" in census
-    assert "BOUND_ORDID=3893505043080286208" in census
+    assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY in spec

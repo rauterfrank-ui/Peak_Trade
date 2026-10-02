@@ -136,9 +136,12 @@ _FORBIDDEN_MAPPER_WRITE_CALLS = frozenset(
 
 
 def _section_5_3(text: str) -> str:
-    start = text.index("## 5.3 Canonical productive no-order call graph")
-    end = text.index("## 5.4 Closed or materially established baseline capabilities")
-    return text[start:end]
+    del text
+    from tests.ops._post_restoration_runbook_section_anchor_v1 import (
+        canonical_productive_no_order_call_graph_section_v1,
+    )
+
+    return canonical_productive_no_order_call_graph_section_v1()
 
 
 def _called_names(tree: ast.AST) -> set[str]:
