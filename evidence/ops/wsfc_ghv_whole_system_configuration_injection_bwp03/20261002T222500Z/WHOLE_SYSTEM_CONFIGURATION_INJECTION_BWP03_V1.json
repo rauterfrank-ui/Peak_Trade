@@ -43,7 +43,7 @@
         "cap21_coalesce_repo_root"
       ],
       "BEFORE": "Inline CLI residency flags; scoped_integrated_eval=None; coalesce repo_root implicit only",
-      "AFTER": "Explicit M01→Cap24 handoff; coalesce repo_root when scoped residency+gate ON; default OFF unchanged",
+      "AFTER": "Explicit M01\u2192Cap24 handoff; coalesce repo_root when scoped residency+gate ON; default OFF unchanged",
       "STATIC_TARGET_MATCH": true,
       "UNINTENDED_DIFF": false,
       "RUNTIME_PROOF_STILL_REQUIRED": true
@@ -66,7 +66,7 @@
         {
           "EDGE": "GHV-E-CMP-CMP-B07-CMP-E01",
           "BEFORE": "G17 producer live; F1/M9 gate decoupled (fixture ctx)",
-          "AFTER": "G17 producer → apply_current_productive_g17_typed_vol_cmc_bind_v1 → F1/M9 evaluate",
+          "AFTER": "G17 producer \u2192 apply_current_productive_g17_typed_vol_cmc_bind_v1 \u2192 F1/M9 evaluate",
           "COHERENCE": "ALIGNED_WITH_S7_TYPED_VOL_BIND_OWNER"
         }
       ]
@@ -74,7 +74,7 @@
     "INJ-002": {
       "EDGES": [
         {
-          "EDGE": "CMP-M01→CMP-C03/C04/C07",
+          "EDGE": "CMP-M01\u2192CMP-C03/C04/C07",
           "BEFORE": "Partial scoped flag wiring without explicit coalesce repo handoff",
           "AFTER": "build_m01_scoped_residency_cap24_propagation_handoff_v1; cap21_coalesce_repo_root",
           "COHERENCE": "DEFAULT_OFF_PRESERVED"
@@ -85,7 +85,7 @@
   "NO_CHANGE_CONTROLS_CHECKED": 88,
   "NO_CHANGE_CONTROL_SEMANTIC_DRIFT": false,
   "NATURAL_ENTER_CONFIG_PROJECTION_RECONCILED": true,
-  "KNOWN_CONFIG_INCOHERENCE_REMAINING_ON_NATURAL_ENTER_ROUTE": "PRODUCTIVE_RUNTIME_PROOF_ONLY (BWP01-G-F001 NATURAL→PRE_EXTERNAL not re-proven)",
+  "KNOWN_CONFIG_INCOHERENCE_REMAINING_ON_NATURAL_ENTER_ROUTE": "PRODUCTIVE_RUNTIME_PROOF_ONLY (BWP01-G-F001 NATURAL\u2192PRE_EXTERNAL not re-proven)",
   "CONFIGURATION_INJECTION_COMPLETE": true,
   "PRODUCTIVE_RUNTIME_PROOF": false,
   "LINEAGE": {
@@ -94,7 +94,7 @@
     "ORIGINAL_BWP03_IMPLEMENTATION_BASE": "459ff66b3c79f4cdd2bf1dc5dc7ad2dda27a1772",
     "POST_7027_CANONICAL_BASE": "2f4daa86ca09e622d70d624e2e8862c14ad5917d",
     "PRE_REBASE_HEAD": "295e6e52dbadcee55568556feeb2d8084d372f15",
-    "POST_REBASE_HEAD": null,
+    "POST_REBASE_HEAD": "4bf639d83b2fe7a9b6b0d75846ecf847fc04950c",
     "POST_7027_REBASE": true,
     "PR7027_MERGE_SHA": "2f4daa86ca09e622d70d624e2e8862c14ad5917d"
   },
