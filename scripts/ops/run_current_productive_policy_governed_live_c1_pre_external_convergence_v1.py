@@ -207,6 +207,22 @@ def _main() -> int:
         default=1,
         help="S6 cycle index for one-shot synthetic overlay (default 1)",
     )
+    parser.add_argument(
+        "--enable-forensic-executable-quantity-override-v1",
+        action="store_true",
+        help=(
+            "Forensic-only: after real LIVE-29P sizing, inject executable quantity when "
+            "blocked (requires synthetic + GHV forensic flags; default off)"
+        ),
+    )
+    parser.add_argument(
+        "--forensic-executable-quantity",
+        default=None,
+        help=(
+            "Optional explicit positive forensic quantity (no productive default; "
+            "requires --enable-forensic-executable-quantity-override-v1)"
+        ),
+    )
     from src.ops.full_core_live_path_composition_root_v1.current_productive_continuous_observation_budget_v1 import (
         ContinuousObservationBudgetError,
         PRODUCTIVE_DEFAULT_MAX_CYCLES_PER_RUN,
@@ -457,6 +473,10 @@ def _main() -> int:
                     synthetic_enter_forensic_cycle_index=int(
                         args.synthetic_enter_forensic_cycle_index
                     ),
+                    enable_forensic_executable_quantity_override_v1=bool(
+                        args.enable_forensic_executable_quantity_override_v1
+                    ),
+                    forensic_executable_quantity=str(args.forensic_executable_quantity or ""),
                     selection_id=str(handoff.selection_id or ""),
                     binding_epoch=str(binding_epoch or ""),
                     cap24_reselection_performed=bool(handoff.reselection_performed),

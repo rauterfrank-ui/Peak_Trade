@@ -358,6 +358,7 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
     decision_epoch: str,
     portfolio_budget_owner: PortfolioCapitalReservationBudgetOwnerV1 | None = None,
     portfolio_slot: CurrentProductiveEnterLive29PPortfolioSlotContextV1 | None = None,
+    cycle_index: int | None = None,
 ) -> CurrentProductiveEnterLive29PJoinResultV1:
     """Consume Live-29P only on ENTER. HOLD does not private-GET."""
     reject_direct_avail_eq_29p_claim_v1(claimed="producer")
@@ -841,6 +842,27 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
                 sizing_decision.outcome,
             )
         )
+    if sizing_decision is not None and metadata_output.constraints is not None:
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_forensic_executable_quantity_override_v1 import (
+            maybe_apply_forensic_executable_quantity_override_after_live_29p_v1,
+        )
+        from src.ops.full_core_live_path_composition_root_v1.ghv_pre_external_runtime_flight_recorder_v1 import (
+            active_ghv_pre_external_runtime_flight_recorder_session_v1,
+        )
+
+        override_result = maybe_apply_forensic_executable_quantity_override_after_live_29p_v1(
+            rebound_replay=rebound,
+            sizing_decision=sizing_decision,
+            constraints=metadata_output.constraints,
+            live_ctx=live_ctx,
+            cycle_index=int(cycle_index or 0),
+            ghv_pre_external_runtime_flight_recorder_enabled=(
+                active_ghv_pre_external_runtime_flight_recorder_session_v1() is not None
+            ),
+        )
+        rebound = override_result.replay
+        sizing_decision = override_result.sizing_decision
+        sizing_outcome = override_result.sizing_outcome
     return CurrentProductiveEnterLive29PJoinResultV1(
         decision_class=DECISION_ENTER,
         called=True,
