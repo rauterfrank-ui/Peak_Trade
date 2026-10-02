@@ -76,7 +76,6 @@ def _section_5_3(text: str) -> str:
     return canonical_productive_no_order_call_graph_section_v1()
 
 
-
 def _latest_persist(section: str) -> str:
     marker = "MAX_SIZE_FRESHNESS_OWNER_POLICY_DECISION_V1=true"
     start = section.index(marker)

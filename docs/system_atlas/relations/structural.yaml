@@ -1919,7 +1919,7 @@ relations:
   - docs/ops/specs/UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_NORMATIVE_V1.md
   - config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json
   notes: 'Navigation only. D01/D02 topology census and inter-loop adjudication; AUTHORITY=NONE;
-    not SSOT. ATLAS_AUTHORITY=NONE.
+    not SSOT. ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #7027 BWP-01 evidence/navigation only; no authority promotion.
 
     '
 - id: REL:s_map_navigates_unified_blueprint_phase_8_mi_to_learning_integration_v1

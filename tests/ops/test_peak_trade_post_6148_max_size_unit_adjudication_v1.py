@@ -69,7 +69,6 @@ def _section_5_3(text: str) -> str:
     return canonical_productive_no_order_call_graph_section_v1()
 
 
-
 def test_spec_is_subordinate_and_does_not_grant_authority() -> None:
     spec = SPEC_PATH.read_text(encoding="utf-8")
     assert SPEC_PATH.is_file()

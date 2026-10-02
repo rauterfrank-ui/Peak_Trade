@@ -26,7 +26,6 @@ def _section_5_3(text: str) -> str:
     return canonical_productive_no_order_call_graph_section_v1()
 
 
-
 def test_c4_named_master_ssot_pointer_matches_existing_spec_and_runtime() -> None:
     assert C4_SPEC_PATH.is_file()
     assert C4_RUNTIME_MODULE.is_file()

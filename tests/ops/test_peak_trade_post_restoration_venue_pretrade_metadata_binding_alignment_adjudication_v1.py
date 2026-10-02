@@ -132,7 +132,6 @@ def _section_5_3(text: str) -> str:
     return canonical_productive_no_order_call_graph_section_v1()
 
 
-
 def _this_persist(section: str) -> str:
     """Historical #6147 persist only. Later §5.3 slices may supersede STATUS."""
     marker = "VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_ADJUDICATION_V1=true"

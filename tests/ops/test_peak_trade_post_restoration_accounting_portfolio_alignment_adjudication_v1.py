@@ -153,7 +153,6 @@ def _section_5_3(text: str) -> str:
     return canonical_productive_no_order_call_graph_section_v1()
 
 
-
 def _called_names(tree: ast.AST) -> set[str]:
     names: set[str] = set()
     for node in ast.walk(tree):

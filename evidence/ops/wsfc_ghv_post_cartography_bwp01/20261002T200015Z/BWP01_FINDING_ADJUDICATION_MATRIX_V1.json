@@ -53,10 +53,25 @@
       "REPAIR_REQUIRED": false
     },
     {
-      "FINAL_CLASSIFICATION": "UNKNOWN_CURRENT",
+      "FINAL_CLASSIFICATION": "HARNESS_LOCAL_FINDING",
       "FINDING_ID": "BWP01-G-F001",
       "ORIGINAL_CLASSIFICATION": "N/A",
-      "REMAINS_OPEN": true,
+      "HISTORICAL_ADJUDICATION": {
+        "FINAL_CLASSIFICATION": "UNKNOWN_CURRENT",
+        "REMAINS_OPEN": true,
+        "ROOT_CAUSE": "Local productive harness hung without stdout within bounded wallclock."
+      },
+      "CURRENT_ADJUDICATION": {
+        "FINAL_CLASSIFICATION": "HARNESS_LOCAL_FINDING",
+        "BWP01-G-F001_WHOLE_SYSTEM_BLOCKER": false,
+        "ATTEMPTED_RUN_CLASSIFICATION": "VALID_BUT_PARTIAL_GHV_OBSERVATION",
+        "F1_M9_TEST_FIXTURE_ACCEPTABLE_FOR_CANONICAL_PRODUCTIVE_REAL_PROOF": false,
+        "RESIDENCY_DEFAULT_OFF": true,
+        "CAP23_RESIDENCY_GATE_DEFAULT_OFF": true,
+        "REMAINS_OPEN": false,
+        "NOTE": "BWP-03 (PR #7028) addresses productive F1/M9 G17 wiring separately; does not rewrite BWP-01 historical observation."
+      },
+      "REMAINS_OPEN": false,
       "ROOT_CAUSE": "Local productive harness hung without stdout within bounded wallclock."
     }
   ],

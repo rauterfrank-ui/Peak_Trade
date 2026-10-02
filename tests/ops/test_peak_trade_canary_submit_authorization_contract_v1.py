@@ -32,7 +32,6 @@ def _section_5_3(text: str) -> str:
     return canonical_productive_no_order_call_graph_section_v1()
 
 
-
 def test_docs_and_master_pointer() -> None:
     spec = SPEC_PATH.read_text(encoding="utf-8")
     prior = PRIOR_VENUE.read_text(encoding="utf-8")
