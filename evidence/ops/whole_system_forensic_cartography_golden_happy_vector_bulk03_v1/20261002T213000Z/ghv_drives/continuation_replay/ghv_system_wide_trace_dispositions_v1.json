@@ -1,0 +1,233 @@
+{
+  "items": [
+    {
+      "LAST_OBSERVED_GENERATION": "gen_7cf9f53df9071c6ef5d4efbb",
+      "LAST_OBSERVED_SURFACE": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_ba58c3dfeafcf64da4b0ecc0",
+      "LAST_OBSERVED_SURFACE": "OBS:maybe_apply_synthetic_enter_forensic_overlay_v1->join_current_productive_enter_live_29p_before_venue_plan_v1@GHV_ROOT_CHANGE_EVENT",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "surface_id": "OBS:maybe_apply_synthetic_enter_forensic_overlay_v1->join_current_productive_enter_live_29p_before_venue_plan_v1@GHV_ROOT_CHANGE_EVENT"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_154776ac2ddde7fc7f043555",
+      "LAST_OBSERVED_SURFACE": "OBS:maybe_apply_synthetic_enter_forensic_overlay_v1->join_current_productive_enter_live_29p_before_venue_plan_v1@SYNTHETIC_OVERLAY_OUTPUT",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "surface_id": "OBS:maybe_apply_synthetic_enter_forensic_overlay_v1->join_current_productive_enter_live_29p_before_venue_plan_v1@SYNTHETIC_OVERLAY_OUTPUT"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_75a578a5706c6ca9ef5bdbc0",
+      "LAST_OBSERVED_SURFACE": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->try_bind_current_productive_venue_plan_v1@LIVE_29P_JOIN_OUTPUT"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_a37e5748897491bf036ae0d4",
+      "LAST_OBSERVED_SURFACE": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_cbdd4ad60de41a07b11588f9",
+      "LAST_OBSERVED_SURFACE": "OBS:reapply_forensic_synthetic_safety_reprojection_on_replay_v1->try_bind_current_productive_venue_plan_v1@PR7013_FORENSIC_SYNTHETIC_SAFETY_REPROJECTION",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "surface_id": "OBS:reapply_forensic_synthetic_safety_reprojection_on_replay_v1->try_bind_current_productive_venue_plan_v1@PR7013_FORENSIC_SYNTHETIC_SAFETY_REPROJECTION"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_5322d20f5c856fa9ce9516c0",
+      "LAST_OBSERVED_SURFACE": "OBS:reapply_forensic_synthetic_safety_reprojection_on_replay_v1->try_bind_current_productive_venue_plan_v1@VENUE_PLAN_INPUT",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "surface_id": "OBS:reapply_forensic_synthetic_safety_reprojection_on_replay_v1->try_bind_current_productive_venue_plan_v1@VENUE_PLAN_INPUT"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_6707de3f1efce3e1688cecf8",
+      "LAST_OBSERVED_SURFACE": "OBS:compose_core_live_execution_intent_v1->try_bind_current_productive_venue_plan_v1@VENUE_PLAN_COMPOSE_EXECUTION_INTENT",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "surface_id": "OBS:compose_core_live_execution_intent_v1->try_bind_current_productive_venue_plan_v1@VENUE_PLAN_COMPOSE_EXECUTION_INTENT"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_d24177e498855564dcc907cb",
+      "LAST_OBSERVED_SURFACE": "OBS:try_bind_current_productive_venue_plan_v1->downstream_pre_external@VENUE_PLAN_BIND",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "surface_id": "OBS:try_bind_current_productive_venue_plan_v1->downstream_pre_external@VENUE_PLAN_BIND"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "",
+      "LAST_OBSERVED_SURFACE": "OBS:reapply_forensic_synthetic_safety_reprojection_on_replay_v1->PR7013_FORENSIC_SYNTHETIC_SAFETY_REPROJECTION@PR7013_FORENSIC_SYNTHETIC_SAFETY_REPROJECTION",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:reapply_forensic_synthetic_safety_reprojection_on_replay_v1->PR7013_FORENSIC_SYNTHETIC_SAFETY_REPROJECTION@PR7013_FORENSIC_SYNTHETIC_SAFETY_REPROJECTION"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "",
+      "LAST_OBSERVED_SURFACE": "OBS:compose_core_live_execution_intent_v1->COMPOSE_CORE_LIVE_EXECUTION_INTENT@COMPOSE_CORE_LIVE_EXECUTION_INTENT",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:compose_core_live_execution_intent_v1->COMPOSE_CORE_LIVE_EXECUTION_INTENT@COMPOSE_CORE_LIVE_EXECUTION_INTENT"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "",
+      "LAST_OBSERVED_SURFACE": "OBS:try_bind_current_productive_venue_plan_v1->VENUE_PLAN_BIND@VENUE_PLAN_BIND",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:try_bind_current_productive_venue_plan_v1->VENUE_PLAN_BIND@VENUE_PLAN_BIND"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "",
+      "LAST_OBSERVED_SURFACE": "OBS:resolve_protective_stop_sizing_side_for_live_29p_join_v1->PROTECTIVE_STOP_DERIVATION@PROTECTIVE_STOP_DERIVATION",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:resolve_protective_stop_sizing_side_for_live_29p_join_v1->PROTECTIVE_STOP_DERIVATION@PROTECTIVE_STOP_DERIVATION"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "",
+      "LAST_OBSERVED_SURFACE": "OBS:fresh_pretrade_runtime_get_v1->FRESH_PRETRADE_CONTRACT@FRESH_PRETRADE_CONTRACT",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:fresh_pretrade_runtime_get_v1->FRESH_PRETRADE_CONTRACT@FRESH_PRETRADE_CONTRACT"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "",
+      "LAST_OBSERVED_SURFACE": "OBS:get_only_credential_transport_bind_v1->CREDENTIAL_HANDLE_BIND@CREDENTIAL_HANDLE_BIND",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:get_only_credential_transport_bind_v1->CREDENTIAL_HANDLE_BIND@CREDENTIAL_HANDLE_BIND"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "",
+      "LAST_OBSERVED_SURFACE": "OBS:FullCoreProductiveReadOnlyGetTransportV1->AUTHENTICATED_PRIVATE_GET@AUTHENTICATED_PRIVATE_GET",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:FullCoreProductiveReadOnlyGetTransportV1->AUTHENTICATED_PRIVATE_GET@AUTHENTICATED_PRIVATE_GET"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "",
+      "LAST_OBSERVED_SURFACE": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->LIVE_29P_CARRIER@LIVE_29P_CARRIER",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:join_current_productive_enter_live_29p_before_venue_plan_v1->LIVE_29P_CARRIER@LIVE_29P_CARRIER"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "",
+      "LAST_OBSERVED_SURFACE": "OBS:execution_eligibility_v1->EXECUTION_ELIGIBILITY@EXECUTION_ELIGIBILITY",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:execution_eligibility_v1->EXECUTION_ELIGIBILITY@EXECUTION_ELIGIBILITY"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "",
+      "LAST_OBSERVED_SURFACE": "OBS:pre_external_admission_v1->ADMISSION@ADMISSION",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:pre_external_admission_v1->ADMISSION@ADMISSION"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "",
+      "LAST_OBSERVED_SURFACE": "OBS:DISPOSITION_PRE_EXTERNAL_EFFECT->PRE_EXTERNAL_TERMINAL@PRE_EXTERNAL_TERMINAL",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:DISPOSITION_PRE_EXTERNAL_EFFECT->PRE_EXTERNAL_TERMINAL@PRE_EXTERNAL_TERMINAL"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_d24177e498855564dcc907cb",
+      "LAST_OBSERVED_SURFACE": "OBS:DISPOSITION_PRE_EXTERNAL_EFFECT->PRE_EXTERNAL_TERMINAL@PRE_EXTERNAL_TERMINAL",
+      "NEXT_EXPECTED_CONSUMER_IF_KNOWN": "reapply_forensic_synthetic_safety_reprojection_on_replay_v1",
+      "TRACE_DISPOSITION": "CONTINUED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:harness:PR7013_FORENSIC_SYNTHETIC_SAFETY_REPROJECTION"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_d24177e498855564dcc907cb",
+      "LAST_OBSERVED_SURFACE": "OBS:DISPOSITION_PRE_EXTERNAL_EFFECT->PRE_EXTERNAL_TERMINAL@PRE_EXTERNAL_TERMINAL",
+      "NEXT_EXPECTED_CONSUMER_IF_KNOWN": "compose_core_live_execution_intent_v1",
+      "TRACE_DISPOSITION": "LEGITIMATELY_TERMINATED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:harness:COMPOSE_CORE_LIVE_EXECUTION_INTENT"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_d24177e498855564dcc907cb",
+      "LAST_OBSERVED_SURFACE": "OBS:DISPOSITION_PRE_EXTERNAL_EFFECT->PRE_EXTERNAL_TERMINAL@PRE_EXTERNAL_TERMINAL",
+      "NEXT_EXPECTED_CONSUMER_IF_KNOWN": "try_bind_current_productive_venue_plan_v1",
+      "TRACE_DISPOSITION": "LEGITIMATELY_TERMINATED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:harness:VENUE_PLAN_BIND"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_d24177e498855564dcc907cb",
+      "LAST_OBSERVED_SURFACE": "OBS:DISPOSITION_PRE_EXTERNAL_EFFECT->PRE_EXTERNAL_TERMINAL@PRE_EXTERNAL_TERMINAL",
+      "NEXT_EXPECTED_CONSUMER_IF_KNOWN": "resolve_protective_stop_sizing_side_for_live_29p_join_v1",
+      "TRACE_DISPOSITION": "UPSTREAM_BLOCKED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:harness:PROTECTIVE_STOP_DERIVATION"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_d24177e498855564dcc907cb",
+      "LAST_OBSERVED_SURFACE": "OBS:DISPOSITION_PRE_EXTERNAL_EFFECT->PRE_EXTERNAL_TERMINAL@PRE_EXTERNAL_TERMINAL",
+      "NEXT_EXPECTED_CONSUMER_IF_KNOWN": "fresh_pretrade_runtime_get_v1",
+      "TRACE_DISPOSITION": "UPSTREAM_BLOCKED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:harness:FRESH_PRETRADE_CONTRACT"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_d24177e498855564dcc907cb",
+      "LAST_OBSERVED_SURFACE": "OBS:DISPOSITION_PRE_EXTERNAL_EFFECT->PRE_EXTERNAL_TERMINAL@PRE_EXTERNAL_TERMINAL",
+      "NEXT_EXPECTED_CONSUMER_IF_KNOWN": "get_only_credential_transport_bind_v1",
+      "TRACE_DISPOSITION": "UPSTREAM_BLOCKED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:harness:CREDENTIAL_HANDLE_BIND"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_d24177e498855564dcc907cb",
+      "LAST_OBSERVED_SURFACE": "OBS:DISPOSITION_PRE_EXTERNAL_EFFECT->PRE_EXTERNAL_TERMINAL@PRE_EXTERNAL_TERMINAL",
+      "NEXT_EXPECTED_CONSUMER_IF_KNOWN": "FullCoreProductiveReadOnlyGetTransportV1",
+      "TRACE_DISPOSITION": "UPSTREAM_BLOCKED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:harness:AUTHENTICATED_PRIVATE_GET"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_d24177e498855564dcc907cb",
+      "LAST_OBSERVED_SURFACE": "OBS:DISPOSITION_PRE_EXTERNAL_EFFECT->PRE_EXTERNAL_TERMINAL@PRE_EXTERNAL_TERMINAL",
+      "NEXT_EXPECTED_CONSUMER_IF_KNOWN": "join_current_productive_enter_live_29p_before_venue_plan_v1",
+      "TRACE_DISPOSITION": "UPSTREAM_BLOCKED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:harness:LIVE_29P_CARRIER"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_d24177e498855564dcc907cb",
+      "LAST_OBSERVED_SURFACE": "OBS:DISPOSITION_PRE_EXTERNAL_EFFECT->PRE_EXTERNAL_TERMINAL@PRE_EXTERNAL_TERMINAL",
+      "NEXT_EXPECTED_CONSUMER_IF_KNOWN": "execution_eligibility_v1",
+      "TRACE_DISPOSITION": "UPSTREAM_BLOCKED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:harness:EXECUTION_ELIGIBILITY"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_d24177e498855564dcc907cb",
+      "LAST_OBSERVED_SURFACE": "OBS:DISPOSITION_PRE_EXTERNAL_EFFECT->PRE_EXTERNAL_TERMINAL@PRE_EXTERNAL_TERMINAL",
+      "NEXT_EXPECTED_CONSUMER_IF_KNOWN": "pre_external_admission_v1",
+      "TRACE_DISPOSITION": "UPSTREAM_BLOCKED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:harness:ADMISSION"
+    },
+    {
+      "LAST_OBSERVED_GENERATION": "gen_d24177e498855564dcc907cb",
+      "LAST_OBSERVED_SURFACE": "OBS:DISPOSITION_PRE_EXTERNAL_EFFECT->PRE_EXTERNAL_TERMINAL@PRE_EXTERNAL_TERMINAL",
+      "NEXT_EXPECTED_CONSUMER_IF_KNOWN": "DISPOSITION_PRE_EXTERNAL_EFFECT",
+      "TRACE_DISPOSITION": "UPSTREAM_BLOCKED",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "surface_id": "OBS:harness:PRE_EXTERNAL_TERMINAL"
+    }
+  ],
+  "schema_version": "ghv_system_wide_trace_dispositions.v1"
+}

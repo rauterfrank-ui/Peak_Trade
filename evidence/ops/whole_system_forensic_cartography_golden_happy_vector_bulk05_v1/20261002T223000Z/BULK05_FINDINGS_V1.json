@@ -1,0 +1,26 @@
+{
+  "findings": [
+    {
+      "FINDING_ID": "B03-F001",
+      "STATUS": "UNCHANGED_OPEN"
+    },
+    {
+      "FINDING_ID": "B03-F005",
+      "STATUS": "UNCHANGED_OPEN"
+    },
+    {
+      "FINDING_ID": "B04-F001",
+      "STATUS": "UNCHANGED_OPEN"
+    },
+    {
+      "FINDING_ID": "B05-F001",
+      "CURRENT_CLASSIFICATION": "UNKNOWN_CURRENT",
+      "NOTE": "RATE_LIMIT/SHUTDOWN not GHV-driven"
+    },
+    {
+      "FINDING_ID": "B05-F002",
+      "CURRENT_CLASSIFICATION": "UNKNOWN_CURRENT",
+      "NOTE": "CACHE_MISS not isolated"
+    }
+  ]
+}

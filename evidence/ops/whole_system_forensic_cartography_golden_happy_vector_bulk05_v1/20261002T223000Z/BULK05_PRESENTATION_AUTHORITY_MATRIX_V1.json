@@ -1,0 +1,67 @@
+{
+  "PRESENTATION_AUTHORITY": "NONE",
+  "DASHBOARD_AUTHORITY_EFFECT": "NONE",
+  "READ_MODEL_AUTHORITY_EFFECT": "NONE",
+  "rows": [
+    {
+      "CHECK": "CAN_PRESENTATION_WRITE_TRADING_STATE",
+      "RESULT": false,
+      "PROOF": "test_dashboard_lifecycle_read_only + architecture guards"
+    },
+    {
+      "CHECK": "CAN_PRESENTATION_CHANGE_CONFIG",
+      "RESULT": false,
+      "PROOF": "runtime_mutation_allowed=false"
+    },
+    {
+      "CHECK": "CAN_PRESENTATION_SELECT",
+      "RESULT": false,
+      "PROOF": "test_no_ui_side_recomputation_markers"
+    },
+    {
+      "CHECK": "CAN_PRESENTATION_BIND",
+      "RESULT": false,
+      "PROOF": "autobind forbidden trading imports tests"
+    },
+    {
+      "CHECK": "CAN_PRESENTATION_DECIDE_TRADE",
+      "RESULT": false,
+      "PROOF": "dashboard_trading_authority=false"
+    },
+    {
+      "CHECK": "CAN_PRESENTATION_CHANGE_RISK",
+      "RESULT": false,
+      "PROOF": "risk_authority=false"
+    },
+    {
+      "CHECK": "CAN_PRESENTATION_CREATE_INTENT",
+      "RESULT": false,
+      "PROOF": "owner_registry presentation forbidden paths"
+    },
+    {
+      "CHECK": "CAN_PRESENTATION_POST",
+      "RESULT": false,
+      "PROOF": "test_get_market_has_no_write_or_order_controls"
+    },
+    {
+      "CHECK": "CAN_PRESENTATION_CREATE_EXTERNAL_EFFECT",
+      "RESULT": false,
+      "PROOF": "test_no_network_or_order_side_effects_in_o5_package"
+    }
+  ],
+  "FEEDBACK_SEAMS": [
+    {
+      "PRODUCER": "landscape poll endpoint",
+      "CONSUMER": "productive runtime",
+      "GHV_CROSSED": false,
+      "GHV_STOP_REASON": "NO_EDGE read-only poll tests"
+    },
+    {
+      "PRODUCER": "health prometheus export",
+      "CONSUMER": "trading control",
+      "GHV_CROSSED": false,
+      "GHV_STOP_REASON": "NO_EDGE metrics only"
+    }
+  ],
+  "PRESENTATION_TRADING_FEEDBACK_PATH_FOUND": false
+}

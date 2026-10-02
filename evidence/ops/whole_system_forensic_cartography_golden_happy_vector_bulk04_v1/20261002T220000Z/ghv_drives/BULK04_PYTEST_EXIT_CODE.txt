@@ -1,0 +1,6 @@
+PRIMARY_PYTEST_EXIT=1
+COLLECTED=90
+PASSED=88
+FAILED=2
+FAILED_TESTS=tests/governance/test_unified_blueprint_phase_26_final_closed_cycle_dod_v1.py::test_phase_26_proof_passes_on_current_repo,test_phase_26_summary_reproof
+SUPPLEMENT_META_ROUTING_PASSED=12
