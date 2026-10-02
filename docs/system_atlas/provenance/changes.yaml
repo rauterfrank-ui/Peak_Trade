@@ -503,3 +503,12 @@ changes:
   notes: 'PR #7011: preserve GHV synthetic enter_short through T2/S5 — post-overlay replay
     for ENTER classification, cycle_result sync, Live-29P/Venue-Plan blockers vs generic HOLD;
     GHV immutable; fail-closed preserved; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7012_ghv_pre_external_offline_convergence_v1
+  from: c0a1c16f51e2714e5e6df5102f1633b398d6f7f6
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_ghv_pre_external_offline_convergence_v1.py
+  notes: 'PR #7012: rebind Safety/KS typed evidence when forensic synthetic enter_short overlay
+    applies; offline GHV harness proves PRE_EXTERNAL terminal with fresh-pretrade fixtures;
+    no POST/threshold/GHV semantic change; ATLAS_AUTHORITY=NONE.'

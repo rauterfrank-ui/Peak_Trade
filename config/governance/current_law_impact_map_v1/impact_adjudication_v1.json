@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "verdict": "NO_LAW_IMPACT",
-  "reason": "GHV synthetic enter_short T2/S5 propagation wiring only; diff-bound law/Atlas bookkeeping; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "GHV synthetic enter_short offline replay safety/KS reprojection for PRE_EXTERNAL convergence; diff-bound law/Atlas bookkeeping only; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -11,16 +11,13 @@
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "docs/system_atlas/relations/structural.yaml",
-    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_synthetic_enter_forensic_v1.py",
-    "tests/ops/test_ghv_synthetic_enter_s5_propagation_v1.py",
-    "tests/ops/test_golden_happy_t2_cycle1_ghv_synthetic_regression_v1.py"
+    "tests/ops/test_ghv_pre_external_offline_convergence_v1.py"
   ],
-  "changed_paths_sha256": "4bf05dbf7a1c1daef1411d471ee93a10402665404462856e8c53e1c0af35161e",
-  "base_sha": "9820a092484a42155b96ac5a6791c00b4481c386",
+  "changed_paths_sha256": "27d7f4cdc9873be6ffbdb505ba69d61bf46a05d1ff8c100e5201dfc4b62cadb3",
+  "base_sha": "c0a1c16f51e2714e5e6df5102f1633b398d6f7f6",
   "evidence_refs": [
-    "tests/ops/test_ghv_synthetic_enter_s5_propagation_v1.py"
+    "tests/ops/test_ghv_pre_external_offline_convergence_v1.py"
   ],
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
@@ -29,11 +26,8 @@
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "docs/system_atlas/relations/structural.yaml",
-    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_synthetic_enter_forensic_v1.py",
-    "tests/ops/test_ghv_synthetic_enter_s5_propagation_v1.py",
-    "tests/ops/test_golden_happy_t2_cycle1_ghv_synthetic_regression_v1.py"
+    "tests/ops/test_ghv_pre_external_offline_convergence_v1.py"
   ],
   "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
   "selector_used_as_law_impact_authority": false
