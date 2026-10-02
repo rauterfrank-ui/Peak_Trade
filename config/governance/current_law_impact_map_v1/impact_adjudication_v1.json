@@ -1,39 +1,18 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "d62eb64ca83e1562b9f8bf7d1506cf65535f51d3",
+  "base_sha": "4b646cc5793a7cb4faed61eb0455b4d18995473d",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
-    "scripts/ops/run_ghv_b06_productive_closure_forensic_drive_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py",
-    "src/ops/productive_futures_ranking_producer_v1/producer_v1.py",
-    "src/ops/single_selected_future_policy_v1/constants_v1.py",
-    "src/ops/single_selected_future_policy_v1/producer_v1.py",
-    "src/ops/single_selected_future_policy_v1/reason_codes_v1.py",
-    "src/ops/single_selected_future_policy_v1/residency_eligibility_gate_v1.py",
-    "src/ops/top20_opportunity_evaluation_residency_v1/lane_evaluation_witness_disposition_v1.py",
-    "src/ops/top20_opportunity_evaluation_residency_v1/orchestration_v1.py",
-    "src/ops/top20_opportunity_evaluation_residency_v1/scoped_productive_residency_evaluation_completion_v1.py",
-    "tests/ops/test_cap23_residency_eligibility_gate_v1.py",
-    "tests/ops/test_lane_evaluation_witness_disposition_v1.py",
-    "tests/ops/test_scoped_productive_residency_evaluation_completion_v1.py"
+    "docs/ops/evidence/GHV_COMPLETE_SYSTEM_FIXPOINT_CLOSURE_V1.md"
   ],
-  "changed_paths_sha256": "8a1914f5cd2d9f9209391ff2df8a511065a48d8079f36d750250eb21f49874d5",
+  "changed_paths_sha256": "40e01c092e7fb8ee0fb435217177448ee5e190613a95aef625ef19dd68f11b25",
   "evidence_refs": [
-    "tests/ops/test_scoped_productive_residency_evaluation_completion_v1.py",
-    "src/ops/single_selected_future_policy_v1/constants_v1.py"
+    "docs/ops/evidence/GHV_COMPLETE_SYSTEM_FIXPOINT_CLOSURE_V1.md"
   ],
-  "reason": "PR #7023 GHV fixpoint: refresh CAP23 law index source_sha256 after default-off residency eligibility gate constants; co-bound Atlas/CSIA adjudication; no law semantic mutation; POST_COUNT=0.",
+  "reason": "PR #7024 docs-only GHV complete-system fixpoint closure; register docs/ops/evidence/ as impact candidate surface; refresh change-bound impact adjudication; no law semantic mutation; POST_COUNT=0.",
   "selector_used_as_law_impact_authority": false,
-  "verdict": "LAW_MAP_UPDATE_REQUIRED"
+  "verdict": "NO_LAW_IMPACT"
 }
