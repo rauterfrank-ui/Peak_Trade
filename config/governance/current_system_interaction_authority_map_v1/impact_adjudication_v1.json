@@ -2,6 +2,8 @@
   "authority_effect": "NONE",
   "base_sha": "2f4daa86ca09e622d70d624e2e8862c14ad5917d",
   "changed_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/ops/evidence/WHOLE_SYSTEM_CONFIGURATION_INJECTION_GHV_BWP03_V1.md",
@@ -18,8 +20,10 @@
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py",
     "src/ops/top20_opportunity_evaluation_residency_v1/scoped_residency_integrated_evaluation_propagation_v1.py"
   ],
-  "changed_paths_sha256": "1fee52be94ba80c78aaecb5327e4705556e188f2719b23d5a82aba87360c16fc",
+  "changed_paths_sha256": "11bb16d346d4ef58303ebfe312b9fe24e440833477a9b395961bdde75b71aa2f",
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "docs/ops/evidence/WHOLE_SYSTEM_CONFIGURATION_INJECTION_GHV_BWP03_V1.md",
     "docs/ops/evidence/WHOLE_SYSTEM_STATIC_FORENSIC_CARTOGRAPHY_GHV_BWP02_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
@@ -39,7 +43,7 @@
     "docs/ops/evidence/WHOLE_SYSTEM_STATIC_FORENSIC_CARTOGRAPHY_GHV_BWP02_V1.md",
     "evidence/ops/wsfc_ghv_whole_system_configuration_injection_bwp03/20261002T222500Z/WHOLE_SYSTEM_CONFIGURATION_INJECTION_BWP03_V1.json"
   ],
-  "reason": "PR #7028 (post-7027): BWP-03 configuration injection + bounded Atlas entity review for docs-drift; NO_MAP_IMPACT; no CSIA source semantic change; POST_COUNT=0.",
+  "reason": "PR #7028: BWP-03 configuration injection + bounded Atlas/law-map currency bindings; NO_MAP_IMPACT; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
