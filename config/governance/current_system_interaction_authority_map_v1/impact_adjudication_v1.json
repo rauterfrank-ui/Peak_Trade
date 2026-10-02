@@ -27,6 +27,7 @@
     "tests/trading/market_state/test_directional_confirmation_progress_v1.py"
   ],
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "docs/ops/specs/MV2_C2_DIRECTIONAL_CONFIRMATION_PROGRESS_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
