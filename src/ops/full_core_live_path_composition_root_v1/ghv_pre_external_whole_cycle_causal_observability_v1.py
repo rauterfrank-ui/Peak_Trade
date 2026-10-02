@@ -805,6 +805,14 @@ def build_whole_cycle_observability_v1(
         and state_graph.get("UNACCOUNTED_GRAPH_NODES") == 0
         and change_impact.get("ALL_CHANGE_EVENTS_FANOUT_TRAVERSED") is True
     )
+    from src.ops.full_core_live_path_composition_root_v1.dynamic_market_selection_evidence_contract_v1 import (
+        build_ghv_dynamic_evidence_from_whole_cycle_v1,
+    )
+
+    dynamic_market_selection_evidence = build_ghv_dynamic_evidence_from_whole_cycle_v1(
+        evidence_root=evidence_root,
+        field_provenance_rows=field_rows,
+    )
     return {
         "field_provenance_rows": field_rows,
         "change_impact": change_impact,
@@ -814,6 +822,7 @@ def build_whole_cycle_observability_v1(
         "CAUSAL_ANALYSIS_COMPLETE": capture_complete,
         "CYCLE_CAPTURE_COMPLETE": capture_complete,
         "ghv_root_present": ghv_root is not None,
+        "dynamic_market_selection_evidence": dynamic_market_selection_evidence,
     }
 
 
@@ -854,6 +863,17 @@ def persist_whole_cycle_observability_artifacts_v1(
         encoding="utf-8",
     )
     paths["causal_blocker_report"] = CAUSAL_BLOCKER_REPORT_FILENAME
+    dynamic = bundle.get("dynamic_market_selection_evidence")
+    if isinstance(dynamic, Mapping):
+        from src.ops.full_core_live_path_composition_root_v1.dynamic_market_selection_evidence_contract_v1 import (
+            ARTIFACT_FILENAME,
+        )
+
+        (evidence_root / ARTIFACT_FILENAME).write_text(
+            json.dumps(dict(dynamic), sort_keys=True, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        paths["dynamic_market_selection_evidence"] = ARTIFACT_FILENAME
     return paths
 
 

@@ -555,3 +555,10 @@ changes:
   notes: 'Post-measurement observability completion: continuation snapshot typed rehydration +
     offline PR7014/7015 artifact materialization from captured Product evidence; no Product rerun;
     no trading semantics; POST_COUNT=0.'
+- id: CHANGE:pr_7017_dynamic_market_selection_evidence_contract_v1
+  from: 01a987ff01aaf73132e31880f7e73839b2a3b698
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_dynamic_market_selection_evidence_contract_v1.py
+  notes: 'PR7017: observer-only dynamic market/selection evidence contract integrated with GHV whole-cycle observability; DYNAMIC_VALUE change is not drift; no trading/selection/sizing semantics; POST_COUNT=0.'
