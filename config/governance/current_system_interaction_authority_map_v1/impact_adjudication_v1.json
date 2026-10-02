@@ -10,6 +10,8 @@
   ],
   "changed_paths_sha256": "40e01c092e7fb8ee0fb435217177448ee5e190613a95aef625ef19dd68f11b25",
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "docs/ops/evidence/GHV_COMPLETE_SYSTEM_FIXPOINT_CLOSURE_V1.md"
   ],
   "evidence_refs": [
