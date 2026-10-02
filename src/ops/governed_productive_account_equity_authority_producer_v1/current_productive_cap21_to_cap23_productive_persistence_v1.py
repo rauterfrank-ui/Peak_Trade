@@ -249,13 +249,38 @@ def run_cap21_to_cap23_persist_productive_v1(
 
     gate_cfg = cap23_residency_eligibility_gate or Cap23ResidencyEligibilityGateConfigV1()
     residency_root = rank_root / "top20_evaluation_residency_v1"
+    from src.ops.top20_opportunity_evaluation_residency_v1.scoped_residency_integrated_evaluation_propagation_v1 import (
+        coalesce_scoped_residency_integrated_evaluation_config_v1,
+        is_scoped_residency_completion_required_v1,
+    )
+
+    integrated_eval_coalesce = coalesce_scoped_residency_integrated_evaluation_config_v1(
+        gate=gate_cfg,
+        residency_config=residency_cfg,
+        caller_config=scoped_residency_integrated_evaluation,
+        repository_sha=repository_sha,
+        universe_snapshot=uni_snapshot_dict,
+        ranking_snapshot=rank_snap,
+    )
+    if (
+        is_scoped_residency_completion_required_v1(gate=gate_cfg, residency_config=residency_cfg)
+        and integrated_eval_coalesce.config is None
+    ):
+        return _result(
+            ok=False,
+            status=(
+                "CAP22_RESIDENCY_EVALUATION_COMPLETION_FAIL_CLOSED:"
+                f"{','.join(integrated_eval_coalesce.failure_codes) or 'INTEGRATED_EVALUATION_CONFIG_MISSING'}"
+            ),
+            selection=None,
+        )
     if gate_cfg.enabled and gate_cfg.scoped_productive_activation:
         completion = run_scoped_productive_residency_evaluation_completion_v1(
             residency_state_root=residency_root,
             residency_config=residency_cfg,
             universe_snapshot=uni_snapshot_dict,
             producer_observed_at_unix=observed_unix,
-            integrated_evaluation=scoped_residency_integrated_evaluation,
+            integrated_evaluation=integrated_eval_coalesce.config,
             scheduler_tick_unix=observed_unix + 1.0,
         )
         if not completion.ok:
