@@ -41,5 +41,7 @@
     "tests/fixtures/ops/dynamic_market_selection_evidence_post_pr7017_sand_measurement_v1.json",
     "tests/ops/test_dynamic_market_runtime_cross_run_expectation_guard_v1.py",
     "tests/ops/test_dynamic_market_selection_evidence_contract_v1.py"
-  ]
+  ],
+  "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
+  "selector_used_as_map_impact_authority": false
 }

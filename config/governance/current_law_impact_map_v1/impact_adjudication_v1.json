@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
-  "verdict": "NO_MAP_IMPACT",
-  "reason": "Dynamic runtime evidence semantics hardening: RUNTIME_VALUE != CROSS_RUN_EXPECTATION guard and contract metadata; observer-only evidence surfaces; no law-map source change; no trading/selection/sizing semantics; POST_COUNT=0.",
+  "verdict": "NO_LAW_IMPACT",
+  "reason": "Dynamic runtime evidence semantics hardening: RUNTIME_VALUE != CROSS_RUN_EXPECTATION guard and contract metadata; observer-only evidence surfaces; no law semantic mutation; no trading/selection/sizing semantics; POST_COUNT=0.",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -41,5 +41,7 @@
     "tests/fixtures/ops/dynamic_market_selection_evidence_post_pr7017_sand_measurement_v1.json",
     "tests/ops/test_dynamic_market_runtime_cross_run_expectation_guard_v1.py",
     "tests/ops/test_dynamic_market_selection_evidence_contract_v1.py"
-  ]
+  ],
+  "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
+  "selector_used_as_law_impact_authority": false
 }

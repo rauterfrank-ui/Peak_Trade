@@ -301,7 +301,9 @@ def evaluate_relations_v1(
         sizing_inst = env_inst or bound_instrument_id
         sizing_match = _identity_match(ctx.selected_instrument, "", sizing_inst)
         if sizing_match is True and bound_native:
-            bound_match = _identity_match(ctx.selected_instrument, bound_native, bound_instrument_id)
+            bound_match = _identity_match(
+                ctx.selected_instrument, bound_native, bound_instrument_id
+            )
             if bound_match is False:
                 sizing_match = False
         if sizing_match is True:
