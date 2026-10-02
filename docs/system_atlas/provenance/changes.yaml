@@ -590,3 +590,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_integrated_offline_replay_and_correctness_head_bound_v1.py
   notes: 'HEAD-bound offline integrated replay/correctness proof and Paper-Shadow economic evidence bundle; shadow readiness discovery only; no orders/network; POST_COUNT=0.'
+- id: CHANGE:top20_opportunity_evaluation_residency_v1
+  from: ff5a533bd1733f5b9e3bcc4e186194ff88ef401d
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_top20_opportunity_evaluation_residency_v1.py
+  notes: 'Default-off Top20 evaluation residency and scheduling after VALID Cap2.2 Top20; admission snapshot duality; optional staged control-plane evaluation frames; no ranking/selection/trading authority; POST_COUNT=0.'

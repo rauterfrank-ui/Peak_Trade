@@ -43,6 +43,7 @@
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:okx_eea_private_account_state_runtime_v1 | DEFINED_BUT_NO_CONSUMER | CAPABILITY:okx_eea_private_account_state_runtime_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:operator_profile_explainability_v1 | DEFINED_BUT_NO_CONSUMER | CAPABILITY:operator_profile_explainability_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:CAPABILITY:peak_trade_public_market_data_runtime_v1 | DEFINED_BUT_NO_CONSUMER | CAPABILITY:peak_trade_public_market_data_runtime_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:CAPABILITY:top20_opportunity_evaluation_residency_v1 | DEFINED_BUT_NO_CONSUMER | CAPABILITY:top20_opportunity_evaluation_residency_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:b05_full_core_governed_authority_chain_closure_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:b05_full_core_governed_authority_chain_closure_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:c08_treasury_observed_or_reconciled_capital_productive_sizing_source_binding_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:c08_treasury_observed_or_reconciled_capital_productive_sizing_source_binding_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:c08_treasury_observed_or_reconciled_capital_semantic_authority_closeout_contract_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:c08_treasury_observed_or_reconciled_capital_semantic_authority_closeout_contract_v1 | STATUS=OPEN (not proven) |  |

@@ -279,9 +279,10 @@ entities:
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
-  modified_by: PENDING_CHANGE
+  modified_by: TOP20_OPPORTUNITY_EVALUATION_RESIDENCY_V1
   authority_sources:
   - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
+  - docs/ops/specs/TOP20_OPPORTUNITY_EVALUATION_RESIDENCY_AND_SCHEDULING_V1.md
   - docs/ops/specs/PEAK_TRADE_RANKING_MATRIX_POLICY_V1.md
   - docs/ops/specs/CAP22_ECONOMIC_MD_INPUT_AND_DUAL_INPUT_CONTRACT_V1.md
   - docs/ops/specs/CAP22_OFFLINE_POLICY_CANDIDATES_AND_EVIDENCE_CONTRACT_V1.md
@@ -292,7 +293,33 @@ entities:
   evidence_sources:
   - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
   notes: 'B03 governance persist: PEAK_TRADE_RANKING_MATRIX_POLICY_V1 ratifies Cap 2.2 ranking policy semantics (balanced movement structure). B06 Cap 2.2 Peak_Trade economic ranking runtime is wired (ECONOMIC_RANK_ACTIVATED=true; CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=true) using B05 raw features and B04 contracts. PRODUCTIVE_ECONOMIC_RANK_ACTIVATION remains false until INPUT2_MAX_AGE_SECONDS is Owner-ratified. Cap 2.3 remains sole productive selection owner. Future economic dual-input architecture remains in CONTRACT:cap22_economic_md_dual_input_v1. Offline policy candidates and evidence requirements are persisted by CONTRACT:cap22_offline_policy_candidates_and_evidence_v1. Offline MVR spread formula and comparison keys are persisted by CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1. The injected Policy-B threshold set and offline evidence harness are persisted by CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1. Offline historical evidence time semantics are persisted
-    by CONTRACT:cap22_historical_evidence_time_semantics_v1. Append-only 15m PIT persistence and collection contracts are persisted by CONTRACT:cap22_append_only_15m_pit_persistence_v1. KEEP29 external separation removed the src/ops/cap22_append_only_15m_pit_persistence_v1 package from the current tree; Cap 2.2 ranking authority is unchanged. Spec remains. No offline policy class has productive authority. CAP22_BECOMES_NETWORK_OWNER=false. CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false. CAP22_PROSPECTIVE_COLLECTION_STARTED=false. B10 adds robustness/stress proof evidence for the current B03-B09 economic ranking semantics only; it does not change ranking policy, features, weights, normalization, tie-breaks, selection, binding, or activation authority. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.'
+    by CONTRACT:cap22_historical_evidence_time_semantics_v1. Append-only 15m PIT persistence and collection contracts are persisted by CONTRACT:cap22_append_only_15m_pit_persistence_v1. KEEP29 external separation removed the src/ops/cap22_append_only_15m_pit_persistence_v1 package from the current tree; Cap 2.2 ranking authority is unchanged. Spec remains. No offline policy class has productive authority. CAP22_BECOMES_NETWORK_OWNER=false. CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false. CAP22_PROSPECTIVE_COLLECTION_STARTED=false. B10 adds robustness/stress proof evidence for the current B03-B09 economic ranking semantics only; it does not change ranking policy, features, weights, normalization, tie-breaks, selection, binding, or activation authority. Default-off post-persist residency observation hook only; no ranking authority. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.'
+- id: CAPABILITY:top20_opportunity_evaluation_residency_v1
+  kind: CAPABILITY
+  name: Top20 Opportunity Evaluation Residency And Scheduling
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: TOP20_OPPORTUNITY_EVALUATION_RESIDENCY_V1
+  authority_sources:
+  - docs/ops/specs/TOP20_OPPORTUNITY_EVALUATION_RESIDENCY_AND_SCHEDULING_V1.md
+  source_paths:
+  - docs/ops/specs/TOP20_OPPORTUNITY_EVALUATION_RESIDENCY_AND_SCHEDULING_V1.md
+  - src/ops/top20_opportunity_evaluation_residency_v1/__init__.py
+  - src/ops/top20_opportunity_evaluation_residency_v1/admission_v1.py
+  - src/ops/top20_opportunity_evaluation_residency_v1/constants_v1.py
+  - src/ops/top20_opportunity_evaluation_residency_v1/evaluation_frame_v1.py
+  - src/ops/top20_opportunity_evaluation_residency_v1/evidence_v1.py
+  - src/ops/top20_opportunity_evaluation_residency_v1/hard_invalidation_v1.py
+  - src/ops/top20_opportunity_evaluation_residency_v1/models_v1.py
+  - src/ops/top20_opportunity_evaluation_residency_v1/orchestration_v1.py
+  - src/ops/top20_opportunity_evaluation_residency_v1/persistence_v1.py
+  - src/ops/top20_opportunity_evaluation_residency_v1/residency_engine_v1.py
+  - src/ops/top20_opportunity_evaluation_residency_v1/single_writer_v1.py
+  - src/ops/top20_opportunity_evaluation_residency_v1/state_machine_v1.py
+  evidence_sources:
+  - tests/ops/test_top20_opportunity_evaluation_residency_v1.py
+  notes: 'Default-off evaluation continuity and non-preferential scheduling after VALID Cap2.2 Top20; admission snapshot duality; no ranking/selection/trading authority; POST_COUNT=0.'
 - id: CAPABILITY:cap_economic_md_input
   kind: CAPABILITY
   name: Persisted Multi-Instrument Economic Market Data Input
@@ -1053,6 +1080,7 @@ entities:
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
+  modified_by: TOP20_OPPORTUNITY_EVALUATION_RESIDENCY_V1
   authority_sources:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   - docs/ops/specs/CURRENT_MF_N5_STAGED_PRODUCTIVE_RUNTIME_ADMISSION_RECOVERY_AUDIT_CONTRACT_V1.md
@@ -1076,6 +1104,7 @@ entities:
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
+  modified_by: TOP20_OPPORTUNITY_EVALUATION_RESIDENCY_V1
   authority_sources:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_PRODUCTIVE_RUNTIME_ORCHESTRATOR_CONTRACT_V1.md
@@ -1337,7 +1366,7 @@ entities:
   epistemic_class: ADJUDICATED
   current_canonical: false
   current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-  modified_by: B06_CAP22_PEAK_TRADE_RANKING_RUNTIME_V1
+  modified_by: TOP20_OPPORTUNITY_EVALUATION_RESIDENCY_V1
   source_paths:
   - src/ops/productive_futures_ranking_producer_v1/__init__.py
   - src/ops/productive_futures_ranking_producer_v1/constants_v1.py
