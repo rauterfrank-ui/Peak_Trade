@@ -18,6 +18,12 @@ from src.ops.current_productive_eea_universe_inventory_acquisition_v1.constants_
 from src.ops.full_core_live_path_composition_root_v1.current_productive_s6_live_fresh_c1_continuous_observation_source_v1 import (
     LiveFreshC1ContinuousObservationSourceV1,
 )
+from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_scoped_one_shot_c1_observation_source_v1 import (
+    GET_PATH,
+)
 from tests.ops._current_productive_canonical_price_test_helpers_v1 import (
     okx_public_mark_price_payload_v1,
 )
@@ -45,6 +51,8 @@ class _RoutingMockTransport:
     def __init__(self, routes: dict[str, dict[str, Any] | None]) -> None:
         self._routes = routes
         self.calls: list[str] = []
+        self.call_policies: list[str] = []
+        self.call_pretrade_ids: list[str] = []
 
     def get(
         self,
@@ -54,9 +62,10 @@ class _RoutingMockTransport:
         pretrade_decision_id: str,
         get_cache_policy: str = "",
     ) -> _MockGetResult:
-        del pretrade_decision_id, get_cache_policy
         assert auth_required is False
         self.calls.append(endpoint)
+        self.call_policies.append(get_cache_policy)
+        self.call_pretrade_ids.append(pretrade_decision_id)
         path = endpoint.split("?", 1)[0]
         payload = self._routes.get(path)
         if payload is None and "?" in endpoint:
@@ -169,6 +178,38 @@ def test_instrument_mismatch_mark_fail_closed(tmp_path: Path) -> None:
         transport=transport,
     )
     assert source.poll() is None
+
+
+def _mark_call_indices(transport: _RoutingMockTransport) -> list[int]:
+    return [
+        i
+        for i, endpoint in enumerate(transport.calls)
+        if endpoint.split("?", 1)[0] == ENDPOINT_PUBLIC_MARK_PRICE
+    ]
+
+
+def test_two_polls_mark_get_uses_dynamic_refresh_required(tmp_path: Path) -> None:
+    cursor = _seed_cursor(tmp_path / "lane", event_time=0.0)
+    transport = _RoutingMockTransport(_mark_routes())
+    source = LiveFreshC1ContinuousObservationSourceV1(
+        cursor_store_root=cursor,
+        evidence_root=tmp_path / "evidence",
+        run_id="rw01-mark-dynamic",
+        native_id=NATIVE_ID,
+        transport=transport,
+    )
+    assert source.poll() is not None
+    assert source.poll() is not None
+    mark_indices = _mark_call_indices(transport)
+    assert len(mark_indices) >= 2
+    for idx in mark_indices:
+        assert transport.call_policies[idx] == GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED
+    candle_indices = [i for i, ep in enumerate(transport.calls) if ep.split("?", 1)[0] == GET_PATH]
+    assert len(candle_indices) >= 2
+    for idx in candle_indices:
+        assert transport.call_policies[idx] == GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED
+    mark_pretrade = [transport.call_pretrade_ids[i] for i in mark_indices]
+    assert len(set(mark_pretrade)) == len(mark_pretrade)
 
 
 def test_no_synthetic_mark_without_public_get(tmp_path: Path) -> None:

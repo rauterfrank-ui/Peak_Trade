@@ -105,6 +105,7 @@ class LiveFreshC1ContinuousObservationSourceV1:
             endpoint=mark_endpoint,
             auth_required=False,
             pretrade_decision_id=f"continuous-run-{self.run_id}-mark-{poll_index}",
+            get_cache_policy=GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
         )
         if not bool(getattr(mark_result, "get_performed", False)):
             return None
