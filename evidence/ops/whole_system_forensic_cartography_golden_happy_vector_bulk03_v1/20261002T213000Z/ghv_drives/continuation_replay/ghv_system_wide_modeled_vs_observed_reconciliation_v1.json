@@ -1,0 +1,320 @@
+{
+  "BOUNDED_OBSERVED_CAUSAL_FOOTPRINT": true,
+  "CONTINUATION_OBSERVED_TOTAL": 11,
+  "CONTINUATION_ONLY_SURFACES": [
+    {
+      "causal_relation": "CONSUMES_TRACED_STATE",
+      "child_trace_ids": [],
+      "consumer_symbol": "PROTECTIVE_STOP_DERIVATION",
+      "cycle_index": null,
+      "discovery_reason": "continuation_harness stage=PROTECTIVE_STOP_DERIVATION status=SKIP",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "file": "unknown",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "module": "unknown",
+      "output_generation_ids": [],
+      "parent_trace_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "stage_if_known": "PROTECTIVE_STOP_DERIVATION",
+      "surface_id": "OBS:resolve_protective_stop_sizing_side_for_live_29p_join_v1->PROTECTIVE_STOP_DERIVATION@PROTECTIVE_STOP_DERIVATION",
+      "symbol": "resolve_protective_stop_sizing_side_for_live_29p_join_v1"
+    },
+    {
+      "causal_relation": "CONSUMES_TRACED_STATE",
+      "child_trace_ids": [],
+      "consumer_symbol": "FRESH_PRETRADE_CONTRACT",
+      "cycle_index": null,
+      "discovery_reason": "continuation_harness stage=FRESH_PRETRADE_CONTRACT status=SKIP",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "file": "unknown",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "module": "unknown",
+      "output_generation_ids": [],
+      "parent_trace_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "stage_if_known": "FRESH_PRETRADE_CONTRACT",
+      "surface_id": "OBS:fresh_pretrade_runtime_get_v1->FRESH_PRETRADE_CONTRACT@FRESH_PRETRADE_CONTRACT",
+      "symbol": "fresh_pretrade_runtime_get_v1"
+    },
+    {
+      "causal_relation": "CONSUMES_TRACED_STATE",
+      "child_trace_ids": [],
+      "consumer_symbol": "CREDENTIAL_HANDLE_BIND",
+      "cycle_index": null,
+      "discovery_reason": "continuation_harness stage=CREDENTIAL_HANDLE_BIND status=SKIP",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "file": "unknown",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "module": "unknown",
+      "output_generation_ids": [],
+      "parent_trace_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "stage_if_known": "CREDENTIAL_HANDLE_BIND",
+      "surface_id": "OBS:get_only_credential_transport_bind_v1->CREDENTIAL_HANDLE_BIND@CREDENTIAL_HANDLE_BIND",
+      "symbol": "get_only_credential_transport_bind_v1"
+    },
+    {
+      "causal_relation": "CONSUMES_TRACED_STATE",
+      "child_trace_ids": [],
+      "consumer_symbol": "AUTHENTICATED_PRIVATE_GET",
+      "cycle_index": null,
+      "discovery_reason": "continuation_harness stage=AUTHENTICATED_PRIVATE_GET status=SKIP",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "file": "unknown",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "module": "unknown",
+      "output_generation_ids": [],
+      "parent_trace_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "stage_if_known": "AUTHENTICATED_PRIVATE_GET",
+      "surface_id": "OBS:FullCoreProductiveReadOnlyGetTransportV1->AUTHENTICATED_PRIVATE_GET@AUTHENTICATED_PRIVATE_GET",
+      "symbol": "FullCoreProductiveReadOnlyGetTransportV1"
+    },
+    {
+      "causal_relation": "CONSUMES_TRACED_STATE",
+      "child_trace_ids": [],
+      "consumer_symbol": "EXECUTION_ELIGIBILITY",
+      "cycle_index": null,
+      "discovery_reason": "continuation_harness stage=EXECUTION_ELIGIBILITY status=SKIP",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "file": "unknown",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "module": "unknown",
+      "output_generation_ids": [],
+      "parent_trace_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "stage_if_known": "EXECUTION_ELIGIBILITY",
+      "surface_id": "OBS:execution_eligibility_v1->EXECUTION_ELIGIBILITY@EXECUTION_ELIGIBILITY",
+      "symbol": "execution_eligibility_v1"
+    },
+    {
+      "causal_relation": "CONSUMES_TRACED_STATE",
+      "child_trace_ids": [],
+      "consumer_symbol": "ADMISSION",
+      "cycle_index": null,
+      "discovery_reason": "continuation_harness stage=ADMISSION status=SKIP",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "file": "unknown",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "module": "unknown",
+      "output_generation_ids": [],
+      "parent_trace_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "stage_if_known": "ADMISSION",
+      "surface_id": "OBS:pre_external_admission_v1->ADMISSION@ADMISSION",
+      "symbol": "pre_external_admission_v1"
+    },
+    {
+      "causal_relation": "CONSUMES_TRACED_STATE",
+      "child_trace_ids": [],
+      "consumer_symbol": "PRE_EXTERNAL_TERMINAL",
+      "cycle_index": null,
+      "discovery_reason": "continuation_harness stage=PRE_EXTERNAL_TERMINAL status=SKIP",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "file": "unknown",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "module": "unknown",
+      "output_generation_ids": [],
+      "parent_trace_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "stage_if_known": "PRE_EXTERNAL_TERMINAL",
+      "surface_id": "OBS:DISPOSITION_PRE_EXTERNAL_EFFECT->PRE_EXTERNAL_TERMINAL@PRE_EXTERNAL_TERMINAL",
+      "symbol": "DISPOSITION_PRE_EXTERNAL_EFFECT"
+    }
+  ],
+  "GLOBAL_RUNTIME_UNIVERSE_PROVEN_COMPLETE": "UNKNOWN_CURRENT",
+  "MODELED_BUT_NOT_OBSERVED": [
+    "NODE:GHV_FORENSIC_OBSERVABILITY",
+    "NODE:LIVE_29P_29Q_CARRIER",
+    "NODE:OCCUPANCY",
+    "NODE:PROTECTIVE_STOP",
+    "NODE:SAFETY_KS",
+    "NODE:SIZING_CAPITAL_SLOT",
+    "NODE:T2_JOIN"
+  ],
+  "MODELED_BUT_NOT_OBSERVED_COUNT": 7,
+  "MODELED_TOTAL": 20,
+  "OBSERVED_AND_MODELED": [
+    "NODE:ADMISSION",
+    "NODE:AUTHENTICATED_PRIVATE_GET",
+    "NODE:COMPOSE_EXECUTION_INTENT",
+    "NODE:CONTINUATION_SNAPSHOT",
+    "NODE:CREDENTIAL_PRIVATE_GET",
+    "NODE:EXECUTION_ELIGIBILITY",
+    "NODE:FRESH_PRETRADE",
+    "NODE:GHV_SYNTHETIC_OVERLAY_CYCLE1",
+    "NODE:LIVE_29P_JOIN",
+    "NODE:MV2_S7_REPLAY",
+    "NODE:PR7013_FINAL_REPROJECTION",
+    "NODE:PRE_EXTERNAL",
+    "NODE:VENUE_PLAN_BIND"
+  ],
+  "OBSERVED_AND_MODELED_COUNT": 13,
+  "OBSERVED_BUT_NOT_MODELED": [
+    {
+      "causal_relation": "CONSUMES_TRACED_STATE",
+      "child_trace_ids": [],
+      "consumer_symbol": "PROTECTIVE_STOP_DERIVATION",
+      "cycle_index": null,
+      "discovery_reason": "continuation_harness stage=PROTECTIVE_STOP_DERIVATION status=SKIP",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "file": "unknown",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "module": "unknown",
+      "output_generation_ids": [],
+      "parent_trace_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "stage_if_known": "PROTECTIVE_STOP_DERIVATION",
+      "surface_id": "OBS:resolve_protective_stop_sizing_side_for_live_29p_join_v1->PROTECTIVE_STOP_DERIVATION@PROTECTIVE_STOP_DERIVATION",
+      "symbol": "resolve_protective_stop_sizing_side_for_live_29p_join_v1"
+    }
+  ],
+  "OBSERVED_BUT_NOT_MODELED_COUNT": 1,
+  "OBSERVED_BUT_NOT_MODELED_SURFACES": [
+    {
+      "causal_relation": "CONSUMES_TRACED_STATE",
+      "child_trace_ids": [],
+      "consumer_symbol": "PROTECTIVE_STOP_DERIVATION",
+      "cycle_index": null,
+      "discovery_reason": "continuation_harness stage=PROTECTIVE_STOP_DERIVATION status=SKIP",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "file": "unknown",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "module": "unknown",
+      "output_generation_ids": [],
+      "parent_trace_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "stage_if_known": "PROTECTIVE_STOP_DERIVATION",
+      "surface_id": "OBS:resolve_protective_stop_sizing_side_for_live_29p_join_v1->PROTECTIVE_STOP_DERIVATION@PROTECTIVE_STOP_DERIVATION",
+      "symbol": "resolve_protective_stop_sizing_side_for_live_29p_join_v1"
+    }
+  ],
+  "PRODUCT_OBSERVED_TOTAL": 9,
+  "PRODUCT_ONLY_SURFACES": [
+    {
+      "causal_relation": "CONSUMES_TRACED_STATE",
+      "child_trace_ids": [
+        "gen_7cf9f53df9071c6ef5d4efbb"
+      ],
+      "consumer_symbol": "maybe_apply_synthetic_enter_forensic_overlay_v1",
+      "cycle_index": 1,
+      "discovery_reason": "flight_record stage=S7_MV2_FINAL_OUTPUT producer=compose_occupied_lane_mv2_dp_durable_cycle_v1 consumer=maybe_apply_synthetic_enter_forensic_overlay_v1",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "file": "full_core_live_path_composition_root_v1.ghv_pre_external_runtime_flight_recorder_v1",
+      "input_generation_ids": [
+        "gen_s7_mv2_output"
+      ],
+      "module": "unknown",
+      "output_generation_ids": [
+        "gen_7cf9f53df9071c6ef5d4efbb"
+      ],
+      "parent_trace_ids": [
+        "gen_s7_mv2_output"
+      ],
+      "stage_if_known": "S7_MV2_FINAL_OUTPUT",
+      "surface_id": "OBS:compose_occupied_lane_mv2_dp_durable_cycle_v1->maybe_apply_synthetic_enter_forensic_overlay_v1@S7_MV2_FINAL_OUTPUT",
+      "symbol": "compose_occupied_lane_mv2_dp_durable_cycle_v1"
+    },
+    {
+      "causal_relation": "TRANSFORMS_TRACED_STATE",
+      "child_trace_ids": [
+        "gen_ba58c3dfeafcf64da4b0ecc0"
+      ],
+      "consumer_symbol": "join_current_productive_enter_live_29p_before_venue_plan_v1",
+      "cycle_index": 1,
+      "discovery_reason": "flight_record stage=GHV_ROOT_CHANGE_EVENT producer=maybe_apply_synthetic_enter_forensic_overlay_v1 consumer=join_current_productive_enter_live_29p_before_venue_plan_v1",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "file": "full_core_live_path_composition_root_v1.ghv_pre_external_runtime_flight_recorder_v1",
+      "input_generation_ids": [
+        "gen_root"
+      ],
+      "module": "unknown",
+      "output_generation_ids": [
+        "gen_ba58c3dfeafcf64da4b0ecc0"
+      ],
+      "parent_trace_ids": [
+        "gen_root"
+      ],
+      "stage_if_known": "GHV_ROOT_CHANGE_EVENT",
+      "surface_id": "OBS:maybe_apply_synthetic_enter_forensic_overlay_v1->join_current_productive_enter_live_29p_before_venue_plan_v1@GHV_ROOT_CHANGE_EVENT",
+      "symbol": "maybe_apply_synthetic_enter_forensic_overlay_v1"
+    },
+    {
+      "causal_relation": "TRANSFORMS_TRACED_STATE",
+      "child_trace_ids": [
+        "gen_154776ac2ddde7fc7f043555"
+      ],
+      "consumer_symbol": "join_current_productive_enter_live_29p_before_venue_plan_v1",
+      "cycle_index": 1,
+      "discovery_reason": "flight_record stage=SYNTHETIC_OVERLAY_OUTPUT producer=maybe_apply_synthetic_enter_forensic_overlay_v1 consumer=join_current_productive_enter_live_29p_before_venue_plan_v1",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "file": "full_core_live_path_composition_root_v1.ghv_pre_external_runtime_flight_recorder_v1",
+      "input_generation_ids": [
+        "gen_7cf9f53df9071c6ef5d4efbb"
+      ],
+      "module": "unknown",
+      "output_generation_ids": [
+        "gen_154776ac2ddde7fc7f043555"
+      ],
+      "parent_trace_ids": [
+        "gen_7cf9f53df9071c6ef5d4efbb"
+      ],
+      "stage_if_known": "SYNTHETIC_OVERLAY_OUTPUT",
+      "surface_id": "OBS:maybe_apply_synthetic_enter_forensic_overlay_v1->join_current_productive_enter_live_29p_before_venue_plan_v1@SYNTHETIC_OVERLAY_OUTPUT",
+      "symbol": "maybe_apply_synthetic_enter_forensic_overlay_v1"
+    },
+    {
+      "causal_relation": "CONSUMES_TRACED_STATE",
+      "child_trace_ids": [
+        "gen_a37e5748897491bf036ae0d4"
+      ],
+      "consumer_symbol": "ghv_pre_external_continuation_harness_v1",
+      "cycle_index": 1,
+      "discovery_reason": "flight_record stage=CONTINUATION_SNAPSHOT_PERSISTED producer=persist_continuation_snapshot_v1 consumer=ghv_pre_external_continuation_harness_v1",
+      "execution_domain": "PRODUCT_RUNTIME",
+      "file": "full_core_live_path_composition_root_v1.ghv_pre_external_runtime_flight_recorder_v1",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "module": "unknown",
+      "output_generation_ids": [
+        "gen_a37e5748897491bf036ae0d4"
+      ],
+      "parent_trace_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "stage_if_known": "CONTINUATION_SNAPSHOT_PERSISTED",
+      "surface_id": "OBS:persist_continuation_snapshot_v1->ghv_pre_external_continuation_harness_v1@CONTINUATION_SNAPSHOT_PERSISTED",
+      "symbol": "persist_continuation_snapshot_v1"
+    }
+  ],
+  "owner": "full_core_live_path_composition_root_v1.ghv_system_wide_canary_surface_discovery_v1",
+  "schema_version": "ghv_system_wide_modeled_vs_observed_reconciliation.v1"
+}

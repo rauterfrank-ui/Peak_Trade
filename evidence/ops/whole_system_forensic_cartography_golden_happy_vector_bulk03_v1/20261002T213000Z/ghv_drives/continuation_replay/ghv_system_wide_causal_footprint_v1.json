@@ -1,0 +1,48 @@
+{
+  "DISCOVERED_SURFACES_ACCOUNTED_FOR": true,
+  "GHV_CANARY_ROOT": "GHV_SYNTHETIC_ENTER_SHORT_CYCLE_1",
+  "GHV_SYSTEM_WIDE_FOOTPRINT": true,
+  "NO_FAIL_FAST": true,
+  "direct_consumers": [
+    "join_current_productive_enter_live_29p_before_venue_plan_v1",
+    "reapply_forensic_synthetic_safety_reprojection_on_replay_v1"
+  ],
+  "observed_but_not_modeled_surfaces": [
+    {
+      "causal_relation": "CONSUMES_TRACED_STATE",
+      "child_trace_ids": [],
+      "consumer_symbol": "PROTECTIVE_STOP_DERIVATION",
+      "cycle_index": null,
+      "discovery_reason": "continuation_harness stage=PROTECTIVE_STOP_DERIVATION status=SKIP",
+      "execution_domain": "OFFLINE_CONTINUATION",
+      "file": "unknown",
+      "input_generation_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "module": "unknown",
+      "output_generation_ids": [],
+      "parent_trace_ids": [
+        "gen_75a578a5706c6ca9ef5bdbc0"
+      ],
+      "stage_if_known": "PROTECTIVE_STOP_DERIVATION",
+      "surface_id": "OBS:resolve_protective_stop_sizing_side_for_live_29p_join_v1->PROTECTIVE_STOP_DERIVATION@PROTECTIVE_STOP_DERIVATION",
+      "symbol": "resolve_protective_stop_sizing_side_for_live_29p_join_v1"
+    }
+  ],
+  "observed_gates": [
+    "OBS:try_bind_current_productive_venue_plan_v1->downstream_pre_external@VENUE_PLAN_BIND",
+    "OBS:compose_core_live_execution_intent_v1->COMPOSE_CORE_LIVE_EXECUTION_INTENT@COMPOSE_CORE_LIVE_EXECUTION_INTENT",
+    "OBS:try_bind_current_productive_venue_plan_v1->VENUE_PLAN_BIND@VENUE_PLAN_BIND"
+  ],
+  "observed_transformations": [
+    "OBS:maybe_apply_synthetic_enter_forensic_overlay_v1->join_current_productive_enter_live_29p_before_venue_plan_v1@GHV_ROOT_CHANGE_EVENT",
+    "OBS:maybe_apply_synthetic_enter_forensic_overlay_v1->join_current_productive_enter_live_29p_before_venue_plan_v1@SYNTHETIC_OVERLAY_OUTPUT",
+    "OBS:reapply_forensic_synthetic_safety_reprojection_on_replay_v1->try_bind_current_productive_venue_plan_v1@PR7013_FORENSIC_SYNTHETIC_SAFETY_REPROJECTION"
+  ],
+  "owner": "full_core_live_path_composition_root_v1.ghv_system_wide_canary_surface_discovery_v1",
+  "schema_version": "ghv_system_wide_causal_footprint.v1",
+  "transitive_consumers": [
+    "compose_core_live_execution_intent_v1",
+    "try_bind_current_productive_venue_plan_v1"
+  ]
+}

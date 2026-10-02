@@ -139,11 +139,77 @@ MULTI_FUTURE_RUNTIME_AUTHORIZED=false
 
 ## Open findings
 
+Cartography completeness (18/18 DEEP) is separate from correctness; the following remain open after the cumulative GHV checkpoint:
+
 ```text
-CURRENT_OPEN_FINDINGS=WP02-F002 (dual B05 namespace — documentation/navigation)
+B03-F001=UNKNOWN_CURRENT (offline GHV short synthetic enter → HOLD_CLOSED not PRE_EXTERNAL)
+B03-F005=VIOLATED_CURRENT (adjacent pytest/runbook drift)
+B04-F001=VIOLATED_CURRENT (Phase 26 DoD aggregate reproof; nested phase_15)
+B05-F001=UNKNOWN_CURRENT (RATE_LIMIT / SHUTDOWN_DURING_POLL not GHV-driven)
+B05-F002=UNKNOWN_CURRENT (CACHE_MISS not isolated in public-MD tests)
+WP02-F002=documentation/navigation (dual B05 namespace)
 RESOLVED_FINDINGS=B10_FINDING_01 (config propagation)
 HISTORICAL_FINDINGS=B10_FINDING_03 (frozen)
+STRUCTURAL_OFFLINE_NATURAL_ENTER_TO_PRE_EXTERNAL=PROVEN
+PRODUCTIVE_REAL_CANONICAL_NATURAL_ENTER_TO_PRE_EXTERNAL=NOT_YET_PROVEN
 ```
+
+## Extension — WSFC-GHV-BULK-03 (observation / control / persistence plane)
+
+**AUTHORITY=NONE.** Supplements WP01–WP11; does not replace them.
+
+```text
+BULK_ID=WSFC-GHV-BULK-03
+BASELINE_SHA=6ba968bdfd56d50da73cdfc4cc13657059f1845d
+EVIDENCE_ROOT=evidence/ops/whole_system_forensic_cartography_golden_happy_vector_bulk03_v1/20261002T213000Z/
+COMPANION_DOC=docs/ops/evidence/WHOLE_SYSTEM_FORENSIC_CARTOGRAPHY_GHV_BULK03_V1.md
+COMPONENT_OCCURRENCES=84
+BOUNDARY_OCCURRENCES=78
+```
+
+Sectors deeply cartographed in BULK-03: WP-B private state, WP-C convergence, persistence/restart,
+continuous-run/post-6948 policy, GHV observability/continuation/canary, Cap7.2 simulated execution
+(fail-closed beyond PRE_EXTERNAL).
+
+At BULK-03 completion the remaining frontier was learning/MI/research/presentation (closed in BULK-04/05).
+
+## Extension — WSFC-GHV-BULK-04 (learning / MI offline / research corpus)
+
+**AUTHORITY=NONE.**
+
+```text
+BULK_ID=WSFC-GHV-BULK-04
+BASELINE_SHA=6ba968bdfd56d50da73cdfc4cc13657059f1845d
+EVIDENCE_ROOT=evidence/ops/whole_system_forensic_cartography_golden_happy_vector_bulk04_v1/20261002T220000Z/
+COMPANION_DOC=docs/ops/evidence/WHOLE_SYSTEM_FORENSIC_CARTOGRAPHY_GHV_BULK04_V1.md
+SURFACES_DEEP_CARTOGRAPHED=TD-DDO-LEARNING, TD-MI-OFFLINE, TD-RESEARCH-CORPUS
+COMPONENT_OCCURRENCES=101
+BOUNDARY_OCCURRENCES=94
+PRODUCTIVE_TRADING_AUTHORITY_LEAK_FOUND=false
+B03_F001_STATUS=UNCHANGED_OPEN
+B03_F005_STATUS=UNCHANGED_OPEN
+```
+
+At BULK-04 completion the remaining frontier was presentation + full WP-A public-MD orchestrator depth (closed in BULK-05).
+
+## Extension — WSFC-GHV-BULK-05 (presentation + public-MD closure)
+
+**AUTHORITY=NONE.**
+
+```text
+BULK_ID=WSFC-GHV-BULK-05
+EVIDENCE_ROOT=evidence/ops/whole_system_forensic_cartography_golden_happy_vector_bulk05_v1/20261002T223000Z/
+COMPANION_DOC=docs/ops/evidence/WHOLE_SYSTEM_FORENSIC_CARTOGRAPHY_GHV_BULK05_V1.md
+FINAL_RECONCILIATION=WHOLE_SYSTEM_GHV_FINAL_COVERAGE_RECONCILIATION_V1.json
+WHOLE_SYSTEM_DEEP_CARTOGRAPHY_COMPLETE=true
+MATERIAL_SURFACE_COUNT=18
+DEEP_CARTOGRAPHED=18
+B03_F001_STATUS=UNCHANGED_OPEN
+B03_F005_STATUS=UNCHANGED_OPEN
+B04_F001_STATUS=UNCHANGED_OPEN
+```
+
+Program-level cartography completeness is declared; open findings remain correctness/navigation debt (see BULK05_FINDINGS_V1.json and prior bulk findings).
 
 ## Runtime diff (this PR)
 

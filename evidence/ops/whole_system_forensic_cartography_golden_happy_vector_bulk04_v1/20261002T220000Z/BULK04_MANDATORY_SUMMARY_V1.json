@@ -1,0 +1,76 @@
+{
+  "BULK_ID": "WSFC-GHV-BULK-04",
+  "BASELINE_SHA": "6ba968bdfd56d50da73cdfc4cc13657059f1845d",
+  "WHOLE_SYSTEM_FORENSIC_METHOD": "GOLDEN_HAPPY_VECTOR",
+  "GHV_WAS_FORENSIC_INSTRUMENT_FOR_ENTIRE_BULK": true,
+  "SURFACES_DEEP_CARTOGRAPHED": [
+    "SURFACE:TD-DDO-LEARNING",
+    "SURFACE:TD-MI-OFFLINE",
+    "SURFACE:TD-RESEARCH-CORPUS"
+  ],
+  "BULK04_SECTORS": [
+    "B04-S01 DDO capture / ledger / productive observation join",
+    "B04-S02 DDO export → optimization learning-input boundary",
+    "B04-S03 DDO promotion dry-run guards",
+    "B04-S04 Optimization universe / M4 plane / proposal ingress / join policy",
+    "B04-S05 MI offline stack (MARKET_CONTEXT → loops → attribution)",
+    "B04-S06 Meta dual router + Blueprint Phase 26 DoD",
+    "B04-S07 STEP29M research corpus / post-selection binding"
+  ],
+  "BULK04_COMPONENT_OCCURRENCES": 101,
+  "BULK04_BOUNDARY_OCCURRENCES": 94,
+  "BULK04_PROVEN_CURRENT": 97,
+  "BULK04_UNKNOWN_CURRENT": 1,
+  "BULK04_CONFLICTING_CURRENT": 0,
+  "BULK04_VIOLATED_CURRENT": 3,
+  "GHV_TRAVERSAL_COUNTS": {
+    "REAL_PRODUCTIVE_GHV": 0,
+    "ARCHIVED_REAL_GHV": 0,
+    "OFFLINE_INTEGRATED_GHV": 8,
+    "DETERMINISTIC_GHV": 92,
+    "FAIL_CLOSED_GHV": 6,
+    "NOT_TRAVERSED": 5
+  },
+  "DDO_LEARNING_AUTHORITY": "NONE",
+  "MI_OFFLINE_AUTHORITY": "NONE",
+  "RESEARCH_CORPUS_AUTHORITY": "NONE",
+  "PRODUCTIVE_TRADING_AUTHORITY_LEAK_FOUND": false,
+  "PROMOTION_BOUNDARIES_FOUND": 6,
+  "HIDDEN_AUTO_ACTIVATION_FOUND": false,
+  "REPRODUCIBILITY_COMPLETE": false,
+  "REPRODUCIBILITY_GAPS": [
+    "Phase 26 global DoD reproof incomplete (B04-F001)",
+    "STEP29M fleet-wide lineage not collapsed to single GHV vector",
+    "Partial fee/slippage lineage only where experiment identity tests require"
+  ],
+  "B03_F001_STATUS": "UNCHANGED_OPEN",
+  "B03_F005_STATUS": "UNCHANGED_OPEN",
+  "REPAIRS_PERFORMED": [],
+  "REPAIRS_NOT_PERFORMED": [
+    "B04-F001 Phase 26 DoD reproof",
+    "B03-F001",
+    "B03-F005"
+  ],
+  "POST_ALLOWED": false,
+  "REAL_VENUE_POST_ALLOWED": false,
+  "EXTERNAL_EFFECT_AUTHORIZED": false,
+  "REAL_POST_COUNT": 0,
+  "STRUCTURAL_OFFLINE_NATURAL_ENTER_TO_PRE_EXTERNAL": "PROVEN",
+  "PRODUCTIVE_REAL_CANONICAL_NATURAL_ENTER_TO_PRE_EXTERNAL": "NOT_YET_PROVEN",
+  "TESTS": {
+    "primary_pytest_drive": "90 collected, 88 passed, 2 failed (phase 26 DoD)",
+    "supplement_meta_routing": "12 passed",
+    "ghv_drive_log": "ghv_drives/BULK04_PYTEST_GHV_DRIVE.log"
+  },
+  "DURABLE_EVIDENCE_ROOT": "evidence/ops/whole_system_forensic_cartography_golden_happy_vector_bulk04_v1/20261002T220000Z/",
+  "BULK_FORENSIC_CARTOGRAPHY_COMPLETE": true,
+  "WHOLE_SYSTEM_DEEP_CARTOGRAPHY_COMPLETE": false,
+  "REMAINING_FORENSIC_FRONTIER": [
+    "SURFACE:TD-PRESENTATION",
+    "SURFACE:TD-PUBLIC-MD (full orchestrator depth beyond WP-01 C1 spine)"
+  ],
+  "NEXT_RECOMMENDED_BULK": "WSFC-GHV-BULK-05",
+  "PR_CREATED": false,
+  "OWNER_MERGE_GO": false,
+  "HARD_BLOCKER": null
+}

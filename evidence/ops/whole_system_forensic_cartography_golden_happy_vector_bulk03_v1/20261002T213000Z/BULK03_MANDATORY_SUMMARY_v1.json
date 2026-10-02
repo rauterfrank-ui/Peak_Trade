@@ -1,0 +1,128 @@
+{
+  "BULK_ID": "WSFC-GHV-BULK-03",
+  "BASELINE_SHA": "6ba968bdfd56d50da73cdfc4cc13657059f1845d",
+  "ORIGIN_MAIN_AT_COMPLETION": "6ba968bdfd56d50da73cdfc4cc13657059f1845d",
+  "WHOLE_SYSTEM_FORENSIC_METHOD": "GOLDEN_HAPPY_VECTOR",
+  "GHV_ROLE": "FORENSIC_INSTRUMENT",
+  "GHV_WAS_FORENSIC_INSTRUMENT_FOR_ENTIRE_BULK": true,
+  "BULK03_SECTORS": [
+    "B03-S01 WP-B Private Account State",
+    "B03-S02 WP-C MD/Public-Private Convergence",
+    "B03-S03 Persistence / restart / checkpoint",
+    "B03-S04 Continuous-run / bootstrap / shutdown",
+    "B03-S05 GHV observability / continuation / canary",
+    "B03-S06 Cap7.2 host / simulated execution"
+  ],
+  "BULK03_COMPONENT_OCCURRENCES": 84,
+  "BULK03_BOUNDARY_OCCURRENCES": 78,
+  "BULK03_PROVEN_CURRENT": 79,
+  "BULK03_UNKNOWN_CURRENT": 4,
+  "BULK03_CONFLICTING_CURRENT": 0,
+  "BULK03_VIOLATED_CURRENT": 1,
+  "GHV_TRAVERSAL_COUNTS": {
+    "REAL_PRODUCTIVE_GHV": 0,
+    "ARCHIVED_REAL_GHV": 12,
+    "OFFLINE_INTEGRATED_GHV": 18,
+    "DETERMINISTIC_GHV": 52,
+    "FAIL_CLOSED_GHV": 14,
+    "NOT_TRAVERSED": 8
+  },
+  "FINDINGS": [
+    {
+      "FINDING_ID": "B03-F001",
+      "LOCATION": "tests/ops/test_ghv_pre_external_offline_convergence_v1.py::test_ghv_synthetic_enter_short_offline_reaches_pre_external_terminal",
+      "OBSERVED": "disposition HOLD_CLOSED",
+      "EXPECTED": "PRE_EXTERNAL_EFFECT for short synthetic enter path",
+      "CURRENT_CLASSIFICATION": "UNKNOWN_CURRENT",
+      "ROOT_CAUSE_PROVEN": false,
+      "AUTHORITY_IMPACT": "NONE",
+      "SAFETY_IMPACT": "NONE — fail-closed hold",
+      "GHV_IMPACT": "offline short-path GHV stop documented",
+      "REPAIR_REQUIRED_FOR_CARTOGRAPHY": false,
+      "REPAIR_SCOPE_IF_REQUIRED": null
+    },
+    {
+      "FINDING_ID": "B03-F002",
+      "LOCATION": "ghv_pre_external_continuation_harness_v1 / archived canary snapshot",
+      "OBSERVED": "COMPOSE_CORE_LIVE_EXECUTION_INTENT ROOT_BLOCKER 29P_DENY,SIZING_OUTCOME:BLOCKED",
+      "EXPECTED": "Legitimate fail-closed without POST",
+      "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+      "ROOT_CAUSE_PROVEN": true,
+      "AUTHORITY_IMPACT": "NONE",
+      "SAFETY_IMPACT": "NONE — capital/sizing gate preserved",
+      "GHV_IMPACT": "GHV stopped at compose intent; downstream stages NOT_EVALUABLE",
+      "REPAIR_REQUIRED_FOR_CARTOGRAPHY": false,
+      "REPAIR_SCOPE_IF_REQUIRED": null
+    },
+    {
+      "FINDING_ID": "B03-F003",
+      "LOCATION": "SURFACE:TD-PRIVATE-STATE / WP-B → productive GET chain",
+      "OBSERVED": "Deterministic GHV traverses contracts; productive K1+authenticated GET same stop class as WP01",
+      "EXPECTED": "Fail-closed without Owner-GO keychain",
+      "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+      "ROOT_CAUSE_PROVEN": true,
+      "AUTHORITY_IMPACT": "NONE",
+      "SAFETY_IMPACT": "NONE",
+      "GHV_IMPACT": "boundary B03S01-B05 stop preserved",
+      "REPAIR_REQUIRED_FOR_CARTOGRAPHY": false,
+      "REPAIR_SCOPE_IF_REQUIRED": null
+    },
+    {
+      "FINDING_ID": "B03-F004",
+      "LOCATION": "B03-S06 PRE_EXTERNAL → Cap7.2 host join",
+      "OBSERVED": "NO_EDGE — PRE_EXTERNAL terminal; host binding default enabled=false",
+      "EXPECTED": "No automatic productive cross to simulated/live POST",
+      "CURRENT_CLASSIFICATION": "PROVEN_CURRENT",
+      "ROOT_CAUSE_PROVEN": true,
+      "AUTHORITY_IMPACT": "NONE",
+      "SAFETY_IMPACT": "NONE",
+      "GHV_IMPACT": "explicit NO_EDGE boundary recorded",
+      "REPAIR_REQUIRED_FOR_CARTOGRAPHY": false,
+      "REPAIR_SCOPE_IF_REQUIRED": null
+    },
+    {
+      "FINDING_ID": "B03-F005",
+      "LOCATION": "pytest selection (informational only — not BULK03 scope)",
+      "OBSERVED": "9 failures in optional adjacent tests (runbook section drift / gap DAG label)",
+      "EXPECTED": "tests green",
+      "CURRENT_CLASSIFICATION": "VIOLATED_CURRENT",
+      "ROOT_CAUSE_PROVEN": true,
+      "AUTHORITY_IMPACT": "NONE",
+      "SAFETY_IMPACT": "NONE",
+      "GHV_IMPACT": "none — not used as GHV proof",
+      "REPAIR_REQUIRED_FOR_CARTOGRAPHY": false,
+      "REPAIR_SCOPE_IF_REQUIRED": "separate maintenance PR if desired"
+    }
+  ],
+  "REPAIRS_PERFORMED": [],
+  "REPAIRS_NOT_PERFORMED": [
+    "B03-F001 short synthetic PRE_EXTERNAL path",
+    "B03-F005 adjacent test drift"
+  ],
+  "POST_ALLOWED": false,
+  "REAL_VENUE_POST_ALLOWED": false,
+  "EXTERNAL_EFFECT_AUTHORIZED": false,
+  "REAL_POST_COUNT": 0,
+  "STRUCTURAL_OFFLINE_NATURAL_ENTER_TO_PRE_EXTERNAL": "PROVEN",
+  "PRODUCTIVE_REAL_CANONICAL_NATURAL_ENTER_TO_PRE_EXTERNAL": "NOT_YET_PROVEN",
+  "TESTS": {
+    "BULK03_PRIMARY_GHV_DRIVE": "tests/ops/test_okx_eea_private_account_state_runtime_v1.py (14 pass), test_market_data_private_state_runtime_convergence_v1.py (13 pass), test_post_6948... (8 pass), test_ghv_pre_external_offline_convergence_v1.py (2 pass, 1 fail documented), test_post_capability_7_2_cybersecurity_review_v1.py (3 pass)",
+    "CONTINUATION_HARNESS": "scripts/ops/run_ghv_pre_external_continuation_harness_v1.py on archived canary snapshot",
+    "TOTAL_PRIMARY_PASS": 40,
+    "DOCUMENTED_FAIL": 1
+  },
+  "DURABLE_EVIDENCE_ROOT": "evidence/ops/whole_system_forensic_cartography_golden_happy_vector_bulk03_v1/20261002T213000Z/",
+  "BULK_FORENSIC_CARTOGRAPHY_COMPLETE": true,
+  "WHOLE_SYSTEM_DEEP_CARTOGRAPHY_COMPLETE": false,
+  "REMAINING_AFTER_BULK03": [
+    "SURFACE:TD-DDO-LEARNING",
+    "SURFACE:TD-MI-OFFLINE",
+    "SURFACE:TD-RESEARCH-CORPUS",
+    "SURFACE:TD-PRESENTATION",
+    "SURFACE:TD-PUBLIC-MD full orchestrator depth (partial only)"
+  ],
+  "NEXT_RECOMMENDED_BULK": "WSFC-GHV-BULK-04 (learning + MI offline + research corpus connected plane)",
+  "PR_CREATED": false,
+  "OWNER_MERGE_GO": false,
+  "HARD_BLOCKER": null
+}
