@@ -1091,7 +1091,8 @@ relations:
     boundary. PR #7006 synthetic overlay uses the same ENTER join when armed. PR #7008
     persistent S5 runner propagates fresh pretrade GET into LIVE-29P injected handoff
     (wiring only). PR #7009 GHV product launcher binds GET-only K1 handle to fresh-pretrade
-    transport (no POST standing pin change). PR_6744 MV2 capital context rebind is navigation-only
+    transport (no POST standing pin change). GHV synthetic enter_short protective-stop sizing-side
+    resolution at LIVE-29P join (wiring only). PR_6744 MV2 capital context rebind is navigation-only
     lineage; orchestration only. ATLAS_AUTHORITY=NONE.
 
     '
