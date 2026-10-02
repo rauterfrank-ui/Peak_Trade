@@ -127,7 +127,7 @@ Cap 2.2 → Residency → Evaluation → Witness → Cap 2.3 → Cap 2.4 → GHV
 END_TO_END_IDENTITY_MATCH=true
 ```
 
-Evidence scope: post6999 integrated replay + offline GHV B06 driver (`evidence/ops/golden_happy_vector_instrumented_information_funnel_post6999_v1/` archived under workspace evidence; driver path on main).
+Evidence scope: post6999 integrated replay + offline GHV B06 driver (`evidence&#47;ops&#47;golden_happy_vector_instrumented_information_funnel_post6999_v1&#47;` archived under workspace evidence; driver path on main).
 
 ---
 
