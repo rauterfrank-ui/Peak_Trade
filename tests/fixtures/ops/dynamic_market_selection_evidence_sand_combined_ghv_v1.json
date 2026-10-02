@@ -1,0 +1,43 @@
+{
+  "run_id": "50b9d20100ece6df",
+  "cycle_index": 1,
+  "observation_stage": "LIVE_29P_JOIN_OUTPUT",
+  "selected_instrument": "SAND-USDT-SWAP",
+  "bound_instrument": {
+    "instrument_id": "okx_eea:linear_perpetual:SAND:USDT:USDT:sand-usdt-swap",
+    "venue_native_id": "SAND-USDT-SWAP",
+    "ranking_snapshot_id": "fixture",
+    "ranking_integrity_digest": "fixture",
+    "universe_snapshot_id": "fixture",
+    "selection_id": "fixture",
+    "selection_integrity_digest": "fixture",
+    "selection_state": "SELECTED",
+    "selected_future_count": 1,
+    "max_positions_effective": 1
+  },
+  "observed_instrument_id": "okx_eea:linear_perpetual:SAND:USDT:USDT:sand-usdt-swap",
+  "reference_price": "0.05748",
+  "decision_outcome": "enter_short",
+  "selected_side": "short",
+  "pre_external_reached": false,
+  "policy_outcome": "BLOCKED",
+  "fresh_pretrade_captured": false,
+  "source_provenance": "evidence/ops/combined_ghv_whole_cycle_canary_measurement_v1/20261002T074052Z",
+  "sizing_state": {
+    "final_quantity": "0",
+    "outcome": "BLOCKED",
+    "selected_side": "SHORT",
+    "reason_codes": ["ROUNDED_DOWN", "BELOW_MIN_QUANTITY"],
+    "pre_sizing_risk": {
+      "candidate_quantity_upper_bound": "0.00279309536824239125",
+      "reference_price": "0.05748",
+      "side": "SHORT",
+      "status": "PASS"
+    },
+    "scope_capital_envelope": {
+      "instrument_id": "okx_eea:linear_perpetual:SAND:USDT:USDT:sand-usdt-swap",
+      "available_capital": "2.234476294593913",
+      "status": "PASS"
+    }
+  }
+}
