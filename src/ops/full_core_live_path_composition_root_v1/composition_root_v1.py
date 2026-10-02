@@ -115,7 +115,9 @@ def compose_core_live_execution_intent_v1(
             terminal=terminal,
         )
 
-    def _deny_traced(*reasons: str, predicate: str, summary: str = "") -> tuple[
+    def _deny_traced(
+        *reasons: str, predicate: str, summary: str = ""
+    ) -> tuple[
         CompositionStatusV1,
         tuple[str, ...],
         None,

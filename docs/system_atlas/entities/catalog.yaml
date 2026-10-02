@@ -982,13 +982,13 @@ entities:
   notes: 'S8_HARNESS_BIND_OCCUPIED_LANE_GOVERNED_CYCLE_ROOTS_WITHOUT_INVOKE harness-only path bind: reuse S3 lane_state_root as cursor_store_root and address distinct lock_root plus evidence_root under that same root. Does not invoke the governed cycle, write disk, or mutate S7 compose. N=1 global cursor path is rejected. Cap61 remains state_root=None and persist=False inside the existing cycle. NEW_STATE_OWNER_CREATED=false. CAP61_STATE_ROOT_BOUND=false. HOST_JOIN=false. MF_PRODUCTIVE_JOIN=false. MAY_INVOKE_GOVERNED_CYCLE=false. RUNTIME_AUTHORITY_EFFECT=NONE. No cursor schema change. P5_10_PRODUCTIVE_ACTIVATION_AND_BINDING_V1: when bind enabled, uses productive_layered_core_bind_cycle_kwargs_v1 (scope carrier + store gate) into cycle. Not ranking, selection, trading-authority, runtime-activation, or execution authority. MAX_POSITIONS_EFFECTIVE remains 1. MULTI_FUTURE_RUNTIME_AUTHORIZED=false. EXECUTION_CONCURRENCY_AUTHORIZED=false. PREPARED_BOUND_CARDINALITY remains 0..5. PRODUCTIVE_RUNTIME_CARDINALITY
     remains 1_UNJOINED. CROSS_UNIVERSE_* remain false. Shared mutable state remains false. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.'
 - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
-  # atlas_entity_review: PR venue-plan object-identity — reapply PR7012 safety reprojection on live_29p.replay before venue plan.
+  # atlas_entity_review: PR #7014 optional default-off GHV PRE_EXTERNAL runtime flight recorder wiring at LIVE-29P join; observation-only; AUTHORITY=NONE.
   kind: CONTRACT
   name: CURRENT MF N=5 Full-Autonomy occupied-lane governed-cycle N=1 consumer join
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
-  modified_by: PR_VENUE_PLAN_RUNTIME_OBJECT_IDENTITY_V1
+  modified_by: PR_7014_GHV_RUNTIME_FLIGHT_RECORDER_CONTINUATION_V1
   authority_sources:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_GOVERNED_CYCLE_N1_CONSUMER_JOIN_CONTRACT_V1.md
@@ -1005,6 +1005,7 @@ entities:
   - tests/ops/test_golden_happy_t2_cycle1_ghv_synthetic_regression_v1.py
   - tests/ops/test_ghv_synthetic_enter_s5_propagation_v1.py
   - tests/ops/test_ghv_observe_shaped_venue_plan_object_identity_v1.py
+  - tests/ops/test_ghv_pre_external_runtime_flight_recorder_v1.py
   notes: GOVERNED_CYCLE_N1_CONSUMER_JOIN_TO_PRE_EXTERNAL_EFFECT consumes S8 lane-local cursor_store_root, lock_root, and evidence_root and invokes the existing governed cycle once per occupied lane. EG is NON-V5. T2 is S7 compose_occupied_lane_mv2_dp_durable_cycle_v1. native_id is BoundInstrumentV1.venue_native_id. Cap61 stays state_root=None persist=False. Cursor owner remains the existing sidestate confirmation cursor. N1 global cursor is rejected. Optional portfolio_budget_owner threads slot-scoped reservations through ENTER Live-29P join without enabling N>1. Default-off forensic synthetic ENTER overlay may replace replay decision_outcome once per run at LIVE-29P join seam only when armed; does not weaken POST/credential gates. HOST_JOIN=false. MF_PRODUCTIVE_JOIN=false. PRODUCTIVE_RUNTIME_CARDINALITY remains 1_UNJOINED. MAX_POSITIONS_EFFECTIVE remains 1. MULTI_FUTURE_RUNTIME_AUTHORIZED=false. EXECUTION_CONCURRENCY_AUTHORIZED=false. No POST, permit, V5, Cap21-24 reinvoke, host join, or cardinality raise. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1
   kind: CONTRACT
@@ -3624,13 +3625,13 @@ entities:
   - tests/ops/test_pre_live_fresh_runtime_root_isolation_v1.py
   notes: POST-slice recorded baseline fca07afa with live integrity drift gate; fresh Cap-24 root; fail-closed historical POST-store isolation; no venue POST; stop before Actual-Venue-POST Owner-GO; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1
-  # atlas_entity_review: PR #7012 offline GHV harness uses make_n1_occupied_lane_s5_runner_v1 to PRE_EXTERNAL; no runner semantic change.
+  # atlas_entity_review: PR #7014 optional flight-recorder predicate trace collector on S5 runner; observation-only; AUTHORITY=NONE.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive persistent Natural-ENTER convergence v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7012_GHV_PRE_EXTERNAL_OFFLINE_CONVERGENCE_V1
+  modified_by: PR_7014_GHV_RUNTIME_FLIGHT_RECORDER_CONTINUATION_V1
   source_paths:
   - scripts/ops/run_current_productive_persistent_natural_enter_convergence_offline_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py
@@ -3645,6 +3646,7 @@ entities:
   - tests/ops/test_current_productive_selection_rotation_cursor_reconciliation_v1.py
   - tests/ops/test_persistent_natural_enter_live_29p_get_wiring_v1.py
   - tests/ops/test_ghv_pre_external_offline_convergence_v1.py
+  - tests/ops/test_ghv_pre_external_runtime_flight_recorder_v1.py
   notes: 'Offline S8 fixed lane-root through S6/S7 to PRE_EXTERNAL; CONTINUOUS_RUN_AUTHORIZED=false; POST_COUNT=0; N5 bootstrap C1/mark alignment join fix; not productive activation; ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6951 cursor-floor rebind after S7 bootstrap; live 1m bid/ask from bar low/high; # orchestration-only; MV2/DP immutable; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6997 startup reconciliation when Cap23 selection native_id rotates vs persisted sidestate cursor; archive superseded cursor and clear active lane for existing cold-lane bootstrap; LINEAGE_MISMATCH guard unchanged; no Cap23/Cap24 authority change; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6999 default-off forensic entry-state snapshot after rotation reconciliation and before first poll; observation-only; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7002 consumes bounded observation budget resolver; orchestration-only; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7008 wire fresh pretrade GET into persistent S5 runner for LIVE-29P injected handoff; downstream propagation only; no threshold/POST change; AUTHORITY=NONE; POST_COUNT=0.'
 - id: RUNTIME_COMPONENT:current_productive_continuous_observation_budget_v1
   kind: RUNTIME_COMPONENT
@@ -3660,13 +3662,13 @@ entities:
   - tests/ops/full_core_live_path_composition_root_v1/test_productive_continuous_observation_budget_v1.py
   notes: 'Bounded S6 cycle/duration caps (default 4/180; explicit ceiling 12/900); fail-closed resolver; no trading threshold change; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7002 bounded observation budget SSOT + fail-closed resolver; wiring-only; AUTHORITY=NONE; POST_COUNT=0.'
 - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
-  # atlas_entity_review: PR #7009 GHV product launcher binds ephemeral K1 GET-only handle to fresh-pretrade transport.
+  # atlas_entity_review: PR #7014 default-off --enable-ghv-pre-external-runtime-flight-recorder-v1 product flag; observation-only.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive persistent Natural-ENTER policy-governed live Fresh-C1 continuous run v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7009_GHV_GET_ONLY_CREDENTIAL_TRANSPORT_BIND_V1
+  modified_by: PR_7014_GHV_RUNTIME_FLIGHT_RECORDER_CONTINUATION_V1
   source_paths:
   - scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1.py
@@ -3725,13 +3727,13 @@ entities:
   - tests/ops/test_golden_happy_scope_decision_trace_observability_v1.py
   notes: Default-off session-bound append-only directional signal_strength/threshold JSONL, golden_happy_scope_decision_trace_v1.jsonl (G17→Scope causal refs), plus single entry-state JSON snapshot; reads productive replay intermediate and cursor carrier; no signal/scope recompute; no trading/threshold/budget/GET semantic change; CORRELATION_STATUS=PARTIAL; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:current_productive_synthetic_enter_forensic_v1
-  # atlas_entity_review: PR venue-plan object-identity — export canonical reapply helper for post-live-29p replay.
+  # atlas_entity_review: PR #7014 flight-recorder capture hooks on synthetic overlay seam; observation-only; AUTHORITY=NONE.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive synthetic ENTER forensic overlay v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_VENUE_PLAN_RUNTIME_OBJECT_IDENTITY_V1
+  modified_by: PR_7014_GHV_RUNTIME_FLIGHT_RECORDER_CONTINUATION_V1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/current_productive_synthetic_enter_forensic_v1.py
   - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py
@@ -3742,7 +3744,35 @@ entities:
   - tests/ops/test_ghv_synthetic_enter_s5_propagation_v1.py
   - tests/ops/test_ghv_pre_external_offline_convergence_v1.py
   - tests/ops/test_ghv_observe_shaped_venue_plan_object_identity_v1.py
+  - tests/ops/test_ghv_pre_external_runtime_flight_recorder_v1.py
   notes: Default-off forensic-only synthetic ENTER overlay at LIVE-29P join seam before enter_live_29p join; explicit SYNTHETIC_FORENSIC evidence; does not set NATURAL_ENTER_OBSERVED; no threshold/market-data mutation; AUTHORITY=NONE; POST_COUNT=0.
+- id: RUNTIME_COMPONENT:ghv_pre_external_continuation_harness_v1
+  # atlas_entity_review: PR #7014 offline continuation harness replays flight-recorder snapshots; AUTHORITY=NONE; POST_COUNT=0.
+  kind: RUNTIME_COMPONENT
+  name: GHV PRE_EXTERNAL continuation harness v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: PR_7014_GHV_RUNTIME_FLIGHT_RECORDER_CONTINUATION_V1
+  source_paths:
+  - scripts/ops/run_ghv_pre_external_continuation_harness_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_continuation_harness_v1.py
+  evidence_sources:
+  - tests/ops/test_ghv_pre_external_runtime_flight_recorder_v1.py
+  notes: Offline harness reads continuation snapshots written by default-off flight recorder; no trading authority; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+- id: RUNTIME_COMPONENT:ghv_pre_external_runtime_flight_recorder_v1
+  # atlas_entity_review: PR #7014 default-off PRE_EXTERNAL runtime flight recorder + continuation snapshot; AUTHORITY=NONE.
+  kind: RUNTIME_COMPONENT
+  name: GHV PRE_EXTERNAL runtime flight recorder v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: PR_7014_GHV_RUNTIME_FLIGHT_RECORDER_CONTINUATION_V1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_runtime_flight_recorder_v1.py
+  evidence_sources:
+  - tests/ops/test_ghv_pre_external_runtime_flight_recorder_v1.py
+  notes: Append-only observation capture at composition-root predicate seams; capture failures do not change decisions; RECORDER_AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
   kind: RUNTIME_COMPONENT
   name: Governed M4-M8 to meta-learning optimization feedback real mechanical continuation v1
@@ -4450,13 +4480,13 @@ entities:
   - tests/governance/test_companion_c2_fraction_to_units_runtime_completion_v1.py
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-  # atlas_entity_review: PR #7012 synthetic overlay Safety/KS reprojection only; PRE_EXTERNAL offline harness evidence.
+  # atlas_entity_review: PR #7014 optional predicate_trace_collector wiring for default-off flight recorder; observation-only.
   kind: RUNTIME_COMPONENT
   name: Offline Core-to-Live composition root v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7012_GHV_PRE_EXTERNAL_OFFLINE_CONVERGENCE_V1
+  modified_by: PR_7014_GHV_RUNTIME_FLIGHT_RECORDER_CONTINUATION_V1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/__init__.py
   - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
@@ -4679,6 +4709,8 @@ entities:
   - tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_td_mode_and_order_environment_authority_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_continuation_harness_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_runtime_flight_recorder_v1.py
   - src/ops/full_core_live_path_composition_root_v1/final_order_envelope_v1.py
   - src/ops/full_core_live_path_composition_root_v1/external_effect_permit_v1.py
   - src/ops/full_core_live_path_composition_root_v1/external_effect_permit_durable_consume_v1.py
@@ -4785,6 +4817,7 @@ entities:
   - tests/ops/current_productive_c1_cycle_test_fixtures_v1.py
   - tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py
   - tests/ops/test_ghv_protective_stop_synthetic_enter_live_29p_join_v1.py
+  - tests/ops/test_ghv_pre_external_runtime_flight_recorder_v1.py
   - tests/ops/test_current_productive_mv2_capital_context_rebind_v1.py
   - tests/ops/test_full_core_current_productive_enter_live_29p_portfolio_join_v1.py
   - tests/ops/test_full_core_current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py

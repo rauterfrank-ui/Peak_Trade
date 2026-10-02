@@ -1024,9 +1024,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
                 reset_ghv_pre_external_runtime_flight_recorder_session_v1,
             )
 
-            reset_ghv_pre_external_runtime_flight_recorder_session_v1(
-                flight_recorder_session_reset
-            )
+            reset_ghv_pre_external_runtime_flight_recorder_session_v1(flight_recorder_session_reset)
 
     orch = result.orchestrator_result
     if orch.post_count != 0 or orch.permit_created or orch.external_effect_count != 0:

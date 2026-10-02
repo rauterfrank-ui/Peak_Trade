@@ -1,15 +1,20 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: ATLAS_LEGACY_ERADICATION_V1
-modified_by: PR_VENUE_PLAN_RUNTIME_OBJECT_IDENTITY_V1
+modified_by: PR_7014_GHV_RUNTIME_FLIGHT_RECORDER_CONTINUATION_V1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'Forensic synthetic ENTER: reapply PR7012 Safety/KS reprojection on live_29p.replay
-  before venue plan; observe-shaped product-parity regression; fail-closed preserved;
-  AUTHORITY=NONE; POST_COUNT=0.'
+note: 'PR #7014: default-off GHV PRE_EXTERNAL runtime flight recorder + continuation snapshot/harness;
+  observation-only wiring at composition root, venue plan, synthetic overlay, and N5 join; capture failures
+  do not change decisions; AUTHORITY=NONE; POST_COUNT=0.'
 changed_entities:
 - CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
+- RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1
+- RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
 - RUNTIME_COMPONENT:current_productive_synthetic_enter_forensic_v1
+- RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+- RUNTIME_COMPONENT:ghv_pre_external_continuation_harness_v1
+- RUNTIME_COMPONENT:ghv_pre_external_runtime_flight_recorder_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []
