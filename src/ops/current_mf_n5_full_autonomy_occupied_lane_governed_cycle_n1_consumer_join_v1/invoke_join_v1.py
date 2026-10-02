@@ -452,8 +452,19 @@ def _t2_from_s7(
                 )
                 _dispatch.last_invocation = invocation  # type: ignore[attr-defined]
                 return result
+            venue_plan_replay = live_29p.replay
+            if overlay.applied and venue_plan_replay is not None:
+                from src.ops.full_core_live_path_composition_root_v1.current_productive_synthetic_enter_forensic_v1 import (
+                    is_forensic_synthetic_enter_outcome_v1,
+                    reapply_forensic_synthetic_safety_reprojection_on_replay_v1,
+                )
+
+                if is_forensic_synthetic_enter_outcome_v1(venue_plan_replay):
+                    venue_plan_replay = reapply_forensic_synthetic_safety_reprojection_on_replay_v1(
+                        venue_plan_replay
+                    )
             status, _reasons, plan = try_bind_current_productive_venue_plan_v1(
-                replay=live_29p.replay,
+                replay=venue_plan_replay,
                 bound_instrument=bound,
                 session_id=str(s7_base["cycle_id_prefix"]),
                 run_id=f"{s7_base['cycle_id_prefix']}:{next(iter(composed))}",
