@@ -197,6 +197,7 @@
     "evidence/ops/wsfc_ghv_post_cartography_bwp01/",
     "evidence/ops/wsfc_ghv_static_whole_system_cartography_bwp02/",
     "evidence/ops/wsfc_ghv_whole_system_configuration_injection_bwp03/",
+    "evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1/",
     "docs/ops/evidence/WHOLE_SYSTEM_FORENSIC_CARTOGRAPHY_GHV_FIXPOINT_V1.md",
     "docs/ops/specs/FULL_CORE_LIVE_PATH_IDENTITY_AND_ADMISSION_GAP_V1.md",
     "config/governance/unified_blueprint_d01_d02_topology_adjudication_v1.json",
