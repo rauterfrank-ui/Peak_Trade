@@ -7,6 +7,7 @@
 # atlas_entity_review: PR #7004 — productive continuous GET budget counts candle+mark dynamic wire GETs per S6 poll; fuse 12/900→405; wiring-only; AUTHORITY=NONE; POST_COUNT=0.
 # atlas_entity_review: PR #7005 — C2 directional confirmation progress + qualifying EPOCH_GAP recovery; pure market_state C2; AUTHORITY=NONE; POST_COUNT=0.
 # atlas_entity_review: PR #7027 — BWP-01 post-cartography GHV finding adjudication + bounded stale-governance test repair; docs/evidence only; FULL_CORE identity spec clarification; AUTHORITY=NONE; POST_COUNT=0; Residency default OFF; F1/M9 fixture wiring deferred to BWP-03 PR #7028.
+# atlas_entity_review: PR #7028 — BWP-03 configuration injection (INJ-001 F1/M9 per-cycle G17 bind; INJ-002 optional scoped residency propagation default OFF; INJ-003 governance-only); SEMANTIC_CHANGE_FROM_PR7028=NONE on ranking/selection/MV2/DP/admission/capital/PRE_EXTERNAL/POST; AUTHORITY=NONE; POST_COUNT=0; REVIEWED_HEAD=7ee392714.
 entities:
 - id: SYSTEM:peak_trade
   kind: SYSTEM
@@ -296,6 +297,7 @@ entities:
   - docs/ops/specs/MASTER_V2_CAPABILITY_2_2_PRODUCTIVE_FUTURES_RANKING_PRODUCER_V1.md
   notes: 'B03 governance persist: PEAK_TRADE_RANKING_MATRIX_POLICY_V1 ratifies Cap 2.2 ranking policy semantics (balanced movement structure). B06 Cap 2.2 Peak_Trade economic ranking runtime is wired (ECONOMIC_RANK_ACTIVATED=true; CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=true) using B05 raw features and B04 contracts. PRODUCTIVE_ECONOMIC_RANK_ACTIVATION remains false until INPUT2_MAX_AGE_SECONDS is Owner-ratified. Cap 2.3 remains sole productive selection owner. Future economic dual-input architecture remains in CONTRACT:cap22_economic_md_dual_input_v1. Offline policy candidates and evidence requirements are persisted by CONTRACT:cap22_offline_policy_candidates_and_evidence_v1. Offline MVR spread formula and comparison keys are persisted by CONTRACT:cap22_offline_mvr_spread_comparison_keys_v1. The injected Policy-B threshold set and offline evidence harness are persisted by CONTRACT:cap22_offline_mvr_threshold_set_and_evidence_harness_v1. Offline historical evidence time semantics are persisted
     by CONTRACT:cap22_historical_evidence_time_semantics_v1. Append-only 15m PIT persistence and collection contracts are persisted by CONTRACT:cap22_append_only_15m_pit_persistence_v1. KEEP29 external separation removed the src/ops/cap22_append_only_15m_pit_persistence_v1 package from the current tree; Cap 2.2 ranking authority is unchanged. Spec remains. No offline policy class has productive authority. CAP22_BECOMES_NETWORK_OWNER=false. CAP22_PRODUCTIVE_ECONOMIC_RUNTIME_WIRED=false. CAP22_PROSPECTIVE_COLLECTION_STARTED=false. B10 adds robustness/stress proof evidence for the current B03-B09 economic ranking semantics only; it does not change ranking policy, features, weights, normalization, tie-breaks, selection, binding, or activation authority. Default-off post-persist residency observation hook only; no ranking authority. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.'
+  # atlas_entity_review: PR #7028 BWP-03 INJ-002 build_m01_scoped_residency_cap24_propagation_handoff_v1 + cap21_coalesce_repo_root; residency optional default OFF; Cap2.3 sole selection owner; Cap2.4 bind-only; SEMANTIC_CHANGE_FROM_PR7028=NONE; AUTHORITY=NONE; POST_COUNT=0.
 - id: CAPABILITY:top20_opportunity_evaluation_residency_v1
   kind: CAPABILITY
   name: Top20 Opportunity Evaluation Residency And Scheduling
@@ -327,7 +329,7 @@ entities:
   - tests/ops/test_lane_evaluation_witness_disposition_v1.py
   - tests/ops/test_scoped_productive_residency_evaluation_completion_v1.py
   - tests/ops/test_scoped_residency_integrated_evaluation_propagation_v1.py
-  notes: 'PR #7025: coalesce scoped integrated evaluation config at Cap21→23 from Cap2.2 rank-1 identity vs registered offline GHV datasets; fail-closed on mismatch; config propagation only; no ranking/selection/trading authority; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+  notes: 'PR #7025: coalesce scoped integrated evaluation config at Cap21→23 from Cap2.2 rank-1 identity vs registered offline GHV datasets; fail-closed on mismatch; config propagation only; no ranking/selection/trading authority; POST_COUNT=0; ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #7028 BWP-03 propagation/coalesce wiring only; ACTIVATION_DEFAULT=OFF; SEMANTIC_CHANGE_FROM_PR7028=NONE; AUTHORITY=NONE.'
 - id: CAPABILITY:cap_economic_md_input
   kind: CAPABILITY
   name: Persisted Multi-Instrument Economic Market Data Input
@@ -3727,6 +3729,7 @@ entities:
   - tests/ops/full_core_live_path_composition_root_v1/test_productive_continuous_observation_budget_v1.py
   notes: 'Bounded S6 cycle/duration caps (default 4/180; explicit ceiling 12/900); fail-closed resolver; no trading threshold change; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7002 bounded observation budget SSOT + fail-closed resolver; wiring-only; AUTHORITY=NONE; POST_COUNT=0.'
 - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
+  # atlas_entity_review: PR #7028 BWP-03 INJ-001/002 launcher wiring (_build_f1_m9_evaluator G17 bind; residency handoff); defaults OFF; no Natural-Enter forcing; SEMANTIC_CHANGE_FROM_PR7028=NONE; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: default-off --enable-ghv-system-wide-canary-surface-discovery-v1 product flag; CANARY_AUTHORITY=NONE.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive persistent Natural-ENTER policy-governed live Fresh-C1 continuous run v1
@@ -3814,6 +3817,7 @@ entities:
   notes: Default-off forensic-only synthetic ENTER overlay at LIVE-29P join seam before enter_live_29p join; explicit SYNTHETIC_FORENSIC evidence; does not set NATURAL_ENTER_OBSERVED; no threshold/market-data mutation; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:current_productive_forensic_executable_quantity_override_v1
   # atlas_entity_review: PR #7019 default-off forensic executable quantity override after real LIVE-29P sizing; AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #7028 BWP-03 dependency-closure only; launcher/residency/F1-M9 wiring; no override semantic change; SEMANTIC_CHANGE_FROM_PR7028=NONE; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive forensic executable quantity override v1
   epistemic_class: FORENSIC_RAW
@@ -4652,6 +4656,7 @@ entities:
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   # atlas_entity_review: PR #7014 optional predicate_trace_collector wiring for default-off flight recorder; observation-only.
   # atlas_entity_review: PR #7027 BWP-01 indirect atlas touch via identity/admission spec only; no composition-root code change; AUTHORITY=NONE.
+  # atlas_entity_review: PR #7028 BWP-03 INJ-001 apply_current_productive_g17_typed_vol_cmc_bind_v1 on productive path; no admission/capital/PRE_EXTERNAL/POST change; SEMANTIC_CHANGE_FROM_PR7028=NONE; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Offline Core-to-Live composition root v1
   epistemic_class: FORENSIC_RAW

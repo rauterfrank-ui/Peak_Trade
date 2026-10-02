@@ -8,7 +8,7 @@ import json
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 from urllib.parse import urlencode
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -45,7 +45,12 @@ def _extract_latest_dpo_cycle2(lane: Path) -> dict[str, str]:
     return out
 
 
-def _build_f1_m9_evaluator(*, ledger_root: Path) -> Any:
+def _build_f1_m9_evaluator(
+    *,
+    ledger_root: Path,
+    g17_producers: Mapping[str, object],
+    bound: Any,
+) -> Any:
     from src.governance.current_productive_activation_policy_v1 import (
         RUNTIME_SURFACE_F1_M9_HARDENING_V2_BRIDGE,
     )
@@ -64,12 +69,25 @@ def _build_f1_m9_evaluator(*, ledger_root: Path) -> Any:
         GovernedF1M9ThresholdConsumerWiringRequestV1,
         run_governed_f1_m9_productive_runtime_threshold_consumer_wiring_continuation_v1,
     )
-    from tests.governance.test_governed_f1_m9_productive_runtime_threshold_consumer_wiring_real_mechanical_continuation_v1 import (
-        _bound_context,
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_g17_typed_vol_cmc_bind_v1 import (
+        apply_current_productive_g17_typed_vol_cmc_bind_v1,
     )
-    from tests.trading.master_v2.test_double_play_runtime_typed_volatility_presence_gate_v1 import (
-        _valid_estimate,
+    from trading.master_v2.canonical_market_context_v1 import (
+        BarFinalityStatus,
+        CanonicalMarketContextV1,
+        ClockTrustStatus,
+        DataIntegrityStatus,
+        FEATURE_CONTRACT_VERSION,
+        WarmupStatus,
+        with_computed_input_digest,
     )
+    from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
+        evaluate_typed_volatility_binding_eligibility_v1,
+    )
+    from trading.master_v2.canonical_volatility_typed_runtime_producer_scaffold_v1 import (
+        CanonicalVolatilityTypedRuntimeProducerScaffoldV1,
+    )
+    from trading.master_v2.double_play_futures_input import FuturesMarketType
 
     ledger_root.mkdir(parents=True, exist_ok=True)
     apply_rev = ledger_root / "apply_rev.jsonl"
@@ -91,9 +109,57 @@ def _build_f1_m9_evaluator(*, ledger_root: Path) -> Any:
     )
     if continuation.bound_seam_record is None:
         raise RuntimeError("F1_M9_BOUND_SEAM_MISSING")
-    ctx, elig = _bound_context(_valid_estimate())
+    instrument_id = str(bound.instrument_id or "").strip()
+    lane_producer = g17_producers.get("LANE_1")
+    if lane_producer is not None and not isinstance(
+        lane_producer, CanonicalVolatilityTypedRuntimeProducerScaffoldV1
+    ):
+        raise RuntimeError("F1_M9_G17_PRODUCER_TYPE_INVALID")
 
-    def _eval(_cycle_index: int):
+    def _gate_market_context_v1(*, cycle_index: int) -> CanonicalMarketContextV1:
+        ts = _utc_iso()
+        return with_computed_input_digest(
+            CanonicalMarketContextV1(
+                context_id=(
+                    f"ctx-{instrument_id}-f1m9-gate-cycle{cycle_index}-"
+                    "current-productive-pre-external-v1"
+                ),
+                instrument_id=instrument_id,
+                market_type=FuturesMarketType.PERPETUAL,
+                trading_epoch=1,
+                market_event_time=ts,
+                decision_time=ts,
+                bar_interval="1m",
+                bar_finality_status=BarFinalityStatus.FINALIZED,
+                mark_price=0.0,
+                index_price=0.0,
+                best_bid=0.0,
+                best_ask=0.0,
+                spread=0.0,
+                volume=0.0,
+                open_interest=0.0,
+                funding_rate=0.0,
+                volatility_estimate=0.0,
+                trend_feature_set={},
+                momentum_feature_set={},
+                liquidity_feature_set={},
+                market_structure_feature_set={},
+                data_integrity_status=DataIntegrityStatus.TRUSTED,
+                clock_trust_status=ClockTrustStatus.TRUSTED,
+                warmup_status=WarmupStatus.WARMUP_COMPLETE,
+                feature_contract_version=FEATURE_CONTRACT_VERSION,
+                input_digest="",
+            )
+        )
+
+    def _eval(cycle_index: int):
+        base_ctx = _gate_market_context_v1(cycle_index=cycle_index)
+        bind_result = apply_current_productive_g17_typed_vol_cmc_bind_v1(
+            base_ctx,
+            producer=lane_producer,
+        )
+        ctx = bind_result.context
+        elig = evaluate_typed_volatility_binding_eligibility_v1(ctx)
         return evaluate_f1_m9_productive_runtime_threshold_consumer_path_v1(
             market_context=ctx,
             eligibility=elig,
@@ -353,22 +419,20 @@ def _main() -> int:
         print(json.dumps(out, sort_keys=True))
         return 2
 
-    from src.ops.single_selected_future_policy_v1.residency_eligibility_gate_v1 import (
-        Cap23ResidencyEligibilityGateConfigV1,
+    from src.ops.top20_opportunity_evaluation_residency_v1.scoped_residency_integrated_evaluation_propagation_v1 import (
+        build_m01_scoped_residency_cap24_propagation_handoff_v1,
     )
-    from src.ops.top20_opportunity_evaluation_residency_v1.models_v1 import ResidencyRuntimeConfigV1
 
-    scoped_residency = bool(args.enable_scoped_top20_evaluation_residency_v1)
-    scoped_gate = bool(args.enable_cap23_residency_eligibility_gate_v1)
-    residency_runtime_config = None
-    cap23_residency_gate = None
-    scoped_integrated_eval = None
-    if scoped_residency or scoped_gate:
-        residency_runtime_config = ResidencyRuntimeConfigV1(enabled=scoped_residency)
-        cap23_residency_gate = Cap23ResidencyEligibilityGateConfigV1(
-            enabled=scoped_gate,
-            scoped_productive_activation=scoped_gate,
-        )
+    residency_handoff = build_m01_scoped_residency_cap24_propagation_handoff_v1(
+        enable_scoped_top20_evaluation_residency_v1=bool(
+            args.enable_scoped_top20_evaluation_residency_v1
+        ),
+        enable_cap23_residency_eligibility_gate_v1=bool(
+            args.enable_cap23_residency_eligibility_gate_v1
+        ),
+        repository_sha=repository_sha,
+        repo_root=REPO_ROOT,
+    )
     execute_current_productive_cap24_selection_state_canonical_write_v1(
         owner_go="CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITE_V1",
         origin_main_sha=origin_sha,
@@ -378,10 +442,13 @@ def _main() -> int:
         allow_default_productivity_root=False,
         decision_epoch=decision_epoch,
         execution_integrity_backend=backend,
-        residency_runtime_config=residency_runtime_config,
-        cap23_residency_eligibility_gate=cap23_residency_gate,
-        scoped_top20_evaluation_residency_v1=scoped_residency,
-        scoped_residency_integrated_evaluation=scoped_integrated_eval,
+        residency_runtime_config=residency_handoff.residency_runtime_config,
+        cap23_residency_eligibility_gate=residency_handoff.cap23_residency_eligibility_gate,
+        scoped_top20_evaluation_residency_v1=residency_handoff.scoped_top20_evaluation_residency_v1,
+        scoped_residency_integrated_evaluation=(
+            residency_handoff.scoped_residency_integrated_evaluation
+        ),
+        cap21_coalesce_repo_root=residency_handoff.cap21_coalesce_repo_root,
     )
     from src.ops.single_selected_future_policy_v1.persistence_v1 import (
         load_and_validate_selection_v1,
@@ -490,7 +557,9 @@ def _main() -> int:
                     observation_source=obs_source,
                     evidence_root=evidence_root,
                     f1_m9_cycle_evaluator=_build_f1_m9_evaluator(
-                        ledger_root=evidence_root / "f1_m9"
+                        ledger_root=evidence_root / "f1_m9",
+                        g17_producers=g17,
+                        bound=bound,
                     ),
                     repo_root=REPO_ROOT,
                     enable_golden_happy_vector_forensic_observability_v1=(

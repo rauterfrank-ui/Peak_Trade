@@ -232,3 +232,50 @@ def coalesce_scoped_residency_integrated_evaluation_config_v1(
         dataset_root=dataset_root,
         primary_venue_native_id=primary_native,
     )
+
+
+@dataclass(frozen=True)
+class M01ScopedResidencyCap24PropagationHandoffV1:
+    """M01 → Cap2.4 writer residency propagation (default OFF unchanged)."""
+
+    residency_runtime_config: ResidencyRuntimeConfigV1 | None
+    cap23_residency_eligibility_gate: Cap23ResidencyEligibilityGateConfigV1 | None
+    scoped_top20_evaluation_residency_v1: bool
+    scoped_residency_integrated_evaluation: ScopedResidencyIntegratedEvaluationConfigV1 | None
+    cap21_coalesce_repo_root: Path | None
+
+
+def build_m01_scoped_residency_cap24_propagation_handoff_v1(
+    *,
+    enable_scoped_top20_evaluation_residency_v1: bool,
+    enable_cap23_residency_eligibility_gate_v1: bool,
+    repository_sha: str,
+    repo_root: Path,
+    caller_integrated_evaluation: ScopedResidencyIntegratedEvaluationConfigV1 | None = None,
+) -> M01ScopedResidencyCap24PropagationHandoffV1:
+    """Coherent scoped residency CLI propagation without changing default-off semantics."""
+    scoped_residency = bool(enable_scoped_top20_evaluation_residency_v1)
+    scoped_gate = bool(enable_cap23_residency_eligibility_gate_v1)
+    if not scoped_residency and not scoped_gate:
+        return M01ScopedResidencyCap24PropagationHandoffV1(
+            residency_runtime_config=None,
+            cap23_residency_eligibility_gate=None,
+            scoped_top20_evaluation_residency_v1=False,
+            scoped_residency_integrated_evaluation=None,
+            cap21_coalesce_repo_root=None,
+        )
+    residency_runtime_config = ResidencyRuntimeConfigV1(enabled=scoped_residency)
+    cap23_residency_gate = Cap23ResidencyEligibilityGateConfigV1(
+        enabled=scoped_gate,
+        scoped_productive_activation=scoped_gate,
+    )
+    coalesce_root: Path | None = None
+    if scoped_residency and scoped_gate:
+        coalesce_root = Path(repo_root)
+    return M01ScopedResidencyCap24PropagationHandoffV1(
+        residency_runtime_config=residency_runtime_config,
+        cap23_residency_eligibility_gate=cap23_residency_gate,
+        scoped_top20_evaluation_residency_v1=scoped_residency,
+        scoped_residency_integrated_evaluation=caller_integrated_evaluation,
+        cap21_coalesce_repo_root=coalesce_root,
+    )
