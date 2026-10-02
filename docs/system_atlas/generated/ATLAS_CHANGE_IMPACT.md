@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=8
+ATLAS_CHANGED_ENTITY_COUNT=5
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,14 +40,11 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
-| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
 | `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
-| `RUNTIME_COMPONENT:current_productive_synthetic_enter_forensic_v1` |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
 | `RUNTIME_COMPONENT:ghv_pre_external_continuation_harness_v1` |
 | `RUNTIME_COMPONENT:ghv_pre_external_runtime_flight_recorder_v1` |
-| `RUNTIME_COMPONENT:ghv_pre_external_whole_cycle_causal_observability_v1` |
+| `RUNTIME_COMPONENT:ghv_system_wide_canary_surface_discovery_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -99,8 +96,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7014: GHV-centered whole-cycle causal observability — state graph, field/reverse provenance, fan-out/fan-in, multi-blocker report, deterministic offline continuation; observation-only; AUTHORITY=NONE.
+- System-wide GHV Canary surface discovery: observed runtime graph independent of PR7014 modeled whole-cycle graph; trace dispositions and causal footprint; CANARY_AUTHORITY=NONE.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_7014_GHV_WHOLE_CYCLE_CAUSAL_OBSERVABILITY_V1
+- modified_by=GHV_SYSTEM_WIDE_CANARY_SURFACE_DISCOVERY_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -250,6 +250,11 @@ def _append_flight_record_stage_inner_v1(
         row.update(_jsonable(dict(extra)))
     if predicate_traces:
         row["predicate_traces"] = [_jsonable(dict(p)) for p in predicate_traces]
+    from src.ops.full_core_live_path_composition_root_v1.ghv_system_wide_canary_surface_discovery_v1 import (
+        attach_canary_correlation_to_flight_row_v1,
+    )
+
+    row = attach_canary_correlation_to_flight_row_v1(row)
     _assert_no_secrets(row)
     path = session.product_evidence_root / FLIGHT_RECORD_FILENAME
     path.parent.mkdir(parents=True, exist_ok=True)

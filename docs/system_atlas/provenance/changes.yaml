@@ -538,3 +538,11 @@ changes:
   evidence: tests/ops/test_ghv_pre_external_whole_cycle_causal_observability_v1.py
   notes: 'PR #7014: GHV Synthetic enter_short Cycle-1 whole-cycle causal graph, reverse provenance,
     fan-out/fan-in, multi-blocker report, no fail-fast observation; AUTHORITY=NONE; POST_COUNT=0.'
+- id: CHANGE:ghv_system_wide_canary_surface_discovery_v1
+  from: 15873721c02e92df6c31d00c5c055e12a3d2475f
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_ghv_system_wide_canary_surface_discovery_v1.py
+  notes: 'System-wide GHV Canary runtime surface discovery: observed graph independent of modeled
+    whole-cycle topology; modeled-vs-observed reconciliation; CANARY_AUTHORITY=NONE; POST_COUNT=0.'

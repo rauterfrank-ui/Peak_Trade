@@ -271,6 +271,17 @@ def run_ghv_pre_external_continuation_harness_v1(
     out_root = Path(output_dir) if output_dir is not None else evidence_root
     out_root.mkdir(parents=True, exist_ok=True)
     persist_whole_cycle_observability_artifacts_v1(evidence_root=out_root, bundle=observability)
+    from src.ops.full_core_live_path_composition_root_v1.ghv_system_wide_canary_surface_discovery_v1 import (
+        build_system_wide_canary_bundle_v1,
+        persist_system_wide_canary_artifacts_v1,
+    )
+
+    canary_bundle = build_system_wide_canary_bundle_v1(
+        evidence_root=evidence_root,
+        harness_report=report,
+    )
+    persist_system_wide_canary_artifacts_v1(evidence_root=out_root, bundle=canary_bundle)
+    report["system_wide_canary_reconciliation"] = canary_bundle.get("reconciliation")
     return report
 
 
