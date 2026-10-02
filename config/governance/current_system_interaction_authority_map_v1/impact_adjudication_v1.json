@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "verdict": "NO_MAP_IMPACT",
-  "reason": "PR #7014: GHV-centered whole-cycle causal observability (state graph, field/reverse provenance, fan-out/fan-in, multi-blocker report, no fail-fast continuation); observation-only; capture failures do not change decisions; diff-bound Atlas/CSIA bookkeeping only; no CSIA source_v1.json semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "System-wide GHV Canary surface discovery: observed runtime graph independent of PR7014 modeled whole-cycle topology; GHV_CANARY_TRACE correlation only; diff-bound Atlas/CSIA bookkeeping; no CSIA source_v1.json semantic mutation; CANARY_AUTHORITY=NONE; POST_COUNT=0.",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -15,22 +15,16 @@
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
-    "scripts/ops/run_ghv_pre_external_continuation_harness_v1.py",
-    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_synthetic_enter_forensic_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_continuation_harness_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_runtime_flight_recorder_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_whole_cycle_causal_observability_v1.py",
-    "tests/ops/test_ghv_pre_external_runtime_flight_recorder_v1.py",
-    "tests/ops/test_ghv_pre_external_whole_cycle_causal_observability_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/ghv_system_wide_canary_surface_discovery_v1.py",
+    "tests/ops/test_ghv_system_wide_canary_surface_discovery_v1.py"
   ],
-  "changed_paths_sha256": "edfb98828c3e2f3fa7ea52579623fadc32dab9ecfe987476843cf4414a340667",
-  "base_sha": "a94c3f960e4f6b77242784cbeb427aa45a580d76",
+  "changed_paths_sha256": "5b154130394ea5cfcfe3021dd2a38d92a9f021604becdb73402aed91b2e0a8d3",
+  "base_sha": "15873721c02e92df6c31d00c5c055e12a3d2475f",
   "evidence_refs": [
-    "tests/ops/test_ghv_pre_external_whole_cycle_causal_observability_v1.py"
+    "tests/ops/test_ghv_system_wide_canary_surface_discovery_v1.py"
   ],
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
@@ -43,17 +37,11 @@
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
-    "scripts/ops/run_ghv_pre_external_continuation_harness_v1.py",
-    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_synthetic_enter_forensic_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_continuation_harness_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_runtime_flight_recorder_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_whole_cycle_causal_observability_v1.py",
-    "tests/ops/test_ghv_pre_external_runtime_flight_recorder_v1.py",
-    "tests/ops/test_ghv_pre_external_whole_cycle_causal_observability_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/ghv_system_wide_canary_surface_discovery_v1.py",
+    "tests/ops/test_ghv_system_wide_canary_surface_discovery_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "selector_used_as_map_impact_authority": false

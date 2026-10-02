@@ -180,6 +180,14 @@ def _main() -> int:
         ),
     )
     parser.add_argument(
+        "--enable-ghv-system-wide-canary-surface-discovery-v1",
+        action="store_true",
+        help=(
+            "Observation-only GHV system-wide Canary correlation + surface discovery "
+            "(default off; CANARY_AUTHORITY=NONE)"
+        ),
+    )
+    parser.add_argument(
         "--enable-synthetic-enter-forensic-v1",
         action="store_true",
         help=(
@@ -438,6 +446,9 @@ def _main() -> int:
                     ),
                     enable_ghv_pre_external_runtime_flight_recorder_v1=bool(
                         args.enable_ghv_pre_external_runtime_flight_recorder_v1
+                    ),
+                    enable_ghv_system_wide_canary_surface_discovery_v1=bool(
+                        args.enable_ghv_system_wide_canary_surface_discovery_v1
                     ),
                     enable_synthetic_enter_forensic_v1=bool(
                         args.enable_synthetic_enter_forensic_v1

@@ -836,6 +836,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     sleep_fn: Callable[[float], None] | None = None,
     enable_golden_happy_vector_forensic_observability_v1: bool = False,
     enable_ghv_pre_external_runtime_flight_recorder_v1: bool = False,
+    enable_ghv_system_wide_canary_surface_discovery_v1: bool = False,
     enable_synthetic_enter_forensic_v1: bool = False,
     synthetic_enter_forensic_side: str = "enter_short",
     synthetic_enter_forensic_cycle_index: int = 1,
@@ -868,6 +869,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
 
     forensic_session_reset = None
     flight_recorder_session_reset = None
+    canary_session_reset = None
     synthetic_session_reset = None
     pairs = build_s8_occupied_lane_pairs_v1(
         lane_state_root=Path(lane_state_root),
@@ -931,6 +933,21 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
         flight_recorder_session_reset = bind_ghv_pre_external_runtime_flight_recorder_session_v1(
             flight_session
         )
+    if enable_ghv_system_wide_canary_surface_discovery_v1:
+        from src.ops.full_core_live_path_composition_root_v1.ghv_system_wide_canary_surface_discovery_v1 import (
+            GhvSystemWideCanarySessionV1,
+            bind_ghv_system_wide_canary_session_v1,
+        )
+
+        canary_session = GhvSystemWideCanarySessionV1(
+            enabled=True,
+            ghv_canary_trace_id=GhvSystemWideCanarySessionV1.new_trace_id(
+                run_id=run_id,
+                cycle_index=synthetic_enter_forensic_cycle_index,
+            ),
+            cycle_index=synthetic_enter_forensic_cycle_index,
+        )
+        canary_session_reset = bind_ghv_system_wide_canary_session_v1(canary_session)
     if enable_golden_happy_vector_forensic_observability_v1:
         cursor_floor_pre_obs = _cursor_floor_or_zero(cursor_store_root)
         persist_continuous_run_entry_state_snapshot_v1(
@@ -1025,6 +1042,12 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
             )
 
             reset_ghv_pre_external_runtime_flight_recorder_session_v1(flight_recorder_session_reset)
+        if canary_session_reset is not None:
+            from src.ops.full_core_live_path_composition_root_v1.ghv_system_wide_canary_surface_discovery_v1 import (
+                reset_ghv_system_wide_canary_session_v1,
+            )
+
+            reset_ghv_system_wide_canary_session_v1(canary_session_reset)
 
     orch = result.orchestrator_result
     if orch.post_count != 0 or orch.permit_created or orch.external_effect_count != 0:
