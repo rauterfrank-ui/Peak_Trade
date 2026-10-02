@@ -491,6 +491,7 @@
     "scripts/ops/run_whole_system_causal_closure_from_synthetic_treasury_zero_e2e_v1.py",
     "docs/ops/specs/WHOLE_SYSTEM_CAUSAL_CLOSURE_SYNTHETIC_TREASURY_PRODUCTIVE_JOIN_V1.md",
     "docs/ops/specs/WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1.md",
+    "tests/ops/test_current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1.py",
     "tests/ops/test_current_productive_g17_dk_mv2_typed_vol_hot_path_join_v1.py",
     "tests/ops/test_current_productive_g17_typed_vol_cmc_bind_v1.py",
     "tests/ops/test_current_productive_gap_true_01_executable_envelope_pre_external_evidence_v1.py",

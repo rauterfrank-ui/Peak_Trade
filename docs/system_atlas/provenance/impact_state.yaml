@@ -1,12 +1,12 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: ATLAS_LEGACY_ERADICATION_V1
-modified_by: PR_7008_LIVE_29P_S5_FRESH_PRETRADE_GET_WIRING_V1
+modified_by: PR_7009_GHV_GET_ONLY_CREDENTIAL_TRANSPORT_BIND_V1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'PR #7008: propagate fresh pretrade GET into persistent S5 runner for LIVE-29P injected
-  handoff; Atlas + CSIA diff-bound bookkeeping only; no trading threshold change; AUTHORITY=NONE;
-  POST_COUNT=0.'
+note: 'PR #7009: bind ephemeral K1 GET-only credential handle to productive fresh-pretrade
+  transport on GHV live-C1 launcher; Atlas + CSIA diff-bound bookkeeping only; no POST authority
+  change; AUTHORITY=NONE; POST_COUNT=0.'
 changed_entities:
 - RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1
 - RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
