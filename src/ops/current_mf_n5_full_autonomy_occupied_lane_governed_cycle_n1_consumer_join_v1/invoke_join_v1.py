@@ -387,6 +387,22 @@ def _t2_from_s7(
             maybe_apply_synthetic_enter_forensic_overlay_v1,
             read_cycle_index_from_s5_evidence_root_v1,
         )
+        from src.ops.full_core_live_path_composition_root_v1.ghv_pre_external_runtime_flight_recorder_v1 import (
+            append_flight_record_stage_v1,
+            persist_continuation_snapshot_v1,
+        )
+
+        flight_parent = "gen_s7_mv2_output"
+        flight_parent = (
+            append_flight_record_stage_v1(
+                stage="S7_MV2_FINAL_OUTPUT",
+                producer_symbol="compose_occupied_lane_mv2_dp_durable_cycle_v1",
+                consumer_symbol="maybe_apply_synthetic_enter_forensic_overlay_v1",
+                parent_generation_id=flight_parent,
+                replay=replay,
+            )
+            or flight_parent
+        )
 
         cycle_evidence_root = Path(str(s7_base.get("cycle_evidence_root") or ""))
         cycle_index = read_cycle_index_from_s5_evidence_root_v1(cycle_evidence_root)
@@ -396,6 +412,21 @@ def _t2_from_s7(
             cycle_evidence_root=cycle_evidence_root if str(cycle_evidence_root) else None,
         )
         replay = overlay.replay
+        if overlay.applied:
+            flight_parent = (
+                append_flight_record_stage_v1(
+                    stage="SYNTHETIC_OVERLAY_OUTPUT",
+                    producer_symbol="maybe_apply_synthetic_enter_forensic_overlay_v1",
+                    consumer_symbol="join_current_productive_enter_live_29p_before_venue_plan_v1",
+                    parent_generation_id=flight_parent,
+                    replay=replay,
+                    extra={
+                        "natural_outcome_before_overlay": overlay.natural_outcome_before,
+                        "synthetic_side": overlay.synthetic_side,
+                    },
+                )
+                or flight_parent
+            )
         if overlay.applied:
             evidence = getattr(replay, "evidence", None)
             raw_outcome = getattr(evidence, "decision_outcome", "") if evidence is not None else ""
@@ -429,6 +460,34 @@ def _t2_from_s7(
             portfolio_budget_owner=portfolio_budget_owner,
             portfolio_slot=portfolio_slot,
         )
+        live_29p_gen = (
+            append_flight_record_stage_v1(
+                stage="LIVE_29P_JOIN_OUTPUT",
+                producer_symbol="join_current_productive_enter_live_29p_before_venue_plan_v1",
+                consumer_symbol="try_bind_current_productive_venue_plan_v1",
+                parent_generation_id=flight_parent,
+                replay=live_29p.replay,
+                extra={
+                    "live_29p_status": str(live_29p.status),
+                    "live_29p_first_blocker": str(live_29p.first_blocker or ""),
+                    "sizing_outcome": str(live_29p.sizing_outcome),
+                },
+            )
+            or flight_parent
+        )
+        if live_29p.replay is not None:
+            persist_continuation_snapshot_v1(
+                parent_generation_id=live_29p_gen,
+                post_live_29p_replay=live_29p.replay,
+                bound_instrument=bound,
+                composed_epoch=epoch,
+                session_id=str(s7_base["cycle_id_prefix"]),
+                run_id_suffix=f"{s7_base['cycle_id_prefix']}:{next(iter(composed))}",
+                synthetic_overlay_applied=bool(overlay.applied),
+                live_29p_status=str(live_29p.status or ""),
+                live_29p_first_blocker=str(live_29p.first_blocker or ""),
+                venue_plan_input_generation_id=live_29p_gen,
+            )
         # Classify from the post-overlay replay at the LIVE-29P join seam, not a stale
         # pre-overlay cycle_result snapshot or a rebound artifact that may lag overlay.
         decision_class = current_productive_decision_class_v1(replay)
@@ -461,8 +520,17 @@ def _t2_from_s7(
 
                 if is_forensic_synthetic_enter_outcome_v1(venue_plan_replay):
                     venue_plan_replay = reapply_forensic_synthetic_safety_reprojection_on_replay_v1(
-                        venue_plan_replay
+                        venue_plan_replay,
+                        parent_generation_id=live_29p_gen,
                     )
+            append_flight_record_stage_v1(
+                stage="VENUE_PLAN_INPUT",
+                producer_symbol="reapply_forensic_synthetic_safety_reprojection_on_replay_v1",
+                consumer_symbol="try_bind_current_productive_venue_plan_v1",
+                parent_generation_id=live_29p_gen,
+                replay=venue_plan_replay,
+                extra={"venue_plan_input_generation_id": live_29p_gen},
+            )
             status, _reasons, plan = try_bind_current_productive_venue_plan_v1(
                 replay=venue_plan_replay,
                 bound_instrument=bound,
