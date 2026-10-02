@@ -583,3 +583,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_simulated_economics_crs_boundary_binding_v1.py
   notes: 'Bind CRS boundary state into wallclock simulated-economics bridge for Cap 7.1 integrated offline replay; no new Capital/Risk owner; no POST; POST_COUNT=0.'
+- id: CHANGE:integrated_shadow_readiness_head_bound_v1
+  from: f66e75b6ba5ac2b62697c539a90be60d65551b1b
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_integrated_offline_replay_and_correctness_head_bound_v1.py
+  notes: 'HEAD-bound offline integrated replay/correctness proof and Paper-Shadow economic evidence bundle; shadow readiness discovery only; no orders/network; POST_COUNT=0.'

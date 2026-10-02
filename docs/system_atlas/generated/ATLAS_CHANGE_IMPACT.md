@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `HOST:wallclock_decision_economics_cycle` |
+| `CAPABILITY:integrated_offline_replay_correctness_head_bound_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Integrated sim CRS boundary binding on wallclock bridge; Atlas catalog source_paths only; no trading semantics; POST_COUNT=0.
+- HEAD-bound shadow readiness proof surfaces; Atlas catalog navigation only; no trading semantics; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=INTEGRATED_SIM_CRS_BOUNDARY_BINDING_V1
+- modified_by=INTEGRATED_SHADOW_READINESS_HEAD_BOUND_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -308,6 +308,7 @@ Capabilities are numbered packages with specs under `docs&#47;ops&#47;specs&#47;
 | CAPABILITY:cap_7_2_stateful_no_order | CAPABILITY | Single-Future Canonical Stateful Runtime Activation | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:cap_economic_md_input | CAPABILITY | Persisted Multi-Instrument Economic Market Data Input | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:future_profile_snapshot_v1 | CAPABILITY | Future Profile Snapshot V1 (B07) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
+| CAPABILITY:integrated_offline_replay_correctness_head_bound_v1 | CAPABILITY | Integrated offline replay correctness HEAD-bound proof | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | CAPABILITY:market_data_private_state_runtime_convergence_v1 | CAPABILITY | Market Data & Private State Runtime Convergence (WP-C) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1 | CAPABILITY | Market Intelligence Forecast/Calibration Offline Stack (Trac | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:okx_eea_private_account_state_runtime_v1 | CAPABILITY | OKX EEA Private Account State Runtime (observation-only) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
@@ -456,7 +457,7 @@ Architectural-kind count in this bucket: `30`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `38`.
+Architectural-kind count in this bucket: `39`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -465,6 +466,7 @@ Architectural-kind count in this bucket: `38`.
 | CAPABILITY:cap_1_1_reconciliation | CAPABILITY | Productive Reconciliation Runtime Binding | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:cap_3_1_futures_accounting | CAPABILITY | Productive Futures Accounting Runtime Binding | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:cap_4_1_pre_activation_closure | CAPABILITY | Single Future Canonical Runtime Pre-Activation Closure | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=CANONICAL_AUTHORITY |
+| CAPABILITY:integrated_offline_replay_correctness_head_bound_v1 | CAPABILITY | Integrated offline replay correctness HEAD-bound proof | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:account_equity_orchestration_ingress_v1 | DATA_CONTRACT | Account-equity orchestration ingress v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:bound_instrument_v1 | DATA_CONTRACT | BoundInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:full_core_live_path_models_v1 | DATA_CONTRACT | Full-core live path typed contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -631,7 +633,7 @@ Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_RE
 
 ## 16. Orphan / missing-wiring findings
 
-Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `159`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
+Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `160`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
 
 | id | class | entity | epistemic |
 | --- | --- | --- | --- |
@@ -702,7 +704,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=dfcf4d04b8400763bee6ab0b465fa182927dea75
-ENTITY_TOTAL=337
+ENTITY_TOTAL=338
 HUB_RELATION_COUNT=72
 STRUCTURAL_RELATION_COUNT=244
 RUNTIME_RELATION_COUNT=101
@@ -778,7 +780,7 @@ Remaining census domains:
 | ADAPTER | 1 |
 | AUTH_PRIMITIVE | 1 |
 | BINDER | 1 |
-| CAPABILITY | 20 |
+| CAPABILITY | 21 |
 | CONTRACT | 66 |
 | DATA_CONTRACT | 6 |
 | DOD | 5 |

@@ -120,6 +120,17 @@ def _discover_surface_p_flags(repo_root: Path) -> tuple[bool, bool, bool, str]:
         return False, False, False, f"surface_p_discovery_failed:{type(exc).__name__}"
 
 
+def _discover_head_bound_correctness(repo_root: Path) -> tuple[bool, bool, bool, str]:
+    try:
+        from src.ops.integrated_offline_replay_and_correctness_head_bound_v1.discovery_v1 import (
+            discover_verified_head_bound_correctness_at_current_head_v1,
+        )
+
+        return discover_verified_head_bound_correctness_at_current_head_v1(repo_root=repo_root)
+    except Exception as exc:  # noqa: BLE001 - discovery fail-closed
+        return False, False, False, f"head_bound_discovery_failed:{type(exc).__name__}"
+
+
 def _discover_step29u_bound(repo_root: Path) -> tuple[bool, str]:
     try:
         from src.ops.step_29u_canonical_shadow_binding_v0 import (
@@ -282,7 +293,14 @@ def produce_paper_shadow_observation_readiness_v1(
     )
 
     full_chain, parity, economic_adm, surface_ev = _discover_surface_p_flags(root)
-    # Map Surface P flags into correctness/parity discovery. Economic admissible
+    head_offline, head_correctness, head_chain_proxy, head_ev = _discover_head_bound_correctness(
+        root
+    )
+    if head_offline and head_correctness:
+        parity = True
+        full_chain = bool(full_chain or head_chain_proxy)
+        surface_ev = f"{surface_ev};{head_ev}"
+    # Map Surface P / HEAD-bound proof into correctness discovery. Economic admissible
     # is NOT required for observation readiness under the reconciled ladder.
     facts.append(ReadinessDiscoveryFactV1("FULL_CANONICAL_SYSTEM_PARITY", full_chain, surface_ev))
     facts.append(
@@ -300,6 +318,13 @@ def produce_paper_shadow_observation_readiness_v1(
             "BACKTEST_RUNTIME_DECISION_PARITY_PASS",
             parity,
             surface_ev,
+        )
+    )
+    facts.append(
+        ReadinessDiscoveryFactV1(
+            "INTEGRATED_OFFLINE_REPLAY_AND_CORRECTNESS_HEAD_BOUND",
+            head_offline and head_correctness,
+            head_ev,
         )
     )
     _ = economic_adm  # discovered but intentionally not a readiness blocker
