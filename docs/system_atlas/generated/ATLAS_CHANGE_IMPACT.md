@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=7
+ATLAS_CHANGED_RELATION_COUNT=2
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,14 +40,20 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:mv2_c2_directional_confirmation_progress_v1` |
-| `RUNTIME_COMPONENT:directional_confirmation_progress_v1` |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1` |
+| `GATE:portfolio_capital_reservation_budget_v1` |
+| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
+| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
+| `RUNTIME_COMPONENT:current_productive_synthetic_enter_forensic_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget` |
+| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_s8_addressing` |
 
 ## NEW_RELATIONS
 
@@ -93,8 +99,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7005: C2 qualifying-signal epoch-gap recovery (GHV MOE 2/3/4 liveness); confirmation_epochs=2 unchanged; Atlas topology only; AUTHORITY=NONE; POST_COUNT=0.
+- PR #7006: default-off forensic synthetic ENTER overlay at LIVE-29P join seam; Atlas topology + CSIA diff-bound bookkeeping only; no trading threshold change; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_7005_GHV_C2_CONFIRMATION_LIVENESS_GAP_RECOVERY_V1
+- modified_by=PR_7006_SYNTHETIC_ENTER_FORENSIC_GHV_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
