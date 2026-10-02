@@ -1,8 +1,10 @@
 {
   "authority_effect": "NONE",
   "verdict": "NO_MAP_IMPACT",
-  "reason": "Default-off Top20 evaluation residency and scheduling after VALID Cap2.2 Top20; optional post-persist observation hook and staged control-plane evaluation frames; no structured CSIA source_v1.json change; no new authority edges; POST_COUNT=0.",
+  "reason": "Default-off Top20 evaluation residency and scheduling after VALID Cap2.2 Top20; optional post-persist observation hook and staged control-plane evaluation frames; no structured CSIA source_v1.json change; co-bound law/Atlas adjudication only; POST_COUNT=0.",
   "changed_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/ops/specs/TOP20_OPPORTUNITY_EVALUATION_RESIDENCY_AND_SCHEDULING_V1.md",
@@ -32,13 +34,15 @@
     "src/ops/top20_opportunity_evaluation_residency_v1/state_machine_v1.py",
     "tests/ops/test_top20_opportunity_evaluation_residency_v1.py"
   ],
-  "changed_paths_sha256": "0b025b87a03ffeed4f3838c99c811327f3971b024642d2d435d0bab55b028989",
+  "changed_paths_sha256": "1a1363b552d75efe72c7d6131e49ed167f9374b29971d67c11882c94fa67ca0d",
   "base_sha": "ff5a533bd1733f5b9e3bcc4e186194ff88ef401d",
   "evidence_refs": [
     "tests/ops/test_top20_opportunity_evaluation_residency_v1.py",
     "docs/ops/specs/TOP20_OPPORTUNITY_EVALUATION_RESIDENCY_AND_SCHEDULING_V1.md"
   ],
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "docs/ops/specs/TOP20_OPPORTUNITY_EVALUATION_RESIDENCY_AND_SCHEDULING_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
