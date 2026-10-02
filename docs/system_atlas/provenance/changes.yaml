@@ -611,3 +611,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_scoped_residency_integrated_evaluation_propagation_v1.py
   notes: 'PR #7025: scoped residency integrated evaluation config coalesce + identity validation; Whole-System GHV forensic fixpoint doc (AUTHORITY=NONE); no placement/threshold/trading-policy change; POST_COUNT=0.'
+- id: CHANGE:pr_7031_post_static_closure_documentation_fixpoint_v1
+  from: dc0320a4d3814e5b555c936ec5a4eb63ffd5a5fc
+  to: dc0320a4d3814e5b555c936ec5a4eb63ffd5a5fc
+  type: NAVIGATION_REBIND
+  epistemic_status: FORENSIC_RAW
+  evidence: docs/ops/evidence/POST_STATIC_CLOSURE_DOCUMENTATION_FIXPOINT_V1.md
+  notes: 'PR #7031 post-static-closure documentation fixpoint: Master Runbook + Map of Truth + CURRENT whole-system functional/causal model with TRADING-QUALITY SEMANTIC CONTRACT AUDIT V1; static cartography/coherence; WSRC superseded; PRE_EXTERNAL boundary; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
