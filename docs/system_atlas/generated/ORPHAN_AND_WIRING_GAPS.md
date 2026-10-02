@@ -57,6 +57,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ddo_current_decision_learning_binding_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ddo_experiment_identity_binding | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ddo_experiment_identity_binding | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ddo_validation_producer_bindings | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ddo_validation_producer_bindings | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:directional_confirmation_progress_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:directional_confirmation_progress_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:double_play_old_effective_host_contract | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:double_play_old_effective_host_contract | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_capital_slot | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_capital_slot | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dp_dashboard_display | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dp_dashboard_display | STATUS=OPEN (not proven) |  |

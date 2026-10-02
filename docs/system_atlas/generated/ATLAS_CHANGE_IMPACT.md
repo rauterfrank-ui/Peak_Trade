@@ -40,8 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `CONTRACT:mv2_c2_directional_confirmation_progress_v1` |
+| `RUNTIME_COMPONENT:directional_confirmation_progress_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7004: productive continuous GET budget contract counts two dynamic wire GETs per S6 poll (candle+mark); 12/900 max_request_count 205→405; no cache/transport/trading threshold change; Real-Venue reproof deferred post-merge; AUTHORITY=NONE; POST_COUNT=0.
+- PR #7005: C2 qualifying-signal epoch-gap recovery (GHV MOE 2/3/4 liveness); confirmation_epochs=2 unchanged; Atlas topology only; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_7004_PRODUCTIVE_CONTINUOUS_GET_BUDGET_CONTRACT_REPAIR_V1
+- modified_by=PR_7005_GHV_C2_CONFIRMATION_LIVENESS_GAP_RECOVERY_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
