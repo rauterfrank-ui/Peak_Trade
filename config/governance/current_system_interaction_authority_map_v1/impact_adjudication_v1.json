@@ -3,45 +3,44 @@
   "authority_effect": "NONE",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT",
-  "reason": "PR #7005: C2 qualifying-signal EPOCH_GAP recovery (ACCEPTED_DISTINCT_GAP_RECOVERY) restores single-lane confirmation liveness; confirmation_epochs=2 unchanged; System Atlas + clean-core seal digest bookkeeping only; no CSIA source_v1.json semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #7006: default-off forensic synthetic ENTER overlay at LIVE-29P join seam; wiring-only through N1 consumer and productive continuous run entry; System Atlas entity/relation bookkeeping; no CSIA source_v1.json semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
   "changed_paths": [
-    "config/governance/clean_core_seal_manifest_v1.json",
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "docs/ops/specs/MV2_C2_DIRECTIONAL_CONFIRMATION_PROGRESS_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/trading/market_state/directional_confirmation_progress_v1.py",
-    "tests/trading/market_state/test_directional_confirmation_progress_v1.py",
-    "tests/trading/market_state/test_ghv_c2_confirmation_liveness_gap_recovery_v1.py",
-    "tests/trading/master_v2/test_directional_assessment_confirmation_integration_v1.py"
+    "docs/system_atlas/relations/structural.yaml",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_synthetic_enter_forensic_v1.py",
+    "tests/ops/test_current_productive_synthetic_enter_forensic_v1.py"
   ],
-  "changed_paths_sha256": "cf4a2e014d9f59858cb1d19df60d6fee804ceb81d84279543221f3a7625e9a73",
-  "base_sha": "59e9138b90e7e2c1073e7cf2b543422d0ecf783f",
+  "changed_paths_sha256": "26850cbf1249023e1c63faed2f22b6191d628ea14f2a747eff22f6f94dd9eb98",
+  "base_sha": "5c23fed4f1bc72005488f03e70585340851cbc83",
   "evidence_refs": [
-    "tests/trading/market_state/test_ghv_c2_confirmation_liveness_gap_recovery_v1.py",
-    "tests/trading/market_state/test_directional_confirmation_progress_v1.py"
+    "tests/ops/test_current_productive_synthetic_enter_forensic_v1.py"
   ],
   "covered_candidate_paths": [
-    "config/governance/clean_core_seal_manifest_v1.json",
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "docs/ops/specs/MV2_C2_DIRECTIONAL_CONFIRMATION_PROGRESS_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/trading/market_state/directional_confirmation_progress_v1.py",
-    "tests/trading/market_state/test_directional_confirmation_progress_v1.py",
-    "tests/trading/market_state/test_ghv_c2_confirmation_liveness_gap_recovery_v1.py",
-    "tests/trading/master_v2/test_directional_assessment_confirmation_integration_v1.py"
+    "docs/system_atlas/relations/structural.yaml",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_synthetic_enter_forensic_v1.py",
+    "tests/ops/test_current_productive_synthetic_enter_forensic_v1.py"
   ]
 }

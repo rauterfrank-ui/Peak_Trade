@@ -125,6 +125,7 @@
     "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_V1.md",
     "src/ops/full_core_live_path_composition_root_v1/productive_golden_happy_vector_forensic_observability_v1.py",
     "tests/ops/test_productive_golden_happy_vector_forensic_observability_v1.py",
+    "tests/ops/test_current_productive_synthetic_enter_forensic_v1.py",
     "scripts/ops/run_golden_happy_natural_data_offline_witness_adjudication_v1.py",
     "tests/ops/test_golden_happy_offline_replay_g17_provision_parity_v1.py",
     "tests/ops/test_golden_happy_scope_decision_trace_observability_v1.py",

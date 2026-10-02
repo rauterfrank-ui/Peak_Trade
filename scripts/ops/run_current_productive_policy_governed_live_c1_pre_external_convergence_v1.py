@@ -171,6 +171,26 @@ def _main() -> int:
             "directional signal_strength/threshold evidence (default off)"
         ),
     )
+    parser.add_argument(
+        "--enable-synthetic-enter-forensic-v1",
+        action="store_true",
+        help=(
+            "Forensic-only synthetic ENTER overlay at LIVE-29P join seam (default off). "
+            "Does not set NATURAL_ENTER_OBSERVED."
+        ),
+    )
+    parser.add_argument(
+        "--synthetic-enter-forensic-side",
+        default="enter_short",
+        choices=("enter_long", "enter_short"),
+        help="Synthetic side when --enable-synthetic-enter-forensic-v1 (default enter_short)",
+    )
+    parser.add_argument(
+        "--synthetic-enter-forensic-cycle-index",
+        type=int,
+        default=1,
+        help="S6 cycle index for one-shot synthetic overlay (default 1)",
+    )
     from src.ops.full_core_live_path_composition_root_v1.current_productive_continuous_observation_budget_v1 import (
         ContinuousObservationBudgetError,
         PRODUCTIVE_DEFAULT_MAX_CYCLES_PER_RUN,
@@ -395,6 +415,9 @@ def _main() -> int:
             enable_golden_happy_vector_forensic_observability_v1=(
                 args.enable_golden_happy_vector_forensic_observability_v1
             ),
+            enable_synthetic_enter_forensic_v1=bool(args.enable_synthetic_enter_forensic_v1),
+            synthetic_enter_forensic_side=str(args.synthetic_enter_forensic_side),
+            synthetic_enter_forensic_cycle_index=int(args.synthetic_enter_forensic_cycle_index),
             selection_id=str(handoff.selection_id or ""),
             binding_epoch=str(binding_epoch or ""),
             cap24_reselection_performed=bool(handoff.reselection_performed),
@@ -435,6 +458,13 @@ def _main() -> int:
     ]
     pre_external_reached = orch.disposition == DISPOSITION_PRE_EXTERNAL_EFFECT
     natural_enter = outcome in {"enter_long", "enter_short"}
+    synthetic_summary_path = evidence_root / "synthetic_enter_forensic_summary_v1.json"
+    synthetic_enter_observed = False
+    synthetic_enter_count = 0
+    if synthetic_summary_path.is_file():
+        syn = json.loads(synthetic_summary_path.read_text(encoding="utf-8"))
+        synthetic_enter_observed = bool(syn.get("synthetic_enter_observed"))
+        synthetic_enter_count = int(syn.get("synthetic_enter_count") or 0)
     report = {
         "BASELINE_SHA": origin_sha,
         "EXECUTION_HEAD_SHA": execution_head_sha,
@@ -458,6 +488,8 @@ def _main() -> int:
         "NATURAL_PRE_EXTERNAL_REACHED": str(natural_pre_external).lower(),
         "PRE_EXTERNAL_REACHED": str(pre_external_reached).lower(),
         "NATURAL_ENTER_OBSERVED": str(natural_enter).lower(),
+        "SYNTHETIC_ENTER_OBSERVED": str(synthetic_enter_observed).lower(),
+        "SYNTHETIC_ENTER_COUNT": synthetic_enter_count,
         "ENTER_SIDE": outcome if natural_enter else "",
         "S5_CYCLE_SUMMARIES": cycle_summaries,
         "DPO": dpo,

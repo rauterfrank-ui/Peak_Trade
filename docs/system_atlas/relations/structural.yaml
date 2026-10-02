@@ -1069,8 +1069,9 @@ relations:
   - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/constants_v1.py
   - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py
   notes: 'This consumer consumes S8 bind_occupied_lane_governed_cycle_store_roots_v1
-    and does not reopen S8 or flip MAY_INVOKE_GOVERNED_CYCLE on the producer. Atlas
-    is not runtime authority. ATLAS_AUTHORITY=NONE.
+    and does not reopen S8 or flip MAY_INVOKE_GOVERNED_CYCLE on the producer. PR
+    #7006 optional synthetic ENTER overlay applies after S7 compose replay only.
+    Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 
     '
 - id: REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget
@@ -1086,7 +1087,8 @@ relations:
   - tests/ops/test_current_productive_mv2_capital_context_rebind_v1.py
   notes: 'Optional portfolio_budget_owner threads slot_id, decision_id, and cycle_id
     into ENTER Live-29P join and commits or releases reservations at PRE_EXTERNAL
-    boundary. PR_6744 MV2 capital context rebind is navigation-only lineage; orchestration
+    boundary. PR #7006 synthetic overlay uses the same ENTER join when armed. PR_6744
+    MV2 capital context rebind is navigation-only lineage; orchestration
     only. ATLAS_AUTHORITY=NONE.
 
     '
