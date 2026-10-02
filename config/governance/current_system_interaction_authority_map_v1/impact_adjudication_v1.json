@@ -30,7 +30,6 @@
   ],
   "covered_candidate_paths": [
     "config/governance/clean_core_seal_manifest_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "docs/ops/specs/MV2_C2_DIRECTIONAL_CONFIRMATION_PROGRESS_V1.md",
