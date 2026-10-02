@@ -53,7 +53,7 @@ MULTI_FUTURE_RUNTIME_AUTHORIZED=false
 - `WHOLE_SYSTEM_GHV_COVERAGE_MATRIX_V1.json`
 - `BULK03_GHV_SECTOR_CARTOGRAPHY_v1.json` (84 components, 78 boundaries)
 - `BULK03_MANDATORY_SUMMARY_v1.json`
-- `ghv_drives/` pytest logs + continuation replay
+- `ghv_drives&#47;` pytest logs + continuation replay
 
 ## Natural Enter (unchanged adjudication)
 
