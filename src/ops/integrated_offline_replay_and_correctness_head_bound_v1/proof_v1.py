@@ -154,7 +154,9 @@ def produce_integrated_offline_replay_and_correctness_head_bound_evidence_v1(
 
     _, _ = adverse_exit_fixture_v1()
     with tempfile.TemporaryDirectory(prefix="head-bound-lifecycle-") as tmp:
-        lifecycle = run_adverse_exit_v1(repository_sha=head, work_root=Path(tmp) / "adverse_fixture")
+        lifecycle = run_adverse_exit_v1(
+            repository_sha=head, work_root=Path(tmp) / "adverse_fixture"
+        )
 
     entry_qty_ok, exit_qty_ok = _quantity_semantics_pass(lifecycle.fills)
     if not entry_qty_ok:
