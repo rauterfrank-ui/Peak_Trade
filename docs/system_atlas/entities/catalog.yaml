@@ -5,6 +5,7 @@
 # atlas_entity_review: PR #6998 — optional default-off natural GET capture wrapper; observation-only; AUTHORITY=NONE; POST_COUNT=0.
 # atlas_entity_review: PR #6999 — default-off Golden Happy forensic signal/entry-state observability; ops wiring only; src/trading/master_v2 net diff zero; AUTHORITY=NONE; POST_COUNT=0.
 # atlas_entity_review: PR #7004 — productive continuous GET budget counts candle+mark dynamic wire GETs per S6 poll; fuse 12/900→405; wiring-only; AUTHORITY=NONE; POST_COUNT=0.
+# atlas_entity_review: PR #7005 — C2 directional confirmation progress + qualifying EPOCH_GAP recovery; pure market_state C2; AUTHORITY=NONE; POST_COUNT=0.
 entities:
 - id: SYSTEM:peak_trade
   kind: SYSTEM
@@ -188,6 +189,36 @@ entities:
   - tests/trading/market_state/test_elementary_direction_v1.py
   - tests/ops/test_elementary_direction_passive_cycle_join_v1.py
   notes: "Passive cycle-evidence identity only. previous=C1 state_before.last_accepted_observation_identity.mark_price; current=bound selected-Future markPx. None/equal=NEUTRAL; greater=BULL; lower=BEAR. Invalid numeric fail-closed via C1 convention. Not Replay input. Not Double Play rewire. AUTHORITY_EFFECT=NONE. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.\n      PR #6993 atlas review: dynamic scope + bridge boundary closure; topology/navigation only; ATLAS_AUTHORITY=NONE; POST_COUNT=0.\n      PR #6999 atlas review: adjacent ops-layer forensic observability reads productive replay intermediate only; elementary_direction semantics unchanged; AUTHORITY=NONE; POST_COUNT=0."
+- id: CONTRACT:mv2_c2_directional_confirmation_progress_v1
+  kind: CONTRACT
+  name: Master V2 C2 Directional Confirmation Progress V1
+  epistemic_class: NAVIGATION_ONLY
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  semantic_authority: false
+  authority_sources:
+  - docs/ops/specs/MV2_C2_DIRECTIONAL_CONFIRMATION_PROGRESS_V1.md
+  evidence_sources:
+  - docs/ops/specs/MV2_C2_DIRECTIONAL_CONFIRMATION_PROGRESS_V1.md
+  - docs/ops/specs/MV2_C3_DIRECTIONAL_ASSESSMENT_CONFIRMATION_INTEGRATION_V1.md
+  notes: Pure C2 confirmation-progress contract (MarketObservationEpoch contiguity, gap recovery on qualifying signals). AUTHORITY_EFFECT=NONE. Does not authorize POST, live, or config mutation. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: RUNTIME_COMPONENT:directional_confirmation_progress_v1
+  kind: RUNTIME_COMPONENT
+  name: Directional Confirmation Progress V1 (C2)
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+  semantic_authority: false
+  modified_by: PR_7005_GHV_C2_CONFIRMATION_LIVENESS_GAP_RECOVERY_V1
+  source_paths:
+  - src/trading/market_state/directional_confirmation_progress_v1.py
+  evidence_sources:
+  - src/trading/market_state/directional_confirmation_progress_v1.py
+  - docs/ops/specs/MV2_C2_DIRECTIONAL_CONFIRMATION_PROGRESS_V1.md
+  - tests/trading/market_state/test_directional_confirmation_progress_v1.py
+  - tests/trading/market_state/test_ghv_c2_confirmation_liveness_gap_recovery_v1.py
+  - tests/trading/master_v2/test_directional_assessment_confirmation_integration_v1.py
+  notes: 'Pure deterministic C2 evaluator consumed by C3/OD1 single-lane productive path. PR #7005: qualifying-signal EPOCH_GAP recovery (ACCEPTED_DISTINCT_GAP_RECOVERY); confirmation_epochs=2 unchanged; no Scope/Composition/Entry/POST authority. AUTHORITY=NONE; POST_COUNT=0.'
 - id: FORENSIC_REFERENCE:information_corpus_persistence_base
   kind: FORENSIC_REFERENCE
   name: Information Corpus Persistence Base

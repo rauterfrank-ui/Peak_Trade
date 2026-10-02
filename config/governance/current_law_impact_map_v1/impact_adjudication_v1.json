@@ -3,29 +3,44 @@
   "authority_effect": "NONE",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT",
-  "reason": "PR #7004: productive GET budget fuse alignment + Atlas/CSIA diff-bound bookkeeping; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #7005: C2 epoch-gap recovery liveness repair; clean-core seal digest re-pin for SEAL_CORE_14; diff-bound law/Atlas bookkeeping only; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
   "changed_paths": [
+    "config/governance/clean_core_seal_manifest_v1.json",
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "docs/ops/specs/MV2_C2_DIRECTIONAL_CONFIRMATION_PROGRESS_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_get_budget_contract_v1.py",
-    "tests/ops/full_core_live_path_composition_root_v1/test_productive_bounded_continuous_get_budget_contract_v1.py"
+    "src/trading/market_state/directional_confirmation_progress_v1.py",
+    "tests/trading/market_state/test_directional_confirmation_progress_v1.py",
+    "tests/trading/market_state/test_ghv_c2_confirmation_liveness_gap_recovery_v1.py",
+    "tests/trading/master_v2/test_directional_assessment_confirmation_integration_v1.py"
   ],
-  "changed_paths_sha256": "e1b51e18d73888f2b4db90029b355390a568ffeae30423b0a210e74d73bea9b9",
-  "base_sha": "1a7235f20515aaa54b9dcb77ff0bc0f42e2df1a2",
+  "changed_paths_sha256": "cf4a2e014d9f59858cb1d19df60d6fee804ceb81d84279543221f3a7625e9a73",
+  "base_sha": "59e9138b90e7e2c1073e7cf2b543422d0ecf783f",
   "evidence_refs": [
-    "tests/ops/full_core_live_path_composition_root_v1/test_productive_bounded_continuous_get_budget_contract_v1.py"
+    "tests/trading/market_state/test_ghv_c2_confirmation_liveness_gap_recovery_v1.py"
   ],
   "covered_candidate_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/clean_core_seal_manifest_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "docs/ops/specs/MV2_C2_DIRECTIONAL_CONFIRMATION_PROGRESS_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_get_budget_contract_v1.py",
-    "tests/ops/full_core_live_path_composition_root_v1/test_productive_bounded_continuous_get_budget_contract_v1.py"
+    "src/trading/market_state/directional_confirmation_progress_v1.py",
+    "tests/trading/market_state/test_directional_confirmation_progress_v1.py",
+    "tests/trading/market_state/test_ghv_c2_confirmation_liveness_gap_recovery_v1.py",
+    "tests/trading/master_v2/test_directional_assessment_confirmation_integration_v1.py"
   ]
 }

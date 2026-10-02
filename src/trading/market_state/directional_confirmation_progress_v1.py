@@ -77,6 +77,7 @@ class ConfirmationProgressReasonCodeV1(str, Enum):
     ACCEPTED_DISTINCT_RESET = "ACCEPTED_DISTINCT_RESET"
     ACCEPTED_DISTINCT_CONFIRMED = "ACCEPTED_DISTINCT_CONFIRMED"
     ACCEPTED_DISTINCT_HOLD_CONFIRMED = "ACCEPTED_DISTINCT_HOLD_CONFIRMED"
+    ACCEPTED_DISTINCT_GAP_RECOVERY = "ACCEPTED_DISTINCT_GAP_RECOVERY"
     NON_DISTINCT_NOOP = "NON_DISTINCT_NOOP"
     IDEMPOTENT_REPLAY = "IDEMPOTENT_REPLAY"
     EPOCH_GAP = "EPOCH_GAP"
@@ -439,6 +440,28 @@ def reject_decision_epoch_confirmation_advance_v1(
     )
 
 
+def _gap_recovery_observe_prior_v1(
+    prior: ConfirmationProgressStateV1,
+    *,
+    current_epoch: MarketObservationEpoch,
+) -> ConfirmationProgressStateV1:
+    """Rebase prior to OBSERVE at (current_epoch - 1) for contiguous gap recovery."""
+    if current_epoch.value < 1:
+        raise ValueError("INVALID_CONFIRMATION_PROGRESS_FIELD:gap_recovery_epoch")
+    rebase_epoch = MarketObservationEpoch(value=current_epoch.value - 1)
+    return ConfirmationProgressStateV1(
+        session_id=prior.session_id,
+        venue=prior.venue,
+        instrument=prior.instrument,
+        side=prior.side,
+        assessment_state=ConfirmationAssessmentStateV1.OBSERVE,
+        latest_accepted_market_observation_epoch=rebase_epoch,
+        candidate_started_at_epoch=None,
+        distinct_confirmation_observation_count=0,
+        last_processed_acceptor_result_fingerprint=prior.last_processed_acceptor_result_fingerprint,
+    )
+
+
 def _apply_transition(
     *,
     prior: ConfirmationProgressStateV1,
@@ -658,6 +681,25 @@ def evaluate_confirmation_progress_v1(
             fail_closed=True,
         )
     if delta > 1:
+        signal = progress_input.assessment_signal
+        if signal in (
+            ConfirmationAssessmentSignalV1.CANDIDATE,
+            ConfirmationAssessmentSignalV1.CONFIRMED,
+        ):
+            recovery_prior = _gap_recovery_observe_prior_v1(prior, current_epoch=current_epoch)
+            after, _transition_reason, confirmation_advanced = _apply_transition(
+                prior=recovery_prior,
+                current_epoch=current_epoch,
+                signal=signal,
+                threshold=threshold,
+                fingerprint=fingerprint,
+            )
+            return _success_result(
+                prior=prior,
+                after=after,
+                reason=ConfirmationProgressReasonCodeV1.ACCEPTED_DISTINCT_GAP_RECOVERY,
+                confirmation_advanced=confirmation_advanced,
+            )
         return _unchanged_result(
             prior=prior,
             reason=ConfirmationProgressReasonCodeV1.EPOCH_GAP,

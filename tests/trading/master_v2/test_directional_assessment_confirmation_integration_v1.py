@@ -377,9 +377,10 @@ def test_06_epoch_gap_fail_closed() -> None:
         acceptor=a3,
         price_path=(3500.0, 3550.0),
     )
-    assert gap.fail_closed is True
-    assert gap.reason_code is ConfirmationProgressReasonCodeV1.EPOCH_GAP
-    assert gap.assessment.status is DirectionalAssessmentStatus.BLOCKED
+    assert gap.fail_closed is False
+    assert gap.reason_code is ConfirmationProgressReasonCodeV1.ACCEPTED_DISTINCT_GAP_RECOVERY
+    assert gap.assessment.status is DirectionalAssessmentStatus.CANDIDATE
+    assert gap.confirmation_progress_after.distinct_confirmation_observation_count == 1
 
 
 def test_07_epoch_regression_fail_closed() -> None:
