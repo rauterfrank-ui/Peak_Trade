@@ -1,0 +1,21 @@
+{
+  "INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE": true,
+  "authority_effect": "NONE",
+  "bridge_reconstruction_pass": true,
+  "broker_writes_performed": false,
+  "capital_risk_context_provenance": "wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.simulated_economics_crs_boundary_binding_v1.build_simulated_economics_crs_boundary_state_file_v1",
+  "controlled_wallclock_bridge_dir": "controlled_wallclock_bridge",
+  "correctness_evidence_relpath": "evidence/ops/integrated_offline_replay_and_correctness_head_bound_v1/f66e75b6ba5ac2b62697c539a90be60d65551b1b",
+  "credentials_used": false,
+  "decision_provenance": "run_integrated_offline_trading_logic_replay_v1",
+  "network_used": false,
+  "observation_bundle_verified": true,
+  "observation_offline_cycle_dir": "observation_offline_cycle",
+  "orders_submitted": false,
+  "predecessor_market_data_evidence_relpath": "evidence/ops/integrated_paper_shadow_productive_6h_technical_closeout",
+  "predecessor_reuse_only": true,
+  "repository_head_sha": "f66e75b6ba5ac2b62697c539a90be60d65551b1b",
+  "schema_id": "ops.integrated_paper_shadow_economic_evidence_bundle_head_bound_v1",
+  "schema_version": "v1",
+  "strategy_intent_owner": "trading.master_v2.double_play_entry_exit_policy_v0"
+}
