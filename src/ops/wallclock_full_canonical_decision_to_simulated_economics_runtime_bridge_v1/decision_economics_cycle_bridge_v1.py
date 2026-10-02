@@ -9,7 +9,7 @@ from __future__ import annotations
 import hashlib
 import json
 import tempfile
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import datetime, timezone
 from decimal import Decimal
 from pathlib import Path
@@ -497,6 +497,8 @@ class BridgeSessionStateV1:
     last_replay_intermediate: Optional[Any] = None
     last_replay_regime_id: Optional[str] = None
     last_replay_regime_status: Optional[str] = None
+    # Cap 7.1 / integrated offline replay — CRS boundary (dynamic mark/stop; offline algebra).
+    capital_risk_sizing_boundary_state_file: Optional[Any] = None
     last_replay_execution_safety: Optional[Any] = None
     last_pure_stack_display_decision_result: Optional[dict[str, Any]] = None
     ddo_n_bars_horizon_decision_event: Optional[dict[str, Any]] = None
@@ -1390,6 +1392,17 @@ def run_bridge_cycle_v1(
         )
     )
 
+    if state.capital_risk_sizing_boundary_state_file is None:
+        from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.simulated_economics_crs_boundary_binding_v1 import (
+            build_simulated_economics_crs_boundary_state_file_v1,
+        )
+
+        state.capital_risk_sizing_boundary_state_file = (
+            build_simulated_economics_crs_boundary_state_file_v1(
+                instrument_id=state.instrument_id,
+            )
+        )
+
     replay_input = build_integrated_offline_replay_input_v1(
         replay_id=f"{session_id}-cycle-{state.cycle_index}",
         instrument_id=state.instrument_id,
@@ -1472,6 +1485,12 @@ def run_bridge_cycle_v1(
             else None
         ),
         explicit_runtime_scope_reset=False,
+    )
+    replay_input = replace(
+        replay_input,
+        current_instrument_capital_risk_sizing_boundary_state_file=(
+            state.capital_risk_sizing_boundary_state_file
+        ),
     )
 
     replay = run_integrated_offline_trading_logic_replay_v1(replay_input)
