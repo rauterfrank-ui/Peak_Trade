@@ -300,7 +300,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: TOP20_OPPORTUNITY_EVALUATION_RESIDENCY_V1
+  modified_by: CHANGE:pr_7023_ghv_residency_evaluation_eligibility_semantics_v1
   authority_sources:
   - docs/ops/specs/TOP20_OPPORTUNITY_EVALUATION_RESIDENCY_AND_SCHEDULING_V1.md
   source_paths:
@@ -311,15 +311,19 @@ entities:
   - src/ops/top20_opportunity_evaluation_residency_v1/evaluation_frame_v1.py
   - src/ops/top20_opportunity_evaluation_residency_v1/evidence_v1.py
   - src/ops/top20_opportunity_evaluation_residency_v1/hard_invalidation_v1.py
+  - src/ops/top20_opportunity_evaluation_residency_v1/lane_evaluation_witness_disposition_v1.py
   - src/ops/top20_opportunity_evaluation_residency_v1/models_v1.py
   - src/ops/top20_opportunity_evaluation_residency_v1/orchestration_v1.py
   - src/ops/top20_opportunity_evaluation_residency_v1/persistence_v1.py
   - src/ops/top20_opportunity_evaluation_residency_v1/residency_engine_v1.py
+  - src/ops/top20_opportunity_evaluation_residency_v1/scoped_productive_residency_evaluation_completion_v1.py
   - src/ops/top20_opportunity_evaluation_residency_v1/single_writer_v1.py
   - src/ops/top20_opportunity_evaluation_residency_v1/state_machine_v1.py
   evidence_sources:
   - tests/ops/test_top20_opportunity_evaluation_residency_v1.py
-  notes: 'Default-off evaluation continuity and non-preferential scheduling after VALID Cap2.2 Top20; admission snapshot duality; no ranking/selection/trading authority; POST_COUNT=0.'
+  - tests/ops/test_lane_evaluation_witness_disposition_v1.py
+  - tests/ops/test_scoped_productive_residency_evaluation_completion_v1.py
+  notes: 'PR #7023: scoped productive integrated evaluation completion, N5-compatible lane disposition→witness HOLD, default-off global pin bypass via scoped_productive_activation; evaluation/evidence only; no ranking/selection/trading authority; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
 - id: CAPABILITY:cap_economic_md_input
   kind: CAPABILITY
   name: Persisted Multi-Instrument Economic Market Data Input
@@ -1251,12 +1255,13 @@ entities:
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
-  modified_by: B08_CAP23_INTEGRATION_AND_ANTI_CHURN_PROOF_V1
+  modified_by: CHANGE:pr_7023_ghv_residency_evaluation_eligibility_semantics_v1
   source_paths:
   - src/ops/single_selected_future_policy_v1/constants_v1.py
   - src/ops/single_selected_future_policy_v1/models_v1.py
   - src/ops/single_selected_future_policy_v1/policy_v1.py
   - src/ops/single_selected_future_policy_v1/producer_v1.py
+  - src/ops/single_selected_future_policy_v1/residency_eligibility_gate_v1.py
   - src/ops/single_selected_future_policy_v1/selection_v1.py
   - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
   - src/ops/single_selected_future_policy_v1/reason_codes_v1.py
@@ -1268,11 +1273,13 @@ entities:
   - src/ops/single_selected_future_policy_v1/models_v1.py
   - src/ops/single_selected_future_policy_v1/policy_v1.py
   - src/ops/single_selected_future_policy_v1/producer_v1.py
+  - src/ops/single_selected_future_policy_v1/residency_eligibility_gate_v1.py
   - src/ops/single_selected_future_policy_v1/selection_v1.py
   - src/ops/single_selected_future_policy_v1/governed_pin_v1.py
   - src/ops/single_selected_future_policy_v1/reason_codes_v1.py
   - src/ops/single_selected_future_policy_v1/__init__.py
-  notes: B08 records that Cap 2.3 consumes Cap 2.2 ranking order/provenance and preserves sole productive selection ownership without rescoring, reranking, second ranking semantics, or downstream authority transfer. Optional same-universe governed pin constrains candidate proposal only. Unpinned Cap 2.3 remains the global first-eligible path. Pin does not merge, borrow, or fall back across ranking universes. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
+  - tests/ops/test_cap23_residency_eligibility_gate_v1.py
+  notes: 'PR #7023: read-only Cap2.3 residency eligibility gate on EvaluationCompletionWitnessV1; residency_completion_ref evidence; sole selection owner unchanged; no rerank/reselect; default-off gate pin; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
 - id: CAPABILITY:cap_2_4_runtime_binding
   kind: CAPABILITY
   name: Single Selected Future Runtime Binding

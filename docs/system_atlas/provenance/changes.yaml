@@ -597,3 +597,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_top20_opportunity_evaluation_residency_v1.py
   notes: 'Default-off Top20 evaluation residency and scheduling after VALID Cap2.2 Top20; admission snapshot duality; optional staged control-plane evaluation frames; no ranking/selection/trading authority; POST_COUNT=0.'
+- id: CHANGE:pr_7023_ghv_residency_evaluation_eligibility_semantics_v1
+  from: d62eb64ca83e1562b9f8bf7d1506cf65535f51d3
+  to: d8865e6f6ad47987c8ca57c3f34b2d814185d8d0
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_scoped_productive_residency_evaluation_completion_v1.py
+  notes: 'PR #7023 GHV fixpoint: scoped productive residency integrated evaluation completion; lane/OBSERVE_HOLD→witness HOLD disposition adapter; Cap2.3 read-only residency eligibility gate + evidence ref; Cap21→24 propagation only; Golden Happy Vector B01–B09 structural reproof; no Cap2.3 selection-authority transfer; no Cap2.4 binding-authority change; no MV2/DP/trading-threshold change; Natural Enter/B10 out of scope; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
