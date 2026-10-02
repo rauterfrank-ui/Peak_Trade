@@ -637,6 +637,7 @@
     "tests/ops/_post_restoration_runbook_section_anchor_v1.py",
     "tests/ops/",
     "evidence/ops/wsfc_ghv_static_whole_system_cartography_bwp02/",
-    "evidence/ops/wsfc_ghv_whole_system_configuration_injection_bwp03/"
+    "evidence/ops/wsfc_ghv_whole_system_configuration_injection_bwp03/",
+    "evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1/"
   ]
 }
