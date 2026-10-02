@@ -1,5 +1,11 @@
 # Whole-System Static Forensic Cartography — GHV BWP-02
 
+> **HISTORICAL / SUPERSEDED (navigation):** Pre-INJ-001 findings in this slice
+> (including BWP02-F002 fixture F1/M9 on M01 and `NEXT_ATOMIC_CHANGE_SET=ATOMIC-01`)
+> are **not CURRENT open repair debt** on `origin/main` at `dc0320a4d…`.
+> CURRENT closure: INJ-001 + PR #7030 M01 regression lock; see BWP-03 and Master
+> Runbook static cartography section.
+
 **AUTHORITY=NONE** · **EXECUTION_MODE=STATIC_FORENSIC_CARTOGRAPHY_ONLY**
 
 ```text

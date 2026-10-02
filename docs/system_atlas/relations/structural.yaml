@@ -38,6 +38,14 @@ relations:
   epistemic_status: NAVIGATION_ONLY
   evidence_sources:
   - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+- id: REL:s_map_navigates_whole_system_functional_causal_model_v1
+  source: NAVIGATION_INDEX:map_of_truth
+  type: NAVIGATES_TO
+  target: NAVIGATION_INDEX:current_whole_system_functional_causal_model_v1
+  epistemic_status: NAVIGATION_ONLY
+  evidence_sources:
+  - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
+  - docs/ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md
 - id: REL:s_map_navigates_universe_landscape_snapshot
   source: NAVIGATION_INDEX:map_of_truth
   type: NAVIGATES_TO

@@ -1,21 +1,34 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "dd6e40b77583f89b6f184b674823b7e33161aa88",
+  "base_sha": "dc0320a4d3814e5b555c936ec5a4eb63ffd5a5fc",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "tests/ops/test_current_productive_m01_f1_m9_g17_production_closure_v1.py"
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
+    "docs/ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md",
+    "docs/ops/evidence/POST_STATIC_CLOSURE_DOCUMENTATION_FIXPOINT_V1.md",
+    "docs/ops/evidence/WHOLE_SYSTEM_EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_FIXPOINT_V1.md",
+    "docs/ops/evidence/WHOLE_SYSTEM_STATIC_FORENSIC_CARTOGRAPHY_GHV_BWP02_V1.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/system_atlas/census/census_meta.yaml",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/STRUCTURAL_GRAPH.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "docs/system_atlas/relations/structural.yaml"
   ],
-  "changed_paths_sha256": "b715735041dd84bc97da4f6afc71040de1690daab530a5a0d9d78b64ed130e1b",
-  "covered_candidate_paths": [
-    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "tests/ops/test_current_productive_m01_f1_m9_g17_production_closure_v1.py"
-  ],
+  "changed_paths_sha256": "d696416efcc8be92219014c995eb43ae986ac261610fa46696ac3ca9bde5e35e",
   "evidence_refs": [
-    "evidence/ops/whole_system_radiograph_coherence_adjudication_v1/20261002T233600Z/REP_WSRC_001_PRE_REPAIR_FORENSIC_ADJUDICATION_V1.json",
-    "tests/ops/test_current_productive_m01_f1_m9_g17_production_closure_v1.py"
+    "docs/ops/evidence/POST_STATIC_CLOSURE_DOCUMENTATION_FIXPOINT_V1.md",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
+    "docs/system_atlas/provenance/impact_state.yaml"
   ],
-  "reason": "PR #7030: TEST_ONLY M01 F1/M9↔G17 production-closure regression lock (INJ-001); NO_LAW_IMPACT; no law map source semantic change; POST_COUNT=0.",
+  "reason": "PR #7031: refresh RUNBOOK-VENUE-PLAN law reference source_sha256 after Master Runbook reconciliation; LAW_MAP_UPDATE_REQUIRED; documentation-only; POST_COUNT=0.",
   "selector_used_as_law_impact_authority": false,
-  "verdict": "NO_LAW_IMPACT"
+  "verdict": "LAW_MAP_UPDATE_REQUIRED"
 }

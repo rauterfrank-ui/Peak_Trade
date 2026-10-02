@@ -6,8 +6,8 @@ DOCUMENT_ROLE=CURRENT_OPERATIONAL_SSOT
 AUTHORITY_EFFECT=IMPLEMENTATION_AND_OPERATIONAL_SEMANTIC_AUTHORITY
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 NO_PARALLEL_SEMANTIC_MODEL=true
-CURRENT_REVIEWED_AT_SHA=d26caea78d1a178fde0a9e91aee169d454eebcae
-BOUND_ORIGIN_MAIN_SHA=d26caea78d1a178fde0a9e91aee169d454eebcae
+CURRENT_REVIEWED_AT_SHA=dc0320a4d3814e5b555c936ec5a4eb63ffd5a5fc
+BOUND_ORIGIN_MAIN_SHA=dc0320a4d3814e5b555c936ec5a4eb63ffd5a5fc
 STALE_IF_HEAD_DIFFERS=true
 REVIEW_SHA_SEMANTICS=CONTENT_ORIGIN_SHA preserves evidence/workpackage collection baselines; CURRENT_REVIEWED_AT_SHA is navigation/review binding only
 TRACK_A_CLOSURE_CONTENT_ORIGIN_SHA=d0edb85fc83a5415a8a652299144cd0fe6da7644
@@ -85,6 +85,137 @@ REQUIRES_PYTHON=>=3.10
 ```
 
 Navigation without semantics: `docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md`.
+
+Descriptive whole-system functional/causal model (no operational SSOT):
+`docs/ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md`.
+
+------------------------------------------------------------------------
+
+## CURRENT Static Cartography, Coherence, and Open Debt (post dc0320a4d)
+
+```text
+SYSTEM_BASELINE=dc0320a4d3814e5b555c936ec5a4eb63ffd5a5fc
+STATIC_CARTOGRAPHY_STATUS=COMPLETE
+STATIC_COHERENCE_STATUS=READY
+STATIC_REPAIR_REQUIRED=false
+STATIC_REPAIR_DEBT_COUNT=0
+RUNTIME_PROOF_STATUS=NOT_COMPLETE
+PRODUCTIVE_RUNTIME_PROOF_COMPLETE=false
+NATURAL_ENTER_TO_PRE_EXTERNAL_PROVEN=false
+CURRENT_RUNTIME_PROOF_READY=false
+```
+
+Exhaustive repository cartography (merged PR #7029; navigation index only):
+
+```text
+DOCUMENTED_DOMAIN_COUNT=31
+DOCUMENTED_NODE_COUNT=120
+DOCUMENTED_EDGE_COUNT=396
+DOCUMENTED_CONFIG_POINT_COUNT=145
+CARTOGRAPHY_GAP_COUNT=0
+GLOBAL_GRAPH_EXPANSION_FIXPOINT=true
+```
+
+Machine index:
+[`docs/ops/evidence/WHOLE_SYSTEM_EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_FIXPOINT_V1.md`](../../ops/evidence/WHOLE_SYSTEM_EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_FIXPOINT_V1.md).
+
+### Superseded static repair narratives (not CURRENT debt)
+
+```text
+WSRC-V1-ORD-001=SUPERSEDED_BY_INJ_001_ON_MAIN
+REP-WSRC-001=ALREADY_CLOSED_BY_INJ_001_ON_MAIN
+F1_M9_PRODUCTIVE_G17_CONTEXT_BOUND=true
+F1_M9_TEST_FIXTURE_ON_PRODUCTIVE_PATH=false
+M01_F1M9_G17_CURRENT_CONTRACT_REGRESSION_LOCK=true
+```
+
+PR #7030 locks INJ-001 wiring via
+`tests/ops/test_current_productive_m01_f1_m9_g17_production_closure_v1.py`.
+Historical BWP-02 finding BWP02-F002 (fixture F1/M9 on M01) is **HISTORICAL /
+SUPERSEDED** — do not treat as open static repair.
+
+Configuration injection record (INJ-001..003):
+[`docs/ops/evidence/WHOLE_SYSTEM_CONFIGURATION_INJECTION_GHV_BWP03_V1.md`](../../ops/evidence/WHOLE_SYSTEM_CONFIGURATION_INJECTION_GHV_BWP03_V1.md).
+
+### CURRENT productive causal path (code order; not narrative guess)
+
+Standing authorized proof terminal: **PRE_EXTERNAL** only unless explicit
+scoped Owner-GO names a narrower boundary.
+
+```text
+POST_ALLOWED=false
+REAL_VENUE_POST_ALLOWED=false
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_POST_COUNT=0
+```
+
+**STATICALLY_PROVEN (structure / wiring / deterministic regression):**
+
+```text
+Cap21→Cap23 productive persist (EEA universe inventory, economic MD, optional Top20 residency)
+→ Cap2.3 selection (SOLE_SELECTION_OWNER)
+→ Cap2.4 bind-only (BIND_ONLY; no selection)
+→ S8 occupied lane + cursor / sidestate
+→ per-run G17: mark-history GET → prepare_current_productive_g17_dk_mv2_typed_vol_hot_path_v1 (LANE_1 producer)
+→ LiveFreshC1ContinuousObservationSourceV1 (C1 + public mark/index GET on poll)
+→ cold bootstrap: bootstrap_s8_lane_via_s7_compose_v1 when cursor absent
+→ run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1
+→ S6 continuous orchestrator + policy iteration_gate (require_f1_m9_each_cycle=true)
+→ per cycle: M01 _build_f1_m9_evaluator → apply_current_productive_g17_typed_vol_cmc_bind_v1 → F1/M9 threshold consumer path
+→ parallel N1/S5: make_n1_occupied_lane_s5_runner_v1 → S7 T2 compose → run_current_productive_master_v2_runtime_cycle_v1 (G17 CMC bind → typed vol gate → MV2/Double Play)
+→ capital/risk admissibility + intent/envelope construction
+→ S5 governed cycle disposition → PRE_EXTERNAL terminal class (no POST)
+```
+
+Primary entry script (navigation):
+`scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py`.
+
+**RUNTIME_PROOF_REQUIRED (not established by static cartography alone):**
+
+- per-cycle ingestion of new finalized PT1M marks into the shared LANE_1 G17
+  producer vs bind-only `on_runtime_cycle_without_sample_v1` on the F1 gate path;
+- aligned observation generations between F1/M9 gate scaffold and S7/MV2 CMC;
+- `confirmation_epochs=2` advancing only on valid contiguous live C1 observations;
+- Natural Enter (`enter_long` / `enter_short`) reaching PRE_EXTERNAL under bounded
+  productive Owner-GO observation.
+
+Do not classify the above as static defects without CURRENT fail-closed proof.
+
+### Open debt registers (CURRENT semantics)
+
+| Register | CURRENT count / status |
+| --- | --- |
+| STATIC_REPAIR_DEBT | 0 |
+| RUNTIME_PROOF_DEBT | OPEN (productive PRE_EXTERNAL / Natural Enter liveness) |
+| NAVIGATION_DEBT | residual dedup / cross-index (see exhaustive fixpoint evidence) |
+| EVIDENCE_DRIFT | reconcile stale *CURRENT* claims only; preserve sealed history |
+| TEST_COVERAGE_DEBT | bounded; M01 production closure locked at #7030 |
+| PERFORMANCE_VALIDATION_DEBT | decision/economic quality not established |
+
+```text
+NEXT_AUTHORIZED_PHASE=GHV_DRIVEN_BOUNDED_PRODUCTIVE_PRE_EXTERNAL_RUNTIME_PROOF
+```
+
+Requires explicit scoped Owner-GO; this runbook section does not authorize it.
+
+### CURRENT global invariants (productive safety)
+
+```text
+CAP23_SOLE_SELECTION_OWNER=true
+CAP24_BIND_ONLY=true
+MAX_POSITIONS_ONE_INVARIANT=true
+N5_AUTONOMY_TRADING_DECISION_AUTHORITY=false
+DDO_PRODUCTIVE_TRADING_AUTHORITY=false
+LEARNING_TRADING_AUTHORITY=false
+OPTIMIZATION_TRADING_AUTHORITY=false
+MI_TRADING_AUTHORITY=false
+WEBUI_TRADING_AUTHORITY=false
+```
+
+Golden Happy Vector (GHV): **forensic probe** for configuration/state/authority
+traversal — not proof of profitability or runtime liveness without productive
+evidence. Static GHV-relevant path coherence: **READY**; remaining transitions
+are runtime-measurement facts (see functional model doc).
 
 ------------------------------------------------------------------------
 

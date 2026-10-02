@@ -15,7 +15,10 @@ PARALLEL_SSOT_CREATED=false
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 CURRENT_ONLY_INVENTORY=false
 CURRENT_ONLY_INVENTORY_REASON=NAVIGATION_ONLY_DESIGN_MIXES_CURRENT_HISTORICAL_FORENSIC_TARGETS
-CURRENT_REVIEWED_AT_SHA=dfcf4d04b8400763bee6ab0b465fa182927dea75
+CURRENT_REVIEWED_AT_SHA=dc0320a4d3814e5b555c936ec5a4eb63ffd5a5fc
+GRAPH_LOSES_TO_CANONICAL_CURRENT_CODE=true
+AUTHORITY=NONE
+NAVIGATION_ONLY=true
 ```
 
 **Role:** discovery / path resolution only.  
@@ -79,6 +82,76 @@ Master Runbook CURRENT section navigation (headings, not historical phase IDs):
 | Learning / STEP29M / Optimization boundaries | CURRENT Learning, STEP29M, and Optimization Universe Boundaries |
 | Historical names still in code | CURRENT Compatibility Identifiers |
 | Remaining productive boundary | CURRENT Productive Boundary |
+| Static cartography / coherence fixpoint | CURRENT Static Cartography, Coherence, and Open Debt (post dc0320a4d) |
+| Whole-system functional/causal model (descriptive) | [`docs/ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md`](../ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md) |
+
+------------------------------------------------------------------------
+
+## 1.1 Whole-system cartography and GHV navigation (CURRENT)
+
+**Counts are navigation summaries.** Machine index and evidence JSON win on drift.
+
+```text
+DOCUMENTED_DOMAIN_COUNT=31
+DOCUMENTED_NODE_COUNT=120
+DOCUMENTED_EDGE_COUNT=396
+DOCUMENTED_CONFIG_POINT_COUNT=145
+STATIC_SYSTEM_CARTOGRAPHY_COMPLETE=true
+CARTOGRAPHY_GAP_COUNT=0
+STATIC_COHERENCE_READY=true
+STATIC_REPAIR_DEBT_COUNT=0
+```
+
+| Area | Navigation |
+| --- | --- |
+| Exhaustive cartography fixpoint | [`docs/ops/evidence/WHOLE_SYSTEM_EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_FIXPOINT_V1.md`](../ops/evidence/WHOLE_SYSTEM_EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_FIXPOINT_V1.md) |
+| Durable JSON index | `evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1/20261002T232000Z/` |
+| GHV forensic fixpoint | [`docs/ops/evidence/WHOLE_SYSTEM_FORENSIC_CARTOGRAPHY_GHV_FIXPOINT_V1.md`](../ops/evidence/WHOLE_SYSTEM_FORENSIC_CARTOGRAPHY_GHV_FIXPOINT_V1.md) |
+| BWP-02 static cartography (historical slice) | [`docs/ops/evidence/WHOLE_SYSTEM_STATIC_FORENSIC_CARTOGRAPHY_GHV_BWP02_V1.md`](../ops/evidence/WHOLE_SYSTEM_STATIC_FORENSIC_CARTOGRAPHY_GHV_BWP02_V1.md) — pre-INJ-001 findings superseded on main |
+| BWP-03 configuration injection (INJ-001..003) | [`docs/ops/evidence/WHOLE_SYSTEM_CONFIGURATION_INJECTION_GHV_BWP03_V1.md`](../ops/evidence/WHOLE_SYSTEM_CONFIGURATION_INJECTION_GHV_BWP03_V1.md) |
+| WSRC coherence adjudication | `evidence&#47;ops&#47;whole_system_radiograph_coherence_adjudication_v1&#47;20261002T233600Z&#47;` |
+| M01 F1/M9↔G17 regression lock (PR #7030) | `tests/ops/test_current_productive_m01_f1_m9_g17_production_closure_v1.py` |
+| Descriptive whole-system model | [`CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md`](../ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md) |
+
+**Major CURRENT domains (pointer table — not semantics):**
+
+| Domain | Typical navigation surfaces |
+| --- | --- |
+| Market / Data | `src/ops/peak_trade_public_market_data_runtime_v1/`, WP-A specs |
+| Economic MD | `src/ops/economic_md_input_producer_v1/` |
+| Universe / ranking | Cap21–Cap22 producers, Top20 residency specs |
+| Cap2.3 / Cap2.4 | `src/ops/single_selected_future_policy_v1/`, binding packages |
+| G17 / typed vol | G17 hot path + CMC bind modules (see cartography JSON) |
+| F1/M9 | `src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py`, M01 script |
+| MV2 / Double Play | Master V2 runtime cycle in Full-Core composition root |
+| Confirmation / candidate | `current_productive_sidestate_confirmation_cursor_v1.py` |
+| Capital / risk | Full-Core risk admissibility modules |
+| N5 | `src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/` |
+| DDO / learning / OPT / MI | `src/learning&#47;**`, optimization universe — offline/research boundaries |
+| Envelope / external-effect | PRE_EXTERNAL closure modules; POST disabled |
+| Reconciliation / treasury | treasury phase specs, recon bindings |
+| WebUI / operator | market dashboard runbooks (read-only) |
+| Evidence / governance | `evidence&#47;ops&#47;**`, governance validators |
+
+**GHV branch vocabulary (forensic navigation only):**
+
+```text
+GHV_MAIN_PATH=ON_GHV_CRITICAL_ROUTE (Cap21–Cap24 → C1 → MV2/DP → S5 → PRE_EXTERNAL)
+GHV_SIDE_BRANCH=PARALLEL_GHV_SECTOR (F1/M9 plane; N1/S5 parallel lane)
+GHV_CONTROL_BRANCH=policy gates, confirmation cursor, continuous-run policy
+GHV_EVIDENCE_BRANCH=sealed cartography and adjudication JSON
+GHV_SHADOW_BRANCH=shadow treasury, offline replay, research-only
+INDEPENDENT_CURRENT_SUBSYSTEM=MD runtime, private read, WebUI, learning loops
+```
+
+```text
+RUNTIME_PROOF_COMPLETE=false
+NATURAL_ENTER_TO_PRE_EXTERNAL_PROVEN=false
+POST_ALLOWED=false
+EXTERNAL_EFFECT_AUTHORIZED=false
+WSRC-V1-ORD-001=SUPERSEDED_BY_INJ_001_ON_MAIN
+REP-WSRC-001=ALREADY_CLOSED_BY_INJ_001_ON_MAIN
+```
 
 ------------------------------------------------------------------------
 
@@ -186,6 +259,8 @@ authority and must not be read as activation or next-step instructions.
 | [`config/governance/current_system_interaction_authority_map_v1/source_v1.json`](../../config/governance/current_system_interaction_authority_map_v1/source_v1.json) | **Navigation only:** structured source for CURRENT System Interaction & Authority Map (`AUTHORITY=NONE`, `map_authority=NONE`); derived read-only views under [`docs/governance/current_system_interaction_authority_map_v1/generated/`](current_system_interaction_authority_map_v1/generated/); not operational SSOT |
 | [`config/governance/current_system_census_graph_v1/source_v1.json`](../../config/governance/current_system_census_graph_v1/source_v1.json) | **Navigation only:** CURRENT Complete System Census graph index (`AUTHORITY=NONE`); package/surface topology and semantic edges; not runtime authority |
 | [`docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md`](CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md) / [`config/governance/current_universe_landscape_snapshot_v1/source_v1.json`](../../config/governance/current_universe_landscape_snapshot_v1/source_v1.json) | **Navigation only:** persisted CURRENT Universe/Plane landscape at architecture fixpoint (`AUTHORITY=NONE`); links to census, authority map, and evidence; not runtime authority |
+| [`docs/ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md`](../ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md) | **Navigation/descriptive only:** whole-system functional/causal model; `AUTHORITY=NONE`; does not override Master Runbook or code |
+| [`docs/ops/evidence/WHOLE_SYSTEM_EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_FIXPOINT_V1.md`](../ops/evidence/WHOLE_SYSTEM_EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_FIXPOINT_V1.md) | **Evidence index:** exhaustive cartography closure (31/120/396/145); not authorization |
 | [`docs/system_atlas/generated/SYSTEM_ATLAS.md`](../system_atlas/generated/SYSTEM_ATLAS.md) | **Navigation only:** System Atlas generated views (`ATLAS_AUTHORITY=NONE`); reconcile with CSIA and census graph before use |
 | [`docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md`](PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md) | Historical/runtime discovery aid; reconcile against Master Runbook + CURRENT code before use |
 | [`docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md`](PEAK_TRADE_IMPLEMENTATION_CONTRACT.md) | Short navigation contract; not a second SSOT |
