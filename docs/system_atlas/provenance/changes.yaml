@@ -546,3 +546,12 @@ changes:
   evidence: tests/ops/test_ghv_system_wide_canary_surface_discovery_v1.py
   notes: 'System-wide GHV Canary runtime surface discovery: observed graph independent of modeled
     whole-cycle topology; modeled-vs-observed reconciliation; CANARY_AUTHORITY=NONE; POST_COUNT=0.'
+- id: CHANGE:ghv_post_measurement_observability_completion_v1
+  from: fb46756b62e98977851402c41a50dacc1f3da0c7
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_ghv_pre_external_continuation_snapshot_hydration_v1.py
+  notes: 'Post-measurement observability completion: continuation snapshot typed rehydration +
+    offline PR7014/7015 artifact materialization from captured Product evidence; no Product rerun;
+    no trading semantics; POST_COUNT=0.'

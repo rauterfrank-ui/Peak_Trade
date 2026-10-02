@@ -463,11 +463,16 @@ def load_replay_from_continuation_snapshot_v1(
     evidence_raw = raw.get("evidence") or {}
     evidence = CanonicalTradingDecisionEvidenceV1(**evidence_raw)
     intermediate_raw = raw.get("intermediate")
-    intermediate = (
-        IntegratedOfflineReplayIntermediateV1(**intermediate_raw)
-        if intermediate_raw is not None
-        else None
-    )
+    intermediate = None
+    if intermediate_raw is not None:
+        from src.ops.full_core_live_path_composition_root_v1.ghv_pre_external_continuation_snapshot_hydration_v1 import (
+            hydrate_continuation_critical_intermediate_v1,
+        )
+
+        intermediate = hydrate_continuation_critical_intermediate_v1(
+            IntegratedOfflineReplayIntermediateV1(**intermediate_raw),
+            intermediate_raw,
+        )
     replay = IntegratedOfflineReplayResultV1(
         evidence=evidence,
         intermediate=intermediate,

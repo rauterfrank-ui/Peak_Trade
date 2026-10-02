@@ -80,6 +80,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:external_data_archive_locator_consumers | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:external_data_archive_locator_consumers | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:gfu_eligibility | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:gfu_eligibility | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_pre_external_continuation_harness_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_pre_external_continuation_harness_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_pre_external_continuation_snapshot_hydration_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_pre_external_continuation_snapshot_hydration_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_pre_external_runtime_flight_recorder_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_pre_external_runtime_flight_recorder_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_pre_external_whole_cycle_causal_observability_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_pre_external_whole_cycle_causal_observability_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_system_wide_canary_surface_discovery_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_system_wide_canary_surface_discovery_v1 | STATUS=OPEN (not proven) |  |
@@ -103,6 +104,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p3_input_creator_binder_runtime_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:materialize_ghv_pre_external_observability_from_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:materialize_ghv_pre_external_observability_from_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:meta_evidence_dual_router_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:meta_evidence_dual_router_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mi_loop_a_conditioned_learning_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mi_loop_a_conditioned_learning_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mi_market_context_existing_fact_materialization_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mi_market_context_existing_fact_materialization_v1 | STATUS=OPEN (not proven) |  |

@@ -3763,6 +3763,30 @@ entities:
   - tests/ops/test_ghv_pre_external_whole_cycle_causal_observability_v1.py
   - tests/ops/test_ghv_system_wide_canary_surface_discovery_v1.py
   notes: Offline harness reads continuation snapshots written by default-off flight recorder; no trading authority; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+- id: RUNTIME_COMPONENT:ghv_pre_external_continuation_snapshot_hydration_v1
+  kind: RUNTIME_COMPONENT
+  name: GHV PRE_EXTERNAL continuation snapshot hydration v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: GHV_POST_MEASUREMENT_OBSERVABILITY_COMPLETION_V1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_continuation_snapshot_hydration_v1.py
+  evidence_sources:
+  - tests/ops/test_ghv_pre_external_continuation_snapshot_hydration_v1.py
+  notes: Rehydrates continuation snapshot JSON into production-compatible typed state (CapitalRiskSizingDecisionV1, CanonicalOrderIntentV1); observer-only; no trading semantics; POST_COUNT=0.
+- id: RUNTIME_COMPONENT:materialize_ghv_pre_external_observability_from_evidence_v1
+  kind: RUNTIME_COMPONENT
+  name: Materialize GHV PRE_EXTERNAL observability from evidence v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: GHV_POST_MEASUREMENT_OBSERVABILITY_COMPLETION_V1
+  source_paths:
+  - scripts/ops/materialize_ghv_pre_external_observability_from_evidence_v1.py
+  evidence_sources:
+  - tests/ops/test_ghv_pre_external_continuation_snapshot_hydration_v1.py
+  notes: Offline PR7014/7015 artifact materialization from captured Product flight record + continuation snapshot; no Product launcher; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:ghv_pre_external_runtime_flight_recorder_v1
   # atlas_entity_review: optional GHV_CANARY_TRACE correlation on flight rows; observer-only.
   kind: RUNTIME_COMPONENT
@@ -3770,12 +3794,14 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: GHV_SYSTEM_WIDE_CANARY_SURFACE_DISCOVERY_V1
+  modified_by: GHV_POST_MEASUREMENT_OBSERVABILITY_COMPLETION_V1
   source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_continuation_snapshot_hydration_v1.py
   - src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_runtime_flight_recorder_v1.py
   - src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_whole_cycle_causal_observability_v1.py
   - src/ops/full_core_live_path_composition_root_v1/ghv_system_wide_canary_surface_discovery_v1.py
   evidence_sources:
+  - tests/ops/test_ghv_pre_external_continuation_snapshot_hydration_v1.py
   - tests/ops/test_ghv_pre_external_runtime_flight_recorder_v1.py
   - tests/ops/test_ghv_pre_external_whole_cycle_causal_observability_v1.py
   - tests/ops/test_ghv_system_wide_canary_surface_discovery_v1.py
