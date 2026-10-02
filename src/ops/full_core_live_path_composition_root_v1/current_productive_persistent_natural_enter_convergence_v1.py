@@ -516,6 +516,7 @@ def make_n1_occupied_lane_s5_runner_v1(
     g17_producers: Mapping[str, object],
     cycle_id_prefix_base: str,
     forensic_observability_enabled: bool = False,
+    synthetic_enter_forensic_enabled: bool = False,
 ) -> Callable[..., CurrentProductiveGovernedCycleResultV1]:
     """Adapt S6 S5 slot to occupied-lane N1 consumer (S7 T2 durable compose)."""
 
@@ -578,6 +579,8 @@ def make_n1_occupied_lane_s5_runner_v1(
             if key not in {"origin_main_sha", "g17_typed_vol_producers"}
         }
         s7_base["g17_typed_vol_producers"] = {LANE_ID: g17_producers[LANE_ID]}
+        if synthetic_enter_forensic_enabled:
+            s7_base["cycle_evidence_root"] = str(Path(evidence_root).resolve())
         t2_dispatch = _t2_from_s7(
             lane_pairs=lane_pairs,
             native_id=native_id,
@@ -752,6 +755,9 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     time_fn: Callable[[], float] | None = None,
     sleep_fn: Callable[[float], None] | None = None,
     enable_golden_happy_vector_forensic_observability_v1: bool = False,
+    enable_synthetic_enter_forensic_v1: bool = False,
+    synthetic_enter_forensic_side: str = "enter_short",
+    synthetic_enter_forensic_cycle_index: int = 1,
     selection_id: str = "",
     binding_epoch: str = "",
     cap24_reselection_performed: bool = False,
@@ -778,6 +784,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
         raise PersistentNaturalEnterConvergenceError("F1_M9_CYCLE_EVALUATOR_REQUIRED")
 
     forensic_session_reset = None
+    synthetic_session_reset = None
     pairs = build_s8_occupied_lane_pairs_v1(
         lane_state_root=Path(lane_state_root),
         bound=bound,
@@ -793,6 +800,20 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     )
 
     run_id = mint_continuous_run_id_v1(authorization)
+    if enable_synthetic_enter_forensic_v1:
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_synthetic_enter_forensic_v1 import (
+            bind_synthetic_enter_forensic_session_v1,
+            build_synthetic_enter_forensic_session_v1,
+        )
+
+        synthetic_session = build_synthetic_enter_forensic_session_v1(
+            enabled=True,
+            synthetic_side=synthetic_enter_forensic_side,
+            inject_cycle_index=synthetic_enter_forensic_cycle_index,
+            product_evidence_root=Path(evidence_root),
+            continuous_run_id=run_id,
+        )
+        synthetic_session_reset = bind_synthetic_enter_forensic_session_v1(synthetic_session)
     if enable_golden_happy_vector_forensic_observability_v1:
         from src.ops.full_core_live_path_composition_root_v1.productive_golden_happy_vector_forensic_observability_v1 import (
             GoldenHappyVectorForensicObservabilitySessionV1,
@@ -861,6 +882,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
         g17_producers=g17_producers,
         cycle_id_prefix_base=cycle_id_prefix_base,
         forensic_observability_enabled=enable_golden_happy_vector_forensic_observability_v1,
+        synthetic_enter_forensic_enabled=enable_synthetic_enter_forensic_v1,
     )
     lock = lock_root or (Path(evidence_root) / "continuous_lock")
     root = repo_root or Path(__file__).resolve().parents[3]
@@ -882,6 +904,12 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     except ContinuousRunRuntimeBindingError as exc:
         raise PersistentNaturalEnterConvergenceError(exc.reason_code, exc.detail) from exc
     finally:
+        if synthetic_session_reset is not None:
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_synthetic_enter_forensic_v1 import (
+                reset_synthetic_enter_forensic_session_v1,
+            )
+
+            reset_synthetic_enter_forensic_session_v1(synthetic_session_reset)
         if forensic_session_reset is not None:
             from src.ops.full_core_live_path_composition_root_v1.productive_golden_happy_vector_forensic_observability_v1 import (
                 reset_golden_happy_vector_forensic_observability_session_v1,

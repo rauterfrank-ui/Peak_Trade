@@ -380,6 +380,19 @@ def _t2_from_s7(
         if str(bound.venue_native_id or "").strip() != native_id:
             _fail(FAILURE_IDENTITY_MISMATCH, native_id)
         replay = invocation.cycle_result.replay
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_synthetic_enter_forensic_v1 import (
+            maybe_apply_synthetic_enter_forensic_overlay_v1,
+            read_cycle_index_from_s5_evidence_root_v1,
+        )
+
+        cycle_evidence_root = Path(str(s7_base.get("cycle_evidence_root") or ""))
+        cycle_index = read_cycle_index_from_s5_evidence_root_v1(cycle_evidence_root)
+        overlay = maybe_apply_synthetic_enter_forensic_overlay_v1(
+            replay,
+            cycle_index=cycle_index,
+            cycle_evidence_root=cycle_evidence_root if str(cycle_evidence_root) else None,
+        )
+        replay = overlay.replay
         bound_epoch = str(common_epoch_decision_epoch or "").strip()
         epoch = bound_epoch if bound_epoch else _iso_utc(float(s7_base["observed_unix"]))
         portfolio_slot = None
