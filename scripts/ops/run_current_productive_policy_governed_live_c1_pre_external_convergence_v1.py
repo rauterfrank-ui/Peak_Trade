@@ -188,6 +188,22 @@ def _main() -> int:
         ),
     )
     parser.add_argument(
+        "--enable-scoped-top20-evaluation-residency-v1",
+        action="store_true",
+        help=(
+            "Scoped productive Top20 evaluation residency after Cap2.2 persist "
+            "(default off; requires --enable-cap23-residency-eligibility-gate-v1 for gate)"
+        ),
+    )
+    parser.add_argument(
+        "--enable-cap23-residency-eligibility-gate-v1",
+        action="store_true",
+        help=(
+            "Scoped Cap2.3 read-only eligibility gate on EvaluationCompletionWitnessV1 "
+            "(default off; no POST/external effect)"
+        ),
+    )
+    parser.add_argument(
         "--enable-synthetic-enter-forensic-v1",
         action="store_true",
         help=(
@@ -337,6 +353,35 @@ def _main() -> int:
         print(json.dumps(out, sort_keys=True))
         return 2
 
+    from src.ops.single_selected_future_policy_v1.residency_eligibility_gate_v1 import (
+        Cap23ResidencyEligibilityGateConfigV1,
+    )
+    from src.ops.top20_opportunity_evaluation_residency_v1.models_v1 import ResidencyRuntimeConfigV1
+    from src.ops.top20_opportunity_evaluation_residency_v1.scoped_productive_residency_evaluation_completion_v1 import (
+        ScopedResidencyIntegratedEvaluationConfigV1,
+    )
+
+    scoped_residency = bool(args.enable_scoped_top20_evaluation_residency_v1)
+    scoped_gate = bool(args.enable_cap23_residency_eligibility_gate_v1)
+    residency_runtime_config = None
+    cap23_residency_gate = None
+    scoped_integrated_eval = None
+    if scoped_residency or scoped_gate:
+        residency_runtime_config = ResidencyRuntimeConfigV1(enabled=scoped_residency)
+        cap23_residency_gate = Cap23ResidencyEligibilityGateConfigV1(
+            enabled=scoped_gate,
+            scoped_productive_activation=scoped_gate,
+        )
+    if scoped_gate:
+        post6999 = (
+            REPO_ROOT
+            / "evidence/ops/golden_happy_vector_instrumented_information_funnel_post6999_v1/20261001T212755Z"
+        )
+        if post6999.is_dir():
+            scoped_integrated_eval = ScopedResidencyIntegratedEvaluationConfigV1(
+                dataset_root=post6999,
+                repository_sha=repository_sha,
+            )
     execute_current_productive_cap24_selection_state_canonical_write_v1(
         owner_go="CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITE_V1",
         origin_main_sha=origin_sha,
@@ -346,6 +391,10 @@ def _main() -> int:
         allow_default_productivity_root=False,
         decision_epoch=decision_epoch,
         execution_integrity_backend=backend,
+        residency_runtime_config=residency_runtime_config,
+        cap23_residency_eligibility_gate=cap23_residency_gate,
+        scoped_top20_evaluation_residency_v1=scoped_residency,
+        scoped_residency_integrated_evaluation=scoped_integrated_eval,
     )
     from src.ops.single_selected_future_policy_v1.persistence_v1 import (
         load_and_validate_selection_v1,

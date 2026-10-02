@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 from src.ops.current_productive_eea_universe_inventory_acquisition_v1.acquire_v1 import (
     EeaUniverseAcquisitionResultV1,
@@ -38,6 +38,14 @@ from src.ops.single_selected_future_policy_v1.models_v1 import (
 )
 from src.ops.single_selected_future_policy_v1.producer_v1 import (
     run_single_selected_future_policy_v1,
+)
+from src.ops.single_selected_future_policy_v1.residency_eligibility_gate_v1 import (
+    Cap23ResidencyEligibilityGateConfigV1,
+)
+from src.ops.top20_opportunity_evaluation_residency_v1.models_v1 import ResidencyRuntimeConfigV1
+from src.ops.top20_opportunity_evaluation_residency_v1.scoped_productive_residency_evaluation_completion_v1 import (
+    ScopedResidencyIntegratedEvaluationConfigV1,
+    run_scoped_productive_residency_evaluation_completion_v1,
 )
 from src.ops.economic_md_input_producer_v1.public_md_source_v1 import (
     EconomicMdPublicSourceV1,
@@ -154,6 +162,11 @@ def run_cap21_to_cap23_persist_productive_v1(
     observed_unix: float,
     session_id_prefix: str,
     economic_md_public_source: EconomicMdPublicSourceV1,
+    residency_runtime_config: ResidencyRuntimeConfigV1 | None = None,
+    cap23_residency_eligibility_gate: Cap23ResidencyEligibilityGateConfigV1 | None = None,
+    scoped_top20_evaluation_residency_v1: bool = False,
+    scoped_residency_integrated_evaluation: ScopedResidencyIntegratedEvaluationConfigV1
+    | None = None,
 ) -> CurrentProductiveCap21ToCap23PersistResultV1:
     """Run Cap-2.1→2.3 producers into ``store/runtime_state/*`` (persisted)."""
 
@@ -216,6 +229,7 @@ def run_cap21_to_cap23_persist_productive_v1(
         collection_started_at_unix=collection_started,
         collection_completed_at_unix=observed_unix,
     )
+    residency_cfg = residency_runtime_config or ResidencyRuntimeConfigV1()
     ranking = run_productive_futures_ranking_producer_v1(
         state_root=rank_root,
         universe_state_root=uni_root,
@@ -223,6 +237,9 @@ def run_cap21_to_cap23_persist_productive_v1(
         producer_observed_at_unix=observed_unix,
         session_id=f"{session_id_prefix}-ranking",
         feature_production_snapshot=feature_snap,
+        residency_config=residency_cfg,
+        residency_universe_snapshot=uni_snapshot_dict,
+        scoped_top20_evaluation_residency_v1=scoped_top20_evaluation_residency_v1,
     )
     if ranking.get("ok") is not True:
         return _result(ok=False, status="CAP22_CURRENT_RANKING_FAIL_CLOSED", selection=None)
@@ -230,11 +247,28 @@ def run_cap21_to_cap23_persist_productive_v1(
     empty_fields["cap22_ranking_id"] = str(rank_snap.get("ranking_snapshot_id") or "")
     empty_fields["cap22_ranking_epoch"] = str(rank_snap.get("event_time") or "")
 
+    gate_cfg = cap23_residency_eligibility_gate or Cap23ResidencyEligibilityGateConfigV1()
+    residency_root = rank_root / "top20_evaluation_residency_v1"
+    if gate_cfg.enabled and gate_cfg.scoped_productive_activation:
+        completion = run_scoped_productive_residency_evaluation_completion_v1(
+            residency_state_root=residency_root,
+            residency_config=residency_cfg,
+            universe_snapshot=uni_snapshot_dict,
+            producer_observed_at_unix=observed_unix,
+            integrated_evaluation=scoped_residency_integrated_evaluation,
+            scheduler_tick_unix=observed_unix + 1.0,
+        )
+        if not completion.ok:
+            return _result(
+                ok=False,
+                status=f"CAP22_RESIDENCY_EVALUATION_COMPLETION_FAIL_CLOSED:{','.join(completion.failure_codes) or 'UNKNOWN'}",
+                selection=None,
+            )
     selection_run = run_single_selected_future_policy_v1(
         state_root=sel_root,
         ranking_state_root=rank_root,
         repository_sha=repository_sha,
-        producer_observed_at_unix=observed_unix,
+        producer_observed_at_unix=observed_unix + 2.0,
         session_id=f"{session_id_prefix}-selection",
         previous_selection=None,
         load_previous_from_state=False,
@@ -242,6 +276,13 @@ def run_cap21_to_cap23_persist_productive_v1(
         dashboard_payload=None,
         allowlist_payload=None,
         manual_override_payload=None,
+        residency_eligibility_gate=Cap23ResidencyEligibilityGateConfigV1(
+            enabled=gate_cfg.enabled,
+            residency_state_root=residency_root,
+            max_witness_age_seconds=gate_cfg.max_witness_age_seconds,
+            scoped_productive_activation=gate_cfg.scoped_productive_activation,
+        ),
+        residency_runtime_config=residency_cfg,
     )
     selection_path = sel_root / SELECTION_FILENAME
     selection = None

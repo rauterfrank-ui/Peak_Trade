@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=5
-ATLAS_CHANGED_RELATION_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_RELATION_COUNT=2
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `ATLAS_LEGACY_ERADICATION_V1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7023_ghv_residency_evaluation_eligibility_semantics_v1`.
 
 ## Workflow
 
@@ -41,16 +41,15 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `CAPABILITY:top20_opportunity_evaluation_residency_v1` |
+| `CAPABILITY:cap_2_3_single_selected_future` |
 | `CAPABILITY:cap_2_2_ranking` |
-| `CONTRACT:current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1` |
-| `CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1` |
-| `SELECTOR:productive_futures_ranking` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
 | `REL:s_top20_residency_depends_on_cap22_valid_snapshot` |
+| `REL:s_cap23_depends_cap22` |
 
 ## NEW_RELATIONS
 
@@ -96,8 +95,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Default-off Top20 evaluation residency and scheduling after VALID Cap2.2; navigation only; no ranking/selection/trading authority; POST_COUNT=0.
-- introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=TOP20_OPPORTUNITY_EVALUATION_RESIDENCY_V1
+- PR #7023 GHV residency→evaluation→witness→Cap2.3 eligibility seam bookkeeping; navigation/provenance only; no ranking/selection/trading authority; POST_COUNT=0.
+- introduced_by=CHANGE:pr_7023_ghv_residency_evaluation_eligibility_semantics_v1
+- modified_by=CHANGE:pr_7023_ghv_residency_evaluation_eligibility_semantics_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

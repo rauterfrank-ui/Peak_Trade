@@ -116,7 +116,7 @@
       "law_id": "CAP23-SINGLE-SELECTED-FUTURE-V1",
       "canonical_source": "src/ops/single_selected_future_policy_v1/constants_v1.py",
       "canonical_anchor": "SINGLE_SELECTED_FUTURE_POLICY_V1",
-      "source_sha256": "d5651c05276a04754cec5801fdd22090c92a7ccb355869c2fd0e81414c6c2121",
+      "source_sha256": "92f9e96ea03392771f990c4f37a500bb5094af155e15ed04088863b88f7930ff",
       "source_authority_class": "EVIDENCE_CENSUS",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",

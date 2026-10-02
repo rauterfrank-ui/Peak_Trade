@@ -29,8 +29,14 @@ def _config(config: Optional[ResidencyRuntimeConfigV1]) -> ResidencyRuntimeConfi
     return config if config is not None else ResidencyRuntimeConfigV1()
 
 
-def is_residency_feature_enabled_v1(config: Optional[ResidencyRuntimeConfigV1] = None) -> bool:
+def is_residency_feature_enabled_v1(
+    config: Optional[ResidencyRuntimeConfigV1] = None,
+    *,
+    scoped_productive_activation: bool = False,
+) -> bool:
     cfg = _config(config)
+    if scoped_productive_activation and bool(cfg.enabled):
+        return True
     if not TOP20_EVALUATION_RESIDENCY_ENABLED:
         return False
     return bool(cfg.enabled)
@@ -50,9 +56,12 @@ def observe_valid_cap22_snapshot_after_persist_v1(
     producer_observed_at_unix: float,
     config: Optional[ResidencyRuntimeConfigV1] = None,
     universe_snapshot: Optional[Mapping[str, object]] = None,
+    scoped_productive_activation: bool = False,
 ) -> None:
     cfg = _config(config)
-    if not is_residency_feature_enabled_v1(cfg):
+    if not is_residency_feature_enabled_v1(
+        cfg, scoped_productive_activation=scoped_productive_activation
+    ):
         return
     if str(ranking_snapshot.get("snapshot_state") or "") != SNAPSHOT_STATE_VALID:
         return
@@ -108,9 +117,15 @@ def post_orchestrator_evaluation_feedback_v1(
     config: Optional[ResidencyRuntimeConfigV1],
     witnesses: Sequence[EvaluationCompletionWitnessV1],
     producer_observed_at_unix: float,
+    scoped_productive_activation: bool = False,
 ) -> None:
     cfg = _config(config)
-    if not is_residency_feature_enabled_v1(cfg) or not witnesses:
+    if (
+        not is_residency_feature_enabled_v1(
+            cfg, scoped_productive_activation=scoped_productive_activation
+        )
+        or not witnesses
+    ):
         return
     apply_evaluation_completion_v1(
         state_root=residency_state_root,
@@ -137,6 +152,12 @@ def witnesses_from_orchestrator_lane_map_v1(
         epoch = residency_epoch_ids_by_instrument.get(instrument)
         if not epoch:
             continue
+        from src.ops.top20_opportunity_evaluation_residency_v1.lane_evaluation_witness_disposition_v1 import (
+            normalize_lane_disposition_to_evaluation_witness_v1,
+        )
+
+        raw_disp = str(disposition_by_lane.get(lane_id) or "")
+        normalized = normalize_lane_disposition_to_evaluation_witness_v1(raw_disp) or raw_disp
         out.append(
             EvaluationCompletionWitnessV1(
                 canonical_instrument_id=instrument,
@@ -144,7 +165,7 @@ def witnesses_from_orchestrator_lane_map_v1(
                 integrated_offline_replay_executed=bool(
                     replay_executed_by_lane.get(lane_id, False)
                 ),
-                governed_cycle_disposition=str(disposition_by_lane.get(lane_id) or ""),
+                governed_cycle_disposition=normalized,
             )
         )
     return tuple(out)

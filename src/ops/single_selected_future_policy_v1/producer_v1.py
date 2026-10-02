@@ -40,10 +40,16 @@ from src.ops.single_selected_future_policy_v1.reason_codes_v1 import SelectionFa
 from src.ops.single_selected_future_policy_v1.selection_v1 import (
     produce_single_selected_future_v1,
 )
+from src.ops.single_selected_future_policy_v1.residency_eligibility_gate_v1 import (
+    Cap23ResidencyEligibilityGateConfigV1,
+    ResidencyCompletionRefV1,
+    apply_cap23_residency_eligibility_gate_v1,
+)
 from src.ops.single_selected_future_policy_v1.single_writer_v1 import (
     DuplicateSelectionWriterError,
     SingleSelectedFutureSingleWriterV1,
 )
+from src.ops.top20_opportunity_evaluation_residency_v1.models_v1 import ResidencyRuntimeConfigV1
 
 
 def produce_from_ranking_state_root_v1(
@@ -126,6 +132,8 @@ def run_single_selected_future_policy_v1(
     legacy_selection_payload: Mapping[str, Any] | None = None,
     manual_override_payload: Mapping[str, Any] | None = None,
     governed_pin: GovernedCap23InstrumentPinV1 | None = None,
+    residency_eligibility_gate: Cap23ResidencyEligibilityGateConfigV1 | None = None,
+    residency_runtime_config: ResidencyRuntimeConfigV1 | None = None,
 ) -> dict[str, Any]:
     """Full productive call graph: select → persist → verify (no runtime activation)."""
     writer = SingleSelectedFutureSingleWriterV1(state_root=Path(state_root), session_id=session_id)
@@ -200,12 +208,31 @@ def run_single_selected_future_policy_v1(
                 lane_state_root=state_root,
             )
 
+        ranking_snapshot_for_gate: Mapping[str, Any] | None = ranking_snapshot
+        if ranking_snapshot_for_gate is None and ranking_state_root is not None:
+            loaded_rank = load_and_validate_ranking_snapshot_v1(Path(ranking_state_root))
+            if loaded_rank.ok and loaded_rank.snapshot is not None:
+                ranking_snapshot_for_gate = loaded_rank.snapshot.to_dict()
+
+        residency_completion_ref: ResidencyCompletionRefV1 | None = None
+        gate_cfg = residency_eligibility_gate or Cap23ResidencyEligibilityGateConfigV1()
+        residency_cfg = residency_runtime_config or ResidencyRuntimeConfigV1()
+        if ranking_snapshot_for_gate is not None:
+            produced, residency_completion_ref = apply_cap23_residency_eligibility_gate_v1(
+                produced=produced,
+                ranking_snapshot=ranking_snapshot_for_gate,
+                gate=gate_cfg,
+                residency_config=residency_cfg,
+                producer_observed_at_unix=producer_observed_at_unix,
+            )
+
         evidence = build_selection_evidence_v1(
             produced=produced,
             persistence_path=str(Path(state_root)),
             persistence_verification=None,
             restart_verification=None,
             previous_selection=prev,
+            residency_completion_ref=residency_completion_ref,
         )
         try:
             persistence = persist_selection_bundle_atomic_v1(
@@ -250,6 +277,7 @@ def run_single_selected_future_policy_v1(
             persistence_verification=persistence,
             restart_verification=restart,
             previous_selection=prev,
+            residency_completion_ref=residency_completion_ref,
         )
         persist_selection_bundle_atomic_v1(
             state_root=Path(state_root),
@@ -357,6 +385,7 @@ def build_selection_evidence_v1(
     restart_verification: Optional[Mapping[str, Any]],
     previous_selection: Mapping[str, Any] | None,
     extra_failure_codes: tuple[str, ...] = (),
+    residency_completion_ref: ResidencyCompletionRefV1 | None = None,
 ) -> dict[str, Any]:
     sel = produced.selection
     recomputed = sel.compute_integrity_digest()
@@ -417,6 +446,9 @@ def build_selection_evidence_v1(
             "selection_integrity_digest": sel.integrity_digest,
         },
         "authority_verification": dict(sel.authority),
+        "residency_completion_ref": (
+            residency_completion_ref.to_dict() if residency_completion_ref is not None else None
+        ),
         "dashboard_authority": False,
         "dashboard_input_used": False,
         "allowlist_input_used": False,
