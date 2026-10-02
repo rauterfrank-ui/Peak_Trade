@@ -38,6 +38,12 @@ SAND_FIXTURE = (
     / "ops"
     / "dynamic_market_selection_evidence_sand_combined_ghv_v1.json"
 )
+POST_PR7017_SAND_FIXTURE = (
+    FIXTURE_ROOT
+    / "fixtures"
+    / "ops"
+    / "dynamic_market_selection_evidence_post_pr7017_sand_measurement_v1.json"
+)
 COMBINED_EVIDENCE = Path(
     "evidence/ops/combined_ghv_whole_cycle_canary_measurement_v1/20261002T074052Z"
 )
@@ -82,7 +88,56 @@ def test_same_instrument_changing_price_is_dynamic_not_drift() -> None:
     ]
     assert prices_a != prices_b
     assert report_a["ghv_path_evidence_semantics"]["DYNAMIC_VALUE_CHANGE_IS_NOT_DRIFT"] is True
+    assert report_a["ghv_path_evidence_semantics"]["DYNAMIC_VALUE_CHANGE_IS_SYSTEM_DRIFT"] is False
+    assert (
+        report_a["runtime_evidence_semantics"]["CROSS_RUN_ABSOLUTE_VALUE_COMPARISON_AUTHORIZED"]
+        is False
+    )
     assert path_relational_integrity_v1(report_a["relational_evidence"]) == "PASS"
+
+
+def test_cross_instrument_valid_variation_both_relationally_pass() -> None:
+    def _report_for(native: str, canonical_suffix: str, mark: str, outcome: str) -> dict:
+        bound = {
+            "instrument_id": f"okx_eea:linear_perpetual:{canonical_suffix}",
+            "venue_native_id": native,
+            "selected_future_count": 1,
+            "max_positions_effective": 1,
+            "ranking_snapshot_id": "x",
+            "ranking_integrity_digest": "x",
+            "universe_snapshot_id": "x",
+            "selection_id": "x",
+            "selection_integrity_digest": "x",
+            "selection_state": "SELECTED",
+        }
+        sizing = {
+            "final_quantity": "0" if outcome == "BLOCKED" else "1",
+            "outcome": outcome,
+            "pre_sizing_risk": {"reference_price": mark, "side": "SHORT"},
+            "scope_capital_envelope": {
+                "instrument_id": bound["instrument_id"],
+                "available_capital": "1.0",
+            },
+        }
+        ctx = DynamicMarketSelectionObservationContextV1(
+            selected_instrument=native,
+            bound_instrument=bound,
+            observed_instrument_id=bound["instrument_id"],
+            reference_price=mark,
+            sizing_state=sizing,
+            decision_outcome="enter_short",
+            selected_side="short",
+            policy_outcome=outcome,
+            pre_external_reached=False,
+        )
+        return build_dynamic_market_selection_evidence_contract_v1(ctx)
+
+    report_a = _report_for("AAA-USDT-SWAP", "AAA:USDT:USDT:aaa-usdt-swap", "1.0", "PASS")
+    report_b = _report_for("BBB-USDT-SWAP", "BBB:USDT:USDT:bbb-usdt-swap", "2.0", "BLOCKED")
+    assert path_relational_integrity_v1(report_a["relational_evidence"]) == "PASS"
+    assert path_relational_integrity_v1(report_b["relational_evidence"]) == "PASS"
+    assert report_a["dynamic_value_observations"] != report_b["dynamic_value_observations"]
+    assert report_a["runtime_evidence_semantics"]["DYNAMIC_VALUE_CHANGE_IS_SYSTEM_DRIFT"] is False
 
 
 def test_different_instrument_internally_consistent_accepted() -> None:
@@ -111,6 +166,25 @@ def test_different_instrument_internally_consistent_accepted() -> None:
         if r["relation_name"] == "SELECTION_TO_BINDING_IDENTITY"
     )
     assert sel_rel["relation_status"] == RELATION_PASS
+
+
+def test_cross_context_sizing_mismatch_detected() -> None:
+    sizing = dict(_ctx().sizing_state or {})
+    envelope = dict(sizing.get("scope_capital_envelope") or {})
+    envelope["instrument_id"] = "okx_eea:linear_perpetual:PROS:USDT:USDT:pros-usdt-swap"
+    sizing["scope_capital_envelope"] = envelope
+    ctx = _ctx(
+        selected_instrument="SAND-USDT-SWAP",
+        observed_instrument_id=envelope["instrument_id"],
+        sizing_state=sizing,
+    )
+    report = build_dynamic_market_selection_evidence_contract_v1(ctx)
+    sizing_rel = next(
+        r
+        for r in report["relational_evidence"]
+        if r["relation_name"] == "BINDING_TO_SIZING_IDENTITY"
+    )
+    assert sizing_rel["relation_status"] == RELATION_FAIL
 
 
 def test_cross_instrument_relational_mismatch_detected() -> None:
@@ -175,6 +249,9 @@ def test_pre_external_false_when_relational_integrity_passes() -> None:
     report = build_dynamic_market_selection_evidence_contract_v1(_ctx())
     assert report["ghv_path_evidence_semantics"]["PATH_RELATIONAL_INTEGRITY"] == "PASS"
     assert report["ghv_path_evidence_semantics"]["PRE_EXTERNAL_REACHED"] is False
+    assert (
+        report["ghv_path_evidence_semantics"]["PRE_EXTERNAL_FALSE_NOT_RELATIONAL_FAILURE"] is True
+    )
 
 
 def test_post_safety_invariants_stable() -> None:
@@ -204,6 +281,34 @@ def test_sand_fixture_regression_without_universal_expected_values() -> None:
     )
     assert explained["relation_status"] == RELATION_UNKNOWN
     assert report["ghv_path_evidence_semantics"]["PRE_EXTERNAL_REACHED"] is False
+
+
+def test_post_pr7017_sand_observations_are_not_cross_run_expectations() -> None:
+    ctx = observation_context_from_mapping_v1(json.loads(POST_PR7017_SAND_FIXTURE.read_text()))
+    report = build_dynamic_market_selection_evidence_contract_v1(ctx)
+    dyn = report["dynamic_value_observations"]
+    assert all(row.get("cross_run_expectation") is False for row in dyn)
+    assert all(row.get("semantic_class") == "RUNTIME_DISCOVERED_VALUE" for row in dyn)
+    by_field = {str(r["field_name"]): r["value"] for r in dyn}
+    assert by_field.get("reference_price") == "0.06091"
+    assert by_field.get("available_capital") == "2.234476294593913"
+    assert by_field.get("final_quantity") == "0"
+    assert report["runtime_evidence_semantics"]["RUNTIME_VALUE_NOT_CROSS_RUN_EXPECTATION"] is True
+    explained = next(
+        r for r in report["relational_evidence"] if r["relation_name"] == "SIZING_OUTCOME_EXPLAINED"
+    )
+    assert explained["relation_status"] == RELATION_UNKNOWN
+    assert path_relational_integrity_v1(report["relational_evidence"]) == "PASS"
+
+
+def test_runtime_observations_include_context_identity_and_provenance() -> None:
+    report = build_dynamic_market_selection_evidence_contract_v1(_ctx())
+    row = next(
+        r for r in report["dynamic_value_observations"] if r["field_name"] == "selected_instrument"
+    )
+    assert row["context_identity"]
+    assert row["provenance"]
+    assert row["cross_run_expectation"] is False
 
 
 def test_native_correlation_key() -> None:
