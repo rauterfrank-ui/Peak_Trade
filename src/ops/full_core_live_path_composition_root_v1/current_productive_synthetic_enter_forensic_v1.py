@@ -29,6 +29,28 @@ SYNTHETIC_REASON_DOWNSTREAM_LIVENESS = "DOWNSTREAM_LIVENESS_ADJUDICATION"
 NATURAL_ENTER_OUTCOMES = frozenset({"enter_long", "enter_short"})
 ALLOWED_SYNTHETIC_SIDES = frozenset({"enter_long", "enter_short"})
 
+# Natural observe/hold path reason codes must not block forensic synthetic ENTER
+# downstream contract adjudication (venue plan / PRE_EXTERNAL wiring proofs).
+_FORENSIC_SYNTHETIC_STRIP_REASON_CODES = frozenset(
+    {
+        "no_action",
+        "observe",
+        "hold",
+        "safety_mode_exit_only",
+        "killswitch_reduce_to_flat",
+        "killswitch_block_new",
+        "killswitch_no_position_increase",
+        "killswitch_cancel_pending",
+        "killswitch_emergency_flatten",
+        "killswitch_no_auto_resume",
+        "killswitch_reconciliation_precedence_entry_blocked",
+        "entry_blocked_by_killswitch_boundary",
+        "entry_blocked_by_safety_kernel_boundary",
+        "CAPITAL_RISK_CONTEXT_UNRESOLVED",
+        "capital_risk_context_unresolved",
+    }
+)
+
 LEDGER_FILENAME = "synthetic_enter_forensic_v1.jsonl"
 SUMMARY_FILENAME = "synthetic_enter_forensic_summary_v1.json"
 
@@ -121,6 +143,57 @@ def _natural_outcome_from_replay_v1(replay: IntegratedOfflineReplayResultV1) -> 
     return str(getattr(raw, "value", raw) or "").strip().lower()
 
 
+def _rebind_replay_for_forensic_synthetic_enter_overlay_v1(
+    replay: IntegratedOfflineReplayResultV1,
+    *,
+    new_evidence: Any,
+) -> IntegratedOfflineReplayResultV1:
+    """Align typed safety + reason codes with post-overlay ENTER for downstream seams.
+
+    Does not grant POST, credentials, or runtime authority. Re-projects Safety/KS
+    bindings for the synthetic decision so stale observe-path exit-only markers do
+    not deny venue-plan composition after LIVE-29P join.
+    """
+    from trading.master_v2.killswitch_boundary_offline_replay_binding_adapter_v0 import (
+        KillSwitchBoundaryOfflineReplayContextV0,
+        bind_killswitch_boundary_offline_replay_evidence_v0,
+    )
+    from trading.master_v2.replay_execution_safety_contract_v1 import (
+        derive_replay_execution_safety_v1,
+    )
+    from trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0 import (
+        SafetyKernelOfflineReplayContextV0,
+        bind_safety_kernel_offline_replay_evidence_v0,
+    )
+
+    filtered_reasons = tuple(
+        dict.fromkeys(
+            str(code)
+            for code in (getattr(new_evidence, "reason_codes", None) or ())
+            if str(code) not in _FORENSIC_SYNTHETIC_STRIP_REASON_CODES
+        )
+    )
+    evidence_seed = replace(new_evidence, reason_codes=filtered_reasons)
+    safety_binding = bind_safety_kernel_offline_replay_evidence_v0(
+        evidence_seed,
+        context=SafetyKernelOfflineReplayContextV0(),
+    )
+    killswitch_binding = bind_killswitch_boundary_offline_replay_evidence_v0(
+        safety_binding.evidence,
+        context=KillSwitchBoundaryOfflineReplayContextV0(),
+    )
+    rebound_evidence = killswitch_binding.evidence
+    replay_execution_safety = derive_replay_execution_safety_v1(
+        safety_boundary=safety_binding.boundary,
+        killswitch_boundary=killswitch_binding.boundary,
+    )
+    return replace(
+        replay,
+        evidence=rebound_evidence,
+        replay_execution_safety=replay_execution_safety,
+    )
+
+
 @dataclass(frozen=True)
 class SyntheticEnterForensicApplyResultV1:
     replay: IntegratedOfflineReplayResultV1
@@ -203,7 +276,10 @@ def maybe_apply_synthetic_enter_forensic_overlay_v1(
         decision_outcome=side,
         selected_side=composition_selected_side,
     )
-    new_replay = replace(replay, evidence=new_evidence)
+    new_replay = _rebind_replay_for_forensic_synthetic_enter_overlay_v1(
+        replay,
+        new_evidence=new_evidence,
+    )
     session.mark_applied_v1(int(cycle_index))
 
     record: dict[str, Any] = {

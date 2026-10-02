@@ -3623,13 +3623,13 @@ entities:
   - tests/ops/test_pre_live_fresh_runtime_root_isolation_v1.py
   notes: POST-slice recorded baseline fca07afa with live integrity drift gate; fresh Cap-24 root; fail-closed historical POST-store isolation; no venue POST; stop before Actual-Venue-POST Owner-GO; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1
-  # atlas_entity_review: PR #7008 S5 runner resolves LIVE-29P injected GET from fresh pretrade transport per cycle (was None).
+  # atlas_entity_review: PR #7012 offline GHV harness uses make_n1_occupied_lane_s5_runner_v1 to PRE_EXTERNAL; no runner semantic change.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive persistent Natural-ENTER convergence v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7008_LIVE_29P_S5_FRESH_PRETRADE_GET_WIRING_V1
+  modified_by: PR_7012_GHV_PRE_EXTERNAL_OFFLINE_CONVERGENCE_V1
   source_paths:
   - scripts/ops/run_current_productive_persistent_natural_enter_convergence_offline_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py
@@ -3643,6 +3643,7 @@ entities:
   - tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py
   - tests/ops/test_current_productive_selection_rotation_cursor_reconciliation_v1.py
   - tests/ops/test_persistent_natural_enter_live_29p_get_wiring_v1.py
+  - tests/ops/test_ghv_pre_external_offline_convergence_v1.py
   notes: 'Offline S8 fixed lane-root through S6/S7 to PRE_EXTERNAL; CONTINUOUS_RUN_AUTHORIZED=false; POST_COUNT=0; N5 bootstrap C1/mark alignment join fix; not productive activation; ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6951 cursor-floor rebind after S7 bootstrap; live 1m bid/ask from bar low/high; # orchestration-only; MV2/DP immutable; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6997 startup reconciliation when Cap23 selection native_id rotates vs persisted sidestate cursor; archive superseded cursor and clear active lane for existing cold-lane bootstrap; LINEAGE_MISMATCH guard unchanged; no Cap23/Cap24 authority change; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6999 default-off forensic entry-state snapshot after rotation reconciliation and before first poll; observation-only; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7002 consumes bounded observation budget resolver; orchestration-only; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7008 wire fresh pretrade GET into persistent S5 runner for LIVE-29P injected handoff; downstream propagation only; no threshold/POST change; AUTHORITY=NONE; POST_COUNT=0.'
 - id: RUNTIME_COMPONENT:current_productive_continuous_observation_budget_v1
   kind: RUNTIME_COMPONENT
@@ -3723,13 +3724,13 @@ entities:
   - tests/ops/test_golden_happy_scope_decision_trace_observability_v1.py
   notes: Default-off session-bound append-only directional signal_strength/threshold JSONL, golden_happy_scope_decision_trace_v1.jsonl (G17→Scope causal refs), plus single entry-state JSON snapshot; reads productive replay intermediate and cursor carrier; no signal/scope recompute; no trading/threshold/budget/GET semantic change; CORRELATION_STATUS=PARTIAL; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:current_productive_synthetic_enter_forensic_v1
-  # atlas_entity_review: PR #7011 forensic ledger records selected_side_after_overlay=short.
+  # atlas_entity_review: PR #7012 rebind Safety/KS typed evidence on overlay for venue-plan/PRE_EXTERNAL offline proof.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive synthetic ENTER forensic overlay v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7011_GHV_SYNTHETIC_ENTER_S5_PROPAGATION_V1
+  modified_by: PR_7012_GHV_PRE_EXTERNAL_OFFLINE_CONVERGENCE_V1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/current_productive_synthetic_enter_forensic_v1.py
   - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py
@@ -3738,6 +3739,7 @@ entities:
   - tests/ops/test_golden_happy_t2_cycle1_ghv_synthetic_regression_v1.py
   - tests/ops/test_ghv_protective_stop_synthetic_enter_live_29p_join_v1.py
   - tests/ops/test_ghv_synthetic_enter_s5_propagation_v1.py
+  - tests/ops/test_ghv_pre_external_offline_convergence_v1.py
   notes: Default-off forensic-only synthetic ENTER overlay at LIVE-29P join seam before enter_live_29p join; explicit SYNTHETIC_FORENSIC evidence; does not set NATURAL_ENTER_OBSERVED; no threshold/market-data mutation; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
   kind: RUNTIME_COMPONENT
@@ -4446,13 +4448,13 @@ entities:
   - tests/governance/test_companion_c2_fraction_to_units_runtime_completion_v1.py
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-  # atlas_entity_review: PR #7009 GET-only K1 credential transport bind seam for GHV live-C1 fresh-pretrade path.
+  # atlas_entity_review: PR #7012 synthetic overlay Safety/KS reprojection only; PRE_EXTERNAL offline harness evidence.
   kind: RUNTIME_COMPONENT
   name: Offline Core-to-Live composition root v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7009_GHV_GET_ONLY_CREDENTIAL_TRANSPORT_BIND_V1
+  modified_by: PR_7012_GHV_PRE_EXTERNAL_OFFLINE_CONVERGENCE_V1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/__init__.py
   - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
