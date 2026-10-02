@@ -840,6 +840,8 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     enable_synthetic_enter_forensic_v1: bool = False,
     synthetic_enter_forensic_side: str = "enter_short",
     synthetic_enter_forensic_cycle_index: int = 1,
+    enable_forensic_executable_quantity_override_v1: bool = False,
+    forensic_executable_quantity: str = "",
     selection_id: str = "",
     binding_epoch: str = "",
     cap24_reselection_performed: bool = False,
@@ -871,6 +873,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     flight_recorder_session_reset = None
     canary_session_reset = None
     synthetic_session_reset = None
+    forensic_quantity_override_session_reset = None
     pairs = build_s8_occupied_lane_pairs_v1(
         lane_state_root=Path(lane_state_root),
         bound=bound,
@@ -900,6 +903,24 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
             continuous_run_id=run_id,
         )
         synthetic_session_reset = bind_synthetic_enter_forensic_session_v1(synthetic_session)
+    if enable_forensic_executable_quantity_override_v1:
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_forensic_executable_quantity_override_v1 import (
+            bind_forensic_executable_quantity_override_session_v1,
+            build_forensic_executable_quantity_override_session_v1,
+        )
+
+        fq_session = build_forensic_executable_quantity_override_session_v1(
+            enabled=True,
+            explicit_forensic_quantity=forensic_executable_quantity or None,
+            product_evidence_root=Path(evidence_root),
+            continuous_run_id=run_id,
+            require_ghv_pre_external_runtime_flight_recorder_v1=(
+                enable_ghv_pre_external_runtime_flight_recorder_v1
+            ),
+        )
+        forensic_quantity_override_session_reset = (
+            bind_forensic_executable_quantity_override_session_v1(fq_session)
+        )
     if enable_golden_happy_vector_forensic_observability_v1:
         from src.ops.full_core_live_path_composition_root_v1.productive_golden_happy_vector_forensic_observability_v1 import (
             GoldenHappyVectorForensicObservabilitySessionV1,
@@ -1030,6 +1051,14 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
             )
 
             reset_synthetic_enter_forensic_session_v1(synthetic_session_reset)
+        if forensic_quantity_override_session_reset is not None:
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_forensic_executable_quantity_override_v1 import (
+                reset_forensic_executable_quantity_override_session_v1,
+            )
+
+            reset_forensic_executable_quantity_override_session_v1(
+                forensic_quantity_override_session_reset
+            )
         if forensic_session_reset is not None:
             from src.ops.full_core_live_path_composition_root_v1.productive_golden_happy_vector_forensic_observability_v1 import (
                 reset_golden_happy_vector_forensic_observability_session_v1,

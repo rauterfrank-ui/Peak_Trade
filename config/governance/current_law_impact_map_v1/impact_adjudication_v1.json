@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "verdict": "NO_LAW_IMPACT",
-  "reason": "Dynamic runtime evidence semantics hardening: RUNTIME_VALUE != CROSS_RUN_EXPECTATION guard and contract metadata; observer-only evidence surfaces; no law semantic mutation; no trading/selection/sizing semantics; POST_COUNT=0.",
+  "reason": "PR7019 default-off forensic executable quantity override after real LIVE-29P sizing: ops wiring and Atlas provenance only; no law semantic mutation; no trading/selection/sizing semantics; POST_COUNT=0.",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -14,21 +14,21 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/dynamic_market_runtime_cross_run_expectation_guard_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/dynamic_market_selection_evidence_contract_v1.py",
-    "tests/fixtures/ops/dynamic_market_selection_evidence_post_pr7017_sand_measurement_v1.json",
-    "tests/ops/test_dynamic_market_runtime_cross_run_expectation_guard_v1.py",
-    "tests/ops/test_dynamic_market_selection_evidence_contract_v1.py"
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_forensic_executable_quantity_override_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+    "tests/ops/test_current_productive_forensic_executable_quantity_override_v1.py"
   ],
-  "changed_paths_sha256": "4cdced36ee47de4cb9108d7fb74c7844267e74a29ef4cb6894a8bda9c256ce21",
-  "base_sha": "122057337b67c5777147d98f6b5e97ea46daf127",
+  "changed_paths_sha256": "81ba7bcc1d1ff6076745b08c02b8e3c3d0a5bdeb2673b5ebf8008874e61b7e01",
+  "base_sha": "579b4af22a6b7af52507309133f26ff3ceb0d582",
   "evidence_refs": [
-    "tests/ops/test_dynamic_market_selection_evidence_contract_v1.py",
-    "tests/ops/test_dynamic_market_runtime_cross_run_expectation_guard_v1.py"
+    "tests/ops/test_current_productive_forensic_executable_quantity_override_v1.py"
   ],
   "covered_candidate_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
@@ -36,11 +36,12 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/dynamic_market_runtime_cross_run_expectation_guard_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/dynamic_market_selection_evidence_contract_v1.py",
-    "tests/fixtures/ops/dynamic_market_selection_evidence_post_pr7017_sand_measurement_v1.json",
-    "tests/ops/test_dynamic_market_runtime_cross_run_expectation_guard_v1.py",
-    "tests/ops/test_dynamic_market_selection_evidence_contract_v1.py"
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_forensic_executable_quantity_override_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+    "tests/ops/test_current_productive_forensic_executable_quantity_override_v1.py"
   ],
   "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
   "selector_used_as_law_impact_authority": false

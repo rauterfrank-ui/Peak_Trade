@@ -168,6 +168,11 @@
     "tests/ops/test_n5_canonical_productive_entry_import_cycle_v1.py",
     "tests/ops/test_peak_trade_public_market_data_runtime_v1.py",
     "tests/ops/test_whole_system_connection_closure_bounded_wp_v1.py",
-    "tests/trading/master_v2/"
+    "tests/trading/master_v2/",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_forensic_executable_quantity_override_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+    "tests/ops/test_current_productive_forensic_executable_quantity_override_v1.py"
   ]
 }

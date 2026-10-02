@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=4
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,10 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:dynamic_market_runtime_cross_run_expectation_guard_v1` |
-| `RUNTIME_COMPONENT:dynamic_market_selection_evidence_contract_v1` |
-| `RUNTIME_COMPONENT:ghv_pre_external_runtime_flight_recorder_v1` |
-| `RUNTIME_COMPONENT:ghv_pre_external_whole_cycle_causal_observability_v1` |
+| `RUNTIME_COMPONENT:current_productive_forensic_executable_quantity_override_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -95,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Dynamic runtime evidence semantics hardening: RUNTIME_VALUE != CROSS_RUN_EXPECTATION; guard + relational sizing; no trading semantics; POST_COUNT=0.
+- PR7019 forensic executable quantity override: default-off GHV-guarded seam after real sizing; no trading semantics; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=DYNAMIC_RUNTIME_EVIDENCE_SEMANTICS_HARDENING_V1
+- modified_by=PR_7019_FORENSIC_EXECUTABLE_QUANTITY_PRE_EXTERNAL_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

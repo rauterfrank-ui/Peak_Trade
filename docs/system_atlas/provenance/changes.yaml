@@ -569,3 +569,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_dynamic_market_selection_evidence_contract_v1.py
   notes: 'Harden RUNTIME_VALUE != CROSS_RUN_EXPECTATION; RUNTIME_DISCOVERED_VALUE semantics; cross-run guard; relational sizing identity; no trading semantics; POST_COUNT=0.'
+- id: CHANGE:pr_7019_forensic_executable_quantity_override_v1
+  from: 579b4af22a6b7af52507309133f26ff3ceb0d582
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_current_productive_forensic_executable_quantity_override_v1.py
+  notes: 'PR7019: default-off forensic executable quantity override after real LIVE-29P sizing for synthetic PRE_EXTERNAL proof path; real sizing preserved separately; no policy forgery; POST_COUNT=0.'

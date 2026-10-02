@@ -459,6 +459,7 @@ def _t2_from_s7(
             decision_epoch=epoch,
             portfolio_budget_owner=portfolio_budget_owner,
             portfolio_slot=portfolio_slot,
+            cycle_index=cycle_index,
         )
         live_29p_gen = (
             append_flight_record_stage_v1(
@@ -540,6 +541,25 @@ def _t2_from_s7(
                 execution_mode="LIVE",
             )
             venue_plan_pass = status is CompositionStatusV1.PASS and plan is not None
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_forensic_executable_quantity_override_v1 import (
+                active_forensic_executable_quantity_override_session_v1,
+                refresh_forensic_executable_quantity_run_outcome_v1,
+            )
+
+            fq_session = active_forensic_executable_quantity_override_session_v1()
+            if fq_session is not None:
+                sizing_state = live_29p.replay.intermediate.capital_risk_sizing_decision
+                policy_out = ""
+                if sizing_state is not None:
+                    policy_out = str(getattr(sizing_state.outcome, "value", sizing_state.outcome))
+                refresh_forensic_executable_quantity_run_outcome_v1(
+                    session=fq_session,
+                    policy_outcome_after_override=policy_out,
+                    venue_plan_status_after_override=str(status.value),
+                    pre_external_reached=False,
+                    post_count=0,
+                    external_effect_count=0,
+                )
             _finalize_portfolio_reservation_after_enter_join_v1(
                 portfolio_budget_owner,
                 reservation_id=live_29p.portfolio_reservation_id,

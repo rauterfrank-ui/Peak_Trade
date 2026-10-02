@@ -3747,6 +3747,24 @@ entities:
   - tests/ops/test_ghv_pre_external_runtime_flight_recorder_v1.py
   - tests/ops/test_ghv_pre_external_whole_cycle_causal_observability_v1.py
   notes: Default-off forensic-only synthetic ENTER overlay at LIVE-29P join seam before enter_live_29p join; explicit SYNTHETIC_FORENSIC evidence; does not set NATURAL_ENTER_OBSERVED; no threshold/market-data mutation; AUTHORITY=NONE; POST_COUNT=0.
+- id: RUNTIME_COMPONENT:current_productive_forensic_executable_quantity_override_v1
+  # atlas_entity_review: PR #7019 default-off forensic executable quantity override after real LIVE-29P sizing; AUTHORITY=NONE; POST_COUNT=0.
+  kind: RUNTIME_COMPONENT
+  name: CURRENT productive forensic executable quantity override v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: PR_7019_FORENSIC_EXECUTABLE_QUANTITY_PRE_EXTERNAL_V1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_forensic_executable_quantity_override_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
+  - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py
+  - scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py
+  evidence_sources:
+  - tests/ops/test_current_productive_forensic_executable_quantity_override_v1.py
+  - tests/ops/test_current_productive_synthetic_enter_forensic_v1.py
+  notes: Default-off forensic-only executable quantity override after real sizing at LIVE-29P join; preserves real sizing evidence separately; requires synthetic+GHV forensic guards; no policy/venue-plan PASS forgery; instrument agnostic; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:ghv_pre_external_continuation_harness_v1
   # atlas_entity_review: system-wide Canary artifact persistence alongside PR7014 whole-cycle bundle.
   kind: RUNTIME_COMPONENT
