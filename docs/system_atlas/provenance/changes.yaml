@@ -562,3 +562,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_dynamic_market_selection_evidence_contract_v1.py
   notes: 'PR7017: observer-only dynamic market/selection evidence contract integrated with GHV whole-cycle observability; DYNAMIC_VALUE change is not drift; no trading/selection/sizing semantics; POST_COUNT=0.'
+- id: CHANGE:dynamic_runtime_evidence_semantics_hardening_v1
+  from: 122057337b67c5777147d98f6b5e97ea46daf127
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_dynamic_market_selection_evidence_contract_v1.py
+  notes: 'Harden RUNTIME_VALUE != CROSS_RUN_EXPECTATION; RUNTIME_DISCOVERED_VALUE semantics; cross-run guard; relational sizing identity; no trading semantics; POST_COUNT=0.'

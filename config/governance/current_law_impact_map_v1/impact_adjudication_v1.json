@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
-  "verdict": "NO_LAW_IMPACT",
-  "reason": "PR7017 adds observer-only dynamic market/selection evidence contract and Atlas governance bindings; no law semantic mutation; POST_COUNT=0.",
+  "verdict": "NO_MAP_IMPACT",
+  "reason": "Dynamic runtime evidence semantics hardening: RUNTIME_VALUE != CROSS_RUN_EXPECTATION guard and contract metadata; observer-only evidence surfaces; no law-map source change; no trading/selection/sizing semantics; POST_COUNT=0.",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -14,15 +14,17 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
+    "src/ops/full_core_live_path_composition_root_v1/dynamic_market_runtime_cross_run_expectation_guard_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/dynamic_market_selection_evidence_contract_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_whole_cycle_causal_observability_v1.py",
-    "tests/fixtures/ops/dynamic_market_selection_evidence_sand_combined_ghv_v1.json",
+    "tests/fixtures/ops/dynamic_market_selection_evidence_post_pr7017_sand_measurement_v1.json",
+    "tests/ops/test_dynamic_market_runtime_cross_run_expectation_guard_v1.py",
     "tests/ops/test_dynamic_market_selection_evidence_contract_v1.py"
   ],
-  "changed_paths_sha256": "05e4c395a692323e27adab3a9854230bf6991ce2d2894e5a73fbcd29d1fe33a4",
-  "base_sha": "01a987ff01aaf73132e31880f7e73839b2a3b698",
+  "changed_paths_sha256": "4cdced36ee47de4cb9108d7fb74c7844267e74a29ef4cb6894a8bda9c256ce21",
+  "base_sha": "122057337b67c5777147d98f6b5e97ea46daf127",
   "evidence_refs": [
-    "tests/ops/test_dynamic_market_selection_evidence_contract_v1.py"
+    "tests/ops/test_dynamic_market_selection_evidence_contract_v1.py",
+    "tests/ops/test_dynamic_market_runtime_cross_run_expectation_guard_v1.py"
   ],
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
@@ -34,11 +36,10 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
+    "src/ops/full_core_live_path_composition_root_v1/dynamic_market_runtime_cross_run_expectation_guard_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/dynamic_market_selection_evidence_contract_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_whole_cycle_causal_observability_v1.py",
-    "tests/fixtures/ops/dynamic_market_selection_evidence_sand_combined_ghv_v1.json",
+    "tests/fixtures/ops/dynamic_market_selection_evidence_post_pr7017_sand_measurement_v1.json",
+    "tests/ops/test_dynamic_market_runtime_cross_run_expectation_guard_v1.py",
     "tests/ops/test_dynamic_market_selection_evidence_contract_v1.py"
-  ],
-  "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
-  "selector_used_as_law_impact_authority": false
+  ]
 }

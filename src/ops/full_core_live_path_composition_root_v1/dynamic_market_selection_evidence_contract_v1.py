@@ -28,6 +28,7 @@ ARTIFACT_FILENAME = "dynamic_market_selection_evidence_contract_v1.json"
 
 SEMANTIC_CLASS_STABLE_INVARIANT = "STABLE_INVARIANT"
 SEMANTIC_CLASS_DYNAMIC_VALUE = "DYNAMIC_VALUE"
+SEMANTIC_CLASS_RUNTIME_DISCOVERED_VALUE = "RUNTIME_DISCOVERED_VALUE"
 SEMANTIC_CLASS_DYNAMIC_RELATIONAL_EVIDENCE = "DYNAMIC_RELATIONAL_EVIDENCE"
 
 EXPECTED_BEHAVIOR_STABLE = "STABLE"
@@ -45,6 +46,9 @@ PATH_UNKNOWN_CURRENT = "UNKNOWN_CURRENT"
 
 DYNAMIC_VALUE_CHANGE_IS_NOT_DRIFT_RULE = (
     "DYNAMIC_VALUE_CHANGE != SYSTEM_DRIFT; relational mismatch is evidence failure"
+)
+RUNTIME_VALUE_NOT_CROSS_RUN_EXPECTATION_RULE = (
+    "RUNTIME_VALUE != CROSS_RUN_EXPECTATION; observed_value is current-run evidence only"
 )
 
 CORE_RELATIONS_FOR_PATH_INTEGRITY_V1: tuple[str, ...] = (
@@ -150,16 +154,30 @@ def _dynamic_value_observation(
     source_provenance: str,
     ctx: DynamicMarketSelectionObservationContextV1,
 ) -> dict[str, Any]:
+    from src.ops.full_core_live_path_composition_root_v1.dynamic_market_runtime_cross_run_expectation_guard_v1 import (
+        context_identity_for_observation_v1,
+    )
+
+    context_identity = context_identity_for_observation_v1(
+        selected_instrument=ctx.selected_instrument,
+        observed_instrument_id=ctx.observed_instrument_id,
+        run_id=ctx.run_id,
+    )
     return {
         "schema_version": SCHEMA_VERSION,
         "run_id": ctx.run_id,
         "cycle_index": ctx.cycle_index,
         "generation_id": ctx.generation_id,
         "observation_stage": observation_stage,
-        "semantic_class": SEMANTIC_CLASS_DYNAMIC_VALUE,
+        "semantic_class": SEMANTIC_CLASS_RUNTIME_DISCOVERED_VALUE,
+        "legacy_semantic_class": SEMANTIC_CLASS_DYNAMIC_VALUE,
         "field_name": field_name,
+        "value": observed_value,
         "observed_value": observed_value,
+        "provenance": source_provenance,
         "source_provenance": source_provenance,
+        "context_identity": context_identity,
+        "cross_run_expectation": False,
         "observed_at": ctx.observed_at,
         "expected_behavior": EXPECTED_BEHAVIOR_MAY_CHANGE,
         "authority": CONTRACT_AUTHORITY,
@@ -280,9 +298,12 @@ def evaluate_relations_v1(
         )
 
     if env_inst or bound_instrument_id:
-        sizing_match = _identity_match(
-            ctx.selected_instrument, bound_native, env_inst or bound_instrument_id
-        )
+        sizing_inst = env_inst or bound_instrument_id
+        sizing_match = _identity_match(ctx.selected_instrument, "", sizing_inst)
+        if sizing_match is True and bound_native:
+            bound_match = _identity_match(ctx.selected_instrument, bound_native, bound_instrument_id)
+            if bound_match is False:
+                sizing_match = False
         if sizing_match is True:
             relations.append(
                 _relation_row(
@@ -509,19 +530,26 @@ def stable_invariant_observations_v1(
                 "cycle_index": ctx.cycle_index,
             }
         )
-    if ctx.pre_external_reached is not None:
-        rows.append(
-            {
-                "schema_version": SCHEMA_VERSION,
-                "semantic_class": SEMANTIC_CLASS_STABLE_INVARIANT,
-                "field_name": "PRE_EXTERNAL_REACHED",
-                "observed_value": ctx.pre_external_reached,
-                "expected_behavior": EXPECTED_BEHAVIOR_STABLE,
-                "authority": CONTRACT_AUTHORITY,
-                "detail": "factual stage reachability; not success criterion",
-            }
-        )
     return rows
+
+
+def runtime_factual_observations_v1(
+    ctx: DynamicMarketSelectionObservationContextV1,
+) -> list[dict[str, Any]]:
+    """Current-run reachability facts — not cross-run success criteria."""
+    if ctx.pre_external_reached is None:
+        return []
+    stage = ctx.observation_stage or "PRODUCT_RUNTIME"
+    prov = ctx.source_provenance or "dynamic_market_selection_evidence_contract_v1"
+    return [
+        _dynamic_value_observation(
+            field_name="PRE_EXTERNAL_REACHED",
+            observed_value=ctx.pre_external_reached,
+            observation_stage=stage,
+            source_provenance=prov,
+            ctx=ctx,
+        )
+    ]
 
 
 def build_dynamic_value_observations_v1(
@@ -576,6 +604,19 @@ def build_dynamic_value_observations_v1(
                             ctx=ctx,
                         )
                     )
+        envelope = sizing.get("scope_capital_envelope") or {}
+        if isinstance(envelope, Mapping):
+            for key in ("available_capital", "remaining_capital"):
+                if key in envelope:
+                    rows.append(
+                        _dynamic_value_observation(
+                            field_name=key,
+                            observed_value=envelope.get(key),
+                            observation_stage=stage,
+                            source_provenance=prov,
+                            ctx=ctx,
+                        )
+                    )
         for code in sizing.get("reason_codes") or ():
             rows.append(
                 _dynamic_value_observation(
@@ -623,21 +664,31 @@ def classify_ghv_path_evidence_semantics_v1(
     else:
         path_class = PATH_CORRECT_WITH_PASS
 
+    pre_external_not_failure = integrity == "PASS" and pre_external_reached is False
     return {
         "PATH_RELATIONAL_INTEGRITY": integrity,
         "POLICY_OUTCOME": policy or "UNKNOWN",
         "PRE_EXTERNAL_REACHED": pre_external_reached,
         "GHV_PATH_EVIDENCE_CLASSIFICATION": path_class,
         "DYNAMIC_VALUE_CHANGE_IS_NOT_DRIFT": True,
+        "DYNAMIC_VALUE_CHANGE_IS_SYSTEM_DRIFT": False,
+        "PRE_EXTERNAL_FALSE_NOT_RELATIONAL_FAILURE": pre_external_not_failure,
         "semantic_rule": DYNAMIC_VALUE_CHANGE_IS_NOT_DRIFT_RULE,
+        "runtime_value_rule": RUNTIME_VALUE_NOT_CROSS_RUN_EXPECTATION_RULE,
     }
 
 
 def build_dynamic_market_selection_evidence_contract_v1(
     ctx: DynamicMarketSelectionObservationContextV1,
 ) -> dict[str, Any]:
+    from src.ops.full_core_live_path_composition_root_v1.dynamic_market_runtime_cross_run_expectation_guard_v1 import (
+        runtime_evidence_semantics_block_v1,
+        validate_dynamic_market_evidence_contract_v1,
+    )
+
     relations = evaluate_relations_v1(ctx)
     dynamic_values = build_dynamic_value_observations_v1(ctx)
+    dynamic_values.extend(runtime_factual_observations_v1(ctx))
     stable = stable_invariant_observations_v1(ctx)
     policy_outcome = str(ctx.policy_outcome or "")
     sizing = dict(ctx.sizing_state or {})
@@ -648,7 +699,7 @@ def build_dynamic_market_selection_evidence_contract_v1(
         pre_external_reached=ctx.pre_external_reached,
         policy_outcome=policy_outcome,
     )
-    return {
+    contract = {
         "schema_version": SCHEMA_VERSION,
         "owner": OWNER,
         "authority": CONTRACT_AUTHORITY,
@@ -659,15 +710,20 @@ def build_dynamic_market_selection_evidence_contract_v1(
         "semantic_classes_implemented": [
             SEMANTIC_CLASS_STABLE_INVARIANT,
             SEMANTIC_CLASS_DYNAMIC_VALUE,
+            SEMANTIC_CLASS_RUNTIME_DISCOVERED_VALUE,
             SEMANTIC_CLASS_DYNAMIC_RELATIONAL_EVIDENCE,
         ],
         "dynamic_value_change_is_not_drift_rule": DYNAMIC_VALUE_CHANGE_IS_NOT_DRIFT_RULE,
+        "runtime_value_not_cross_run_expectation_rule": RUNTIME_VALUE_NOT_CROSS_RUN_EXPECTATION_RULE,
+        "runtime_evidence_semantics": runtime_evidence_semantics_block_v1(),
         "stable_invariant_observations": stable,
         "dynamic_value_observations": dynamic_values,
         "relational_evidence": relations,
         "required_relations_v1": list(REQUIRED_RELATIONS_V1),
         "ghv_path_evidence_semantics": ghv_semantics,
     }
+    validate_dynamic_market_evidence_contract_v1(contract)
+    return contract
 
 
 def observation_context_from_mapping_v1(
@@ -829,6 +885,7 @@ __all__ = [
     "ARTIFACT_FILENAME",
     "CONTRACT_AUTHORITY",
     "DYNAMIC_VALUE_CHANGE_IS_NOT_DRIFT_RULE",
+    "RUNTIME_VALUE_NOT_CROSS_RUN_EXPECTATION_RULE",
     "OWNER",
     "PATH_CORRECT_WITH_LEGITIMATE_POLICY_REJECTION",
     "PATH_CORRECT_WITH_PASS",
@@ -838,6 +895,7 @@ __all__ = [
     "SCHEMA_VERSION",
     "SEMANTIC_CLASS_DYNAMIC_RELATIONAL_EVIDENCE",
     "SEMANTIC_CLASS_DYNAMIC_VALUE",
+    "SEMANTIC_CLASS_RUNTIME_DISCOVERED_VALUE",
     "SEMANTIC_CLASS_STABLE_INVARIANT",
     "DynamicMarketSelectionObservationContextV1",
     "build_dynamic_market_selection_evidence_contract_v1",

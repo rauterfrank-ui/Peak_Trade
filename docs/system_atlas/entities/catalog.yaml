@@ -3828,12 +3828,25 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR7017_DYNAMIC_MARKET_SELECTION_EVIDENCE_CONTRACT_V1
+  modified_by: DYNAMIC_RUNTIME_EVIDENCE_SEMANTICS_HARDENING_V1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/dynamic_market_selection_evidence_contract_v1.py
   evidence_sources:
   - tests/ops/test_dynamic_market_selection_evidence_contract_v1.py
-  notes: Classifies STABLE_INVARIANT vs DYNAMIC_VALUE vs relational evidence; GHV path integrity vs policy outcome; no trading semantics; POST_COUNT=0.
+  notes: RUNTIME_DISCOVERED_VALUE with cross_run_expectation=false; stable criteria vs runtime observations; relational primary proof; no trading semantics; POST_COUNT=0.
+- id: RUNTIME_COMPONENT:dynamic_market_runtime_cross_run_expectation_guard_v1
+  # atlas_entity_review: cross-run Golden expectation guard for dynamic market evidence contract.
+  kind: RUNTIME_COMPONENT
+  name: Dynamic market runtime cross-run expectation guard v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: DYNAMIC_RUNTIME_EVIDENCE_SEMANTICS_HARDENING_V1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/dynamic_market_runtime_cross_run_expectation_guard_v1.py
+  evidence_sources:
+  - tests/ops/test_dynamic_market_runtime_cross_run_expectation_guard_v1.py
+  notes: RUNTIME_VALUE != CROSS_RUN_EXPECTATION guard; forbidden cross-run absolute Golden keys; transitive taint metadata; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:ghv_system_wide_canary_surface_discovery_v1
   # atlas_entity_review: system-wide GHV Canary observed-vs-modeled surface discovery; CANARY_AUTHORITY=NONE.
   kind: RUNTIME_COMPONENT
