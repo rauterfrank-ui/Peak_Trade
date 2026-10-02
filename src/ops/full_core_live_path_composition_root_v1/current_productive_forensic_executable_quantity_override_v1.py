@@ -232,9 +232,7 @@ def _build_forensic_pass_sizing_decision_v1(
     daily_loss = envelope.daily_loss_state
     daily_limit = daily_loss.get("limit_usd") if isinstance(daily_loss, Mapping) else None
     slot_state = envelope.position_slot_state
-    max_positions_raw = (
-        slot_state.get("max_positions") if isinstance(slot_state, Mapping) else "1"
-    )
+    max_positions_raw = slot_state.get("max_positions") if isinstance(slot_state, Mapping) else "1"
     policy = CapitalRiskSizingPolicyV1(
         policy_version=policy_version,
         total_capital_limit_usd=envelope.total_capital_limit,

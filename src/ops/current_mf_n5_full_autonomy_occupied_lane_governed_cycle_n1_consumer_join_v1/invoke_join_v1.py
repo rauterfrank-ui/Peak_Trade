@@ -551,9 +551,7 @@ def _t2_from_s7(
                 sizing_state = live_29p.replay.intermediate.capital_risk_sizing_decision
                 policy_out = ""
                 if sizing_state is not None:
-                    policy_out = str(
-                        getattr(sizing_state.outcome, "value", sizing_state.outcome)
-                    )
+                    policy_out = str(getattr(sizing_state.outcome, "value", sizing_state.outcome))
                 refresh_forensic_executable_quantity_run_outcome_v1(
                     session=fq_session,
                     policy_outcome_after_override=policy_out,
