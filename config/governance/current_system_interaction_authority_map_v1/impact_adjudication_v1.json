@@ -6,6 +6,7 @@
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/ops/evidence/WHOLE_SYSTEM_CONFIGURATION_INJECTION_GHV_BWP03_V1.md",
     "docs/ops/evidence/WHOLE_SYSTEM_STATIC_FORENSIC_CARTOGRAPHY_GHV_BWP02_V1.md",
+    "docs/system_atlas/entities/catalog.yaml",
     "evidence/ops/wsfc_ghv_static_whole_system_cartography_bwp02/20261002T221600Z/WHOLE_SYSTEM_CONFIGURATION_INJECTION_MANIFEST_V1.json",
     "evidence/ops/wsfc_ghv_static_whole_system_cartography_bwp02/20261002T221600Z/WHOLE_SYSTEM_CONTROL_AND_COHERENCE_BWP02_Q_V1.json",
     "evidence/ops/wsfc_ghv_static_whole_system_cartography_bwp02/20261002T221600Z/WHOLE_SYSTEM_SLICE_R_FIXPOINT_V1.json",
@@ -17,10 +18,11 @@
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py",
     "src/ops/top20_opportunity_evaluation_residency_v1/scoped_residency_integrated_evaluation_propagation_v1.py"
   ],
-  "changed_paths_sha256": "482257ab5c356e7f517a55503559e0ecf533284e2fb336401bcf811fa4476bcf",
+  "changed_paths_sha256": "1fee52be94ba80c78aaecb5327e4705556e188f2719b23d5a82aba87360c16fc",
   "covered_candidate_paths": [
     "docs/ops/evidence/WHOLE_SYSTEM_CONFIGURATION_INJECTION_GHV_BWP03_V1.md",
     "docs/ops/evidence/WHOLE_SYSTEM_STATIC_FORENSIC_CARTOGRAPHY_GHV_BWP02_V1.md",
+    "docs/system_atlas/entities/catalog.yaml",
     "evidence/ops/wsfc_ghv_static_whole_system_cartography_bwp02/20261002T221600Z/WHOLE_SYSTEM_CONFIGURATION_INJECTION_MANIFEST_V1.json",
     "evidence/ops/wsfc_ghv_static_whole_system_cartography_bwp02/20261002T221600Z/WHOLE_SYSTEM_CONTROL_AND_COHERENCE_BWP02_Q_V1.json",
     "evidence/ops/wsfc_ghv_static_whole_system_cartography_bwp02/20261002T221600Z/WHOLE_SYSTEM_SLICE_R_FIXPOINT_V1.json",
@@ -37,7 +39,7 @@
     "docs/ops/evidence/WHOLE_SYSTEM_STATIC_FORENSIC_CARTOGRAPHY_GHV_BWP02_V1.md",
     "evidence/ops/wsfc_ghv_whole_system_configuration_injection_bwp03/20261002T222500Z/WHOLE_SYSTEM_CONFIGURATION_INJECTION_BWP03_V1.json"
   ],
-  "reason": "PR #7028 (post-7027 rebase): BWP-03 whole-system configuration injection (INJ-001 F1/M9 G17 bind; INJ-002 scoped residency propagation, defaults OFF; INJ-003 governance-only UNRATIFIED) plus BWP-02 static fixpoint evidence; CSIA impact candidate registration for wsfc evidence roots; change-bound NO_MAP_IMPACT; no CSIA source_v1.json semantic change; Cap2.3 selection and Cap2.4 bind-only unchanged; POST_COUNT=0.",
+  "reason": "PR #7028 (post-7027): BWP-03 configuration injection + bounded Atlas entity review for docs-drift; NO_MAP_IMPACT; no CSIA source semantic change; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
