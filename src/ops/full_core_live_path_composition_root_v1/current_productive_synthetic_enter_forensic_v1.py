@@ -197,9 +197,11 @@ def maybe_apply_synthetic_enter_forensic_overlay_v1(
         )
 
     evidence = replay.evidence
+    composition_selected_side = "short" if side == "enter_short" else "long"
     new_evidence = replace(
         evidence,
         decision_outcome=side,
+        selected_side=composition_selected_side,
     )
     new_replay = replace(replay, evidence=new_evidence)
     session.mark_applied_v1(int(cycle_index))

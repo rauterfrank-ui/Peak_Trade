@@ -485,3 +485,12 @@ changes:
   notes: 'PR #7009: bind ephemeral K1 GET-only credential handle to FullCoreProductiveReadOnlyGetTransportV1
     on GHV policy-governed live-C1 launcher; closes PRIVATE_GET_REQUIRES_CREDENTIAL_HANDLE on
     fresh-pretrade spine; standing POST/external-effect pins unchanged; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_ghv_protective_stop_market_state_v1
+  from: 5e4b55fe0adf8bdfc60319449a7e648062de4a89
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_ghv_protective_stop_synthetic_enter_live_29p_join_v1.py
+  notes: 'GHV synthetic enter_short: resolve LONG/SHORT for protective-stop derivation at LIVE-29P
+    join when composition selected_side is none; fail-closed preserved; no threshold/POST change;
+    POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

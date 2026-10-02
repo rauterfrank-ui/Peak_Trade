@@ -210,6 +210,38 @@ def current_productive_decision_class_v1(
     return DECISION_OTHER
 
 
+def resolve_protective_stop_sizing_side_for_live_29p_join_v1(
+    replay: IntegratedOfflineReplayResultV1,
+) -> str | None:
+    """Map replay evidence to LONG/SHORT for adverse-exit stop derivation.
+
+    Uses canonical ``selected_side`` when present (LONG/SHORT or composition
+    long/short). For ENTER decisions whose ``selected_side`` is still ``none``
+    (forensic synthetic overlay sets ``decision_outcome`` only), derives side
+    from ``enter_long`` / ``enter_short`` fail-closed.
+    """
+    from trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge_v0 import (
+        map_selected_side_to_sizing_side,
+    )
+
+    evidence = replay.evidence
+    mapped = map_selected_side_to_sizing_side(str(evidence.selected_side or ""))
+    if mapped is not None:
+        return mapped
+    composition_side = str(evidence.selected_side or "").strip().lower()
+    if composition_side == "long":
+        return "LONG"
+    if composition_side == "short":
+        return "SHORT"
+    raw_outcome = evidence.decision_outcome
+    outcome = str(getattr(raw_outcome, "value", raw_outcome) or "").strip().lower()
+    if outcome == DecisionOutcome.ENTER_LONG.value:
+        return "LONG"
+    if outcome == DecisionOutcome.ENTER_SHORT.value:
+        return "SHORT"
+    return None
+
+
 def _hold_result(
     *, replay: IntegratedOfflineReplayResultV1 | None
 ) -> CurrentProductiveEnterLive29PJoinResultV1:
@@ -584,8 +616,9 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             reasons=tuple(str(code) for code in price_output.reason_codes),
         )
     reference = price_output.reference_price
+    protective_sizing_side = resolve_protective_stop_sizing_side_for_live_29p_join_v1(replay)
     stop = derive_protective_stop_price_from_adverse_exit_v0(
-        selected_side=str(replay.evidence.selected_side),
+        selected_side=str(protective_sizing_side or ""),
         reference_price=reference,
         adverse_exit_distance=CANONICAL_ADVERSE_EXIT_DISTANCE,
     )

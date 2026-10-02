@@ -89,6 +89,7 @@ def test_synthetic_overlay_applies_once_and_persists_evidence(tmp_path: Path) ->
     assert first.applied is True
     assert second.applied is False
     assert str(first.replay.evidence.decision_outcome) == "enter_short"
+    assert first.replay.evidence.selected_side == "short"
     assert first.record is not None
     assert first.record["entry_origin"] == ENTRY_ORIGIN_SYNTHETIC_FORENSIC
     assert first.record["synthetic_enter"] is True

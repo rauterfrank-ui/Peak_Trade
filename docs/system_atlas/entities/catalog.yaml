@@ -3722,19 +3722,20 @@ entities:
   - tests/ops/test_golden_happy_scope_decision_trace_observability_v1.py
   notes: Default-off session-bound append-only directional signal_strength/threshold JSONL, golden_happy_scope_decision_trace_v1.jsonl (G17→Scope causal refs), plus single entry-state JSON snapshot; reads productive replay intermediate and cursor carrier; no signal/scope recompute; no trading/threshold/budget/GET semantic change; CORRELATION_STATUS=PARTIAL; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:current_productive_synthetic_enter_forensic_v1
-  # atlas_entity_review: PR #7007 GHV+synthetic cycle-1 regression; LIVE-29P join seam and injection point unchanged.
+  # atlas_entity_review: PR GHV protective-stop sizing side bind for synthetic enter_short at LIVE-29P join.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive synthetic ENTER forensic overlay v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7007_GHV_SYNTHETIC_T2_CYCLE1_COMPOSE_KWARG_V1
+  modified_by: PR_GHV_PROTECTIVE_STOP_MARKET_STATE_V1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/current_productive_synthetic_enter_forensic_v1.py
   - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py
   evidence_sources:
   - tests/ops/test_current_productive_synthetic_enter_forensic_v1.py
   - tests/ops/test_golden_happy_t2_cycle1_ghv_synthetic_regression_v1.py
+  - tests/ops/test_ghv_protective_stop_synthetic_enter_live_29p_join_v1.py
   notes: Default-off forensic-only synthetic ENTER overlay at LIVE-29P join seam before enter_live_29p join; explicit SYNTHETIC_FORENSIC evidence; does not set NATURAL_ENTER_OBSERVED; no threshold/market-data mutation; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
   kind: RUNTIME_COMPONENT
@@ -4777,6 +4778,7 @@ entities:
   - tests/ops/test_full_core_current_productive_occupancy_classify_and_c1_gate_v1.py
   - tests/ops/current_productive_c1_cycle_test_fixtures_v1.py
   - tests/ops/test_full_core_current_productive_enter_live_29p_join_v1.py
+  - tests/ops/test_ghv_protective_stop_synthetic_enter_live_29p_join_v1.py
   - tests/ops/test_current_productive_mv2_capital_context_rebind_v1.py
   - tests/ops/test_full_core_current_productive_enter_live_29p_portfolio_join_v1.py
   - tests/ops/test_full_core_current_productive_governed_next_c1_trigger_and_exactly_one_cycle_orchestration_v1.py
