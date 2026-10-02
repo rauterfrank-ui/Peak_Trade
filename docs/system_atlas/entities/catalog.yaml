@@ -300,7 +300,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7023_ghv_residency_evaluation_eligibility_semantics_v1
+  modified_by: CHANGE:pr_7025_scoped_residency_integrated_evaluation_propagation_v1
   authority_sources:
   - docs/ops/specs/TOP20_OPPORTUNITY_EVALUATION_RESIDENCY_AND_SCHEDULING_V1.md
   source_paths:
@@ -317,13 +317,15 @@ entities:
   - src/ops/top20_opportunity_evaluation_residency_v1/persistence_v1.py
   - src/ops/top20_opportunity_evaluation_residency_v1/residency_engine_v1.py
   - src/ops/top20_opportunity_evaluation_residency_v1/scoped_productive_residency_evaluation_completion_v1.py
+  - src/ops/top20_opportunity_evaluation_residency_v1/scoped_residency_integrated_evaluation_propagation_v1.py
   - src/ops/top20_opportunity_evaluation_residency_v1/single_writer_v1.py
   - src/ops/top20_opportunity_evaluation_residency_v1/state_machine_v1.py
   evidence_sources:
   - tests/ops/test_top20_opportunity_evaluation_residency_v1.py
   - tests/ops/test_lane_evaluation_witness_disposition_v1.py
   - tests/ops/test_scoped_productive_residency_evaluation_completion_v1.py
-  notes: 'PR #7023: scoped productive integrated evaluation completion, N5-compatible lane disposition→witness HOLD, default-off global pin bypass via scoped_productive_activation; evaluation/evidence only; no ranking/selection/trading authority; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+  - tests/ops/test_scoped_residency_integrated_evaluation_propagation_v1.py
+  notes: 'PR #7025: coalesce scoped integrated evaluation config at Cap21→23 from Cap2.2 rank-1 identity vs registered offline GHV datasets; fail-closed on mismatch; config propagation only; no ranking/selection/trading authority; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
 - id: CAPABILITY:cap_economic_md_input
   kind: CAPABILITY
   name: Persisted Multi-Instrument Economic Market Data Input

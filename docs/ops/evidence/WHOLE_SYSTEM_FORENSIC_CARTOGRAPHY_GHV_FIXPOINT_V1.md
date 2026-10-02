@@ -28,13 +28,13 @@ BASELINE=origin/main@e8ca5f67ae46606845a0be9b14013d9ee86a6020
 
 | WP | Sector | Components | Boundaries | Evidence root (machine-readable) |
 |----|--------|------------|------------|----------------------------------|
-| 01 | Credentials → Venue GET → Economic MD → C1 → MOE | 19 | 18 | `evidence/ops/whole_system_forensic_cartography_golden_happy_vector_wp01_v1/` |
-| 02 | Universe → Cap2.1/B05 → Cap2.2 input | 16 | 15 | `evidence/ops/whole_system_forensic_cartography_golden_happy_vector_wp02_v1/` |
-| 03 | Cap2.2 ranking / S_STAR / B06 | 14 | 13 | `evidence/ops/whole_system_forensic_cartography_golden_happy_vector_bulk01_wp03_wp06_v1/` |
+| 01 | Credentials → Venue GET → Economic MD → C1 → MOE | 19 | 18 | `evidence&#47;ops&#47;whole_system_forensic_cartography_golden_happy_vector_wp01_v1&#47;` |
+| 02 | Universe → Cap2.1/B05 → Cap2.2 input | 16 | 15 | `evidence&#47;ops&#47;whole_system_forensic_cartography_golden_happy_vector_wp02_v1&#47;` |
+| 03 | Cap2.2 ranking / S_STAR / B06 | 14 | 13 | `evidence&#47;ops&#47;whole_system_forensic_cartography_golden_happy_vector_bulk01_wp03_wp06_v1&#47;` |
 | 04 | Top20 residency / witness | 15 | 14 | same bulk01 |
 | 05 | Cap2.3 / Cap2.4 | 12 | 11 | same bulk01 |
 | 06 | Cap24 → S8 → S6 → S5 | 16 | 15 | same bulk01 |
-| 07 | G17 / CMC / Layer-C | 13 | 12 | `evidence/ops/whole_system_forensic_cartography_golden_happy_vector_bulk02b_v1/` |
+| 07 | G17 / CMC / Layer-C | 13 | 12 | `evidence&#47;ops&#47;whole_system_forensic_cartography_golden_happy_vector_bulk02b_v1&#47;` |
 | 08 | Cap6.1 / C3 / Confirmation / SideState | 14 | 13 | same bulk02b |
 | 09 | MV2 / Double Play / composition / entry / exit | 15 | 14 | same bulk02b |
 | 10 | Admission / risk / capital / reconciliation | 12 | 11 | same bulk02b |

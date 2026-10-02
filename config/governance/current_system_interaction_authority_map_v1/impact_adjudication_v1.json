@@ -1,23 +1,35 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "4b646cc5793a7cb4faed61eb0455b4d18995473d",
+  "base_sha": "e8ca5f67ae46606845a0be9b14013d9ee86a6020",
   "changed_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "docs/ops/evidence/GHV_COMPLETE_SYSTEM_FIXPOINT_CLOSURE_V1.md"
+    "docs/ops/evidence/WHOLE_SYSTEM_FORENSIC_CARTOGRAPHY_GHV_FIXPOINT_V1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/provenance/changes.yaml",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "scripts/ops/run_ghv_b06_productive_closure_forensic_drive_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
+    "src/ops/top20_opportunity_evaluation_residency_v1/scoped_residency_integrated_evaluation_propagation_v1.py",
+    "tests/ops/test_scoped_residency_integrated_evaluation_propagation_v1.py"
   ],
-  "changed_paths_sha256": "40e01c092e7fb8ee0fb435217177448ee5e190613a95aef625ef19dd68f11b25",
+  "changed_paths_sha256": "98bce229df04edb071d6f35fed8f2b4b340ea1f2896e0248eb3eec35e90e4e2c",
   "covered_candidate_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "docs/ops/evidence/GHV_COMPLETE_SYSTEM_FIXPOINT_CLOSURE_V1.md"
+    "docs/ops/evidence/WHOLE_SYSTEM_FORENSIC_CARTOGRAPHY_GHV_FIXPOINT_V1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/provenance/changes.yaml",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "scripts/ops/run_ghv_b06_productive_closure_forensic_drive_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
+    "src/ops/top20_opportunity_evaluation_residency_v1/scoped_residency_integrated_evaluation_propagation_v1.py",
+    "tests/ops/test_scoped_residency_integrated_evaluation_propagation_v1.py"
   ],
   "evidence_refs": [
-    "docs/ops/evidence/GHV_COMPLETE_SYSTEM_FIXPOINT_CLOSURE_V1.md"
+    "docs/ops/evidence/WHOLE_SYSTEM_FORENSIC_CARTOGRAPHY_GHV_FIXPOINT_V1.md"
   ],
-  "reason": "PR #7024 docs-only GHV complete-system fixpoint closure; CSIA candidate surface registration for docs/ops/evidence/; change-bound adjudication refresh; no structured CSIA source_v1.json change; no selection/binding/trading-authority transfer; POST_COUNT=0.",
+  "reason": "PR #7025 scoped residency integrated evaluation config coalesce at Cap21→23; Atlas entity source-path review for propagation module; impact candidate registration; change-bound adjudication refresh; no CSIA source_v1.json semantic change; no selection/binding/trading-authority transfer; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
