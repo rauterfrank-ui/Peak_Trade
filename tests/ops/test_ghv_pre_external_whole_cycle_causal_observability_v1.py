@@ -57,8 +57,8 @@ def _bind_recorder(tmp_path: Path) -> tuple[Path, object]:
         repository_sha="abc",
         cycle_index=1,
     )
-    token = bind_ghv_pre_external_runtime_flight_recorder_session_v1(session)
-    return evidence_root, token
+    fr_reset = bind_ghv_pre_external_runtime_flight_recorder_session_v1(session)
+    return evidence_root, fr_reset
 
 
 def test_bounded_graph_accounts_all_nodes() -> None:
