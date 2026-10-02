@@ -218,15 +218,44 @@ def is_forensic_synthetic_enter_outcome_v1(replay: IntegratedOfflineReplayResult
 
 def reapply_forensic_synthetic_safety_reprojection_on_replay_v1(
     replay: IntegratedOfflineReplayResultV1,
+    *,
+    parent_generation_id: str = "gen_pr7013_root",
 ) -> IntegratedOfflineReplayResultV1:
     """Re-run PR7012 Safety/KS reprojection on a post-live-29p replay for venue-plan consume."""
+    from src.ops.full_core_live_path_composition_root_v1.ghv_pre_external_runtime_flight_recorder_v1 import (
+        active_ghv_pre_external_runtime_flight_recorder_session_v1,
+        record_pr7013_safety_reprojection_v1,
+    )
+
     evidence = replay.evidence
+    control_reached = True
+    preconditions = evidence is not None and is_forensic_synthetic_enter_outcome_v1(replay)
     if evidence is None:
+        if active_ghv_pre_external_runtime_flight_recorder_session_v1() is not None:
+            record_pr7013_safety_reprojection_v1(
+                parent_generation_id=parent_generation_id,
+                replay_before=replay,
+                replay_after=replay,
+                helper_control_flow_reached=control_reached,
+                helper_preconditions_satisfied=False,
+                helper_executed=False,
+            )
         return replay
-    return _rebind_replay_for_forensic_synthetic_enter_overlay_v1(
+    result = _rebind_replay_for_forensic_synthetic_enter_overlay_v1(
         replay,
         new_evidence=evidence,
     )
+    executed = bool(preconditions)
+    if active_ghv_pre_external_runtime_flight_recorder_session_v1() is not None:
+        record_pr7013_safety_reprojection_v1(
+            parent_generation_id=parent_generation_id,
+            replay_before=replay,
+            replay_after=result,
+            helper_control_flow_reached=control_reached,
+            helper_preconditions_satisfied=preconditions,
+            helper_executed=executed,
+        )
+    return result
 
 
 def maybe_apply_synthetic_enter_forensic_overlay_v1(
@@ -306,6 +335,22 @@ def maybe_apply_synthetic_enter_forensic_overlay_v1(
         new_evidence=new_evidence,
     )
     session.mark_applied_v1(int(cycle_index))
+
+    from src.ops.full_core_live_path_composition_root_v1.ghv_pre_external_runtime_flight_recorder_v1 import (
+        active_ghv_pre_external_runtime_flight_recorder_session_v1,
+        record_ghv_root_change_event_v1,
+    )
+
+    fr_session = active_ghv_pre_external_runtime_flight_recorder_session_v1()
+    if fr_session is not None:
+        record_ghv_root_change_event_v1(
+            parent_generation_id=getattr(fr_session, "_lineage_root", "gen_root"),
+            pre_overlay_generation=getattr(fr_session, "_lineage_root", "gen_root"),
+            replay_before=replay,
+            replay_after=new_replay,
+            synthetic_side=side,
+            cycle_index=int(cycle_index),
+        )
 
     record: dict[str, Any] = {
         "schema": "synthetic_enter_forensic_apply.v1",

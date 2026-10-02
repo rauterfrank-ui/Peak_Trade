@@ -172,6 +172,14 @@ def _main() -> int:
         ),
     )
     parser.add_argument(
+        "--enable-ghv-pre-external-runtime-flight-recorder-v1",
+        action="store_true",
+        help=(
+            "Observation-only GHV PRE_EXTERNAL runtime flight recorder + continuation "
+            "snapshot (default off; no trading authority)"
+        ),
+    )
+    parser.add_argument(
         "--enable-synthetic-enter-forensic-v1",
         action="store_true",
         help=(
@@ -427,6 +435,9 @@ def _main() -> int:
                     repo_root=REPO_ROOT,
                     enable_golden_happy_vector_forensic_observability_v1=(
                         args.enable_golden_happy_vector_forensic_observability_v1
+                    ),
+                    enable_ghv_pre_external_runtime_flight_recorder_v1=bool(
+                        args.enable_ghv_pre_external_runtime_flight_recorder_v1
                     ),
                     enable_synthetic_enter_forensic_v1=bool(
                         args.enable_synthetic_enter_forensic_v1

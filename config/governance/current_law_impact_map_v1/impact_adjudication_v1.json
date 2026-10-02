@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "verdict": "NO_LAW_IMPACT",
-  "reason": "Forensic synthetic ENTER: reapply PR7012 Safety/KS reprojection on live_29p.replay before venue plan bind; observe-shaped product-parity regression; diff-bound law/Atlas bookkeeping only; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #7014: GHV-centered whole-cycle causal observability; observation-only wiring; diff-bound law/Atlas bookkeeping only; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -9,27 +9,51 @@
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "scripts/ops/run_ghv_pre_external_continuation_harness_v1.py",
     "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_synthetic_enter_forensic_v1.py",
-    "tests/ops/test_ghv_observe_shaped_venue_plan_object_identity_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_continuation_harness_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_runtime_flight_recorder_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_whole_cycle_causal_observability_v1.py",
+    "tests/ops/test_ghv_pre_external_runtime_flight_recorder_v1.py",
+    "tests/ops/test_ghv_pre_external_whole_cycle_causal_observability_v1.py"
   ],
-  "changed_paths_sha256": "77aba5095da81338852336a53cc1055405e11efc5a68244b4b74db81082dac45",
-  "base_sha": "0282076d39c76d98b674e721571d887877d3fb45",
+  "changed_paths_sha256": "edfb98828c3e2f3fa7ea52579623fadc32dab9ecfe987476843cf4414a340667",
+  "base_sha": "a94c3f960e4f6b77242784cbeb427aa45a580d76",
   "evidence_refs": [
-    "tests/ops/test_ghv_observe_shaped_venue_plan_object_identity_v1.py"
+    "tests/ops/test_ghv_pre_external_whole_cycle_causal_observability_v1.py"
   ],
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "scripts/ops/run_ghv_pre_external_continuation_harness_v1.py",
     "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/composition_root_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_synthetic_enter_forensic_v1.py",
-    "tests/ops/test_ghv_observe_shaped_venue_plan_object_identity_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_venue_plan_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_continuation_harness_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_runtime_flight_recorder_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_whole_cycle_causal_observability_v1.py",
+    "tests/ops/test_ghv_pre_external_runtime_flight_recorder_v1.py",
+    "tests/ops/test_ghv_pre_external_whole_cycle_causal_observability_v1.py"
   ],
   "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
   "selector_used_as_law_impact_authority": false
