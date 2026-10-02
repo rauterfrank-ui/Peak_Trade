@@ -24,8 +24,8 @@ POST, credentials, or semantic repair.
 ## Method
 
 - Sources: Master Runbook (normative semantics, read-only), Map of Truth
-  (navigation only), `src/**`, `config/**`, `scripts/**` (static), prior GHV
-  evidence under `evidence/ops/whole_system_forensic_cartography_*` and BWP-01.
+  (navigation only), `src&#47;**`, `config&#47;**`, `scripts&#47;**` (static), prior GHV
+  evidence under `evidence&#47;ops&#47;whole_system_forensic_cartography_*` and BWP-01.
 - GHV used as **tracing vocabulary** (sectors, edges, proof classes), not as an
   executed runtime drive.
 - Claims without static proof: **UNKNOWN_CURRENT** (no execution to close).
