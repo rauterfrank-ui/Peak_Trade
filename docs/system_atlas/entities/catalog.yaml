@@ -3788,13 +3788,13 @@ entities:
   - tests/ops/test_ghv_pre_external_continuation_snapshot_hydration_v1.py
   notes: Offline PR7014/7015 artifact materialization from captured Product flight record + continuation snapshot; no Product launcher; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:ghv_pre_external_runtime_flight_recorder_v1
-  # atlas_entity_review: optional GHV_CANARY_TRACE correlation on flight rows; observer-only.
+  # atlas_entity_review: PR7017 indexes this entity via shared source_paths only; no flight_recorder source mutation.
   kind: RUNTIME_COMPONENT
   name: GHV PRE_EXTERNAL runtime flight recorder v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: GHV_POST_MEASUREMENT_OBSERVABILITY_COMPLETION_V1
+  modified_by: PR7017_DYNAMIC_MARKET_SELECTION_EVIDENCE_CONTRACT_V1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_continuation_snapshot_hydration_v1.py
   - src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_runtime_flight_recorder_v1.py
@@ -3807,18 +3807,33 @@ entities:
   - tests/ops/test_ghv_system_wide_canary_surface_discovery_v1.py
   notes: Append-only observation capture at composition-root predicate seams; whole-cycle state graph and provenance; capture failures do not change decisions; RECORDER_AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:ghv_pre_external_whole_cycle_causal_observability_v1
-  # atlas_entity_review: PR #7014 bounded GHV Cycle-1 causal observability analyzer; AUTHORITY=NONE.
+  # atlas_entity_review: PR7017 adds dynamic market/selection evidence contract artifact persistence; AUTHORITY=NONE.
   kind: RUNTIME_COMPONENT
   name: GHV PRE_EXTERNAL whole-cycle causal observability v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7014_GHV_WHOLE_CYCLE_CAUSAL_OBSERVABILITY_V1
+  modified_by: PR7017_DYNAMIC_MARKET_SELECTION_EVIDENCE_CONTRACT_V1
   source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/dynamic_market_selection_evidence_contract_v1.py
   - src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_whole_cycle_causal_observability_v1.py
   evidence_sources:
+  - tests/ops/test_dynamic_market_selection_evidence_contract_v1.py
   - tests/ops/test_ghv_pre_external_whole_cycle_causal_observability_v1.py
-  notes: Builds state graph, field provenance, change impact, reverse provenance, multi-blocker report from flight records; PROVENANCE_ANALYZER_AUTHORITY=NONE; POST_COUNT=0.
+  notes: Builds state graph, field provenance, change impact, reverse provenance, multi-blocker report from flight records; persists dynamic market/selection evidence contract; PROVENANCE_ANALYZER_AUTHORITY=NONE; POST_COUNT=0.
+- id: RUNTIME_COMPONENT:dynamic_market_selection_evidence_contract_v1
+  # atlas_entity_review: PR7017 observer-only dynamic market/selection evidence semantics; AUTHORITY=NONE.
+  kind: RUNTIME_COMPONENT
+  name: Dynamic market selection evidence contract v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: PR7017_DYNAMIC_MARKET_SELECTION_EVIDENCE_CONTRACT_V1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/dynamic_market_selection_evidence_contract_v1.py
+  evidence_sources:
+  - tests/ops/test_dynamic_market_selection_evidence_contract_v1.py
+  notes: Classifies STABLE_INVARIANT vs DYNAMIC_VALUE vs relational evidence; GHV path integrity vs policy outcome; no trading semantics; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:ghv_system_wide_canary_surface_discovery_v1
   # atlas_entity_review: system-wide GHV Canary observed-vs-modeled surface discovery; CANARY_AUTHORITY=NONE.
   kind: RUNTIME_COMPONENT

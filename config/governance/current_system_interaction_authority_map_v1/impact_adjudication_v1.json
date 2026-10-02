@@ -1,39 +1,43 @@
 {
   "authority_effect": "NONE",
   "verdict": "NO_MAP_IMPACT",
-  "reason": "Post-measurement observability completion: continuation snapshot typed rehydration + offline PR7014/7015 materialization from captured Product evidence; no trading/sizing/venue semantics; CANARY/RECORDER authority unchanged; POST_COUNT=0.",
+  "reason": "PR7017 observer-only dynamic market/selection evidence contract and Atlas/map-currency adjudication bindings; no structured interaction-map source change; no trading/selection/sizing semantics; POST_COUNT=0.",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
-    "scripts/ops/materialize_ghv_pre_external_observability_from_evidence_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_continuation_snapshot_hydration_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_runtime_flight_recorder_v1.py",
-    "tests/ops/test_ghv_pre_external_continuation_snapshot_hydration_v1.py"
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "src/ops/full_core_live_path_composition_root_v1/dynamic_market_selection_evidence_contract_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_whole_cycle_causal_observability_v1.py",
+    "tests/fixtures/ops/dynamic_market_selection_evidence_sand_combined_ghv_v1.json",
+    "tests/ops/test_dynamic_market_selection_evidence_contract_v1.py"
   ],
-  "changed_paths_sha256": "b3fffdd92c3cfa29a19a4b2ba25575d679c7812ea1b6bbe1693c5e58cccca1e1",
-  "base_sha": "fb46756b62e98977851402c41a50dacc1f3da0c7",
+  "changed_paths_sha256": "05e4c395a692323e27adab3a9854230bf6991ce2d2894e5a73fbcd29d1fe33a4",
+  "base_sha": "01a987ff01aaf73132e31880f7e73839b2a3b698",
   "evidence_refs": [
-    "tests/ops/test_ghv_pre_external_continuation_snapshot_hydration_v1.py"
+    "tests/ops/test_dynamic_market_selection_evidence_contract_v1.py"
   ],
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
     "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
-    "scripts/ops/materialize_ghv_pre_external_observability_from_evidence_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_continuation_snapshot_hydration_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_runtime_flight_recorder_v1.py",
-    "tests/ops/test_ghv_pre_external_continuation_snapshot_hydration_v1.py"
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "src/ops/full_core_live_path_composition_root_v1/dynamic_market_selection_evidence_contract_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/ghv_pre_external_whole_cycle_causal_observability_v1.py",
+    "tests/fixtures/ops/dynamic_market_selection_evidence_sand_combined_ghv_v1.json",
+    "tests/ops/test_dynamic_market_selection_evidence_contract_v1.py"
   ],
   "map_id": "CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1",
   "selector_used_as_map_impact_authority": false
