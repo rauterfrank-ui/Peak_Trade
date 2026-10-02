@@ -1088,9 +1088,10 @@ relations:
   - tests/ops/test_current_productive_mv2_capital_context_rebind_v1.py
   notes: 'Optional portfolio_budget_owner threads slot_id, decision_id, and cycle_id
     into ENTER Live-29P join and commits or releases reservations at PRE_EXTERNAL
-    boundary. PR #7006 synthetic overlay uses the same ENTER join when armed. PR_6744
-    MV2 capital context rebind is navigation-only lineage; orchestration
-    only. ATLAS_AUTHORITY=NONE.
+    boundary. PR #7006 synthetic overlay uses the same ENTER join when armed. PR #7008
+    persistent S5 runner propagates fresh pretrade GET into LIVE-29P injected handoff
+    (wiring only; credentials unchanged). PR_6744 MV2 capital context rebind is navigation-only
+    lineage; orchestration only. ATLAS_AUTHORITY=NONE.
 
     '
 - id: REL:s_fa_occupied_lane_n1_host_join_readiness_depends_on_n1_consumer

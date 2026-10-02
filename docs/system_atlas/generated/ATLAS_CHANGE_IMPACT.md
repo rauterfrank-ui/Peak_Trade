@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=5
-ATLAS_CHANGED_RELATION_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,18 +40,15 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
-| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1` |
-| `GATE:portfolio_capital_reservation_budget_v1` |
 | `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
-| `RUNTIME_COMPONENT:current_productive_synthetic_enter_forensic_v1` |
+| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget` |
-| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_s8_addressing` |
+| _(none)_ |
 
 ## NEW_RELATIONS
 
@@ -97,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7007: filter forensic cycle_evidence_root from S7 compose kwargs in N1 consumer; GHV+synthetic cycle-1 T2 repair; Atlas + CSIA diff-bound bookkeeping only; no trading threshold change; AUTHORITY=NONE; POST_COUNT=0.
+- PR #7008: propagate fresh pretrade GET into persistent S5 runner for LIVE-29P injected handoff; Atlas + CSIA diff-bound bookkeeping only; no trading threshold change; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_7007_GHV_SYNTHETIC_T2_CYCLE1_COMPOSE_KWARG_V1
+- modified_by=PR_7008_LIVE_29P_S5_FRESH_PRETRADE_GET_WIRING_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
