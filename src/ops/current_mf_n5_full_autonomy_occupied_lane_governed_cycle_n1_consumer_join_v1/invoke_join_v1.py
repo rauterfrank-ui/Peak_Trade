@@ -6,7 +6,7 @@ Does not bind Cap61, join a host, call V5, or POST.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
 from types import SimpleNamespace
@@ -396,6 +396,18 @@ def _t2_from_s7(
             cycle_evidence_root=cycle_evidence_root if str(cycle_evidence_root) else None,
         )
         replay = overlay.replay
+        if overlay.applied:
+            evidence = getattr(replay, "evidence", None)
+            raw_outcome = getattr(evidence, "decision_outcome", "") if evidence is not None else ""
+            consumed_outcome = str(getattr(raw_outcome, "value", raw_outcome) or "").strip().lower()
+            invocation = replace(
+                invocation,
+                cycle_result=replace(
+                    invocation.cycle_result,
+                    replay=replay,
+                    decision_outcome=consumed_outcome,
+                ),
+            )
         bound_epoch = str(common_epoch_decision_epoch or "").strip()
         epoch = bound_epoch if bound_epoch else _iso_utc(float(s7_base["observed_unix"]))
         portfolio_slot = None
@@ -417,7 +429,9 @@ def _t2_from_s7(
             portfolio_budget_owner=portfolio_budget_owner,
             portfolio_slot=portfolio_slot,
         )
-        decision_class = current_productive_decision_class_v1(live_29p.replay)
+        # Classify from the post-overlay replay at the LIVE-29P join seam, not a stale
+        # pre-overlay cycle_result snapshot or a rebound artifact that may lag overlay.
+        decision_class = current_productive_decision_class_v1(replay)
         master_decision = str(
             getattr(getattr(replay, "evidence", None), "decision_outcome", "") or ""
         )
@@ -476,6 +490,21 @@ def _t2_from_s7(
                 )
                 _dispatch.last_invocation = invocation  # type: ignore[attr-defined]
                 return result
+            result = SimpleNamespace(
+                runtime_cycle_count="1",
+                decision_result="OBSERVE_HOLD",
+                decision_execution_eligible=_FALSE,
+                master_v2_decision=master_decision or "enter",
+                venue_plan_status="DENY",
+                final_envelope_id="",
+                final_envelope_digest="",
+                permit_created=_FALSE,
+                post_count="0",
+                first_real_blocker="VENUE_PLAN_NOT_PASS",
+                s7_invocation=invocation,
+            )
+            _dispatch.last_invocation = invocation  # type: ignore[attr-defined]
+            return result
         result = SimpleNamespace(
             runtime_cycle_count="1",
             decision_result="OBSERVE_HOLD",

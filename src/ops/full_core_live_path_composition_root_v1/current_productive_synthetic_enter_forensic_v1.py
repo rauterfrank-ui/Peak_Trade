@@ -221,6 +221,7 @@ def maybe_apply_synthetic_enter_forensic_overlay_v1(
         "synthetic_reason": SYNTHETIC_REASON_DOWNSTREAM_LIVENESS,
         "natural_outcome_before_overlay": natural_before,
         "decision_outcome_after_overlay": side,
+        "selected_side_after_overlay": composition_selected_side,
     }
     ledger = Path(session.product_evidence_root) / LEDGER_FILENAME
     _atomic_append_jsonl_v1(path=ledger, record=record)
