@@ -14,8 +14,8 @@ from src.ops.integrated_offline_replay_and_correctness_head_bound_v1.constants_v
     PROOF_ARTIFACT_NAME,
     SCHEMA_ID,
 )
-from src.ops.integrated_offline_replay_and_correctness_head_bound_v1.proof_v1 import (
-    resolve_repository_head_sha_v1,
+from src.ops.integrated_offline_replay_and_correctness_head_bound_v1.binding_v1 import (
+    compute_implementation_surface_digest_sha256_v1,
 )
 
 
@@ -89,7 +89,7 @@ def verify_integrated_offline_replay_and_correctness_head_bound_evidence_v1(
 
     for key in (
         "INTEGRATED_OFFLINE_REPLAY_AND_CORRECTNESS_PASS",
-        "CURRENT_HEAD_BOUND",
+        "IMPLEMENTATION_SURFACE_BOUND",
         "CRS_CONTEXT_BOUND",
         "ENTRY_QUANTITY_SEMANTICS_PASS",
         "EXIT_QUANTITY_SEMANTICS_PASS",
@@ -100,15 +100,24 @@ def verify_integrated_offline_replay_and_correctness_head_bound_evidence_v1(
         if proof.get(key) is not True:
             blockers.append(f"{key}_NOT_TRUE")
 
-    evidence_head = str(proof.get("repository_head_sha") or "")
+    proven_source = str(proof.get("proven_source_sha") or proof.get("repository_head_sha") or "")
+    if len(proven_source) != 40:
+        blockers.append("PROVEN_SOURCE_SHA_INVALID")
+
+    declared_digest = str(proof.get("implementation_surface_digest_sha256") or "")
     if require_current_head:
-        try:
-            current = resolve_repository_head_sha_v1(repo_root=repo_root.resolve())
-        except ValueError:
-            blockers.append("CURRENT_HEAD_RESOLUTION_FAILED")
-            current = ""
-        if evidence_head != current:
-            blockers.append("EVIDENCE_HEAD_STALE")
+        if not declared_digest:
+            blockers.append("IMPLEMENTATION_SURFACE_DIGEST_MISSING")
+        else:
+            current_digest = compute_implementation_surface_digest_sha256_v1(
+                repo_root=repo_root.resolve()
+            )
+            if current_digest != declared_digest:
+                blockers.append("IMPLEMENTATION_SURFACE_DRIFT")
+
+    legacy_head = str(proof.get("repository_head_sha") or "")
+    if proven_source and legacy_head and proven_source != legacy_head:
+        blockers.append("PROVEN_SOURCE_REPOSITORY_HEAD_MISMATCH")
 
     return HeadBoundCorrectnessVerificationResultV1(
         verified=not blockers,

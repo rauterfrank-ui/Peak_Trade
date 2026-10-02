@@ -12,8 +12,11 @@ from src.ops.integrated_offline_replay_and_correctness_head_bound_v1.discovery_v
 from src.ops.integrated_offline_replay_and_correctness_head_bound_v1.economic_evidence_bundle_v1 import (
     verify_integrated_paper_shadow_economic_evidence_bundle_head_bound_v1,
 )
+from src.ops.integrated_offline_replay_and_correctness_head_bound_v1.binding_v1 import (
+    resolve_configured_correctness_evidence_relpath_v1,
+    resolve_configured_economic_bundle_evidence_relpath_v1,
+)
 from src.ops.integrated_offline_replay_and_correctness_head_bound_v1.proof_v1 import (
-    default_canonical_evidence_dir_for_head_v1,
     resolve_repository_head_sha_v1,
 )
 from src.ops.integrated_offline_replay_and_correctness_head_bound_v1.verifier_v1 import (
@@ -52,14 +55,19 @@ def evaluate_integrated_paper_shadow_shadow_readiness_head_bound_v1(
 ) -> ShadowReadinessAdjudicationResultV1:
     root = repo_root.resolve()
     head = resolve_repository_head_sha_v1(repo_root=root)
-    correctness_dir = root / default_canonical_evidence_dir_for_head_v1(head_sha=head)
+    correctness_rel = resolve_configured_correctness_evidence_relpath_v1(
+        repo_root=root,
+        fallback_head_sha=head,
+    )
+    correctness_dir = root / correctness_rel
     correctness = verify_integrated_offline_replay_and_correctness_head_bound_evidence_v1(
         evidence_root=correctness_dir,
         repo_root=root,
         require_current_head=True,
     )
-    bundle_rel = bundle_evidence_relpath or (
-        f"evidence/ops/integrated_paper_shadow_economic_evidence_bundle_head_bound_v1/{head}"
+    bundle_rel = bundle_evidence_relpath or resolve_configured_economic_bundle_evidence_relpath_v1(
+        repo_root=root,
+        fallback_head_sha=head,
     )
     bundle_dir = root / bundle_rel
     bundle = verify_integrated_paper_shadow_economic_evidence_bundle_head_bound_v1(

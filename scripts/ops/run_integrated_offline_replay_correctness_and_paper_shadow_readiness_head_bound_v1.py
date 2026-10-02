@@ -15,11 +15,14 @@ if str(_REPO_ROOT) not in sys.path:
 from src.ops.integrated_offline_replay_and_correctness_head_bound_v1.adjudication_v1 import (  # noqa: E402
     evaluate_integrated_paper_shadow_shadow_readiness_head_bound_v1,
 )
+from src.ops.integrated_offline_replay_and_correctness_head_bound_v1.binding_v1 import (  # noqa: E402
+    resolve_configured_correctness_evidence_relpath_v1,
+    resolve_configured_economic_bundle_evidence_relpath_v1,
+)
 from src.ops.integrated_offline_replay_and_correctness_head_bound_v1.economic_evidence_bundle_v1 import (  # noqa: E402
     produce_integrated_paper_shadow_economic_evidence_bundle_head_bound_v1,
 )
 from src.ops.integrated_offline_replay_and_correctness_head_bound_v1.proof_v1 import (  # noqa: E402
-    default_canonical_evidence_dir_for_head_v1,
     produce_integrated_offline_replay_and_correctness_head_bound_evidence_v1,
     resolve_repository_head_sha_v1,
 )
@@ -36,9 +39,13 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     head = resolve_repository_head_sha_v1(repo_root=_REPO_ROOT)
-    correctness_dir = _REPO_ROOT / default_canonical_evidence_dir_for_head_v1(head_sha=head)
-    bundle_dir = _REPO_ROOT / (
-        f"evidence/ops/integrated_paper_shadow_economic_evidence_bundle_head_bound_v1/{head}"
+    correctness_dir = _REPO_ROOT / resolve_configured_correctness_evidence_relpath_v1(
+        repo_root=_REPO_ROOT,
+        fallback_head_sha=head,
+    )
+    bundle_dir = _REPO_ROOT / resolve_configured_economic_bundle_evidence_relpath_v1(
+        repo_root=_REPO_ROOT,
+        fallback_head_sha=head,
     )
 
     proof_result = None

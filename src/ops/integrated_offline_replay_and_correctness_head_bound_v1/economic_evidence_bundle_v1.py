@@ -134,7 +134,9 @@ def produce_integrated_paper_shadow_economic_evidence_bundle_head_bound_v1(
         reference_price=Decimal("3500"),
         intended_side="HOLD",
     )
-    head_sha = str(correctness.proof.get("repository_head_sha") if correctness.proof else "")
+    proof_doc = correctness.proof or {}
+    head_sha = str(proof_doc.get("proven_source_sha") or proof_doc.get("repository_head_sha") or "")
+    surface_digest = str(proof_doc.get("implementation_surface_digest_sha256") or "")
     no_order = attest_capability_sources_no_order_v1(
         repo_root=root,
         relative_paths=[
@@ -148,7 +150,11 @@ def produce_integrated_paper_shadow_economic_evidence_bundle_head_bound_v1(
         lifecycle=lifecycle,
         no_order=no_order,
         config_snapshot={"orders_allowed": False, "mode": "observation"},
-        code_identity={"capability_id": OBS_CAPABILITY_ID, "repository_head_sha": head_sha},
+        code_identity={
+            "capability_id": OBS_CAPABILITY_ID,
+            "proven_source_sha": head_sha,
+            "implementation_surface_digest_sha256": surface_digest,
+        },
         session_identity={"session_id": "head-bound-offline-observation", "offline": True},
     )
     obs_verify = verify_integrated_paper_shadow_observation_evidence_bundle_v1(
@@ -163,7 +169,9 @@ def produce_integrated_paper_shadow_economic_evidence_bundle_head_bound_v1(
         "schema_id": BUNDLE_SCHEMA_ID,
         "schema_version": "v1",
         "authority_effect": AUTHORITY_EFFECT_NONE,
-        "repository_head_sha": proof.get("repository_head_sha"),
+        "proven_source_sha": proof.get("proven_source_sha") or proof.get("repository_head_sha"),
+        "implementation_surface_digest_sha256": proof.get("implementation_surface_digest_sha256"),
+        "repository_head_sha": proof.get("proven_source_sha") or proof.get("repository_head_sha"),
         "decision_provenance": "run_integrated_offline_trading_logic_replay_v1",
         "strategy_intent_owner": "trading.master_v2.double_play_entry_exit_policy_v0",
         "capital_risk_context_provenance": proof.get("crs_provenance"),
@@ -239,6 +247,15 @@ def verify_integrated_paper_shadow_economic_evidence_bundle_head_bound_v1(
     )
     if not correctness.verified:
         blockers.extend(f"CORRECTNESS:{b}" for b in correctness.blockers)
+    proof = correctness.proof or {}
+    bundle_proven = str(doc.get("proven_source_sha") or doc.get("repository_head_sha") or "")
+    proof_proven = str(proof.get("proven_source_sha") or proof.get("repository_head_sha") or "")
+    if bundle_proven and proof_proven and bundle_proven != proof_proven:
+        blockers.append("BUNDLE_PROVEN_SOURCE_MISMATCH")
+    bundle_digest = str(doc.get("implementation_surface_digest_sha256") or "")
+    proof_digest = str(proof.get("implementation_surface_digest_sha256") or "")
+    if bundle_digest and proof_digest and bundle_digest != proof_digest:
+        blockers.append("BUNDLE_IMPLEMENTATION_DIGEST_MISMATCH")
     obs_verify = verify_integrated_paper_shadow_observation_evidence_bundle_v1(
         evidence_root=Path(bundle_root) / "observation_offline_cycle",
         require_cycle_pass=True,

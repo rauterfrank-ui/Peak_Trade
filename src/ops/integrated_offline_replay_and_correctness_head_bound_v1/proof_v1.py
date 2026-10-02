@@ -12,6 +12,9 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
+from src.ops.integrated_offline_replay_and_correctness_head_bound_v1.binding_v1 import (
+    compute_implementation_surface_digest_sha256_v1,
+)
 from src.ops.integrated_offline_replay_and_correctness_head_bound_v1.constants_v1 import (
     AUTHORITY_EFFECT_NONE,
     CAPABILITY_ID,
@@ -51,7 +54,10 @@ class HeadBoundCorrectnessProofResultV1:
     package_marker: str
     authority_effect: str
     repository_head_sha: str
+    proven_source_sha: str
+    implementation_surface_digest_sha256: str
     CURRENT_HEAD_BOUND: bool
+    IMPLEMENTATION_SURFACE_BOUND: bool
     CRS_CONTEXT_BOUND: bool
     ENTRY_QUANTITY_SEMANTICS_PASS: bool
     EXIT_QUANTITY_SEMANTICS_PASS: bool
@@ -186,6 +192,11 @@ def produce_integrated_offline_replay_and_correctness_head_bound_evidence_v1(
         blockers.append("ACCOUNTING_CONSISTENCY_FAIL")
 
     external_effect_count = 0
+    surface_digest = compute_implementation_surface_digest_sha256_v1(repo_root=root)
+    implementation_surface_bound = bool(surface_digest)
+    if not implementation_surface_bound:
+        blockers.append("IMPLEMENTATION_SURFACE_DIGEST_FAILED")
+
     pass_ok = not blockers
     result = HeadBoundCorrectnessProofResultV1(
         ok=pass_ok,
@@ -195,7 +206,10 @@ def produce_integrated_offline_replay_and_correctness_head_bound_evidence_v1(
         package_marker=PACKAGE_MARKER,
         authority_effect=AUTHORITY_EFFECT_NONE,
         repository_head_sha=head,
+        proven_source_sha=head,
+        implementation_surface_digest_sha256=surface_digest,
         CURRENT_HEAD_BOUND=head_bound,
+        IMPLEMENTATION_SURFACE_BOUND=implementation_surface_bound,
         CRS_CONTEXT_BOUND=crs_bound,
         ENTRY_QUANTITY_SEMANTICS_PASS=entry_qty_ok,
         EXIT_QUANTITY_SEMANTICS_PASS=exit_qty_ok,
