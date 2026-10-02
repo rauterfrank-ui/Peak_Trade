@@ -166,6 +166,7 @@
     "tests/ops/test_n1_standing_supervisor_launcher_v1.py",
     "tests/ops/test_n1_whole_system_hard_facts_integration_wp_v1.py",
     "tests/ops/test_n5_canonical_productive_entry_import_cycle_v1.py",
+    "tests/ops/test_simulated_economics_crs_boundary_binding_v1.py",
     "tests/ops/test_peak_trade_public_market_data_runtime_v1.py",
     "tests/ops/test_whole_system_connection_closure_bounded_wp_v1.py",
     "tests/trading/master_v2/",

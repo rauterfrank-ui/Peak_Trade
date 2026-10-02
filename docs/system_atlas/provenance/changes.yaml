@@ -576,3 +576,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_current_productive_forensic_executable_quantity_override_v1.py
   notes: 'PR7019: default-off forensic executable quantity override after real LIVE-29P sizing for synthetic PRE_EXTERNAL proof path; real sizing preserved separately; no policy forgery; POST_COUNT=0.'
+- id: CHANGE:integrated_sim_crs_boundary_binding_v1
+  from: 5e42bd3897dbf093c35534fa0f604090339277b8
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_simulated_economics_crs_boundary_binding_v1.py
+  notes: 'Bind CRS boundary state into wallclock simulated-economics bridge for Cap 7.1 integrated offline replay; no new Capital/Risk owner; no POST; POST_COUNT=0.'

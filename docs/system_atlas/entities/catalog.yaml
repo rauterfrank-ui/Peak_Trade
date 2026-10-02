@@ -1828,10 +1828,11 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7002_GHV_OBSERVATION_BUDGET_AND_T2_DDO_O4_SESSION_SCOPE_V1
+  modified_by: INTEGRATED_SIM_CRS_BOUNDARY_BINDING_V1
   source_paths:
   - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/__init__.py
   - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
+  - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/simulated_economics_crs_boundary_binding_v1.py
   - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_n_bars_horizon_observation_host_binding_v1.py
   - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_n_bars_horizon_upstream_from_cycle_capture_v1.py
   - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_o4_n_bars_public_plane_convergence_v1.py
@@ -1853,6 +1854,7 @@ entities:
   - src/governance/f1_m9_productive_runtime_threshold_consumer_wiring_v1.py
   - src/learning/deterministic_decision_outcome_v0/a1_unattended_durability_policy_boundary_v1.py
   - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py
+  - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/simulated_economics_crs_boundary_binding_v1.py
   - src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/hardening_cycle_bridge_v2.py
   - src/ops/dynamic_scope_persistence_binding_v1/constants_v1.py
   - src/ops/exit_policy_producer_binding_v1/constants_v1.py

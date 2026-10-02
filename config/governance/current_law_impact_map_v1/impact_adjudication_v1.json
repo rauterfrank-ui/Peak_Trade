@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "verdict": "NO_LAW_IMPACT",
-  "reason": "PR7019 default-off forensic executable quantity override after real LIVE-29P sizing: ops wiring and Atlas provenance only; no law semantic mutation; no trading/selection/sizing semantics; POST_COUNT=0.",
+  "reason": "Integrated sim CRS boundary binding on existing wallclock Cap 7.1 bridge: propagate CRS boundary state file into offline integrated replay; no law semantic mutation; no new Capital/Risk owner; POST_COUNT=0.",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -9,39 +9,22 @@
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
-    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_forensic_executable_quantity_override_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
-    "tests/ops/test_current_productive_forensic_executable_quantity_override_v1.py"
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/simulated_economics_crs_boundary_binding_v1.py",
+    "tests/ops/test_simulated_economics_crs_boundary_binding_v1.py"
   ],
-  "changed_paths_sha256": "81ba7bcc1d1ff6076745b08c02b8e3c3d0a5bdeb2673b5ebf8008874e61b7e01",
-  "base_sha": "579b4af22a6b7af52507309133f26ff3ceb0d582",
+  "changed_paths_sha256": "78f85260715eff2cf33e0580f25e3f41a60b6cbde5ff8862b9fc4fe0c392200e",
+  "base_sha": "5e42bd3897dbf093c35534fa0f604090339277b8",
   "evidence_refs": [
-    "tests/ops/test_current_productive_forensic_executable_quantity_override_v1.py"
+    "tests/ops/test_simulated_economics_crs_boundary_binding_v1.py",
+    "tests/ops/test_simulated_entry_reduce_exit_actionability_evidence_v1.py"
   ],
   "covered_candidate_paths": [
-    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
-    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_forensic_executable_quantity_override_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
-    "tests/ops/test_current_productive_forensic_executable_quantity_override_v1.py"
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/decision_economics_cycle_bridge_v1.py",
+    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/simulated_economics_crs_boundary_binding_v1.py",
+    "tests/ops/test_simulated_economics_crs_boundary_binding_v1.py"
   ],
   "map_id": "CURRENT_LAW_IMPACT_MAP_V1",
   "selector_used_as_law_impact_authority": false

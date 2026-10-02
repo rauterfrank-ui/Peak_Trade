@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:current_productive_forensic_executable_quantity_override_v1` |
+| `HOST:wallclock_decision_economics_cycle` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR7019 forensic executable quantity override: default-off GHV-guarded seam after real sizing; no trading semantics; POST_COUNT=0.
+- Integrated sim CRS boundary binding on wallclock bridge; Atlas catalog source_paths only; no trading semantics; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_7019_FORENSIC_EXECUTABLE_QUANTITY_PRE_EXTERNAL_V1
+- modified_by=INTEGRATED_SIM_CRS_BOUNDARY_BINDING_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
