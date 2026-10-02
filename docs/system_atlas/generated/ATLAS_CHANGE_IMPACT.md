@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=7
+ATLAS_CHANGED_ENTITY_COUNT=8
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -47,6 +47,7 @@ Do not manually patch generated Markdown.
 | `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 | `RUNTIME_COMPONENT:ghv_pre_external_continuation_harness_v1` |
 | `RUNTIME_COMPONENT:ghv_pre_external_runtime_flight_recorder_v1` |
+| `RUNTIME_COMPONENT:ghv_pre_external_whole_cycle_causal_observability_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -98,8 +99,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7014: default-off GHV PRE_EXTERNAL runtime flight recorder + continuation snapshot/harness; observation-only wiring at composition root, venue plan, synthetic overlay, and N5 join; capture failures do not change decisions; AUTHORITY=NONE; POST_COUNT=0.
+- PR #7014: GHV-centered whole-cycle causal observability — state graph, field/reverse provenance, fan-out/fan-in, multi-blocker report, deterministic offline continuation; observation-only; AUTHORITY=NONE.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_7014_GHV_RUNTIME_FLIGHT_RECORDER_CONTINUATION_V1
+- modified_by=PR_7014_GHV_WHOLE_CYCLE_CAUSAL_OBSERVABILITY_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -336,6 +336,22 @@ def maybe_apply_synthetic_enter_forensic_overlay_v1(
     )
     session.mark_applied_v1(int(cycle_index))
 
+    from src.ops.full_core_live_path_composition_root_v1.ghv_pre_external_runtime_flight_recorder_v1 import (
+        active_ghv_pre_external_runtime_flight_recorder_session_v1,
+        record_ghv_root_change_event_v1,
+    )
+
+    fr_session = active_ghv_pre_external_runtime_flight_recorder_session_v1()
+    if fr_session is not None:
+        record_ghv_root_change_event_v1(
+            parent_generation_id=getattr(fr_session, "_lineage_root", "gen_root"),
+            pre_overlay_generation=getattr(fr_session, "_lineage_root", "gen_root"),
+            replay_before=replay,
+            replay_after=new_replay,
+            synthetic_side=side,
+            cycle_index=int(cycle_index),
+        )
+
     record: dict[str, Any] = {
         "schema": "synthetic_enter_forensic_apply.v1",
         "owner": OWNER,

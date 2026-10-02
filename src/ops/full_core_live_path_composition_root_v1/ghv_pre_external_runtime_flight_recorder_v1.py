@@ -9,11 +9,10 @@ import hashlib
 import json
 import re
 from contextvars import ContextVar
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from decimal import Decimal
 from contextvars import Token as _CtxReset
 from dataclasses import asdict, dataclass, field, is_dataclass
-from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Any, Mapping, Optional
@@ -31,6 +30,7 @@ CAPTURE_MANIFEST_FILENAME = "ghv_pre_external_runtime_capture_manifest_v1.json"
 CONTINUATION_SNAPSHOT_DIRNAME = "ghv_pre_external_continuation_snapshot_v1"
 CONTINUATION_SNAPSHOT_MANIFEST = "ghv_pre_external_continuation_snapshot_manifest_v1.json"
 CAUSAL_BLOCKER_REPORT_FILENAME = "ghv_pre_external_causal_blocker_report_v1.json"
+GHV_ROOT_CHANGE_EVENT_ID = "GHV_SYNTHETIC_ENTER_SHORT_CYCLE_1"
 
 RECORDER_AUTHORITY = "NONE"
 RECORDER_CAPTURE_FAILURE_CHANGES_DECISION = False
@@ -272,6 +272,56 @@ def sync_flight_recorder_cycle_from_s5_evidence_root_v1(*, s5_evidence_root: Pat
     session.cycle_index = int(payload.get("cycle_index") or 0) or None
 
 
+def record_ghv_root_change_event_v1(
+    *,
+    parent_generation_id: str,
+    pre_overlay_generation: str,
+    replay_before: IntegratedOfflineReplayResultV1,
+    replay_after: IntegratedOfflineReplayResultV1,
+    synthetic_side: str,
+    cycle_index: int,
+) -> str | None:
+    """Root GHV Synthetic Cycle-1 change event (observation-only)."""
+    before = _replay_summary_v1(replay_before)
+    after = _replay_summary_v1(replay_after)
+    changed: list[str] = []
+    for key in ("decision_outcome", "selected_side"):
+        if before.get(key) != after.get(key):
+            changed.append(key)
+    return append_flight_record_stage_v1(
+        stage="GHV_ROOT_CHANGE_EVENT",
+        producer_symbol="maybe_apply_synthetic_enter_forensic_overlay_v1",
+        consumer_symbol="join_current_productive_enter_live_29p_before_venue_plan_v1",
+        parent_generation_id=parent_generation_id,
+        replay=replay_after,
+        extra={
+            "change_event_id": GHV_ROOT_CHANGE_EVENT_ID,
+            "synthetic_decision": synthetic_side,
+            "synthetic_selected_side": "short" if synthetic_side == "enter_short" else "long",
+            "cycle_index": cycle_index,
+            "pre_overlay_generation": pre_overlay_generation,
+            "decision_before": before.get("decision_outcome"),
+            "decision_after": after.get("decision_outcome"),
+            "selected_side_before": before.get("selected_side"),
+            "selected_side_after": after.get("selected_side"),
+            "changed_fields": changed,
+            "direct_consumers": [
+                "join_current_productive_enter_live_29p_before_venue_plan_v1",
+                "reapply_forensic_synthetic_safety_reprojection_on_replay_v1",
+            ],
+            "transitive_consumers": [
+                "compose_core_live_execution_intent_v1",
+                "try_bind_current_productive_venue_plan_v1",
+            ],
+            "unknown_fanout": [],
+            "golden_happy_vector_centered": True,
+            "ghv_forensic_observability_owner": (
+                "productive_golden_happy_vector_forensic_observability_v1"
+            ),
+        },
+    )
+
+
 def record_pr7013_safety_reprojection_v1(
     *,
     parent_generation_id: str,
@@ -456,6 +506,7 @@ __all__ = [
     "bound_instrument_from_manifest_v1",
     "load_replay_from_continuation_snapshot_v1",
     "persist_continuation_snapshot_v1",
+    "record_ghv_root_change_event_v1",
     "record_pr7013_safety_reprojection_v1",
     "reset_ghv_pre_external_runtime_flight_recorder_session_v1",
 ]

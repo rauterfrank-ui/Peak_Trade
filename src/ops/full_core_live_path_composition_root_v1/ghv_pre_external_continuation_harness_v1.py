@@ -23,8 +23,14 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_venue_pl
 )
 from src.ops.full_core_live_path_composition_root_v1.ghv_pre_external_runtime_flight_recorder_v1 import (
     CAUSAL_BLOCKER_REPORT_FILENAME,
+    FLIGHT_RECORD_FILENAME,
     bound_instrument_from_manifest_v1,
     load_replay_from_continuation_snapshot_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.ghv_pre_external_whole_cycle_causal_observability_v1 import (
+    CONTINUATION_HARNESS_AUTHORITY,
+    build_whole_cycle_observability_v1,
+    persist_whole_cycle_observability_artifacts_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.models_v1 import CompositionStatusV1
 from src.ops.single_selected_future_runtime_binding_v1.models_v1 import BoundInstrumentV1
@@ -218,12 +224,18 @@ def run_ghv_pre_external_continuation_harness_v1(
     _downstream("ADMISSION", "pre_external_admission_v1", False)
     _downstream("PRE_EXTERNAL_TERMINAL", "DISPOSITION_PRE_EXTERNAL_EFFECT", False)
 
+    evidence_root = Path(snapshot_root).parent
+    if not (evidence_root / FLIGHT_RECORD_FILENAME).is_file():
+        evidence_root = Path(snapshot_root)
+
     report = {
         "owner": OWNER,
         "schema_version": "ghv_pre_external_causal_blocker_report.v1",
+        "continuation_harness_authority": CONTINUATION_HARNESS_AUTHORITY,
         "snapshot_root": str(snapshot_root),
         "PR7013_HELPER_ACTUALLY_EXECUTED": pr7013_executed,
         "PR7013_OUTPUT_USED_BY_VENUE_PLAN": pr7013_executed and synthetic_applied,
+        "NO_FAIL_FAST_OBSERVATION": True,
         "stages": [
             {
                 "stage": s.stage,
@@ -241,14 +253,24 @@ def run_ghv_pre_external_continuation_harness_v1(
         "DEPENDENT_BLOCKERS": dependent,
         "INDEPENDENT_BLOCKERS": independent,
         "NOT_EVALUABLE": not_evaluable,
+        "LEGITIMATE_GATE_REJECTIONS": [],
+        "STALE_STATE_DIVERGENCES": [],
+        "CROSS_BRANCH_CONFLICTS": [],
+        "UNKNOWN_CURRENT": [],
     }
-    if output_dir is not None:
-        out = Path(output_dir)
-        out.mkdir(parents=True, exist_ok=True)
-        (out / CAUSAL_BLOCKER_REPORT_FILENAME).write_text(
-            json.dumps(report, sort_keys=True, indent=2) + "\n",
-            encoding="utf-8",
-        )
+    observability = build_whole_cycle_observability_v1(
+        evidence_root=evidence_root,
+        harness_report=report,
+    )
+    report["CAUSAL_ANALYSIS_COMPLETE"] = observability.get("CAUSAL_ANALYSIS_COMPLETE")
+    report["CYCLE_CAPTURE_COMPLETE"] = observability.get("CYCLE_CAPTURE_COMPLETE")
+    report["state_graph_summary"] = {
+        "GRAPH_NODES_TOTAL": observability["state_graph"].get("GRAPH_NODES_TOTAL"),
+        "UNACCOUNTED_GRAPH_NODES": observability["state_graph"].get("UNACCOUNTED_GRAPH_NODES"),
+    }
+    out_root = Path(output_dir) if output_dir is not None else evidence_root
+    out_root.mkdir(parents=True, exist_ok=True)
+    persist_whole_cycle_observability_artifacts_v1(evidence_root=out_root, bundle=observability)
     return report
 
 
