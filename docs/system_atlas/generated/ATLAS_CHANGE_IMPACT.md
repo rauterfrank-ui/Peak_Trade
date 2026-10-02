@@ -98,8 +98,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7002: bounded continuous observation budget (4/180 default, 12/900 explicit ceiling) plus productive DDO O4 WP-A session scoping for multi-cycle T2; fixes uncaught DdoValidationError O4_PROVENANCE_SESSION_MISMATCH; no MV2/DP/trading threshold change; Real-Venue not re-run in PR; AUTHORITY=NONE; POST_COUNT=0.
+- PR #7003: productive S6 mark-price GET requires DYNAMIC_REFRESH_REQUIRED at callsite (parity with candle polls); fixes proven stale mark cache reuse; transport default/cache key unchanged; no trading/threshold/selection/MV2/DP change; Real-Venue reproof deferred post-merge; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_7002_GHV_OBSERVATION_BUDGET_AND_T2_DDO_O4_SESSION_SCOPE_V1
+- modified_by=PR_7003_GHV_PRODUCTIVE_MARK_DYNAMIC_REFRESH_CONTRACT_REPAIR_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
