@@ -1,0 +1,64 @@
+{
+  "WORK_PACKAGE_ID": "WSFC-GHV-POST-CARTOGRAPHY-BWP-01",
+  "BASELINE_SHA": "459ff66b3c79f4cdd2bf1dc5dc7ad2dda27a1772",
+  "FINDINGS": [
+    {
+      "FINDING_ID": "B03-F001",
+      "ORIGINAL_CLASSIFICATION": "UNKNOWN_CURRENT",
+      "FINAL_CLASSIFICATION": "SUPERSEDED_BY_CURRENT_EVIDENCE",
+      "ROOT_CAUSE": "Historical cartography fail; CURRENT offline GHV short synthetic path reaches PRE_EXTERNAL.",
+      "REPAIR_REQUIRED": false,
+      "REPAIR_PERFORMED": false,
+      "REMAINS_OPEN": false
+    },
+    {
+      "FINDING_ID": "B03-F005",
+      "ORIGINAL_CLASSIFICATION": "VIOLATED_CURRENT",
+      "FINAL_CLASSIFICATION": "PROVEN_STALE_TEST",
+      "ROOT_CAUSE": "Pytest/runbook heading drift after Master Runbook restructure.",
+      "REPAIR_REQUIRED": true,
+      "REPAIR_PERFORMED": true,
+      "REMAINS_OPEN": false
+    },
+    {
+      "FINDING_ID": "B04-F001",
+      "ORIGINAL_CLASSIFICATION": "VIOLATED_CURRENT",
+      "FINAL_CLASSIFICATION": "PROVEN_GOVERNANCE_DRIFT",
+      "ROOT_CAUSE": "D01 authorized_baseline_sha != authority map baseline_sha.",
+      "REPAIR_REQUIRED": true,
+      "REPAIR_PERFORMED": true,
+      "REMAINS_OPEN": false
+    },
+    {
+      "FINDING_ID": "B05-F001-RATE_LIMIT",
+      "ORIGINAL_CLASSIFICATION": "UNKNOWN_CURRENT",
+      "FINAL_CLASSIFICATION": "PROVEN_EXPECTED_BEHAVIOR",
+      "REPAIR_REQUIRED": false,
+      "REPAIR_PERFORMED": false,
+      "REMAINS_OPEN": false
+    },
+    {
+      "FINDING_ID": "B05-F001-SHUTDOWN",
+      "ORIGINAL_CLASSIFICATION": "UNKNOWN_CURRENT",
+      "FINAL_CLASSIFICATION": "PROVEN_EXPECTED_BEHAVIOR",
+      "REPAIR_REQUIRED": false,
+      "REPAIR_PERFORMED": false,
+      "REMAINS_OPEN": false
+    },
+    {
+      "FINDING_ID": "B05-F002",
+      "ORIGINAL_CLASSIFICATION": "UNKNOWN_CURRENT",
+      "FINAL_CLASSIFICATION": "PROVEN_EXPECTED_BEHAVIOR",
+      "REPAIR_REQUIRED": false,
+      "REPAIR_PERFORMED": false,
+      "REMAINS_OPEN": false
+    },
+    {
+      "FINDING_ID": "BWP01-G-F001",
+      "ORIGINAL_CLASSIFICATION": "N/A",
+      "FINAL_CLASSIFICATION": "UNKNOWN_CURRENT",
+      "ROOT_CAUSE": "Local productive harness hung without stdout within bounded wallclock.",
+      "REMAINS_OPEN": true
+    }
+  ]
+}

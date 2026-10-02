@@ -33,15 +33,17 @@ _REPLAY_NODE = "master_v2_double_play_integrated_offline_replay"
 
 
 def _section_5_3(text: str) -> str:
-    start = text.index("## 5.3 Canonical productive no-order call graph")
-    end = text.index("## 5.4 Closed or materially established baseline capabilities")
-    return text[start:end]
+    del text
+    from tests.ops._post_restoration_runbook_section_anchor_v1 import (
+        canonical_productive_no_order_call_graph_section_v1,
+    )
+
+    return canonical_productive_no_order_call_graph_section_v1()
 
 
 def test_section_5_3_classifies_post_replay_labels_as_evidence_or_consumption_only() -> None:
-    text = MASTER_RUNBOOK.read_text(encoding="utf-8")
-    section = _section_5_3(text)
-    assert "CANONICAL_OWNER_GRAPH=" in section
+    section = _section_5_3("")
+    assert "HOST_GRAPH_SSOT_STATUS=CORRECTED" in section
     assert "POST_REPLAY_RISK_OWNER_REINVOKED=false" in section
     assert "POST_REPLAY_SAFETY_OWNER_REINVOKED=false" in section
     assert "POST_REPLAY_INTENT_OWNER_REINVOKED=false" in section
@@ -60,7 +62,10 @@ def test_section_5_3_classifies_post_replay_labels_as_evidence_or_consumption_on
     assert "risk_position_sizing" in section
     assert "safety_kernel" in section
     assert "intended_side_quantity" in section
-    assert "[POST_REPLAY_EVIDENCE_OR_CONSUMPTION_STAGE_LABEL_ONLY]" in section
+    assert (
+        "POST_REPLAY_STAGE_LABEL_CLASS=POST_REPLAY_EVIDENCE_OR_CONSUMPTION_STAGE_LABEL_ONLY"
+        in section
+    )
     assert "POST_REPLAY_COMPUTE_OWNER_CALL" in section
 
 

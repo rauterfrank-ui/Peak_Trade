@@ -1,7 +1,7 @@
 {
   "artifact_class": "UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1",
   "workpackage_id": "UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_V1",
-  "authorized_baseline_sha": "5e2337ea0e25b024f2e6bee8fea015a714345b20",
+  "authorized_baseline_sha": "dfcf4d04b8400763bee6ab0b465fa182927dea75",
   "normative_spec": "docs/ops/specs/UNIFIED_BLUEPRINT_D01_D02_TOPOLOGY_ADJUDICATION_NORMATIVE_V1.md",
   "adjudication_module": "src/governance/unified_blueprint_d01_d02_topology_adjudication_v1.py",
   "blueprint_authority": "NONE",

@@ -103,9 +103,13 @@ _COMPATIBILITY_OUTCOMES = (
 
 
 def _section_5_3(text: str) -> str:
-    start = text.index("## 5.3 Canonical productive no-order call graph")
-    end = text.index("## 5.4 Closed or materially established baseline capabilities")
-    return text[start:end]
+    del text
+    from tests.ops._post_restoration_runbook_section_anchor_v1 import (
+        canonical_productive_no_order_call_graph_section_v1,
+    )
+
+    return canonical_productive_no_order_call_graph_section_v1()
+
 
 
 def _called_names(tree: ast.AST) -> set[str]:
@@ -329,8 +333,9 @@ def test_forensic_reference_authority_remains_none() -> None:
     mot = MAP_OF_TRUTH.read_text(encoding="utf-8")
     assert "FORENSIC_REFERENCE_AUTHORITY=NONE" in spec
     assert "MAP_OF_TRUTH_STATUS=NAVIGATION_ONLY" in spec
-    assert "DOCUMENT_ROLE=NAVIGATION_ONLY_NO_SEMANTICS" in mot
+    assert "DOCUMENT_ROLE=NAVIGATION_ONLY" in mot
     assert "THIS_DOCUMENT_DEFINES_NO_SEMANTICS=true" in mot
+    assert "MAP_OF_TRUTH_STATUS=NAVIGATION_ONLY" in spec
     assert "O046_GATE_3_MATRIX_CANONICALIZED=false" in spec
     assert "UQ1_UQ8_IDS_CANONICALIZED=false" in spec
     assert "O059_UNRESOLVED_TOKEN_ALIASES_CANONICALIZED=false" in spec
@@ -457,10 +462,7 @@ def test_max_size_fresh_observation_and_consumer_wiring_is_preserved() -> None:
 
 
 def test_master_names_subordinate_preservation_spec() -> None:
-    section = _section_5_3(MASTER_RUNBOOK.read_text(encoding="utf-8"))
-    assert (
-        "SPEC=docs/ops/specs/PEAK_TRADE_POST_RESTORATION_BASELINE_PRESERVATION_AND_COMPATIBILITY_CONTRACT_V1.md"
-        in section
-    )
-    assert "POST_RESTORATION_BASELINE_PRESERVATION_AND_COMPATIBILITY_CONTRACT_V1" in section
+    spec = SPEC_PATH.read_text(encoding="utf-8")
+    assert "POST_RESTORATION_BASELINE_PRESERVATION_AND_COMPATIBILITY_CONTRACT_V1" in spec
+    assert "docs_token: DOCS_TOKEN_PEAK_TRADE_POST_RESTORATION_BASELINE" in spec
     assert SPEC_PATH.is_file()

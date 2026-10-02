@@ -142,16 +142,18 @@ MULTI_FUTURE_RUNTIME_AUTHORIZED=false
 Cartography completeness (18/18 DEEP) is separate from correctness; the following remain open after the cumulative GHV checkpoint:
 
 ```text
-B03-F001=UNKNOWN_CURRENT (offline GHV short synthetic enter → HOLD_CLOSED not PRE_EXTERNAL)
-B03-F005=VIOLATED_CURRENT (adjacent pytest/runbook drift)
-B04-F001=VIOLATED_CURRENT (Phase 26 DoD aggregate reproof; nested phase_15)
-B05-F001=UNKNOWN_CURRENT (RATE_LIMIT / SHUTDOWN_DURING_POLL not GHV-driven)
-B05-F002=UNKNOWN_CURRENT (CACHE_MISS not isolated in public-MD tests)
+B03-F001=SUPERSEDED_BY_CURRENT_EVIDENCE (BWP01: offline GHV short synthetic → PRE_EXTERNAL PASS at baseline)
+B03-F005=PROVEN_STALE_TEST (BWP01: post-restoration anchors → bounded specs; tests repaired)
+B04-F001=PROVEN_GOVERNANCE_DRIFT (BWP01: D01 baseline_sha bind; phase_26 reproof PASS)
+B05-F001=PROVEN_EXPECTED_BEHAVIOR (BWP01: rate-limit + shutdown GHV-driven deterministic reproof)
+B05-F002=PROVEN_EXPECTED_BEHAVIOR (BWP01: cache/gap miss fail-closed reproof)
+BWP01-G-F001=UNKNOWN_CURRENT (local productive harness non-progress; natural enter not reproven this run)
 WP02-F002=documentation/navigation (dual B05 namespace)
 RESOLVED_FINDINGS=B10_FINDING_01 (config propagation)
 HISTORICAL_FINDINGS=B10_FINDING_03 (frozen)
 STRUCTURAL_OFFLINE_NATURAL_ENTER_TO_PRE_EXTERNAL=PROVEN
 PRODUCTIVE_REAL_CANONICAL_NATURAL_ENTER_TO_PRE_EXTERNAL=NOT_YET_PROVEN
+BWP01_EVIDENCE=evidence/ops/wsfc_ghv_post_cartography_bwp01/20261002T200015Z/
 ```
 
 ## Extension — WSFC-GHV-BULK-03 (observation / control / persistence plane)

@@ -18,9 +18,13 @@ REPLAY_MODULE = REPO_ROOT / "src/trading/master_v2/integrated_offline_trading_lo
 
 
 def _section_5_3(text: str) -> str:
-    start = text.index("## 5.3 Canonical productive no-order call graph")
-    end = text.index("## 5.4 Closed or materially established baseline capabilities")
-    return text[start:end]
+    del text
+    from tests.ops._post_restoration_runbook_section_anchor_v1 import (
+        canonical_productive_no_order_call_graph_section_v1,
+    )
+
+    return canonical_productive_no_order_call_graph_section_v1()
+
 
 
 def test_c4_named_master_ssot_pointer_matches_existing_spec_and_runtime() -> None:
