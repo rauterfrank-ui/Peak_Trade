@@ -3,7 +3,7 @@
   "authority_effect": "NONE",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT",
-  "reason": "PR #7008: LIVE-29P fresh pretrade GET S5 wiring repair only; diff-bound law/Atlas bookkeeping; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #7009: GHV GET-only K1 credential transport bind only; diff-bound law/Atlas bookkeeping; no law semantic mutation; AUTHORITY=NONE; POST_COUNT=0.",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -15,13 +15,13 @@
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/relations/structural.yaml",
     "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
-    "tests/ops/test_persistent_natural_enter_live_29p_get_wiring_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1.py",
+    "tests/ops/test_current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1.py"
   ],
-  "changed_paths_sha256": "94936a7874d0715fc5e208ce56f2168dff8bfba4c609d69bd6dbe513a4983bc6",
-  "base_sha": "95b0c7ad37027dfcb652239e26f8c14cc4c13db5",
+  "changed_paths_sha256": "a6d9a6dad05e5e26c16e1caa5708c5369d47baf23bdca690789672e086405029",
+  "base_sha": "6d6544822ae3f1fac0c0d8b5cddc042a6817db6a",
   "evidence_refs": [
-    "tests/ops/test_persistent_natural_enter_live_29p_get_wiring_v1.py"
+    "tests/ops/test_current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1.py"
   ],
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
@@ -32,7 +32,7 @@
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/relations/structural.yaml",
     "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
-    "tests/ops/test_persistent_natural_enter_live_29p_get_wiring_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1.py",
+    "tests/ops/test_current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1.py"
   ]
 }

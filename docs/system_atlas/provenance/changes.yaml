@@ -476,3 +476,12 @@ changes:
     live launcher so LIVE-29P join receives injected GET handoff; fixes LIVE_29P_GET_MISSING
     propagation; offline wiring regression; no threshold/POST/credential change; POST_COUNT=0;
     ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7009_ghv_get_only_credential_transport_bind_v1
+  from: 6d6544822ae3f1fac0c0d8b5cddc042a6817db6a
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1.py
+  notes: 'PR #7009: bind ephemeral K1 GET-only credential handle to FullCoreProductiveReadOnlyGetTransportV1
+    on GHV policy-governed live-C1 launcher; closes PRIVATE_GET_REQUIRES_CREDENTIAL_HANDLE on
+    fresh-pretrade spine; standing POST/external-effect pins unchanged; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

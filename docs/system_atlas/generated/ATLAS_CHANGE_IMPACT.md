@@ -94,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7008: propagate fresh pretrade GET into persistent S5 runner for LIVE-29P injected handoff; Atlas + CSIA diff-bound bookkeeping only; no trading threshold change; AUTHORITY=NONE; POST_COUNT=0.
+- PR #7009: bind ephemeral K1 GET-only credential handle to productive fresh-pretrade transport on GHV live-C1 launcher; Atlas + CSIA diff-bound bookkeeping only; no POST authority change; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_7008_LIVE_29P_S5_FRESH_PRETRADE_GET_WIRING_V1
+- modified_by=PR_7009_GHV_GET_ONLY_CREDENTIAL_TRANSPORT_BIND_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

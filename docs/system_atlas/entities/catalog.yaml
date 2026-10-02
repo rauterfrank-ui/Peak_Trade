@@ -3657,15 +3657,16 @@ entities:
   - tests/ops/full_core_live_path_composition_root_v1/test_productive_continuous_observation_budget_v1.py
   notes: 'Bounded S6 cycle/duration caps (default 4/180; explicit ceiling 12/900); fail-closed resolver; no trading threshold change; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7002 bounded observation budget SSOT + fail-closed resolver; wiring-only; AUTHORITY=NONE; POST_COUNT=0.'
 - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
-  # atlas_entity_review: PR #7008 launcher passes fresh pretrade transport into policy-governed continuous run for LIVE-29P GET wiring.
+  # atlas_entity_review: PR #7009 GHV product launcher binds ephemeral K1 GET-only handle to fresh-pretrade transport.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive persistent Natural-ENTER policy-governed live Fresh-C1 continuous run v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7008_LIVE_29P_S5_FRESH_PRETRADE_GET_WIRING_V1
+  modified_by: PR_7009_GHV_GET_ONLY_CREDENTIAL_TRANSPORT_BIND_V1
   source_paths:
   - scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_get_budget_contract_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_continuous_observation_budget_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py
@@ -3690,7 +3691,8 @@ entities:
   - tests/ops/test_current_productive_s6_live_fresh_c1_mark_attachment_v1.py
   - tests/ops/test_current_productive_synthetic_enter_forensic_v1.py
   - tests/ops/test_persistent_natural_enter_live_29p_get_wiring_v1.py
-  notes: 'Owner-GO decision + consume evidence for bounded continuous run and public readonly Fresh-C1 GET; S6 observation poll only; PRE_EXTERNAL terminal; CONTINUOUS_RUN_AUTHORIZED=false; ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6951 productive entry script + cold-lane bootstrap; baseline rebind 27c3cd4; # ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6952 post-merge Owner-GO baseline lineage (ancestor bind + MV2/DP drift gate); # wiring-only; module pins unchanged; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6980 Cap24 witness epoch + Owner-GO re-pin 7a3597e; integration-only; # src/trading/master_v2 untouched; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6994 Owner-GO baseline reissued to 049fc18 after #6993 Dynamic-Scope cutover; decision JSON + harness/supervisor baseline pins only; Golden-Happy inject-transport PRE_EXTERNAL proof; no live-market Natural Enter claim; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6995 Fresh-C1 dynamic GET cache policy on productive transport for S6 candle polls only; observation transport liveness; offline proof; Real-Venue effectiveness UNKNOWN pre-merge; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6996 shared transport max_request_count derived from bounded continuous poll contract SSOT; no cache/transport semantic change; offline regression only; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6997 pre-S6 selection-vs-cursor reconciliation for legitimate Cap23 instrument rotation; archive superseded cursor; fresh lane via existing bootstrap; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6998 optional default-off delegating transport capture for verbatim natural GET payloads under evidence_root; observation-only; no trading/threshold/budget change; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6999 default-off Golden Happy forensic observability CLI for directional signal_strength/threshold evidence and immutable entry-state snapshot; observation-only; src/trading/master_v2 net diff zero; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7003 productive S6 mark-price GET requires DYNAMIC_REFRESH_REQUIRED (parity with candle polls); fixes proven CACHEABLE_SNAPSHOT stale mark reuse; transport default/cache key unchanged; no trading/threshold/selection change;     Real-Venue reproof deferred post-merge; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7004 bounded continuous GET budget SSOT counts two dynamic wire GETs per S6 poll (candle+mark); 12/900 max_request_count 205→405; no cache/transport/trading threshold change; offline contract tests only; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7006 default-off --enable-synthetic-enter-forensic-v1 CLI wiring; synthetic overlay does not contaminate NATURAL_ENTER_OBSERVED; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7008 pass fresh pretrade GET transport from launcher into S5 runner for LIVE-29P injected GET resolution; wiring-only; AUTHORITY=NONE; POST_COUNT=0.'
+  - tests/ops/test_current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1.py
+  notes: 'Owner-GO decision + consume evidence for bounded continuous run and public readonly Fresh-C1 GET; S6 observation poll only; PRE_EXTERNAL terminal; CONTINUOUS_RUN_AUTHORIZED=false; ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6951 productive entry script + cold-lane bootstrap; baseline rebind 27c3cd4; # ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6952 post-merge Owner-GO baseline lineage (ancestor bind + MV2/DP drift gate); # wiring-only; module pins unchanged; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6980 Cap24 witness epoch + Owner-GO re-pin 7a3597e; integration-only; # src/trading/master_v2 untouched; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6994 Owner-GO baseline reissued to 049fc18 after #6993 Dynamic-Scope cutover; decision JSON + harness/supervisor baseline pins only; Golden-Happy inject-transport PRE_EXTERNAL proof; no live-market Natural Enter claim; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6995 Fresh-C1 dynamic GET cache policy on productive transport for S6 candle polls only; observation transport liveness; offline proof; Real-Venue effectiveness UNKNOWN pre-merge; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6996 shared transport max_request_count derived from bounded continuous poll contract SSOT; no cache/transport semantic change; offline regression only; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6997 pre-S6 selection-vs-cursor reconciliation for legitimate Cap23 instrument rotation; archive superseded cursor; fresh lane via existing bootstrap; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6998 optional default-off delegating transport capture for verbatim natural GET payloads under evidence_root; observation-only; no trading/threshold/budget change; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6999 default-off Golden Happy forensic observability CLI for directional signal_strength/threshold evidence and immutable entry-state snapshot; observation-only; src/trading/master_v2 net diff zero; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7003 productive S6 mark-price GET requires DYNAMIC_REFRESH_REQUIRED (parity with candle polls); fixes proven CACHEABLE_SNAPSHOT stale mark reuse; transport default/cache key unchanged; no trading/threshold/selection change;     Real-Venue reproof deferred post-merge; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7004 bounded continuous GET budget SSOT counts two dynamic wire GETs per S6 poll (candle+mark); 12/900 max_request_count 205→405; no cache/transport/trading threshold change; offline contract tests only; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7006 default-off --enable-synthetic-enter-forensic-v1 CLI wiring; synthetic overlay does not contaminate NATURAL_ENTER_OBSERVED; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7008 pass fresh pretrade GET transport from launcher into S5 runner for LIVE-29P injected GET resolution; wiring-only; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7009 bind ephemeral K1 GET-only credential handle to productive fresh-pretrade transport on GHV product path; no POST/external-effect pin change; AUTHORITY=NONE; POST_COUNT=0.'
 - id: RUNTIME_COMPONENT:productive_natural_market_data_capture_sink_v1
   kind: RUNTIME_COMPONENT
   name: Productive natural market-data GET capture sink v1
@@ -4441,13 +4443,13 @@ entities:
   - tests/governance/test_companion_c2_fraction_to_units_runtime_completion_v1.py
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-  # atlas_entity_review: PR #7008 persistent natural-enter S5 path propagates fresh pretrade GET for LIVE-29P join consumer.
+  # atlas_entity_review: PR #7009 GET-only K1 credential transport bind seam for GHV live-C1 fresh-pretrade path.
   kind: RUNTIME_COMPONENT
   name: Offline Core-to-Live composition root v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7008_LIVE_29P_S5_FRESH_PRETRADE_GET_WIRING_V1
+  modified_by: PR_7009_GHV_GET_ONLY_CREDENTIAL_TRANSPORT_BIND_V1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/__init__.py
   - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
@@ -4664,6 +4666,7 @@ entities:
   - src/ops/full_core_live_path_composition_root_v1/current_productive_scoped_one_shot_c1_observation_source_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_continuous_observation_budget_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py
   - tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py
