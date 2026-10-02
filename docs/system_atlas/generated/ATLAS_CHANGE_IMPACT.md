@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=6
-ATLAS_CHANGED_RELATION_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,19 +40,14 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:current_productive_continuous_observation_budget_v1` |
-| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
 | `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
 | `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
-| `HOST:wallclock_decision_economics_cycle` |
-| `CAPABILITY:market_data_private_state_runtime_convergence_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:r_wallclock_materializes_ddo_o4_via_wp_c_public_plane` |
-| `REL:s_wp_c_o4_n_bars_learning_handoff_to_wallclock_ddo` |
+| _(none)_ |
 
 ## NEW_RELATIONS
 
@@ -98,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7003: productive S6 mark-price GET requires DYNAMIC_REFRESH_REQUIRED at callsite (parity with candle polls); fixes proven stale mark cache reuse; transport default/cache key unchanged; no trading/threshold/selection/MV2/DP change; Real-Venue reproof deferred post-merge; AUTHORITY=NONE; POST_COUNT=0.
+- PR #7004: productive continuous GET budget contract counts two dynamic wire GETs per S6 poll (candle+mark); 12/900 max_request_count 205→405; no cache/transport/trading threshold change; Real-Venue reproof deferred post-merge; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_7003_GHV_PRODUCTIVE_MARK_DYNAMIC_REFRESH_CONTRACT_REPAIR_V1
+- modified_by=PR_7004_PRODUCTIVE_CONTINUOUS_GET_BUDGET_CONTRACT_REPAIR_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
