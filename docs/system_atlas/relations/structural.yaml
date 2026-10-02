@@ -2619,3 +2619,13 @@ relations:
     AUTHORITY=NONE. ATLAS_AUTHORITY=NONE.
 
     '
+- id: REL:s_top20_residency_depends_on_cap22_valid_snapshot
+  source: CAPABILITY:top20_opportunity_evaluation_residency_v1
+  type: DEPENDS_ON
+  target: CAPABILITY:cap_2_2_ranking
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - docs/ops/specs/TOP20_OPPORTUNITY_EVALUATION_RESIDENCY_AND_SCHEDULING_V1.md
+  - src/ops/top20_opportunity_evaluation_residency_v1/admission_v1.py
+  - tests/ops/test_top20_opportunity_evaluation_residency_v1.py
+  notes: 'Default-off post-persist observation of VALID Cap2.2 Top20 snapshots only; no ranking authority; POST_COUNT=0. ATLAS_AUTHORITY=NONE.'

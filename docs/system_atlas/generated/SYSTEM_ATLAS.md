@@ -253,7 +253,7 @@ Drill-down: [MASTER_V2_DOUBLE_PLAY_MAP.md](MASTER_V2_DOUBLE_PLAY_MAP.md).
 
 ## 3. System / subsystem hierarchy
 
-`SYSTEM:peak_trade` `CONTAINS` `SUBSYSTEM:master_v2`. Recorded `HAS_CAPABILITY` edges from the system entity are Caps 1.1, 2.1–2.4, 3.1, 4.1, 7.2, and 11.13.5. The seven `MASTER_V2_CAPABILITY_*.md` spec files (1.1, 2.1–2.4, 3.1, 4.1) are inventoried; Caps 7.2 and 11.13.5 are Master-Runbook capabilities without a numbered MASTER_V2 spec file. Structural relation count: `244`. Drill-down: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md).
+`SYSTEM:peak_trade` `CONTAINS` `SUBSYSTEM:master_v2`. Recorded `HAS_CAPABILITY` edges from the system entity are Caps 1.1, 2.1–2.4, 3.1, 4.1, 7.2, and 11.13.5. The seven `MASTER_V2_CAPABILITY_*.md` spec files (1.1, 2.1–2.4, 3.1, 4.1) are inventoried; Caps 7.2 and 11.13.5 are Master-Runbook capabilities without a numbered MASTER_V2 spec file. Structural relation count: `245`. Drill-down: [STRUCTURAL_GRAPH.md](STRUCTURAL_GRAPH.md).
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -314,6 +314,7 @@ Capabilities are numbered packages with specs under `docs&#47;ops&#47;specs&#47;
 | CAPABILITY:okx_eea_private_account_state_runtime_v1 | CAPABILITY | OKX EEA Private Account State Runtime (observation-only) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:operator_profile_explainability_v1 | CAPABILITY | Operator Profile and Explainability View V1 (B11) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:peak_trade_public_market_data_runtime_v1 | CAPABILITY | OKX EEA Public Market Data Runtime (observation-only) | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
+| CAPABILITY:top20_opportunity_evaluation_residency_v1 | CAPABILITY | Top20 Opportunity Evaluation Residency And Scheduling | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 
 Drill-down: [BUILD_GUIDANCE.md](BUILD_GUIDANCE.md), [FULL_DEPENDENCY_GRAPH.md](FULL_DEPENDENCY_GRAPH.md).
 
@@ -457,7 +458,7 @@ Architectural-kind count in this bucket: `30`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `39`.
+Architectural-kind count in this bucket: `40`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -467,6 +468,7 @@ Architectural-kind count in this bucket: `39`.
 | CAPABILITY:cap_3_1_futures_accounting | CAPABILITY | Productive Futures Accounting Runtime Binding | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:cap_4_1_pre_activation_closure | CAPABILITY | Single Future Canonical Runtime Pre-Activation Closure | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=CANONICAL_AUTHORITY |
 | CAPABILITY:integrated_offline_replay_correctness_head_bound_v1 | CAPABILITY | Integrated offline replay correctness HEAD-bound proof | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| CAPABILITY:top20_opportunity_evaluation_residency_v1 | CAPABILITY | Top20 Opportunity Evaluation Residency And Scheduling | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:account_equity_orchestration_ingress_v1 | DATA_CONTRACT | Account-equity orchestration ingress v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:bound_instrument_v1 | DATA_CONTRACT | BoundInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:full_core_live_path_models_v1 | DATA_CONTRACT | Full-core live path typed contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -633,7 +635,7 @@ Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_RE
 
 ## 16. Orphan / missing-wiring findings
 
-Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `160`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
+Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `161`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
 
 | id | class | entity | epistemic |
 | --- | --- | --- | --- |
@@ -704,9 +706,9 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=dfcf4d04b8400763bee6ab0b465fa182927dea75
-ENTITY_TOTAL=338
+ENTITY_TOTAL=339
 HUB_RELATION_COUNT=72
-STRUCTURAL_RELATION_COUNT=244
+STRUCTURAL_RELATION_COUNT=245
 RUNTIME_RELATION_COUNT=101
 AUTHORITY_RELATION_COUNT=10
 UNRESOLVED_CONTRADICTION_COUNT=8
@@ -780,7 +782,7 @@ Remaining census domains:
 | ADAPTER | 1 |
 | AUTH_PRIMITIVE | 1 |
 | BINDER | 1 |
-| CAPABILITY | 21 |
+| CAPABILITY | 22 |
 | CONTRACT | 66 |
 | DATA_CONTRACT | 6 |
 | DOD | 5 |

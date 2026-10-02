@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=5
+ATLAS_CHANGED_RELATION_COUNT=1
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -40,13 +40,17 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CAPABILITY:integrated_offline_replay_correctness_head_bound_v1` |
+| `CAPABILITY:top20_opportunity_evaluation_residency_v1` |
+| `CAPABILITY:cap_2_2_ranking` |
+| `CONTRACT:current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1` |
+| `CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1` |
+| `SELECTOR:productive_futures_ranking` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:s_top20_residency_depends_on_cap22_valid_snapshot` |
 
 ## NEW_RELATIONS
 
@@ -92,8 +96,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- HEAD-bound shadow readiness proof surfaces; Atlas catalog navigation only; no trading semantics; POST_COUNT=0.
+- Default-off Top20 evaluation residency and scheduling after VALID Cap2.2; navigation only; no ranking/selection/trading authority; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=INTEGRATED_SHADOW_READINESS_HEAD_BOUND_V1
+- modified_by=TOP20_OPPORTUNITY_EVALUATION_RESIDENCY_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -1,13 +1,18 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: ATLAS_LEGACY_ERADICATION_V1
-modified_by: INTEGRATED_SHADOW_READINESS_HEAD_BOUND_V1
+modified_by: TOP20_OPPORTUNITY_EVALUATION_RESIDENCY_V1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'HEAD-bound shadow readiness proof surfaces; Atlas catalog navigation only; no trading semantics; POST_COUNT=0.'
+note: 'Default-off Top20 evaluation residency and scheduling after VALID Cap2.2; navigation only; no ranking/selection/trading authority; POST_COUNT=0.'
 changed_entities:
-- CAPABILITY:integrated_offline_replay_correctness_head_bound_v1
-changed_relations: []
+- CAPABILITY:top20_opportunity_evaluation_residency_v1
+- CAPABILITY:cap_2_2_ranking
+- CONTRACT:current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1
+- CONTRACT:current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1
+- SELECTOR:productive_futures_ranking
+changed_relations:
+- REL:s_top20_residency_depends_on_cap22_valid_snapshot
 changed_closures: []
 changed_wiring: []
 changed_venue: []

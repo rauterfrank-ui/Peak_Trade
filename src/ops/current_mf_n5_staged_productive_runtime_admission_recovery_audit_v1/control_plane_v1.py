@@ -127,6 +127,9 @@ def run_staged_productive_full_autonomy_n5_runtime_control_plane_v1(
     hard_facts_cap22_handoff: HardFactsCap22MembershipHandoffRequestV1 | None = None,
     membership_store_root: Path | str | None = None,
     apply_productive_default_cap22_handoff: bool = False,
+    residency_config: Any | None = None,
+    residency_productivity_state_root: Path | str | None = None,
+    residency_universe_snapshot: Mapping[str, Any] | None = None,
     **cycle_kwargs: Any,
 ) -> StagedProductiveN5RuntimeControlPlaneResultV1:
     """Governed productive entry: staged admission → orchestrator → aggregate → audit."""
@@ -171,19 +174,87 @@ def run_staged_productive_full_autonomy_n5_runtime_control_plane_v1(
     else:
         if cardinality.architectural_harness_used and not architectural_composition_harness:
             _fail(FAILURE_FORBIDDEN_HARNESS, "harness_flag_mismatch")
-        orch = run_productive_full_autonomy_n5_runtime_orchestrator_v1(
-            membership=membership,
-            ranking_snapshot=ranking_snapshot,
-            topology_state_root_base=topology_state_root_base,
-            lane_assignment_writer=lane_assignment_writer,
-            cap24_bind=cap24_bind,
-            repository_sha=repository_sha,
-            producer_observed_at_unix=producer_observed_at_unix,
-            origin_main_sha=origin_main_sha,
-            target_cardinality=cardinality.invocation_cardinality,
-            portfolio_budget_owner=owner,
-            **cycle_kwargs,
+        from src.ops.top20_opportunity_evaluation_residency_v1.orchestration_v1 import (
+            post_orchestrator_evaluation_feedback_v1,
+            prepare_staged_control_plane_residency_v1,
+            witnesses_from_orchestrator_lane_map_v1,
         )
+
+        productivity_root = (
+            Path(residency_productivity_state_root)
+            if residency_productivity_state_root is not None
+            else Path(cap24_bind.ranking_state_root)
+        )
+        residency_prep = prepare_staged_control_plane_residency_v1(
+            productivity_state_root=productivity_root,
+            current_ranking_snapshot=ranking_snapshot,
+            producer_observed_at_unix=producer_observed_at_unix,
+            config=residency_config,
+            universe_snapshot=residency_universe_snapshot,
+        )
+        residency_cycle_kwargs = dict(cycle_kwargs)
+        replay_by_lane = residency_cycle_kwargs.pop(
+            "integrated_offline_replay_executed_by_lane", None
+        )
+        if replay_by_lane is None:
+            replay_by_lane = {}
+        if residency_prep.use_residency_frames:
+            orch = None
+            for frame in residency_prep.frames:
+                frame_cardinality = min(
+                    len(frame.ordered_instrument_ids),
+                    int(cardinality.invocation_cardinality),
+                )
+                orch = run_productive_full_autonomy_n5_runtime_orchestrator_v1(
+                    membership=frame.membership,
+                    ranking_snapshot=frame.evaluation_ranking_snapshot,
+                    topology_state_root_base=topology_state_root_base,
+                    lane_assignment_writer=lane_assignment_writer,
+                    cap24_bind=cap24_bind,
+                    repository_sha=repository_sha,
+                    producer_observed_at_unix=producer_observed_at_unix,
+                    origin_main_sha=origin_main_sha,
+                    target_cardinality=frame_cardinality,
+                    portfolio_budget_owner=owner,
+                    **residency_cycle_kwargs,
+                )
+                epoch_by_inst = dict(
+                    zip(frame.ordered_instrument_ids, frame.residency_epoch_ids, strict=True)
+                )
+                instrument_by_lane = dict(
+                    zip(orch.occupied_lane_ids, frame.ordered_instrument_ids, strict=False)
+                )
+                disposition_by_lane = {
+                    rollup.lane_id: rollup.disposition for rollup in orch.lane_rollups
+                }
+                witnesses = witnesses_from_orchestrator_lane_map_v1(
+                    instrument_ids_by_lane=instrument_by_lane,
+                    residency_epoch_ids_by_instrument=epoch_by_inst,
+                    replay_executed_by_lane={
+                        lane: bool(replay_by_lane.get(lane, False)) for lane in instrument_by_lane
+                    },
+                    disposition_by_lane=disposition_by_lane,
+                )
+                post_orchestrator_evaluation_feedback_v1(
+                    residency_state_root=residency_prep.residency_state_root,
+                    config=residency_config,
+                    witnesses=witnesses,
+                    producer_observed_at_unix=producer_observed_at_unix,
+                )
+        else:
+            orch = run_productive_full_autonomy_n5_runtime_orchestrator_v1(
+                membership=membership,
+                ranking_snapshot=ranking_snapshot,
+                topology_state_root_base=topology_state_root_base,
+                lane_assignment_writer=lane_assignment_writer,
+                cap24_bind=cap24_bind,
+                repository_sha=repository_sha,
+                producer_observed_at_unix=producer_observed_at_unix,
+                origin_main_sha=origin_main_sha,
+                target_cardinality=cardinality.invocation_cardinality,
+                portfolio_budget_owner=owner,
+                **residency_cycle_kwargs,
+            )
         if orch.external_effect_authorized or orch.post_allowed:
             _fail(FAILURE_EXTERNAL_EFFECT, OWNER)
         for rollup in orch.lane_rollups:

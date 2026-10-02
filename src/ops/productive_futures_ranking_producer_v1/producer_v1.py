@@ -501,6 +501,8 @@ def run_productive_futures_ranking_producer_v1(
     release_writer: bool = True,
     dashboard_payload: Mapping[str, Any] | None = None,
     legacy_ranker_payload: Mapping[str, Any] | None = None,
+    residency_config: Any | None = None,
+    residency_universe_snapshot: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Full productive call graph: produce → persist → verify (no selection/alpha)."""
     writer = ProductiveRankingSingleWriterV1(state_root=Path(state_root), session_id=session_id)
@@ -599,6 +601,18 @@ def run_productive_futures_ranking_producer_v1(
             snapshot=produced.snapshot,
             evidence=evidence,
         )
+        if produced.ok and bool(persistence.get("ok")) and bool(restart.get("ok")):
+            from src.ops.top20_opportunity_evaluation_residency_v1.orchestration_v1 import (
+                observe_valid_cap22_snapshot_after_persist_v1,
+            )
+
+            observe_valid_cap22_snapshot_after_persist_v1(
+                state_root=Path(state_root),
+                ranking_snapshot=produced.snapshot.to_dict(),
+                producer_observed_at_unix=producer_observed_at_unix,
+                config=residency_config,
+                universe_snapshot=residency_universe_snapshot,
+            )
         return {
             "ok": produced.ok and bool(persistence.get("ok")) and bool(restart.get("ok")),
             "hard_stop": produced.hard_stop or not restart.get("ok"),
