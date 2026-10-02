@@ -361,11 +361,14 @@ def _t2_from_s7(
                 closes = extracted
             if last_ts is not None:
                 event_ts = float(last_ts)
+        compose_s7_base = {
+            key: value for key, value in s7_base.items() if key != "cycle_evidence_root"
+        }
         try:
             composed = compose_occupied_lane_mv2_dp_durable_cycle_v1(
                 lane_pairs,
                 **{
-                    **s7_base,
+                    **compose_s7_base,
                     "finalized_closes": closes,
                     "last_finalized_event_ts_unix": event_ts,
                     "observed_unix": event_ts + 1.0,

@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=7
+ATLAS_CHANGED_ENTITY_COUNT=5
 ATLAS_CHANGED_RELATION_COUNT=2
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -44,9 +44,7 @@ Do not manually patch generated Markdown.
 | `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1` |
 | `GATE:portfolio_capital_reservation_budget_v1` |
 | `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
-| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
 | `RUNTIME_COMPONENT:current_productive_synthetic_enter_forensic_v1` |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -99,8 +97,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7006: default-off forensic synthetic ENTER overlay at LIVE-29P join seam; Atlas topology + CSIA diff-bound bookkeeping only; no trading threshold change; AUTHORITY=NONE; POST_COUNT=0.
+- PR #7007: filter forensic cycle_evidence_root from S7 compose kwargs in N1 consumer; GHV+synthetic cycle-1 T2 repair; Atlas + CSIA diff-bound bookkeeping only; no trading threshold change; AUTHORITY=NONE; POST_COUNT=0.
 - introduced_by=ATLAS_LEGACY_ERADICATION_V1
-- modified_by=PR_7006_SYNTHETIC_ENTER_FORENSIC_GHV_V1
+- modified_by=PR_7007_GHV_SYNTHETIC_T2_CYCLE1_COMPOSE_KWARG_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

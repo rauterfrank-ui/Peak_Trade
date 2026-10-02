@@ -958,13 +958,13 @@ entities:
   - tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1.py
   notes: S2 identity-preserving Full-Autonomy to MV2/DP per-lane compose via compose_occupied_lane_mv2_dp_handoff_v1. Occupied admitted lanes map to existing IsolatedLaneSlotV1 plus the same BoundInstrumentV1 objects; occupied without admitted omitted; empty -> {}. MV2/DP ingress remains singular BoundInstrumentV1. FIRST_TRADING_DECISION_CONSUMER remains run_current_productive_master_v2_runtime_cycle_v1 and is not invoked. No pick-one; no new ingress/Top-5/multi-bound authority DTO. Not ranking, selection, Cap24 binding, trading, host, runtime-activation, or execution authority. No Cap23/Cap24 reinvoke, no Master V2/Double Play mutation, no Cap61 state_root bind, no cursor persist/restore, no productive MF join, no five-lane runtime, MAX_POSITIONS_EFFECTIVE remains 1. PREPARED_BOUND_CARDINALITY remains 0..5. PRODUCTIVE_RUNTIME_CARDINALITY remains 1_UNJOINED. CROSS_UNIVERSE_* remain false. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
-  # atlas_entity_review: PR #7006 N1 consumer still composes via S7 without semantic change.
+  # atlas_entity_review: PR #7007 N1 consumer strips forensic cycle_evidence_root from S7 compose kwargs only; addressing join unchanged.
   kind: CONTRACT
   name: CURRENT MF N=5 Full-Autonomy occupied-lane MV2/DP decision-state addressing join S8
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
-  modified_by: PR_7006_SYNTHETIC_ENTER_FORENSIC_GHV_V1
+  modified_by: PR_7007_GHV_SYNTHETIC_T2_CYCLE1_COMPOSE_KWARG_V1
   authority_sources:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1.md
@@ -982,13 +982,13 @@ entities:
   notes: 'S8_HARNESS_BIND_OCCUPIED_LANE_GOVERNED_CYCLE_ROOTS_WITHOUT_INVOKE harness-only path bind: reuse S3 lane_state_root as cursor_store_root and address distinct lock_root plus evidence_root under that same root. Does not invoke the governed cycle, write disk, or mutate S7 compose. N=1 global cursor path is rejected. Cap61 remains state_root=None and persist=False inside the existing cycle. NEW_STATE_OWNER_CREATED=false. CAP61_STATE_ROOT_BOUND=false. HOST_JOIN=false. MF_PRODUCTIVE_JOIN=false. MAY_INVOKE_GOVERNED_CYCLE=false. RUNTIME_AUTHORITY_EFFECT=NONE. No cursor schema change. P5_10_PRODUCTIVE_ACTIVATION_AND_BINDING_V1: when bind enabled, uses productive_layered_core_bind_cycle_kwargs_v1 (scope carrier + store gate) into cycle. Not ranking, selection, trading-authority, runtime-activation, or execution authority. MAX_POSITIONS_EFFECTIVE remains 1. MULTI_FUTURE_RUNTIME_AUTHORIZED=false. EXECUTION_CONCURRENCY_AUTHORIZED=false. PREPARED_BOUND_CARDINALITY remains 0..5. PRODUCTIVE_RUNTIME_CARDINALITY
     remains 1_UNJOINED. CROSS_UNIVERSE_* remain false. Shared mutable state remains false. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.'
 - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
-  # atlas_entity_review: PR #7006 optional synthetic ENTER overlay seam before LIVE-29P join.
+  # atlas_entity_review: PR #7007 filter cycle_evidence_root before compose_occupied_lane_mv2_dp_durable_cycle_v1; synthetic overlay seam unchanged.
   kind: CONTRACT
   name: CURRENT MF N=5 Full-Autonomy occupied-lane governed-cycle N=1 consumer join
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
-  modified_by: PR_7006_SYNTHETIC_ENTER_FORENSIC_GHV_V1
+  modified_by: PR_7007_GHV_SYNTHETIC_T2_CYCLE1_COMPOSE_KWARG_V1
   authority_sources:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_GOVERNED_CYCLE_N1_CONSUMER_JOIN_CONTRACT_V1.md
@@ -1002,6 +1002,7 @@ entities:
   - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/constants_v1.py
   - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py
   - tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.py
+  - tests/ops/test_golden_happy_t2_cycle1_ghv_synthetic_regression_v1.py
   notes: GOVERNED_CYCLE_N1_CONSUMER_JOIN_TO_PRE_EXTERNAL_EFFECT consumes S8 lane-local cursor_store_root, lock_root, and evidence_root and invokes the existing governed cycle once per occupied lane. EG is NON-V5. T2 is S7 compose_occupied_lane_mv2_dp_durable_cycle_v1. native_id is BoundInstrumentV1.venue_native_id. Cap61 stays state_root=None persist=False. Cursor owner remains the existing sidestate confirmation cursor. N1 global cursor is rejected. Optional portfolio_budget_owner threads slot-scoped reservations through ENTER Live-29P join without enabling N>1. Default-off forensic synthetic ENTER overlay may replace replay decision_outcome once per run at LIVE-29P join seam only when armed; does not weaken POST/credential gates. HOST_JOIN=false. MF_PRODUCTIVE_JOIN=false. PRODUCTIVE_RUNTIME_CARDINALITY remains 1_UNJOINED. MAX_POSITIONS_EFFECTIVE remains 1. MULTI_FUTURE_RUNTIME_AUTHORIZED=false. EXECUTION_CONCURRENCY_AUTHORIZED=false. No POST, permit, V5, Cap21-24 reinvoke, host join, or cardinality raise. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_n1_host_join_readiness_v1
   kind: CONTRACT
@@ -3621,12 +3622,13 @@ entities:
   - tests/ops/test_pre_live_fresh_runtime_root_isolation_v1.py
   notes: POST-slice recorded baseline fca07afa with live integrity drift gate; fresh Cap-24 root; fail-closed historical POST-store isolation; no venue POST; stop before Actual-Venue-POST Owner-GO; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1
+  # atlas_entity_review: PR #7007 cycle_evidence_root remains on s7_base for synthetic overlay; T2 compose kwargs filtered in N1 consumer.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive persistent Natural-ENTER convergence v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7006_SYNTHETIC_ENTER_FORENSIC_GHV_V1
+  modified_by: PR_7007_GHV_SYNTHETIC_T2_CYCLE1_COMPOSE_KWARG_V1
   source_paths:
   - scripts/ops/run_current_productive_persistent_natural_enter_convergence_offline_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py
@@ -3716,17 +3718,19 @@ entities:
   - tests/ops/test_golden_happy_scope_decision_trace_observability_v1.py
   notes: Default-off session-bound append-only directional signal_strength/threshold JSONL, golden_happy_scope_decision_trace_v1.jsonl (G17→Scope causal refs), plus single entry-state JSON snapshot; reads productive replay intermediate and cursor carrier; no signal/scope recompute; no trading/threshold/budget/GET semantic change; CORRELATION_STATUS=PARTIAL; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:current_productive_synthetic_enter_forensic_v1
+  # atlas_entity_review: PR #7007 GHV+synthetic cycle-1 regression; LIVE-29P join seam and injection point unchanged.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive synthetic ENTER forensic overlay v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7006_SYNTHETIC_ENTER_FORENSIC_GHV_V1
+  modified_by: PR_7007_GHV_SYNTHETIC_T2_CYCLE1_COMPOSE_KWARG_V1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/current_productive_synthetic_enter_forensic_v1.py
   - src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py
   evidence_sources:
   - tests/ops/test_current_productive_synthetic_enter_forensic_v1.py
+  - tests/ops/test_golden_happy_t2_cycle1_ghv_synthetic_regression_v1.py
   notes: Default-off forensic-only synthetic ENTER overlay at LIVE-29P join seam before enter_live_29p join; explicit SYNTHETIC_FORENSIC evidence; does not set NATURAL_ENTER_OBSERVED; no threshold/market-data mutation; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:governed_m4_m8_evidence_return_to_meta_learning_optimization_feedback_real_mechanical_continuation_v1
   kind: RUNTIME_COMPONENT
@@ -5742,13 +5746,13 @@ entities:
   - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/constants_v1.py
   notes: Isolates bounded canary venue-proof from FULL_CORE_LIVE_PATH. Canary DEFAULT_INSTRUMENT_ID / DEFAULT_SIDE / minSz are not admissible as full-core E2E proof. Canary role is HISTORICAL_AND_SCOPED_VENUE_PROOF. Not a parallel productive Live authority. Does not activate canary. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 - id: GATE:portfolio_capital_reservation_budget_v1
-  # atlas_entity_review: PR #7006 synthetic overlay may reach ENTER join path unchanged.
+  # atlas_entity_review: PR #7007 T2 compose kwarg filter only; portfolio budget join path unchanged.
   kind: GATE
   name: Portfolio capital reservation budget owner v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7006_SYNTHETIC_ENTER_FORENSIC_GHV_V1
+  modified_by: PR_7007_GHV_SYNTHETIC_T2_CYCLE1_COMPOSE_KWARG_V1
   fail_closed: true
   source_paths:
   - src/ops/portfolio_capital_reservation_budget_v1/__init__.py
