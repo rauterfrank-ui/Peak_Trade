@@ -148,6 +148,7 @@ REQUIRED_PARTIAL_IDS = (
     "current_productive_persistent_natural_enter_convergence_v1",
     "current_productive_s6_s7_c1_cursor_ownership_seam_v1",
     "pr_6993_dynamic_scope_authority_and_productive_bridge_boundaries_v1",
+    "pr_7036_raw_instrument_relative_scope_cutover_v1",
     "treasury_import_wording",
     "m4_nongoals_vs_modules",
 )

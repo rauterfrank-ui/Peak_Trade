@@ -1,0 +1,18 @@
+{
+  "lane": "B_RAW|shock",
+  "cycles": 48,
+  "hysteresis_over_mark_dispersion": 0.0,
+  "medians_hyst_over_mark_by_pc": {
+    "MICRO": 0.002
+  },
+  "raw_to_dynamic_collapse": 0.0,
+  "rank_corr_raw_to_hyst": 1.0,
+  "structural_failure_count": 0,
+  "bound_lower_activations": 0,
+  "bound_upper_activations": 0,
+  "RAW_BELOW_1_COUNT": 48,
+  "S3_ONE_FLOOR_REACHED_COUNT": 0,
+  "S3_ONE_FLOOR_EFFECTIVE_COUNT": 0,
+  "S3_ONE_FLOOR_CHANGED_VALUE_COUNT": 0,
+  "failures": []
+}

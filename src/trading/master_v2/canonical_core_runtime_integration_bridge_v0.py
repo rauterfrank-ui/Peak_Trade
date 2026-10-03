@@ -27,10 +27,9 @@ from trading.master_v2.canonical_market_context_v1 import (
     with_computed_input_digest,
 )
 from trading.master_v2.canonical_scope_initialization_v1 import (
-    CanonicalScopeInitializationPolicyV1,
     ScopeInitializationPrerequisitesV1,
     ScopeReinitializationGuardV1,
-    SCOPE_INITIALIZATION_POLICY_VERSION,
+    default_instrument_relative_scope_initialization_policy_v1,
 )
 from trading.master_v2.canonical_trading_decision_evidence_v1 import (
     serialize_canonical_trading_decision_evidence_canonical,
@@ -206,11 +205,7 @@ def _features(**kwargs: float) -> dict[str, float]:
 
 def _default_policies() -> IntegratedOfflineReplayPoliciesV1:
     return IntegratedOfflineReplayPoliciesV1(
-        scope_initialization=CanonicalScopeInitializationPolicyV1(
-            min_scope_band=50.0,
-            max_scope_band=500.0,
-            policy_version=SCOPE_INITIALIZATION_POLICY_VERSION,
-        ),
+        scope_initialization=default_instrument_relative_scope_initialization_policy_v1(),
         scope_event_generator=ScopeEventGeneratorPolicyV1(
             hard_max_scope_distance=1000.0,
             hard_max_adverse_distance=500.0,
@@ -266,8 +261,9 @@ def _component_versions() -> dict[str, str]:
 
 
 def _policy_versions() -> dict[str, str]:
+    scope_init_version = _default_policies().scope_initialization.policy_version
     return {
-        "scope_initialization": SCOPE_INITIALIZATION_POLICY_VERSION,
+        "scope_initialization": scope_init_version,
         "scope_event_generator": SCOPE_EVENT_GENERATOR_POLICY_VERSION,
         "directional": DIRECTIONAL_ASSESSMENT_POLICY_VERSION,
         "survival": SURVIVAL_ASSESSMENT_POLICY_VERSION,

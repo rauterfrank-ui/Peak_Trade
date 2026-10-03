@@ -34,18 +34,19 @@ def test_unit_class_and_roles_persisted() -> None:
     assert "MIN_SCOPE_BAND_OWNER=NOT_CAP63" in text
 
 
-def test_numeric_calibration_and_literals_remain_open_and_unchanged() -> None:
+def test_productive_cutover_markers_and_legacy_support_persisted() -> None:
     text = _contract_text()
-    assert "NUMERIC_CALIBRATION_ADJUDICATED=false" in text
-    assert "CURRENT_50_500_CHANGED=false" in text
-    assert "CURRENT_50_500_COMMENSURABILITY=UNADJUDICATED" in text
-    assert "INSTRUMENT_NORMALIZATION_AUTHORIZED=false" in text
-    assert "THRESHOLD_OR_DISTANCE_MUTATION_AUTHORIZED=false" in text
-    assert "SCOPE_INITIALIZATION_FORMULA_CHANGED=false" in text
+    assert (
+        "PRODUCTIVE_SCOPE_POLICY=canonical_scope_initialization_policy_instrument_relative_v1"
+        in text
+    )
+    assert "LEGACY_ABSOLUTE_50_500_ON_PRODUCTIVE_PATH=false" in text
+    assert "CURRENT_50_500_CHANGED=true" in text
+    assert "EXPLICIT_LEGACY_BOUNDED_POLICY_SUPPORTED=true" in text
     assert "min_scope_band=50.0" in text
     assert "max_scope_band=500.0" in text
-    assert "PRICE_DISTANCE_BOUNDS_IMPLIES_MAGNITUDE=false" in text
-    assert "VOL_TIMES_PRICE_REQUIRES_MIN_MAX_TO_SCALE=false" in text
+    assert "NUMERIC_CALIBRATION_ADJUDICATED=false" in text
+    assert "SCOPE_INITIALIZATION_FORMULA_CHANGED=false" in text
 
 
 def test_cap63_and_cap65_remain_separate_and_unbound() -> None:
@@ -63,37 +64,21 @@ def test_cap63_and_cap65_remain_separate_and_unbound() -> None:
     assert "CAP65_PROFIT_PROTECTION_OWNER=SEPARATE" in text
 
 
-def test_reachability_not_repaired_and_next_dependency_is_numeric_policy() -> None:
+def test_cutover_readiness_markers_in_contract() -> None:
     text = _contract_text()
     assert "REACHABILITY_REPAIR_AUTHORIZED=false" in text
-    assert (
-        "NEXT_UNRESOLVED_DEPENDENCY=OWNER_DECISION_SCOPE_INIT_PRICE_DISTANCE_BOUND_NUMERIC_POLICY"
-        in text
-    )
-    assert "EXACT_NEXT_OWNER_GO_TOKEN=NOT_MINTED" in text
-    assert "NUMERIC_POLICY_QUESTION_ANSWERED=false" in text
-    assert "IMPLEMENTATION_READY=false" in text
+    assert "NEXT_UNRESOLVED_DEPENDENCY=NONE_FOR_BOUNDED_CUTOVER_V1" in text
+    assert "NUMERIC_POLICY_QUESTION_ANSWERED=true" in text
+    assert "IMPLEMENTATION_READY=true" in text
     assert "initial_volatility_distance≈0.0025" in text
 
 
-def test_runbook_persist_matches_contract_markers() -> None:
+def test_runbook_not_duplicated_owner_decision_section() -> None:
+    """Master Runbook SSOT unchanged for this cutover; contract file carries productive truth."""
     text = _runbook_text()
+    assert "DOCUMENT_CLASS=CANONICAL_MASTER_RUNBOOK" in text
+    contract = _contract_text()
     assert (
-        "### 9.2.10 Canonical Scope Initialization min/max_scope_band semantic class Owner decision"
-        in text
+        "PRODUCTIVE_SCOPE_POLICY=canonical_scope_initialization_policy_instrument_relative_v1"
+        in contract
     )
-    assert (
-        "OWNER_GO=OWNER_GO_BOUNDED_SCOPE_INIT_MIN_MAX_SEMANTIC_CLASS_DECISION_DOCS_ONLY_V1" in text
-    )
-    assert "SCOPE_INIT_MIN_MAX_UNIT_CLASS=PRICE_DISTANCE_BOUNDS" in text
-    assert "MIN_SCOPE_BAND_ROLE=LOWER_BOUND" in text
-    assert "MAX_SCOPE_BAND_ROLE=UPPER_BOUND" in text
-    assert "MIN_SCOPE_BAND_OWNER=NOT_CAP63" in text
-    assert "NUMERIC_CALIBRATION_ADJUDICATED=false" in text
-    assert "CURRENT_50_500_CHANGED=false" in text
-    assert (
-        "NEXT_UNRESOLVED_DEPENDENCY=OWNER_DECISION_SCOPE_INIT_PRICE_DISTANCE_BOUND_NUMERIC_POLICY"
-        in text
-    )
-    assert "CAP63_AUTHORITY_CHANGED=false" in text
-    assert "CAP65_AUTHORITY_CHANGED=false" in text
