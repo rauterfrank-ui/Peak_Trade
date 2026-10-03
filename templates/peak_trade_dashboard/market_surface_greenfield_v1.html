@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Peak_Trade · Operator Trading Surface</title>
+  <link rel="stylesheet" href="/static/css/market_surface_greenfield_v1.css" />
+  <script defer src="/static/vendor/lightweight-charts/4.2.2/lightweight-charts.standalone.production.js"></script>
+  <script defer src="/static/js/market_surface_greenfield_v1/surface_app_v1.js"></script>
+</head>
+<body class="ots-canvas" data-ots-greenfield-v1="true" data-state-api="{{ state_api_path }}">
+  <header class="ots-top-strip">
+    <div class="ots-brand">PEAK_TRADE</div>
+    <div class="ots-top-meta">
+      <span id="ots-instrument" class="ots-mono">—</span>
+      <span id="ots-okx-inst" class="ots-mono ots-dim">—</span>
+      <span id="ots-last-price" class="ots-mono ots-price">—</span>
+      <span id="ots-market-freshness" class="ots-mono ots-dim">—</span>
+      <span class="ots-readonly">READ ONLY · AUTHORITY=NONE</span>
+    </div>
+  </header>
+
+  <main class="ots-main">
+    <section class="ots-market-field" aria-label="Market chart">
+      <div class="ots-chart-toolbar">
+        <span id="ots-interval" class="ots-mono ots-dim">—</span>
+        <span id="ots-connection" class="ots-mono">—</span>
+      </div>
+      <div id="ots-chart" class="ots-chart-host"></div>
+    </section>
+
+    <aside class="ots-system-context" aria-label="System context">
+      <div class="ots-system-block">
+        <div class="ots-label">Selected future</div>
+        <div id="ots-selected-future" class="ots-mono">—</div>
+      </div>
+      <div class="ots-system-block">
+        <div class="ots-label">Trades set / rejected</div>
+        <div id="ots-trade-counters" class="ots-mono">—</div>
+      </div>
+      <div class="ots-system-block">
+        <div class="ots-label">Optimization / R&amp;D</div>
+        <div id="ots-optimization" class="ots-mono ots-dim">—</div>
+      </div>
+      <div class="ots-system-block ots-unknown-strip">
+        <div class="ots-label">Unavailable sources</div>
+        <ul id="ots-unknown-list" class="ots-unknown-list"></ul>
+      </div>
+      <div class="ots-system-block">
+        <div class="ots-label">Safety</div>
+        <div id="ots-safety" class="ots-mono ots-dim">—</div>
+      </div>
+    </aside>
+  </main>
+</body>
+</html>

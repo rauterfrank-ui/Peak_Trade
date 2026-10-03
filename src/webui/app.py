@@ -195,6 +195,8 @@ from .market_dashboard_landscape_shell_router_v2 import (
     router as market_dashboard_landscape_shell_router_v2,
     set_market_landscape_shell_config,
 )
+from .market_surface_greenfield_v1 import market_surface_greenfield_router_v1
+from .market_surface_greenfield_v1.router_v1 import set_market_surface_greenfield_templates
 
 # Wir gehen davon aus: src/webui/app.py -> src/webui -> src -> REPO_ROOT
 BASE_DIR = Path(__file__).resolve().parents[2]
@@ -532,6 +534,10 @@ def create_app() -> FastAPI:
     # Market Dashboard Landscape V2 — Phase 3 read-only shell (GET /market)
     set_market_landscape_shell_config(templates)
     app.include_router(market_dashboard_landscape_shell_router_v2)
+
+    # Operator trading surface greenfield v1 — parallel read-only surface (GET only)
+    set_market_surface_greenfield_templates(templates)
+    app.include_router(market_surface_greenfield_router_v1)
 
     # JSON API Alias für /api/ops/workflows
     @app.get("/api/ops/workflows")

@@ -1,0 +1,134 @@
+:root {
+  --ots-bg: #0a0c10;
+  --ots-fg: #e6e8ec;
+  --ots-dim: #7a8190;
+  --ots-accent: #5b8def;
+  --ots-sep: rgba(255, 255, 255, 0.06);
+  --ots-font: "Inter", system-ui, sans-serif;
+  --ots-mono: "IBM Plex Mono", "SF Mono", ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--ots-bg);
+  color: var(--ots-fg);
+  font-family: var(--ots-font);
+  font-size: 13px;
+}
+
+.ots-canvas {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.ots-top-strip {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.65rem 1.25rem;
+  border-bottom: 1px solid var(--ots-sep);
+}
+
+.ots-brand {
+  letter-spacing: 0.2em;
+  font-size: 11px;
+  color: var(--ots-dim);
+}
+
+.ots-top-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: baseline;
+}
+
+.ots-mono {
+  font-family: var(--ots-mono);
+}
+
+.ots-dim {
+  color: var(--ots-dim);
+}
+
+.ots-price {
+  font-size: 15px;
+  color: var(--ots-fg);
+}
+
+.ots-readonly {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: var(--ots-dim);
+  text-transform: uppercase;
+}
+
+.ots-main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 280px;
+  min-height: 0;
+}
+
+.ots-market-field {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0.5rem 0.75rem 1rem 1rem;
+}
+
+.ots-chart-toolbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.25rem 0 0.5rem;
+  font-size: 11px;
+}
+
+.ots-chart-host {
+  flex: 1;
+  min-height: 420px;
+}
+
+.ots-system-context {
+  border-left: 1px solid var(--ots-sep);
+  padding: 1rem 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  overflow-y: auto;
+}
+
+.ots-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ots-dim);
+  margin-bottom: 0.35rem;
+}
+
+.ots-unknown-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--ots-mono);
+  font-size: 11px;
+  color: var(--ots-dim);
+  line-height: 1.6;
+}
+
+@media (max-width: 960px) {
+  .ots-main {
+    grid-template-columns: 1fr;
+  }
+  .ots-system-context {
+    border-left: none;
+    border-top: 1px solid var(--ots-sep);
+  }
+}
