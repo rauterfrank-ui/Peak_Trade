@@ -5439,6 +5439,20 @@
       ],
       "closure_adjudication_class": "REPRESENTATION_ONLY",
       "closure_note": "Governance/map/atlas/seal closure for reviewed productive wiring; AUTHORITY=NONE."
+    },
+    {
+      "id": "pr_7036_raw_instrument_relative_scope_cutover_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #7036: Productive Scope initialization cutover from legacy absolute [50,500] injection to existing instrument-relative σ×mark policy on canonical_core_runtime_integration_bridge_v0 and integrated_vs_scenario_replay_full_system_parity_harness_v0 only. No new Scope formula; Double Play / Layer-C / LIVE29P unchanged. Diff-bound MAP_UPDATE_REQUIRED + Atlas navigation review; AUTHORITY=NONE; POST_COUNT=0.",
+      "evidence_refs": [
+        "docs/ops/specs/SCOPE_INIT_MIN_MAX_SEMANTIC_CLASS_OWNER_DECISION_V1.md",
+        "evidence/research/raw_scope_instrument_relative_cutover_v1/20261003T180432Z/implementation_manifest.json",
+        "src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py",
+        "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
+        "tests/trading/master_v2/test_raw_instrument_relative_scope_cutover_productive_v1.py"
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "Governance/map/atlas closure for bounded Scope policy cutover; TRADING_SEMANTICS_CHANGED=false at governance boundary."
     }
   ]
 }

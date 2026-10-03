@@ -141,6 +141,10 @@
     "tests/trading/master_v2/test_capital_risk_sizing_offline_replay_binding_parity_rewire_contract_v0.py",
     "tests/trading/master_v2/test_double_play_composition_scenario_matrix_parity_contract_v0.py",
     "tests/trading/master_v2/test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py",
+    "tests/trading/master_v2/test_raw_instrument_relative_scope_cutover_productive_v1.py",
+    "evidence/research/raw_scope_instrument_relative_cutover_v1/run_post_cutover_reproof_v1.py",
+    "evidence/research/raw_scope_instrument_relative_cutover_v1/20261003T180432Z/implementation_manifest.json",
+    "evidence/research/raw_scope_instrument_relative_cutover_v1/20261003T180432Z/ghv_final_adjudication.json",
     "tests/trading/master_v2/test_killswitch_boundary_offline_replay_binding_parity_rewire_contract_v0.py",
     "tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py",
     "tests/trading/master_v2/test_reconciliation_unknown_outcome_offline_replay_binding_parity_rewire_contract_v0.py",
@@ -1260,6 +1264,7 @@
     "MASTER_V2_DOUBLE_PLAY_HOST_GRAPH_SSOT_AND_OWNER_COMPOSED_FULL_CHAIN_PROOF_V1 exact-file allowlist for the proof-only host-graph SSOT spec and owner-composed full-chain consumption test (docs/test-only; semantics-neutral; no runtime authority; no restoration-slice expansion).",
     "CHARACTERIZATION_TEST_EXACT_FILE_ADMISSION exact-file allowlist for the existing three-file forbidden characterization test set (test-only; semantics-neutral; no runtime/economic mutation; no restoration/decommission/mapping-bind/nonproductive-grant use).",
     "M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_V1: authorize exact-file passive M9-S1 market session observation ledger, fail-safe bridge delegation to productive accumulation, offline 8-candidate counterfactual replay, owner-review artifacts, focused tests and docs. Reuses productive/join ledgers. No numeric max-age selection, enforcement, Alpha/presence gate semantic change, or external effect.",
-    "PR6993_DYNAMIC_SCOPE_PRODUCTIVE_BRIDGE_BOUNDARIES_V1: authorize exact-file Layer-C scope event distance binding, canonical scope initialization continuity, integrated replay scope wiring, typed volatility presence gate bridge consumption, and focused Master-V2 scope tests for dynamic scope magnitude + Cap 6.2 restart continuity + WP1/WP2 productive bridge boundaries. CORE_SEMANTICS unchanged at governance boundary; no live/testnet/orders."
+    "PR6993_DYNAMIC_SCOPE_PRODUCTIVE_BRIDGE_BOUNDARIES_V1: authorize exact-file Layer-C scope event distance binding, canonical scope initialization continuity, integrated replay scope wiring, typed volatility presence gate bridge consumption, and focused Master-V2 scope tests for dynamic scope magnitude + Cap 6.2 restart continuity + WP1/WP2 productive bridge boundaries. CORE_SEMANTICS unchanged at governance boundary; no live/testnet/orders.",
+    "PR7036_RAW_INSTRUMENT_RELATIVE_SCOPE_CUTOVER_V1: authorize exact-file productive Scope initialization policy cutover from legacy absolute [50,500] injection to existing instrument-relative σ×mark policy on canonical_core_runtime_integration_bridge_v0 and integrated_vs_scenario_replay_full_system_parity_harness_v0; focused cutover contract tests, GHV reproof evidence runner/manifests, and SCOPE_INIT navigation docs. No new Scope formula; Double Play / Layer-C / LIVE29P unchanged; CORE_SEMANTICS unchanged at governance boundary; no live/testnet/orders."
   ]
 }

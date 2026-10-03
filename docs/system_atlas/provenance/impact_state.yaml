@@ -1,12 +1,11 @@
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CHANGE:pr_7033_post_7032_document_currency_fixpoint_v1
-modified_by: CHANGE:pr_7033_post_7032_document_currency_fixpoint_v1
+introduced_by: CHANGE:pr_7036_raw_instrument_relative_scope_cutover_v1
+modified_by: CHANGE:pr_7036_raw_instrument_relative_scope_cutover_v1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'PR #7033 post-#7032 document-currency fixpoint — Master Runbook + Map of Truth residency navigation; law map runbook SHA refresh; workspace hygiene; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.'
+note: 'PR #7036 raw instrument-relative Scope cutover — bridge + Surface-P parity harness productive policy wiring; Map-of-Truth navigation inventory; GHV reproof evidence; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.'
 changed_entities:
-- RUNBOOK:canonical_master_runbook
 - NAVIGATION_INDEX:map_of_truth
 changed_relations: []
 changed_closures: []
