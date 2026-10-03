@@ -1459,7 +1459,7 @@ Operator-only recovery state (not runtime dependency): tracked CURRENT tree
 preserved (`20413` tracked files, byte-identical pre/post cleanup);
 `git status --porcelain` clean; **zero** registered auxiliary linked worktrees;
 local non-tracked forensic/runtime/WIP artifacts moved to operator external
-archive (no permanent deletion). `.venv/` and local secrets/env remain in the
+archive (no permanent deletion). `.venv&#47;` and local secrets/env remain in the
 worktree and are not duplicated into archive.
 
 ------------------------------------------------------------------------

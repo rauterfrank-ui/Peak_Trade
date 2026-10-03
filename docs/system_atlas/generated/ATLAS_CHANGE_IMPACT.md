@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=6
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7032_ghv_current_residency_migration_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7033_post_7032_document_currency_fixpoint_v1`.
 
 ## Workflow
 
@@ -40,12 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:ghv_current_residency_decoupling_v1` |
+| `RUNBOOK:canonical_master_runbook` |
 | `NAVIGATION_INDEX:map_of_truth` |
-| `NAVIGATION_INDEX:current_universe_landscape_snapshot_v1` |
-| `CAPABILITY:market_intelligence_forecast_calibration_offline_stack_v1` |
-| `RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1` |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -97,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7032 merged on origin/main (b0a15094). Post-merge document-currency fixpoint ratifies O5/MAT/ARC residency in Master Runbook and Map of Truth; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.
-- introduced_by=CHANGE:pr_7032_ghv_current_residency_migration_v1
-- modified_by=CHANGE:pr_7032_ghv_current_residency_migration_v1
+- PR #7033 post-#7032 document-currency fixpoint — Master Runbook + Map of Truth residency navigation; law map runbook SHA refresh; workspace hygiene; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.
+- introduced_by=CHANGE:pr_7033_post_7032_document_currency_fixpoint_v1
+- modified_by=CHANGE:pr_7033_post_7032_document_currency_fixpoint_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

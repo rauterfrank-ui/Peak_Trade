@@ -32,7 +32,7 @@ LAW_REFERENCE_IS_NORMATIVE=false
 - law_id=OD-U01-P01-29P-SIZING-MINT-ADJUDICATION-V1 source=config/governance/od_u01_p01_29p_sizing_mint_canonical_adjudication_v1.json anchor=od_u01_p01_29p_sizing_mint_canonical_adjudication_v1 sha256=f8bca9e15505… index_status=INDEXED
 - law_id=PROD-CANONICAL-PRICE-PROVENANCE-V1 source=src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py anchor=ProductiveCanonicalPriceProvenanceError sha256=cb7cd9839850… index_status=INDEXED
 - law_id=PUBLIC-MD-RUNTIME-POLICY-V1 source=config/governance/peak_trade_public_market_data_runtime_v1_policy_v1.json anchor=peak_trade_public_market_data_runtime_v1_policy_v1 sha256=fc2b9165d324… index_status=INDEXED
-- law_id=RUNBOOK-VENUE-PLAN-TDMODE-AUTHORITY-V1 source=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md anchor=CURRENT Venue-Plan tdMode and Order-Environment Authority sha256=a4bdbbb34356… index_status=INDEXED
+- law_id=RUNBOOK-VENUE-PLAN-TDMODE-AUTHORITY-V1 source=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md anchor=CURRENT Venue-Plan tdMode and Order-Environment Authority sha256=0a418048d7a6… index_status=INDEXED
 - law_id=SEM-DIV-00001 source=tests/ops/test_current_productive_semantic_enforcement_repair_v1.py anchor=test_natural_enter_rejects_candle_close_only_mark_without_payload sha256=ad5e8c07e658… index_status=INDEXED
 - law_id=SEM-DIV-00002 source=tests/ops/test_current_productive_semantic_enforcement_repair_v1.py anchor=test_cycle_rejects_forbidden_candle_close_mark_source sha256=ad5e8c07e658… index_status=INDEXED
 - law_id=SEM-DIV-00006 source=tests/ops/test_current_productive_semantic_enforcement_repair_v1.py anchor=test_observation_sidestate_seed_class_rejected_on_bind sha256=ad5e8c07e658… index_status=INDEXED

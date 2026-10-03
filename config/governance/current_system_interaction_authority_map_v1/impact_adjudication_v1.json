@@ -8,25 +8,34 @@
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
     "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/system_atlas/census/census_meta.yaml",
+    "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+    "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml"
   ],
-  "changed_paths_sha256": "40fbeb6b805666de32809f593bdc3ef706e760f32b1e60e98afee6dd000d1754",
+  "changed_paths_sha256": "3a3a95a6cf3b78adf640298f36b9354b1d108dfef8ac1e9040bd2578bed5fb8d",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/source_v1.json",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
     "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/system_atlas/census/census_meta.yaml",
+    "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+    "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml"
   ],
   "evidence_refs": [
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "docs/system_atlas/provenance/changes.yaml"
   ],
-  "reason": "Post-#7032 document-currency fixpoint: Master Runbook and Map of Truth residency navigation only; law map runbook SHA refresh; Atlas provenance note; no CSIA structured source change; AUTHORITY=NONE; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.",
+  "reason": "Post-#7032 document-currency fixpoint: Master Runbook and Map of Truth residency navigation; law map runbook SHA refresh; Atlas NAVIGATION_REBIND provenance; no CSIA structured source change; AUTHORITY=NONE; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
