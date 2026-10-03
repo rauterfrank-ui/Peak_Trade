@@ -13,6 +13,7 @@
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "docs/system_atlas/relations/runtime.yaml",
+    "scripts/ops/current_system_interaction_authority_map_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
     "tests/ops/test_current_productive_mv2_crs_boundary_wiring_v1.py",
     "tests/ops/test_full_core_current_productive_host_enter_29p_invalid_stop_price_repair_v1.py",
