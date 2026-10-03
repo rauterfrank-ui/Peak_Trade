@@ -16,9 +16,6 @@ from dataclasses import dataclass, replace
 from decimal import Decimal, InvalidOperation
 from typing import Any, Mapping, Optional
 
-from src.ops.decision_config_ownership_and_consumer_closure_v1.canonical_values_v1 import (
-    CANONICAL_ADVERSE_EXIT_DISTANCE,
-)
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     NUMERIC_EQUITY_TTL_SECONDS,
 )
@@ -341,6 +338,25 @@ def _rebound_replay_with_sizing_decision_v1(
     )
 
 
+def resolve_current_productive_live_29p_adverse_exit_distance_v1(
+    replay: IntegratedOfflineReplayResultV1 | None,
+) -> tuple[float | None, tuple[str, ...]]:
+    """Layer-C σ×P adverse exit distance aligned with productive MV2 replay (not Cap-6.3 fixed 80)."""
+    from trading.master_v2.layer_c_scope_event_distance_binding_v1 import (
+        resolve_layer_c_event_distances_from_canonical_market_context_v1,
+    )
+
+    if replay is None or replay.intermediate is None:
+        return None, ("replay_intermediate_missing",)
+    binding = resolve_layer_c_event_distances_from_canonical_market_context_v1(
+        replay.intermediate.market_context
+    )
+    if not binding.ok or binding.adverse_exit_distance is None:
+        codes = binding.failure_codes or ("layer_c_adverse_exit_unresolved",)
+        return None, tuple(str(code) for code in codes)
+    return float(binding.adverse_exit_distance), ()
+
+
 def _classify_fail_status(reasons: tuple[str, ...], *, error_class: str) -> str:
     joined = " ".join(reasons) + " " + str(error_class or "")
     if "STALE" in joined:
@@ -617,11 +633,25 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             reasons=tuple(str(code) for code in price_output.reason_codes),
         )
     reference = price_output.reference_price
+    adverse_exit_distance, adverse_reasons = (
+        resolve_current_productive_live_29p_adverse_exit_distance_v1(replay)
+    )
+    if adverse_exit_distance is None:
+        return _deny(
+            status=STATUS_FAIL,
+            blocker="LAYER_C_ADVERSE_EXIT_DISTANCE_UNRESOLVED",
+            replay=replay,
+            get_count=get_count,
+            producer_output_value=str(output.value),
+            producer_output_status="PRODUCED",
+            step_29p_risk_admissible=TRUE_TOKEN,
+            reasons=adverse_reasons,
+        )
     protective_sizing_side = resolve_protective_stop_sizing_side_for_live_29p_join_v1(replay)
     stop = derive_protective_stop_price_from_adverse_exit_v0(
         selected_side=str(protective_sizing_side or ""),
         reference_price=reference,
-        adverse_exit_distance=CANONICAL_ADVERSE_EXIT_DISTANCE,
+        adverse_exit_distance=adverse_exit_distance,
     )
     if stop is None:
         return _deny(

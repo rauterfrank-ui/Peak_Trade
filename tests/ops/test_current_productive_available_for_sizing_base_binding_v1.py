@@ -341,6 +341,34 @@ def test_n_duplicate_evidence_idempotent() -> None:
     )
 
 
+def test_duplicate_evidence_rebinds_decision_epoch_for_current_cycle() -> None:
+    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_available_for_sizing_base_binding_v1 import (
+        bind_current_productive_available_for_sizing_base_from_treasury_host_v1,
+    )
+
+    obs = _reconciled_obs()
+    first = _host(obs)
+    assert first.base_numeric_binding.base_fact is not None
+    assert first.base_numeric_binding.base_fact.decision_epoch == _TS
+
+    later_obs = _reconciled_obs(observed_at_utc="2026-09-21T05:30:00Z")
+    second_host = _host(later_obs)
+    assert second_host.base_numeric_binding.numeric_base_bound is True
+    assert second_host.base_numeric_binding.base_fact is not None
+    assert second_host.base_numeric_binding.base_fact.decision_epoch == "2026-09-21T05:30:00Z"
+
+    bound = bind_current_productive_available_for_sizing_base_from_treasury_host_v1(
+        treasury_observation=later_obs,
+        c08_binding=second_host.c08_sizing_source_binding,
+        host_evaluation=second_host.host_evaluation,
+        usdc_row_status=CURRENCY_ROW_STATUS_PRESENT,
+        capital_admission_evidence=second_host.treasury_join.capital_admission_evidence,
+        decision_epoch="2026-09-21T05:30:00Z",
+    )
+    assert bound.base_fact is not None
+    assert bound.base_fact.decision_epoch == "2026-09-21T05:30:00Z"
+
+
 def test_o_step_29p_deny() -> None:
     result = _host(_reconciled_obs())
     assert result.base_numeric_binding.risk_admissible is False

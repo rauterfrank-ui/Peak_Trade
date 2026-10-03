@@ -27,6 +27,9 @@ from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consume
     _t2_from_s7,
     non_v5_eg_dispatch_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
+    DISPOSITION_FAIL_CLOSED as CONTINUOUS_DISPOSITION_FAIL_CLOSED,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
     run_current_productive_governed_cycle_v1,
 )
@@ -1088,6 +1091,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
         "STALL_BOUND_STOP",
         "WAIT_BOUND",
         "HOLD_CONTINUE_CLOSED",
+        CONTINUOUS_DISPOSITION_FAIL_CLOSED,
     }:
         raise PersistentNaturalEnterConvergenceError(
             "UNEXPECTED_TERMINAL_DISPOSITION", str(orch.disposition)
