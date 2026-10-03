@@ -189,3 +189,14 @@ def test_chart_layout_regression_flags() -> None:
         and "ots-chart-stage" in html,
     }
     assert all(flags.values()), flags
+
+
+def test_v1_2_narrow_ranking_rail_css_and_dom() -> None:
+    html = HTML_PATH.read_text(encoding="utf-8")
+    css = CSS_PATH.read_text(encoding="utf-8")
+    assert 'data-ranking-rail="narrow-v1-2"' in html
+    assert 'data-v1-2-delivery="narrow-rail"' in html
+    assert "--ots-left-col: 18%" in css
+    assert "33%" not in css.split("--ots-left-col")[1].split(";")[0]
+    assert "minmax(0, 1fr)" in css
+    assert "--ots-ranking-rail-max" in css

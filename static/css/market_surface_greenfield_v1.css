@@ -11,8 +11,10 @@
   --ots-font: "Inter", system-ui, -apple-system, sans-serif;
   --ots-mono: "IBM Plex Mono", "SF Mono", ui-monospace, monospace;
   --ots-transition: 180ms ease;
-  --ots-left-col: 33%;
-  --ots-right-col: 67%;
+  /* V1.2 narrow ranking rail (~half prior 33% column) */
+  --ots-left-col: 18%;
+  --ots-right-col: 82%;
+  --ots-ranking-rail-max: 220px;
 }
 
 * {
@@ -82,7 +84,7 @@ body {
 
 .ots-primary-stage {
   display: grid;
-  grid-template-columns: var(--ots-left-col) var(--ots-right-col);
+  grid-template-columns: minmax(148px, var(--ots-left-col)) minmax(0, 1fr);
   gap: 0 1rem;
   padding: 0.5rem 1rem 0.35rem;
   min-height: 0;
@@ -96,7 +98,8 @@ body {
   flex-direction: column;
   min-height: 0;
   min-width: 0;
-  padding-right: 0.75rem;
+  max-width: var(--ots-ranking-rail-max);
+  padding-right: 0.5rem;
   border-right: 1px solid var(--ots-line);
 }
 
@@ -107,20 +110,21 @@ body {
 }
 
 .ots-brand-primary {
-  font-size: clamp(22px, 2.2vw, 28px);
+  font-size: clamp(17px, 1.5vw, 24px);
   font-weight: 600;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.1em;
   color: var(--ots-fg);
-  line-height: 1.15;
+  line-height: 1.12;
 }
 
 .ots-brand-subtitle {
   margin-top: 0.35rem;
-  font-size: 11px;
-  letter-spacing: 0.28em;
+  font-size: 9px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ots-dim);
   font-weight: 400;
+  line-height: 1.45;
 }
 
 .ots-ranking-universe {
@@ -160,11 +164,11 @@ body {
 
 .ots-population-grid {
   position: absolute;
-  inset: 14% 12% 38% 10%;
+  inset: 14% 8% 38% 8%;
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(4, 1fr);
-  gap: 8px;
+  gap: 6px;
   opacity: 0.5;
 }
 
@@ -469,7 +473,7 @@ body {
   transition: opacity var(--ots-transition);
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 768px) {
   .ots-primary-stage {
     grid-template-columns: 1fr;
   }
