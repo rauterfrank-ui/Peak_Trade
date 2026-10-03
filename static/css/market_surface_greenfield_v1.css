@@ -15,6 +15,10 @@
   --ots-left-col: 18%;
   --ots-right-col: 82%;
   --ots-ranking-rail-max: 220px;
+  /* V1.3 market column — shared left edge, bounded chart viewport */
+  --ots-rail-brand-offset: 4.35rem;
+  --ots-market-column-max: 680px;
+  --ots-market-module-gap: 0.35rem;
 }
 
 * {
@@ -241,6 +245,7 @@ body {
   flex-direction: column;
   min-height: 0;
   min-width: 0;
+  padding-top: var(--ots-rail-brand-offset);
 }
 
 .ots-market-workspace {
@@ -248,22 +253,58 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  align-items: stretch;
+  width: 100%;
+}
+
+.ots-market-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  min-width: 0;
+  flex: 0 0 auto;
+}
+
+.ots-market-module {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: min(100%, var(--ots-market-column-max));
+  max-width: var(--ots-market-column-max);
+  gap: var(--ots-market-module-gap);
+  flex-shrink: 0;
 }
 
 .ots-direct-view {
-  padding-bottom: 0.35rem;
+  width: 100%;
+  padding-bottom: 0;
+}
+
+.ots-direct-view-compact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.45rem;
+  row-gap: 0.2rem;
+}
+
+.ots-direct-view-compact .ots-direct-view-title {
+  margin-bottom: 0;
+  flex: 0 0 auto;
 }
 
 .ots-direct-view-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 3px;
+  flex: 1 1 auto;
 }
 
 .ots-dv-btn {
   font-family: var(--ots-mono);
-  font-size: 11px;
-  padding: 0.35rem 0.55rem;
+  font-size: 10px;
+  padding: 0.18rem 0.38rem;
   background: transparent;
   color: var(--ots-muted);
   border: 1px solid var(--ots-line);
@@ -288,59 +329,49 @@ body {
 }
 
 .ots-direct-view-hint {
-  margin: 0.35rem 0 0;
+  margin: 0.1rem 0 0;
+  flex: 1 1 100%;
+  font-size: 9px;
+  line-height: 1.25;
 }
 
 .ots-transition-band {
-  padding: 0.2rem 0 0.35rem;
+  padding: 0;
   color: var(--ots-dim);
   flex-shrink: 0;
+  width: 100%;
 }
 
 .ots-chart-stage {
-  flex: 1;
-  display: grid;
-  grid-template-rows: minmax(64px, 1fr) auto minmax(64px, 1fr);
-  align-items: center;
-  justify-items: center;
-  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
   width: 100%;
-}
-
-.ots-upper-instrument-band,
-.ots-lower-instrument-band {
-  width: 100%;
-  min-height: 64px;
-  align-self: stretch;
-}
-
-.ots-upper-instrument-band {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  flex: none;
 }
 
 .ots-lower-instrument-band {
-  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  width: 100%;
+  max-width: none;
+  margin-top: auto;
+  padding-top: 0.75rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-}
-
-.ots-chart-center-wrap {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  max-width: 100%;
-  padding: 0.25rem 0;
+  align-self: stretch;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .ots-chart-region {
   display: flex;
   flex-direction: column;
-  width: min(96%, 920px);
-  margin-inline: auto;
+  width: 100%;
+  max-width: var(--ots-market-column-max);
+  margin-inline: 0;
   flex: none;
+  align-self: flex-start;
 }
 
 .ots-chart-head {
@@ -370,8 +401,9 @@ body {
 
 .ots-chart-host {
   flex: none;
-  height: clamp(220px, 36vh, 400px);
+  height: clamp(220px, 34vh, 380px);
   width: 100%;
+  max-width: var(--ots-market-column-max);
 }
 
 .ots-analytical-row {
@@ -476,6 +508,9 @@ body {
 @media (max-width: 768px) {
   .ots-primary-stage {
     grid-template-columns: 1fr;
+  }
+  .ots-right-stack {
+    padding-top: 0;
   }
   .ots-left-landscape {
     border-right: none;
