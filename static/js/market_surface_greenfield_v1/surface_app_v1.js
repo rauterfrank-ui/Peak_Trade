@@ -4,9 +4,13 @@
   var body = document.body;
   var stateApi = body.getAttribute("data-state-api") || "/api/operator-trading-surface/v1/state";
   var pollTimer = null;
+  var pollInFlight = false;
   var chart = null;
   var candleSeries = null;
   var lastMarket = null;
+  var previousCandleSeries = null;
+  var chartSeriesInitialized = false;
+  var chartInstanceCount = 0;
   var directView = window.PeakTradeDirectViewV1 ? window.PeakTradeDirectViewV1.load() : "MARKET";
   var fmt = window.PeakTradeSurfaceFormatV1 || {
     formatPrice: function (v) {
@@ -107,10 +111,58 @@
     applyDirectViewUi();
   }
 
+  function candleSeriesSignature(series) {
+    if (!Array.isArray(series) || !series.length) return "";
+    var last = series[series.length - 1];
+    return series.length + ":" + last.time + ":" + last.open + ":" + last.high + ":" + last.low + ":" + last.close;
+  }
+
+  function applyCandleSeries(series) {
+    if (!candleSeries || !Array.isArray(series) || !series.length) return;
+    var signature = candleSeriesSignature(series);
+    if (!chartSeriesInitialized) {
+      candleSeries.setData(series);
+      if (chart) chart.timeScale().fitContent();
+      chartSeriesInitialized = true;
+      previousCandleSeries = series.slice();
+      return;
+    }
+    if (signature === candleSeriesSignature(previousCandleSeries)) return;
+    if (
+      previousCandleSeries &&
+      series.length === previousCandleSeries.length &&
+      series.length > 0
+    ) {
+      var prefixStable = true;
+      for (var i = 0; i < series.length - 1; i++) {
+        var prev = previousCandleSeries[i];
+        var next = series[i];
+        if (
+          prev.time !== next.time ||
+          prev.open !== next.open ||
+          prev.high !== next.high ||
+          prev.low !== next.low ||
+          prev.close !== next.close
+        ) {
+          prefixStable = false;
+          break;
+        }
+      }
+      if (prefixStable) {
+        candleSeries.update(series[series.length - 1]);
+        previousCandleSeries = series.slice();
+        return;
+      }
+    }
+    candleSeries.setData(series);
+    previousCandleSeries = series.slice();
+  }
+
   function ensureChart() {
     if (chart || typeof LightweightCharts === "undefined") return;
     var host = el("ots-chart");
     if (!host) return;
+    chartInstanceCount += 1;
     chart = LightweightCharts.createChart(host, {
       layout: { background: { color: "#080a0e" }, textColor: "#9aa3b2" },
       grid: { vertLines: { color: "rgba(255,255,255,0.05)" }, horzLines: { color: "rgba(255,255,255,0.05)" } },
@@ -174,8 +226,7 @@
           minMove: fmt.minMoveForPrice(lastClose),
         },
       });
-      candleSeries.setData(market.candle_series);
-      if (chart) chart.timeScale().fitContent();
+      applyCandleSeries(market.candle_series);
     }
     applyDirectViewUi();
   }
@@ -206,7 +257,17 @@
       safety.direct_browser_okx;
   }
 
+  function scheduleNextPoll(intervalMs) {
+    if (pollTimer) clearTimeout(pollTimer);
+    pollTimer = setTimeout(tick, intervalMs);
+  }
+
   function tick() {
+    if (pollInFlight) {
+      scheduleNextPoll(250);
+      return;
+    }
+    pollInFlight = true;
     fetch(stateApi, { method: "GET", credentials: "same-origin" })
       .then(function (r) {
         return r.json();
@@ -218,11 +279,13 @@
         applyTransitionBand(state.system);
         applySafety(state.safety);
         var interval = (state.poll_interval_seconds || 1) * 1000;
-        if (pollTimer) clearTimeout(pollTimer);
-        pollTimer = setTimeout(tick, interval);
+        scheduleNextPoll(interval);
       })
       .catch(function () {
-        pollTimer = setTimeout(tick, 3000);
+        scheduleNextPoll(3000);
+      })
+      .finally(function () {
+        pollInFlight = false;
       });
   }
 

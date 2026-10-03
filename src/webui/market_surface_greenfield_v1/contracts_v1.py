@@ -8,6 +8,8 @@ STATE_API_PATH = "/api/operator-trading-surface/v1/state"
 STATE_SCHEMA = "operator_trading_surface_canonical_state.v1"
 
 POLL_INTERVAL_SECONDS = 1
+MARKET_OBSERVATION_INTERVAL_SECONDS = 1
+SYSTEM_INSTRUMENTS_CACHE_SECONDS = 5
 
 # Instrument slots with no canonical CURRENT productive HTTP source (fail-closed).
 UNKNOWN_SOURCE_SLOTS: tuple[tuple[str, str], ...] = (

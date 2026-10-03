@@ -19,8 +19,14 @@ from src.webui.execution_watch_api_v0_2 import (
 )
 from src.webui.r_and_d_api import compute_summary, load_experiments_from_dir
 
-from .contracts_v1 import POLL_INTERVAL_SECONDS, STATE_SCHEMA
+from .contracts_v1 import (
+    MARKET_OBSERVATION_INTERVAL_SECONDS,
+    POLL_INTERVAL_SECONDS,
+    STATE_SCHEMA,
+    SYSTEM_INSTRUMENTS_CACHE_SECONDS,
+)
 from .market_projection_v1 import project_market_state_from_ohlcv_doc
+from .observation_cache_v1 import get_or_refresh_system_slice
 from .system_projection_v1 import project_system_state
 
 
@@ -69,11 +75,18 @@ async def build_canonical_surface_state_v1(*, force_refresh: bool = False) -> di
                 else DEFAULT_DASHBOARD_OHLCV_POLL_INTERVAL_SECONDS,
             )
         except OkxOhlcvReadmodelError as exc:
-            refresh_meta = {
-                "status": "REFRESH_FAILED",
-                "refresh_attempted": True,
-                "refresh_error": str(exc),
-            }
+            if str(exc) == "REFRESH_IN_PROGRESS":
+                refresh_meta = {
+                    "status": "SKIPPED_IN_PROGRESS",
+                    "refresh_attempted": False,
+                    "refresh_error": str(exc),
+                }
+            else:
+                refresh_meta = {
+                    "status": "REFRESH_FAILED",
+                    "refresh_attempted": True,
+                    "refresh_error": str(exc),
+                }
         loaded = load_ohlcv_readmodel_v1(archive_root)
         if loaded is not None:
             ohlcv_doc = dict(loaded)
@@ -84,15 +97,23 @@ async def build_canonical_surface_state_v1(*, force_refresh: bool = False) -> di
         ohlcv_doc, refresh_meta=refresh_meta, observed_at=observed_at
     )
 
-    run_id, events = await _load_trade_events_for_latest_run()
-    r_and_d = _load_r_and_d_summary()
-    system = project_system_state(
-        archive_root=archive_root,
-        trade_events=events,
-        run_id=run_id,
-        observed_at=observed_at,
-        r_and_d_summary=r_and_d,
+    async def _build_system_payload() -> dict[str, Any]:
+        run_id, events = await _load_trade_events_for_latest_run()
+        r_and_d = _load_r_and_d_summary()
+        system = project_system_state(
+            archive_root=archive_root,
+            trade_events=events,
+            run_id=run_id,
+            observed_at=observed_at,
+            r_and_d_summary=r_and_d,
+        )
+        return {"system": system}
+
+    system_payload, system_from_cache = await get_or_refresh_system_slice(
+        builder=_build_system_payload,
+        force=force_refresh,
     )
+    system = system_payload["system"]
 
     try:
         from src.ops.current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.constants_v1 import (
@@ -118,6 +139,13 @@ async def build_canonical_surface_state_v1(*, force_refresh: bool = False) -> di
         "schema_version": 1,
         "observed_at": observed_at,
         "poll_interval_seconds": POLL_INTERVAL_SECONDS,
+        "observation": {
+            "market_interval_seconds": MARKET_OBSERVATION_INTERVAL_SECONDS,
+            "browser_poll_interval_seconds": POLL_INTERVAL_SECONDS,
+            "system_instruments_cache_seconds": SYSTEM_INSTRUMENTS_CACHE_SECONDS,
+            "system_slice_from_cache": system_from_cache,
+            "okx_refresh_status": None if refresh_meta is None else refresh_meta.get("status"),
+        },
         "market": market,
         "system": system,
         "safety": safety,
