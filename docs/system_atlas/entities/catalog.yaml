@@ -65,13 +65,13 @@ entities:
   - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_KILL_ALL_STATE_SWITCH_FAVORABLE_ADVERSE_EXTREME_MOVES_ACCEPTANCE_V0.md
   notes: Inner functional core census label for Double Play relative to Master V2. Exact token FUNCTIONAL_CORE not found on origin/main; proven as Modul-Owner of one Trading Core. Typed contract hardening does not move Double Play authority. SideState remains the directional/lifecycle authority; Neutral-Start ARMED and Switch-Terminal ARMED are distinct identities. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: RUNBOOK:canonical_master_runbook
-  atlas_documentation_fixpoint: CHANGE:pr_7031_post_static_closure_documentation_fixpoint_v1
+  atlas_documentation_fixpoint: CHANGE:pr_7033_post_7032_document_currency_fixpoint_v1
   kind: RUNBOOK
   name: Peak_Trade Master Runbook
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
-  modified_by: CHANGE:pr_7031_post_static_closure_documentation_fixpoint_v1
+  modified_by: CHANGE:pr_7033_post_7032_document_currency_fixpoint_v1
   authority_sources:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   evidence_sources:
@@ -96,7 +96,7 @@ entities:
   - docs/ops/evidence/POST_STATIC_CLOSURE_DOCUMENTATION_FIXPOINT_V1.md
   notes: Descriptive whole-system machine model with TRADING-QUALITY SEMANTIC CONTRACT AUDIT V1; AUTHORITY=NONE; not operational SSOT; does not override Master Runbook or code; POST_COUNT=0.
 - id: NAVIGATION_INDEX:map_of_truth
-  atlas_documentation_fixpoint: CHANGE:pr_7032_ghv_current_residency_migration_v1
+  atlas_documentation_fixpoint: CHANGE:pr_7033_post_7032_document_currency_fixpoint_v1
   # atlas_entity_review: PR #7027 BWP-01 navigation-only GHV fixpoint evidence; AUTHORITY=NONE.
   kind: NAVIGATION_INDEX
   name: Map of Truth
@@ -104,7 +104,7 @@ entities:
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
   semantic_authority: false
-  modified_by: CHANGE:pr_7032_ghv_current_residency_migration_v1
+  modified_by: CHANGE:pr_7033_post_7032_document_currency_fixpoint_v1
   authority_sources:
   - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
   evidence_sources:

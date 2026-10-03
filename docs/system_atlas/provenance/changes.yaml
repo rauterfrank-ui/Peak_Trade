@@ -625,3 +625,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_canonical_read_model_and_market_dashboard_rebuild_v1.py
   notes: 'PR #7032: GHV precomputed CURRENT residency decoupling — O5 read-model persistence, presentation materializers, archive-root resolver moved to neutral ops packages; import/config rewiring only; legacy dashboard subgraph retained for next deletion WP; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7033_post_7032_document_currency_fixpoint_v1
+  from: b0a15094e0c2ad33f93fc6c4d017072f7907eaa4
+  to: PENDING_CHANGE
+  type: NAVIGATION_REBIND
+  epistemic_status: FORENSIC_RAW
+  evidence: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+  notes: 'PR #7033 post-#7032 document-currency fixpoint: Master Runbook + Map of Truth residency navigation; law map runbook SHA refresh; operator workspace hygiene; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
