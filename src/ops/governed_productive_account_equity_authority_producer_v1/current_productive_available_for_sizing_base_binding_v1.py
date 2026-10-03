@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from dataclasses import replace
 from typing import Mapping, Protocol, Tuple
 
 from src.ops.full_core_live_path_composition_root_v1.capital_admission_v1 import (
@@ -217,6 +218,20 @@ def bind_current_productive_available_for_sizing_base_from_treasury_host_v1(
                         base_fact = None
                     else:
                         base_fact = cached
+                        rebound_epoch = str(
+                            decision_epoch or treasury_observation.observed_at_utc or ""
+                        ).strip()
+                        if rebound_epoch and base_fact.decision_epoch != rebound_epoch:
+                            base_fact = replace(
+                                base_fact,
+                                decision_epoch=rebound_epoch,
+                                observed_at_as_of=str(
+                                    treasury_observation.observed_at_utc
+                                    or base_fact.observed_at_as_of
+                                ),
+                                age_seconds=age_seconds,
+                                freshness_max_age=freshness_max_age,
+                            )
                         numeric_bound = True
                         fail_closed = False
                 else:
