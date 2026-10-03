@@ -96,7 +96,7 @@ entities:
   - docs/ops/evidence/POST_STATIC_CLOSURE_DOCUMENTATION_FIXPOINT_V1.md
   notes: Descriptive whole-system machine model with TRADING-QUALITY SEMANTIC CONTRACT AUDIT V1; AUTHORITY=NONE; not operational SSOT; does not override Master Runbook or code; POST_COUNT=0.
 - id: NAVIGATION_INDEX:map_of_truth
-  atlas_documentation_fixpoint: CHANGE:pr_7031_post_static_closure_documentation_fixpoint_v1
+  atlas_documentation_fixpoint: CHANGE:pr_7032_ghv_current_residency_migration_v1
   # atlas_entity_review: PR #7027 BWP-01 navigation-only GHV fixpoint evidence; AUTHORITY=NONE.
   kind: NAVIGATION_INDEX
   name: Map of Truth
@@ -104,7 +104,7 @@ entities:
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
   semantic_authority: false
-  modified_by: CHANGE:pr_7031_post_static_closure_documentation_fixpoint_v1
+  modified_by: CHANGE:pr_7032_ghv_current_residency_migration_v1
   authority_sources:
   - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
   evidence_sources:
@@ -172,7 +172,7 @@ entities:
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
   semantic_authority: false
-  modified_by: FINAL_CURRENT_UNIVERSE_LANDSCAPE_CONVERGENCE_V1
+  modified_by: CHANGE:pr_7032_ghv_current_residency_migration_v1
   authority_sources:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   evidence_sources:
@@ -350,6 +350,38 @@ entities:
   - tests/ops/test_scoped_productive_residency_evaluation_completion_v1.py
   - tests/ops/test_scoped_residency_integrated_evaluation_propagation_v1.py
   notes: 'PR #7025: coalesce scoped integrated evaluation config at Cap21→23 from Cap2.2 rank-1 identity vs registered offline GHV datasets; fail-closed on mismatch; config propagation only; no ranking/selection/trading authority; POST_COUNT=0; ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #7028 BWP-03 propagation/coalesce wiring only; ACTIVATION_DEFAULT=OFF; SEMANTIC_CHANGE_FROM_PR7028=NONE; AUTHORITY=NONE.'
+- id: RUNTIME_COMPONENT:ghv_current_residency_decoupling_v1
+  kind: RUNTIME_COMPONENT
+  name: GHV current residency decoupling (O5, materializers, archive root)
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: CHANGE:pr_7032_ghv_current_residency_migration_v1
+  source_paths:
+  - src/ops/canonical_derived_public_md_read_model_v1/
+  - src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/
+  - src/ops/presentation_archive_materializers_v1/
+  - src/ops/presentation_archive_root_v1/
+  - src/ops/public_md_observation_get_adapter_v1/
+  - src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/pso_to_o4_o5_live_bridge_v1.py
+  - src/ops/presentation_projection_octet_orchestrator_v1/orchestrator_v1.py
+  - src/ops/productive_decision_host_active_archive_three_family_binding_v1/
+  - src/ops/governed_end_to_end_runtime_and_dashboard_evidence_v1/
+  - src/ops/runtime_health_recovery_and_failure_injection_closure_v1/
+  - src/ops/safety_authority_archive_sibling_exporter_v1/
+  - src/ops/risk_sizing_capital_archive_sibling_exporter_v1/
+  - src/ops/execution_reconciliation_archive_sibling_exporter_v1/
+  - src/ops/economic_summary_archive_sibling_exporter_v1/
+  - src/ops/regime_bull_bear_switch_archive_sibling_exporter_v1/
+  - src/ops/section_11_14_live_order_and_economic_evidence_ladder_v1/
+  - src/ops/canonical_local_launcher_and_process_supervision_v1/dashboard_http_host_v1.py
+  - src/webui/workflow_dashboard_archive_root_v1.py
+  - src/webui/market_dashboard_landscape_shell_router_v2.py
+  - config/ops/presentation_archive_root_v1.json
+  evidence_sources:
+  - tests/ops/test_canonical_read_model_and_market_dashboard_rebuild_v1.py
+  - tests/webui/test_workflow_dashboard_archive_root_v1.py
+  notes: 'PR #7032 residency-only move: neutral ops packages for O5 durable read model, presentation materializers, archive-root resolver; BR-001 preserved; legacy dashboard deletion deferred; AUTHORITY=NONE; POST_COUNT=0.'
 - id: CAPABILITY:cap_economic_md_input
   kind: CAPABILITY
   name: Persisted Multi-Instrument Economic Market Data Input
@@ -455,7 +487,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CURRENT_SYSTEM_TRUTH_AUTHORITY_CONVERGENCE_V1
+  modified_by: CHANGE:pr_7032_ghv_current_residency_migration_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py
   - tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py
@@ -498,7 +530,7 @@ entities:
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
-  modified_by: MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_V1
+  modified_by: CHANGE:pr_7032_ghv_current_residency_migration_v1
   authority_sources:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   - docs/ops/specs/MARKET_INTELLIGENCE_FORECAST_CALIBRATION_OFFLINE_STACK_NORMATIVE_V1.md
@@ -4677,12 +4709,13 @@ entities:
   # atlas_entity_review: PR #7014 optional predicate_trace_collector wiring for default-off flight recorder; observation-only.
   # atlas_entity_review: PR #7027 BWP-01 indirect atlas touch via identity/admission spec only; no composition-root code change; AUTHORITY=NONE.
   # atlas_entity_review: PR #7028 BWP-03 INJ-001 apply_current_productive_g17_typed_vol_cmc_bind_v1 on productive path; no admission/capital/PRE_EXTERNAL/POST change; SEMANTIC_CHANGE_FROM_PR7028=NONE; AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #7032 census graph dashboard_read edge rebind to canonical_derived_public_md_read_model_v1; residency-only; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Offline Core-to-Live composition root v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7014_GHV_RUNTIME_FLIGHT_RECORDER_CONTINUATION_V1
+  modified_by: CHANGE:pr_7032_ghv_current_residency_migration_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/__init__.py
   - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
