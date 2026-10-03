@@ -97,7 +97,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7032 GHV CURRENT residency decoupling — O5, materializers, archive-root neutral ops packages; CSIA/census navigation rebind; import rewiring only; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.
+- PR #7032 merged on origin/main (b0a15094). Post-merge document-currency fixpoint ratifies O5/MAT/ARC residency in Master Runbook and Map of Truth; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.
 - introduced_by=CHANGE:pr_7032_ghv_current_residency_migration_v1
 - modified_by=CHANGE:pr_7032_ghv_current_residency_migration_v1
 

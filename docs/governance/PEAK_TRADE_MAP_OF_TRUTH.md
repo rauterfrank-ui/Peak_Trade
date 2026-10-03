@@ -15,7 +15,7 @@ PARALLEL_SSOT_CREATED=false
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 CURRENT_ONLY_INVENTORY=false
 CURRENT_ONLY_INVENTORY_REASON=NAVIGATION_ONLY_DESIGN_MIXES_CURRENT_HISTORICAL_FORENSIC_TARGETS
-CURRENT_REVIEWED_AT_SHA=dc0320a4d3814e5b555c936ec5a4eb63ffd5a5fc
+CURRENT_REVIEWED_AT_SHA=b0a15094e0c2ad33f93fc6c4d017072f7907eaa4
 GRAPH_LOSES_TO_CANONICAL_CURRENT_CODE=true
 AUTHORITY=NONE
 NAVIGATION_ONLY=true
@@ -246,6 +246,13 @@ in the Master Runbook and the named packages.
 | Treasury PDF current-head rebind census | `docs/ops/specs/TREASURY_PDF_CURRENT_HEAD_REBIND_AND_CENSUS_V1.md` / `src/ops/treasury_pdf_current_head_rebind_and_census_v1/` |
 | Canonical Python launcher | `scripts/pt` |
 | Canonical interpreter | `.venv&#47;bin&#47;python` |
+| Productive O5 / derived public-MD read model (#7032) | `src/ops/canonical_derived_public_md_read_model_v1/` |
+| Legacy dashboard chrome compat (not productive O5) | `src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/` (`ohlcv_adapter_v1`, `dashboard_lifecycle_v1`) |
+| Presentation archive materializers MAT-01..08 (#7032) | `src/ops/presentation_archive_materializers_v1/` |
+| Presentation archive root resolver ARC-001 (#7032) | `src/ops/presentation_archive_root_v1/resolver_v1.py` |
+| Canonical presentation archive config | `config/ops/presentation_archive_root_v1.json` |
+| WebUI archive-root compatibility surface | `src/webui/workflow_dashboard_archive_root_v1.py` |
+| OTUI public-MD observation GET seam (AUTHORITY=NONE) | `src/ops/public_md_observation_get_adapter_v1/contract_v1.py` |
 
 ------------------------------------------------------------------------
 

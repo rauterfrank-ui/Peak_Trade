@@ -6,8 +6,8 @@ DOCUMENT_ROLE=CURRENT_OPERATIONAL_SSOT
 AUTHORITY_EFFECT=IMPLEMENTATION_AND_OPERATIONAL_SEMANTIC_AUTHORITY
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 NO_PARALLEL_SEMANTIC_MODEL=true
-CURRENT_REVIEWED_AT_SHA=dc0320a4d3814e5b555c936ec5a4eb63ffd5a5fc
-BOUND_ORIGIN_MAIN_SHA=dc0320a4d3814e5b555c936ec5a4eb63ffd5a5fc
+CURRENT_REVIEWED_AT_SHA=b0a15094e0c2ad33f93fc6c4d017072f7907eaa4
+BOUND_ORIGIN_MAIN_SHA=b0a15094e0c2ad33f93fc6c4d017072f7907eaa4
 STALE_IF_HEAD_DIFFERS=true
 REVIEW_SHA_SEMANTICS=CONTENT_ORIGIN_SHA preserves evidence/workpackage collection baselines; CURRENT_REVIEWED_AT_SHA is navigation/review binding only
 TRACK_A_CLOSURE_CONTENT_ORIGIN_SHA=d0edb85fc83a5415a8a652299144cd0fe6da7644
@@ -1429,6 +1429,38 @@ Forbidden:
 ```text
 Dashboard → Runtime Decision / Intent / Order
 ```
+
+### CURRENT GHV presentation / public-MD residency (#7032 fixpoint on `origin/main`)
+
+PR #7032 merged GHV **CURRENT residency decoupling** (import rewiring and
+navigation only; `TRADING_SEMANTICS_CHANGED=false`; `POST_COUNT=0`). Distinguish
+**productive O5** from **legacy chrome compatibility**:
+
+```text
+PRODUCTIVE_O5_CURRENT=src/ops/canonical_derived_public_md_read_model_v1/
+LEGACY_CHROME_CURRENT_COMPAT=src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/
+  (ohlcv_adapter_v1.py, dashboard_lifecycle_v1.py only — not productive O5 owner)
+MAT_01_THROUGH_08_CURRENT=src/ops/presentation_archive_materializers_v1/
+ARC_001_CURRENT=src/ops/presentation_archive_root_v1/resolver_v1.py
+ARCHIVE_CONFIG_CURRENT=config/ops/presentation_archive_root_v1.json
+BR_001_CURRENT=existing bridge path; imports bound to canonical_derived_public_md_read_model_v1
+DP_001=SHARED_KEEP
+OTUI_SEAM_CURRENT=src/ops/public_md_observation_get_adapter_v1/contract_v1.py
+OTUI_CONTRACT=GET_only; AUTHORITY=NONE; no mutation routes
+WEBUI_ARCHIVE_COMPAT=src/webui/workflow_dashboard_archive_root_v1.py
+```
+
+Presentation projection **loaders** that remain under `src/webui/` by design are
+not materializer residency; do not conflate with MAT-01..08 ops packages.
+
+### CURRENT operator workspace hygiene fixpoint (post local-artifact cleanup)
+
+Operator-only recovery state (not runtime dependency): tracked CURRENT tree
+preserved (`20413` tracked files, byte-identical pre/post cleanup);
+`git status --porcelain` clean; **zero** registered auxiliary linked worktrees;
+local non-tracked forensic/runtime/WIP artifacts moved to operator external
+archive (no permanent deletion). `.venv/` and local secrets/env remain in the
+worktree and are not duplicated into archive.
 
 ------------------------------------------------------------------------
 
