@@ -8,6 +8,7 @@
 # atlas_entity_review: PR #7005 — C2 directional confirmation progress + qualifying EPOCH_GAP recovery; pure market_state C2; AUTHORITY=NONE; POST_COUNT=0.
 # atlas_entity_review: PR #7027 — BWP-01 post-cartography GHV finding adjudication + bounded stale-governance test repair; docs/evidence only; FULL_CORE identity spec clarification; AUTHORITY=NONE; POST_COUNT=0; Residency default OFF; F1/M9 fixture wiring deferred to BWP-03 PR #7028.
 # atlas_entity_review: PR #7028 — BWP-03 configuration injection (INJ-001 F1/M9 per-cycle G17 bind; INJ-002 optional scoped residency propagation default OFF; INJ-003 governance-only); SEMANTIC_CHANGE_FROM_PR7028=NONE on ranking/selection/MV2/DP/admission/capital/PRE_EXTERNAL/POST; AUTHORITY=NONE; POST_COUNT=0; REVIEWED_HEAD=7ee392714.
+# atlas_entity_review: PR #7035 — Natural-Enter downstream LIVE-29P Layer-C protective-stop binding + treasury BASE epoch rebind on duplicate GET; persistent convergence fail-closed segment terminal; binding-only; MV2/DP unchanged; AUTHORITY=NONE; POST_COUNT=0.
 entities:
 - id: SYSTEM:peak_trade
   kind: SYSTEM
