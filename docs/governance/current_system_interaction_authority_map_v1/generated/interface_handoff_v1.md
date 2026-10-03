@@ -265,7 +265,7 @@ flowchart LR
 - lifecycle=PROVEN_CURRENT
 - flow_type=PRESENTATION_FLOW
 - contract_or_payload=runtime SSOT to read model to dashboard
-- producer=ops.canonical_read_model_and_market_dashboard_rebuild_v1
+- producer=ops.canonical_derived_public_md_read_model_v1
 - consumer=presentation_dashboard
 - authority_effect=NONE
 - decision_effect=DISPLAY_ONLY
@@ -276,7 +276,7 @@ flowchart LR
 - provenance_binding=AUTHORITY_EFFECT_NONE
 - promotion_required=FALSE
 - fail_closed=TRUE
-- evidence=`src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/constants_v1.py`
+- evidence=`src/ops/canonical_derived_public_md_read_model_v1/constants_v1.py`
 
 ## eea_acquisition_to_cap21_cap23_persist
 
@@ -625,18 +625,18 @@ flowchart LR
 - lifecycle=PROVEN_CURRENT
 - flow_type=PRESENTATION_FLOW
 - contract_or_payload=productive runtime/cycle SSOT to read model (non-authority)
-- producer=ops.canonical_read_model_and_market_dashboard_rebuild_v1
+- producer=ops.canonical_derived_public_md_read_model_v1
 - consumer=presentation_dashboard
 - authority_effect=NONE
 - decision_effect=DISPLAY_ONLY
 - direct_or_indirect=INDIRECT
 - identity_binding=READ_MODEL_PROJECTION
 - temporal_binding=UNKNOWN
-- version_binding=canonical_read_model_and_market_dashboard_rebuild_v1
+- version_binding=canonical_derived_public_md_read_model_v1
 - provenance_binding=AUTHORITY_EFFECT_NONE
 - promotion_required=FALSE
 - fail_closed=TRUE
-- evidence=`src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/constants_v1.py`
+- evidence=`src/ops/canonical_derived_public_md_read_model_v1/constants_v1.py`
 
 ## governed_cycle_venue_plan_status
 

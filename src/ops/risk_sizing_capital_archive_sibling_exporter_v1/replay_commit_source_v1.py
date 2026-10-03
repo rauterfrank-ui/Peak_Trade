@@ -22,7 +22,7 @@ from src.ops.risk_sizing_capital_archive_sibling_exporter_v1.constants_v1 import
 from src.trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
     compute_risk_sizing_decision_ref_v0,
 )
-from src.webui.workflow_dashboard_readmodel_v1.risk_sizing_capital_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.risk_sizing_capital_presentation_projection_materializer_v1 import (
     coerce_risk_sizing_capital_fields_mapping_v1,
 )
 

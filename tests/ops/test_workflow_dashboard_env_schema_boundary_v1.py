@@ -8,7 +8,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_workflow_dashboard_env_constants_in_runtime_module() -> None:
-    from src.webui.workflow_dashboard_archive_root_v1 import ENV_ARCHIVE_ROOT as ROOT_ENV
+    from src.ops.presentation_archive_root_v1.resolver_v1 import ENV_ARCHIVE_ROOT as ROOT_ENV
     from src.webui.workflow_dashboard_runtime_v1 import ENV_ARCHIVE_ROOT, ENV_ENABLED
 
     assert ENV_ENABLED == "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED"

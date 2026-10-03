@@ -35,7 +35,7 @@ from src.ops.productive_decision_host_active_archive_three_family_binding_v1.sta
 from src.webui.market_dashboard_landscape_producer_binding_v2 import (
     economic_viability_evidence_fields_from_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.economic_summary_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.economic_summary_presentation_projection_materializer_v1 import (
     SOURCE_FIELDS_RELATIVE_PATH,
     materialize_economic_summary_presentation_projection_v1,
 )

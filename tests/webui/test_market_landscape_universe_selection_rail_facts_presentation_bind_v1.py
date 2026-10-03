@@ -32,7 +32,7 @@ from src.webui.market_dashboard_landscape_v2 import (
 from src.webui.market_dashboard_landscape_v2.unavailable import (
     unavailable_universe_ranking,
 )
-from src.webui.workflow_dashboard_archive_root_v1 import ENV_ARCHIVE_ROOT
+from src.ops.presentation_archive_root_v1.resolver_v1 import ENV_ARCHIVE_ROOT
 from src.webui.workflow_dashboard_readmodel_v1.universe_selection_producer_v1 import (
     READMODEL_FILENAME,
     READMODELS_DIRNAME,

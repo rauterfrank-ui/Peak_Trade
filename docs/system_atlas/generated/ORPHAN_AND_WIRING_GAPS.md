@@ -84,6 +84,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:elementary_direction_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:elementary_direction_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:external_data_archive_locator_consumers | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:external_data_archive_locator_consumers | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:gfu_eligibility | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:gfu_eligibility | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_current_residency_decoupling_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_current_residency_decoupling_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_pre_external_continuation_harness_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_pre_external_continuation_harness_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_pre_external_continuation_snapshot_hydration_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_pre_external_continuation_snapshot_hydration_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_pre_external_runtime_flight_recorder_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_pre_external_runtime_flight_recorder_v1 | STATUS=OPEN (not proven) |  |

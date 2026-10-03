@@ -85,7 +85,7 @@ def coerce_economic_summary_fields_export_payload_v1(
     source: object,
 ) -> tuple[dict[str, Any] | None, str | None]:
     """Validate export fields via the materializer-owned coerce contract (lazy bind)."""
-    from src.webui.workflow_dashboard_readmodel_v1.economic_summary_presentation_projection_materializer_v1 import (
+    from src.ops.presentation_archive_materializers_v1.economic_summary_presentation_projection_materializer_v1 import (
         coerce_economic_summary_fields_mapping_v1,
     )
 

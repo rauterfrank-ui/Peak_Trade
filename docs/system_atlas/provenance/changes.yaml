@@ -618,3 +618,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: docs/ops/evidence/POST_STATIC_CLOSURE_DOCUMENTATION_FIXPOINT_V1.md
   notes: 'PR #7031 post-static-closure documentation fixpoint: Master Runbook + Map of Truth + CURRENT whole-system functional/causal model with TRADING-QUALITY SEMANTIC CONTRACT AUDIT V1; static cartography/coherence; WSRC superseded; PRE_EXTERNAL boundary; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7032_ghv_current_residency_migration_v1
+  from: 0410bd8bec37e2015e5a9ea6829f6400e351276a
+  to: 0410bd8bec37e2015e5a9ea6829f6400e351276a
+  type: RESIDENCY_REBIND
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_canonical_read_model_and_market_dashboard_rebuild_v1.py
+  notes: 'PR #7032: GHV precomputed CURRENT residency decoupling — O5 read-model persistence, presentation materializers, archive-root resolver moved to neutral ops packages; import/config rewiring only; legacy dashboard subgraph retained for next deletion WP; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

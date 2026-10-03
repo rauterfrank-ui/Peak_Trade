@@ -17,10 +17,10 @@ from src.ops.canonical_public_md_and_ohlcv_transport_reconciliation_v1.constants
 from src.ops.canonical_public_md_and_ohlcv_transport_reconciliation_v1.dashboard_ohlcv_projection_v1 import (
     project_authoritative_envelopes_to_dashboard_ohlcv_v1,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.connection_state_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.connection_state_v1 import (
     classify_connection_state_v1,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.constants_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.constants_v1 import (
     CANONICAL_MARKET_ROUTE,
     CANONICAL_OHLCV_API,
     CONNECTION_MISSING_SOURCE,

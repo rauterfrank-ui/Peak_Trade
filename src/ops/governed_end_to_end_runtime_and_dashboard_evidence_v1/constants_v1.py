@@ -13,7 +13,7 @@ O1_ENVIRONMENT_PACKAGE = "canonical_runtime_environment_contract_v1"
 O2_LAUNCHER_PACKAGE = "canonical_local_launcher_and_process_supervision_v1"
 O3_TOKEN_PACKAGE = "secure_confirm_token_family_and_hidden_input_handoff_v1"
 O4_TRANSPORT_PACKAGE = "canonical_public_md_and_ohlcv_transport_reconciliation_v1"
-O5_READ_MODEL_PACKAGE = "canonical_read_model_and_market_dashboard_rebuild_v1"
+O5_READ_MODEL_PACKAGE = "canonical_derived_public_md_read_model_v1"
 O6_HEALTH_PACKAGE = "runtime_health_recovery_and_failure_injection_closure_v1"
 
 PRODUCTION_SURFACES_REUSED = (

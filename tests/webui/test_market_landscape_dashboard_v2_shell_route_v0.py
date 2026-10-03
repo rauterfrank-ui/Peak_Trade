@@ -46,7 +46,7 @@ FORBIDDEN_UI = (
 @pytest.fixture()
 def client(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> TestClient:
     """Isolate default /market SSR from operator-local durable archive autobind."""
-    from src.webui.workflow_dashboard_archive_root_v1 import ENV_ARCHIVE_ROOT
+    from src.ops.presentation_archive_root_v1.resolver_v1 import ENV_ARCHIVE_ROOT
 
     monkeypatch.setenv(ENV_ARCHIVE_ROOT, str(tmp_path))
     return TestClient(create_app())
@@ -549,7 +549,7 @@ def test_get_market_default_path_projects_selected_instrument_without_env(
     from scripts.ops.primary_evidence_retention_v0 import (
         write_manifest_sha256 as _write_manifest_sha256,
     )
-    from src.webui.workflow_dashboard_archive_root_v1 import (
+    from src.ops.presentation_archive_root_v1.resolver_v1 import (
         ENV_ARCHIVE_ROOT,
         canonical_default_workflow_dashboard_archive_root,
     )

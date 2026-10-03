@@ -21,7 +21,7 @@ from src.ops.safety_authority_archive_sibling_exporter_v1.exporter_v1 import (
 from src.ops.safety_authority_archive_sibling_exporter_v1.replay_commit_source_v1 import (
     build_safety_authority_sibling_payload_from_replay_commit_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.safety_authority_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.safety_authority_presentation_projection_materializer_v1 import (
     materialize_safety_authority_presentation_projection_v1,
 )
 from src.webui.workflow_dashboard_readmodel_v1.safety_authority_presentation_projection_v1 import (

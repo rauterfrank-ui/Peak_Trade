@@ -39,8 +39,10 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Mapping
 
-from .readmodels_manifest_coherence_v1 import finalize_manifest_for_readmodel_artifact_v1
-from .double_play_presentation_projection_v1 import (
+from src.webui.workflow_dashboard_readmodel_v1.readmodels_manifest_coherence_v1 import (
+    finalize_manifest_for_readmodel_artifact_v1,
+)
+from src.webui.workflow_dashboard_readmodel_v1.double_play_presentation_projection_v1 import (
     AUTHORITY_EFFECT,
     DOUBLE_PLAY_AUTHORITY_EFFECT,
     LOAD_ERROR_DISPLAY_INVALID,
@@ -55,7 +57,7 @@ from .double_play_presentation_projection_v1 import (
 
 CAPABILITY_ID = "CAPABILITY_PRESENTATION_DOUBLE_PLAY_PROJECTION_MATERIALIZER_V1"
 OWNER_MODULE = (
-    "webui.workflow_dashboard_readmodel_v1.double_play_presentation_projection_materializer_v1"
+    "ops.presentation_archive_materializers_v1.double_play_presentation_projection_materializer_v1"
 )
 SOURCE_DISPLAY_RELATIVE_PATH = "readmodels/double_play_dashboard_display.v1.json"
 LEGACY_ROUTE_NON_SOURCE = "double_play_dashboard_display_json_route_v0"

@@ -338,7 +338,7 @@ def test_cli_has_no_forbidden_imports() -> None:
 
 def test_exported_sibling_is_materializer_source_shape(tmp_path: Path) -> None:
     """Prove export closes the upstream sibling required by the materializer path."""
-    from src.webui.workflow_dashboard_readmodel_v1.canonical_decision_presentation_projection_materializer_v1 import (
+    from src.ops.presentation_archive_materializers_v1.canonical_decision_presentation_projection_materializer_v1 import (
         SOURCE_EVIDENCE_RELATIVE_PATH,
         STATUS_WRITTEN,
         materialize_canonical_decision_presentation_projection_v1,

@@ -1,18 +1,19 @@
-"""Non-authoritative materializer for Risk/Sizing/Capital presentation projection.
+"""Non-authoritative materializer for Execution/Reconciliation presentation projection.
 
-CAPABILITY_ID=CAPABILITY_PRESENTATION_RISK_SIZING_CAPITAL_PROJECTION_MATERIALIZER_AUTOBIND_V1
+CAPABILITY_ID=CAPABILITY_PRESENTATION_EXECUTION_RECONCILIATION_PROJECTION_MATERIALIZER_AUTOBIND_V1
 
-Consumes already-produced Risk/Sizing/Capital binder-compatible field payloads
-(or the durable sibling dump under the Workflow Dashboard archive root) and
-writes the non-authoritative presentation projection schema to the loader-owned
-path. This module:
+Consumes already-produced Execution/Reconciliation binder-compatible field
+payloads (or the durable sibling dump under the Workflow Dashboard archive root)
+and writes the non-authoritative presentation projection schema to the
+loader-owned path. This module:
 
 - AUTHORITY_EFFECT=NONE
-- RISK_SIZING_AUTHORITY_EFFECT=NONE
-- never creates, mutates, or evaluates capital/risk/sizing decisions
-- never imports src.governance.capital_risk_sizing_v1 evaluators
-- never imports trading.master_v2 capital_risk_sizing offline adapters
-- never invents quantity, status, timestamps, or reason_codes
+- EXECUTION_AUTHORITY_EFFECT=NONE
+- never creates, mutates, or evaluates order intents / reconciliation
+- never imports src.governance.canonical_order_intent_v1 builders
+- never imports trading.master_v2 order-intent offline adapters
+- never invents execution_status, reconciliation_status, order_intent_ref,
+  timestamps, or reason_codes
 - fail-closed: missing source → MISSING_SOURCE and no artifact write;
   invalid source → FAIL_CLOSED and no artifact write
 - projection remains non-authoritative and must never flow back into runtime
@@ -35,25 +36,29 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Mapping
 
-from .readmodels_manifest_coherence_v1 import finalize_manifest_for_readmodel_artifact_v1
-from .risk_sizing_capital_presentation_projection_v1 import (
+from src.webui.workflow_dashboard_readmodel_v1.readmodels_manifest_coherence_v1 import (
+    finalize_manifest_for_readmodel_artifact_v1,
+)
+from src.webui.workflow_dashboard_readmodel_v1.execution_reconciliation_presentation_projection_v1 import (
     AUTHORITY_EFFECT,
+    EXECUTION_AUTHORITY_EFFECT,
     LOAD_ERROR_FIELDS_INVALID,
     LOAD_ERROR_SCHEMA_MISMATCH,
     LOAD_ERROR_TIMESTAMP_MISSING,
     PROJECTION_ROLE,
-    RISK_SIZING_AUTHORITY_EFFECT,
     SCHEMA_NAME,
     SCHEMA_VERSION,
     SOURCE_FIELDS_RELATIVE_PATH,
     STORAGE_RELATIVE_PATH,
-    map_risk_sizing_capital_fields_to_binder_fields_v1,
+    map_execution_reconciliation_fields_to_binder_fields_v1,
 )
 
-CAPABILITY_ID = "CAPABILITY_PRESENTATION_RISK_SIZING_CAPITAL_PROJECTION_MATERIALIZER_AUTOBIND_V1"
+CAPABILITY_ID = (
+    "CAPABILITY_PRESENTATION_EXECUTION_RECONCILIATION_PROJECTION_MATERIALIZER_AUTOBIND_V1"
+)
 OWNER_MODULE = (
-    "webui.workflow_dashboard_readmodel_v1."
-    "risk_sizing_capital_presentation_projection_materializer_v1"
+    "ops.presentation_archive_materializers_v1.execution_reconciliation_presentation_projection_materializer_v1"
+    "execution_reconciliation_presentation_projection_materializer_v1"
 )
 
 STATUS_WRITTEN = "WRITTEN"
@@ -61,19 +66,17 @@ STATUS_MISSING_SOURCE = "MISSING_SOURCE"
 STATUS_FAIL_CLOSED = "FAIL_CLOSED"
 
 MATERIALIZE_ERROR_MISSING_SOURCE = "MISSING_SOURCE"
-MATERIALIZE_ERROR_INVALID_JSON = "RISK_SIZING_CAPITAL_PRESENTATION_MATERIALIZER_INVALID_JSON"
-MATERIALIZE_ERROR_INVALID_SOURCE = "RISK_SIZING_CAPITAL_PRESENTATION_MATERIALIZER_INVALID_SOURCE"
-MATERIALIZE_ERROR_WRITE_FAILED = "RISK_SIZING_CAPITAL_PRESENTATION_MATERIALIZER_WRITE_FAILED"
-
-_REQUIRED_FIELD_ATTRS = (
-    "risk_status",
-    "sizing_status",
-    "capital_status",
+MATERIALIZE_ERROR_INVALID_JSON = "EXECUTION_RECONCILIATION_PRESENTATION_MATERIALIZER_INVALID_JSON"
+MATERIALIZE_ERROR_INVALID_SOURCE = (
+    "EXECUTION_RECONCILIATION_PRESENTATION_MATERIALIZER_INVALID_SOURCE"
 )
+MATERIALIZE_ERROR_WRITE_FAILED = "EXECUTION_RECONCILIATION_PRESENTATION_MATERIALIZER_WRITE_FAILED"
+
+_REQUIRED_FIELD_ATTRS = ("execution_status",)
 
 
 @dataclass(frozen=True)
-class RiskSizingCapitalPresentationMaterializeResultV1:
+class ExecutionReconciliationPresentationMaterializeResultV1:
     """Result of a fail-closed presentation projection materialize attempt."""
 
     written: bool
@@ -81,7 +84,7 @@ class RiskSizingCapitalPresentationMaterializeResultV1:
     errors: tuple[str, ...]
     projection_path: str | None = None
     source_path: str | None = None
-    risk_status: str | None = None
+    execution_status: str | None = None
     payload_digest: str | None = None
 
 
@@ -90,8 +93,8 @@ def _empty_result(
     status: str,
     errors: tuple[str, ...],
     source_path: str | None = None,
-) -> RiskSizingCapitalPresentationMaterializeResultV1:
-    return RiskSizingCapitalPresentationMaterializeResultV1(
+) -> ExecutionReconciliationPresentationMaterializeResultV1:
+    return ExecutionReconciliationPresentationMaterializeResultV1(
         written=False,
         status=status,
         errors=errors,
@@ -111,16 +114,17 @@ def _enum_or_str(value: object) -> object:
     return value
 
 
-def coerce_risk_sizing_capital_fields_mapping_v1(
+def coerce_execution_reconciliation_fields_mapping_v1(
     source: object | None,
 ) -> tuple[dict[str, Any] | None, tuple[str, ...]]:
-    """Copy already-selected Risk/Sizing/Capital fields without mutation.
+    """Copy already-selected Execution/Reconciliation fields without mutation.
 
     Accepts:
-    - binder-compatible fields (risk_status/sizing_status/capital_status)
-    - nested projection envelope {"risk_sizing_capital": {...}}
+    - binder-compatible fields (execution_status[/reconciliation_status|/order_intent_ref])
+    - nested projection envelope {"execution_reconciliation": {...}}
+    - objects exposing ExecutionReconciliationSnapshotV1-compatible attributes
 
-    Never invents quantity, statuses, timestamps, or productive defaults.
+    Never invents statuses, refs, timestamps, or productive defaults.
     """
     if source is None:
         return None, (MATERIALIZE_ERROR_MISSING_SOURCE,)
@@ -132,25 +136,28 @@ def coerce_risk_sizing_capital_fields_mapping_v1(
         extracted: dict[str, Any] = {}
         for key in (
             *_REQUIRED_FIELD_ATTRS,
-            "quantity",
+            "reconciliation_status",
+            "order_intent_ref",
             "reason_codes",
             "evidence_digest",
-            "risk_sizing_ref",
+            "semantic_digest",
             "schema_version",
             "generated_at",
             "effective_at",
             "source_reference",
-            "risk_sizing_capital",
+            "execution_reconciliation",
         ):
             if hasattr(source, key):
                 extracted[key] = getattr(source, key)
         raw = extracted
 
-    # Nested projection envelope: {"risk_sizing_capital": {...}}.
-    if "risk_sizing_capital" in raw and isinstance(raw.get("risk_sizing_capital"), Mapping):
-        nested = raw["risk_sizing_capital"]
-        top_status = raw.get("risk_status")
-        nested_status = nested.get("risk_status")
+    # Nested projection envelope: {"execution_reconciliation": {...}}.
+    if "execution_reconciliation" in raw and isinstance(
+        raw.get("execution_reconciliation"), Mapping
+    ):
+        nested = raw["execution_reconciliation"]
+        top_status = raw.get("execution_status")
+        nested_status = nested.get("execution_status")
         if (
             isinstance(top_status, str)
             and top_status.strip()
@@ -181,16 +188,16 @@ def coerce_risk_sizing_capital_fields_mapping_v1(
     return fields, ()
 
 
-def build_risk_sizing_capital_presentation_projection_payload_v1(
+def build_execution_reconciliation_presentation_projection_payload_v1(
     *,
-    risk_sizing_capital: object,
+    execution_reconciliation: object,
     generated_at: str,
     effective_at: str | None = None,
     source_reference: str | None = None,
 ) -> tuple[dict[str, Any] | None, tuple[str, ...]]:
-    """Build the loader-compatible projection envelope from Risk fields."""
-    fields_mapping, coerce_errors = coerce_risk_sizing_capital_fields_mapping_v1(
-        risk_sizing_capital
+    """Build the loader-compatible projection envelope from Execution fields."""
+    fields_mapping, coerce_errors = coerce_execution_reconciliation_fields_mapping_v1(
+        execution_reconciliation
     )
     if fields_mapping is None:
         return None, coerce_errors
@@ -198,8 +205,8 @@ def build_risk_sizing_capital_presentation_projection_payload_v1(
     if _require_nonempty_str(generated_at) is None:
         return None, (LOAD_ERROR_TIMESTAMP_MISSING,)
 
-    binder_fields, map_errors = map_risk_sizing_capital_fields_to_binder_fields_v1(
-        risk_sizing_capital=fields_mapping,
+    binder_fields, map_errors = map_execution_reconciliation_fields_to_binder_fields_v1(
+        execution_reconciliation=fields_mapping,
         generated_at=generated_at,
         effective_at=effective_at,
         source_reference=source_reference,
@@ -207,26 +214,26 @@ def build_risk_sizing_capital_presentation_projection_payload_v1(
     if binder_fields is None:
         return None, map_errors
 
-    risk_out: dict[str, Any] = {
-        "capital_status": binder_fields["capital_status"],
+    execution_out: dict[str, Any] = {
+        "execution_status": binder_fields["execution_status"],
         "reason_codes": list(binder_fields.get("reason_codes", ())),
-        "risk_status": binder_fields["risk_status"],
-        "sizing_status": binder_fields["sizing_status"],
     }
-    if "quantity" in binder_fields:
-        risk_out["quantity"] = binder_fields["quantity"]
+    if "reconciliation_status" in binder_fields:
+        execution_out["reconciliation_status"] = binder_fields["reconciliation_status"]
+    if "order_intent_ref" in binder_fields:
+        execution_out["order_intent_ref"] = binder_fields["order_intent_ref"]
     if "evidence_digest" in binder_fields:
-        risk_out["evidence_digest"] = binder_fields["evidence_digest"]
-        risk_out["risk_sizing_ref"] = binder_fields["evidence_digest"]
+        execution_out["evidence_digest"] = binder_fields["evidence_digest"]
+        execution_out["semantic_digest"] = binder_fields["evidence_digest"]
     if "schema_version" in binder_fields:
-        risk_out["schema_version"] = binder_fields["schema_version"]
+        execution_out["schema_version"] = binder_fields["schema_version"]
 
     payload: dict[str, Any] = {
         "authority_effect": AUTHORITY_EFFECT,
+        "execution_authority_effect": EXECUTION_AUTHORITY_EFFECT,
+        "execution_reconciliation": execution_out,
         "generated_at": binder_fields["generated_at"],
         "projection_role": PROJECTION_ROLE,
-        "risk_sizing_authority_effect": RISK_SIZING_AUTHORITY_EFFECT,
-        "risk_sizing_capital": risk_out,
         "schema_name": SCHEMA_NAME,
         "schema_version": SCHEMA_VERSION,
     }
@@ -237,7 +244,7 @@ def build_risk_sizing_capital_presentation_projection_payload_v1(
     return payload, ()
 
 
-def serialize_risk_sizing_capital_presentation_projection_v1(
+def serialize_execution_reconciliation_presentation_projection_v1(
     payload: Mapping[str, Any],
 ) -> str:
     """Deterministic JSON serialization for the presentation projection artifact."""
@@ -263,10 +270,10 @@ def _atomic_write_text(*, destination: Path, body: str) -> None:
             tmp_path.unlink()
 
 
-def write_risk_sizing_capital_presentation_projection_v1(
+def write_execution_reconciliation_presentation_projection_v1(
     archive_root: str | Path,
     payload: Mapping[str, Any],
-) -> RiskSizingCapitalPresentationMaterializeResultV1:
+) -> ExecutionReconciliationPresentationMaterializeResultV1:
     """Atomically persist an already-validated projection payload."""
     if payload.get("schema_name") != SCHEMA_NAME:
         return _empty_result(
@@ -281,7 +288,7 @@ def write_risk_sizing_capital_presentation_projection_v1(
         )
     if (
         payload.get("authority_effect") != AUTHORITY_EFFECT
-        or payload.get("risk_sizing_authority_effect") != RISK_SIZING_AUTHORITY_EFFECT
+        or payload.get("execution_authority_effect") != EXECUTION_AUTHORITY_EFFECT
     ):
         return _empty_result(
             status=STATUS_FAIL_CLOSED,
@@ -290,7 +297,7 @@ def write_risk_sizing_capital_presentation_projection_v1(
 
     root = Path(archive_root).expanduser().resolve()
     path = root / STORAGE_RELATIVE_PATH
-    body = serialize_risk_sizing_capital_presentation_projection_v1(payload)
+    body = serialize_execution_reconciliation_presentation_projection_v1(payload)
     try:
         _atomic_write_text(destination=path, body=body)
     except OSError:
@@ -305,27 +312,27 @@ def write_risk_sizing_capital_presentation_projection_v1(
             errors=(MATERIALIZE_ERROR_WRITE_FAILED,),
         )
 
-    risk = payload.get("risk_sizing_capital")
-    risk_status = None
-    if isinstance(risk, Mapping):
-        raw_status = risk.get("risk_status")
+    execution = payload.get("execution_reconciliation")
+    execution_status = None
+    if isinstance(execution, Mapping):
+        raw_status = execution.get("execution_status")
         if isinstance(raw_status, str) and raw_status.strip():
-            risk_status = raw_status.strip()
+            execution_status = raw_status.strip()
 
-    return RiskSizingCapitalPresentationMaterializeResultV1(
+    return ExecutionReconciliationPresentationMaterializeResultV1(
         written=True,
         status=STATUS_WRITTEN,
         errors=(),
         projection_path=str(path),
-        risk_status=risk_status,
+        execution_status=execution_status,
         payload_digest=hashlib.sha256(body.encode("utf-8")).hexdigest(),
     )
 
 
-def try_load_risk_sizing_capital_fields_source_v1(
+def try_load_execution_reconciliation_fields_source_v1(
     archive_root: str | Path,
 ) -> tuple[dict[str, Any] | None, tuple[str, ...], str | None]:
-    """Load the sole durable Risk/Sizing/Capital fields sibling without inventing content."""
+    """Load the sole durable Execution fields sibling without inventing content."""
     root = Path(archive_root).expanduser().resolve()
     path = root / SOURCE_FIELDS_RELATIVE_PATH
     source_path = str(path)
@@ -341,30 +348,30 @@ def try_load_risk_sizing_capital_fields_source_v1(
         return None, (MATERIALIZE_ERROR_INVALID_JSON,), source_path
     if not isinstance(payload, dict):
         return None, (MATERIALIZE_ERROR_INVALID_SOURCE,), source_path
-    fields, errors = coerce_risk_sizing_capital_fields_mapping_v1(payload)
+    fields, errors = coerce_execution_reconciliation_fields_mapping_v1(payload)
     if fields is None:
         return None, errors, source_path
     return fields, (), source_path
 
 
-def materialize_risk_sizing_capital_presentation_projection_v1(
+def materialize_execution_reconciliation_presentation_projection_v1(
     archive_root: str | Path,
     *,
-    risk_sizing_capital: object | None = None,
+    execution_reconciliation: object | None = None,
     generated_at: str | None = None,
     effective_at: str | None = None,
     source_reference: str | None = None,
-) -> RiskSizingCapitalPresentationMaterializeResultV1:
-    """Materialize the presentation projection from Risk fields or durable source.
+) -> ExecutionReconciliationPresentationMaterializeResultV1:
+    """Materialize the presentation projection from Execution fields or durable source.
 
     Missing source yields MISSING_SOURCE and does not write an artifact.
     Invalid source or missing required timestamps fail closed without writing.
-    Caller-owned Risk inputs are never mutated.
+    Caller-owned Execution inputs are never mutated.
     """
     source_path: str | None = None
-    source_obj: object | None = risk_sizing_capital
+    source_obj: object | None = execution_reconciliation
     if source_obj is None:
-        loaded, load_errors, source_path = try_load_risk_sizing_capital_fields_source_v1(
+        loaded, load_errors, source_path = try_load_execution_reconciliation_fields_source_v1(
             archive_root
         )
         if loaded is None:
@@ -385,17 +392,19 @@ def materialize_risk_sizing_capital_presentation_projection_v1(
 
     # Snapshot caller-owned mapping to prove / preserve non-mutation.
     caller_snapshot = (
-        deepcopy(risk_sizing_capital) if isinstance(risk_sizing_capital, Mapping) else None
+        deepcopy(execution_reconciliation)
+        if isinstance(execution_reconciliation, Mapping)
+        else None
     )
 
-    payload, build_errors = build_risk_sizing_capital_presentation_projection_payload_v1(
-        risk_sizing_capital=source_obj,
+    payload, build_errors = build_execution_reconciliation_presentation_projection_payload_v1(
+        execution_reconciliation=source_obj,
         generated_at=generated_at,
         effective_at=effective_at,
         source_reference=source_reference,
     )
-    if isinstance(risk_sizing_capital, Mapping) and caller_snapshot is not None:
-        if dict(risk_sizing_capital) != dict(caller_snapshot):
+    if isinstance(execution_reconciliation, Mapping) and caller_snapshot is not None:
+        if dict(execution_reconciliation) != dict(caller_snapshot):
             return _empty_result(
                 status=STATUS_FAIL_CLOSED,
                 errors=(MATERIALIZE_ERROR_INVALID_SOURCE,),
@@ -409,15 +418,15 @@ def materialize_risk_sizing_capital_presentation_projection_v1(
         )
         return _empty_result(status=status, errors=build_errors, source_path=source_path)
 
-    result = write_risk_sizing_capital_presentation_projection_v1(archive_root, payload)
+    result = write_execution_reconciliation_presentation_projection_v1(archive_root, payload)
     if not result.written:
         return result
-    return RiskSizingCapitalPresentationMaterializeResultV1(
+    return ExecutionReconciliationPresentationMaterializeResultV1(
         written=True,
         status=STATUS_WRITTEN,
         errors=(),
         projection_path=result.projection_path,
         source_path=source_path,
-        risk_status=result.risk_status,
+        execution_status=result.execution_status,
         payload_digest=result.payload_digest,
     )

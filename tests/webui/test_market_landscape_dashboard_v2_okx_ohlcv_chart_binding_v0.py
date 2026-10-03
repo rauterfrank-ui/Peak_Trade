@@ -29,7 +29,7 @@ from src.webui.market_dashboard_landscape_v2 import (
 from src.webui.market_dashboard_landscape_v2.presenter import (
     serialize_ohlcv_browser_payload_v1,
 )
-from src.webui.workflow_dashboard_archive_root_v1 import ENV_ARCHIVE_ROOT
+from src.ops.presentation_archive_root_v1.resolver_v1 import ENV_ARCHIVE_ROOT
 
 REPO = Path(__file__).resolve().parents[2]
 STAMP = datetime(2026, 7, 24, 22, 0, 0, tzinfo=timezone.utc)

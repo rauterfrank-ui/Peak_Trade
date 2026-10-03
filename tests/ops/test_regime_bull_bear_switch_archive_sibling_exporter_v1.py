@@ -35,7 +35,7 @@ from src.trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
 )
 from src.webui.market_dashboard_landscape_producer_binding_v2 import bind_market_universe_slots
 from src.webui.market_dashboard_landscape_v2.availability import Availability
-from src.webui.workflow_dashboard_readmodel_v1.bull_bear_regime_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.bull_bear_regime_presentation_projection_materializer_v1 import (
     SOURCE_REGIME_RELATIVE_PATH,
     materialize_bull_bear_regime_presentation_projection_v1,
     try_load_regime_bull_bear_switch_source_v1,

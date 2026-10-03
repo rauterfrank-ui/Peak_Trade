@@ -919,7 +919,7 @@
       "id": "presentation_dashboard",
       "tier": "FIRST_CLASS",
       "role": "Read model and dashboard. Authority effect is none.",
-      "canonical_owner_ref": "canonical_read_model_and_market_dashboard_rebuild_v1",
+      "canonical_owner_ref": "canonical_derived_public_md_read_model_v1",
       "authority_class": "CANONICAL_AUTHORITY",
       "lifecycle": "READ_ONLY",
       "status": "PROVEN_CURRENT",
@@ -928,10 +928,10 @@
       ],
       "contract_refs": [],
       "code_refs": [
-        "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/constants_v1.py"
+        "src/ops/canonical_derived_public_md_read_model_v1/constants_v1.py"
       ],
       "evidence_refs": [
-        "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/constants_v1.py",
+        "src/ops/canonical_derived_public_md_read_model_v1/constants_v1.py",
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
       ]
     },
@@ -3283,7 +3283,7 @@
       "to_domain": "presentation_dashboard",
       "flow_type": "PRESENTATION_FLOW",
       "contract_or_payload": "runtime SSOT to read model to dashboard",
-      "producer": "ops.canonical_read_model_and_market_dashboard_rebuild_v1",
+      "producer": "ops.canonical_derived_public_md_read_model_v1",
       "consumer": "presentation_dashboard",
       "authority_effect": "NONE",
       "decision_effect": "DISPLAY_ONLY",
@@ -3296,7 +3296,7 @@
       "promotion_required": "FALSE",
       "fail_closed": "TRUE",
       "evidence_refs": [
-        "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/constants_v1.py"
+        "src/ops/canonical_derived_public_md_read_model_v1/constants_v1.py"
       ]
     },
     {
@@ -3956,7 +3956,7 @@
       "to_domain": "presentation_dashboard",
       "flow_type": "PRESENTATION_FLOW",
       "contract_or_payload": "productive runtime/cycle SSOT to read model (non-authority)",
-      "producer": "ops.canonical_read_model_and_market_dashboard_rebuild_v1",
+      "producer": "ops.canonical_derived_public_md_read_model_v1",
       "consumer": "presentation_dashboard",
       "authority_effect": "NONE",
       "decision_effect": "DISPLAY_ONLY",
@@ -3964,12 +3964,12 @@
       "lifecycle": "PROVEN_CURRENT",
       "identity_binding": "READ_MODEL_PROJECTION",
       "temporal_binding": "UNKNOWN",
-      "version_binding": "canonical_read_model_and_market_dashboard_rebuild_v1",
+      "version_binding": "canonical_derived_public_md_read_model_v1",
       "provenance_binding": "AUTHORITY_EFFECT_NONE",
       "promotion_required": "FALSE",
       "fail_closed": "TRUE",
       "evidence_refs": [
-        "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/constants_v1.py"
+        "src/ops/canonical_derived_public_md_read_model_v1/constants_v1.py"
       ]
     }
   ],

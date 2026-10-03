@@ -35,8 +35,10 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Mapping
 
-from .readmodels_manifest_coherence_v1 import finalize_manifest_for_readmodel_artifact_v1
-from .safety_authority_presentation_projection_v1 import (
+from src.webui.workflow_dashboard_readmodel_v1.readmodels_manifest_coherence_v1 import (
+    finalize_manifest_for_readmodel_artifact_v1,
+)
+from src.webui.workflow_dashboard_readmodel_v1.safety_authority_presentation_projection_v1 import (
     AUTHORITY_EFFECT,
     LOAD_ERROR_FIELDS_INVALID,
     LOAD_ERROR_SCHEMA_MISMATCH,
@@ -52,9 +54,7 @@ from .safety_authority_presentation_projection_v1 import (
 )
 
 CAPABILITY_ID = "CAPABILITY_PRESENTATION_SAFETY_AUTHORITY_PROJECTION_MATERIALIZER_AUTOBIND_V1"
-OWNER_MODULE = (
-    "webui.workflow_dashboard_readmodel_v1.safety_authority_presentation_projection_materializer_v1"
-)
+OWNER_MODULE = "ops.presentation_archive_materializers_v1.safety_authority_presentation_projection_materializer_v1"
 
 STATUS_WRITTEN = "WRITTEN"
 STATUS_MISSING_SOURCE = "MISSING_SOURCE"

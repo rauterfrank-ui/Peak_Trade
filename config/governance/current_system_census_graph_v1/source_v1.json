@@ -1720,10 +1720,10 @@
       "secondary_roles": []
     },
     {
-      "object_id": "SO-OPS-PKG:canonical_read_model_and_market_dashboard_rebuild_v1",
-      "name": "canonical_read_model_and_market_dashboard_rebuild_v1",
+      "object_id": "SO-OPS-PKG:canonical_derived_public_md_read_model_v1",
+      "name": "canonical_derived_public_md_read_model_v1",
       "paths": [
-        "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/**"
+        "src/ops/canonical_derived_public_md_read_model_v1/**"
       ],
       "object_type": "OPS_CAPABILITY_PACKAGE",
       "current_status": "PROVEN_CURRENT",
@@ -1743,8 +1743,8 @@
       "transport_role": null,
       "productive_reachability": false,
       "evidence_refs": [
-        "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/",
-        "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/constants_v1.py"
+        "src/ops/canonical_derived_public_md_read_model_v1/",
+        "src/ops/canonical_derived_public_md_read_model_v1/constants_v1.py"
       ],
       "epistemic_status": "PROVEN_CURRENT",
       "notes": null,
@@ -11083,7 +11083,7 @@
     {
       "edge_id": "dashboard_read",
       "source_object": "SO-OPS-PKG:full_core_live_path_composition_root_v1",
-      "target_object": "SO-OPS-PKG:canonical_read_model_and_market_dashboard_rebuild_v1",
+      "target_object": "SO-OPS-PKG:canonical_derived_public_md_read_model_v1",
       "source_universe_or_plane": "execution_external_effect",
       "target_universe_or_plane": "presentation_dashboard",
       "flow_type": "PRESENTATION_FLOW",
@@ -11096,7 +11096,7 @@
       "productive_reachability": false,
       "map_relationship": "MAP_ONLY",
       "current_evidence": [
-        "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/constants_v1.py"
+        "src/ops/canonical_derived_public_md_read_model_v1/constants_v1.py"
       ],
       "epistemic_status": "PROVEN_CURRENT"
     },
@@ -11513,12 +11513,12 @@
     },
     {
       "edge_id": "CE-005",
-      "source_object": "SO-OPS-PKG:canonical_read_model_and_market_dashboard_rebuild_v1",
+      "source_object": "SO-OPS-PKG:canonical_derived_public_md_read_model_v1",
       "target_object": "SO-SRC-PKG:webui",
       "source_universe_or_plane": "TD-PRESENTATION",
       "target_universe_or_plane": "TD-PRESENTATION",
       "flow_type": "PRESENTATION",
-      "producer": "SO-OPS-PKG:canonical_read_model_and_market_dashboard_rebuild_v1",
+      "producer": "SO-OPS-PKG:canonical_derived_public_md_read_model_v1",
       "consumer": "SO-SRC-PKG:webui",
       "contract_or_payload": "dashboard readmodel",
       "transport": "FILESYSTEM",
@@ -11927,7 +11927,7 @@
         "SO-SRC-PKG:knowledge",
         "SO-SRC-PKG:reporting",
         "SO-SRC-PKG:webui",
-        "SO-OPS-PKG:canonical_read_model_and_market_dashboard_rebuild_v1",
+        "SO-OPS-PKG:canonical_derived_public_md_read_model_v1",
         "SO-OPS-PKG:future_profile_snapshot_v1",
         "SO-OPS-PKG:peak_trade_operator_profile_explainability_v1",
         "SO-OPS-PKG:presentation_projection_octet_orchestrator_v1",

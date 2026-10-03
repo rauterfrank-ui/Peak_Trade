@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from src.webui.workflow_dashboard_archive_root_v1 import (
+from src.ops.presentation_archive_root_v1.resolver_v1 import (
     ENV_ARCHIVE_ROOT,
     OKX_OHLCV_READMODEL_RELATIVE,
     PRECEDENCE_CHAIN,

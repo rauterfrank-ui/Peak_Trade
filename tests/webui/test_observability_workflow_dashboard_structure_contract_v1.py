@@ -160,7 +160,7 @@ def test_market_separation(client_off: TestClient) -> None:
     assert "data-observability-status-summary" not in html
     assert "data-workflow-dashboard-v1" not in html
     # Exact producer_module provenance in the secondary Engineering drawer may
-    # contain module paths such as webui.workflow_dashboard_readmodel_v1.* —
+    # contain module paths such as ops.presentation_archive_materializers_v1.* —
     # that is diagnostic truth, not Observability Hub UI embedding.
     assert 'data-mdl-eng-field="producer_module"' in html
 

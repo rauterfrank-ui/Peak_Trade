@@ -201,7 +201,7 @@ def test_shell_ssr_path_decouples_identity_stale_from_ohlcv_connection() -> None
     from src.webui.market_dashboard_landscape_shell_router_v2 import (
         _chart_availability_for_ohlcv,
     )
-    from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.ohlcv_adapter_v1 import (
+    from src.ops.canonical_derived_public_md_read_model_v1.ohlcv_adapter_v1 import (
         adapt_derived_ohlcv_payload_to_o5_read_model_v1,
     )
 

@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pytest
 
-from src.webui.workflow_dashboard_archive_root_v1 import (
+from src.ops.presentation_archive_root_v1.resolver_v1 import (
     ENV_ARCHIVE_ROOT,
     _is_under,
     _path_is_under_tmp,

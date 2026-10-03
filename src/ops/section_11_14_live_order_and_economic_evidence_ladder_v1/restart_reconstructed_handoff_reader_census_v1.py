@@ -65,7 +65,7 @@ def bind_restart_reader_census_v1() -> dict[str, Any]:
             "SECTION_11_14_ELIGIBILITY": "REJECTED_NOT_OWNER_BOUND_PRODUCTIVE_READER",
         },
         {
-            "PATH": "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/durable_read_model_store_v1.py",
+            "PATH": "src/ops/canonical_derived_public_md_read_model_v1/durable_read_model_store_v1.py",
             "SYMBOL": "load_durable_read_model_v1",
             "SOURCE_OWNER": "DASHBOARD_READ_MODEL",
             "EXPECTED_SCHEMA": "dashboard_read_model",

@@ -53,28 +53,28 @@ from src.ops.presentation_projection_octet_orchestrator_v1.constants_v1 import (
     STATUS_SKIPPED,
     STATUS_WRITTEN,
 )
-from src.webui.workflow_dashboard_readmodel_v1.bull_bear_regime_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.bull_bear_regime_presentation_projection_materializer_v1 import (
     materialize_bull_bear_regime_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.canonical_decision_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.canonical_decision_presentation_projection_materializer_v1 import (
     materialize_canonical_decision_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.double_play_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.double_play_presentation_projection_materializer_v1 import (
     materialize_double_play_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.dynamic_scope_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.dynamic_scope_presentation_projection_materializer_v1 import (
     materialize_dynamic_scope_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.economic_summary_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.economic_summary_presentation_projection_materializer_v1 import (
     materialize_economic_summary_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.execution_reconciliation_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.execution_reconciliation_presentation_projection_materializer_v1 import (
     materialize_execution_reconciliation_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.risk_sizing_capital_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.risk_sizing_capital_presentation_projection_materializer_v1 import (
     materialize_risk_sizing_capital_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.safety_authority_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.safety_authority_presentation_projection_materializer_v1 import (
     materialize_safety_authority_presentation_projection_v1,
 )
 

@@ -11,7 +11,7 @@ import pytest
 
 from scripts.ops.primary_evidence_retention_v0 import verify_manifest_sha256, write_manifest_sha256
 from src.webui.market_dashboard_landscape_producer_binding_v2 import bind_market_universe_slots
-from src.webui.workflow_dashboard_readmodel_v1.dynamic_scope_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.dynamic_scope_presentation_projection_materializer_v1 import (
     materialize_dynamic_scope_presentation_projection_v1,
 )
 from src.webui.workflow_dashboard_readmodel_v1.universe_selection_reader_v1 import (

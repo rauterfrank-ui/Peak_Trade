@@ -60,7 +60,7 @@ from trading.master_v2.double_play_survival import (
 )
 from src.webui.market_dashboard_landscape_producer_binding_v2 import bind_market_universe_slots
 from src.webui.market_dashboard_landscape_v2.availability import Availability
-from src.webui.workflow_dashboard_readmodel_v1.double_play_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.double_play_presentation_projection_materializer_v1 import (
     SOURCE_DISPLAY_RELATIVE_PATH,
 )
 from src.webui.workflow_dashboard_readmodel_v1.double_play_presentation_projection_v1 import (
@@ -205,7 +205,7 @@ def test_export_and_materialize_e2e(tmp_path: Path) -> None:
     assert out.exported is True
     assert (archive_root / TARGET_RELATIVE_PATH).is_file()
 
-    from src.webui.workflow_dashboard_readmodel_v1.double_play_presentation_projection_materializer_v1 import (
+    from src.ops.presentation_archive_materializers_v1.double_play_presentation_projection_materializer_v1 import (
         materialize_double_play_presentation_projection_v1,
     )
 
@@ -278,7 +278,7 @@ def test_dashboard_autobind_after_export(tmp_path: Path) -> None:
         archive_root=archive_root,
         replay_intermediate=_intermediate_with_bundle(),
     )
-    from src.webui.workflow_dashboard_readmodel_v1.double_play_presentation_projection_materializer_v1 import (
+    from src.ops.presentation_archive_materializers_v1.double_play_presentation_projection_materializer_v1 import (
         materialize_double_play_presentation_projection_v1,
     )
 

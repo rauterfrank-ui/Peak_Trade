@@ -27,11 +27,11 @@ from src.ops.canonical_local_launcher_and_process_supervision_v1.process_identit
 from src.ops.canonical_public_md_and_ohlcv_transport_reconciliation_v1.canonical_bar_producer_v1 import (
     CanonicalPublicMdBarProducerV1,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.connection_state_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.connection_state_v1 import (
     assert_no_healthy_render_for_cached_bad_state_v1,
     classify_connection_state_v1,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.constants_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.constants_v1 import (
     CONNECTION_DISCONNECTED,
     CONNECTION_MISSING_SOURCE,
     CONNECTION_STALE,
@@ -39,11 +39,11 @@ from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.constants_v1 i
     READ_MODEL_CLASSIFICATION,
     READ_MODEL_SSOT,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.dashboard_lifecycle_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.dashboard_lifecycle_v1 import (
     assert_dashboard_has_no_trading_authority_v1,
     materialize_dashboard_lifecycle_status_v1,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.read_model_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.read_model_v1 import (
     bind_dashboard_backend_to_read_model_v1,
     build_missing_source_read_model_v1,
     project_o4_envelopes_to_canonical_dashboard_read_model_v1,

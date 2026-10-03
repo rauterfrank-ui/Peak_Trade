@@ -11,7 +11,7 @@ import time
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.constants_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.constants_v1 import (
     READ_MODEL_RELATIVE_PATH,
     READ_MODEL_SCHEMA_NAME,
 )
