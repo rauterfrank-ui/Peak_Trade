@@ -15,9 +15,11 @@
   --ots-left-col: 18%;
   --ots-right-col: 82%;
   --ots-ranking-rail-max: 220px;
-  /* V1.3 market column — shared left edge, bounded chart viewport */
+  /* V1.4 strict geometry — workspace-relative chart, fixed ranking gutter */
   --ots-rail-brand-offset: 4.35rem;
-  --ots-market-column-max: 680px;
+  --ots-ranking-market-gutter: 20px;
+  --ots-chart-workspace-width-ratio: 0.8;
+  --ots-chart-workspace-width-max-ratio: 0.85;
   --ots-market-module-gap: 0.35rem;
 }
 
@@ -88,8 +90,9 @@ body {
 
 .ots-primary-stage {
   display: grid;
-  grid-template-columns: minmax(148px, var(--ots-left-col)) minmax(0, 1fr);
-  gap: 0 1rem;
+  grid-template-columns: minmax(148px, var(--ots-ranking-rail-max)) minmax(0, 1fr);
+  column-gap: var(--ots-ranking-market-gutter);
+  row-gap: 0;
   padding: 0.5rem 1rem 0.35rem;
   min-height: 0;
   align-items: stretch;
@@ -103,7 +106,8 @@ body {
   min-height: 0;
   min-width: 0;
   max-width: var(--ots-ranking-rail-max);
-  padding-right: 0.5rem;
+  width: 100%;
+  padding-right: 0;
   border-right: 1px solid var(--ots-line);
 }
 
@@ -250,30 +254,36 @@ body {
 
 .ots-market-workspace {
   flex: 1;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
   min-height: 0;
   align-items: stretch;
   width: 100%;
-}
-
-.ots-market-column {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
   min-width: 0;
-  flex: 0 0 auto;
 }
 
-.ots-market-module {
+.ots-market-axis {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-items: start;
+  justify-items: start;
+  width: 100%;
+  min-height: 0;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.ots-market-module-header {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  width: min(100%, var(--ots-market-column-max));
-  max-width: var(--ots-market-column-max);
+  width: calc(var(--ots-chart-workspace-width-ratio) * 100%);
+  max-width: calc(var(--ots-chart-workspace-width-max-ratio) * 100%);
   gap: var(--ots-market-module-gap);
   flex-shrink: 0;
+  margin: 0;
+  padding: 0;
 }
 
 .ots-direct-view {
@@ -342,6 +352,18 @@ body {
   width: 100%;
 }
 
+.ots-chart-viewport-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: calc(var(--ots-chart-workspace-width-ratio) * 100%);
+  max-width: calc(var(--ots-chart-workspace-width-max-ratio) * 100%);
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  will-change: transform;
+}
+
 .ots-chart-stage {
   display: flex;
   flex-direction: column;
@@ -349,6 +371,8 @@ body {
   justify-content: flex-start;
   width: 100%;
   flex: none;
+  margin: 0;
+  padding: 0;
 }
 
 .ots-lower-instrument-band {
@@ -364,22 +388,13 @@ body {
   min-height: 0;
 }
 
-.ots-chart-region {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: var(--ots-market-column-max);
-  margin-inline: 0;
-  flex: none;
-  align-self: flex-start;
-}
-
 .ots-chart-head {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   gap: 1rem;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.15rem;
+  width: 100%;
 }
 
 .ots-chart-meta {
@@ -401,9 +416,9 @@ body {
 
 .ots-chart-host {
   flex: none;
-  height: clamp(220px, 34vh, 380px);
   width: 100%;
-  max-width: var(--ots-market-column-max);
+  height: clamp(360px, 45vh, calc((100vh - 5.5rem) * 0.48));
+  min-height: 360px;
 }
 
 .ots-analytical-row {

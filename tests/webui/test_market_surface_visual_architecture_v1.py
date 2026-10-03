@@ -155,35 +155,41 @@ def test_direct_view_inside_market_workspace() -> None:
     assert ws_start < dv < chart_end
 
 
-def test_v1_3_market_column_left_aligned_layout() -> None:
+def test_v1_4_strict_geometry_layout() -> None:
     html = HTML_PATH.read_text(encoding="utf-8")
     css = CSS_PATH.read_text(encoding="utf-8")
-    assert 'data-v1-3-delivery="market-column-left-align"' in html
-    assert 'data-market-column="left-aligned-v1-3"' in html
+    geometry_js = (JS_DIR / "surface_geometry_v1.js").read_text(encoding="utf-8")
+    assert 'data-v1-4-delivery="strict-geometry"' in html
+    assert 'data-market-axis="workspace-left-v1-4"' in html
     assert 'data-market-column-left-alignment-pass="true"' in html
-    assert 'data-chart-layout="market-column-left-v1-3"' in html
+    assert 'data-chart-layout="workspace-ratio-v1-4"' in html
+    assert 'data-chart-viewport="primary-v1-4"' in html
     assert 'data-okx-chart-bounded="true"' in html
     assert 'data-okx-chart-left-edge-realigned="true"' in html
-    assert "ots-market-column" in html
-    assert "ots-market-module" in html
+    assert "ots-market-axis" in html
+    assert "ots-market-module-header" in html
+    assert "ots-chart-viewport-row" in html
     assert "ots-direct-view-compact" in html
+    assert "surface_geometry_v1.js" in html
+    assert "fetch(" not in geometry_js
     assert "centered-three-band" not in html
     assert "ots-chart-center-wrap" not in html
     assert 'data-instrument-band="upper"' not in html
     assert 'data-instrument-band="lower"' in html
-    col = html.index("ots-market-column")
+    axis = html.index("ots-market-axis")
     dv = html.index("ots-direct-view-nav")
     chart = html.index("ots-chart-host")
     lower = html.index('data-instrument-band="lower"')
-    assert col < dv < chart < lower
-    assert "--ots-market-column-max" in css
-    assert "--ots-rail-brand-offset" in css
-    assert "margin-inline: 0" in css
+    assert axis < dv < chart < lower
+    assert "--ots-ranking-market-gutter" in css
+    assert "--ots-chart-workspace-width-ratio" in css
+    assert "--ots-market-column-max" not in css
+    assert "680px" not in css
     assert "padding-top: var(--ots-rail-brand-offset)" in css
 
 
-def test_v1_3_chart_layout_regression_flags() -> None:
-    """Machine-readable layout contract markers for left-aligned market column."""
+def test_v1_4_chart_layout_regression_flags() -> None:
+    """Machine-readable layout contract markers for workspace-relative chart geometry."""
     html = HTML_PATH.read_text(encoding="utf-8")
     css = CSS_PATH.read_text(encoding="utf-8")
     flags = {
@@ -191,12 +197,12 @@ def test_v1_3_chart_layout_regression_flags() -> None:
         in html,
         "OKX_CHART_LEFT_EDGE_REALIGNED": 'data-okx-chart-left-edge-realigned="true"' in html,
         "OKX_CHART_BOUNDED": 'data-okx-chart-bounded="true"' in html
-        and "--ots-market-column-max" in css,
-        "OKX_CHART_BLINDLY_STRETCHED": "width: min(96%, 920px)" not in css
-        and "margin-inline: auto" not in css.split(".ots-chart-region")[1].split("}")[0],
+        and "--ots-chart-workspace-width-ratio" in css,
+        "OKX_CHART_BLINDLY_STRETCHED": "width: min(96%, 920px)" not in css and "680px" not in css,
         "DIRECT_VIEW_COMPACT": "ots-direct-view-compact" in html,
         "LOWER_INSTRUMENT_BAND_RESERVED": 'data-instrument-band="lower"' in html,
         "EXCESSIVE_INTERSTITIAL_GAP_REMOVED": "minmax(64px, 1fr)" not in css,
+        "RANKING_MARKET_GUTTER_DEFINED": "--ots-ranking-market-gutter: 20px" in css,
     }
     assert all(flags.values()), flags
 

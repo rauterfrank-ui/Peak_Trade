@@ -141,7 +141,13 @@
       if (chart && host) {
         chart.applyOptions({ width: host.clientWidth, height: host.clientHeight });
       }
+      if (window.PeakTradeSurfaceGeometryV1) {
+        window.PeakTradeSurfaceGeometryV1.schedule();
+      }
     }).observe(host);
+    if (window.PeakTradeSurfaceGeometryV1) {
+      window.PeakTradeSurfaceGeometryV1.schedule();
+    }
   }
 
   function applyMarket(market) {
