@@ -30,6 +30,12 @@ def test_surface_html_visual_regions() -> None:
     assert "PRE_EXTERNAL" in html
     assert "ots-chart-host" in html
     assert "ots-system-context" not in html
+    assert 'data-layout="ranking-left-market-right"' in html
+    assert "ots-left-landscape" in html
+    assert "ots-right-stack" in html
+    assert "ots-brand-primary" in html
+    assert "GOLDEN HAPPY HECTOR" in html
+    assert "Golden Happy Vector" not in html
 
 
 def test_direct_view_default_market_in_js() -> None:
@@ -120,3 +126,29 @@ def test_html_avoids_dashboard_card_wall_words() -> None:
     html = HTML_PATH.read_text(encoding="utf-8").lower()
     assert "widget-grid" not in html
     assert "dashboard-card" not in html
+
+
+def test_hector_copy_not_in_backend_python() -> None:
+    py_blob = "\n".join(
+        p.read_text(encoding="utf-8")
+        for p in (REPO_ROOT / "src" / "webui" / "market_surface_greenfield_v1").glob("*.py")
+    )
+    assert "GOLDEN HAPPY HECTOR" not in py_blob
+    assert "Golden Happy Vector" not in py_blob
+
+
+def test_desktop_layout_ranking_precedes_market_in_dom() -> None:
+    html = HTML_PATH.read_text(encoding="utf-8")
+    left = html.index("ots-left-landscape")
+    right = html.index("ots-right-stack")
+    direct = html.index("ots-direct-view-nav")
+    chart = html.index("ots-chart-host")
+    assert left < right < direct < chart
+
+
+def test_direct_view_inside_market_workspace() -> None:
+    html = HTML_PATH.read_text(encoding="utf-8")
+    ws_start = html.index("ots-market-workspace")
+    dv = html.index("ots-direct-view-nav")
+    chart_end = html.index("ots-chart-host")
+    assert ws_start < dv < chart_end
