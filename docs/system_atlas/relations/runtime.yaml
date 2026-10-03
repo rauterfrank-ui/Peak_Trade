@@ -536,7 +536,7 @@ relations:
     adjacent default-off forensic observability on runtime cycle path; observation-only;
     AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7001 adds default-off
     scope-decision trace append on same cycle hook; observation-only; AUTHORITY=NONE;
-    POST_COUNT=0.'
+    POST_COUNT=0. # atlas_entity_review: PR #7037 MV2 CRS boundary wiring-only on same cycle hook; relation semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.'
 - id: REL:r_full_core_path_calls_venue_translation
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CALLS

@@ -1942,7 +1942,7 @@
     "bootstrap_exhaustive": false,
     "census_method": "UCS_FROZEN_WORKSET_EVIDENCE_BINDING_V1",
     "unclassified_sample_cap": 120,
-    "notes": "Navigation-only UCS pass; dispositions in ucs_frozen_workset_v1.json. PR #7036 raw instrument-relative Scope cutover: representation-only law-map adjudication; no normative law change; AUTHORITY=NONE.",
+    "notes": "Navigation-only UCS pass; dispositions in ucs_frozen_workset_v1.json. PR #7037 MV2 CRS boundary wiring-only: representation-only law-map adjudication; no normative law change; AUTHORITY=NONE.",
     "frozen_workset_sha256": "1faa5ad603886a2d77f4c11465cb989a9b7ddd0d3aae758378287a6739a5b8c3",
     "frozen_workset_count": 78
   }

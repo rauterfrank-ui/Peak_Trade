@@ -5453,6 +5453,18 @@
       ],
       "closure_adjudication_class": "REPRESENTATION_ONLY",
       "closure_note": "Governance/map/atlas closure for bounded Scope policy cutover; TRADING_SEMANTICS_CHANGED=false at governance boundary."
+    },
+    {
+      "id": "pr_7037_crs_boundary_mv2_wiring_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #7037: WIRING_ONLY MV2 CRS boundary propagation — build_simulated_economics_crs_boundary_state_file_v1 onto IntegratedOfflineReplayInputV1.current_instrument_capital_risk_sizing_boundary_state_file before integrated replay; closes CAPITAL_RISK_CONTEXT_UNRESOLVED on Full-Core GHV lane; no trading-decision, Scope, Layer-C, or POST authority change. Diff-bound MAP_UPDATE_REQUIRED + Atlas navigation review; AUTHORITY=NONE; POST_COUNT=0.",
+      "evidence_refs": [
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+        "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/simulated_economics_crs_boundary_binding_v1.py",
+        "tests/ops/test_current_productive_mv2_crs_boundary_wiring_v1.py"
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "Governance/map/atlas closure for CRS boundary wiring cut; TRADING_SEMANTICS_CHANGED=false at governance boundary."
     }
   ]
 }
