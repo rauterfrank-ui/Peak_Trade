@@ -18,7 +18,7 @@
     "tests/ops/test_full_core_current_productive_host_enter_29p_invalid_stop_price_repair_v1.py",
     "tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py"
   ],
-  "changed_paths_sha256": "6c2459402129b6422b22c42314629fe8c5a57a85127f88a7d03657d4ec014d2c",
+  "changed_paths_sha256": "24d8f579414a1c08b3b978156f1e7d6511dd19b86e2e74cebce553f9dc15ff4f",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/source_v1.json",
