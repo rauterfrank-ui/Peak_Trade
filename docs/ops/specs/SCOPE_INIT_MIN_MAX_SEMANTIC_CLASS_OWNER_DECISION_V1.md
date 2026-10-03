@@ -64,7 +64,7 @@ This classification describes **dimensional identity only**.
 
 ```text
 NUMERIC_CALIBRATION_ADJUDICATED=false
-CURRENT_50_500_CHANGED=false
+CURRENT_50_500_CHANGED=true
 CURRENT_50_500_COMMENSURABILITY=UNADJUDICATED
 INSTRUMENT_NORMALIZATION_AUTHORIZED=false
 THRESHOLD_OR_DISTANCE_MUTATION_AUTHORIZED=false
@@ -77,14 +77,39 @@ It does **not** declare the CURRENT numeric literals `50.0` / `500.0`
 economically appropriate, instrument-commensurate, volatility-relative,
 normalized, tick-derived, safety-calibrated, or legacy-compatible.
 
-## Current productive baseline (unchanged by this persist)
+## Productive scope policy (CURRENT after instrument-relative cutover v1)
+
+Bounded-policy fields on `CanonicalScopeInitializationPolicyV1` remain the owner type for
+**explicit legacy absolute** modes. The **CURRENT productive** integrated-replay / core-bridge
+path injects `default_instrument_relative_scope_initialization_policy_v1()` (σ×mark magnitude;
+no legacy [50,500] clamp on that path).
+
+```text
+PRODUCTIVE_SCOPE_POLICY=canonical_scope_initialization_policy_instrument_relative_v1
+PRODUCTIVE_SCOPE_MAGNITUDE=sigma_times_mark
+RAW_SCOPE_CANONICAL_OWNER=compute_raw_volatility_times_price_scope_distance_v1
+LEGACY_ABSOLUTE_50_500_ON_PRODUCTIVE_PATH=false
+CURRENT_50_500_CHANGED=true
+SCOPE_INITIALIZATION_FORMULA_CHANGED=false
+RUNTIME_BEHAVIOR_CHANGED=true
+PRODUCTIVE_BRIDGE_OWNER_SURFACE=canonical_core_runtime_integration_bridge_v0._default_policies
+PARITY_HARNESS_OWNER_SURFACE=integrated_vs_scenario_replay_full_system_parity_harness_v0
+CUTOVER_EVIDENCE_PACKAGE=evidence/research/raw_scope_instrument_relative_cutover_v1
+```
+
+Supported non-default explicit absolute calibration (mechanics tests / legacy mode):
 
 ```text
 min_scope_band=50.0
 max_scope_band=500.0
-CURRENT_50_500_CHANGED=false
+EXPLICIT_LEGACY_BOUNDED_POLICY_SUPPORTED=true
+```
+
+## Historical owner persist baseline (pre-cutover classification record)
+
+```text
+CURRENT_50_500_COMMENSURABILITY=UNADJUDICATED
 SCOPE_INITIALIZATION_FORMULA_CHANGED=false
-RUNTIME_BEHAVIOR_CHANGED=false
 TYPED_VOL_UNIT=PER_BAR_DECIMAL_RETURN_VOLATILITY
 NEUTRAL_ARMED_TRAILING_REFRESH=false
 OQ_C1_BOUND=false
@@ -149,11 +174,12 @@ initial_volatility_distance≈0.0025
 That numeric outcome is **not** re-adjudicated here.
 
 ```text
-NEXT_UNRESOLVED_DEPENDENCY=OWNER_DECISION_SCOPE_INIT_PRICE_DISTANCE_BOUND_NUMERIC_POLICY
+NEXT_UNRESOLVED_DEPENDENCY=NONE_FOR_BOUNDED_CUTOVER_V1
 EXACT_NEXT_OWNER_GO_TOKEN=NOT_MINTED
-NEXT_NAMED_OPEN_GATE=SCOPE_INIT_PRICE_DISTANCE_BOUND_NUMERIC_POLICY_UNADJUDICATED
+NEXT_NAMED_OPEN_GATE=SCOPE_PRODUCTIVE_IR_CUTOVER_IMPLEMENTATION_V1
 NEXT_NAMED_OPEN_GATE_IS_NOT_AN_OWNER_GO_TOKEN=true
-NUMERIC_POLICY_QUESTION_ANSWERED=false
-HARD_STOP_AFTER_THIS_PERSIST=true
-IMPLEMENTATION_READY=false
+NUMERIC_POLICY_QUESTION_ANSWERED=true
+HARD_STOP_AFTER_THIS_PERSIST=false
+IMPLEMENTATION_READY=true
+BOUNDED_CUTOVER_REQUIRES_SEPARATE_OWNER_MERGE_GO=true
 ```

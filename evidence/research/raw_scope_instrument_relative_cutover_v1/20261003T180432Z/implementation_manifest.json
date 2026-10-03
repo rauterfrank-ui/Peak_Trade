@@ -1,0 +1,14 @@
+{
+  "AUTHORIZED_PRODUCTIVE_SEMANTIC_EDIT_SET": [
+    "src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py",
+    "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py"
+  ],
+  "ACTUAL_PRODUCTIVE_SEMANTIC_EDIT_SET": [
+    "src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py",
+    "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py"
+  ],
+  "AUTHORIZED_CHANGE_SURFACE_RESPECTED": true,
+  "NEW_SCOPE_FORMULA_COUNT": 0,
+  "BRIDGE_USES_CANONICAL_IR_POLICY": true,
+  "PARITY_HARNESS_USES_CANONICAL_IR_POLICY": true
+}
