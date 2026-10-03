@@ -1,44 +1,37 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "a21362ab9236e28bc3512b8a02c84a0dda93c882",
+  "base_sha": "18283b2c3d3fc4066c538eeea1cfa0519606a86b",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/technical_canonical_wiring_authorization_v1.json",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "docs/system_atlas/relations/runtime.yaml",
-    "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
-    "tests/ops/test_current_productive_mv2_crs_boundary_wiring_v1.py",
-    "tests/ops/test_full_core_current_productive_host_enter_29p_invalid_stop_price_repair_v1.py",
-    "tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/ghv_e2e_productive_pre_external_tail_bind_v1.py",
+    "tests/ops/test_ghv_e2e_pre_decision_productive_closure_entry_regression_v1.py"
   ],
-  "changed_paths_sha256": "24d8f579414a1c08b3b978156f1e7d6511dd19b86e2e74cebce553f9dc15ff4f",
+  "changed_paths_sha256": "7c6359bcbc657828db3eb44bb582d46609d422bc93494bc444f58e15573b4d89",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/source_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "docs/system_atlas/relations/runtime.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
-    "tests/ops/test_current_productive_mv2_crs_boundary_wiring_v1.py",
-    "tests/ops/test_full_core_current_productive_host_enter_29p_invalid_stop_price_repair_v1.py",
-    "tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/ghv_e2e_productive_pre_external_tail_bind_v1.py",
+    "tests/ops/test_ghv_e2e_pre_decision_productive_closure_entry_regression_v1.py"
   ],
   "evidence_refs": [
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
-    "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/simulated_economics_crs_boundary_binding_v1.py",
-    "tests/ops/test_current_productive_mv2_crs_boundary_wiring_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/ghv_e2e_productive_pre_external_tail_bind_v1.py",
+    "tests/ops/test_ghv_e2e_pre_decision_productive_closure_entry_regression_v1.py"
   ],
-  "reason": "PR #7037 WIRING_ONLY MV2 CRS boundary propagation; governance/map/atlas closure; CSIA open epistemic record pr_7037; no interaction-authority edge change; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #7038 GHV E2E harness pre-decision productive Closure bind + System Atlas currency; no CSIA structured source change; no interaction-authority edge change; AUTHORITY=NONE; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
-  "verdict": "MAP_UPDATE_REQUIRED"
+  "verdict": "NO_MAP_IMPACT"
 }
