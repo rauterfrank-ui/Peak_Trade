@@ -12,19 +12,12 @@
     "tests/ops/test_current_productive_live_29p_layer_c_protective_stop_binding_v1.py"
   ],
   "changed_paths_sha256": "90d9711bfbb91a569e4c5e205255a33c67dd8b7cbc5ce67917e510ed3cde4b16",
-  "covered_candidate_paths": [
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
-    "tests/ops/test_current_productive_available_for_sizing_base_binding_v1.py",
-    "tests/ops/test_current_productive_live_29p_layer_c_protective_stop_binding_v1.py"
-  ],
   "evidence_refs": [
     "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_available_for_sizing_base_binding_v1.py",
     "tests/ops/test_current_productive_live_29p_layer_c_protective_stop_binding_v1.py"
   ],
   "reason": "PR #7035 Natural-Enter downstream binding repair: LIVE-29P join uses Layer-C adverse exit distance aligned with productive MV2; treasury BASE duplicate-evidence path rebinds decision_epoch for P01 coherency; persistent convergence accepts fail-closed continuous segment terminals without POST. Downstream binding only; TRADING_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.",
-  "selector_used_as_map_impact_authority": false,
-  "verdict": "NO_MAP_IMPACT"
+  "selector_used_as_law_impact_authority": false,
+  "verdict": "NO_LAW_IMPACT"
 }
