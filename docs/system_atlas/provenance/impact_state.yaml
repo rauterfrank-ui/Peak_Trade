@@ -1,13 +1,18 @@
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CHANGE:pr_7036_raw_instrument_relative_scope_cutover_v1
-modified_by: CHANGE:pr_7036_raw_instrument_relative_scope_cutover_v1
+introduced_by: CHANGE:pr_7037_crs_boundary_mv2_wiring_v1
+modified_by: CHANGE:pr_7037_crs_boundary_mv2_wiring_v1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'PR #7036 raw instrument-relative Scope cutover — bridge + Surface-P parity harness productive policy wiring; Map-of-Truth navigation inventory; GHV reproof evidence; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.'
+note: 'PR #7037 MV2 CRS boundary wiring-only — build_simulated_economics_crs_boundary_state_file_v1 propagated to IntegratedOfflineReplayInputV1 before integrated replay; GHV 576/576 valid CRS; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.'
 changed_entities:
-- NAVIGATION_INDEX:map_of_truth
-changed_relations: []
+- RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+- CONTRACT:p5_10_productive_activation_and_binding_v1
+- RUNTIME_COMPONENT:elementary_direction_v1
+- RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1
+- RUNTIME_COMPONENT:productive_golden_happy_vector_forensic_observability_v1
+changed_relations:
+- REL:r_full_core_cycle_observes_elementary_direction
 changed_closures: []
 changed_wiring: []
 changed_venue: []

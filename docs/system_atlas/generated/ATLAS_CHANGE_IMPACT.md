@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=5
+ATLAS_CHANGED_RELATION_COUNT=1
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7036_raw_instrument_relative_scope_cutover_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7037_crs_boundary_mv2_wiring_v1`.
 
 ## Workflow
 
@@ -40,13 +40,17 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `NAVIGATION_INDEX:map_of_truth` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `CONTRACT:p5_10_productive_activation_and_binding_v1` |
+| `RUNTIME_COMPONENT:elementary_direction_v1` |
+| `RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1` |
+| `RUNTIME_COMPONENT:productive_golden_happy_vector_forensic_observability_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:r_full_core_cycle_observes_elementary_direction` |
 
 ## NEW_RELATIONS
 
@@ -92,8 +96,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7036 raw instrument-relative Scope cutover — bridge + Surface-P parity harness productive policy wiring; Map-of-Truth navigation inventory; GHV reproof evidence; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.
-- introduced_by=CHANGE:pr_7036_raw_instrument_relative_scope_cutover_v1
-- modified_by=CHANGE:pr_7036_raw_instrument_relative_scope_cutover_v1
+- PR #7037 MV2 CRS boundary wiring-only — build_simulated_economics_crs_boundary_state_file_v1 propagated to IntegratedOfflineReplayInputV1 before integrated replay; GHV 576/576 valid CRS; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.
+- introduced_by=CHANGE:pr_7037_crs_boundary_mv2_wiring_v1
+- modified_by=CHANGE:pr_7037_crs_boundary_mv2_wiring_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

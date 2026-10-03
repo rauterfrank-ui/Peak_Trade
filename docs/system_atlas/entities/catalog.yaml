@@ -99,6 +99,7 @@ entities:
 - id: NAVIGATION_INDEX:map_of_truth
   atlas_documentation_fixpoint: CHANGE:pr_7036_raw_instrument_relative_scope_cutover_v1
   # atlas_entity_review: PR #7036 raw instrument-relative Scope cutover navigation inventory; bridge + Surface-P harness; AUTHORITY=NONE; POST_COUNT=0.
+# atlas_entity_review: PR #7037 MV2 simulated-economics CRS boundary wiring-only on current_productive_master_v2_runtime_cycle_v1; propagation to IntegratedOfflineReplayInputV1; TRADING_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.
   kind: NAVIGATION_INDEX
   name: Map of Truth
   epistemic_class: NAVIGATION_ONLY
@@ -203,6 +204,7 @@ entities:
   - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
   notes: Navigation/topology record for the passive C1 mark-to-mark identity {BULL, BEAR, NEUTRAL}. AUTHORITY_EFFECT=NONE. Not a trading-decision owner. Not consumed by Replay, Double Play, ScopeEvent, SideState, Entry, Risk, Intent, Execution, or POST. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:elementary_direction_v1
+  # atlas_entity_review: PR #7037 adjacent MV2 CRS boundary wiring-only; elementary_direction semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Elementary C1 mark direction identity
   epistemic_class: FORENSIC_RAW
@@ -491,6 +493,7 @@ entities:
   - tests/ops/test_okx_eea_private_account_state_runtime_v1.py
   notes: 'Observation-only OKX EEA private state plane: OKX_EEA_PRIVATE_OBSERVATION_READ_V1 credential class, GET-only REST baseline/recovery, private WS login/subscribe only, normalized account/balance/position/order/fill state, reconciliation/durability, thin adapters into existing fresh-pretrade seams. No POST, WS order send/amend/cancel, trade-credential fallback, account-equity sizing authority, selection, strategy, execution, or wire authority. MULTI_FUTURE_RUNTIME_AUTHORIZED remains false; MAX_POSITIONS_EFFECTIVE=1. ATLAS_AUTHORITY=NONE.'
 - id: RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1
+  # atlas_entity_review: PR #7037 test expectation update only (CRS at MV2 host); cursor seam unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Current productive side-state / confirmation cursor seam
   epistemic_class: FORENSIC_RAW
@@ -2974,6 +2977,7 @@ entities:
   - config/governance/productive_activation_boundary_forensic_review_v1_decision_v1.json
   notes: Post-#6889 Owner-GO forensic census + static proof; consumer reachability does not mint Productive Activation; PRODUCTIVE_ACTIVATION_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
 - id: CONTRACT:p5_10_productive_activation_and_binding_v1
+  # atlas_entity_review: PR #7037 MV2 host CRS boundary attach after prepare_productive_layered_core_replay_bind_v1; bind seam semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: CONTRACT
   name: P5.10 productive activation and binding v1
   epistemic_class: CANONICAL_AUTHORITY
@@ -3843,6 +3847,7 @@ entities:
   - tests/ops/test_productive_natural_market_data_capture_sink_v1.py
   notes: Append-only evidence wrapper around FullCoreProductiveReadOnlyGetTransportV1; 1:1 delegate GET passthrough; default disabled at product entry; CORRELATION_STATUS=PARTIAL; no poll-bundle claim; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:productive_golden_happy_vector_forensic_observability_v1
+  # atlas_entity_review: PR #7037 GHV reproof lane CRS propagation fix; observability module unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Productive Golden Happy Vector forensic observability v1
   epistemic_class: FORENSIC_RAW
@@ -4717,6 +4722,7 @@ entities:
   - tests/governance/test_companion_c2_fraction_to_units_runtime_completion_v1.py
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  # atlas_entity_review: PR #7037 WIRING_ONLY CRS boundary propagation via build_simulated_economics_crs_boundary_state_file_v1 before integrated replay; no trading-decision change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7035 LIVE-29P join Layer-C adverse-exit protective-stop binding aligned with productive MV2; downstream binding only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7014 optional predicate_trace_collector wiring for default-off flight recorder; observation-only.
   # atlas_entity_review: PR #7027 BWP-01 indirect atlas touch via identity/admission spec only; no composition-root code change; AUTHORITY=NONE.
@@ -4727,7 +4733,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7032_ghv_current_residency_migration_v1
+  modified_by: CHANGE:pr_7037_crs_boundary_mv2_wiring_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/__init__.py
   - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py

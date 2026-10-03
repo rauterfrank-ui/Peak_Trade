@@ -632,3 +632,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   notes: 'PR #7033 post-#7032 document-currency fixpoint: Master Runbook + Map of Truth residency navigation; law map runbook SHA refresh; operator workspace hygiene; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7037_crs_boundary_mv2_wiring_v1
+  from: a21362ab9236e28bc3512b8a02c84a0dda93c882
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_current_productive_mv2_crs_boundary_wiring_v1.py
+  notes: 'PR #7037: WIRING_ONLY MV2 simulated-economics CRS boundary propagation to IntegratedOfflineReplayInputV1; reuses build_simulated_economics_crs_boundary_state_file_v1; GHV reproof 576/576 valid CRS; Double Play/Scope/Layer-C unchanged; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
