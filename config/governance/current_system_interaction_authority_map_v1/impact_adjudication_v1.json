@@ -2,6 +2,8 @@
   "authority_effect": "NONE",
   "base_sha": "0410bd8bec37e2015e5a9ea6829f6400e351276a",
   "changed_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_census_graph_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
@@ -105,8 +107,10 @@
     "tests/webui/test_workflow_dashboard_archive_root_okx_discovery_v0.py",
     "tests/webui/test_workflow_dashboard_archive_root_v1.py"
   ],
-  "changed_paths_sha256": "edba9601cd429472ebd821fe80f697716b4d96420b1e57c7b92ead8f262bd803",
+  "changed_paths_sha256": "e46c9b995372803609893aaeb11afc3331d5e1687f1455cb374973ce0886ae8c",
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_census_graph_v1/source_v1.json",
     "config/ops/presentation_archive_root_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
@@ -184,6 +188,6 @@
     "tests/ops/test_presentation_projection_octet_orchestrator_v1.py"
   ],
   "reason": "PR #7032 GHV precomputed CURRENT residency decoupling: O5\u2192canonical_derived_public_md_read_model_v1, 8 presentation materializers\u2192ops, archive-root resolver\u2192ops; CSIA/census navigation rebind only; AUTHORITY=NONE; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.",
-  "selector_used_as_map_impact_authority": false,
-  "verdict": "MAP_UPDATE_REQUIRED"
+  "verdict": "MAP_UPDATE_REQUIRED",
+  "selector_used_as_map_impact_authority": false
 }
