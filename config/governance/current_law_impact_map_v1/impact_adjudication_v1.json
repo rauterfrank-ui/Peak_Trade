@@ -3,19 +3,21 @@
   "base_sha": "b0a15094e0c2ad33f93fc6c4d017072f7907eaa4",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/impact_state.yaml"
   ],
-  "changed_paths_sha256": "6e66d082cbaee44c1f0e06cc0c8bd09489045045a33a33f3bd9bd4a96aa551ee",
+  "changed_paths_sha256": "40fbeb6b805666de32809f593bdc3ef706e760f32b1e60e98afee6dd000d1754",
   "covered_candidate_paths": [],
   "evidence_refs": [
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "config/governance/current_law_impact_map_v1/source_v1.json"
   ],
-  "reason": "Post-#7032 document-currency fixpoint: documentation and navigation currency only; no law semantics; NO_LAW_IMPACT; POST_COUNT=0.",
+  "reason": "Post-#7032 document-currency fixpoint: RUNBOOK-VENUE-PLAN-TDMODE-AUTHORITY-V1 source_sha256 refresh and regenerated law reference index; documentation currency only; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.",
   "selector_used_as_law_impact_authority": false,
-  "verdict": "NO_LAW_IMPACT"
+  "verdict": "LAW_MAP_UPDATE_REQUIRED"
 }
