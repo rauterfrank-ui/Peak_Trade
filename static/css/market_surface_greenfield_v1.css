@@ -87,6 +87,8 @@ body {
   padding: 0.5rem 1rem 0.35rem;
   min-height: 0;
   align-items: stretch;
+  flex: 1;
+  min-height: calc(100vh - 5.5rem);
 }
 
 .ots-left-landscape {
@@ -288,13 +290,53 @@ body {
 .ots-transition-band {
   padding: 0.2rem 0 0.35rem;
   color: var(--ots-dim);
+  flex-shrink: 0;
+}
+
+.ots-chart-stage {
+  flex: 1;
+  display: grid;
+  grid-template-rows: minmax(64px, 1fr) auto minmax(64px, 1fr);
+  align-items: center;
+  justify-items: center;
+  min-height: 0;
+  width: 100%;
+}
+
+.ots-upper-instrument-band,
+.ots-lower-instrument-band {
+  width: 100%;
+  min-height: 64px;
+  align-self: stretch;
+}
+
+.ots-upper-instrument-band {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.ots-lower-instrument-band {
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.ots-chart-center-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  padding: 0.25rem 0;
 }
 
 .ots-chart-region {
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 0;
+  width: min(96%, 920px);
+  margin-inline: auto;
+  flex: none;
 }
 
 .ots-chart-head {
@@ -323,9 +365,8 @@ body {
 }
 
 .ots-chart-host {
-  flex: 1;
-  min-height: 240px;
-  max-height: min(46vh, 520px);
+  flex: none;
+  height: clamp(220px, 36vh, 400px);
   width: 100%;
 }
 
@@ -333,9 +374,10 @@ body {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.65rem;
-  padding: 0.55rem 0 0.25rem;
-  border-top: 1px solid var(--ots-line);
-  margin-top: 0.35rem;
+  padding: 0.45rem 0 0.15rem;
+  border-top: none;
+  margin-top: 0;
+  width: 100%;
 }
 
 .ots-micro-panel {

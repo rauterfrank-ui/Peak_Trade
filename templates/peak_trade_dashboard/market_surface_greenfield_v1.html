@@ -64,23 +64,26 @@
           Confirmation · NO CANONICAL SOURCE
         </div>
 
-        <div class="ots-chart-region" aria-label="OKX market chart">
-          <div class="ots-chart-head">
-            <div>
-              <div id="ots-chart-mode" class="ots-l2">MARKET TRUTH · OKX</div>
-              <div id="ots-chart-sub" class="ots-l4 ots-mono ots-dim">—</div>
-            </div>
-            <div class="ots-chart-meta ots-l4 ots-mono">
-              <span id="ots-interval">—</span>
-              <span id="ots-connection">—</span>
+        <div class="ots-chart-stage" data-chart-layout="centered-three-band">
+          <div class="ots-upper-instrument-band" data-instrument-band="upper" aria-hidden="true"></div>
+          <div class="ots-chart-center-wrap" data-chart-center="true">
+            <div class="ots-chart-region" aria-label="OKX market chart">
+              <div class="ots-chart-head">
+                <div>
+                  <div id="ots-chart-mode" class="ots-l2">MARKET TRUTH · OKX</div>
+                  <div id="ots-chart-sub" class="ots-l4 ots-mono ots-dim">—</div>
+                </div>
+                <div class="ots-chart-meta ots-l4 ots-mono">
+                  <span id="ots-interval">—</span>
+                  <span id="ots-connection">—</span>
+                </div>
+              </div>
+              <div id="ots-projection-banner" class="ots-projection-banner ots-l4" hidden></div>
+              <div id="ots-chart" class="ots-chart-host"></div>
             </div>
           </div>
-          <div id="ots-projection-banner" class="ots-projection-banner ots-l4" hidden></div>
-          <div id="ots-chart" class="ots-chart-host"></div>
-        </div>
-      </section>
-
-      <section class="ots-analytical-row" aria-label="System observability">
+          <div class="ots-lower-instrument-band" data-instrument-band="lower">
+            <section class="ots-analytical-row" aria-label="System observability">
         <div class="ots-micro-panel" data-micro="trades">
           <div class="ots-l3">Trades</div>
           <div class="ots-micro-trace" id="ots-micro-trades"></div>
@@ -99,6 +102,9 @@
         <div class="ots-micro-panel" data-micro="sources">
           <div class="ots-l3">Source coverage</div>
           <div class="ots-micro-matrix" id="ots-micro-sources"></div>
+        </div>
+            </section>
+          </div>
         </div>
       </section>
     </div>

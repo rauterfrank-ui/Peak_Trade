@@ -14,6 +14,7 @@ from src.webui.app import app
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 HTML_PATH = REPO_ROOT / "templates" / "peak_trade_dashboard" / "market_surface_greenfield_v1.html"
+CSS_PATH = REPO_ROOT / "static" / "css" / "market_surface_greenfield_v1.css"
 JS_DIR = REPO_ROOT / "static" / "js" / "market_surface_greenfield_v1"
 FORMAT_JS = JS_DIR / "surface_format_v1.js"
 APP_JS = JS_DIR / "surface_app_v1.js"
@@ -152,3 +153,39 @@ def test_direct_view_inside_market_workspace() -> None:
     dv = html.index("ots-direct-view-nav")
     chart_end = html.index("ots-chart-host")
     assert ws_start < dv < chart_end
+
+
+def test_okx_chart_centered_three_band_layout() -> None:
+    html = HTML_PATH.read_text(encoding="utf-8")
+    css = CSS_PATH.read_text(encoding="utf-8")
+    assert 'data-chart-layout="centered-three-band"' in html
+    assert 'data-instrument-band="upper"' in html
+    assert 'data-instrument-band="lower"' in html
+    assert 'data-chart-center="true"' in html
+    assert "ots-chart-center-wrap" in html
+    upper = html.index('data-instrument-band="upper"')
+    center = html.index("ots-chart-center-wrap")
+    lower = html.index('data-instrument-band="lower"')
+    assert upper < center < lower
+    assert ".ots-chart-stage" in css
+    assert "grid-template-rows" in css
+    assert "ots-chart-center-wrap" in css
+    assert "margin-inline: auto" in css or "align-items: center" in css
+
+
+def test_chart_layout_regression_flags() -> None:
+    """Machine-readable layout contract markers for centered OKX chart composition."""
+    html = HTML_PATH.read_text(encoding="utf-8")
+    css = CSS_PATH.read_text(encoding="utf-8")
+    flags = {
+        "OKX_CHART_HORIZONTAL_CENTER_PASS": "margin-inline: auto" in css
+        or "justify-items: center" in css,
+        "OKX_CHART_VERTICAL_CENTER_PASS": "grid-template-rows" in css
+        and "ots-chart-center-wrap" in css,
+        "UPPER_INSTRUMENT_BAND_RESERVED": 'data-instrument-band="upper"' in html,
+        "LOWER_INSTRUMENT_BAND_RESERVED": 'data-instrument-band="lower"' in html,
+        "RANKING_AND_CHART_VERTICAL_MIDPOINT_ALIGNMENT_PASS": "min-height: calc(100vh"
+        in css
+        and "ots-chart-stage" in html,
+    }
+    assert all(flags.values()), flags
