@@ -32,11 +32,11 @@ from src.ops.canonical_local_launcher_and_process_supervision_v1.dashboard_http_
     create_o2_dashboard_http_app_v1,
     run_uvicorn_loopback_v1,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.constants_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.constants_v1 import (
     CONNECTION_HEALTHY,
     READ_MODEL_SCHEMA_NAME,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.durable_read_model_store_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.durable_read_model_store_v1 import (
     commit_durable_read_model_v1,
 )
 

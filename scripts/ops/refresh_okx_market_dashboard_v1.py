@@ -27,7 +27,7 @@ from scripts.ops.okx_to_futures_producer_packet_governed_v1 import (
 from src.ops.okx_selected_instrument_ohlcv_readmodel_v1 import (
     materialize_selected_okx_ohlcv_readmodel_v1,
 )
-from src.webui.workflow_dashboard_archive_root_v1 import resolve_workflow_dashboard_archive_root
+from src.ops.presentation_archive_root_v1.resolver_v1 import resolve_workflow_dashboard_archive_root
 from src.webui.workflow_dashboard_readmodel_v1.futures_producer_packet_real_metadata_source_v1 import (
     FuturesProducerPacketRealMetadataSourceError,
     bundle_to_upstream_input,

@@ -1406,7 +1406,7 @@ def test_exact_canonical_default_path_resolution_without_env(
 ) -> None:
     import sys
 
-    from src.webui.workflow_dashboard_archive_root_v1 import (
+    from src.ops.presentation_archive_root_v1.resolver_v1 import (
         canonical_default_workflow_dashboard_archive_root,
         resolve_workflow_dashboard_archive_root,
     )
@@ -1434,7 +1434,7 @@ def test_default_path_binds_selected_instrument_and_venue_without_env(
 ) -> None:
     import sys
 
-    from src.webui.workflow_dashboard_archive_root_v1 import (
+    from src.ops.presentation_archive_root_v1.resolver_v1 import (
         canonical_default_workflow_dashboard_archive_root,
     )
 
@@ -1489,7 +1489,7 @@ def test_default_path_missing_readmodel_remains_fail_closed(
 ) -> None:
     import sys
 
-    from src.webui.workflow_dashboard_archive_root_v1 import (
+    from src.ops.presentation_archive_root_v1.resolver_v1 import (
         canonical_default_workflow_dashboard_archive_root,
     )
 
@@ -1509,7 +1509,7 @@ def test_default_path_invalid_schema_remains_fail_closed(
 ) -> None:
     import sys
 
-    from src.webui.workflow_dashboard_archive_root_v1 import (
+    from src.ops.presentation_archive_root_v1.resolver_v1 import (
         canonical_default_workflow_dashboard_archive_root,
     )
 

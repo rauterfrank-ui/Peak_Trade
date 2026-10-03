@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Any, Mapping
 
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.constants_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.constants_v1 import (
     CONNECTION_DEGRADED,
     CONNECTION_DISCONNECTED,
     CONNECTION_HEALTHY,

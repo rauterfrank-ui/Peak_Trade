@@ -37,14 +37,14 @@ from src.ops.canonical_public_md_and_ohlcv_transport_reconciliation_v1.missing_s
     mark_missing_bar_v1,
     mark_stale_bar_v1,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.connection_state_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.connection_state_v1 import (
     classify_connection_state_v1,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.constants_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.constants_v1 import (
     CONNECTION_DISCONNECTED,
     CONNECTION_STALE,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.read_model_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.read_model_v1 import (
     project_o4_envelopes_to_canonical_dashboard_read_model_v1,
 )
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.normalized_market_data_v1 import (

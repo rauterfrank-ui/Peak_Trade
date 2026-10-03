@@ -307,7 +307,7 @@
     "src/governance/v32_post_d27_test_entry_lifecycle_global_closure_adjudication_v1.py",
     "src/learning/deterministic_decision_outcome_v0/",
     "src/ops/b05_full_core_governed_authority_chain_closure_v1/",
-    "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/",
+    "src/ops/canonical_derived_public_md_read_model_v1/",
     "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/",
     "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/",
     "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/",

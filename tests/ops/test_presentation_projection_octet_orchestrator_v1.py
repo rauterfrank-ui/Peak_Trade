@@ -26,7 +26,7 @@ from src.ops.presentation_projection_octet_orchestrator_v1.constants_v1 import (
 from src.ops.presentation_projection_octet_orchestrator_v1.orchestrator_v1 import (
     run_presentation_projection_octet_orchestrator_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.dynamic_scope_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.dynamic_scope_presentation_projection_materializer_v1 import (
     SOURCE_STATE_RELATIVE_PATH,
 )
 

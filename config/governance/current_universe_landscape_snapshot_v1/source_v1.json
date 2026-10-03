@@ -665,7 +665,7 @@
         "SO-SRC-PKG:knowledge",
         "SO-SRC-PKG:reporting",
         "SO-SRC-PKG:webui",
-        "SO-OPS-PKG:canonical_read_model_and_market_dashboard_rebuild_v1",
+        "SO-OPS-PKG:canonical_derived_public_md_read_model_v1",
         "SO-OPS-PKG:future_profile_snapshot_v1",
         "SO-OPS-PKG:peak_trade_operator_profile_explainability_v1",
         "SO-OPS-PKG:presentation_projection_octet_orchestrator_v1",

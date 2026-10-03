@@ -18,7 +18,7 @@ from src.webui.market_dashboard_landscape_producer_binding_v2 import (
     bind_market_universe_slots,
 )
 from src.webui.market_dashboard_landscape_v2.availability import Availability
-from src.webui.workflow_dashboard_archive_root_v1 import ENV_ARCHIVE_ROOT
+from src.ops.presentation_archive_root_v1.resolver_v1 import ENV_ARCHIVE_ROOT
 from src.webui.workflow_dashboard_readmodel_v1.canonical_decision_presentation_projection_v1 import (
     AUTHORITY_EFFECT,
     DECISION_AUTHORITY_EFFECT,

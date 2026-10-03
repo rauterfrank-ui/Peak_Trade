@@ -1,18 +1,18 @@
-"""Non-authoritative materializer for canonical decision presentation projection.
+"""Non-authoritative materializer for Risk/Sizing/Capital presentation projection.
 
-CAPABILITY_ID=CAPABILITY_PRESENTATION_CANONICAL_DECISION_PROJECTION_MATERIALIZER_V1
+CAPABILITY_ID=CAPABILITY_PRESENTATION_RISK_SIZING_CAPITAL_PROJECTION_MATERIALIZER_AUTOBIND_V1
 
-Consumes already-produced CanonicalTradingDecisionEvidenceV1 field payloads (or
-the durable sibling producer dump under the Workflow Dashboard archive root)
-and writes the existing non-authoritative presentation projection schema to the
-loader-owned path. This module:
+Consumes already-produced Risk/Sizing/Capital binder-compatible field payloads
+(or the durable sibling dump under the Workflow Dashboard archive root) and
+writes the non-authoritative presentation projection schema to the loader-owned
+path. This module:
 
 - AUTHORITY_EFFECT=NONE
-- DECISION_AUTHORITY_EFFECT=NONE
-- never creates, mutates, or evaluates trading decisions
-- never imports trading.master_v2 decision producers or evaluators
-- never calls transition_state / compose_double_play / KillSwitch / risk / sizing
-- never invents decision facts, timestamps, or default field values
+- RISK_SIZING_AUTHORITY_EFFECT=NONE
+- never creates, mutates, or evaluates capital/risk/sizing decisions
+- never imports src.governance.capital_risk_sizing_v1 evaluators
+- never imports trading.master_v2 capital_risk_sizing offline adapters
+- never invents quantity, status, timestamps, or reason_codes
 - fail-closed: missing source → MISSING_SOURCE and no artifact write;
   invalid source → FAIL_CLOSED and no artifact write
 - projection remains non-authoritative and must never flow back into runtime
@@ -20,7 +20,7 @@ loader-owned path. This module:
 
 Deterministic serialization and atomic replace only. This projection path does
 not own a separate MANIFEST contract; integrity follows the existing loader
-schema/authority/evidence checks.
+schema/authority/fields checks.
 """
 
 from __future__ import annotations
@@ -31,51 +31,51 @@ import os
 import tempfile
 from copy import deepcopy
 from dataclasses import dataclass
+from enum import Enum
 from pathlib import Path
 from typing import Any, Mapping
 
-from .readmodels_manifest_coherence_v1 import finalize_manifest_for_readmodel_artifact_v1
-from .canonical_decision_presentation_projection_v1 import (
+from src.webui.workflow_dashboard_readmodel_v1.readmodels_manifest_coherence_v1 import (
+    finalize_manifest_for_readmodel_artifact_v1,
+)
+from src.webui.workflow_dashboard_readmodel_v1.risk_sizing_capital_presentation_projection_v1 import (
     AUTHORITY_EFFECT,
-    DECISION_AUTHORITY_EFFECT,
-    LOAD_ERROR_EVIDENCE_INVALID,
+    LOAD_ERROR_FIELDS_INVALID,
     LOAD_ERROR_SCHEMA_MISMATCH,
     LOAD_ERROR_TIMESTAMP_MISSING,
-    PRODUCER_EVIDENCE_SCHEMA_VERSION,
     PROJECTION_ROLE,
+    RISK_SIZING_AUTHORITY_EFFECT,
     SCHEMA_NAME,
     SCHEMA_VERSION,
+    SOURCE_FIELDS_RELATIVE_PATH,
     STORAGE_RELATIVE_PATH,
-    map_canonical_decision_evidence_to_binder_fields_v1,
+    map_risk_sizing_capital_fields_to_binder_fields_v1,
 )
 
-CAPABILITY_ID = "CAPABILITY_PRESENTATION_CANONICAL_DECISION_PROJECTION_MATERIALIZER_V1"
+CAPABILITY_ID = "CAPABILITY_PRESENTATION_RISK_SIZING_CAPITAL_PROJECTION_MATERIALIZER_AUTOBIND_V1"
 OWNER_MODULE = (
-    "webui.workflow_dashboard_readmodel_v1."
-    "canonical_decision_presentation_projection_materializer_v1"
+    "ops.presentation_archive_materializers_v1.risk_sizing_capital_presentation_projection_materializer_v1"
+    "risk_sizing_capital_presentation_projection_materializer_v1"
 )
-SOURCE_EVIDENCE_RELATIVE_PATH = "readmodels/canonical_trading_decision_evidence.v1.json"
 
 STATUS_WRITTEN = "WRITTEN"
 STATUS_MISSING_SOURCE = "MISSING_SOURCE"
 STATUS_FAIL_CLOSED = "FAIL_CLOSED"
 
 MATERIALIZE_ERROR_MISSING_SOURCE = "MISSING_SOURCE"
-MATERIALIZE_ERROR_INVALID_JSON = "CANONICAL_DECISION_PRESENTATION_MATERIALIZER_INVALID_JSON"
-MATERIALIZE_ERROR_INVALID_SOURCE = "CANONICAL_DECISION_PRESENTATION_MATERIALIZER_INVALID_SOURCE"
-MATERIALIZE_ERROR_WRITE_FAILED = "CANONICAL_DECISION_PRESENTATION_MATERIALIZER_WRITE_FAILED"
+MATERIALIZE_ERROR_INVALID_JSON = "RISK_SIZING_CAPITAL_PRESENTATION_MATERIALIZER_INVALID_JSON"
+MATERIALIZE_ERROR_INVALID_SOURCE = "RISK_SIZING_CAPITAL_PRESENTATION_MATERIALIZER_INVALID_SOURCE"
+MATERIALIZE_ERROR_WRITE_FAILED = "RISK_SIZING_CAPITAL_PRESENTATION_MATERIALIZER_WRITE_FAILED"
 
-_REQUIRED_EVIDENCE_ATTRS = (
-    "instrument_id",
-    "decision_outcome",
-    "next_direction_state",
-    "decision_id",
-    "evidence_schema_version",
+_REQUIRED_FIELD_ATTRS = (
+    "risk_status",
+    "sizing_status",
+    "capital_status",
 )
 
 
 @dataclass(frozen=True)
-class CanonicalDecisionPresentationMaterializeResultV1:
+class RiskSizingCapitalPresentationMaterializeResultV1:
     """Result of a fail-closed presentation projection materialize attempt."""
 
     written: bool
@@ -83,7 +83,7 @@ class CanonicalDecisionPresentationMaterializeResultV1:
     errors: tuple[str, ...]
     projection_path: str | None = None
     source_path: str | None = None
-    decision_id: str | None = None
+    risk_status: str | None = None
     payload_digest: str | None = None
 
 
@@ -92,8 +92,8 @@ def _empty_result(
     status: str,
     errors: tuple[str, ...],
     source_path: str | None = None,
-) -> CanonicalDecisionPresentationMaterializeResultV1:
-    return CanonicalDecisionPresentationMaterializeResultV1(
+) -> RiskSizingCapitalPresentationMaterializeResultV1:
+    return RiskSizingCapitalPresentationMaterializeResultV1(
         written=False,
         status=status,
         errors=errors,
@@ -107,10 +107,23 @@ def _require_nonempty_str(value: object) -> str | None:
     return value.strip()
 
 
-def coerce_canonical_decision_evidence_mapping_v1(
-    source: object,
+def _enum_or_str(value: object) -> object:
+    if isinstance(value, Enum):
+        return value.value
+    return value
+
+
+def coerce_risk_sizing_capital_fields_mapping_v1(
+    source: object | None,
 ) -> tuple[dict[str, Any] | None, tuple[str, ...]]:
-    """Copy producer evidence fields without mutating the caller-owned source."""
+    """Copy already-selected Risk/Sizing/Capital fields without mutation.
+
+    Accepts:
+    - binder-compatible fields (risk_status/sizing_status/capital_status)
+    - nested projection envelope {"risk_sizing_capital": {...}}
+
+    Never invents quantity, statuses, timestamps, or productive defaults.
+    """
     if source is None:
         return None, (MATERIALIZE_ERROR_MISSING_SOURCE,)
 
@@ -119,73 +132,76 @@ def coerce_canonical_decision_evidence_mapping_v1(
         raw = source
     else:
         extracted: dict[str, Any] = {}
-        for key in _REQUIRED_EVIDENCE_ATTRS:
-            if not hasattr(source, key):
-                return None, (MATERIALIZE_ERROR_INVALID_SOURCE, LOAD_ERROR_EVIDENCE_INVALID)
-            extracted[key] = getattr(source, key)
-        for optional in ("reason_codes", "semantic_digest", "evidence_digest"):
-            if hasattr(source, optional):
-                extracted[optional] = getattr(source, optional)
+        for key in (
+            *_REQUIRED_FIELD_ATTRS,
+            "quantity",
+            "reason_codes",
+            "evidence_digest",
+            "risk_sizing_ref",
+            "schema_version",
+            "generated_at",
+            "effective_at",
+            "source_reference",
+            "risk_sizing_capital",
+        ):
+            if hasattr(source, key):
+                extracted[key] = getattr(source, key)
         raw = extracted
 
-    # Nested producer dump envelope: {"evidence": {...}} without conflicting
-    # top-level decision identity.
-    if "evidence" in raw and isinstance(raw.get("evidence"), Mapping):
-        nested = raw["evidence"]
-        top_decision_id = raw.get("decision_id")
-        nested_decision_id = nested.get("decision_id")
+    # Nested projection envelope: {"risk_sizing_capital": {...}}.
+    if "risk_sizing_capital" in raw and isinstance(raw.get("risk_sizing_capital"), Mapping):
+        nested = raw["risk_sizing_capital"]
+        top_status = raw.get("risk_status")
+        nested_status = nested.get("risk_status")
         if (
-            isinstance(top_decision_id, str)
-            and top_decision_id.strip()
-            and isinstance(nested_decision_id, str)
-            and nested_decision_id.strip()
-            and top_decision_id.strip() != nested_decision_id.strip()
+            isinstance(top_status, str)
+            and top_status.strip()
+            and isinstance(nested_status, str)
+            and nested_status.strip()
+            and top_status.strip() != nested_status.strip()
         ):
-            return None, (MATERIALIZE_ERROR_INVALID_SOURCE, LOAD_ERROR_EVIDENCE_INVALID)
-        # Prefer nested producer payload when present as the sole evidence body.
-        if not all(key in raw for key in _REQUIRED_EVIDENCE_ATTRS):
+            return None, (MATERIALIZE_ERROR_INVALID_SOURCE, LOAD_ERROR_FIELDS_INVALID)
+        if not all(key in raw for key in _REQUIRED_FIELD_ATTRS):
             raw = nested
 
-    evidence = deepcopy(dict(raw))
-    missing = [key for key in _REQUIRED_EVIDENCE_ATTRS if key not in evidence]
+    fields = deepcopy(dict(raw))
+
+    for key in _REQUIRED_FIELD_ATTRS:
+        value = fields.get(key)
+        if isinstance(value, Enum):
+            fields[key] = value.value
+
+    missing = [key for key in _REQUIRED_FIELD_ATTRS if key not in fields]
     if missing:
-        return None, (MATERIALIZE_ERROR_INVALID_SOURCE, LOAD_ERROR_EVIDENCE_INVALID)
+        return None, (MATERIALIZE_ERROR_INVALID_SOURCE, LOAD_ERROR_FIELDS_INVALID)
 
-    schema_version = _require_nonempty_str(evidence.get("evidence_schema_version"))
-    if schema_version is None:
-        return None, (MATERIALIZE_ERROR_INVALID_SOURCE, LOAD_ERROR_EVIDENCE_INVALID)
-    if schema_version != PRODUCER_EVIDENCE_SCHEMA_VERSION:
-        return None, (MATERIALIZE_ERROR_INVALID_SOURCE, LOAD_ERROR_SCHEMA_MISMATCH)
+    for key in _REQUIRED_FIELD_ATTRS:
+        if _require_nonempty_str(_enum_or_str(fields.get(key))) is None:
+            return None, (MATERIALIZE_ERROR_INVALID_SOURCE, LOAD_ERROR_FIELDS_INVALID)
+        fields[key] = str(_enum_or_str(fields[key])).strip()
 
-    for key in (
-        "instrument_id",
-        "decision_outcome",
-        "next_direction_state",
-        "decision_id",
-    ):
-        if _require_nonempty_str(evidence.get(key)) is None:
-            return None, (MATERIALIZE_ERROR_INVALID_SOURCE, LOAD_ERROR_EVIDENCE_INVALID)
-
-    return evidence, ()
+    return fields, ()
 
 
-def build_canonical_decision_presentation_projection_payload_v1(
+def build_risk_sizing_capital_presentation_projection_payload_v1(
     *,
-    evidence: object,
+    risk_sizing_capital: object,
     generated_at: str,
     effective_at: str | None = None,
     source_reference: str | None = None,
 ) -> tuple[dict[str, Any] | None, tuple[str, ...]]:
-    """Build the loader-compatible projection envelope from producer evidence."""
-    evidence_mapping, coerce_errors = coerce_canonical_decision_evidence_mapping_v1(evidence)
-    if evidence_mapping is None:
+    """Build the loader-compatible projection envelope from Risk fields."""
+    fields_mapping, coerce_errors = coerce_risk_sizing_capital_fields_mapping_v1(
+        risk_sizing_capital
+    )
+    if fields_mapping is None:
         return None, coerce_errors
 
     if _require_nonempty_str(generated_at) is None:
         return None, (LOAD_ERROR_TIMESTAMP_MISSING,)
 
-    binder_fields, map_errors = map_canonical_decision_evidence_to_binder_fields_v1(
-        evidence=evidence_mapping,
+    binder_fields, map_errors = map_risk_sizing_capital_fields_to_binder_fields_v1(
+        risk_sizing_capital=fields_mapping,
         generated_at=generated_at,
         effective_at=effective_at,
         source_reference=source_reference,
@@ -193,23 +209,26 @@ def build_canonical_decision_presentation_projection_payload_v1(
     if binder_fields is None:
         return None, map_errors
 
-    evidence_out: dict[str, Any] = {
-        "decision_id": binder_fields["decision_id"],
-        "decision_outcome": binder_fields["decision_outcome"],
-        "evidence_schema_version": binder_fields["evidence_schema_version"],
-        "instrument_id": binder_fields["instrument_id"],
-        "next_direction_state": binder_fields["next_direction_state"],
+    risk_out: dict[str, Any] = {
+        "capital_status": binder_fields["capital_status"],
         "reason_codes": list(binder_fields.get("reason_codes", ())),
+        "risk_status": binder_fields["risk_status"],
+        "sizing_status": binder_fields["sizing_status"],
     }
-    if "semantic_digest" in binder_fields:
-        evidence_out["semantic_digest"] = binder_fields["semantic_digest"]
+    if "quantity" in binder_fields:
+        risk_out["quantity"] = binder_fields["quantity"]
+    if "evidence_digest" in binder_fields:
+        risk_out["evidence_digest"] = binder_fields["evidence_digest"]
+        risk_out["risk_sizing_ref"] = binder_fields["evidence_digest"]
+    if "schema_version" in binder_fields:
+        risk_out["schema_version"] = binder_fields["schema_version"]
 
     payload: dict[str, Any] = {
         "authority_effect": AUTHORITY_EFFECT,
-        "decision_authority_effect": DECISION_AUTHORITY_EFFECT,
-        "evidence": evidence_out,
         "generated_at": binder_fields["generated_at"],
         "projection_role": PROJECTION_ROLE,
+        "risk_sizing_authority_effect": RISK_SIZING_AUTHORITY_EFFECT,
+        "risk_sizing_capital": risk_out,
         "schema_name": SCHEMA_NAME,
         "schema_version": SCHEMA_VERSION,
     }
@@ -220,7 +239,7 @@ def build_canonical_decision_presentation_projection_payload_v1(
     return payload, ()
 
 
-def serialize_canonical_decision_presentation_projection_v1(
+def serialize_risk_sizing_capital_presentation_projection_v1(
     payload: Mapping[str, Any],
 ) -> str:
     """Deterministic JSON serialization for the presentation projection artifact."""
@@ -246,10 +265,10 @@ def _atomic_write_text(*, destination: Path, body: str) -> None:
             tmp_path.unlink()
 
 
-def write_canonical_decision_presentation_projection_v1(
+def write_risk_sizing_capital_presentation_projection_v1(
     archive_root: str | Path,
     payload: Mapping[str, Any],
-) -> CanonicalDecisionPresentationMaterializeResultV1:
+) -> RiskSizingCapitalPresentationMaterializeResultV1:
     """Atomically persist an already-validated projection payload."""
     if payload.get("schema_name") != SCHEMA_NAME:
         return _empty_result(
@@ -264,7 +283,7 @@ def write_canonical_decision_presentation_projection_v1(
         )
     if (
         payload.get("authority_effect") != AUTHORITY_EFFECT
-        or payload.get("decision_authority_effect") != DECISION_AUTHORITY_EFFECT
+        or payload.get("risk_sizing_authority_effect") != RISK_SIZING_AUTHORITY_EFFECT
     ):
         return _empty_result(
             status=STATUS_FAIL_CLOSED,
@@ -273,7 +292,7 @@ def write_canonical_decision_presentation_projection_v1(
 
     root = Path(archive_root).expanduser().resolve()
     path = root / STORAGE_RELATIVE_PATH
-    body = serialize_canonical_decision_presentation_projection_v1(payload)
+    body = serialize_risk_sizing_capital_presentation_projection_v1(payload)
     try:
         _atomic_write_text(destination=path, body=body)
     except OSError:
@@ -288,29 +307,29 @@ def write_canonical_decision_presentation_projection_v1(
             errors=(MATERIALIZE_ERROR_WRITE_FAILED,),
         )
 
-    evidence = payload.get("evidence")
-    decision_id = None
-    if isinstance(evidence, Mapping):
-        raw_id = evidence.get("decision_id")
-        if isinstance(raw_id, str) and raw_id.strip():
-            decision_id = raw_id.strip()
+    risk = payload.get("risk_sizing_capital")
+    risk_status = None
+    if isinstance(risk, Mapping):
+        raw_status = risk.get("risk_status")
+        if isinstance(raw_status, str) and raw_status.strip():
+            risk_status = raw_status.strip()
 
-    return CanonicalDecisionPresentationMaterializeResultV1(
+    return RiskSizingCapitalPresentationMaterializeResultV1(
         written=True,
         status=STATUS_WRITTEN,
         errors=(),
         projection_path=str(path),
-        decision_id=decision_id,
+        risk_status=risk_status,
         payload_digest=hashlib.sha256(body.encode("utf-8")).hexdigest(),
     )
 
 
-def try_load_canonical_decision_evidence_source_v1(
+def try_load_risk_sizing_capital_fields_source_v1(
     archive_root: str | Path,
 ) -> tuple[dict[str, Any] | None, tuple[str, ...], str | None]:
-    """Load the sole durable producer evidence sibling without inventing content."""
+    """Load the sole durable Risk/Sizing/Capital fields sibling without inventing content."""
     root = Path(archive_root).expanduser().resolve()
-    path = root / SOURCE_EVIDENCE_RELATIVE_PATH
+    path = root / SOURCE_FIELDS_RELATIVE_PATH
     source_path = str(path)
     if not path.is_file():
         return None, (MATERIALIZE_ERROR_MISSING_SOURCE,), source_path
@@ -324,30 +343,30 @@ def try_load_canonical_decision_evidence_source_v1(
         return None, (MATERIALIZE_ERROR_INVALID_JSON,), source_path
     if not isinstance(payload, dict):
         return None, (MATERIALIZE_ERROR_INVALID_SOURCE,), source_path
-    evidence, errors = coerce_canonical_decision_evidence_mapping_v1(payload)
-    if evidence is None:
+    fields, errors = coerce_risk_sizing_capital_fields_mapping_v1(payload)
+    if fields is None:
         return None, errors, source_path
-    return evidence, (), source_path
+    return fields, (), source_path
 
 
-def materialize_canonical_decision_presentation_projection_v1(
+def materialize_risk_sizing_capital_presentation_projection_v1(
     archive_root: str | Path,
     *,
-    evidence: object | None = None,
+    risk_sizing_capital: object | None = None,
     generated_at: str | None = None,
     effective_at: str | None = None,
     source_reference: str | None = None,
-) -> CanonicalDecisionPresentationMaterializeResultV1:
-    """Materialize the presentation projection from producer evidence or durable source.
+) -> RiskSizingCapitalPresentationMaterializeResultV1:
+    """Materialize the presentation projection from Risk fields or durable source.
 
     Missing source yields MISSING_SOURCE and does not write an artifact.
     Invalid source or missing required timestamps fail closed without writing.
-    Caller-owned evidence inputs are never mutated.
+    Caller-owned Risk inputs are never mutated.
     """
     source_path: str | None = None
-    source_obj: object | None = evidence
+    source_obj: object | None = risk_sizing_capital
     if source_obj is None:
-        loaded, load_errors, source_path = try_load_canonical_decision_evidence_source_v1(
+        loaded, load_errors, source_path = try_load_risk_sizing_capital_fields_source_v1(
             archive_root
         )
         if loaded is None:
@@ -367,16 +386,18 @@ def materialize_canonical_decision_presentation_projection_v1(
         )
 
     # Snapshot caller-owned mapping to prove / preserve non-mutation.
-    caller_snapshot = deepcopy(evidence) if isinstance(evidence, Mapping) else None
+    caller_snapshot = (
+        deepcopy(risk_sizing_capital) if isinstance(risk_sizing_capital, Mapping) else None
+    )
 
-    payload, build_errors = build_canonical_decision_presentation_projection_payload_v1(
-        evidence=source_obj,
+    payload, build_errors = build_risk_sizing_capital_presentation_projection_payload_v1(
+        risk_sizing_capital=source_obj,
         generated_at=generated_at,
         effective_at=effective_at,
         source_reference=source_reference,
     )
-    if isinstance(evidence, Mapping) and caller_snapshot is not None:
-        if dict(evidence) != dict(caller_snapshot):
+    if isinstance(risk_sizing_capital, Mapping) and caller_snapshot is not None:
+        if dict(risk_sizing_capital) != dict(caller_snapshot):
             return _empty_result(
                 status=STATUS_FAIL_CLOSED,
                 errors=(MATERIALIZE_ERROR_INVALID_SOURCE,),
@@ -390,15 +411,15 @@ def materialize_canonical_decision_presentation_projection_v1(
         )
         return _empty_result(status=status, errors=build_errors, source_path=source_path)
 
-    result = write_canonical_decision_presentation_projection_v1(archive_root, payload)
+    result = write_risk_sizing_capital_presentation_projection_v1(archive_root, payload)
     if not result.written:
         return result
-    return CanonicalDecisionPresentationMaterializeResultV1(
+    return RiskSizingCapitalPresentationMaterializeResultV1(
         written=True,
         status=STATUS_WRITTEN,
         errors=(),
         projection_path=result.projection_path,
         source_path=source_path,
-        decision_id=result.decision_id,
+        risk_status=result.risk_status,
         payload_digest=result.payload_digest,
     )

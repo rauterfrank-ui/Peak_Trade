@@ -19,7 +19,7 @@ from src.ops.risk_sizing_capital_archive_sibling_exporter_v1.exporter_v1 import 
 from src.ops.risk_sizing_capital_archive_sibling_exporter_v1.replay_commit_source_v1 import (
     build_risk_sizing_capital_sibling_payload_from_replay_commit_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.risk_sizing_capital_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.risk_sizing_capital_presentation_projection_materializer_v1 import (
     SOURCE_FIELDS_RELATIVE_PATH,
     materialize_risk_sizing_capital_presentation_projection_v1,
 )

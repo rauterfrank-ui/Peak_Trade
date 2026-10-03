@@ -25,7 +25,7 @@ from trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0 
     ORDER_INTENT_EFFECT_NONE,
     compute_order_intent_ref_v0,
 )
-from src.webui.workflow_dashboard_readmodel_v1.execution_reconciliation_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.execution_reconciliation_presentation_projection_materializer_v1 import (
     coerce_execution_reconciliation_fields_mapping_v1,
 )
 

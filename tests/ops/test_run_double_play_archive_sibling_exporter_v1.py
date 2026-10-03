@@ -285,7 +285,7 @@ def test_cli_has_no_forbidden_imports() -> None:
 
 def test_end_to_end_export_materialize_loader(tmp_path: Path) -> None:
     """Explicit source → exporter → materializer → projection → loader."""
-    from src.webui.workflow_dashboard_readmodel_v1.double_play_presentation_projection_materializer_v1 import (
+    from src.ops.presentation_archive_materializers_v1.double_play_presentation_projection_materializer_v1 import (
         SOURCE_DISPLAY_RELATIVE_PATH,
         STATUS_WRITTEN,
         materialize_double_play_presentation_projection_v1,

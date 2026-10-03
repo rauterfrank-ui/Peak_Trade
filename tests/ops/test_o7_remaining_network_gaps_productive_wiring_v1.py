@@ -23,12 +23,12 @@ from src.ops.canonical_public_md_and_ohlcv_transport_reconciliation_v1.constants
 from src.ops.canonical_public_md_and_ohlcv_transport_reconciliation_v1.pso_to_o4_o5_live_bridge_v1 import (
     PsoToO4O5LiveBridgeV1,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.constants_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.constants_v1 import (
     CONNECTION_DISCONNECTED,
     CONNECTION_STALE,
     NON_HEALTHY_RENDER_STATES,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.durable_read_model_store_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.durable_read_model_store_v1 import (
     load_durable_read_model_v1,
 )
 from src.ops.okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1.normalized_market_data_v1 import (

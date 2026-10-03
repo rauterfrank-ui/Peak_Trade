@@ -19,7 +19,7 @@ from src.ops.productive_decision_host_active_archive_three_family_binding_v1.con
 from src.ops.productive_decision_host_active_archive_three_family_binding_v1.models_v1 import (
     ArchiveBindingV1,
 )
-from src.webui.workflow_dashboard_archive_root_v1 import (
+from src.ops.presentation_archive_root_v1.resolver_v1 import (
     PRECEDENCE_DEFAULT,
     PRECEDENCE_DISCOVERED_GOVERNED_OKX,
     PRECEDENCE_ENV,

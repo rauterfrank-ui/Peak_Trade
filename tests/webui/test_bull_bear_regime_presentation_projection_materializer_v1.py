@@ -18,8 +18,8 @@ from src.webui.market_dashboard_landscape_producer_binding_v2 import (
     bind_market_universe_slots,
 )
 from src.webui.market_dashboard_landscape_v2.availability import Availability
-from src.webui.workflow_dashboard_archive_root_v1 import ENV_ARCHIVE_ROOT
-from src.webui.workflow_dashboard_readmodel_v1.bull_bear_regime_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_root_v1.resolver_v1 import ENV_ARCHIVE_ROOT
+from src.ops.presentation_archive_materializers_v1.bull_bear_regime_presentation_projection_materializer_v1 import (
     CAPABILITY_ID,
     LEGACY_ROUTE_NON_SOURCE,
     MATERIALIZE_ERROR_MISSING_SOURCE,
@@ -268,7 +268,7 @@ def test_materialize_from_durable_producer_regime_source(tmp_path: Path) -> None
 def test_legacy_route_is_non_source_and_unused() -> None:
     materializer = (
         REPO
-        / "src/webui/workflow_dashboard_readmodel_v1"
+        / "src/ops/presentation_archive_materializers_v1"
         / "bull_bear_regime_presentation_projection_materializer_v1.py"
     ).read_text(encoding="utf-8")
     assert LEGACY_ROUTE_NON_SOURCE in materializer
@@ -335,7 +335,7 @@ def test_existing_presentation_autobind_paths_remain_compatible(
 def test_materializer_module_has_no_forbidden_trading_imports() -> None:
     path = (
         REPO
-        / "src/webui/workflow_dashboard_readmodel_v1"
+        / "src/ops/presentation_archive_materializers_v1"
         / "bull_bear_regime_presentation_projection_materializer_v1.py"
     )
     tree = ast.parse(path.read_text(encoding="utf-8"))

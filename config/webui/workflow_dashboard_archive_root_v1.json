@@ -2,7 +2,7 @@
   "schema_id": "workflow_dashboard_archive_root_v1",
   "schema_version": 1,
   "non_authorizing": true,
-  "owner_module": "src.webui.workflow_dashboard_archive_root_v1",
+  "owner_module": "src.ops.presentation_archive_root_v1.resolver_v1",
   "owner_symbol": "resolve_workflow_dashboard_archive_root",
   "config_contract_path": "config/webui/workflow_dashboard_archive_root_v1.json",
   "env_override": "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT",

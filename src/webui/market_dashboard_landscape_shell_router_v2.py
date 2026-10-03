@@ -113,7 +113,7 @@ def build_ohlcv_poll_response_v1(
         from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.ohlcv_adapter_v1 import (
             adapt_derived_ohlcv_payload_to_o5_read_model_v1,
         )
-        from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.read_model_v1 import (
+        from src.ops.canonical_derived_public_md_read_model_v1.read_model_v1 import (
             bind_dashboard_backend_to_read_model_v1,
         )
 
@@ -210,7 +210,7 @@ def build_ohlcv_poll_response_v1(
     from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.ohlcv_adapter_v1 import (
         adapt_derived_ohlcv_payload_to_o5_read_model_v1,
     )
-    from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.read_model_v1 import (
+    from src.ops.canonical_derived_public_md_read_model_v1.read_model_v1 import (
         bind_dashboard_backend_to_read_model_v1,
     )
 

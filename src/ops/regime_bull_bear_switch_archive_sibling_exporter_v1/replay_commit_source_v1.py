@@ -15,7 +15,7 @@ from src.ops.regime_bull_bear_switch_archive_sibling_exporter_v1.constants_v1 im
     ERROR_SOURCE_INVALID,
     ERROR_TRANSITION_IDENTITY_MISMATCH,
 )
-from src.webui.workflow_dashboard_readmodel_v1.bull_bear_regime_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.bull_bear_regime_presentation_projection_materializer_v1 import (
     coerce_regime_bull_bear_switch_mapping_v1,
 )
 

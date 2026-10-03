@@ -9,17 +9,17 @@ import pytest
 from src.ops.canonical_public_md_and_ohlcv_transport_reconciliation_v1.canonical_bar_producer_v1 import (
     CanonicalPublicMdBarProducerV1,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.authority_declaration_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.authority_declaration_v1 import (
     assert_authority_invariants_v1,
     authority_declaration_v1,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.connection_state_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.connection_state_v1 import (
     ConnectionStateContractErrorV1,
     assert_no_healthy_render_for_cached_bad_state_v1,
     classify_connection_state_v1,
     connection_state_contract_v1,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.constants_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.constants_v1 import (
     CAPABILITY_ID,
     CLOSED_FROM_O4_DEFERRED,
     CONNECTION_DEGRADED,
@@ -40,13 +40,13 @@ from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.dashboard_life
     dashboard_lifecycle_contract_v1,
     materialize_dashboard_lifecycle_status_v1,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.isolation_proofs_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.isolation_proofs_v1 import (
     run_all_o5_isolation_proofs_v1,
 )
 from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.ohlcv_adapter_v1 import (
     adapt_derived_ohlcv_payload_to_o5_read_model_v1,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.read_model_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.read_model_v1 import (
     bind_dashboard_backend_to_read_model_v1,
     build_missing_source_read_model_v1,
     project_o4_envelopes_to_canonical_dashboard_read_model_v1,
@@ -285,7 +285,7 @@ def test_presenter_connection_state_uses_o5_vocabulary() -> None:
 
 def test_no_network_or_order_side_effects_in_o5_package() -> None:
     root = Path(__file__).resolve().parents[2]
-    pkg = root / "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1"
+    pkg = root / "src/ops/canonical_derived_public_md_read_model_v1"
     forbidden = (
         "urlopen(",
         "OkxPublicMarketDataClientV1(",

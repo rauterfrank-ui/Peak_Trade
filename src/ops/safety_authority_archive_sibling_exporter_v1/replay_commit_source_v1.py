@@ -21,7 +21,7 @@ from src.ops.safety_authority_archive_sibling_exporter_v1.constants_v1 import (
     ERROR_TYPED_REPLAY_SAFETY_ABSENT,
 )
 from src.risk_layer.kill_switch.state import KillSwitchState
-from src.webui.workflow_dashboard_readmodel_v1.safety_authority_presentation_projection_materializer_v1 import (
+from src.ops.presentation_archive_materializers_v1.safety_authority_presentation_projection_materializer_v1 import (
     coerce_safety_authority_fields_mapping_v1,
 )
 from trading.master_v2.killswitch_boundary_offline_replay_binding_adapter_v0 import (

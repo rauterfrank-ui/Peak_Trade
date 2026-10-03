@@ -14,10 +14,11 @@ from src.webui.market_dashboard_landscape_producer_binding_v2 import (
     bind_market_universe_slots,
 )
 from src.webui.market_dashboard_landscape_v2.availability import Availability
-from src.webui.workflow_dashboard_archive_root_v1 import (
+from src.ops.presentation_archive_root_v1.resolver_v1 import (
     CONFIG_CONTRACT_RELATIVE_PATH,
     CONTRACT_ID,
     ENV_ARCHIVE_ROOT,
+    ENV_CANONICAL_ARCHIVE_ROOT,
     OWNER_MODULE,
     OWNER_SYMBOL,
     PRECEDENCE_CHAIN,
@@ -39,7 +40,7 @@ def test_config_contract_matches_owner_constants() -> None:
     assert payload["schema_id"] == CONTRACT_ID
     assert payload["owner_module"] == OWNER_MODULE
     assert payload["owner_symbol"] == OWNER_SYMBOL
-    assert payload["env_override"] == ENV_ARCHIVE_ROOT
+    assert payload["env_override"] == ENV_CANONICAL_ARCHIVE_ROOT
     assert tuple(payload["precedence"]) == PRECEDENCE_CHAIN
     assert payload["resolver_creates_filesystem"] is False
     assert payload["fixture_fallback_allowed"] is False

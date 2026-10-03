@@ -18,10 +18,10 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.connection_state_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.connection_state_v1 import (
     assert_no_healthy_render_for_cached_bad_state_v1,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.constants_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.constants_v1 import (
     CANONICAL_MARKET_ROUTE,
     CANONICAL_OHLCV_API,
     CONNECTION_DISCONNECTED,
@@ -35,10 +35,10 @@ from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.constants_v1 i
 from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.dashboard_lifecycle_v1 import (
     assert_dashboard_has_no_trading_authority_v1,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.durable_read_model_store_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.durable_read_model_store_v1 import (
     load_durable_read_model_v1,
 )
-from src.ops.canonical_read_model_and_market_dashboard_rebuild_v1.read_model_v1 import (
+from src.ops.canonical_derived_public_md_read_model_v1.read_model_v1 import (
     bind_dashboard_backend_to_read_model_v1,
     build_missing_source_read_model_v1,
 )
