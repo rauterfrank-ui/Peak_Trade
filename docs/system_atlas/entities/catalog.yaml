@@ -1072,6 +1072,7 @@ entities:
   notes: 'S8_HARNESS_BIND_OCCUPIED_LANE_GOVERNED_CYCLE_ROOTS_WITHOUT_INVOKE harness-only path bind: reuse S3 lane_state_root as cursor_store_root and address distinct lock_root plus evidence_root under that same root. Does not invoke the governed cycle, write disk, or mutate S7 compose. N=1 global cursor path is rejected. Cap61 remains state_root=None and persist=False inside the existing cycle. NEW_STATE_OWNER_CREATED=false. CAP61_STATE_ROOT_BOUND=false. HOST_JOIN=false. MF_PRODUCTIVE_JOIN=false. MAY_INVOKE_GOVERNED_CYCLE=false. RUNTIME_AUTHORITY_EFFECT=NONE. No cursor schema change. P5_10_PRODUCTIVE_ACTIVATION_AND_BINDING_V1: when bind enabled, uses productive_layered_core_bind_cycle_kwargs_v1 (scope carrier + store gate) into cycle. Not ranking, selection, trading-authority, runtime-activation, or execution authority. MAX_POSITIONS_EFFECTIVE remains 1. MULTI_FUTURE_RUNTIME_AUTHORIZED=false. EXECUTION_CONCURRENCY_AUTHORIZED=false. PREPARED_BOUND_CARDINALITY remains 0..5. PRODUCTIVE_RUNTIME_CARDINALITY
     remains 1_UNJOINED. CROSS_UNIVERSE_* remain false. Shared mutable state remains false. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.'
 - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
+  # atlas_entity_review: PR #7035 downstream LIVE-29P join consumes Layer-C stop binding via enter_live_29p_join; no MV2/DP semantic change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7014 optional default-off GHV PRE_EXTERNAL runtime flight recorder wiring at LIVE-29P join; observation-only; AUTHORITY=NONE.
   kind: CONTRACT
   name: CURRENT MF N=5 Full-Autonomy occupied-lane governed-cycle N=1 consumer join
@@ -3745,6 +3746,7 @@ entities:
   - tests/ops/test_pre_live_fresh_runtime_root_isolation_v1.py
   notes: POST-slice recorded baseline fca07afa with live integrity drift gate; fresh Cap-24 root; fail-closed historical POST-store isolation; no venue POST; stop before Actual-Venue-POST Owner-GO; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1
+  # atlas_entity_review: PR #7035 allow fail-closed continuous segment terminal disposition when POST=0; orchestration-only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: optional GHV system-wide Canary session bind; CANARY_AUTHORITY=NONE.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive persistent Natural-ENTER convergence v1
@@ -4707,6 +4709,7 @@ entities:
   - tests/governance/test_companion_c2_fraction_to_units_runtime_completion_v1.py
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  # atlas_entity_review: PR #7035 LIVE-29P join Layer-C adverse-exit protective-stop binding aligned with productive MV2; downstream binding only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7014 optional predicate_trace_collector wiring for default-off flight recorder; observation-only.
   # atlas_entity_review: PR #7027 BWP-01 indirect atlas touch via identity/admission spec only; no composition-root code change; AUTHORITY=NONE.
   # atlas_entity_review: PR #7028 BWP-03 INJ-001 apply_current_productive_g17_typed_vol_cmc_bind_v1 on productive path; no admission/capital/PRE_EXTERNAL/POST change; SEMANTIC_CHANGE_FROM_PR7028=NONE; AUTHORITY=NONE; POST_COUNT=0.
@@ -5946,6 +5949,7 @@ entities:
   - src/ops/treasury_capital_admission_to_account_equity_orchestration_productive_host_join_v1/join_v1.py
   notes: Typed U04/P01/eligibility host inputs to produce_current_productive_available_for_sizing_v1; fail-closed; no BASE mint or authority change. ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:current_productive_available_for_sizing_base_binding_v1
+  # atlas_entity_review: PR #7035 duplicate treasury evidence rebinds BASE decision_epoch to current cycle; capital snapshot idempotent; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Current productive AVAILABLE_FOR_SIZING BASE numeric binding v1
   epistemic_class: FORENSIC_RAW
