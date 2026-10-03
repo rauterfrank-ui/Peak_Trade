@@ -14,7 +14,7 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 from __future__ import annotations
 
 import hashlib
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
@@ -130,6 +130,7 @@ from trading.master_v2.double_play_entry_exit_policy_v0 import (
 from trading.master_v2.double_play_futures_input import FuturesMarketType
 from trading.master_v2.double_play_state import SideState
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
+    IntegratedOfflineReplayInputV1,
     IntegratedOfflineReplayResultV1,
     _side_state_to_entry_exit_direction,
     build_integrated_offline_replay_input_v1,
@@ -177,6 +178,43 @@ ENDPOINT_PUBLIC_OPEN_INTEREST = "/api/v5/public/open-interest"
 ENDPOINT_PUBLIC_FUNDING_RATE = "/api/v5/public/funding-rate"
 
 _REPO_ROOT = Path(__file__).resolve().parents[3]
+
+SIMULATED_ECONOMICS_CRS_BOUNDARY_WIRING_OWNER = (
+    "src.ops.full_core_live_path_composition_root_v1."
+    "current_productive_master_v2_runtime_cycle_v1."
+    "_wire_simulated_economics_crs_boundary_onto_replay_input_v1"
+)
+
+
+def _wire_simulated_economics_crs_boundary_onto_replay_input_v1(
+    replay_input: IntegratedOfflineReplayInputV1,
+    *,
+    instrument_id: str,
+) -> IntegratedOfflineReplayInputV1:
+    """Attach canonical simulated-economics CRS boundary (propagation-only).
+
+    Does not fabricate CRS when the producer rejects inputs; leaves replay input
+    unchanged so integrated replay retains fail-closed unresolved semantics.
+    """
+    canonical_instrument_id = str(instrument_id or "").strip()
+    if not canonical_instrument_id:
+        return replay_input
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.simulated_economics_crs_boundary_binding_v1 import (
+        build_simulated_economics_crs_boundary_state_file_v1,
+    )
+
+    try:
+        boundary = build_simulated_economics_crs_boundary_state_file_v1(
+            instrument_id=canonical_instrument_id,
+        )
+    except ValueError:
+        return replay_input
+    if str(boundary.instrument_id or "").strip() != canonical_instrument_id:
+        return replay_input
+    return replace(
+        replay_input,
+        current_instrument_capital_risk_sizing_boundary_state_file=boundary,
+    )
 
 
 def _resolve_f1_m9_governed_seam_for_integrated_offline_replay_v1(
@@ -915,6 +953,10 @@ def run_current_productive_master_v2_runtime_cycle_v1(
             provenance=",".join(bind_carry.failure_codes),
             cursor_restore_status=restore.disposition.value,
         )
+    bind_input = _wire_simulated_economics_crs_boundary_onto_replay_input_v1(
+        bind_input,
+        instrument_id=instrument_id,
+    )
     ddo_binding = (
         build_productive_ddo_capture_binding_v1(ledger_path=ddo_durable_evidence_ledger_path)
         if ddo_durable_evidence_ledger_path is not None

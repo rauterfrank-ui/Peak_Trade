@@ -243,11 +243,10 @@ def test_host_enter_binds_canonical_adverse_exit_and_reaches_envelope() -> None:
     assert cycle_b.decision_outcome == "enter_long"
     assert cycle_b.replay is not None
     replay = cycle_b.replay
-    # Pre-join intermediate is intentionally pre-CRS (no capital context yet).
-    assert replay.intermediate.capital_risk_sizing_decision is None
-    assert replay.intermediate.canonical_order_intent is None
+    # MV2 host wires simulated-economics CRS boundary before integrated replay.
+    assert replay.intermediate.capital_risk_sizing_decision is not None
     assert str(replay.intermediate.capital_risk_mode) == CAPITAL_RISK_MODE_OFFLINE_ALGEBRA
-    assert REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED in replay.evidence.reason_codes
+    assert REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED not in replay.evidence.reason_codes
 
     join = _join_enter_live_29p(replay=replay)
     assert join.decision_class == DECISION_ENTER

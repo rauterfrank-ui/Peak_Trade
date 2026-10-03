@@ -317,11 +317,10 @@ def test_cycle_b_downstream_enter_29p_29q_venue_plan_envelope_without_permit() -
     )
     assert cycle_b.decision_outcome == "enter_long"
     assert cycle_b.replay is not None
-    # Pre-join intermediate is intentionally pre-CRS.
-    assert cycle_b.replay.intermediate.capital_risk_sizing_decision is None
-    assert cycle_b.replay.intermediate.canonical_order_intent is None
+    # MV2 host wires simulated-economics CRS boundary before integrated replay.
+    assert cycle_b.replay.intermediate.capital_risk_sizing_decision is not None
     assert str(cycle_b.replay.intermediate.capital_risk_mode) == CAPITAL_RISK_MODE_OFFLINE_ALGEBRA
-    assert REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED in cycle_b.replay.evidence.reason_codes
+    assert REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED not in cycle_b.replay.evidence.reason_codes
 
     join = join_current_productive_enter_live_29p_before_venue_plan_v1(
         replay=cycle_b.replay,
