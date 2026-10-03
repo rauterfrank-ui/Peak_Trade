@@ -639,3 +639,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_current_productive_mv2_crs_boundary_wiring_v1.py
   notes: 'PR #7037: WIRING_ONLY MV2 simulated-economics CRS boundary propagation to IntegratedOfflineReplayInputV1; reuses build_simulated_economics_crs_boundary_state_file_v1; GHV reproof 576/576 valid CRS; Double Play/Scope/Layer-C unchanged; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7038_ghv_pre_external_finalization_v1
+  from: 18283b2c3d3fc4066c538eeea1cfa0519606a86b
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_ghv_e2e_pre_decision_productive_closure_entry_regression_v1.py
+  notes: 'PR #7038: durable GHV E2E pre-decision Closure bind; whole-system reproof 360 PRE_EXTERNAL; regression locks post-ENTER second-MV2 topology; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

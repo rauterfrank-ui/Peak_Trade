@@ -3862,6 +3862,19 @@ entities:
   - tests/ops/test_productive_golden_happy_vector_forensic_observability_v1.py
   - tests/ops/test_golden_happy_scope_decision_trace_observability_v1.py
   notes: Default-off session-bound append-only directional signal_strength/threshold JSONL, golden_happy_scope_decision_trace_v1.jsonl (G17→Scope causal refs), plus single entry-state JSON snapshot; reads productive replay intermediate and cursor carrier; no signal/scope recompute; no trading/threshold/budget/GET semantic change; CORRELATION_STATUS=PARTIAL; AUTHORITY=NONE; POST_COUNT=0.
+- id: RUNTIME_COMPONENT:ghv_e2e_productive_pre_external_tail_bind_v1
+  # atlas_entity_review: PR #7038 GHV E2E pre-decision productive Closure bind; harness-only; AUTHORITY=NONE; POST_COUNT=0.
+  kind: RUNTIME_COMPONENT
+  name: GHV E2E productive PRE_EXTERNAL tail bind v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: PR_7038_GHV_PRE_EXTERNAL_FINALIZATION_V1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/ghv_e2e_productive_pre_external_tail_bind_v1.py
+  evidence_sources:
+  - tests/ops/test_ghv_e2e_pre_decision_productive_closure_entry_regression_v1.py
+  notes: GHV E2E harness integration only; branches productive Closure from naturally reached pre-decision incoming_cursor on same evidence cycle; S7/MV2 owns productive ENTER; execute_network=false; not imported by productive live runtime call graph; TRADING_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:current_productive_synthetic_enter_forensic_v1
   # atlas_entity_review: PR #7014 GHV_ROOT_CHANGE_EVENT on synthetic enter_short Cycle-1; observation-only.
   kind: RUNTIME_COMPONENT
