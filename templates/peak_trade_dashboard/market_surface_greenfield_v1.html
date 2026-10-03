@@ -9,6 +9,7 @@
   <script defer src="/static/js/market_surface_greenfield_v1/surface_format_v1.js"></script>
   <script defer src="/static/js/market_surface_greenfield_v1/surface_direct_view_v1.js"></script>
   <script defer src="/static/js/market_surface_greenfield_v1/surface_geometry_v1.js"></script>
+  <script defer src="/static/js/market_surface_greenfield_v1/surface_instruments_v1.js"></script>
   <script defer src="/static/js/market_surface_greenfield_v1/surface_app_v1.js"></script>
 </head>
 <body class="ots-canvas ots-layout-v1-1" data-ots-greenfield-v1="true" data-state-api="{{ state_api_path }}">
@@ -19,7 +20,7 @@
     <span class="ots-l4 ots-dim">READ ONLY · AUTHORITY=NONE</span>
   </header>
 
-  <div class="ots-primary-stage" data-layout="ranking-left-market-right" data-v1-2-delivery="narrow-rail" data-v1-4-delivery="strict-geometry">
+  <div class="ots-primary-stage" data-layout="ranking-left-market-right" data-v1-2-delivery="narrow-rail" data-v1-4-delivery="strict-geometry" data-v1-5-delivery="instrument-population">
     <aside class="ots-left-landscape" data-ranking-rail="narrow-v1-2" aria-label="Ranking universe landscape">
       <div class="ots-identity" data-presentation-only="true">
         <div class="ots-brand-primary">PEAK_TRADE</div>
@@ -80,6 +81,38 @@
             <div id="ots-projection-banner" class="ots-projection-banner ots-l4" hidden></div>
           </div>
 
+          <div class="ots-upper-instrument-field" id="ots-upper-instrument-field" data-upper-instrument-field="v1-5" data-v1-5-populated="true">
+            <div class="ots-instrument-row">
+              <div class="ots-instrument-cell" data-instrument="selection">
+                <div class="ots-l3">Cap 2.3 selection</div>
+                <div class="ots-instrument-lane" id="ots-selection-lane" aria-hidden="true"></div>
+                <div class="ots-l4 ots-mono ots-dim" id="ots-selection-detail">—</div>
+              </div>
+              <div class="ots-instrument-cell" data-instrument="market-health">
+                <div class="ots-l3">Market path</div>
+                <div class="ots-instrument-lane" id="ots-market-health-lane" aria-hidden="true"></div>
+                <div class="ots-l4 ots-mono ots-dim" id="ots-market-health-detail">—</div>
+              </div>
+              <div class="ots-instrument-cell" data-instrument="execution-boundary">
+                <div class="ots-l3">Execution boundary</div>
+                <div class="ots-instrument-lane" id="ots-safety-lane" aria-hidden="true"></div>
+                <div class="ots-l4 ots-mono ots-dim" id="ots-safety-lane-detail">—</div>
+              </div>
+            </div>
+            <div class="ots-instrument-row">
+              <div class="ots-instrument-cell" data-instrument="confirmation">
+                <div class="ots-l3">Confirmation source</div>
+                <div class="ots-instrument-lane" id="ots-confirmation-lane" aria-hidden="true"></div>
+                <div class="ots-l4 ots-mono ots-dim" id="ots-confirmation-detail">—</div>
+              </div>
+              <div class="ots-instrument-cell ots-instrument-cell-wide" data-instrument="canonical-gaps">
+                <div class="ots-l3">Canonical instrument gaps</div>
+                <div class="ots-gap-matrix" id="ots-gap-matrix" aria-hidden="true"></div>
+                <div class="ots-l4 ots-mono ots-dim" id="ots-gap-detail">—</div>
+              </div>
+            </div>
+          </div>
+
           <div class="ots-chart-viewport-row" data-chart-viewport="primary-v1-4">
             <div class="ots-chart-stage" data-chart-layout="workspace-ratio-v1-4" data-okx-chart-bounded="true">
               <div id="ots-chart" class="ots-chart-host" data-okx-chart-left-edge-realigned="true"></div>
@@ -87,7 +120,7 @@
           </div>
         </div>
 
-        <div class="ots-lower-instrument-band" data-instrument-band="lower">
+        <div class="ots-lower-instrument-band" id="ots-lower-instrument-field" data-instrument-band="lower" data-v1-5-populated="true">
             <section class="ots-analytical-row" aria-label="System observability">
         <div class="ots-micro-panel" data-micro="trades">
           <div class="ots-l3">Trades</div>
@@ -107,6 +140,23 @@
         <div class="ots-micro-panel" data-micro="sources">
           <div class="ots-l3">Source coverage</div>
           <div class="ots-micro-matrix" id="ots-micro-sources"></div>
+        </div>
+            </section>
+            <section class="ots-analytical-row ots-analytical-row-secondary" aria-label="Extended operator instrumentation">
+        <div class="ots-micro-panel" data-micro="mi">
+          <div class="ots-l3">Market intelligence</div>
+          <div class="ots-micro-mi" id="ots-micro-mi"></div>
+          <div class="ots-l4 ots-mono ots-dim" id="ots-mi-detail">—</div>
+        </div>
+        <div class="ots-micro-panel" data-micro="feature-slots">
+          <div class="ots-l3">Feature slots</div>
+          <div class="ots-micro-slots" id="ots-micro-feature-slots"></div>
+          <div class="ots-l4 ots-mono ots-dim" id="ots-feature-slots-detail">—</div>
+        </div>
+        <div class="ots-micro-panel" data-micro="archive">
+          <div class="ots-l3">Archive / observe</div>
+          <div class="ots-micro-archive" id="ots-micro-archive"></div>
+          <div class="ots-l4 ots-mono ots-dim" id="ots-archive-detail">—</div>
         </div>
             </section>
         </div>

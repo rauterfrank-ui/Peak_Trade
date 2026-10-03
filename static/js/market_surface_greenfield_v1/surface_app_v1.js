@@ -180,28 +180,10 @@
     applyDirectViewUi();
   }
 
-  function applyMicrovisuals(system, market) {
-    var tc = (system && system.trade_counters) || {};
-    var detail = el("ots-trade-detail");
-    if (detail) {
-      if (tc.trades_set == null && tc.trades_rejected == null) {
-        detail.textContent = "UNKNOWN · no run/events";
-      } else {
-        detail.textContent = "set " + tc.trades_set + " · rejected " + tc.trades_rejected;
-      }
-    }
-    var opt = (system && system.optimization) || {};
-    setText("ots-rd-detail", opt.experiment_count != null ? opt.experiment_count + " experiments" : opt.note || "—");
-    setText("ots-freshness-detail", (market && market.market_freshness) || "—");
-
-    var matrix = el("ots-micro-sources");
-    if (matrix && system && system.unknown_sources) {
-      matrix.innerHTML = "";
-      Object.keys(system.unknown_sources).forEach(function (key) {
-        var cell = document.createElement("span");
-        cell.title = key + ": " + (system.unknown_sources[key].label || "UNKNOWN");
-        matrix.appendChild(cell);
-      });
+  function applyMicrovisuals(state) {
+    if (window.PeakTradeSurfaceInstrumentsV1) {
+      window.PeakTradeSurfaceInstrumentsV1.applyUpper(state);
+      window.PeakTradeSurfaceInstrumentsV1.applyLower(state);
     }
   }
 
@@ -232,7 +214,7 @@
       .then(function (state) {
         applyMarket(state.market);
         applyRankingUniverse(state.system);
-        applyMicrovisuals(state.system, state.market);
+        applyMicrovisuals(state);
         applyTransitionBand(state.system);
         applySafety(state.safety);
         var interval = (state.poll_interval_seconds || 1) * 1000;

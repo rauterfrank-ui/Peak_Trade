@@ -438,52 +438,24 @@ body {
 .ots-micro-trace,
 .ots-micro-spark,
 .ots-micro-pulse,
-.ots-micro-matrix {
+.ots-micro-matrix,
+.ots-micro-mi,
+.ots-micro-slots,
+.ots-micro-archive {
   height: 28px;
   margin: 0.35rem 0;
   background: rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid var(--ots-line);
   position: relative;
   overflow: hidden;
-}
-
-.ots-micro-trace::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 40%;
-  top: 50%;
-  height: 1px;
-  background: var(--ots-muted);
-  opacity: 0.5;
-}
-
-.ots-micro-spark::after {
-  content: "";
-  position: absolute;
-  inset: 4px 8px;
-  background: linear-gradient(90deg, transparent, rgba(126, 184, 255, 0.35), transparent);
-  opacity: 0.4;
-}
-
-.ots-micro-pulse::after {
-  content: "";
-  position: absolute;
-  left: 8px;
-  top: 50%;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--ots-muted);
-  transform: translateY(-50%);
-  box-shadow: 12px 0 0 -1px var(--ots-unavail), 24px 0 0 -2px var(--ots-unavail);
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  padding: 4px 6px;
 }
 
 .ots-micro-matrix {
-  display: flex;
-  gap: 3px;
   align-items: flex-end;
-  padding: 4px 6px;
 }
 
 .ots-micro-matrix span {
@@ -520,6 +492,221 @@ body {
   transition: opacity var(--ots-transition);
 }
 
+.ots-upper-instrument-field {
+  width: calc(var(--ots-chart-workspace-width-ratio) * 100%);
+  max-width: calc(var(--ots-chart-workspace-width-max-ratio) * 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0.15rem 0 0.25rem;
+  padding: 0;
+}
+
+.ots-instrument-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.ots-instrument-row + .ots-instrument-row {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+}
+
+.ots-instrument-cell {
+  min-width: 0;
+}
+
+.ots-instrument-lane,
+.ots-micro-archive {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 22px;
+  margin: 0.25rem 0 0.15rem;
+  border-bottom: 1px solid var(--ots-line);
+  position: relative;
+}
+
+.ots-lane-track {
+  flex: 1;
+  height: 3px;
+  border-radius: 1px;
+  opacity: 0.55;
+}
+
+.ots-lane-track.proven {
+  background: linear-gradient(90deg, var(--ots-accent-selected), transparent 85%);
+}
+
+.ots-lane-track.unknown,
+.ots-lane-track.unavailable {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--ots-unavail),
+    var(--ots-unavail) 6px,
+    transparent 6px,
+    transparent 10px
+  );
+}
+
+.ots-lane-mark {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ots-accent-selected);
+  margin-right: 4px;
+}
+
+.ots-lane-seg {
+  flex: 1;
+  height: 100%;
+  min-width: 8px;
+  opacity: 0.65;
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.ots-lane-seg-fresh,
+.ots-lane-seg-healthy {
+  background: rgba(61, 150, 104, 0.35);
+}
+
+.ots-lane-seg-stale,
+.ots-lane-seg-degraded {
+  background: rgba(196, 163, 90, 0.35);
+}
+
+.ots-lane-seg-unknown,
+.ots-lane-seg-missing_source {
+  background: rgba(61, 68, 80, 0.55);
+}
+
+.ots-lane-seg-blocked {
+  background: rgba(61, 68, 80, 0.45);
+}
+
+.ots-lane-seg-hot {
+  background: rgba(184, 84, 80, 0.45);
+}
+
+.ots-gap-matrix {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  min-height: 22px;
+  align-items: flex-end;
+  margin: 0.25rem 0 0.15rem;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--ots-line);
+}
+
+.ots-gap-cell {
+  width: 10px;
+  height: 10px;
+  background: var(--ots-unavail);
+  opacity: 0.45;
+}
+
+.ots-gap-cell.unavailable {
+  opacity: 0.55;
+}
+
+.ots-trace-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  margin-bottom: 1px;
+}
+
+.ots-trace-dot.set {
+  background: var(--ots-accent-selected);
+  opacity: 0.85;
+}
+
+.ots-trace-dot.rejected {
+  background: #b85450;
+  opacity: 0.75;
+}
+
+.ots-trace-unknown,
+.ots-spark-unknown {
+  flex: 1;
+  height: 1px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--ots-unavail),
+    var(--ots-unavail) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  opacity: 0.6;
+}
+
+.ots-trace-zero,
+.ots-spark-zero {
+  flex: 1;
+  height: 1px;
+  background: var(--ots-line);
+  opacity: 0.8;
+}
+
+.ots-spark-bar {
+  flex: 1;
+  height: calc(var(--ots-spark-h, 20) * 1%);
+  min-height: 2px;
+  max-height: 100%;
+  background: rgba(126, 184, 255, 0.35);
+}
+
+.ots-pulse-core {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-left: 4px;
+}
+
+.ots-pulse-fresh,
+.ots-pulse-healthy {
+  background: #3d9668;
+  box-shadow: 0 0 0 3px rgba(61, 150, 104, 0.15);
+}
+
+.ots-pulse-stale {
+  background: #c4a35a;
+}
+
+.ots-pulse-unknown {
+  background: var(--ots-unavail);
+}
+
+.ots-micro-slots {
+  gap: 4px;
+  padding: 2px 0 4px;
+}
+
+.ots-slot-cell {
+  flex: 1;
+  height: 14px;
+  border: 1px dashed var(--ots-unavail);
+  opacity: 0.55;
+}
+
+.ots-slot-cell.unavailable {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.ots-mi-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ots-muted);
+  opacity: 0.65;
+}
+
+.ots-analytical-row-secondary {
+  margin-top: 0.35rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 @media (max-width: 768px) {
   .ots-primary-stage {
     grid-template-columns: 1fr;
@@ -538,6 +725,13 @@ body {
   }
   .ots-analytical-row {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .ots-instrument-row,
+  .ots-instrument-row + .ots-instrument-row {
+    grid-template-columns: 1fr;
+  }
+  .ots-analytical-row-secondary {
+    grid-template-columns: 1fr;
   }
 }
 

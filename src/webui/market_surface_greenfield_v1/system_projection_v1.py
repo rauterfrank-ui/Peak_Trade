@@ -86,11 +86,15 @@ def project_system_state(
             "classification": "PROVEN_CURRENT",
             "source_producer": "r_and_d_api.compute_summary",
             "experiment_count": r_and_d_summary.get("total_experiments"),
+            "experiments_with_trades": r_and_d_summary.get("experiments_with_trades"),
+            "unique_strategies": r_and_d_summary.get("unique_strategies"),
+            "by_status": dict(r_and_d_summary.get("by_status") or {}),
         }
         mi_evidence = {
             "classification": "PROVEN_CURRENT",
             "source_producer": "r_and_d_api.compute_summary",
             "note": "R&D summary aggregate only — not MI promotion",
+            "experiment_count": r_and_d_summary.get("total_experiments"),
         }
 
     return {

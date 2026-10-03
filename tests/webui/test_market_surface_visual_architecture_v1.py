@@ -207,6 +207,27 @@ def test_v1_4_chart_layout_regression_flags() -> None:
     assert all(flags.values()), flags
 
 
+def test_v1_5_instrument_population_dom_and_scripts() -> None:
+    html = HTML_PATH.read_text(encoding="utf-8")
+    instruments_js = (JS_DIR / "surface_instruments_v1.js").read_text(encoding="utf-8")
+    assert 'data-v1-5-delivery="instrument-population"' in html
+    assert 'data-upper-instrument-field="v1-5"' in html
+    assert 'data-v1-5-populated="true"' in html
+    assert "ots-upper-instrument-field" in html
+    assert (
+        "ots-lower-instrument-field" in html
+        or 'data-v1-5-populated="true"' in html.split("ots-lower-instrument-band", 1)[1]
+    )
+    assert "surface_instruments_v1.js" in html
+    assert "ots-micro-mi" in html
+    assert "ots-micro-feature-slots" in html
+    assert "fetch(" not in instruments_js
+    assert "synthetic" not in instruments_js.lower()
+    upper = html.index("ots-upper-instrument-field")
+    chart = html.index("ots-chart-viewport-row")
+    assert upper < chart
+
+
 def test_v1_2_narrow_ranking_rail_css_and_dom() -> None:
     html = HTML_PATH.read_text(encoding="utf-8")
     css = CSS_PATH.read_text(encoding="utf-8")
