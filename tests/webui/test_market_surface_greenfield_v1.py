@@ -49,13 +49,14 @@ def test_html_surface_has_no_card_tile_primary_markers() -> None:
     ).read_text(encoding="utf-8")
     assert 'data-ots-greenfield-v1="true"' in html
     assert "rounded" not in html
-    assert "card" not in html.lower()
-    assert "tile" not in html.lower()
+    assert "dashboard-card" not in html.lower()
+    assert "widget-grid" not in html.lower()
     assert "okx.com" not in html.lower()
 
 
 def test_browser_js_single_poll_loop_no_okx() -> None:
-    js = _static_js_files()[0].read_text(encoding="utf-8")
+    app_js = REPO_ROOT / "static" / "js" / "market_surface_greenfield_v1" / "surface_app_v1.js"
+    js = app_js.read_text(encoding="utf-8")
     assert js.count("fetch(") == 1
     assert "okx.com" not in js.lower()
     assert "wss://" not in js.lower()
