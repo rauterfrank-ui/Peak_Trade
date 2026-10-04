@@ -646,3 +646,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_ghv_e2e_pre_decision_productive_closure_entry_regression_v1.py
   notes: 'PR #7038: durable GHV E2E pre-decision Closure bind; whole-system reproof 360 PRE_EXTERNAL; regression locks post-ENTER second-MV2 topology; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7045_shadow_runtime_enablement_v1
+  from: 46eb31040eb85623b533f04dcf4550640d562d1f
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_canonical_shadow_runtime_enablement_v1.py
+  notes: 'PR #7045: canonical Shadow runtime enablement v1 (SimulatedExecutionPort-only after PRE_EXTERNAL); GHV corpus provenance contract; fail-closed bridge; no external POST/Testnet/Live; ATLAS_AUTHORITY=NONE.'

@@ -6076,3 +6076,55 @@ entities:
   - src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py
   - tests/ops/test_current_productive_mv2_capital_context_rebind_v1.py
   notes: Shared in-memory capital budget upstream of capital_risk_sizing_v1. Admits or denies a quantity. Does not rank, reselect, or create ENTER. Does not replace the sizing owner. Does not enable N>1. Does not authorize external effect, POST, or venue fill. Restart without a fresh producer fact fails closed. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: RUNTIME_COMPONENT:governance_policy_critic_v1
+  kind: RUNTIME_COMPONENT
+  name: Governance policy critic v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: PR_7045_SHADOW_RUNTIME_ENABLEMENT_V1
+  source_paths:
+  - src/governance/policy_critic/
+  - scripts/run_policy_critic.py
+  - tests/governance/policy_critic/
+  source_symbols:
+  - NoSecretsRule
+  - PolicyCritic
+  evidence_sources:
+  - src/governance/policy_critic/rules.py
+  - tests/governance/policy_critic/test_rules.py
+  notes: CI Policy Critic gate reviews diffs for secrets and governance violations. NO_SECRETS operator_go_token kwargs are public GO identifiers, not credentials. Does not authorize Live, Testnet, or external POST. ATLAS_AUTHORITY=NONE.
+- id: RUNTIME_COMPONENT:canonical_shadow_runtime_enablement_v1
+  kind: RUNTIME_COMPONENT
+  name: Canonical Shadow runtime enablement v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: PR_7045_SHADOW_RUNTIME_ENABLEMENT_V1
+  source_paths:
+  - src/ops/canonical_shadow_runtime_enablement_v1/
+  - tests/ops/test_canonical_shadow_runtime_enablement_v1.py
+  source_symbols:
+  - run_canonical_shadow_runtime_offline_cycle_v1
+  - execute_shadow_simulated_intent_v1
+  - evaluate_shadow_runtime_bridge_v1
+  evidence_sources:
+  - src/ops/canonical_shadow_runtime_enablement_v1/proof_v1.py
+  - src/ops/canonical_shadow_runtime_enablement_v1/constants_v1.py
+  notes: Fail-closed Shadow lane after PRE_EXTERNAL via SimulatedExecutionPort only. LIVE PRE_EXTERNAL terminal unchanged. Operator GO required for bridge ACTIVATED. No external POST, Testnet, or credential access. MV2/Double Play remain decision owners. ATLAS_AUTHORITY=NONE.
+- id: DATA_CONTRACT:ghv_regression_corpus_provenance_v1
+  kind: DATA_CONTRACT
+  name: GHV regression corpus provenance v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: PR_7045_SHADOW_RUNTIME_ENABLEMENT_V1
+  source_paths:
+  - src/ops/ghv_regression_corpus_provenance_v1.py
+  - tests/ops/test_ghv_regression_corpus_provenance_v1.py
+  source_symbols:
+  - canonical_ghv_corpus_catalog_v1
+  - classify_corpus_line_count_v1
+  evidence_sources:
+  - src/ops/ghv_regression_corpus_provenance_v1.py
+  notes: Disambiguates GHV E2E preservation reproof corpus vs lab smoke/full ghv_cycle_observations.jsonl. AUTHORITY=NONE. Does not mutate GHV metrics. ATLAS_AUTHORITY=NONE.

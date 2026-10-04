@@ -76,6 +76,8 @@ class NoSecretsRule(PolicyRule):
             return True
         if re.match(r"go_token\s*=\s*[A-Z][A-Z0-9_]*", stripped, re.IGNORECASE):
             return True
+        if re.search(r"operator_go_token\s*=\s*[A-Z][A-Z0-9_]+", stripped):
+            return True
         if re.search(r"""['"]GO_[A-Z0-9_]{10,}['"]""", stripped):
             return True
         if re.search(r"""['"]OWNER_GO_[A-Z0-9_]{8,}['"]""", stripped):

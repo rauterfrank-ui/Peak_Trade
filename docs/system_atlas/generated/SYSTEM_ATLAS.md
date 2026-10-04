@@ -388,6 +388,7 @@ SCHEMA is not automatically DATA_CONTRACT or dataclass. BoundInstrumentV1 carrie
 | DATA_CONTRACT:account_equity_orchestration_ingress_v1 | DATA_CONTRACT | Account-equity orchestration ingress v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:bound_instrument_v1 | DATA_CONTRACT | BoundInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:full_core_live_path_models_v1 | DATA_CONTRACT | Full-core live path typed contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| DATA_CONTRACT:ghv_regression_corpus_provenance_v1 | DATA_CONTRACT | GHV regression corpus provenance v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:governed_universe_instrument_v1 | DATA_CONTRACT | GovernedUniverseInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1 | DATA_CONTRACT | Treasury Phase-2 read-only reconciliation contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:treasury_shadow_enforcement_result_v1 | DATA_CONTRACT | Treasury shadow enforcement result v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -458,7 +459,7 @@ Architectural-kind count in this bucket: `30`.
 
 ### CURRENT_IMPLEMENTED_NONCANONICAL
 
-Architectural-kind count in this bucket: `40`.
+Architectural-kind count in this bucket: `41`.
 
 | id | kind | name | bucket | epistemic |
 | --- | --- | --- | --- | --- |
@@ -472,6 +473,7 @@ Architectural-kind count in this bucket: `40`.
 | DATA_CONTRACT:account_equity_orchestration_ingress_v1 | DATA_CONTRACT | Account-equity orchestration ingress v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:bound_instrument_v1 | DATA_CONTRACT | BoundInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:full_core_live_path_models_v1 | DATA_CONTRACT | Full-core live path typed contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| DATA_CONTRACT:ghv_regression_corpus_provenance_v1 | DATA_CONTRACT | GHV regression corpus provenance v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:governed_universe_instrument_v1 | DATA_CONTRACT | GovernedUniverseInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1 | DATA_CONTRACT | Treasury Phase-2 read-only reconciliation contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
 | DATA_CONTRACT:treasury_shadow_enforcement_result_v1 | DATA_CONTRACT | Treasury shadow enforcement result v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
@@ -501,7 +503,8 @@ Architectural-kind count in this bucket: `40`.
 | SELECTOR:productive_futures_ranking | SELECTOR | Productive futures ranking | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=ADJUDICATED |
 | SELECTOR:single_selected_future_policy | SELECTOR | Single selected future policy producer | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=ADJUDICATED |
 | UNIVERSE:governed_futures_universe | UNIVERSE | Governed Futures Universe snapshot | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=ADJUDICATED |
-| VENUE:okx_eea | VENUE | OKX EEA / Europe | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+
+Truncated to 40 of `41` architectural-kind rows. Remaining kinds are in [COVERAGE_REPORT.md](COVERAGE_REPORT.md).
 
 ### ADJUDICATED
 
@@ -636,7 +639,7 @@ Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_RE
 
 ## 16. Orphan / missing-wiring findings
 
-Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `163`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
+Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `165`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
 
 | id | class | entity | epistemic |
 | --- | --- | --- | --- |
@@ -707,7 +710,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=b0a15094e0c2ad33f93fc6c4d017072f7907eaa4
-ENTITY_TOTAL=342
+ENTITY_TOTAL=345
 HUB_RELATION_COUNT=72
 STRUCTURAL_RELATION_COUNT=246
 RUNTIME_RELATION_COUNT=101
@@ -785,7 +788,7 @@ Remaining census domains:
 | BINDER | 1 |
 | CAPABILITY | 22 |
 | CONTRACT | 66 |
-| DATA_CONTRACT | 6 |
+| DATA_CONTRACT | 7 |
 | DOD | 5 |
 | EVIDENCE_ARTIFACT | 1 |
 | EXPERIMENT | 1 |
@@ -800,7 +803,7 @@ Remaining census domains:
 | OWNER_DECISION | 2 |
 | PHASE | 1 |
 | RUNBOOK | 2 |
-| RUNTIME_COMPONENT | 170 |
+| RUNTIME_COMPONENT | 172 |
 | SCHEMA | 5 |
 | SCRIPT | 3 |
 | SELECTOR | 2 |

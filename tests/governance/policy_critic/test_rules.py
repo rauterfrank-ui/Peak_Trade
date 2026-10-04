@@ -91,6 +91,17 @@ class TestNoSecretsRule:
 
         assert len(violations) == 0
 
+    def test_no_false_positive_on_operator_go_token_kwarg_constant(self):
+        rule = NoSecretsRule()
+        diff = """
++++ b/tests/ops/test_canonical_shadow_runtime_enablement_v1.py
++        operator_go_token=SHADOW_ACTIVATION_OPERATOR_GO,
++        operator_go_token=None,
+        """
+        violations = rule.check(diff, ["tests/ops/test_canonical_shadow_runtime_enablement_v1.py"])
+
+        assert len(violations) == 0
+
     def test_no_false_positive_on_short_confirm_material_alias(self):
         """Regression: confirm_token=_MATERIAL must not trip NO_SECRETS length gate."""
         rule = NoSecretsRule()
