@@ -6,6 +6,7 @@ superseded_by: null
 last_recorded_impact: UPDATED
 note: 'PR #7045 Shadow runtime enablement v1 + GHV regression corpus provenance; SimulatedExecutionPort-only; operator GO required for bridge ACTIVATED; POST_COUNT=0.'
 changed_entities:
+- RUNTIME_COMPONENT:governance_policy_critic_v1
 - RUNTIME_COMPONENT:canonical_shadow_runtime_enablement_v1
 - DATA_CONTRACT:ghv_regression_corpus_provenance_v1
 changed_relations: []

@@ -98,9 +98,7 @@ class TestNoSecretsRule:
 +        operator_go_token=SHADOW_ACTIVATION_OPERATOR_GO,
 +        operator_go_token=None,
         """
-        violations = rule.check(
-            diff, ["tests/ops/test_canonical_shadow_runtime_enablement_v1.py"]
-        )
+        violations = rule.check(diff, ["tests/ops/test_canonical_shadow_runtime_enablement_v1.py"])
 
         assert len(violations) == 0
 

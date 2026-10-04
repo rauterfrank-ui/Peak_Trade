@@ -6076,6 +6076,24 @@ entities:
   - src/ops/full_core_live_path_composition_root_v1/current_productive_mv2_capital_context_rebind_v1.py
   - tests/ops/test_current_productive_mv2_capital_context_rebind_v1.py
   notes: Shared in-memory capital budget upstream of capital_risk_sizing_v1. Admits or denies a quantity. Does not rank, reselect, or create ENTER. Does not replace the sizing owner. Does not enable N>1. Does not authorize external effect, POST, or venue fill. Restart without a fresh producer fact fails closed. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+- id: RUNTIME_COMPONENT:governance_policy_critic_v1
+  kind: RUNTIME_COMPONENT
+  name: Governance policy critic v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: PR_7045_SHADOW_RUNTIME_ENABLEMENT_V1
+  source_paths:
+  - src/governance/policy_critic/
+  - scripts/run_policy_critic.py
+  - tests/governance/policy_critic/
+  source_symbols:
+  - NoSecretsRule
+  - PolicyCritic
+  evidence_sources:
+  - src/governance/policy_critic/rules.py
+  - tests/governance/policy_critic/test_rules.py
+  notes: CI Policy Critic gate reviews diffs for secrets and governance violations. NO_SECRETS operator_go_token kwargs are public GO identifiers, not credentials. Does not authorize Live, Testnet, or external POST. ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:canonical_shadow_runtime_enablement_v1
   kind: RUNTIME_COMPONENT
   name: Canonical Shadow runtime enablement v1
