@@ -4,9 +4,7 @@
   "changed_paths": [
     "config/evaluation/golden_vectors/authority_signal_flow_constraints/constraint_matrix_v1.json",
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "src/evaluation/golden_vectors/constraints/__init__.py",
     "src/evaluation/golden_vectors/constraints/digest_v1.py",
     "src/evaluation/golden_vectors/constraints/errors.py",
@@ -16,7 +14,7 @@
     "tests/evaluation/golden_vectors/constraint_matrix_fixtures_v1.py",
     "tests/evaluation/golden_vectors/test_gvef_constraint_matrix_bwp0c_v1.py"
   ],
-  "changed_paths_sha256": "f4678e4f5d83efd5ecaf296b65bc0df6fc40d0c4c36686773d93c905062e4973",
+  "changed_paths_sha256": "30b8ebedb83986ca4661b3bbf153a2841acd19e57f2e87bc154c9e53c2407919",
   "evidence_refs": [
     "config/evaluation/golden_vectors/authority_signal_flow_constraints/constraint_matrix_v1.json",
     "tests/evaluation/golden_vectors/test_gvef_constraint_matrix_bwp0c_v1.py"
