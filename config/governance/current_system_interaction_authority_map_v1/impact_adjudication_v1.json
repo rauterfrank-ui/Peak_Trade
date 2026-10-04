@@ -2,6 +2,12 @@
   "authority_effect": "NONE",
   "base_sha": "92284790999e405aa1c21dde60380ade36ba2d43",
   "changed_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "src/ops/canonical_shadow_runtime_enablement_v1/constants_v1.py",
     "src/ops/canonical_shadow_runtime_enablement_v1/ghv_shadow_forensics_v1.py",
     "src/ops/canonical_shadow_runtime_enablement_v1/observation_authorization_v1.py",
@@ -16,8 +22,13 @@
     "src/ops/canonical_shadow_runtime_enablement_v1/shadow_runtime_bridge_v1.py",
     "tests/ops/test_canonical_shadow_runtime_enablement_v1.py"
   ],
-  "changed_paths_sha256": "b186fd6f8435e7d25f72fd722c907fa87d2a0dbb4611dda430fb9c88ac5db443",
+  "changed_paths_sha256": "2a6aaaa7502dd5a921750bb1e66e911634fe76c7913f67818d889ac08bc77128",
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "src/ops/canonical_shadow_runtime_enablement_v1/constants_v1.py",
     "src/ops/canonical_shadow_runtime_enablement_v1/ghv_shadow_forensics_v1.py",
     "src/ops/canonical_shadow_runtime_enablement_v1/observation_authorization_v1.py",
