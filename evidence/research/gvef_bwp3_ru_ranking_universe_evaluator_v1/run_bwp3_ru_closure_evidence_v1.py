@@ -83,15 +83,39 @@ def build_ledger() -> list[dict[str, Any]]:
     ledger: list[dict[str, Any]] = [
         {"REQUIREMENT_ID": "BWP3RU-META-001", "SOLL": bwp},
         {"REQUIREMENT_ID": "BWP3RU-COMP-001", "SOLL": comp},
-        {"REQUIREMENT_ID": "BWP3RU-AUTHORITY-NONE", "SOLL": "RANKING_UNIVERSE_EVALUATOR_AUTHORITY=NONE"},
+        {
+            "REQUIREMENT_ID": "BWP3RU-AUTHORITY-NONE",
+            "SOLL": "RANKING_UNIVERSE_EVALUATOR_AUTHORITY=NONE",
+        },
         {"REQUIREMENT_ID": "BWP3RU-CAP23-SOLE", "SOLL": CAP2_3_SELECTION_OWNER},
-        {"REQUIREMENT_ID": "BWP3RU-MANIFEST-FIELDS", "SOLL": "membership,ranking_snapshot_id,ordering,top_k_context,provenance"},
-        {"REQUIREMENT_ID": "BWP3RU-DELTA-FIELDS", "SOLL": "membership_deltas,ordering_deltas,churn_metrics,digest"},
-        {"REQUIREMENT_ID": "BWP3RU-DIGEST-SEPARATION", "SOLL": "ranking_universe != selection protected digest"},
-        {"REQUIREMENT_ID": "BWP3RU-AUTHORITY-FAIL", "SOLL": "AUTHORITY_FAILURE -> DOWNSTREAM_IMPACT_EVALUATION fail-closed"},
-        {"REQUIREMENT_ID": "BWP3RU-EVIDENCE-MANIFESTS", "SOLL": "ranking_universe_manifest + ranking_delta_manifest on EvidenceBundle"},
-        {"REQUIREMENT_ID": "BWP3RU-PIPELINE", "SOLL": "runner -> RU evaluator -> comparator/digest/delta -> evidence"},
-        {"REQUIREMENT_ID": "BWP3RU-SAFETY", "SOLL": "GVEF authority NONE; no productive writes/credentials/LIVE POST"},
+        {
+            "REQUIREMENT_ID": "BWP3RU-MANIFEST-FIELDS",
+            "SOLL": "membership,ranking_snapshot_id,ordering,top_k_context,provenance",
+        },
+        {
+            "REQUIREMENT_ID": "BWP3RU-DELTA-FIELDS",
+            "SOLL": "membership_deltas,ordering_deltas,churn_metrics,digest",
+        },
+        {
+            "REQUIREMENT_ID": "BWP3RU-DIGEST-SEPARATION",
+            "SOLL": "ranking_universe != selection protected digest",
+        },
+        {
+            "REQUIREMENT_ID": "BWP3RU-AUTHORITY-FAIL",
+            "SOLL": "AUTHORITY_FAILURE -> DOWNSTREAM_IMPACT_EVALUATION fail-closed",
+        },
+        {
+            "REQUIREMENT_ID": "BWP3RU-EVIDENCE-MANIFESTS",
+            "SOLL": "ranking_universe_manifest + ranking_delta_manifest on EvidenceBundle",
+        },
+        {
+            "REQUIREMENT_ID": "BWP3RU-PIPELINE",
+            "SOLL": "runner -> RU evaluator -> comparator/digest/delta -> evidence",
+        },
+        {
+            "REQUIREMENT_ID": "BWP3RU-SAFETY",
+            "SOLL": "GVEF authority NONE; no productive writes/credentials/LIVE POST",
+        },
     ]
     return ledger
 
@@ -335,9 +359,13 @@ def main() -> int:
     out_dir = Path(__file__).resolve().parent / ts
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    origin = subprocess.check_output(["git", "rev-parse", "origin/main"], cwd=REPO, text=True).strip()
+    origin = subprocess.check_output(
+        ["git", "rev-parse", "origin/main"], cwd=REPO, text=True
+    ).strip()
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True).strip()
-    branch = subprocess.check_output(["git", "branch", "--show-current"], cwd=REPO, text=True).strip()
+    branch = subprocess.check_output(
+        ["git", "branch", "--show-current"], cwd=REPO, text=True
+    ).strip()
 
     if origin != BASELINE_EXPECTED:
         print(f"HARD_STOP: origin/main {origin} != expected {BASELINE_EXPECTED}", file=sys.stderr)
@@ -351,16 +379,28 @@ def main() -> int:
     forbidden = forbidden_scan()
     reconciliation = build_reconciliation(auth, sep, man, delta, runner_ev)
 
-    ru_tests = run_pytest("tests/evaluation/golden_vectors/test_gvef_domain_evaluators_bwp3_v1.py::TestRuContract")
+    ru_tests = run_pytest(
+        "tests/evaluation/golden_vectors/test_gvef_domain_evaluators_bwp3_v1.py::TestRuContract"
+    )
     ru_runner = run_pytest(
         "tests/evaluation/golden_vectors/test_gvef_domain_evaluators_bwp3_v1.py::TestRunnerIntegration::test_ru_through_runner"
     )
-    bwp1 = run_pytest("tests/evaluation/golden_vectors/test_gvef_bwp1_blueprint_contract_reconciliation_v1.py")
+    bwp1 = run_pytest(
+        "tests/evaluation/golden_vectors/test_gvef_bwp1_blueprint_contract_reconciliation_v1.py"
+    )
     bwp2 = run_pytest("tests/evaluation/golden_vectors/test_gvef_generic_runner_v1.py")
-    bwp3 = run_pytest("tests/evaluation/golden_vectors/test_gvef_domain_evaluators_bwp3_v1.py::TestPtpContract")
+    bwp3 = run_pytest(
+        "tests/evaluation/golden_vectors/test_gvef_domain_evaluators_bwp3_v1.py::TestPtpContract"
+    )
 
     law = subprocess.run(
-        ["./scripts/pt", "scripts/ops/current_law_impact_map_v1.py", "validate", "--diff-base", "origin/main"],
+        [
+            "./scripts/pt",
+            "scripts/ops/current_law_impact_map_v1.py",
+            "validate",
+            "--diff-base",
+            "origin/main",
+        ],
         cwd=REPO,
         capture_output=True,
         text=True,
@@ -514,7 +554,9 @@ def main() -> int:
         "final_verdict.json": {
             **header,
             **side_effect,
-            "RANKING_UNIVERSE_DIGEST_SEPARATION_PROVEN": sep["RANKING_UNIVERSE_DIGEST_SEPARATION_PROVEN"],
+            "RANKING_UNIVERSE_DIGEST_SEPARATION_PROVEN": sep[
+                "RANKING_UNIVERSE_DIGEST_SEPARATION_PROVEN"
+            ],
             "AUTHORITY_FAILURE_FAIL_CLOSED": auth["AUTHORITY_FAILURE_FAIL_CLOSED"],
             "AUTHORITY_FAILURE_REPROOF_CLASS": auth["AUTHORITY_FAILURE_REPROOF_CLASS"],
             "BWP1_REGRESSION": "PASS" if bwp1["pass"] else "FAIL",
