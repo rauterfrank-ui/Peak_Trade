@@ -7,6 +7,7 @@ from typing import Any
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from src.evaluation.golden_vectors.contracts.enums import (
+    CurrentReachabilityVerdict,
     DigestVerdict,
     DomainEvaluatorId,
     DomainVerdict,
@@ -41,6 +42,7 @@ from src.evaluation.golden_vectors.contracts.serialization import (
     require_iso8601_utc_z,
     require_semver,
     require_sha256_hex,
+    require_uuid_v4,
     sha256_hex,
 )
 
@@ -81,7 +83,7 @@ class BoundaryResultV1(_StrictModel):
     pass_: bool = Field(alias="pass")
     producer: str
     consumer: str
-    current_verdict: str
+    current_verdict: CurrentReachabilityVerdict
 
     model_config = ConfigDict(extra="forbid", frozen=True, populate_by_name=True)
 
@@ -194,6 +196,11 @@ class RunManifestV1(_StrictModel):
     seed_set_digest: str
     fan_out_evaluation_class: FanOutEvaluationClass
     created_at_utc: str
+
+    @field_validator("run_id")
+    @classmethod
+    def _run_id(cls, v: str) -> str:
+        return require_uuid_v4(v, field="run_id")
 
     @field_validator("baseline_sha", "candidate_sha")
     @classmethod
@@ -324,6 +331,11 @@ class EvidenceBundleV1(_StrictModel):
     promotion_status: ExternalPromotionStatus
     post_constraint_gate_pass: bool
     failure_classification: FailureClassification | None = None
+
+    @field_validator("run_id")
+    @classmethod
+    def _run_id(cls, v: str) -> str:
+        return require_uuid_v4(v, field="run_id")
 
     @field_validator(
         "baseline_sha",

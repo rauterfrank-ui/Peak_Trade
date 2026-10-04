@@ -12,7 +12,11 @@ from src.evaluation.golden_vectors.contracts.enums import (
     EvidenceBundleLifecycleState,
     FanOutEvaluationClass,
 )
-from src.evaluation.golden_vectors.contracts.errors import GvefSchemaError, SCHEMA_FAILURE
+from src.evaluation.golden_vectors.contracts.errors import (
+    GvefSchemaError,
+    SCHEMA_FAILURE,
+    SCHEMA_FAILURE_REPROOF_CLASS,
+)
 from src.evaluation.golden_vectors.contracts.models import (
     BoundaryResultV1,
     CapitalRiskCrsSizingEvidenceBundleV1,
@@ -68,6 +72,7 @@ __all__ = [
     "FanOutEvaluationClass",
     "GvefSchemaError",
     "SCHEMA_FAILURE",
+    "SCHEMA_FAILURE_REPROOF_CLASS",
     "RunManifestV1",
     "VectorManifestV1",
     "CorpusManifestV1",
