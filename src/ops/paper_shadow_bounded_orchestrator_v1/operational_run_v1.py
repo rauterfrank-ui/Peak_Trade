@@ -18,8 +18,13 @@ from src.ops.paper_shadow_bounded_orchestrator_v1.bounded_limits_v1 import (
 from src.ops.paper_shadow_bounded_orchestrator_v1.fixpoint_self_check_v1 import (
     evaluate_fixpoint_self_check_v1,
 )
+from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.eea_public_md_transport_v1 import (
+    EeaPublicMdTransportV1,
+)
+from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (
+    REAL_NETWORK_ENV,
+)
 from src.ops.paper_shadow_bounded_orchestrator_v1.observation_tick_source_v1 import (
-    InjectedObservationTickSourceV1,
     ObservationTickSourceV1,
     PublicEeaObservationTickSourceV1,
 )
@@ -99,13 +104,6 @@ def _build_default_tick_source(
 ) -> ObservationTickSourceV1 | None:
     if not allow_real_network:
         return None
-    from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.eea_public_md_transport_v1 import (
-        EeaPublicMdTransportV1,
-    )
-    from src.ops.integrated_paper_shadow_productive_authorization_issuance_and_real_network_execution_v1.constants_v1 import (
-        REAL_NETWORK_ENV,
-    )
-
     if str(os.environ.get(REAL_NETWORK_ENV) or "0") != "1":
         return None
     _ = repo_root
