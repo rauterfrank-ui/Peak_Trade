@@ -1,37 +1,35 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "9539b55ee4e572b3a0607e97008375bccb36814e",
+  "base_sha": "1328be7f17d4ed740c7777254b32b305ad0a5708",
   "changed_paths": [
-    "config/evaluation/golden_vectors/authority_signal_flow_constraints/constraint_matrix_v1.json",
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "src/evaluation/golden_vectors/constraints/__init__.py",
-    "src/evaluation/golden_vectors/constraints/digest_v1.py",
-    "src/evaluation/golden_vectors/constraints/errors.py",
-    "src/evaluation/golden_vectors/constraints/matrix_loader_v1.py",
     "src/evaluation/golden_vectors/constraints/post_constraint_gate_v1.py",
-    "src/evaluation/golden_vectors/constraints/pre_constraint_gate_v1.py",
-    "tests/evaluation/golden_vectors/constraint_matrix_fixtures_v1.py",
-    "tests/evaluation/golden_vectors/test_gvef_constraint_matrix_bwp0c_v1.py"
+    "src/evaluation/golden_vectors/digest/__init__.py",
+    "src/evaluation/golden_vectors/digest/comparator_v1.py",
+    "src/evaluation/golden_vectors/digest/errors.py",
+    "src/evaluation/golden_vectors/digest/protected_semantic_digest_layer_v1.py",
+    "src/evaluation/golden_vectors/runner/digest_projection.py",
+    "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+    "tests/evaluation/golden_vectors/test_gvef_protected_semantic_digest_bwp0d_v1.py"
   ],
-  "changed_paths_sha256": "30b8ebedb83986ca4661b3bbf153a2841acd19e57f2e87bc154c9e53c2407919",
+  "changed_paths_sha256": "34e463f7a91a0f4fc96a823dc565e1cfc1581750e95a61fd13b8d0f40874674c",
   "covered_candidate_paths": [
-    "config/evaluation/golden_vectors/authority_signal_flow_constraints/constraint_matrix_v1.json",
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "src/evaluation/golden_vectors/constraints/__init__.py",
-    "src/evaluation/golden_vectors/constraints/digest_v1.py",
-    "src/evaluation/golden_vectors/constraints/errors.py",
-    "src/evaluation/golden_vectors/constraints/matrix_loader_v1.py",
     "src/evaluation/golden_vectors/constraints/post_constraint_gate_v1.py",
-    "src/evaluation/golden_vectors/constraints/pre_constraint_gate_v1.py",
-    "tests/evaluation/golden_vectors/constraint_matrix_fixtures_v1.py",
-    "tests/evaluation/golden_vectors/test_gvef_constraint_matrix_bwp0c_v1.py"
+    "src/evaluation/golden_vectors/digest/__init__.py",
+    "src/evaluation/golden_vectors/digest/comparator_v1.py",
+    "src/evaluation/golden_vectors/digest/errors.py",
+    "src/evaluation/golden_vectors/digest/protected_semantic_digest_layer_v1.py",
+    "src/evaluation/golden_vectors/runner/digest_projection.py",
+    "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+    "tests/evaluation/golden_vectors/test_gvef_protected_semantic_digest_bwp0d_v1.py"
   ],
   "evidence_refs": [
-    "config/evaluation/golden_vectors/authority_signal_flow_constraints/constraint_matrix_v1.json",
-    "tests/evaluation/golden_vectors/test_gvef_constraint_matrix_bwp0c_v1.py"
+    "src/evaluation/golden_vectors/digest/protected_semantic_digest_layer_v1.py",
+    "tests/evaluation/golden_vectors/test_gvef_protected_semantic_digest_bwp0d_v1.py"
   ],
-  "reason": "GVEF BWP-0C seals authority signal flow matrix; no CSIA source change; POST_COUNT=0.",
+  "reason": "GVEF BWP-0D digest compare layer; no CSIA source change; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

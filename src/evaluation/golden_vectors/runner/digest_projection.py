@@ -10,18 +10,21 @@ from src.evaluation.golden_vectors.contracts.models import (
     contract_to_canonical_mapping,
 )
 from src.evaluation.golden_vectors.contracts.serialization import sha256_hex
+from src.evaluation.golden_vectors.digest.protected_semantic_digest_layer_v1 import (
+    EXCLUDED_VOLATILE_FIELDS,
+    protected_semantic_digests_aggregate_hex,
+    project_semantic_payload,
+)
 
-# contract_schema_manifest.json digest_model.excluded_volatile_fields
-EXCLUDED_VOLATILE_FIELDS = frozenset({"created_at_utc", "runner_host", "process_id"})
 RUN_MANIFEST_VOLATILE_FIELDS = frozenset({"created_at_utc"})
 
 
 def project_mapping_for_protected_digest(
     payload: Mapping[str, Any],
     *,
-    exclude: frozenset[str],
+    exclude: frozenset[str] = EXCLUDED_VOLATILE_FIELDS,
 ) -> dict[str, Any]:
-    return {k: v for k, v in payload.items() if k not in exclude}
+    return project_semantic_payload(payload, exclude=exclude)
 
 
 def project_run_manifest_for_protected_digest(run: RunManifestV1) -> dict[str, Any]:
@@ -35,5 +38,4 @@ def run_manifest_protected_digest_hex(run: RunManifestV1) -> str:
 
 
 def protected_semantic_digests_digest(digests: ProtectedSemanticDigestsV1) -> str:
-    payload = contract_to_canonical_mapping(digests)
-    return sha256_hex(payload)
+    return protected_semantic_digests_aggregate_hex(digests)
