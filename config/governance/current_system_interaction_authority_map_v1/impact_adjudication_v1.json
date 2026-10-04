@@ -1,31 +1,29 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "cf90cc301a784ce549711f9033d92713ffe68b00",
+  "base_sha": "c52f3df5ba50a552a8477cb79c7d0be454cb672e",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "src/evaluation/golden_vectors/contracts/__init__.py",
-    "src/evaluation/golden_vectors/contracts/errors.py",
-    "src/evaluation/golden_vectors/contracts/models.py",
-    "src/evaluation/golden_vectors/contracts/serialization.py",
-    "tests/evaluation/golden_vectors/test_gvef_bwp1_blueprint_contract_reconciliation_v1.py",
-    "tests/evaluation/golden_vectors/whole_system_fixtures_v1.py"
+    "src/evaluation/golden_vectors/evaluators/productive_trading_path_v1.py",
+    "src/evaluation/golden_vectors/runner/deterministic_stubs_v1.py",
+    "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+    "src/evaluation/golden_vectors/runner/protocols.py",
+    "tests/evaluation/golden_vectors/test_gvef_domain_evaluators_bwp3_v1.py"
   ],
-  "changed_paths_sha256": "df3a2d1ae2de594fdfe6ccf020fc5fe317d627d41b9dd9bc460eac6386a49ab8",
+  "changed_paths_sha256": "1373108a6b557ba49665c1e438c5dab683487f1ddc1b1da2943552993393efb5",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "src/evaluation/golden_vectors/contracts/__init__.py",
-    "src/evaluation/golden_vectors/contracts/errors.py",
-    "src/evaluation/golden_vectors/contracts/models.py",
-    "src/evaluation/golden_vectors/contracts/serialization.py",
-    "tests/evaluation/golden_vectors/test_gvef_bwp1_blueprint_contract_reconciliation_v1.py",
-    "tests/evaluation/golden_vectors/whole_system_fixtures_v1.py"
+    "src/evaluation/golden_vectors/evaluators/productive_trading_path_v1.py",
+    "src/evaluation/golden_vectors/runner/deterministic_stubs_v1.py",
+    "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
+    "src/evaluation/golden_vectors/runner/protocols.py",
+    "tests/evaluation/golden_vectors/test_gvef_domain_evaluators_bwp3_v1.py"
   ],
   "evidence_refs": [
-    "src/evaluation/golden_vectors/contracts/models.py",
-    "tests/evaluation/golden_vectors/test_gvef_bwp1_blueprint_contract_reconciliation_v1.py"
+    "src/evaluation/golden_vectors/evaluators/productive_trading_path_v1.py",
+    "tests/evaluation/golden_vectors/test_gvef_domain_evaluators_bwp3_v1.py"
   ],
-  "reason": "GVEF BWP-1 contract schema validation and blueprint parity tests; evaluation-only; no CSIA source change; POST_COUNT=0.",
+  "reason": "GVEF BWP-3 PTP evaluator CRS nested evidence wiring; evaluation-only; no CSIA source change; POST_COUNT=0; PRE_EXTERNAL crossing unchanged.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
