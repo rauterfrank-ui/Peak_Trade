@@ -2,6 +2,9 @@
   "authority_effect": "NONE",
   "base_sha": "1dd90cb053522d953aa7518541da2c0d1940ffee",
   "changed_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/ops/specs/PAPER_SHADOW_BOUNDED_RUN_SETTINGS_DIGEST_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
@@ -16,9 +19,10 @@
     "tests/ops/test_paper_shadow_run_settings_manifest_v1.py",
     "tests/ops/test_paper_shadow_run_staleness_boundary_v1.py"
   ],
-  "changed_paths_sha256": "33702e1cdce7e0a4a19996828d8df9e88c16c613b18bc405f3369922cf7ae994",
+  "changed_paths_sha256": "281c438d5beb8203e1d2027588187557567f213d27121af9767a5c52c8a1b0dd",
   "covered_candidate_paths": [
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "docs/ops/specs/PAPER_SHADOW_BOUNDED_RUN_SETTINGS_DIGEST_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/provenance/changes.yaml",
@@ -36,7 +40,7 @@
     "tests/ops/test_paper_shadow_run_settings_manifest_v1.py",
     "docs/ops/specs/PAPER_SHADOW_BOUNDED_RUN_SETTINGS_DIGEST_V1.md"
   ],
-  "reason": "Run-001 canonical settings manifest/digest owner; poll/staleness single-owner alignment to wallclock constants; preflight SETTINGS_DIGEST verification; no CSIA semantic authority change; no trading path mutation.",
+  "reason": "Run-001 canonical settings manifest/digest owner; governance and Atlas registration for new orchestrator surfaces; poll/staleness alignment only; no CSIA authority semantic change.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

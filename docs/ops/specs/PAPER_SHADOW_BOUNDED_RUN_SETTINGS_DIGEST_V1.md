@@ -26,7 +26,7 @@ Deterministic JSON object (`DIGEST_PAYLOAD`):
 - `SPEC_ID`, `SPEC_VERSION`
 - `SETTINGS`: sorted by `SETTING_ID`, each entry `{SETTING_ID, VALUE}` only
 
-Serialization: `canonical_json_text_v1` (see `archive_sibling_export_contract_v1/canonical_digest.py`).
+Serialization: `canonical_json_text_v1` (see `archive_sibling_export_contract_v1&#47;canonical_digest.py`).
 
 Hash: SHA-256 hex over UTF-8 canonical JSON text (no trailing newline).
 
