@@ -24,7 +24,7 @@
   ],
   "changed_paths_sha256": "2a6aaaa7502dd5a921750bb1e66e911634fe76c7913f67818d889ac08bc77128",
   "covered_candidate_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
@@ -47,7 +47,7 @@
     "src/ops/canonical_shadow_runtime_enablement_v1/proof_v1.py",
     "tests/ops/test_canonical_shadow_runtime_enablement_v1.py"
   ],
-  "reason": "PR #7046 Shadow activatable closure V2: ops-only extension of canonical_shadow_runtime_enablement_v1; fail-closed bridge/observation/preflight semantics; no CSIA source_v1.json semantic change; ATLAS entity review recorded.",
-  "selector_used_as_map_impact_authority": false,
-  "verdict": "NO_MAP_IMPACT"
+  "reason": "PR #7046 Shadow activatable closure V2: ops-only extension; no law map source semantic change; ATLAS review recorded.",
+  "selector_used_as_law_impact_authority": false,
+  "verdict": "NO_LAW_IMPACT"
 }
