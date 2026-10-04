@@ -6100,7 +6100,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7045_SHADOW_RUNTIME_ENABLEMENT_V1
+  modified_by: PR_7046_GHV_GUIDED_SHADOW_RUNTIME_CLOSURE_V2
   source_paths:
   - src/ops/canonical_shadow_runtime_enablement_v1/
   - tests/ops/test_canonical_shadow_runtime_enablement_v1.py
@@ -6108,10 +6108,15 @@ entities:
   - run_canonical_shadow_runtime_offline_cycle_v1
   - execute_shadow_simulated_intent_v1
   - evaluate_shadow_runtime_bridge_v1
+  - evaluate_observation_authorization_v1
+  - evaluate_shadow_activation_state_v1
+  - evaluate_paper_shadow_247_preflight_reconciliation_v1
+  - evaluate_shadow_kill_switch_v1
   evidence_sources:
   - src/ops/canonical_shadow_runtime_enablement_v1/proof_v1.py
   - src/ops/canonical_shadow_runtime_enablement_v1/constants_v1.py
-  notes: Fail-closed Shadow lane after PRE_EXTERNAL via SimulatedExecutionPort only. LIVE PRE_EXTERNAL terminal unchanged. Operator GO required for bridge ACTIVATED. No external POST, Testnet, or credential access. MV2/Double Play remain decision owners. ATLAS_AUTHORITY=NONE.
+  - tests/ops/test_canonical_shadow_runtime_enablement_v1.py
+  notes: 'PR #7046 V2 closure: Shadow ACTIVATABLE vs AUTHORIZED distinction; observation authorization mechanism (ready, not granted); bridge BOUND_READY with kill-switch; 247 preflight READY_BUT_NOT_AUTHORIZED semantics; bounded offline reconciliation/restart/forensics. SimulatedExecutionPort-only. SHADOW_AUTHORIZED=false; SHADOW_RUNNING=false; no Live/Testnet/external POST. MV2/Double Play unchanged. ATLAS_AUTHORITY=NONE.'
 - id: DATA_CONTRACT:ghv_regression_corpus_provenance_v1
   kind: DATA_CONTRACT
   name: GHV regression corpus provenance v1

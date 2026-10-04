@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -40,9 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:governance_policy_critic_v1` |
 | `RUNTIME_COMPONENT:canonical_shadow_runtime_enablement_v1` |
-| `DATA_CONTRACT:ghv_regression_corpus_provenance_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -94,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7045 Shadow runtime enablement v1 + GHV regression corpus provenance; SimulatedExecutionPort-only; operator GO required for bridge ACTIVATED; POST_COUNT=0.
+- PR #7046 Shadow activatable closure V2; observation mechanism ready/unauthorized; bridge BOUND_READY; no Shadow authorization or external POST; productive trading semantics unchanged.
 - introduced_by=CHANGE:pr_7045_shadow_runtime_enablement_v1
-- modified_by=CHANGE:pr_7045_shadow_runtime_enablement_v1
+- modified_by=CHANGE:pr_7046_ghv_guided_shadow_runtime_closure_v2
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

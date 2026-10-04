@@ -653,3 +653,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_canonical_shadow_runtime_enablement_v1.py
   notes: 'PR #7045: canonical Shadow runtime enablement v1 (SimulatedExecutionPort-only after PRE_EXTERNAL); GHV corpus provenance contract; fail-closed bridge; no external POST/Testnet/Live; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7046_ghv_guided_shadow_runtime_closure_v2
+  from: 92284790999e405aa1c21dde60380ade36ba2d43
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_canonical_shadow_runtime_enablement_v1.py
+  notes: 'PR #7046: Shadow activatable closure V2 — observation auth mechanism, activation state model, 247 preflight READY_BUT_NOT_AUTHORIZED, kill-switch/restart/reconciliation forensics; productive GHV path unchanged; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
