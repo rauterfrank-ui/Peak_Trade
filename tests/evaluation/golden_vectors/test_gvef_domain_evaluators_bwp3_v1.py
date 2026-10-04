@@ -185,6 +185,7 @@ class TestRuContract:
         assert ru_ev.evaluator_id == RANKING_UNIVERSE_EVALUATOR_ID
         assert RU_BWP_ID == "BWP-3-RU"
         assert RU_FAILURE is FailureClassification.AUTHORITY_FAILURE
+        assert reproof_for_failure(RU_FAILURE) is FanOutEvaluationClass.DOWNSTREAM_IMPACT_EVALUATION
 
     def test_valid_ru_pass(self, ru_ev: RankingUniverseEvaluatorV1) -> None:
         ctx = ru_context()
@@ -243,6 +244,46 @@ class TestRuContract:
     def test_cap23_owner_reference(self) -> None:
         assert "CAPABILITY_2_3" in CAP2_3_SELECTION_OWNER
 
+    def test_ordering_top_k_and_churn_in_manifests(self, ru_ev: RankingUniverseEvaluatorV1) -> None:
+        entries = ru_entries(
+            baseline=["A", "B"],
+            candidate=["A", "C"],
+            baseline_ordering=[
+                {"instrument_id": "A", "rank": 1},
+                {"instrument_id": "B", "rank": 2},
+            ],
+            candidate_ordering=[
+                {"instrument_id": "A", "rank": 1},
+                {"instrument_id": "C", "rank": 2},
+            ],
+            top_k_context={"k": 2, "qualified": True},
+        )
+        ctx_dict = ru_context(baseline=["A", "B"], candidate=["A", "C"]).model_dump(
+            mode="json", by_alias=True
+        )
+        ctx_dict["replay_trace"] = replay_trace(entries)
+        from src.evaluation.golden_vectors.contracts.validation import (
+            parse_domain_evaluation_context_v1,
+        )
+
+        ctx = parse_domain_evaluation_context_v1(ctx_dict)
+        replay = parsed_replay(entries)
+        ru_ev.evaluate_baseline(context=ctx, replay=replay)
+        cand = ru_ev.evaluate_candidate(context=ctx, replay=replay)
+        assert cand.semantic_digest_deltas is not None
+        rum = cand.semantic_digest_deltas["ranking_universe_manifest"]
+        assert rum["top_k_context"]["k"] == 2
+        assert rum["ordering"][0]["instrument_id"] == "A"
+        rdm = cand.semantic_digest_deltas["ranking_delta_manifest"]
+        assert rdm["churn_metrics"]["membership_churn_count"] >= 1
+        assert rdm["ordering_deltas"] is not None
+
+    def test_protected_digest_collapse_raises(self, ru_ev: RankingUniverseEvaluatorV1) -> None:
+        ctx = ru_context()
+        ru_ev._baseline_ru_digest = ctx.protected_digest_baseline.selection.digest_hex
+        with pytest.raises(ValueError, match="collapse"):
+            ru_ev.protected_digests_baseline(context=ctx)
+
     def test_ru_deterministic_repeat(self, ru_ev: RankingUniverseEvaluatorV1) -> None:
         ctx = ru_context()
         replay = ctx.replay_trace
@@ -275,6 +316,27 @@ class TestRunnerIntegration:
             GvefRunRequestV1(ctx), _runner_deps(RankingUniverseEvaluatorV1())
         )
         assert record.state is RunnerState.REGISTERED
+        assert record.evidence_bundle is not None
+        assert record.evidence_bundle.ranking_universe_manifest is not None
+        assert record.evidence_bundle.ranking_delta_manifest is not None
+
+    def test_ru_authority_failure_blocks_runner(self) -> None:
+        entries = ru_entries(baseline=["A"], candidate=["A"])
+        entries[0]["selection_mutation"] = True
+        ctx_dict = ru_context().model_dump(mode="json", by_alias=True)
+        ctx_dict["replay_trace"] = replay_trace(entries)
+        from src.evaluation.golden_vectors.contracts.validation import (
+            parse_domain_evaluation_context_v1,
+        )
+
+        ctx_bad = parse_domain_evaluation_context_v1(ctx_dict)
+        record = GenericRunnerV1().execute(
+            GvefRunRequestV1(ctx_bad), _runner_deps(RankingUniverseEvaluatorV1())
+        )
+        assert record.state is RunnerState.FAILED
+        assert record.failure_classification is FailureClassification.AUTHORITY_FAILURE
+        assert record.fan_out_evaluation_class is FanOutEvaluationClass.DOWNSTREAM_IMPACT_EVALUATION
+        assert not evidence_complete(record)
 
     def test_failed_evaluator_blocks_evidence_complete(self) -> None:
         ctx = ptp_context(synthetic=True, stages=PTP_STAGE_ORDER[:3])

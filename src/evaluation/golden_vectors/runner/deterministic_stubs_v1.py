@@ -25,6 +25,8 @@ from src.evaluation.golden_vectors.contracts.models import (
     MetricResultV1,
     ProtectedDigestEntryV1,
     ProtectedSemanticDigestsV1,
+    RankingDeltaManifestV1,
+    RankingUniverseManifestV1,
     ReplayTraceV1,
     RunManifestV1,
     contract_to_canonical_mapping,
@@ -175,13 +177,24 @@ class DeterministicEvidenceBuilderV1:
     ) -> EvidenceBundleV1:
         _ = (delta, boundary_results)
         crs_nested: dict | None = None
+        ru_manifest: dict | None = None
+        ru_delta: dict | None = None
         if domain_evaluation_result and domain_evaluation_result.semantic_digest_deltas:
-            raw = domain_evaluation_result.semantic_digest_deltas.get(
-                "capital_risk_crs_sizing_evidence_bundle"
-            )
+            sem = domain_evaluation_result.semantic_digest_deltas
+            raw = sem.get("capital_risk_crs_sizing_evidence_bundle")
             if isinstance(raw, dict):
                 crs_nested = contract_to_canonical_mapping(
                     CapitalRiskCrsSizingEvidenceBundleV1.model_validate(raw)
+                )
+            raw_ru = sem.get("ranking_universe_manifest")
+            if isinstance(raw_ru, dict):
+                ru_manifest = contract_to_canonical_mapping(
+                    RankingUniverseManifestV1.model_validate(raw_ru)
+                )
+            raw_rd = sem.get("ranking_delta_manifest")
+            if isinstance(raw_rd, dict):
+                ru_delta = contract_to_canonical_mapping(
+                    RankingDeltaManifestV1.model_validate(raw_rd)
                 )
         bundle_payload = {
             "run_id": run.run_id,
@@ -220,6 +233,10 @@ class DeterministicEvidenceBuilderV1:
         }
         if crs_nested is not None:
             bundle_payload["capital_risk_crs_sizing_evidence_bundle"] = crs_nested
+        if ru_manifest is not None:
+            bundle_payload["ranking_universe_manifest"] = ru_manifest
+        if ru_delta is not None:
+            bundle_payload["ranking_delta_manifest"] = ru_delta
         bundle_payload["evidence_digest"] = "0" * 64
         bundle = EvidenceBundleV1.model_validate(bundle_payload)
         bundle_payload["evidence_digest"] = evidence_bundle_semantic_digest(bundle)
