@@ -10,6 +10,7 @@ from typing import Any, Callable
 
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
     CANONICAL_INSTRUMENT_ID,
+    DEFAULT_POLL_INTERVAL_SECONDS,
 )
 from src.ops.paper_shadow_bounded_orchestrator_v1.bounded_limits_v1 import (
     BoundedRunCountersV1,
@@ -82,7 +83,7 @@ class OperationalRunHooksV1:
     clock_mono: Callable[[], float] = field(default_factory=time.monotonic)
     clock_wall: Callable[[], float] = field(default_factory=time.time)
     sleep_fn: Callable[[float], None] = field(default_factory=lambda: time.sleep)
-    poll_interval_seconds: float = 1.0
+    poll_interval_seconds: float = DEFAULT_POLL_INTERVAL_SECONDS
     stop_flag: Callable[[], bool] = field(default_factory=lambda: lambda: False)
     kill_switch: Callable[[], bool] = field(default_factory=lambda: lambda: False)
     allow_real_network: bool = False

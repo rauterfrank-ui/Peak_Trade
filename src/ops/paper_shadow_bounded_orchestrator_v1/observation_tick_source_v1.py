@@ -11,6 +11,7 @@ from src.ops.integrated_paper_shadow_observation_session_v1.market_data_policy_v
 )
 from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
     CANONICAL_INSTRUMENT_ID,
+    DEFAULT_MAX_STALE_SECONDS,
     MARKET_TYPE_FUTURES,
     VENUE_OKX,
 )
@@ -102,7 +103,7 @@ class PublicEeaObservationTickSourceV1:
 
     transport: Any
     venue_mapping: Any | None = None
-    max_stale_seconds: float = 30.0
+    max_stale_seconds: float = DEFAULT_MAX_STALE_SECONDS
     _sequence: int = 0
     _opened: bool = False
 

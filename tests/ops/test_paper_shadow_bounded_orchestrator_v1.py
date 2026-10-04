@@ -40,8 +40,44 @@ from tests.ops._paper_shadow_bounded_orchestrator_offline_reproof_v1 import (
 
 REPO = Path(__file__).resolve().parents[2]
 CONTRACT_DIR = REPO / "evidence/research/paper_shadow_run_contract_v1/20261004T211710Z"
-FIXPOINT_SHA = "59410135ec332513ea3fbad66b2bccbe4a809a60"
-FIXPOINT_TREE = "c95e2649514362e61f3b17a146d866a97d2bd882"
+FIXPOINT_SHA = "1dd90cb053522d953aa7518541da2c0d1940ffee"
+FIXPOINT_TREE = "16b0dc9e78e0dc1f24ddcb218514e69f5c5462c4"
+
+
+def _canonical_contract_paths(tmp_path: Path) -> tuple[Path, Path]:
+    from src.ops.paper_shadow_bounded_orchestrator_v1.run_settings_manifest_v1 import (
+        build_run_settings_manifest_v1,
+    )
+
+    manifest = build_run_settings_manifest_v1(repo_root=REPO)
+    digest = str(manifest["RUN_SETTINGS_DIGEST"])
+    contract_path = tmp_path / "run_contract_v1.json"
+    contract_path.write_text(
+        json.dumps(
+            {
+                "RUN_ID": "PAPER_SHADOW_RUN_001",
+                "RUN_TYPE": "BOUNDED_PAPER_SHADOW",
+                "RUN_DURATION_SECONDS": 3600,
+                "MAX_OBSERVATION_COUNT": 2000,
+                "MAX_CYCLE_COUNT": 2000,
+                "MAX_SIMULATED_EXECUTION_COUNT": 120,
+                "MAX_SIMULATED_OPEN_POSITION_COUNT": 1,
+                "ENTER_REQUIRED_FOR_SUCCESS": False,
+                "FIXPOINT_SHA": FIXPOINT_SHA,
+                "FIXPOINT_TREE": FIXPOINT_TREE,
+                "SETTINGS_DIGEST": digest,
+                "OBSERVATION_SOURCE": "wallclock_public_md_observe_v1",
+                "EXECUTION_SINK": "SIMULATED_ONLY",
+            }
+        ),
+        encoding="utf-8",
+    )
+    digest_path = tmp_path / "run_settings_digest.json"
+    digest_path.write_text(
+        json.dumps({"RUN_ID": "PAPER_SHADOW_RUN_001", "SETTINGS_DIGEST": digest}),
+        encoding="utf-8",
+    )
+    return contract_path, digest_path
 
 
 def test_run_contract_loads_from_evidence_bundle() -> None:
@@ -59,10 +95,11 @@ def test_preflight_only_go_ready(tmp_path: Path) -> None:
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True).strip()
     if head != FIXPOINT_SHA:
         pytest.skip("fixpoint head mismatch")
+    contract_path, digest_path = _canonical_contract_paths(tmp_path)
     result = run_paper_shadow_preflight_only_v1(
-        contract_path=CONTRACT_DIR / "run_contract_v1.json",
+        contract_path=contract_path,
         repo_root=REPO,
-        settings_digest_path=CONTRACT_DIR / "run_settings_digest.json",
+        settings_digest_path=digest_path,
     )
     assert result.ok is True
     assert result.final_preflight_state == "GO_READY_AWAITING_EXPLICIT_OWNER_GO"
@@ -126,10 +163,16 @@ def test_owner_go_valid_binding() -> None:
     assert val.owner_go_consumed is False
 
 
-def test_fixpoint_self_check() -> None:
+def test_fixpoint_self_check(tmp_path: Path) -> None:
+    if (
+        subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True).strip()
+        != FIXPOINT_SHA
+    ):
+        pytest.skip("not on fixpoint")
+    contract_path, digest_path = _canonical_contract_paths(tmp_path)
     c = load_paper_shadow_run_contract_v1(
-        contract_path=CONTRACT_DIR / "run_contract_v1.json",
-        settings_digest_path=CONTRACT_DIR / "run_settings_digest.json",
+        contract_path=contract_path,
+        settings_digest_path=digest_path,
     )
     chk = evaluate_fixpoint_self_check_v1(
         repo_root=REPO,
@@ -137,11 +180,6 @@ def test_fixpoint_self_check() -> None:
         expected_tree_sha=c.fixpoint_tree,
         settings_digest=c.settings_digest,
     )
-    if (
-        subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True).strip()
-        != FIXPOINT_SHA
-    ):
-        pytest.skip("not on fixpoint")
     assert chk.ok is True
 
 
@@ -164,20 +202,21 @@ def test_state_machine_no_implicit_running() -> None:
         sm.start_running()
 
 
-def test_cli_preflight_only_exit_zero() -> None:
+def test_cli_preflight_only_exit_zero(tmp_path: Path) -> None:
     if (
         subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True).strip()
         != FIXPOINT_SHA
     ):
         pytest.skip("not on fixpoint")
+    contract_path, digest_path = _canonical_contract_paths(tmp_path)
     proc = subprocess.run(
         [
             str(REPO / "scripts/pt"),
             str(REPO / "scripts/ops/run_paper_shadow_bounded_orchestrator_v1.py"),
             "--contract",
-            str(CONTRACT_DIR / "run_contract_v1.json"),
+            str(contract_path),
             "--settings-digest",
-            str(CONTRACT_DIR / "run_settings_digest.json"),
+            str(digest_path),
             "--json",
         ],
         cwd=REPO,

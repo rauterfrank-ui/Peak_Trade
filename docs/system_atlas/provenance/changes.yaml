@@ -667,3 +667,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_paper_shadow_bounded_orchestrator_v1.py
   notes: 'Paper-Shadow bounded Run-001 orchestrator v1 — lifecycle/composition only; closes MISSING_BOUNDED_ORCHESTRATOR_AT_FIXPOINT; preflight-only default; no Owner-GO consumption; SimulatedExecutionPort-only shadow routing; ORCHESTRATOR_TRADING_AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:paper_shadow_run_settings_digest_v1
+  from: 1dd90cb053522d953aa7518541da2c0d1940ffee
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_paper_shadow_run_settings_manifest_v1.py
+  notes: 'Canonical Run-001 settings manifest/digest owner; poll/staleness aligned to wallclock constants; SETTINGS_DIGEST verification in preflight; no trading semantic change; ATLAS_AUTHORITY=NONE.'
