@@ -96,15 +96,28 @@ def _write_auth(tmp_path: Path, contract: PaperShadowRunContractV1) -> Path:
 def _contract_with_overrides(**overrides: int) -> PaperShadowRunContractV1:
     import subprocess
 
-    base = load_paper_shadow_run_contract_v1(
-        contract_path=CONTRACT_DIR / "run_contract_v1.json",
-        settings_digest_path=CONTRACT_DIR / "run_settings_digest.json",
+    from src.ops.paper_shadow_bounded_orchestrator_v1.run_settings_manifest_v1 import (
+        build_run_settings_manifest_v1,
     )
-    raw = dict(base.raw)
+
+    manifest = build_run_settings_manifest_v1(repo_root=REPO)
     head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True).strip()
     tree = subprocess.check_output(["git", "rev-parse", "HEAD^{tree}"], cwd=REPO, text=True).strip()
-    raw["FIXPOINT_SHA"] = head
-    raw["FIXPOINT_TREE"] = tree
+    raw = {
+        "RUN_ID": "PAPER_SHADOW_RUN_001",
+        "RUN_TYPE": "BOUNDED_PAPER_SHADOW",
+        "RUN_DURATION_SECONDS": 3600,
+        "MAX_OBSERVATION_COUNT": 2000,
+        "MAX_CYCLE_COUNT": 2000,
+        "MAX_SIMULATED_EXECUTION_COUNT": 120,
+        "MAX_SIMULATED_OPEN_POSITION_COUNT": 1,
+        "ENTER_REQUIRED_FOR_SUCCESS": False,
+        "FIXPOINT_SHA": head,
+        "FIXPOINT_TREE": tree,
+        "SETTINGS_DIGEST": str(manifest["RUN_SETTINGS_DIGEST"]),
+        "OBSERVATION_SOURCE": "wallclock_public_md_observe_v1",
+        "EXECUTION_SINK": "SIMULATED_ONLY",
+    }
     raw.update(overrides)
     tmp = Path("/tmp") / "paper_shadow_contract_override.json"
     tmp.write_text(json.dumps(raw), encoding="utf-8")

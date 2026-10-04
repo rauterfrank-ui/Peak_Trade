@@ -31,6 +31,9 @@ from src.ops.paper_shadow_bounded_orchestrator_v1.run_contract_v1 import (
     PaperShadowRunContractV1,
     load_paper_shadow_run_contract_v1,
 )
+from src.ops.paper_shadow_bounded_orchestrator_v1.run_settings_manifest_v1 import (
+    verify_contract_settings_digest_v1,
+)
 from src.ops.paper_shadow_bounded_orchestrator_v1.run_state_machine_v1 import (
     RunLifecycleState,
     RunStateMachineV1,
@@ -102,6 +105,13 @@ def run_paper_shadow_preflight_only_v1(
     )
     if not fixpoint.ok:
         blockers.extend(fixpoint.blockers)
+
+    digest_ok, _expected_digest, _manifest = verify_contract_settings_digest_v1(
+        repo_root=root,
+        contract=contract,
+    )
+    if not digest_ok:
+        blockers.append("SETTINGS_DIGEST_MISMATCH")
 
     shadow_state = evaluate_shadow_activation_state_v1(repo_root=root)
     safety = prove_canonical_shadow_runtime_safety_v1()

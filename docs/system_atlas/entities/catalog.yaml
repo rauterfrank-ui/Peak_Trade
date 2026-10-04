@@ -6127,10 +6127,15 @@ entities:
   source_paths:
   - src/ops/paper_shadow_bounded_orchestrator_v1/
   - scripts/ops/run_paper_shadow_bounded_orchestrator_v1.py
+  - scripts/ops/emit_paper_shadow_run_settings_manifest_v1.py
+  - docs/ops/specs/PAPER_SHADOW_BOUNDED_RUN_SETTINGS_DIGEST_V1.md
   - tests/ops/test_paper_shadow_bounded_orchestrator_v1.py
+  - tests/ops/test_paper_shadow_run_settings_manifest_v1.py
   source_symbols:
   - run_paper_shadow_preflight_only_v1
   - load_paper_shadow_run_contract_v1
+  - build_run_settings_manifest_v1
+  - compute_run_settings_digest_v1
   - validate_owner_go_authorization_v1
   - route_pre_external_to_shadow_v1
   - invoke_productive_pre_external_closure_for_orchestrator_v1
