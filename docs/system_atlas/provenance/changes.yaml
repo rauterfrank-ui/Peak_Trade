@@ -660,3 +660,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_canonical_shadow_runtime_enablement_v1.py
   notes: 'PR #7046: Shadow activatable closure V2 — observation auth mechanism, activation state model, 247 preflight READY_BUT_NOT_AUTHORIZED, kill-switch/restart/reconciliation forensics; productive GHV path unchanged; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:paper_shadow_bounded_orchestrator_v1
+  from: 59410135ec332513ea3fbad66b2bccbe4a809a60
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_paper_shadow_bounded_orchestrator_v1.py
+  notes: 'Paper-Shadow bounded Run-001 orchestrator v1 — lifecycle/composition only; closes MISSING_BOUNDED_ORCHESTRATOR_AT_FIXPOINT; preflight-only default; no Owner-GO consumption; SimulatedExecutionPort-only shadow routing; ORCHESTRATOR_TRADING_AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

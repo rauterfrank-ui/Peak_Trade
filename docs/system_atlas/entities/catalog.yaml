@@ -6117,6 +6117,28 @@ entities:
   - src/ops/canonical_shadow_runtime_enablement_v1/constants_v1.py
   - tests/ops/test_canonical_shadow_runtime_enablement_v1.py
   notes: 'PR #7046 V2 closure: Shadow ACTIVATABLE vs AUTHORIZED distinction; observation authorization mechanism (ready, not granted); bridge BOUND_READY with kill-switch; 247 preflight READY_BUT_NOT_AUTHORIZED semantics; bounded offline reconciliation/restart/forensics. SimulatedExecutionPort-only. SHADOW_AUTHORIZED=false; SHADOW_RUNNING=false; no Live/Testnet/external POST. MV2/Double Play unchanged. ATLAS_AUTHORITY=NONE.'
+- id: RUNTIME_COMPONENT:paper_shadow_bounded_orchestrator_v1
+  kind: RUNTIME_COMPONENT
+  name: Paper-Shadow bounded orchestrator v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: CHANGE:paper_shadow_bounded_orchestrator_v1
+  source_paths:
+  - src/ops/paper_shadow_bounded_orchestrator_v1/
+  - scripts/ops/run_paper_shadow_bounded_orchestrator_v1.py
+  - tests/ops/test_paper_shadow_bounded_orchestrator_v1.py
+  source_symbols:
+  - run_paper_shadow_preflight_only_v1
+  - load_paper_shadow_run_contract_v1
+  - validate_owner_go_authorization_v1
+  - route_pre_external_to_shadow_v1
+  - invoke_productive_pre_external_closure_for_orchestrator_v1
+  evidence_sources:
+  - tests/ops/test_paper_shadow_bounded_orchestrator_v1.py
+  - tests/ops/test_paper_shadow_bounded_operational_loop_v1.py
+  - evidence/research/paper_shadow_run_contract_v1/20261004T211710Z/run_contract_v1.json
+  notes: 'Bounded Run-001 lifecycle/composition orchestrator; ORCHESTRATOR_TRADING_AUTHORITY=NONE; default preflight-only CLI; authorized --attempt-run bounded operational loop; composes public MD tick source, hardened bridge productive step, pre-external shadow routing; no webui imports; no Owner-GO consumption; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
 - id: DATA_CONTRACT:ghv_regression_corpus_provenance_v1
   kind: DATA_CONTRACT
   name: GHV regression corpus provenance v1
