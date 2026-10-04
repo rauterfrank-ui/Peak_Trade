@@ -375,6 +375,8 @@
     "src/obs/metricsd.py",
     "src/ops/b05_full_core_governed_authority_chain_closure_v1/",
     "src/ops/canonical_derived_public_md_read_model_v1/",
+    "src/ops/canonical_shadow_runtime_enablement_v1/",
+    "src/ops/ghv_regression_corpus_provenance_v1.py",
     "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/",
     "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/",
     "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",

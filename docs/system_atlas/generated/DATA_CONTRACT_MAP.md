@@ -18,6 +18,7 @@
 | DATA_CONTRACT:account_equity_orchestration_ingress_v1 | DATA_CONTRACT | mixed | CURRENT_NONCANONICAL |
 | DATA_CONTRACT:bound_instrument_v1 | DATA_CONTRACT | identity | CURRENT_NONCANONICAL |
 | DATA_CONTRACT:full_core_live_path_models_v1 | DATA_CONTRACT | mixed | CURRENT_NONCANONICAL |
+| DATA_CONTRACT:ghv_regression_corpus_provenance_v1 | DATA_CONTRACT |  | CURRENT_NONCANONICAL |
 | DATA_CONTRACT:governed_universe_instrument_v1 | DATA_CONTRACT | mixed | CURRENT_NONCANONICAL |
 | DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1 | DATA_CONTRACT | mixed | CURRENT_NONCANONICAL |
 | DATA_CONTRACT:treasury_shadow_enforcement_result_v1 | DATA_CONTRACT | mixed | CURRENT_NONCANONICAL |

@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7038_ghv_pre_external_finalization_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7045_shadow_runtime_enablement_v1`.
 
 ## Workflow
 
@@ -40,7 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:ghv_e2e_productive_pre_external_tail_bind_v1` |
+| `RUNTIME_COMPONENT:canonical_shadow_runtime_enablement_v1` |
+| `DATA_CONTRACT:ghv_regression_corpus_provenance_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7038 GHV E2E pre-decision productive Closure bind (harness-only); 360 PRE_EXTERNAL reproof; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.
-- introduced_by=CHANGE:pr_7038_ghv_pre_external_finalization_v1
-- modified_by=CHANGE:pr_7038_ghv_pre_external_finalization_v1
+- PR #7045 Shadow runtime enablement v1 + GHV regression corpus provenance; SimulatedExecutionPort-only; operator GO required for bridge ACTIVATED; POST_COUNT=0.
+- introduced_by=CHANGE:pr_7045_shadow_runtime_enablement_v1
+- modified_by=CHANGE:pr_7045_shadow_runtime_enablement_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

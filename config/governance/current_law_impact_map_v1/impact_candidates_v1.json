@@ -97,6 +97,8 @@
     "src/obs/metrics_server.py",
     "src/obs/metricsd.py",
     "src/ops/canonical_derived_public_md_read_model_v1/",
+    "src/ops/canonical_shadow_runtime_enablement_v1/",
+    "src/ops/ghv_regression_corpus_provenance_v1.py",
     "src/ops/canonical_local_launcher_and_process_supervision_v1/",
     "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/",
     "src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/",

@@ -1,12 +1,13 @@
 schema_version: system_atlas.v1
-pending_change: false
-introduced_by: CHANGE:pr_7038_ghv_pre_external_finalization_v1
-modified_by: CHANGE:pr_7038_ghv_pre_external_finalization_v1
+pending_change: true
+introduced_by: CHANGE:pr_7045_shadow_runtime_enablement_v1
+modified_by: CHANGE:pr_7045_shadow_runtime_enablement_v1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'PR #7038 GHV E2E pre-decision productive Closure bind (harness-only); 360 PRE_EXTERNAL reproof; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.'
+note: 'PR #7045 Shadow runtime enablement v1 + GHV regression corpus provenance; SimulatedExecutionPort-only; operator GO required for bridge ACTIVATED; POST_COUNT=0.'
 changed_entities:
-- RUNTIME_COMPONENT:ghv_e2e_productive_pre_external_tail_bind_v1
+- RUNTIME_COMPONENT:canonical_shadow_runtime_enablement_v1
+- DATA_CONTRACT:ghv_regression_corpus_provenance_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []
@@ -15,5 +16,6 @@ changed_census: []
 changed_generated:
 - generated/ATLAS_CHANGE_IMPACT.md
 - generated/COVERAGE_REPORT.md
+- generated/DATA_CONTRACT_MAP.md
 - generated/ORPHAN_AND_WIRING_GAPS.md
 - generated/SYSTEM_ATLAS.md
