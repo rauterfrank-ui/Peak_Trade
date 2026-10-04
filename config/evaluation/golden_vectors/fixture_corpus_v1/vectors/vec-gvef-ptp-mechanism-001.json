@@ -1,0 +1,15 @@
+{
+  "vector_id": "vec-gvef-ptp-mechanism-001",
+  "vector_class": "GoldenHappy",
+  "schema_version": "1.0.0",
+  "population_selector": {
+    "selector_id": "mechanism_ptp_v1",
+    "binding_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "invariant_ids": ["ptp.pre_external_terminal"],
+  "expected_dispositions": ["OBSERVE_ONLY"],
+  "provenance": {
+    "source": "TEST_ONLY_SYNTHETIC",
+    "ref": "tests/evaluation/golden_vectors/corpus_fixtures_v1.py"
+  }
+}
