@@ -33,6 +33,7 @@ from src.evaluation.golden_vectors.runner.digest_projection import (
 )
 from src.evaluation.golden_vectors.runner.errors import GvefNonDeterminismError, GvefRunnerError
 from src.evaluation.golden_vectors.corpus.errors import GvefCorpusDriftError
+from src.evaluation.golden_vectors.digest.errors import GvefProtectedDigestDriftError
 from src.evaluation.golden_vectors.corpus.gate_v1 import PassThroughCorpusIntegrityGateV1
 from src.evaluation.golden_vectors.runner.protocols import (
     ComparatorV1,
@@ -247,6 +248,12 @@ class GenericRunnerV1:
                 record,
                 FailureClassification.NON_DETERMINISM,
                 FanOutEvaluationClass.WHOLE_SYSTEM_REPROOF,
+            )
+        except GvefProtectedDigestDriftError as exc:
+            return self._fail(
+                record,
+                FailureClassification.PROTECTED_DIGEST_DRIFT,
+                exc.reproof_class,
             )
         except (GvefRunnerError, ValueError):
             fan = (

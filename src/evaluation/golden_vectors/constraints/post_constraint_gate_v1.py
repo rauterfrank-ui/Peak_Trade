@@ -47,9 +47,16 @@ class ConstraintMatrixPostGateV1:
                 )
             ]
 
-        ru = protected_digests.ranking_universe.digest_hex
-        sel = protected_digests.selection.digest_hex
-        separation_ok = ru != sel
+        from src.evaluation.golden_vectors.digest.errors import GvefProtectedDigestDriftError
+        from src.evaluation.golden_vectors.digest.protected_semantic_digest_layer_v1 import (
+            enforce_ranking_universe_selection_separation,
+        )
+
+        try:
+            enforce_ranking_universe_selection_separation(protected_digests)
+            separation_ok = True
+        except GvefProtectedDigestDriftError:
+            separation_ok = False
         boundaries = [
             BoundaryResultV1(
                 edge_id="RANKING_UNIVERSE->SELECTION",
