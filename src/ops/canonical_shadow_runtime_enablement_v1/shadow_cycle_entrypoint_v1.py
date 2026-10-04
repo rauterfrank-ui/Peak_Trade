@@ -54,6 +54,8 @@ def run_canonical_shadow_runtime_offline_cycle_v1(
     portfolio: Any,
     operator_go_token: str | None = None,
     observation_authorization_present: bool = False,
+    operator_observation_go_token: str | None = None,
+    kill_switch_engaged: bool = False,
     state_root: Path | None = None,
 ) -> CanonicalShadowRuntimeCycleResultV1:
     """Run one Shadow lane cycle after PRE_EXTERNAL (offline simulated execution only)."""
@@ -75,6 +77,8 @@ def run_canonical_shadow_runtime_offline_cycle_v1(
     bridge = evaluate_shadow_runtime_bridge_v1(
         operator_go_token=operator_go_token,
         observation_authorization_present=observation_authorization_present,
+        operator_observation_go_token=operator_observation_go_token,
+        kill_switch_engaged=kill_switch_engaged,
     )
     if not bridge.bridge_activated:
         return CanonicalShadowRuntimeCycleResultV1(

@@ -1,14 +1,12 @@
 schema_version: system_atlas.v1
 pending_change: true
 introduced_by: CHANGE:pr_7045_shadow_runtime_enablement_v1
-modified_by: CHANGE:pr_7045_shadow_runtime_enablement_v1
+modified_by: CHANGE:pr_7046_ghv_guided_shadow_runtime_closure_v2
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'PR #7045 Shadow runtime enablement v1 + GHV regression corpus provenance; SimulatedExecutionPort-only; operator GO required for bridge ACTIVATED; POST_COUNT=0.'
+note: 'PR #7046 Shadow activatable closure V2; observation mechanism ready/unauthorized; bridge BOUND_READY; no Shadow authorization or external POST; productive trading semantics unchanged.'
 changed_entities:
-- RUNTIME_COMPONENT:governance_policy_critic_v1
 - RUNTIME_COMPONENT:canonical_shadow_runtime_enablement_v1
-- DATA_CONTRACT:ghv_regression_corpus_provenance_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []

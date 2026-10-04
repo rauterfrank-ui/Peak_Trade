@@ -14,8 +14,15 @@ from src.ops.canonical_shadow_runtime_enablement_v1.constants_v1 import (
     LIVE_PRE_EXTERNAL_TERMINAL,
     POST_ALLOWED,
     SHADOW_ACTIVATION_OPERATOR_GO,
+    SHADOW_OBSERVATION_OPERATOR_GO,
     SHADOW_PRE_EXTERNAL_CONTINUATION,
     TESTNET_AUTHORIZED,
+)
+from src.ops.canonical_shadow_runtime_enablement_v1.observation_authorization_v1 import (
+    evaluate_observation_authorization_v1,
+)
+from src.ops.canonical_shadow_runtime_enablement_v1.shadow_activation_state_v1 import (
+    evaluate_shadow_activation_state_v1,
 )
 from src.ops.canonical_shadow_runtime_enablement_v1.pre_external_lane_isolation_v1 import (
     PreExternalLaneIsolationError,
@@ -98,10 +105,24 @@ def test_bridge_fail_closed_without_operator_go() -> None:
 def test_bridge_activated_only_with_go_and_observation_auth() -> None:
     bridge = evaluate_shadow_runtime_bridge_v1(
         operator_go_token=SHADOW_ACTIVATION_OPERATOR_GO,
-        observation_authorization_present=True,
+        operator_observation_go_token=SHADOW_OBSERVATION_OPERATOR_GO,
     )
     assert bridge.bridge_activated is True
     assert bridge.blockers == ()
+
+
+def test_observation_mechanism_ready_not_authorized_by_default() -> None:
+    obs = evaluate_observation_authorization_v1()
+    assert obs.observation_authorization_mechanism_ready is True
+    assert obs.observation_authorized is False
+
+
+def test_shadow_activatable_without_operator_go() -> None:
+    state = evaluate_shadow_activation_state_v1()
+    assert state.shadow_implemented is True
+    assert state.shadow_activatable is True
+    assert state.shadow_authorized is False
+    assert state.shadow_running is False
 
 
 def test_shadow_sink_zero_external_counts() -> None:
@@ -164,7 +185,7 @@ def test_offline_cycle_succeeds_when_bridge_activated() -> None:
         session=session,
         portfolio=portfolio,
         operator_go_token=SHADOW_ACTIVATION_OPERATOR_GO,
-        observation_authorization_present=True,
+        operator_observation_go_token=SHADOW_OBSERVATION_OPERATOR_GO,
     )
     assert result.ok is True
     assert result.execution_evidence is not None
