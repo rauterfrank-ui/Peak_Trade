@@ -83,8 +83,8 @@ class OperationalRunHooksV1:
     clock_wall: Callable[[], float] = field(default_factory=time.time)
     sleep_fn: Callable[[float], None] = field(default_factory=lambda: time.sleep)
     poll_interval_seconds: float = 1.0
-    stop_flag: Callable[[], bool] = field(default_factory=lambda: (lambda: False))
-    kill_switch: Callable[[], bool] = field(default_factory=lambda: (lambda: False))
+    stop_flag: Callable[[], bool] = field(default_factory=lambda: lambda: False)
+    kill_switch: Callable[[], bool] = field(default_factory=lambda: lambda: False)
     allow_real_network: bool = False
 
 
