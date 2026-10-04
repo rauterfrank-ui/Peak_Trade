@@ -59,6 +59,7 @@ _NESTED_BRIDGE: dict[tuple[str, str], str] = {
     ("EvidenceBundle", "protected_semantic_digests"): "ProtectedSemanticDigests",
 }
 
+
 def _json_field_name(attr: str, finfo: pydantic.fields.FieldInfo) -> str:
     if finfo.alias:
         return finfo.alias
