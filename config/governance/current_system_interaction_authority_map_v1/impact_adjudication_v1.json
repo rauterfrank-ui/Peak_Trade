@@ -14,6 +14,7 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
+    "src/governance/policy_critic/rules.py",
     "src/ops/canonical_shadow_runtime_enablement_v1/__init__.py",
     "src/ops/canonical_shadow_runtime_enablement_v1/constants_v1.py",
     "src/ops/canonical_shadow_runtime_enablement_v1/pre_external_lane_isolation_v1.py",
@@ -23,10 +24,11 @@
     "src/ops/canonical_shadow_runtime_enablement_v1/shadow_execution_sink_v1.py",
     "src/ops/canonical_shadow_runtime_enablement_v1/shadow_runtime_bridge_v1.py",
     "src/ops/ghv_regression_corpus_provenance_v1.py",
+    "tests/governance/policy_critic/test_rules.py",
     "tests/ops/test_canonical_shadow_runtime_enablement_v1.py",
     "tests/ops/test_ghv_regression_corpus_provenance_v1.py"
   ],
-  "changed_paths_sha256": "d96639b7ffbdbe2fb9df908e65304aed6f9e3e4e22cd1e41cbf915eb5fe58cca",
+  "changed_paths_sha256": "f866e1c63d5e13b1f929d62fab3875042fd2d3eb6bc78c599fca585b417149e6",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -38,6 +40,7 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
+    "src/governance/policy_critic/rules.py",
     "src/ops/canonical_shadow_runtime_enablement_v1/__init__.py",
     "src/ops/canonical_shadow_runtime_enablement_v1/constants_v1.py",
     "src/ops/canonical_shadow_runtime_enablement_v1/pre_external_lane_isolation_v1.py",
@@ -47,14 +50,16 @@
     "src/ops/canonical_shadow_runtime_enablement_v1/shadow_execution_sink_v1.py",
     "src/ops/canonical_shadow_runtime_enablement_v1/shadow_runtime_bridge_v1.py",
     "src/ops/ghv_regression_corpus_provenance_v1.py",
+    "tests/governance/policy_critic/test_rules.py",
     "tests/ops/test_canonical_shadow_runtime_enablement_v1.py",
     "tests/ops/test_ghv_regression_corpus_provenance_v1.py"
   ],
   "evidence_refs": [
     "src/ops/canonical_shadow_runtime_enablement_v1/proof_v1.py",
-    "tests/ops/test_canonical_shadow_runtime_enablement_v1.py"
+    "tests/ops/test_canonical_shadow_runtime_enablement_v1.py",
+    "tests/governance/policy_critic/test_rules.py"
   ],
-  "reason": "Shadow runtime enablement v1: SimulatedExecutionPort-only lane after PRE_EXTERNAL; Atlas catalog + generated views; map candidate surfaces; no CSIA source_v1 semantic change.",
+  "reason": "Shadow runtime enablement v1 plus Policy Critic NO_SECRETS false-positive guard for operator_go_token kwargs; Atlas and map candidate surfaces; no CSIA source_v1 semantic change.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
