@@ -9,9 +9,11 @@ from src.evaluation.golden_vectors.contracts.enums import (
     EvaluationDomain,
     FailureClassification,
     FanOutEvaluationClass,
+    PassRejectVerdict,
 )
 from src.evaluation.golden_vectors.contracts.models import (
     BoundaryResultV1,
+    CapitalRiskCrsSizingEvidenceBundleV1,
     DomainEvaluationContextV1,
     DomainEvaluationResultV1,
     InvariantResultV1,
@@ -19,6 +21,7 @@ from src.evaluation.golden_vectors.contracts.models import (
     ProtectedSemanticDigestsV1,
     ReplayTraceV1,
     contract_digest_hex,
+    contract_to_canonical_mapping,
 )
 from src.evaluation.golden_vectors.contracts.serialization import sha256_hex
 from src.evaluation.golden_vectors.evaluators._fanout_v1 import bwp3_failure_fan_out
@@ -130,6 +133,15 @@ class ProductiveTradingPathEvaluatorV1:
             )
             for i in range(len(PTP_STAGE_ORDER) - 1)
         ]
+        crs_bundle = self._crs_nested_bundle(replay, run_id=run_id)
+        semantic: dict[str, Any] = {
+            "ptp_stage_trace": trace_payload,
+            "evidence_source_class": self._evidence_class(replay),
+        }
+        if crs_bundle is not None:
+            semantic["capital_risk_crs_sizing_evidence_bundle"] = contract_to_canonical_mapping(
+                crs_bundle
+            )
         return pass_result(
             domain=EvaluationDomain.PRODUCTIVE_TRADING_PATH,
             metrics=metrics,
@@ -141,10 +153,7 @@ class ProductiveTradingPathEvaluatorV1:
             ],
             boundary_results=boundaries,
             evidence_refs=[f"evidence/ptp/{label}/{run_id}"],
-            semantic_digest_deltas={
-                "ptp_stage_trace": trace_payload,
-                "evidence_source_class": self._evidence_class(replay),
-            },
+            semantic_digest_deltas=semantic,
         )
 
     def _parse_stages(
@@ -207,6 +216,43 @@ class ProductiveTradingPathEvaluatorV1:
         if self._is_synthetic(replay):
             return "MECHANISM_TEST_EVIDENCE"
         return "SEALED_GHV_REPLAY_EVIDENCE"
+
+    def _crs_nested_bundle(
+        self, replay: ReplayTraceV1, *, run_id: str
+    ) -> CapitalRiskCrsSizingEvidenceBundleV1 | None:
+        crs_entry: dict[str, Any] | None = None
+        for entry in replay.entries:
+            if entry.get("kind") != "ptp_stage":
+                continue
+            if entry.get("stage") != "CAPITAL_RISK_CRS_SIZING":
+                continue
+            if entry.get("run_id") not in (None, run_id):
+                return None
+            crs_entry = entry
+            break
+        if crs_entry is None:
+            return None
+        observe_payload = {
+            "run_id": run_id,
+            "stage": "CAPITAL_RISK_CRS_SIZING",
+            "owner": crs_entry.get("owner"),
+            "gvef_authority": False,
+        }
+        crs_digest = crs_entry.get("crs_state_digest")
+        if not isinstance(crs_digest, str):
+            crs_digest = sha256_hex(observe_payload)
+        sizing = crs_entry.get("sizing_verdict")
+        admission = crs_entry.get("admission_verdict")
+        return CapitalRiskCrsSizingEvidenceBundleV1(
+            crs_state_digest=crs_digest,
+            sizing_verdict=PassRejectVerdict(sizing) if isinstance(sizing, str) else None,
+            admission_verdict=PassRejectVerdict(admission) if isinstance(admission, str) else None,
+            capital_context_provenance={"source": "ptp_replay_observe", "ref": run_id},
+            risk_context_provenance={"source": "ptp_replay_observe", "ref": run_id},
+            exposure_invariants=[
+                InvariantResultV1(invariant_id="ptp.crs.observe_only", pass_=True),
+            ],
+        )
 
 
 def ptp_protected_output_digest(result: DomainEvaluationResultV1) -> str:

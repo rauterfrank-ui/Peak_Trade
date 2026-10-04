@@ -15,6 +15,7 @@ from src.evaluation.golden_vectors.contracts.enums import (
 from src.evaluation.golden_vectors.evaluators._fanout_v1 import bwp456_failure_fan_out
 from src.evaluation.golden_vectors.contracts.models import (
     BoundaryResultV1,
+    CapitalRiskCrsSizingEvidenceBundleV1,
     DecisionDeltaManifestV1,
     DecisionDeltaV1,
     DomainEvaluationContextV1,
@@ -170,8 +171,18 @@ class DeterministicEvidenceBuilderV1:
         protected_digests: ProtectedSemanticDigestsV1,
         boundary_results: list[BoundaryResultV1],
         post_gate_pass: bool,
+        domain_evaluation_result: DomainEvaluationResultV1 | None = None,
     ) -> EvidenceBundleV1:
         _ = (delta, boundary_results)
+        crs_nested: dict | None = None
+        if domain_evaluation_result and domain_evaluation_result.semantic_digest_deltas:
+            raw = domain_evaluation_result.semantic_digest_deltas.get(
+                "capital_risk_crs_sizing_evidence_bundle"
+            )
+            if isinstance(raw, dict):
+                crs_nested = contract_to_canonical_mapping(
+                    CapitalRiskCrsSizingEvidenceBundleV1.model_validate(raw)
+                )
         bundle_payload = {
             "run_id": run.run_id,
             "experiment_id": run.experiment_id,
@@ -207,6 +218,8 @@ class DeterministicEvidenceBuilderV1:
             "promotion_status": ExternalPromotionStatus.EXTERNAL_UNSET.value,
             "post_constraint_gate_pass": post_gate_pass,
         }
+        if crs_nested is not None:
+            bundle_payload["capital_risk_crs_sizing_evidence_bundle"] = crs_nested
         bundle_payload["evidence_digest"] = "0" * 64
         bundle = EvidenceBundleV1.model_validate(bundle_payload)
         bundle_payload["evidence_digest"] = evidence_bundle_semantic_digest(bundle)
