@@ -100,7 +100,9 @@ def tmp_path_authorization(c, digest: str) -> Path:
                     "MAX_CYCLE_COUNT": c.max_cycle_count,
                     "MAX_SIMULATED_EXECUTION_COUNT": c.max_simulated_execution_count,
                     "EXECUTION_SINK": c.execution_sink,
-                }
+                },
+                "OBSERVATION_TOKEN": SHADOW_OBSERVATION_OPERATOR_GO,
+                "ACTIVATION_TOKEN": SHADOW_ACTIVATION_OPERATOR_GO,
             }
         ),
         encoding="utf-8",

@@ -71,27 +71,54 @@ def main(argv: list[str] | None = None) -> int:
     if not args.attempt_run:
         args.preflight_only = True
     if args.attempt_run:
+        from src.ops.paper_shadow_bounded_orchestrator_v1.operational_run_v1 import (
+            run_paper_shadow_bounded_operational_run_v1,
+        )
+
         contract = load_paper_shadow_run_contract_v1(
             contract_path=args.contract,
             settings_digest_path=args.settings_digest,
         )
+        if args.authorization is None:
+            payload = {
+                "ok": False,
+                "blockers": ["AUTHORIZATION_PATH_REQUIRED"],
+                "RUN_STARTED": False,
+                "OWNER_GO_CONSUMED": False,
+            }
+            if args.json:
+                print(json.dumps(payload, sort_keys=True, indent=2))
+            else:
+                print(payload)
+            return 1
         go = validate_owner_go_authorization_v1(
             contract=contract,
             authorization_path=args.authorization,
         )
-        payload = {
-            "ok": False,
-            "blockers": ["OPERATIONAL_RUN_NOT_IMPLEMENTED_IN_THIS_WP"]
-            if go.ok
-            else list(go.blockers),
-            "RUN_STARTED": False,
-            "OWNER_GO_CONSUMED": False,
-        }
+        if not go.ok:
+            payload = {
+                "ok": False,
+                "blockers": list(go.blockers),
+                "RUN_STARTED": False,
+                "OWNER_GO_CONSUMED": False,
+            }
+            if args.json:
+                print(json.dumps(payload, sort_keys=True, indent=2))
+            else:
+                print(payload)
+            return 1
+        result = run_paper_shadow_bounded_operational_run_v1(
+            contract=contract,
+            repo_root=_REPO,
+            authorization_path=args.authorization,
+            go_validation=go,
+        )
+        payload = result.to_dict()
         if args.json:
             print(json.dumps(payload, sort_keys=True, indent=2))
         else:
             print(payload)
-        return 1
+        return 0 if result.ok else 1
 
     result = run_paper_shadow_preflight_only_v1(
         contract_path=args.contract,

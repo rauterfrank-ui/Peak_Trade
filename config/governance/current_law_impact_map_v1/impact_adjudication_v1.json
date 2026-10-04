@@ -17,16 +17,21 @@
     "src/ops/paper_shadow_bounded_orchestrator_v1/constants_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/fixpoint_self_check_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/observation_step_v1.py",
+    "src/ops/paper_shadow_bounded_orchestrator_v1/observation_tick_source_v1.py",
+    "src/ops/paper_shadow_bounded_orchestrator_v1/operational_run_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/orchestrator_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/owner_go_validator_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/productive_composition_v1.py",
+    "src/ops/paper_shadow_bounded_orchestrator_v1/productive_cycle_step_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/run_contract_v1.py",
+    "src/ops/paper_shadow_bounded_orchestrator_v1/run_evidence_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/run_state_machine_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/shadow_routing_v1.py",
     "tests/ops/_paper_shadow_bounded_orchestrator_offline_reproof_v1.py",
+    "tests/ops/test_paper_shadow_bounded_operational_loop_v1.py",
     "tests/ops/test_paper_shadow_bounded_orchestrator_v1.py"
   ],
-  "changed_paths_sha256": "5cbcad04a16365f3d4e701e6daa61676fb2d99e72d5dd5afad48ea8bcfd2ec3a",
+  "changed_paths_sha256": "2fd159957669ca0bb966c25e6e3602703f81fc97a66e403571ff834099f88a8d",
   "covered_candidate_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
@@ -39,19 +44,24 @@
     "src/ops/paper_shadow_bounded_orchestrator_v1/constants_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/fixpoint_self_check_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/observation_step_v1.py",
+    "src/ops/paper_shadow_bounded_orchestrator_v1/observation_tick_source_v1.py",
+    "src/ops/paper_shadow_bounded_orchestrator_v1/operational_run_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/orchestrator_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/owner_go_validator_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/productive_composition_v1.py",
+    "src/ops/paper_shadow_bounded_orchestrator_v1/productive_cycle_step_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/run_contract_v1.py",
+    "src/ops/paper_shadow_bounded_orchestrator_v1/run_evidence_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/run_state_machine_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/shadow_routing_v1.py",
     "tests/ops/_paper_shadow_bounded_orchestrator_offline_reproof_v1.py",
+    "tests/ops/test_paper_shadow_bounded_operational_loop_v1.py",
     "tests/ops/test_paper_shadow_bounded_orchestrator_v1.py"
   ],
   "evidence_refs": [
     "tests/ops/test_paper_shadow_bounded_orchestrator_v1.py"
   ],
-  "reason": "Paper-Shadow bounded orchestrator v1: composition-only lifecycle; no law surface semantic change.",
+  "reason": "Paper-Shadow bounded orchestrator v1: composition-only lifecycle; no law surface semantic change. Operational bounded loop modules added (composition-only).",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT"
 }

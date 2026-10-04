@@ -6136,8 +6136,9 @@ entities:
   - invoke_productive_pre_external_closure_for_orchestrator_v1
   evidence_sources:
   - tests/ops/test_paper_shadow_bounded_orchestrator_v1.py
+  - tests/ops/test_paper_shadow_bounded_operational_loop_v1.py
   - evidence/research/paper_shadow_run_contract_v1/20261004T211710Z/run_contract_v1.json
-  notes: 'Bounded Run-001 lifecycle/composition orchestrator; ORCHESTRATOR_TRADING_AUTHORITY=NONE; default preflight-only CLI; composes wallclock observation step, productive pre-external closure bind, canonical shadow routing; no webui imports; no Owner-GO consumption in WP; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+  notes: 'Bounded Run-001 lifecycle/composition orchestrator; ORCHESTRATOR_TRADING_AUTHORITY=NONE; default preflight-only CLI; authorized --attempt-run bounded operational loop; composes public MD tick source, hardened bridge productive step, pre-external shadow routing; no webui imports; no Owner-GO consumption; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
 - id: DATA_CONTRACT:ghv_regression_corpus_provenance_v1
   kind: DATA_CONTRACT
   name: GHV regression corpus provenance v1
