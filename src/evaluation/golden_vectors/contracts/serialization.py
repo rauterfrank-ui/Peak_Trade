@@ -13,6 +13,10 @@ _SHA256_HEX_RE = re.compile(r"^[a-f0-9]{64}$")
 _GIT_SHA_RE = re.compile(r"^[a-f0-9]{40}$")
 _SEMVER_RE = re.compile(r"^\d+\.\d+\.\d+$")
 _ISO8601_Z_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z$")
+_UUID_V4_RE = re.compile(
+    r"^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+    re.IGNORECASE,
+)
 
 
 def canonical_json_bytes(payload: Mapping[str, Any]) -> bytes:
@@ -52,3 +56,9 @@ def require_iso8601_utc_z(value: str, *, field: str) -> str:
     if not isinstance(value, str) or not _ISO8601_Z_RE.fullmatch(value):
         raise GvefSchemaError(f"{field} must be ISO8601 UTC with Z suffix", field=field)
     return value
+
+
+def require_uuid_v4(value: str, *, field: str) -> str:
+    if not isinstance(value, str) or not _UUID_V4_RE.fullmatch(value):
+        raise GvefSchemaError(f"{field} must be UUID v4", field=field)
+    return value.lower()

@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import uuid
-
 from src.evaluation.golden_vectors.corpus.gate_v1 import (
     PassThroughCorpusIntegrityGateV1,
     VectorCorpusIntegrityGateV1,
@@ -73,7 +71,8 @@ def whole_system_success_request(*, unique_run: bool = False) -> GvefRunRequestV
     ctx_dict = ctx.model_dump(mode="json", by_alias=True)
     run_id = ctx_dict["run_manifest"]["run_id"]
     if unique_run:
-        run_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, "gvef-bwp9-whole-system-success"))
+        # Deterministic UUID v4 (BWP-1 run_id contract) for replay/determinism tests.
+        run_id = "a1b2c3d4-e5f6-4789-a012-3456789abcde"
         ctx_dict["run_manifest"]["run_id"] = run_id
     ctx_dict["replay_trace"] = replay_trace(ptp_stage_entries(run_id=run_id, synthetic=True))
     from src.evaluation.golden_vectors.contracts.validation import (

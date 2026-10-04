@@ -1,24 +1,22 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "1328be7f17d4ed740c7777254b32b305ad0a5708",
+  "base_sha": "cf90cc301a784ce549711f9033d92713ffe68b00",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "src/evaluation/golden_vectors/constraints/post_constraint_gate_v1.py",
-    "src/evaluation/golden_vectors/digest/__init__.py",
-    "src/evaluation/golden_vectors/digest/comparator_v1.py",
-    "src/evaluation/golden_vectors/digest/errors.py",
-    "src/evaluation/golden_vectors/digest/protected_semantic_digest_layer_v1.py",
-    "src/evaluation/golden_vectors/runner/digest_projection.py",
-    "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
-    "tests/evaluation/golden_vectors/test_gvef_protected_semantic_digest_bwp0d_v1.py"
+    "src/evaluation/golden_vectors/contracts/__init__.py",
+    "src/evaluation/golden_vectors/contracts/errors.py",
+    "src/evaluation/golden_vectors/contracts/models.py",
+    "src/evaluation/golden_vectors/contracts/serialization.py",
+    "tests/evaluation/golden_vectors/test_gvef_bwp1_blueprint_contract_reconciliation_v1.py",
+    "tests/evaluation/golden_vectors/whole_system_fixtures_v1.py"
   ],
-  "changed_paths_sha256": "34e463f7a91a0f4fc96a823dc565e1cfc1581750e95a61fd13b8d0f40874674c",
+  "changed_paths_sha256": "df3a2d1ae2de594fdfe6ccf020fc5fe317d627d41b9dd9bc460eac6386a49ab8",
   "evidence_refs": [
-    "src/evaluation/golden_vectors/digest/protected_semantic_digest_layer_v1.py",
-    "tests/evaluation/golden_vectors/test_gvef_protected_semantic_digest_bwp0d_v1.py"
+    "src/evaluation/golden_vectors/contracts/models.py",
+    "tests/evaluation/golden_vectors/test_gvef_bwp1_blueprint_contract_reconciliation_v1.py"
   ],
-  "reason": "GVEF BWP-0D protected semantic digest layer; evaluation-only; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "GVEF BWP-1 contract schema foundation; evaluation-only; AUTHORITY=NONE; no canonical law source change; POST_COUNT=0.",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT"
 }
