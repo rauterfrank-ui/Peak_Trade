@@ -96,6 +96,10 @@ class TestPtpContract:
         assert result.verdict is DomainVerdict.PASS
         assert result.domain is EvaluationDomain.PRODUCTIVE_TRADING_PATH
         assert result.semantic_digest_deltas["evidence_source_class"] == "MECHANISM_TEST_EVIDENCE"
+        assert "capital_risk_crs_sizing_evidence_bundle" in (result.semantic_digest_deltas or {})
+        assert result.semantic_digest_deltas["capital_risk_crs_sizing_evidence_bundle"][
+            "crs_state_digest"
+        ]
 
     def test_stage_order_edges(self, ptp_ev: ProductiveTradingPathEvaluatorV1) -> None:
         ctx = ptp_context(synthetic=True)
@@ -258,6 +262,12 @@ class TestRunnerIntegration:
         )
         assert record.state is RunnerState.REGISTERED
         assert evidence_complete(record)
+        assert record.evidence_bundle is not None
+        assert record.evidence_bundle.capital_risk_crs_sizing_evidence_bundle is not None
+        assert (
+            record.evidence_bundle.capital_risk_crs_sizing_evidence_bundle.crs_state_digest
+            is not None
+        )
 
     def test_ru_through_runner(self) -> None:
         ctx = ru_context()
@@ -274,6 +284,7 @@ class TestRunnerIntegration:
         assert record.state is RunnerState.FAILED
         assert not evidence_complete(record)
         assert record.fan_out_evaluation_class is FanOutEvaluationClass.DOWNSTREAM_IMPACT_EVALUATION
+        assert record.evidence_bundle is None
 
     def test_ptp_determinism_25x(self) -> None:
         runner = GenericRunnerV1()

@@ -218,6 +218,7 @@ class GenericRunnerV1:
                 protected_digests=merged_d,
                 boundary_results=pre_boundaries + post_boundaries,
                 post_gate_pass=True,
+                domain_evaluation_result=record.candidate_result,
             )
             record.evidence_bundle = bundle
             self._advance(record, RunnerState.EVIDENCE_BUILT)

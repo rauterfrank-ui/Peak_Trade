@@ -108,6 +108,7 @@ class EvidenceBundleBuilderV1(Protocol):
         protected_digests: ProtectedSemanticDigestsV1,
         boundary_results: list[BoundaryResultV1],
         post_gate_pass: bool,
+        domain_evaluation_result: DomainEvaluationResultV1 | None = None,
     ) -> EvidenceBundleV1: ...
 
 
