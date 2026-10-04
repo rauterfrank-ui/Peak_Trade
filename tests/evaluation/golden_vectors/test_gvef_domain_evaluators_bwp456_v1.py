@@ -150,12 +150,12 @@ class TestBwp4Optimization:
 
 
 class TestBwp5SelfLearning:
-    def test_mapping_and_contract(self) -> None:
+    def test_sl_mapping_and_contract(self) -> None:
         assert SL_BWP_ID == "BWP-5"
         assert SL_FAILURE is FailureClassification.AUTHORITY_FAILURE
         assert SL_REPROOF is FanOutEvaluationClass.LOCAL_EVALUATION
 
-    def test_valid_pass(self) -> None:
+    def test_sl_valid_pass(self) -> None:
         ev = SelfLearningEvaluatorV1()
         ctx = sl_context()
         replay = ctx.replay_trace
@@ -201,7 +201,7 @@ class TestBwp5SelfLearning:
         assert record.failure_classification is FailureClassification.AUTHORITY_FAILURE
         assert record.fan_out_evaluation_class is FanOutEvaluationClass.LOCAL_EVALUATION
 
-    def test_determinism_25x(self) -> None:
+    def test_sl_determinism_25x(self) -> None:
         runner = GenericRunnerV1()
         ctx = sl_context()
         digests: set[str] = set()
@@ -212,12 +212,12 @@ class TestBwp5SelfLearning:
 
 
 class TestBwp6MarketIntelligence:
-    def test_mapping_and_contract(self) -> None:
+    def test_mi_mapping_and_contract(self) -> None:
         assert MI_BWP_ID == "BWP-6"
         assert MI_FAILURE is FailureClassification.INVARIANT_FAILURE
         assert MI_REPROOF is FanOutEvaluationClass.LOCAL_EVALUATION
 
-    def test_valid_pass(self) -> None:
+    def test_mi_valid_pass(self) -> None:
         ev = MarketIntelligenceEvaluatorV1()
         ctx = mi_context()
         replay = ctx.replay_trace
@@ -255,7 +255,7 @@ class TestBwp6MarketIntelligence:
         result = ev.evaluate_baseline(context=ctx, replay=ctx.replay_trace)
         assert result.failure_classification is FailureClassification.INVARIANT_FAILURE
 
-    def test_determinism_25x(self) -> None:
+    def test_mi_determinism_25x(self) -> None:
         runner = GenericRunnerV1()
         ctx = mi_context()
         digests: set[str] = set()

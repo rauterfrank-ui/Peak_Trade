@@ -177,7 +177,7 @@ class TestPtpContract:
 
 
 class TestRuContract:
-    def test_evaluator_identity(self, ru_ev: RankingUniverseEvaluatorV1) -> None:
+    def test_ru_evaluator_identity(self, ru_ev: RankingUniverseEvaluatorV1) -> None:
         assert ru_ev.evaluator_id == RANKING_UNIVERSE_EVALUATOR_ID
         assert RU_BWP_ID == "BWP-3-RU"
         assert RU_FAILURE is FailureClassification.AUTHORITY_FAILURE
@@ -239,7 +239,7 @@ class TestRuContract:
     def test_cap23_owner_reference(self) -> None:
         assert "CAPABILITY_2_3" in CAP2_3_SELECTION_OWNER
 
-    def test_deterministic_repeat(self, ru_ev: RankingUniverseEvaluatorV1) -> None:
+    def test_ru_deterministic_repeat(self, ru_ev: RankingUniverseEvaluatorV1) -> None:
         ctx = ru_context()
         replay = ctx.replay_trace
         ru_ev.evaluate_baseline(context=ctx, replay=replay)
