@@ -11,6 +11,12 @@ from src.ops.canonical_shadow_runtime_enablement_v1.constants_v1 import (
     RUNTIME_BRIDGE_STATE_BOUND_READY,
     SHADOW_ACTIVATION_OPERATOR_GO,
 )
+from src.ops.canonical_shadow_runtime_enablement_v1.observation_authorization_v1 import (
+    resolve_observation_authorization_present_v1,
+)
+from src.ops.canonical_shadow_runtime_enablement_v1.shadow_kill_switch_v1 import (
+    evaluate_shadow_kill_switch_v1,
+)
 
 
 class ShadowRuntimeBridgeError(ValueError):
@@ -41,11 +47,27 @@ def evaluate_shadow_runtime_bridge_v1(
     *,
     operator_go_token: str | None,
     observation_authorization_present: bool = False,
+    operator_observation_go_token: str | None = None,
+    kill_switch_engaged: bool = False,
 ) -> ShadowRuntimeBridgeEvaluationV1:
     """Classify bridge state. ACTIVATED only when exact operator GO consumed."""
+    kill = evaluate_shadow_kill_switch_v1(kill_switch_engaged=kill_switch_engaged)
+    if not kill.shadow_continuation_permitted:
+        return ShadowRuntimeBridgeEvaluationV1(
+            runtime_bridge_state=RUNTIME_BRIDGE_STATE_BOUND_NOT_ACTIVATED,
+            operator_go_consumed=False,
+            observation_authorization_present=False,
+            bridge_ready=True,
+            bridge_activated=False,
+            blockers=("SHADOW_KILL_SWITCH_ENGAGED",),
+        )
+    obs_present = resolve_observation_authorization_present_v1(
+        observation_authorization_present=observation_authorization_present,
+        operator_observation_go_token=operator_observation_go_token,
+    )
     go_ok = str(operator_go_token or "").strip() == SHADOW_ACTIVATION_OPERATOR_GO
     blockers: list[str] = []
-    if not observation_authorization_present:
+    if not obs_present:
         blockers.append("PAPER_SHADOW_OBSERVATION_NOT_AUTHORIZED")
     if not go_ok:
         blockers.append("NO_ACTIVATION_AUTHORIZED")
@@ -53,12 +75,12 @@ def evaluate_shadow_runtime_bridge_v1(
         return ShadowRuntimeBridgeEvaluationV1(
             runtime_bridge_state=state,
             operator_go_consumed=False,
-            observation_authorization_present=observation_authorization_present,
+            observation_authorization_present=obs_present,
             bridge_ready=True,
             bridge_activated=False,
             blockers=tuple(blockers),
         )
-    if not observation_authorization_present:
+    if not obs_present:
         state = RUNTIME_BRIDGE_STATE_BOUND_NOT_ACTIVATED
         return ShadowRuntimeBridgeEvaluationV1(
             runtime_bridge_state=state,
