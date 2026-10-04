@@ -1,21 +1,20 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "c52f3df5ba50a552a8477cb79c7d0be454cb672e",
+  "base_sha": "5d6663f5bb86a64c3b41dacab85c8218fa29a369",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "src/evaluation/golden_vectors/evaluators/productive_trading_path_v1.py",
+    "src/evaluation/golden_vectors/evaluators/ranking_universe_v1.py",
     "src/evaluation/golden_vectors/runner/deterministic_stubs_v1.py",
-    "src/evaluation/golden_vectors/runner/generic_runner_v1.py",
-    "src/evaluation/golden_vectors/runner/protocols.py",
+    "tests/evaluation/golden_vectors/evaluator_fixtures_v1.py",
     "tests/evaluation/golden_vectors/test_gvef_domain_evaluators_bwp3_v1.py"
   ],
-  "changed_paths_sha256": "1373108a6b557ba49665c1e438c5dab683487f1ddc1b1da2943552993393efb5",
+  "changed_paths_sha256": "79f88b5e3a628f05251cef91295a0ee4d60d23bd6f1f679c38daf99aca7d18cd",
   "evidence_refs": [
-    "src/evaluation/golden_vectors/evaluators/productive_trading_path_v1.py",
+    "src/evaluation/golden_vectors/evaluators/ranking_universe_v1.py",
     "tests/evaluation/golden_vectors/test_gvef_domain_evaluators_bwp3_v1.py"
   ],
-  "reason": "GVEF BWP-3 PTP evaluator CRS nested evidence wiring; evaluation-only replay/observe; AUTHORITY=NONE; no canonical law source change; POST_COUNT=0.",
+  "reason": "GVEF BWP-3-RU Ranking Universe observe-only wiring; AUTHORITY=NONE; Cap2.3 Selection sole owner preserved; POST_COUNT=0.",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT"
 }

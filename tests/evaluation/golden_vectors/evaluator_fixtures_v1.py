@@ -40,11 +40,24 @@ def ru_entries(
     *,
     baseline: list[str],
     candidate: list[str],
+    baseline_ordering: list[dict] | None = None,
+    candidate_ordering: list[dict] | None = None,
+    top_k_context: dict | None = None,
 ) -> list[dict]:
-    return [
-        {"kind": "ranking_universe", "label": "baseline", "membership": baseline},
-        {"kind": "ranking_universe", "label": "candidate", "membership": candidate},
-    ]
+    base_entry: dict = {"kind": "ranking_universe", "label": "baseline", "membership": baseline}
+    cand_entry: dict = {
+        "kind": "ranking_universe",
+        "label": "candidate",
+        "membership": candidate,
+    }
+    if baseline_ordering is not None:
+        base_entry["ordering"] = baseline_ordering
+    if candidate_ordering is not None:
+        cand_entry["ordering"] = candidate_ordering
+    if top_k_context is not None:
+        base_entry["top_k_context"] = top_k_context
+        cand_entry["top_k_context"] = top_k_context
+    return [base_entry, cand_entry]
 
 
 def replay_trace(entries: list[dict]) -> dict:
