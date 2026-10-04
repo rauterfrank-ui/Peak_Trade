@@ -1,0 +1,113 @@
+"""GVEF V1.5 schema contracts (BWP-1).
+
+GVEF_TRADING_AUTHORITY=NONE
+PROMOTION_GVEF_AUTHORITY=false
+POST_ALLOWED=false
+"""
+
+from __future__ import annotations
+
+from src.evaluation.golden_vectors.contracts.enums import (
+    GVEF_CONTRACTS_PACKAGE_VERSION,
+    EvidenceBundleLifecycleState,
+    FanOutEvaluationClass,
+)
+from src.evaluation.golden_vectors.contracts.errors import GvefSchemaError, SCHEMA_FAILURE
+from src.evaluation.golden_vectors.contracts.models import (
+    BoundaryResultV1,
+    CapitalRiskCrsSizingEvidenceBundleV1,
+    ConstraintMatrixV1,
+    CorpusManifestV1,
+    DecisionDeltaManifestV1,
+    DomainEvaluationContextV1,
+    DomainEvaluationResultV1,
+    EvidenceBundleV1,
+    InvariantResultV1,
+    MetricResultV1,
+    PromotionEvidenceEnvelopeV1,
+    ProtectedDigestManifestV1,
+    ProtectedSemanticDigestsV1,
+    RankingDeltaManifestV1,
+    RankingUniverseManifestV1,
+    RunManifestV1,
+    VectorManifestV1,
+    contract_canonical_bytes,
+    contract_digest_hex,
+    contract_to_canonical_mapping,
+)
+from src.evaluation.golden_vectors.contracts.serialization import (
+    canonical_json_bytes,
+    canonical_json_text,
+    sha256_hex,
+)
+from src.evaluation.golden_vectors.contracts.validation import (
+    evidence_complete_not_implied_by_schema,
+    parse_boundary_result_v1,
+    parse_capital_risk_crs_sizing_evidence_bundle_v1,
+    parse_constraint_matrix_v1,
+    parse_corpus_manifest_v1,
+    parse_decision_delta_manifest_v1,
+    parse_domain_evaluation_context_v1,
+    parse_domain_evaluation_result_v1,
+    parse_evidence_bundle_v1,
+    parse_invariant_result_v1,
+    parse_metric_result_v1,
+    parse_promotion_evidence_envelope_v1,
+    parse_protected_digest_manifest_v1,
+    parse_protected_semantic_digests_v1,
+    parse_ranking_delta_manifest_v1,
+    parse_ranking_universe_manifest_v1,
+    parse_run_manifest_v1,
+    parse_vector_manifest_v1,
+    validate_evidence_bundle_lifecycle_state,
+)
+
+__all__ = [
+    "GVEF_CONTRACTS_PACKAGE_VERSION",
+    "EvidenceBundleLifecycleState",
+    "FanOutEvaluationClass",
+    "GvefSchemaError",
+    "SCHEMA_FAILURE",
+    "RunManifestV1",
+    "VectorManifestV1",
+    "CorpusManifestV1",
+    "ConstraintMatrixV1",
+    "DomainEvaluationContextV1",
+    "DomainEvaluationResultV1",
+    "MetricResultV1",
+    "InvariantResultV1",
+    "BoundaryResultV1",
+    "ProtectedDigestManifestV1",
+    "ProtectedSemanticDigestsV1",
+    "DecisionDeltaManifestV1",
+    "RankingUniverseManifestV1",
+    "RankingDeltaManifestV1",
+    "CapitalRiskCrsSizingEvidenceBundleV1",
+    "EvidenceBundleV1",
+    "PromotionEvidenceEnvelopeV1",
+    "canonical_json_bytes",
+    "canonical_json_text",
+    "sha256_hex",
+    "contract_canonical_bytes",
+    "contract_digest_hex",
+    "contract_to_canonical_mapping",
+    "parse_run_manifest_v1",
+    "parse_vector_manifest_v1",
+    "parse_corpus_manifest_v1",
+    "parse_constraint_matrix_v1",
+    "parse_domain_evaluation_context_v1",
+    "parse_domain_evaluation_result_v1",
+    "parse_metric_result_v1",
+    "parse_invariant_result_v1",
+    "parse_boundary_result_v1",
+    "parse_protected_digest_manifest_v1",
+    "parse_protected_semantic_digests_v1",
+    "parse_decision_delta_manifest_v1",
+    "parse_ranking_universe_manifest_v1",
+    "parse_ranking_delta_manifest_v1",
+    "parse_capital_risk_crs_sizing_evidence_bundle_v1",
+    "parse_evidence_bundle_v1",
+    "parse_promotion_evidence_envelope_v1",
+    "validate_evidence_bundle_lifecycle_state",
+    "evidence_complete_not_implied_by_schema",
+]

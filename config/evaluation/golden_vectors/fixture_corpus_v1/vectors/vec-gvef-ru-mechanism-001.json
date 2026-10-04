@@ -1,0 +1,14 @@
+{
+  "vector_id": "vec-gvef-ru-mechanism-001",
+  "vector_class": "GoldenNeutral",
+  "schema_version": "1.0.0",
+  "population_selector": {
+    "selector_id": "mechanism_ru_v1",
+    "binding_digest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "invariant_ids": ["ru.not_selection"],
+  "provenance": {
+    "source": "TEST_ONLY_SYNTHETIC",
+    "ref": "tests/evaluation/golden_vectors/corpus_fixtures_v1.py"
+  }
+}

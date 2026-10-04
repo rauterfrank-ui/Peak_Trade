@@ -1,0 +1,14 @@
+{
+  "corpus_version": "1.0.0",
+  "corpus_digest": "24ca233713f26a2af9c175f3a9fc97ba2d5ed2d24125a8c13afb118c665b0a84",
+  "vector_ids": [
+    "vec-gvef-ptp-mechanism-001",
+    "vec-gvef-ru-mechanism-001"
+  ],
+  "metric_schema_version": "1.0.0",
+  "seed_set": [42],
+  "provenance": {
+    "source": "TEST_ONLY_SYNTHETIC",
+    "ref": "config/evaluation/golden_vectors/fixture_corpus_v1"
+  }
+}
