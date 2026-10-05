@@ -285,6 +285,7 @@ def run_paper_shadow_bounded_operational_run_v1(
                 counters.cycle_count += 1
                 evidence.cycle_count = counters.cycle_count
             from src.ops.paper_shadow_bounded_orchestrator_v1.wallclock_forensic_cycle_record_v1 import (
+                apply_dual_ledger_passive_correlation_v1,
                 build_wallclock_forensic_cycle_record_v1,
             )
 
@@ -300,6 +301,13 @@ def run_paper_shadow_bounded_operational_run_v1(
                 bridge_cycle=step.bridge_cycle,
                 forensic_record=forensic_record,
             )
+            if evidence.forensic_cycle_records:
+                apply_dual_ledger_passive_correlation_v1(
+                    evidence.forensic_cycle_records[-1],
+                    run_id=contract.run_id,
+                    pre_external_event=step.pre_external_event,
+                    shadow_route=None,
+                )
 
             if step.fail_fatal:
                 stop_reason = "PRODUCTIVE_CYCLE_FATAL"
@@ -331,7 +339,12 @@ def run_paper_shadow_bounded_operational_run_v1(
                         reconcile_ok=bool(route.reconcile and route.reconcile.get("ok")),
                     )
                 if evidence.forensic_cycle_records:
-                    evidence.forensic_cycle_records[-1]["paper_shadow_consumed"] = bool(route.ok)
+                    apply_dual_ledger_passive_correlation_v1(
+                        evidence.forensic_cycle_records[-1],
+                        run_id=contract.run_id,
+                        pre_external_event=step.pre_external_event,
+                        shadow_route=route,
+                    )
                 elif route.fail_reason == "MAX_SIMULATED_OPEN_POSITION_COUNT":
                     evidence.duplicate_prevented_count += 1
                 elif route.event_substitution_count > 0:

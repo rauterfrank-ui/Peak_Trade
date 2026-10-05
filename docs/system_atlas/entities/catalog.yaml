@@ -6124,7 +6124,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7055_d001_canonical_shadow_instrument_v1
+  modified_by: CHANGE:run003_obs_dual_ledger_correlation_v1
   source_paths:
   - src/ops/paper_shadow_bounded_orchestrator_v1/
   - scripts/ops/run_paper_shadow_bounded_orchestrator_v1.py
@@ -6138,6 +6138,7 @@ entities:
   - tests/ops/test_operational_run_forensic_telemetry_wiring_v1.py
   - tests/ops/test_productive_cycle_step_pre_external_wiring_v1.py
   - tests/ops/test_wallclock_position_closure_bridge_v1.py
+  - tests/ops/test_wallclock_dual_ledger_correlation_v1.py
   source_symbols:
   - run_paper_shadow_preflight_only_v1
   - run_paper_shadow_bounded_operational_run_v1
@@ -6150,15 +6151,17 @@ entities:
   - invoke_productive_pre_external_closure_for_orchestrator_v1
   - project_wallclock_pre_external_from_bridge_cycle_v1
   - build_wallclock_forensic_cycle_record_v1
+  - apply_dual_ledger_passive_correlation_v1
   evidence_sources:
   - tests/ops/test_paper_shadow_bounded_orchestrator_v1.py
   - tests/ops/test_wallclock_pre_external_projection_v1.py
   - tests/ops/test_wallclock_forensic_cycle_record_v1.py
   - tests/ops/test_run_evidence_forensic_liveness_v1.py
   - tests/ops/test_operational_run_forensic_telemetry_wiring_v1.py
+  - tests/ops/test_wallclock_dual_ledger_correlation_v1.py
   - tests/ops/test_paper_shadow_bounded_operational_loop_v1.py
   - evidence/research/paper_shadow_run_contract_v1/20261004T211710Z/run_contract_v1.json
-  notes: 'PR #7055 D001: shadow session bundle uses CANONICAL_INSTRUMENT_ID at existing operational_run boundary (was stale TEST literal); bridge/PRE_EXTERNAL already canonical; identity wiring only; ORCHESTRATOR_TRADING_AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+  notes: 'Run003 dual-ledger passive correlation: forensic cycle record projects bridge vs shadow domain effects under existing PRE_EXTERNAL event_key; no cross-domain reconciliation; ORCHESTRATOR_TRADING_AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
 - id: DATA_CONTRACT:ghv_regression_corpus_provenance_v1
   kind: DATA_CONTRACT
   name: GHV regression corpus provenance v1

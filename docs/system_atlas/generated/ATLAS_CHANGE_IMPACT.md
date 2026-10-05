@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7055_d001_canonical_shadow_instrument_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:run003_obs_dual_ledger_correlation_v1`.
 
 ## Workflow
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7055 D001 canonical shadow instrument identity at operational_run bundle boundary; topology review only; no trading or POST authority change.
-- introduced_by=CHANGE:pr_7055_d001_canonical_shadow_instrument_v1
-- modified_by=CHANGE:pr_7055_d001_canonical_shadow_instrument_v1
+- Run003 passive dual-ledger forensic correlation on wallclock cycle records; observability only; no trading or POST authority change.
+- introduced_by=CHANGE:run003_obs_dual_ledger_correlation_v1
+- modified_by=CHANGE:run003_obs_dual_ledger_correlation_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -148,6 +148,60 @@ FIELD_MANIFEST: tuple[dict[str, str], ...] = (
         "OPTIONALITY": "required",
         "FAIL_CLOSED_BEHAVIOR": "computed",
     },
+    {
+        "FIELD": "dual_ledger_correlation_key",
+        "CANONICAL_PRODUCER": "PreExternalProductiveEventV1.event_key or run_id:cycle_id",
+        "CAPTURE_CALLSITE": "apply_dual_ledger_passive_correlation_v1",
+        "TYPE": "str",
+        "SEMANTIC_MEANING": "Forensic-only key linking bridge and shadow observations for one causal cycle",
+        "OPTIONALITY": "required",
+        "FAIL_CLOSED_BEHAVIOR": "run_id:cycle_id_fallback",
+    },
+    {
+        "FIELD": "pre_external_event_key",
+        "CANONICAL_PRODUCER": "PreExternalProductiveEventV1.event_key",
+        "CAPTURE_CALLSITE": "apply_dual_ledger_passive_correlation_v1",
+        "TYPE": "str|null",
+        "SEMANTIC_MEANING": "PRE_EXTERNAL carrier identity when emitted",
+        "OPTIONALITY": "optional",
+        "FAIL_CLOSED_BEHAVIOR": "null",
+    },
+    {
+        "FIELD": "bridge_domain_effect_present",
+        "CANONICAL_PRODUCER": "bridge_cycle.fill",
+        "CAPTURE_CALLSITE": "apply_dual_ledger_passive_correlation_v1",
+        "TYPE": "bool",
+        "SEMANTIC_MEANING": "Bridge portfolio simulated fill applied this cycle",
+        "OPTIONALITY": "required",
+        "FAIL_CLOSED_BEHAVIOR": "false",
+    },
+    {
+        "FIELD": "shadow_domain_effect_present",
+        "CANONICAL_PRODUCER": "route_pre_external_to_shadow_v1 result",
+        "CAPTURE_CALLSITE": "apply_dual_ledger_passive_correlation_v1",
+        "TYPE": "bool",
+        "SEMANTIC_MEANING": "Shadow SimulatedExecutionPort observed continuation for correlated PRE_EXTERNAL",
+        "OPTIONALITY": "required",
+        "FAIL_CLOSED_BEHAVIOR": "false",
+    },
+    {
+        "FIELD": "shadow_fill_present",
+        "CANONICAL_PRODUCER": "ShadowExecutionEvidenceV1.simulated_fill_present",
+        "CAPTURE_CALLSITE": "apply_dual_ledger_passive_correlation_v1",
+        "TYPE": "bool",
+        "SEMANTIC_MEANING": "Shadow isolated accounting simulated fill",
+        "OPTIONALITY": "required",
+        "FAIL_CLOSED_BEHAVIOR": "false",
+    },
+    {
+        "FIELD": "causal_chain_terminator",
+        "CANONICAL_PRODUCER": "ShadowRoutingResultV1.fail_reason",
+        "CAPTURE_CALLSITE": "apply_dual_ledger_passive_correlation_v1",
+        "TYPE": "str|null",
+        "SEMANTIC_MEANING": "Where PRE_EXTERNAL→shadow path stopped when shadow effect absent",
+        "OPTIONALITY": "optional",
+        "FAIL_CLOSED_BEHAVIOR": "null",
+    },
 )
 
 
@@ -217,3 +271,44 @@ def build_wallclock_forensic_cycle_record_v1(
     }
     record["record_digest"] = _digest({k: v for k, v in record.items() if k != "record_digest"})
     return record
+
+
+def apply_dual_ledger_passive_correlation_v1(
+    record: dict[str, Any],
+    *,
+    run_id: str,
+    pre_external_event: Any | None = None,
+    shadow_route: Any | None = None,
+) -> None:
+    """Passive forensic projection only — no productive or shadow state writeback."""
+    cycle_id = str(record.get("cycle_id") or "")
+    seq = record.get("cycle_sequence")
+    if pre_external_event is not None:
+        event_key = str(getattr(pre_external_event, "event_key", "") or "")
+        record["pre_external_event_key"] = event_key or None
+        record["dual_ledger_correlation_key"] = event_key or f"{run_id}:{cycle_id or seq}"
+    else:
+        record["pre_external_event_key"] = None
+        record["dual_ledger_correlation_key"] = (
+            f"{run_id}:{cycle_id}" if cycle_id else f"{run_id}:seq{seq}"
+        )
+
+    record["bridge_domain_effect_present"] = bool(record.get("fill_present"))
+    record["shadow_domain_effect_present"] = False
+    record["shadow_fill_present"] = False
+    record["causal_chain_terminator"] = None
+    record["paper_shadow_consumed"] = False
+
+    if pre_external_event is None or shadow_route is None:
+        return
+
+    ok = bool(getattr(shadow_route, "ok", False))
+    record["paper_shadow_consumed"] = ok
+    record["shadow_domain_effect_present"] = ok
+    evidence = getattr(shadow_route, "shadow_evidence", None) or {}
+    if isinstance(evidence, dict):
+        record["shadow_fill_present"] = bool(evidence.get("simulated_fill_present"))
+    if not ok:
+        record["causal_chain_terminator"] = (
+            str(getattr(shadow_route, "fail_reason", "") or "") or None
+        )
