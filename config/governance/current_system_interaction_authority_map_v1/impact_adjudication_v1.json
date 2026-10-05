@@ -1,28 +1,35 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "63b006628d1bcdf36c0b091d1cdc06452b1d32f5",
+  "base_sha": "3406f4be32f9054be7abf36633b8a456e3e1d0f0",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_census_graph_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml"
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+    "tests/ops/test_current_productive_natural_enter_rc_imp_ord_repair_v1.py"
   ],
-  "changed_paths_sha256": "73eaa423b03bf67ccd426f225f18f741b0c6426be51daed59d4c1ffb30496d28",
+  "changed_paths_sha256": "3ed9a12f7d92252e4ba50db6516615adecefee7fd44ca1e8568dc985962f97f7",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_census_graph_v1/source_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml"
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1/addressing_join_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+    "tests/ops/test_current_productive_natural_enter_rc_imp_ord_repair_v1.py"
   ],
   "evidence_refs": [
-    "tests/governance/test_current_system_census_graph_v1.py"
+    "tests/ops/test_current_productive_natural_enter_rc_imp_ord_repair_v1.py",
+    "tests/ops/test_system_atlas_impact_v1.py"
   ],
-  "reason": "Census graph edge_reconciliation navigation metadata repair and Atlas provenance bookkeeping; no CSIA authority-edge or interaction semantics change.",
+  "reason": "PR #7059 RC-IMP-01/RC-ORD-01 Natural Enter productive seam wiring (accepted C1 identity and EG incoming_cursor carry through S6/S7); no CSIA authority-edge or interaction-semantics change; Atlas provenance records topology review only.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

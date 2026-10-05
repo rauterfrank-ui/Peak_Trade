@@ -204,6 +204,7 @@ entities:
   - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
   notes: Navigation/topology record for the passive C1 mark-to-mark identity {BULL, BEAR, NEUTRAL}. AUTHORITY_EFFECT=NONE. Not a trading-decision owner. Not consumed by Replay, Double Play, ScopeEvent, SideState, Entry, Risk, Intent, Execution, or POST. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:elementary_direction_v1
+  # atlas_entity_review: PR #7059 RC-IMP-01 host C1 evaluation uses accepted_c1_venue_event_time_unix at runtime_cycle seam; elementary_direction primitive unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7037 adjacent MV2 CRS boundary wiring-only; elementary_direction semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Elementary C1 mark direction identity
@@ -892,6 +893,7 @@ entities:
   - tests/ops/test_current_mf_member_to_pinned_cap23_n1_adapter_v1.py
   notes: Optional same-universe Cap23 N=1 pin factory. Not selection authority. Cap 2.3 remains the sole writer of the selection DTO. Pin is valid only inside the same productive Cap 2.2 ranking/universe identity from which the member was derived (universe_snapshot_id, ranking_snapshot_id, integrity_digest, unique eligible instrument row, lane_state_root). Instrument identity alone is not sufficient. CROSS_UNIVERSE_SELECTION, CROSS_UNIVERSE_PIN, CROSS_UNIVERSE_REPLACEMENT, CROSS_UNIVERSE_FALLBACK, CROSS_UNIVERSE_CANDIDATE_BORROWING, CROSS_UNIVERSE_RERANKING, and MULTI_UNIVERSE_MERGE remain false. No MF productive join, no MF_SINGLE_EGRESS rewire, no five-lane runtime, no Cap24/Master-V2/Double Play mutation. Historical MF artifacts are not CURRENT universe identity. Learning/DDO remains observation-only and is not a candidate-selection bridge. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 - id: CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
+  # atlas_entity_review: PR #7059 MV2 addressing join cursor/C1 carry only; lane topology contract unchanged; TRANSITIVELY_IMPACTED; AUTHORITY=NONE; POST_COUNT=0.
   kind: CONTRACT
   name: CURRENT MF N=5 isolated lane-instance topology
   epistemic_class: CANONICAL_AUTHORITY
@@ -1039,6 +1041,7 @@ entities:
   - tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_bound_ingest_join_v1.py
   notes: 'S2 identity-preserving Full Autonomy ingest of the already-produced #6598 dict[lane_id, BoundInstrumentV1] via admit_occupied_lane_bound_instruments_v1. All SUCCESSFUL_BIND lanes kept; no pick-one; no Cap23/Cap24 reinvoke; no Master V2/Double Play or host join. Not ranking, selection, Cap24 binding, trading, runtime-activation, or execution authority. No productive MF join, no five-lane runtime, MAX_POSITIONS_EFFECTIVE remains 1. PREPARED_BOUND_CARDINALITY remains 0..5. PRODUCTIVE_RUNTIME_CARDINALITY remains 1_UNJOINED. CROSS_UNIVERSE_* remain false. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.'
 - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1
+  # atlas_entity_review: PR #7059 downstream addressing join wiring only; handoff compose owner unchanged; TRANSITIVELY_IMPACTED; AUTHORITY=NONE; POST_COUNT=0.
   kind: CONTRACT
   name: CURRENT MF N=5 Full-Autonomy occupied-lane MV2/DP handoff join
   epistemic_class: CANONICAL_AUTHORITY
@@ -1059,13 +1062,14 @@ entities:
   - tests/ops/test_current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1.py
   notes: S2 identity-preserving Full-Autonomy to MV2/DP per-lane compose via compose_occupied_lane_mv2_dp_handoff_v1. Occupied admitted lanes map to existing IsolatedLaneSlotV1 plus the same BoundInstrumentV1 objects; occupied without admitted omitted; empty -> {}. MV2/DP ingress remains singular BoundInstrumentV1. FIRST_TRADING_DECISION_CONSUMER remains run_current_productive_master_v2_runtime_cycle_v1 and is not invoked. No pick-one; no new ingress/Top-5/multi-bound authority DTO. Not ranking, selection, Cap24 binding, trading, host, runtime-activation, or execution authority. No Cap23/Cap24 reinvoke, no Master V2/Double Play mutation, no Cap61 state_root bind, no cursor persist/restore, no productive MF join, no five-lane runtime, MAX_POSITIONS_EFFECTIVE remains 1. PREPARED_BOUND_CARDINALITY remains 0..5. PRODUCTIVE_RUNTIME_CARDINALITY remains 1_UNJOINED. CROSS_UNIVERSE_* remain false. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.
 - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
+  # atlas_entity_review: PR #7059 RC-IMP-01 accepted_c1_venue_event_time_unix + RC-ORD-01 incoming_cursor_override through restore/compose/carry; MATERIALLY_CHANGED wiring only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7007 N1 consumer strips forensic cycle_evidence_root from S7 compose kwargs only; addressing join unchanged.
   kind: CONTRACT
   name: CURRENT MF N=5 Full-Autonomy occupied-lane MV2/DP decision-state addressing join S8
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
-  modified_by: PR_7007_GHV_SYNTHETIC_T2_CYCLE1_COMPOSE_KWARG_V1
+  modified_by: CHANGE:pr_7059_natural_enter_rc_imp_ord_convergence_v1
   authority_sources:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_MV2_DP_DECISION_STATE_ADDRESSING_JOIN_CONTRACT_V1.md
@@ -1083,6 +1087,7 @@ entities:
   notes: 'S8_HARNESS_BIND_OCCUPIED_LANE_GOVERNED_CYCLE_ROOTS_WITHOUT_INVOKE harness-only path bind: reuse S3 lane_state_root as cursor_store_root and address distinct lock_root plus evidence_root under that same root. Does not invoke the governed cycle, write disk, or mutate S7 compose. N=1 global cursor path is rejected. Cap61 remains state_root=None and persist=False inside the existing cycle. NEW_STATE_OWNER_CREATED=false. CAP61_STATE_ROOT_BOUND=false. HOST_JOIN=false. MF_PRODUCTIVE_JOIN=false. MAY_INVOKE_GOVERNED_CYCLE=false. RUNTIME_AUTHORITY_EFFECT=NONE. No cursor schema change. P5_10_PRODUCTIVE_ACTIVATION_AND_BINDING_V1: when bind enabled, uses productive_layered_core_bind_cycle_kwargs_v1 (scope carrier + store gate) into cycle. Not ranking, selection, trading-authority, runtime-activation, or execution authority. MAX_POSITIONS_EFFECTIVE remains 1. MULTI_FUTURE_RUNTIME_AUTHORIZED=false. EXECUTION_CONCURRENCY_AUTHORIZED=false. PREPARED_BOUND_CARDINALITY remains 0..5. PRODUCTIVE_RUNTIME_CARDINALITY
     remains 1_UNJOINED. CROSS_UNIVERSE_* remain false. Shared mutable state remains false. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.'
 - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
+  # atlas_entity_review: PR #7059 RC-IMP-01 T2 dispatch binds observation venue_event_time as accepted C1; RC-ORD-01 passes EG incoming_cursor into S7 compose; MATERIALLY_CHANGED wiring only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7035 downstream LIVE-29P join consumes Layer-C stop binding via enter_live_29p_join; no MV2/DP semantic change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7014 optional default-off GHV PRE_EXTERNAL runtime flight recorder wiring at LIVE-29P join; observation-only; AUTHORITY=NONE.
   kind: CONTRACT
@@ -1090,7 +1095,7 @@ entities:
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
-  modified_by: PR_7014_GHV_RUNTIME_FLIGHT_RECORDER_CONTINUATION_V1
+  modified_by: CHANGE:pr_7059_natural_enter_rc_imp_ord_convergence_v1
   authority_sources:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_GOVERNED_CYCLE_N1_CONSUMER_JOIN_CONTRACT_V1.md
@@ -2977,6 +2982,7 @@ entities:
   - config/governance/productive_activation_boundary_forensic_review_v1_decision_v1.json
   notes: Post-#6889 Owner-GO forensic census + static proof; consumer reachability does not mint Productive Activation; PRODUCTIVE_ACTIVATION_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
 - id: CONTRACT:p5_10_productive_activation_and_binding_v1
+  # atlas_entity_review: PR #7059 adjacent runtime_cycle C1 timestamp seam only; P5.10 bind/activation semantics unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7037 MV2 host CRS boundary attach after prepare_productive_layered_core_replay_bind_v1; bind seam semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: CONTRACT
   name: P5.10 productive activation and binding v1
@@ -3758,6 +3764,7 @@ entities:
   - tests/ops/test_pre_live_fresh_runtime_root_isolation_v1.py
   notes: POST-slice recorded baseline fca07afa with live integrity drift gate; fresh Cap-24 root; fail-closed historical POST-store isolation; no venue POST; stop before Actual-Venue-POST Owner-GO; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1
+  # atlas_entity_review: PR #7059 upstream S6/S7 Natural Enter seam fix in sibling joins; convergence orchestrator unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7035 allow fail-closed continuous segment terminal disposition when POST=0; orchestration-only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: optional GHV system-wide Canary session bind; CANARY_AUTHORITY=NONE.
   kind: RUNTIME_COMPONENT
@@ -3847,6 +3854,7 @@ entities:
   - tests/ops/test_productive_natural_market_data_capture_sink_v1.py
   notes: Append-only evidence wrapper around FullCoreProductiveReadOnlyGetTransportV1; 1:1 delegate GET passthrough; default disabled at product entry; CORRELATION_STATUS=PARTIAL; no poll-bundle claim; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:productive_golden_happy_vector_forensic_observability_v1
+  # atlas_entity_review: PR #7059 adjacent runtime_cycle file touched; GHV observability reads unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7037 GHV reproof lane CRS propagation fix; observability module unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Productive Golden Happy Vector forensic observability v1
@@ -3876,6 +3884,7 @@ entities:
   - tests/ops/test_ghv_e2e_pre_decision_productive_closure_entry_regression_v1.py
   notes: GHV E2E harness integration only; branches productive Closure from naturally reached pre-decision incoming_cursor on same evidence cycle; S7/MV2 owns productive ENTER; execute_network=false; not imported by productive live runtime call graph; TRADING_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:current_productive_synthetic_enter_forensic_v1
+  # atlas_entity_review: PR #7059 invoke_join T2 seam only; synthetic overlay seam unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7014 GHV_ROOT_CHANGE_EVENT on synthetic enter_short Cycle-1; observation-only.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive synthetic ENTER forensic overlay v1
@@ -3897,6 +3906,7 @@ entities:
   - tests/ops/test_ghv_pre_external_whole_cycle_causal_observability_v1.py
   notes: Default-off forensic-only synthetic ENTER overlay at LIVE-29P join seam before enter_live_29p join; explicit SYNTHETIC_FORENSIC evidence; does not set NATURAL_ENTER_OBSERVED; no threshold/market-data mutation; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:current_productive_forensic_executable_quantity_override_v1
+  # atlas_entity_review: PR #7059 N1 consumer path-index coupling only; quantity override module unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7019 default-off forensic executable quantity override after real LIVE-29P sizing; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7028 BWP-03 dependency-closure only; launcher/residency/F1-M9 wiring; no override semantic change; SEMANTIC_CHANGE_FROM_PR7028=NONE; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
@@ -4735,6 +4745,7 @@ entities:
   - tests/governance/test_companion_c2_fraction_to_units_runtime_completion_v1.py
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  # atlas_entity_review: PR #7059 RC-IMP-01 resolve_host_market_sample_venue_event_time_unix_v1 + accepted C1 in run_current_productive_master_v2_runtime_cycle_v1; MATERIALLY_CHANGED wiring only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7037 WIRING_ONLY CRS boundary propagation via build_simulated_economics_crs_boundary_state_file_v1 before integrated replay; no trading-decision change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7035 LIVE-29P join Layer-C adverse-exit protective-stop binding aligned with productive MV2; downstream binding only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7014 optional predicate_trace_collector wiring for default-off flight recorder; observation-only.
@@ -4746,7 +4757,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7037_crs_boundary_mv2_wiring_v1
+  modified_by: CHANGE:pr_7059_natural_enter_rc_imp_ord_convergence_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/__init__.py
   - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
@@ -6054,6 +6065,7 @@ entities:
   - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/constants_v1.py
   notes: Isolates bounded canary venue-proof from FULL_CORE_LIVE_PATH. Canary DEFAULT_INSTRUMENT_ID / DEFAULT_SIDE / minSz are not admissible as full-core E2E proof. Canary role is HISTORICAL_AND_SCOPED_VENUE_PROOF. Not a parallel productive Live authority. Does not activate canary. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 - id: GATE:portfolio_capital_reservation_budget_v1
+  # atlas_entity_review: PR #7059 N1 consumer seam wiring only; portfolio reservation owner unchanged; TRANSITIVELY_IMPACTED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7007 T2 compose kwarg filter only; portfolio budget join path unchanged.
   kind: GATE
   name: Portfolio capital reservation budget owner v1

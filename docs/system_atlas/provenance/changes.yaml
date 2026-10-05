@@ -723,3 +723,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: config/governance/current_system_census_graph_v1/source_v1.json
   notes: 'Census graph edge_reconciliation metadata realigned to materialized semantic_edges tallies while preserving Phase-2 narrative discrepancy (CD-006/CD-008); AUTHORITY=NONE navigation index only; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7059_natural_enter_rc_imp_ord_convergence_v1
+  from: 3406f4be32f9054be7abf36633b8a456e3e1d0f0
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_current_productive_natural_enter_rc_imp_ord_repair_v1.py
+  notes: 'PR #7059: RC-IMP-01 accepted_c1_venue_event_time_unix carries canonical accepted C1 identity separately from close-grid last_finalized_event_ts_unix at S6 host and S7 compose; RC-ORD-01 EG incoming_cursor restored/composed through S7 into continuing lane-local MV2 cycle. Productive seam wiring only; no CSIA/Law authority-edge change; no config change; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
