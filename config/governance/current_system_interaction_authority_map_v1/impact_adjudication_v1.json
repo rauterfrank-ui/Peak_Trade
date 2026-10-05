@@ -1,46 +1,30 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "d962aaee86b347b9d0247981cb06896a0431aeba",
+  "base_sha": "5c70bcb9abb674ee7d88c0bfaaf88331c4c3b217",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "scripts/ops/peak_trade_canonical_entrypoint_discovery_v2.py",
-    "scripts/ops/peak_trade_forensic_closure_logic_v1.py",
-    "scripts/ops/peak_trade_v2_fresh_discovery_v1.py",
-    "scripts/ops/run_current_full_repository_recartography_and_whole_system_fixpoint_continuation_v1.py",
-    "scripts/ops/run_pass_007a_canonical_entrypoint_graph_denominator_v1.py",
-    "scripts/ops/run_peak_trade_ghv_driven_whole_system_forensic_probe_v1.py",
-    "tests/ops/fixtures/runtime_surface_denominator_regression_fixture_v1.json",
-    "tests/ops/test_pass_006b_forensic_closure_guards_v1.py",
-    "tests/ops/test_pass_007a_canonical_root_regression_guards_v1.py",
-    "tests/ops/test_pass_008_root_isolation_regression_guards_v1.py",
-    "tests/ops/test_pass_009_component_identity_regression_guards_v1.py"
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "src/ops/paper_shadow_bounded_orchestrator_v1/operational_run_v1.py"
   ],
-  "changed_paths_sha256": "1e8cfc1a4ec0391733fcdf3c484853ffb825280fb1e0ed3150ad117c03cdd089",
+  "changed_paths_sha256": "536a64266dfce90426f40a43bf11e2538a16c23ad5671f05ddee6288df94eaaa",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "scripts/ops/peak_trade_canonical_entrypoint_discovery_v2.py",
-    "scripts/ops/peak_trade_forensic_closure_logic_v1.py",
-    "scripts/ops/peak_trade_v2_fresh_discovery_v1.py",
-    "scripts/ops/run_current_full_repository_recartography_and_whole_system_fixpoint_continuation_v1.py",
-    "scripts/ops/run_pass_007a_canonical_entrypoint_graph_denominator_v1.py",
-    "scripts/ops/run_peak_trade_ghv_driven_whole_system_forensic_probe_v1.py",
-    "tests/ops/fixtures/runtime_surface_denominator_regression_fixture_v1.json",
-    "tests/ops/test_pass_006b_forensic_closure_guards_v1.py",
-    "tests/ops/test_pass_007a_canonical_root_regression_guards_v1.py",
-    "tests/ops/test_pass_008_root_isolation_regression_guards_v1.py",
-    "tests/ops/test_pass_009_component_identity_regression_guards_v1.py"
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "src/ops/paper_shadow_bounded_orchestrator_v1/operational_run_v1.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_pass_006b_forensic_closure_guards_v1.py",
-    "tests/ops/test_pass_007a_canonical_root_regression_guards_v1.py",
-    "tests/ops/test_pass_008_root_isolation_regression_guards_v1.py",
-    "tests/ops/test_pass_009_component_identity_regression_guards_v1.py"
+    "tests/ops/test_paper_shadow_bounded_orchestrator_v1.py",
+    "tests/ops/test_canonical_shadow_runtime_enablement_v1.py",
+    "tests/ops/test_system_atlas_impact_v1.py"
   ],
-  "reason": "PR #7054 MODEL_2 durable whole-system forensic stack (6 A + 4 B + 1 C). Forensic tooling and regression guards only; AUTHORITY=NONE; no law/CSIA semantic change.",
+  "reason": "PR #7055 D001 aligns Paper-Shadow shadow session bundle instrument_id to existing CANONICAL_INSTRUMENT_ID at an already-present operational_run boundary; no CSIA authority-edge or interaction-semantics change; Atlas provenance records topology review only.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7045_shadow_runtime_enablement_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7055_d001_canonical_shadow_instrument_v1`.
 
 ## Workflow
 
@@ -40,7 +40,6 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:canonical_shadow_runtime_enablement_v1` |
 | `RUNTIME_COMPONENT:paper_shadow_bounded_orchestrator_v1` |
 
 ## CHANGED_RELATIONS
@@ -93,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Post-#7052 DEF-002/003 forensic cycle record and run evidence liveness; integration-only; no trading or POST authority change.
-- introduced_by=CHANGE:pr_7045_shadow_runtime_enablement_v1
-- modified_by=CHANGE:paper_shadow_wallclock_forensic_telemetry_completion_v1
+- PR #7055 D001 canonical shadow instrument identity at operational_run bundle boundary; topology review only; no trading or POST authority change.
+- introduced_by=CHANGE:pr_7055_d001_canonical_shadow_instrument_v1
+- modified_by=CHANGE:pr_7055_d001_canonical_shadow_instrument_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

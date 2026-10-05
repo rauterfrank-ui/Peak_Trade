@@ -6124,7 +6124,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:paper_shadow_wallclock_forensic_telemetry_completion_v1
+  modified_by: CHANGE:pr_7055_d001_canonical_shadow_instrument_v1
   source_paths:
   - src/ops/paper_shadow_bounded_orchestrator_v1/
   - scripts/ops/run_paper_shadow_bounded_orchestrator_v1.py
@@ -6158,7 +6158,7 @@ entities:
   - tests/ops/test_operational_run_forensic_telemetry_wiring_v1.py
   - tests/ops/test_paper_shadow_bounded_operational_loop_v1.py
   - evidence/research/paper_shadow_run_contract_v1/20261004T211710Z/run_contract_v1.json
-  notes: 'Post-#7052 completion: wallclock forensic cycle record + operational_run wiring + run_evidence liveness (DEF-002/003); DEF-001 PRE_EXTERNAL projection unchanged; passive telemetry only; ORCHESTRATOR_TRADING_AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+  notes: 'PR #7055 D001: shadow session bundle uses CANONICAL_INSTRUMENT_ID at existing operational_run boundary (was stale TEST literal); bridge/PRE_EXTERNAL already canonical; identity wiring only; ORCHESTRATOR_TRADING_AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
 - id: DATA_CONTRACT:ghv_regression_corpus_provenance_v1
   kind: DATA_CONTRACT
   name: GHV regression corpus provenance v1

@@ -688,6 +688,13 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_paper_shadow_run_contract_v1.py
   notes: 'Paper-Shadow bounded run contract RUN_ID schema PAPER_SHADOW_RUN_NNN (001-999); removes accidental RUN_001-only loader guard; no authority/safety/digest semantic change; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7055_d001_canonical_shadow_instrument_v1
+  from: 5c70bcb9abb674ee7d88c0bfaaf88331c4c3b217
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_paper_shadow_bounded_orchestrator_v1.py
+  notes: 'PR #7055 D001: default_shadow_session_bundle_v1 uses CANONICAL_INSTRUMENT_ID instead of stale ETH-USD_UM_XPERP-TEST literal; shadow isolated simulation identity aligned with bridge/PRE_EXTERNAL; no selection/decision/POST authority change; ATLAS_AUTHORITY=NONE.'
 - id: CHANGE:paper_shadow_wallclock_pre_external_projection_v1
   from: c9db3d52ca09205f5b904347862bd06bdd1f29e3
   to: PENDING_CHANGE
