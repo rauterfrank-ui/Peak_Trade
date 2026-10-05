@@ -730,3 +730,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_current_productive_natural_enter_rc_imp_ord_repair_v1.py
   notes: 'PR #7059: RC-IMP-01 accepted_c1_venue_event_time_unix carries canonical accepted C1 identity separately from close-grid last_finalized_event_ts_unix at S6 host and S7 compose; RC-ORD-01 EG incoming_cursor restored/composed through S7 into continuing lane-local MV2 cycle. Productive seam wiring only; no CSIA/Law authority-edge change; no config change; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7060_owner_go_revalidation_baseline_rebind_v1
+  from: c752284ac86af46d04244421bb0e30c425d619b8
+  to: c752284ac86af46d04244421bb0e30c425d619b8
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json
+  notes: 'PR #7060: Human Owner-GO revalidation rebinding bounded continuous-run + Fresh-C1 GET decision baseline from 049fc18 to post-PR7059 fixpoint c752284; clears BASELINE_LINEAGE_IMMUTABLE_SURFACE_DRIFT for future S6 preflight; governance/spec/test pins only; no trading semantics change; no authority expansion; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

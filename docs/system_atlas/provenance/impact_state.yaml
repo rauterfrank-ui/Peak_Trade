@@ -1,29 +1,13 @@
 schema_version: system_atlas.v1
 pending_change: false
 introduced_by: CHANGE:pr_7059_natural_enter_rc_imp_ord_convergence_v1
-modified_by: CHANGE:pr_7059_natural_enter_rc_imp_ord_convergence_v1
+modified_by: PR_7060_OWNER_GO_REVALIDATION_BASELINE_REBIND_V1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'PR #7059 Natural Enter RC-IMP-01/RC-ORD-01 productive seam convergence; topology review records accepted C1 identity and EG cursor carry; no trading, POST, or configuration authority change.'
+note: 'PR #7060 Owner-GO revalidation baseline rebind to c752284; governance/spec currency for bounded continuous Fresh-C1 run; no trading, POST, or configuration authority change.'
 changed_entities:
-- CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
-- CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1
-- CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1
-- CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1
-- CONTRACT:p5_10_productive_activation_and_binding_v1
-- GATE:portfolio_capital_reservation_budget_v1
-- RUNTIME_COMPONENT:current_productive_forensic_executable_quantity_override_v1
-- RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1
-- RUNTIME_COMPONENT:current_productive_synthetic_enter_forensic_v1
-- RUNTIME_COMPONENT:elementary_direction_v1
-- RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-- RUNTIME_COMPONENT:productive_golden_happy_vector_forensic_observability_v1
-changed_relations:
-- REL:r_full_core_cycle_observes_elementary_direction
-- REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget
-- REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_s8_addressing
-- REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_fa_mv2_dp_handoff
-- REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_n5_lane_topology
+- RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
+changed_relations: []
 changed_closures: []
 changed_wiring: []
 changed_venue: []
