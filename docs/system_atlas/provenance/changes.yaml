@@ -716,3 +716,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_wallclock_forensic_cycle_record_v1.py
   notes: 'Post-#7052 SET_A: wallclock_forensic_cycle_record_v1 + operational_run/run_evidence liveness; completes DEF-002/003 observability; no trading authority; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:current_system_census_edge_reconciliation_repair_v1
+  from: 63b006628d1bcdf36c0b091d1cdc06452b1d32f5
+  to: PENDING_CHANGE
+  type: NAVIGATION_REBIND
+  epistemic_status: FORENSIC_RAW
+  evidence: config/governance/current_system_census_graph_v1/source_v1.json
+  notes: 'Census graph edge_reconciliation metadata realigned to materialized semantic_edges tallies while preserving Phase-2 narrative discrepancy (CD-006/CD-008); AUTHORITY=NONE navigation index only; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.'

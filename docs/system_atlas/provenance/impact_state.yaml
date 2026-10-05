@@ -1,12 +1,12 @@
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CHANGE:run003_obs_dual_ledger_correlation_v1
-modified_by: CHANGE:run003_obs_dual_ledger_correlation_v1
+introduced_by: CHANGE:current_system_census_edge_reconciliation_repair_v1
+modified_by: CHANGE:current_system_census_edge_reconciliation_repair_v1
 superseded_by: null
-last_recorded_impact: UPDATED
-note: 'Run003 passive dual-ledger forensic correlation on wallclock cycle records; observability only; no trading or POST authority change.'
+last_recorded_impact: NONE_WITH_PROOF
+note: 'Census graph edge_reconciliation bookkeeping only; materialized semantic_edges unchanged; no trading or POST authority change.'
 changed_entities:
-- RUNTIME_COMPONENT:paper_shadow_bounded_orchestrator_v1
+- NAVIGATION_INDEX:current_universe_landscape_snapshot_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []
