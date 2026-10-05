@@ -296,6 +296,8 @@ def _replay_probe_vector(
     active_repo = repo_root or REPO
     if repo_root is not None and repo_root != REPO:
         _purge_runtime_modules()
+        if g17_producers is not None:
+            g17_producers.clear()
         _prepend_sys_path(
             [
                 active_repo / "src",
@@ -345,7 +347,8 @@ def _replay_probe_vector(
     index_px = mark * 0.995
     closes = _closes_for_cycle(path, idx)
     g17_root = g17_store_root or (Path("/tmp/ghv_forensic_g17") / "flights")
-    g17_store = g17_root / fid
+    probe_scope = str(row.get("PROBE_ID") or fid)
+    g17_store = g17_root / probe_scope / fid
     g17_store.mkdir(parents=True, exist_ok=True)
     admission = build_explicit_non_productive_bounded_harness_master_v2_reconciliation_admission_v1(
         bound_instrument_id=bound.instrument_id,
@@ -547,7 +550,6 @@ def main() -> int:
                 sys.path.insert(0, ps)
 
     g17_store_root = out / "_g17_stores"
-    g17_producers: dict[str, Any] = {}
     ordered_vectors = sorted(
         probe_vectors,
         key=lambda pv: (str(pv.get("FLIGHT_ID", "")), int(pv.get("CYCLE_ID", 0))),
@@ -560,7 +562,7 @@ def main() -> int:
                 flights,
                 repo_root=replay_repo,
                 g17_store_root=g17_store_root,
-                g17_producers=g17_producers,
+                g17_producers={},
             )
             replay["REPLAY_REPO_SHA"] = subprocess.check_output(
                 ["git", "-C", str(replay_repo), "rev-parse", "HEAD"], text=True
