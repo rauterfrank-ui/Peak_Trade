@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7049 operational_run_v1 attempt-run transport/clock wiring only; bounded Run-001 composition unchanged; no authority escalation.
+- Run contract RUN_ID schema generalization for sequential bounded Paper-Shadow runs; loader validation only; no trading or POST authority change.
 - introduced_by=CHANGE:pr_7045_shadow_runtime_enablement_v1
-- modified_by=CHANGE:pr_7049_operational_run_transport_clock_v1
+- modified_by=CHANGE:paper_shadow_run_id_schema_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

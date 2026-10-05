@@ -1,6 +1,6 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "556995a169d0d2affe822a81795ea5a618dc52ce",
+  "base_sha": "fb8a338c2b47dcf6349588fb2e68e9bc5f8b8ac1",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
@@ -8,22 +8,24 @@
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/paper_shadow_bounded_orchestrator_v1/operational_run_v1.py"
+    "src/ops/paper_shadow_bounded_orchestrator_v1/run_contract_v1.py",
+    "tests/ops/test_paper_shadow_run_contract_v1.py"
   ],
-  "changed_paths_sha256": "536a64266dfce90426f40a43bf11e2538a16c23ad5671f05ddee6288df94eaaa",
+  "changed_paths_sha256": "82f0c7f7b0bf630ca47e304935588693dd5e67cd408d277cce87ece8905ecb49",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/paper_shadow_bounded_orchestrator_v1/operational_run_v1.py"
+    "src/ops/paper_shadow_bounded_orchestrator_v1/run_contract_v1.py",
+    "tests/ops/test_paper_shadow_run_contract_v1.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_paper_shadow_bounded_operational_loop_v1.py",
+    "tests/ops/test_paper_shadow_run_contract_v1.py",
     "tests/ops/test_paper_shadow_bounded_orchestrator_v1.py"
   ],
-  "reason": "PR #7049 change-bound closure: bounded attempt-run public-MD transport wiring and OperationalRunHooksV1 monotonic/time clock callable fix only; Atlas provenance updated; no CSIA authority semantic change.",
+  "reason": "Paper-Shadow bounded run contract RUN_ID schema generalization (PAPER_SHADOW_RUN_NNN); removes accidental RUN_001-only loader guard; no CSIA authority semantic change.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
