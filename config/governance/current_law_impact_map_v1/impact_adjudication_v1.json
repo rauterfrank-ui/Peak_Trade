@@ -15,7 +15,7 @@
     "tests/ops/test_wallclock_position_closure_bridge_v1.py",
     "tests/ops/test_wallclock_pre_external_projection_v1.py"
   ],
-  "changed_paths_sha256": "2cfc6bfb9269b56a4467444782905950a8c9ac4e437c851cae8a085c12bf83c5",
+  "changed_paths_sha256": "7a028842a96338e9ccb5f871f974b46604e6e57a6a39a6e3259fdb71476d6783",
   "evidence_refs": [
     "tests/ops/test_operational_run_forensic_telemetry_wiring_v1.py",
     "tests/ops/test_paper_shadow_bounded_orchestrator_v1.py",
@@ -27,19 +27,5 @@
   ],
   "reason": "NO_LAW_IMPACT: complete DEF-002/003 Paper Shadow wallclock forensic telemetry and natural_enter propagation; integration-only; no normative law or trading authority change.",
   "selector_used_as_law_impact_authority": false,
-  "verdict": "NO_LAW_IMPACT",
-  "covered_candidate_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "src/ops/paper_shadow_bounded_orchestrator_v1/operational_run_v1.py",
-    "src/ops/paper_shadow_bounded_orchestrator_v1/run_evidence_v1.py",
-    "src/ops/paper_shadow_bounded_orchestrator_v1/wallclock_forensic_cycle_record_v1.py",
-    "tests/ops/test_operational_run_forensic_telemetry_wiring_v1.py",
-    "tests/ops/test_paper_shadow_bounded_orchestrator_v1.py",
-    "tests/ops/test_productive_cycle_step_pre_external_wiring_v1.py",
-    "tests/ops/test_run_evidence_forensic_liveness_v1.py",
-    "tests/ops/test_wallclock_forensic_cycle_record_v1.py",
-    "tests/ops/test_wallclock_position_closure_bridge_v1.py",
-    "tests/ops/test_wallclock_pre_external_projection_v1.py"
-  ]
+  "verdict": "NO_LAW_IMPACT"
 }

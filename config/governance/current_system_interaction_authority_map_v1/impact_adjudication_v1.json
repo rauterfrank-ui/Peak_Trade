@@ -15,10 +15,9 @@
     "tests/ops/test_wallclock_position_closure_bridge_v1.py",
     "tests/ops/test_wallclock_pre_external_projection_v1.py"
   ],
-  "changed_paths_sha256": "2cfc6bfb9269b56a4467444782905950a8c9ac4e437c851cae8a085c12bf83c5",
+  "changed_paths_sha256": "7a028842a96338e9ccb5f871f974b46604e6e57a6a39a6e3259fdb71476d6783",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "src/ops/paper_shadow_bounded_orchestrator_v1/operational_run_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/run_evidence_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/wallclock_forensic_cycle_record_v1.py",
