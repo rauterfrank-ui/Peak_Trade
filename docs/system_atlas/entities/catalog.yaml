@@ -2672,6 +2672,45 @@ entities:
   - docs/ops/specs/WHOLE_SYSTEM_CONNECTION_CLOSURE_BOUNDED_WP_V1.md
   - src/ops/whole_system_connection_closure_bounded_wp_v1/proof_v1.py
   notes: Owner-GO forensic census + static proof for productive Decision→PRE_EXTERNAL after P5.10 bind wiring; WHOLE_SYSTEM_CONNECTION_COMPLETE=true with REQUIRED_CLOSURE_COUNT=0; FINAL_D_T remains intentionally isolated; cutover flags false; ATLAS_AUTHORITY=NONE.
+- id: CONTRACT:peak_trade_whole_system_proof_harness_v1
+  kind: CONTRACT
+  name: Peak_Trade Whole-System Proof Harness v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: PR_7061_WHOLE_SYSTEM_PROOF_HARNESS_V1
+  authority_sources:
+  - docs/ops/specs/PEAK_TRADE_WHOLE_SYSTEM_PROOF_HARNESS_V1.md
+  source_paths:
+  - config/ops/peak_trade_whole_system_proof_harness_v1/operations/policy_governed_live_c1_pre_external_v1.json
+  - docs/ops/specs/PEAK_TRADE_WHOLE_SYSTEM_PROOF_HARNESS_V1.md
+  - scripts/ops/run_peak_trade_whole_system_proof_harness_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/__init__.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/authority_safety_xref_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/baseline_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/config_state_xref_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/constants_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/counterfactual_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/coverage_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/dynamic_binding_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/evidence_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/exclusion_ledger_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/fixpoint_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/ghv_adapter_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/ghv_productive_differential_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/governance_provenance_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/harness_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/identity_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/instrument_inventory_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/manifest_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/persistence_proof_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/setting_solver_v1.py
+  - src/ops/peak_trade_whole_system_proof_harness_v1/static_closure_v1.py
+  - tests/ops/test_peak_trade_whole_system_proof_harness_v1.py
+  evidence_sources:
+  - docs/ops/specs/PEAK_TRADE_WHOLE_SYSTEM_PROOF_HARNESS_V1.md
+  - tests/ops/test_peak_trade_whole_system_proof_harness_v1.py
+  notes: 'PR #7061: observational whole-system proof stack (GHV witness + static/runtime coverage manifest); AUTHORITY=NONE; no productive trading semantic change; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
 - id: CONTRACT:pre_external_to_external_effect_boundary_bounded_wp_v1
   kind: CONTRACT
   name: PRE_EXTERNAL to external-effect boundary bounded WP v1

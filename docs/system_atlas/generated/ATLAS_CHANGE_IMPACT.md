@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7059_natural_enter_rc_imp_ord_convergence_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7061_whole_system_proof_harness_v1`.
 
 ## Workflow
 
@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
+| `CONTRACT:peak_trade_whole_system_proof_harness_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7060 Owner-GO revalidation baseline rebind to c752284; governance/spec currency for bounded continuous Fresh-C1 run; no trading, POST, or configuration authority change.
-- introduced_by=CHANGE:pr_7059_natural_enter_rc_imp_ord_convergence_v1
-- modified_by=PR_7060_OWNER_GO_REVALIDATION_BASELINE_REBIND_V1
+- PR #7061 Whole-System Proof Harness v1 Atlas entity registration; observational instrumentation only; no trading, POST, or configuration authority change.
+- introduced_by=CHANGE:pr_7061_whole_system_proof_harness_v1
+- modified_by=PR_7061_WHOLE_SYSTEM_PROOF_HARNESS_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -1,12 +1,12 @@
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CHANGE:pr_7059_natural_enter_rc_imp_ord_convergence_v1
-modified_by: PR_7060_OWNER_GO_REVALIDATION_BASELINE_REBIND_V1
+introduced_by: CHANGE:pr_7061_whole_system_proof_harness_v1
+modified_by: PR_7061_WHOLE_SYSTEM_PROOF_HARNESS_V1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'PR #7060 Owner-GO revalidation baseline rebind to c752284; governance/spec currency for bounded continuous Fresh-C1 run; no trading, POST, or configuration authority change.'
+note: 'PR #7061 Whole-System Proof Harness v1 Atlas entity registration; observational instrumentation only; no trading, POST, or configuration authority change.'
 changed_entities:
-- RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
+- CONTRACT:peak_trade_whole_system_proof_harness_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []
