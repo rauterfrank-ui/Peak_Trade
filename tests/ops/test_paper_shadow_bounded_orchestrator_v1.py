@@ -234,6 +234,32 @@ def test_cli_preflight_only_exit_zero(tmp_path: Path) -> None:
     assert payload["FINAL_PREFLIGHT_STATE"] == "GO_READY_AWAITING_EXPLICIT_OWNER_GO"
 
 
+def test_record_productive_cycle_passive_telemetry_projection() -> None:
+    from src.ops.paper_shadow_bounded_orchestrator_v1.run_evidence_v1 import (
+        RunEvidenceAccumulatorV1,
+    )
+
+    acc = RunEvidenceAccumulatorV1(
+        run_id="PAPER_SHADOW_RUN_TEST",
+        fixpoint_sha="abc",
+        fixpoint_tree="def",
+        settings_digest="digest",
+    )
+    acc.record_productive_cycle(
+        bridge_cycle={
+            "cycle_id": "cycle_test",
+            "decision_outcome": "no_action",
+            "selected_side": "none",
+            "reason_codes": ["no_action"],
+            "feature_blockers": [],
+            "required_window_complete": True,
+        }
+    )
+    assert acc.decision_outcomes["no_action"] == 1
+    assert acc.cycle_samples[0]["reason_codes"] == ["no_action"]
+    assert acc.cycle_samples[0]["required_window_complete"] is True
+
+
 def test_offline_integration_reproof(tmp_path: Path) -> None:
     reproof = run_offline_integration_reproof_v1(work_root=tmp_path)
     assert reproof["REAL_POST_COUNT"] == 0
