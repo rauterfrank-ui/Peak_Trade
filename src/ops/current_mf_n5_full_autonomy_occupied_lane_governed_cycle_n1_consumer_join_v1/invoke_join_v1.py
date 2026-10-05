@@ -349,29 +349,41 @@ def _t2_from_s7(
 ) -> Any:
     def _dispatch(**kwargs: Any) -> SimpleNamespace:
         observation = kwargs.get("observation")
-        event_ts = float(s7_base["last_finalized_event_ts_unix"])
+        last_finalized_ts = float(s7_base["last_finalized_event_ts_unix"])
+        accepted_c1_ts = s7_base.get("accepted_c1_venue_event_time_unix")
+        if accepted_c1_ts is not None:
+            accepted_c1_ts = float(accepted_c1_ts)
         closes = tuple(s7_base["finalized_closes"])
         if observation is not None:
-            event_ts = float(getattr(observation, "venue_event_time", event_ts) or event_ts)
+            obs_c1_ts = float(getattr(observation, "venue_event_time", 0) or 0)
+            if obs_c1_ts > 0:
+                accepted_c1_ts = obs_c1_ts
             payload = getattr(observation, "payload", None)
             extracted, last_ts = extract_finalized_candle_closes_v1(
                 payload if payload is not None else candles_payload
             )
             if extracted:
                 closes = extracted
-            if last_ts is not None:
-                event_ts = float(last_ts)
         compose_s7_base = {
-            key: value for key, value in s7_base.items() if key != "cycle_evidence_root"
+            key: value
+            for key, value in s7_base.items()
+            if key not in {"cycle_evidence_root", "accepted_c1_venue_event_time_unix"}
         }
+        eg_incoming_cursor = kwargs.get("incoming_cursor")
         try:
             composed = compose_occupied_lane_mv2_dp_durable_cycle_v1(
                 lane_pairs,
                 **{
                     **compose_s7_base,
                     "finalized_closes": closes,
-                    "last_finalized_event_ts_unix": event_ts,
-                    "observed_unix": event_ts + 1.0,
+                    "last_finalized_event_ts_unix": last_finalized_ts,
+                    "accepted_c1_venue_event_time_unix": accepted_c1_ts,
+                    "incoming_cursor_override": eg_incoming_cursor,
+                    "observed_unix": (
+                        float(accepted_c1_ts) + 1.0
+                        if accepted_c1_ts is not None
+                        else last_finalized_ts + 1.0
+                    ),
                 },
             )
         except FullAutonomyOccupiedLaneMv2DpDecisionStateAddressingJoinError as exc:

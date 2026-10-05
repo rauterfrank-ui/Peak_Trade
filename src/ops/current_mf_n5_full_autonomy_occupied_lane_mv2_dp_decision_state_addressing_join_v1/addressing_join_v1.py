@@ -431,6 +431,7 @@ def invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
     last_finalized_event_ts_unix: float,
     venue_flat: bool,
     existing_position_side: ExistingPositionSide,
+    accepted_c1_venue_event_time_unix: float | None = None,
     incoming_cursor: object | None = None,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
     canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
@@ -479,6 +480,7 @@ def invoke_occupied_lane_mv2_dp_decision_state_consumer_v1(
             last_finalized_event_ts_unix=last_finalized_event_ts_unix,
             venue_flat=venue_flat,
             existing_position_side=existing_position_side,
+            accepted_c1_venue_event_time_unix=accepted_c1_venue_event_time_unix,
             incoming_cursor=None,
             g17_typed_vol_producer=producers[lane_id],
             ddo_durable_evidence_ledger_path=_ddo_learning_capture_ledger_path_v1(store_root),
@@ -519,6 +521,7 @@ def carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
     last_finalized_event_ts_unix: float,
     venue_flat: bool,
     existing_position_side: ExistingPositionSide,
+    accepted_c1_venue_event_time_unix: float | None = None,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
     canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
     master_v2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1 | None = None,
@@ -591,6 +594,7 @@ def carry_occupied_lane_mv2_dp_decision_state_in_memory_v1(
             last_finalized_event_ts_unix=last_finalized_event_ts_unix,
             venue_flat=venue_flat,
             existing_position_side=existing_position_side,
+            accepted_c1_venue_event_time_unix=accepted_c1_venue_event_time_unix,
             incoming_cursor=lane_cursor,
             g17_typed_vol_producer=producers[lane_id],
             ddo_durable_evidence_ledger_path=_ddo_learning_capture_ledger_path_v1(store_root),
@@ -704,6 +708,8 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
     last_finalized_event_ts_unix: float,
     venue_flat: bool,
     existing_position_side: ExistingPositionSide,
+    accepted_c1_venue_event_time_unix: float | None = None,
+    incoming_cursor_override: object | None = None,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
     canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
     master_v2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1 | None = None,
@@ -711,8 +717,9 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
     """Reload each lane's cursor file and pass it as that lane's next incoming cursor.
 
     Missing files follow the existing load contract and become incoming_cursor=None.
-    A file whose instrument or venue does not match the lane is rejected before
-    the cycle. Schema handling stays inside the existing cycle restore.
+    When ``incoming_cursor_override`` is provided (S6 EG handoff), it is used instead
+    of disk load after lane identity validation. Schema handling stays inside the
+    existing cycle restore.
     """
     _assert_non_authority()
     if not MAY_LOAD_OR_RESTORE_CURSOR_FROM_DISK:
@@ -728,8 +735,15 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
         if item is None:
             continue
         bound, store_root, cursor_address = item
-        payload = load_current_productive_sidestate_confirmation_cursor_v1(Path(store_root))
-        incoming = _incoming_from_loaded_cursor(lane_id=lane_id, bound=bound, payload=payload)
+        if incoming_cursor_override is not None:
+            incoming = _incoming_from_loaded_cursor(
+                lane_id=lane_id,
+                bound=bound,
+                payload=incoming_cursor_override,
+            )
+        else:
+            payload = load_current_productive_sidestate_confirmation_cursor_v1(Path(store_root))
+            incoming = _incoming_from_loaded_cursor(lane_id=lane_id, bound=bound, payload=payload)
         harness_admission = _resolve_mv2_reconciliation_admission_v1(
             bound=bound,
             prefix=prefix,
@@ -749,6 +763,7 @@ def restore_occupied_lane_mv2_dp_decision_state_cursor_v1(
             funding_rate=funding_rate,
             finalized_closes=finalized_closes,
             last_finalized_event_ts_unix=last_finalized_event_ts_unix,
+            accepted_c1_venue_event_time_unix=accepted_c1_venue_event_time_unix,
             venue_flat=venue_flat,
             existing_position_side=existing_position_side,
             incoming_cursor=incoming,
@@ -828,6 +843,8 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
     last_finalized_event_ts_unix: float,
     venue_flat: bool,
     existing_position_side: ExistingPositionSide,
+    accepted_c1_venue_event_time_unix: float | None = None,
+    incoming_cursor_override: object | None = None,
     g17_typed_vol_producers: Mapping[str, object] | None = None,
     canonical_price_provenance: ProductiveCycleCanonicalPriceProvenanceV1,
     master_v2_reconciliation_admission: ProductiveMasterV2ReconciliationAdmissionV1 | None = None,
@@ -853,8 +870,10 @@ def compose_occupied_lane_mv2_dp_durable_cycle_v1(
         funding_rate=funding_rate,
         finalized_closes=finalized_closes,
         last_finalized_event_ts_unix=last_finalized_event_ts_unix,
+        accepted_c1_venue_event_time_unix=accepted_c1_venue_event_time_unix,
         venue_flat=venue_flat,
         existing_position_side=existing_position_side,
+        incoming_cursor_override=incoming_cursor_override,
         g17_typed_vol_producers=g17_typed_vol_producers,
         canonical_price_provenance=canonical_price_provenance,
         master_v2_reconciliation_admission=master_v2_reconciliation_admission,
