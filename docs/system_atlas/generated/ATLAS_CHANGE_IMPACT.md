@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Run contract RUN_ID schema generalization for sequential bounded Paper-Shadow runs; loader validation only; no trading or POST authority change.
+- Wallclock PRE_EXTERNAL projection + passive Paper Shadow decision telemetry (DEF-001/002/003); integration-only; no trading or POST authority change.
 - introduced_by=CHANGE:pr_7045_shadow_runtime_enablement_v1
-- modified_by=CHANGE:paper_shadow_run_id_schema_v1
+- modified_by=CHANGE:paper_shadow_wallclock_pre_external_projection_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

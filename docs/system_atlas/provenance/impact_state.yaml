@@ -1,10 +1,10 @@
 schema_version: system_atlas.v1
 pending_change: true
 introduced_by: CHANGE:pr_7045_shadow_runtime_enablement_v1
-modified_by: CHANGE:paper_shadow_run_id_schema_v1
+modified_by: CHANGE:paper_shadow_wallclock_pre_external_projection_v1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'Run contract RUN_ID schema generalization for sequential bounded Paper-Shadow runs; loader validation only; no trading or POST authority change.'
+note: 'Wallclock PRE_EXTERNAL projection + passive Paper Shadow decision telemetry (DEF-001/002/003); integration-only; no trading or POST authority change.'
 changed_entities:
 - RUNTIME_COMPONENT:canonical_shadow_runtime_enablement_v1
 - RUNTIME_COMPONENT:paper_shadow_bounded_orchestrator_v1
