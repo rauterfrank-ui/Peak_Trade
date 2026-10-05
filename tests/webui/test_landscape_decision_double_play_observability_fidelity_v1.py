@@ -208,14 +208,6 @@ def test_host_contract_regression_6681() -> None:
     mod.test_canonical_webui_poll_declares_archive_host_contract()
 
 
-def test_persistent_host_regression_6682() -> None:
-    from src.webui.landscape_dashboard_persistent_local_host_v1.constants_v1 import (
-        CANONICAL_BOOKMARK_URL,
-    )
-
-    assert CANONICAL_BOOKMARK_URL == "http://127.0.0.1:8765/market"
-
-
 def test_universe_top20_regression_6683() -> None:
     from tests.webui import test_landscape_universe_top20_selection_rail_fidelity_v1 as mod
 

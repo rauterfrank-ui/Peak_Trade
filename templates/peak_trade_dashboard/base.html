@@ -3,7 +3,7 @@
 <html lang="de">
   <head>
     <meta charset="utf-8" />
-    <title>{% block title %}Peak_Trade Dashboard v1.2{% endblock %}</title>
+    <title>{% block title %}Peak_Trade Operator WebUI{% endblock %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- Phase 1B: self-hosted design tokens + layout + purged utilities (no Tailwind CDN) -->
     <link
@@ -32,8 +32,8 @@
       <header class="border-b border-slate-800 bg-slate-900/70 backdrop-blur sticky top-0 z-50" data-pt-app-chrome-default-v1="true">
         <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <a href="/" class="text-xl font-semibold tracking-tight hover:text-slate-200 transition-colors">
-              Peak_Trade Dashboard
+            <a href="/market" class="text-xl font-semibold tracking-tight hover:text-slate-200 transition-colors">
+              Peak_Trade Operator WebUI
             </a>
             <!-- Version Badge -->
             <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
@@ -51,8 +51,8 @@
           </div>
           <!-- Navigation -->
           <nav class="flex items-center gap-4">
-            <a href="/" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
-              Dashboard
+            <a href="/market" class="text-xs text-slate-400 hover:text-slate-200 transition-colors">
+              Market Landscape
             </a>
             <a
               href="/ops"
@@ -125,7 +125,7 @@
 
       <footer class="border-t border-slate-800/50 bg-slate-900/30 mt-8">
         <div class="max-w-6xl mx-auto px-4 py-3 text-xs text-slate-500 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-          <span>Peak_Trade Dashboard v1.2 · Read-Only · Shadow/Testnet Mode · R&D Dashboard (Phase 76)
+          <span>Peak_Trade Operator WebUI · Read-Only · Shadow/Testnet Mode · R&D (Phase 76)
             · Companion Run UI default <code class="text-slate-400">127.0.0.1:8010</code> (local;
             README)</span>
           <span>🔒 Live-Execution ist deaktiviert</span>

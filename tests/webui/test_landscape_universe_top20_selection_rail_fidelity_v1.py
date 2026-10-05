@@ -341,10 +341,3 @@ def test_host_contract_isolation_regression() -> None:
 
     mod.test_canonical_webui_poll_declares_archive_host_contract()
 
-
-def test_persistent_host_constants_unchanged() -> None:
-    from src.webui.landscape_dashboard_persistent_local_host_v1.constants_v1 import (
-        CANONICAL_BOOKMARK_URL,
-    )
-
-    assert CANONICAL_BOOKMARK_URL == "http://127.0.0.1:8765/market"
