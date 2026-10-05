@@ -328,7 +328,7 @@ Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md]
 
 ## 7. Runtime call / data flow
 
-Runtime relation count: `101`. Entrypoints recorded: `5`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
+Runtime relation count: `101`. Entrypoints recorded: `4`. Double Play pure-stack composition `CONSUMES` survival and suitability in current code. Public MD client `FETCHES` `/api/v5/public/instruments`. Bound testnet transport `SIGNS` HMAC. Flatten `GATES` canary; post-action `OBSERVES` flatten is `OPEN` (not proven wired). Live standing gate `DENIES` canary execute.
 
 Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md](ENTRYPOINT_RUNTIME_TRACES.md).
 
@@ -338,6 +338,87 @@ Drill-down: [RUNTIME_GRAPH.md](RUNTIME_GRAPH.md), [ENTRYPOINT_RUNTIME_TRACES.md]
 | EP:flatten_execute | Flatten execute authority | GATED_MUTATION_PATH | may_exist_downstream_NOT_activated |
 | EP:full_core_live_path_offline | Offline Core-to-Live composition path | GATED_OFFLINE_COMPOSITION_PATH | none_hard_stop_before_wire |
 | EP:gfu_producer | Governed Futures Universe producer | PRODUCTIVE_OFFLINE_PRODUCER | Discovery is offline/injected payload in GFU producer itself; public MD client i |
+
+## 8. Safety / governance model
+
+Fail-closed is the default. Live/Testnet/orders require scoped Owner-GO. Confirm-tokens are purpose-scoped (flatten execute token is not the generic live token). Flatten transport exists with `DEDICATED_FLATTEN_TRANSPORT_LIVE_WIRE_ENABLED=false`. Kill-switch, max-positions=1, and BTC exclusion are separate gates.
+
+| id | kind | name | bucket | epistemic |
+| --- | --- | --- | --- | --- |
+| GATE:btc_exclusion | GATE | BTC_EXCLUDED | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
+| GATE:flatten_execute_authority | GATE | Flatten execute confirm-token authority | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:full_core_capital_admission_v1 | GATE | Full-core Pre-Live Capital Admission seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:full_core_durable_filegate_join_v1 | GATE | Full-core durable FILEGATE join seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:full_core_fresh_pretrade_runtime_get_v1 | GATE | Full-core fresh pretrade runtime GET seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:full_core_live_account_bound_v1 | GATE | Full-core LIVE_ACCOUNT_BOUND seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:full_core_live_path_execution_boundary_halt_before_wire_v1 | GATE | Offline Live execution boundary halt-before-wire v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:full_core_live_path_frozen_pretrade_conjunction_v1 | GATE | Frozen offline pretrade conjunction v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:full_core_live_path_identity_v1 | GATE | Full-core productive Live-path identity gate v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:full_core_live_path_restart_gate_v1 | GATE | Full-core live path restart gate v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:full_core_live_path_standing_live_gates_v1 | GATE | Full-core live path standing Live gates v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:full_core_owner_one_shot_permit_v1 | GATE | Full-core typed OWNER_ONE_SHOT permit seam v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:kill_switch_durable_filegate_v1 | GATE | Durable execution-side kill-switch FILEGATE v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:live_authorized_false | GATE | LIVE_AUTHORIZED=false standing | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
+| GATE:max_positions_1 | GATE | CURRENT_MAX_POSITIONS=1 | CURRENT_CANONICAL | STATUS=CANONICAL_AUTHORITY |
+| GATE:portfolio_capital_reservation_budget_v1 | GATE | Portfolio capital reservation budget owner v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:treasury_phase_1_offline_contracts_v1 | GATE | Treasury Phase-1 offline contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:treasury_phase_2_read_only_reconciliation_v1 | GATE | Treasury Phase-2 read-only reconciliation foundation v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| GATE:treasury_phase_3_shadow_enforcement_v1 | GATE | Treasury Phase-3 shadow read-only enforcement v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+
+Safety chains recorded: `4`. Drill-down: [SAFETY_GOVERNANCE_MAP.md](SAFETY_GOVERNANCE_MAP.md).
+
+## 9. Configuration wiring
+
+Configuration records: `4`. Config enablement does not confer `LIVE_AUTHORIZED`. Drill-down: [CONFIGURATION_WIRING.md](CONFIGURATION_WIRING.md).
+
+| id | key | source | default | status |
+| --- | --- | --- | --- | --- |
+| CFG:exchange_okx_europe_eea | exchange.okx_europe_eea | config/config.toml | enabled=false validate_only=true (as historically observed on origin/main) | CURRENT_NONCANONICAL |
+| CFG:live_authorized | LIVE_AUTHORIZED | docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md | false | CURRENT_CANONICAL |
+| CFG:max_positions | CURRENT_MAX_POSITIONS | docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md | 1 | CURRENT_CANONICAL |
+| CFG:testnet_authorized | TESTNET_AUTHORIZED | docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md | false | CURRENT_CANONICAL |
+
+## 10. Data contract / identity / unit model
+
+SCHEMA is not automatically DATA_CONTRACT or dataclass. BoundInstrumentV1 carries identity/digests, not ctVal/base/quote/settle. Quote currency is derived in Cap 2.1 eligibility (`quoteCcy` else hyphen `instId`; `uly` fills BASE only). Fresh EEA rows often have empty `quoteCcy`; XPERP underscored ids fail the regex (`C-OKX-QUOTE-ULY-001`). Public XPERP `settleCcy=USD` vs account USDC must not be collapsed.
+
+| id | kind | name | bucket | epistemic |
+| --- | --- | --- | --- | --- |
+| DATA_CONTRACT:account_equity_orchestration_ingress_v1 | DATA_CONTRACT | Account-equity orchestration ingress v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| DATA_CONTRACT:bound_instrument_v1 | DATA_CONTRACT | BoundInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| DATA_CONTRACT:full_core_live_path_models_v1 | DATA_CONTRACT | Full-core live path typed contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| DATA_CONTRACT:ghv_regression_corpus_provenance_v1 | DATA_CONTRACT | GHV regression corpus provenance v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| DATA_CONTRACT:governed_universe_instrument_v1 | DATA_CONTRACT | GovernedUniverseInstrumentV1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| DATA_CONTRACT:treasury_phase_2_read_only_reconciliation_v1 | DATA_CONTRACT | Treasury Phase-2 read-only reconciliation contracts v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+| DATA_CONTRACT:treasury_shadow_enforcement_result_v1 | DATA_CONTRACT | Treasury shadow enforcement result v1 | CURRENT_IMPLEMENTED_NONCANONICAL | STATUS=FORENSIC_RAW |
+
+Lineage records: `4`. Drill-down: [DATA_CONTRACT_MAP.md](DATA_CONTRACT_MAP.md), [DATA_LINEAGE_MAP.md](DATA_LINEAGE_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md).
+
+## 11. Complete OKX domain overview
+
+OKX is a first-class venue domain. XPERP is `instType=FUTURES` + `ruleType=xperp`, not a separate instType and not the census organizing center. Productive EEA REST host is `eea.okx.com`. Public MD client often uses `www.okx.com`. WebSocket hosts are configured; no proven live WS client. Signed private REST exists after the 2026-07-17 audit (supersession, not silent overwrite).
+
+Product types below are Peak_Trade evidence, not generic OKX venue capability.
+
+| product_type | status | canonical_support | runtime_reachability |
+| --- | --- | --- | --- |
+| FUTURES | CURRENT_MODEL | venue/okx | CURRENT |
+| SWAP | CURRENT_MODEL | venue/okx | CURRENT |
+| XPERP_as_ruleType_or_instId_family | CURRENT_MODEL | venue/okx | CURRENT |
+
+- hosts: `0`
+- features: `1`
+- endpoints: `3`
+- fields: `3`
+- `OKX_CENSUS_COMPLETE=true`
+- `REPO_OKX_CENSUS_COMPLETE=true`
+
+Drill-down: [OKX_INTEGRATION_MAP.md](OKX_INTEGRATION_MAP.md), [OKX_FEATURE_MATRIX.md](OKX_FEATURE_MATRIX.md), [OKX_CHRONOLOGY.md](OKX_CHRONOLOGY.md).
+
+## 12. Current vs historical classification
+
+Do not treat historical or forensic material as current runtime wiring. Implementation without proven canonical support is not activation. `IMPLEMENTED` is not `ACTIVATED`. `ADJUDICATED` is an Atlas census label, not a Master Runbook token. `FORENSIC_ONLY` is not canonical. `SUPERSEDED`/`REJECTED` remain historical records.
+
 ### CURRENT_CANONICAL
 
 Architectural-kind count in this bucket: `30`.

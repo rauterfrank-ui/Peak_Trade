@@ -54,6 +54,3 @@
   1. `SCRIPT:run_gfu_producer` -> `CAPABILITY:cap_2_1_gfu` gate=`GATE:btc_exclusion` fail=`fail-closed eligibility reject`
   2. `CAPABILITY:cap_2_1_gfu` -> `RUNTIME_COMPONENT:gfu_eligibility` gate=`INVARIANT:missing_metadata_never_defaulted` fail=`MISSING_QUOTE_CURRENCY &#47; exclusion codes`
 
-
-
-
