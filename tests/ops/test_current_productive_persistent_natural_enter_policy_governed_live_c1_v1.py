@@ -71,7 +71,8 @@ from tests.trading.master_v2.test_double_play_runtime_typed_volatility_presence_
 
 REPO = Path(__file__).resolve().parents[2]
 POST_MERGE_MAIN_SHA = "7a3597e61966749a9e30d06f3514e23a9179fb9e"
-CURRENT_MAIN_SHA = "049fc18cdf8061707185b075ec04dfb61a116c0c"
+CURRENT_MAIN_SHA = "c752284ac86af46d04244421bb0e30c425d619b8"
+PRE_REVALIDATION_OWNER_GO_BASELINE_SHA = "049fc18cdf8061707185b075ec04dfb61a116c0c"
 BASELINE_SHA = CURRENT_MAIN_SHA
 
 
@@ -112,6 +113,15 @@ def test_owner_go_decision_accepts_current_main_at_pinned_baseline() -> None:
         baseline_origin_main_sha=CURRENT_MAIN_SHA,
     )
     assert ok, reasons
+
+
+def test_owner_go_decision_rejects_pre_revalidation_baseline_at_current_pin() -> None:
+    ok, reasons = validate_bounded_continuous_run_owner_go_decision_v1(
+        repo_root=REPO,
+        baseline_origin_main_sha=PRE_REVALIDATION_OWNER_GO_BASELINE_SHA,
+    )
+    assert ok is False
+    assert "BASELINE_SHA_MISMATCH" in reasons
 
 
 @dataclass
