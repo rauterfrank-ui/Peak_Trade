@@ -16,7 +16,7 @@ single machine-readable `whole_system_proof_manifest.json`.
 
 ## Evidence
 
-Runs write under `evidence/research/peak_trade_whole_system_proof_harness_v1/<UTC>/`.
+Runs write under `evidence&#47;research&#47;peak_trade_whole_system_proof_harness_v1&#47;&lt;UTC&gt;&#47;`.
 
 ## Invariants
 
