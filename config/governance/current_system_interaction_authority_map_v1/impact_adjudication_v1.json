@@ -10,6 +10,7 @@
   ],
   "changed_paths_sha256": "4e831d4a92de07728a9b42009fcda288202e08c585dc7a6aadd6aab44d7dbd55",
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "scripts/ops/run_peak_trade_ghv_driven_whole_system_forensic_probe_v1.py",
     "tests/ops/test_ghv_forensic_probe_g17_flight_binding_v1.py",
     "tests/ops/test_ghv_forensic_probe_g17_lifecycle_coherence_v1.py"
