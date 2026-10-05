@@ -695,3 +695,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_wallclock_pre_external_projection_v1.py
   notes: 'PR bounded repair: project_wallclock_pre_external_from_bridge_cycle_v1 connects existing enter_* bridge truth to Paper Shadow PRE_EXTERNAL seam; passive run evidence telemetry; no selection/decision/confirmation semantic change; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:paper_shadow_wallclock_forensic_telemetry_completion_v1
+  from: b83724e2f35798ba8ca68a4ac627de80847677de
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_wallclock_forensic_cycle_record_v1.py
+  notes: 'Post-#7052 SET_A: wallclock_forensic_cycle_record_v1 + operational_run/run_evidence liveness; completes DEF-002/003 observability; no trading authority; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
