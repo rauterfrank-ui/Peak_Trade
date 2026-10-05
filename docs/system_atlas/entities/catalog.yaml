@@ -6123,7 +6123,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:paper_shadow_bounded_orchestrator_v1
+  modified_by: CHANGE:pr_7049_operational_run_transport_clock_v1
   source_paths:
   - src/ops/paper_shadow_bounded_orchestrator_v1/
   - scripts/ops/run_paper_shadow_bounded_orchestrator_v1.py
@@ -6133,6 +6133,7 @@ entities:
   - tests/ops/test_paper_shadow_run_settings_manifest_v1.py
   source_symbols:
   - run_paper_shadow_preflight_only_v1
+  - run_paper_shadow_bounded_operational_run_v1
   - load_paper_shadow_run_contract_v1
   - build_run_settings_manifest_v1
   - compute_run_settings_digest_v1
@@ -6143,7 +6144,7 @@ entities:
   - tests/ops/test_paper_shadow_bounded_orchestrator_v1.py
   - tests/ops/test_paper_shadow_bounded_operational_loop_v1.py
   - evidence/research/paper_shadow_run_contract_v1/20261004T211710Z/run_contract_v1.json
-  notes: 'Bounded Run-001 lifecycle/composition orchestrator; ORCHESTRATOR_TRADING_AUTHORITY=NONE; default preflight-only CLI; authorized --attempt-run bounded operational loop; composes public MD tick source, hardened bridge productive step, pre-external shadow routing; no webui imports; no Owner-GO consumption; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+  notes: 'PR #7049: attempt-run uses build_real_eea_public_md_transport_v1 when wallclock real-network gate enabled; OperationalRunHooksV1 clock callables fixed; ORCHESTRATOR_TRADING_AUTHORITY=NONE; no selection/MV2/safety/POST authority change; ATLAS_AUTHORITY=NONE.'
 - id: DATA_CONTRACT:ghv_regression_corpus_provenance_v1
   kind: DATA_CONTRACT
   name: GHV regression corpus provenance v1

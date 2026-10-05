@@ -674,3 +674,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_paper_shadow_run_settings_manifest_v1.py
   notes: 'Canonical Run-001 settings manifest/digest owner; poll/staleness aligned to wallclock constants; SETTINGS_DIGEST verification in preflight; no trading semantic change; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7049_operational_run_transport_clock_v1
+  from: 556995a169d0d2affe822a81795ea5a618dc52ce
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_paper_shadow_bounded_operational_loop_v1.py
+  notes: 'PR #7049: bounded attempt-run public-MD transport wiring + OperationalRunHooksV1 clock callable fix; no trading/selection/MV2/safety authority change; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

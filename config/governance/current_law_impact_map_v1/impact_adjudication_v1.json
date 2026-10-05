@@ -1,30 +1,21 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "1dd90cb053522d953aa7518541da2c0d1940ffee",
+  "base_sha": "556995a169d0d2affe822a81795ea5a618dc52ce",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "docs/ops/specs/PAPER_SHADOW_BOUNDED_RUN_SETTINGS_DIGEST_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
-    "scripts/ops/emit_paper_shadow_run_settings_manifest_v1.py",
-    "src/ops/paper_shadow_bounded_orchestrator_v1/observation_tick_source_v1.py",
-    "src/ops/paper_shadow_bounded_orchestrator_v1/operational_run_v1.py",
-    "src/ops/paper_shadow_bounded_orchestrator_v1/orchestrator_v1.py",
-    "src/ops/paper_shadow_bounded_orchestrator_v1/run_settings_manifest_v1.py",
-    "tests/ops/test_paper_shadow_bounded_operational_loop_v1.py",
-    "tests/ops/test_paper_shadow_bounded_orchestrator_v1.py",
-    "tests/ops/test_paper_shadow_run_settings_manifest_v1.py",
-    "tests/ops/test_paper_shadow_run_staleness_boundary_v1.py"
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "src/ops/paper_shadow_bounded_orchestrator_v1/operational_run_v1.py"
   ],
-  "changed_paths_sha256": "281c438d5beb8203e1d2027588187557567f213d27121af9767a5c52c8a1b0dd",
+  "changed_paths_sha256": "536a64266dfce90426f40a43bf11e2538a16c23ad5671f05ddee6288df94eaaa",
   "evidence_refs": [
-    "tests/ops/test_paper_shadow_run_settings_manifest_v1.py",
-    "docs/ops/specs/PAPER_SHADOW_BOUNDED_RUN_SETTINGS_DIGEST_V1.md"
+    "tests/ops/test_paper_shadow_bounded_operational_loop_v1.py",
+    "tests/ops/test_paper_shadow_bounded_orchestrator_v1.py"
   ],
-  "reason": "Run-001 settings digest authority closure; law candidate catalog extended for new spec/emit script; no law surface semantic change.",
+  "reason": "PR #7049 change-bound closure: operational_run_v1 wiring/clock fix with Atlas registration; no law surface semantic change.",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT"
 }
