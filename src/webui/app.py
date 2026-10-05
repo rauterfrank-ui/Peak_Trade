@@ -3,8 +3,7 @@
 Peak_Trade: Web Dashboard v1.4 (R&D Comparison View)
 ====================================================
 
-FastAPI-App für read-only Status-Ansichten:
-- v1.0 Projekt-Status & Snapshot
+FastAPI-App für read-only Operator-Ansichten:
 - Strategy-Tiering Übersicht
 - Live-Track Panel mit letzten Sessions (Phase 82)
 - Session Explorer mit Filter & Detail-View (Phase 85)
