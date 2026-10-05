@@ -681,3 +681,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_paper_shadow_bounded_operational_loop_v1.py
   notes: 'PR #7049: bounded attempt-run public-MD transport wiring + OperationalRunHooksV1 clock callable fix; no trading/selection/MV2/safety authority change; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:paper_shadow_run_id_schema_v1
+  from: fb8a338c2b47dcf6349588fb2e68e9bc5f8b8ac1
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_paper_shadow_run_contract_v1.py
+  notes: 'Paper-Shadow bounded run contract RUN_ID schema PAPER_SHADOW_RUN_NNN (001-999); removes accidental RUN_001-only loader guard; no authority/safety/digest semantic change; ATLAS_AUTHORITY=NONE.'
