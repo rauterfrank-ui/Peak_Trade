@@ -695,6 +695,13 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_paper_shadow_bounded_orchestrator_v1.py
   notes: 'PR #7055 D001: default_shadow_session_bundle_v1 uses CANONICAL_INSTRUMENT_ID instead of stale ETH-USD_UM_XPERP-TEST literal; shadow isolated simulation identity aligned with bridge/PRE_EXTERNAL; no selection/decision/POST authority change; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:run003_obs_dual_ledger_correlation_v1
+  from: 0e62f89faf514602e358978f42a5148aed5af786
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_wallclock_dual_ledger_correlation_v1.py
+  notes: 'Run003 passive dual-ledger forensic correlation on wallclock_forensic_cycle_record_v1; links bridge vs shadow domain effects via existing PRE_EXTERNAL event_key; observability only; no reconciliation or state authority; ATLAS_AUTHORITY=NONE.'
 - id: CHANGE:paper_shadow_wallclock_pre_external_projection_v1
   from: c9db3d52ca09205f5b904347862bd06bdd1f29e3
   to: PENDING_CHANGE

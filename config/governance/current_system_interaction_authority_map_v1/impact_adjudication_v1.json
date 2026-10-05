@@ -1,6 +1,6 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "5c70bcb9abb674ee7d88c0bfaaf88331c4c3b217",
+  "base_sha": "0e62f89faf514602e358978f42a5148aed5af786",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
@@ -8,23 +8,27 @@
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/paper_shadow_bounded_orchestrator_v1/operational_run_v1.py"
+    "src/ops/paper_shadow_bounded_orchestrator_v1/operational_run_v1.py",
+    "src/ops/paper_shadow_bounded_orchestrator_v1/wallclock_forensic_cycle_record_v1.py",
+    "tests/ops/test_wallclock_dual_ledger_correlation_v1.py"
   ],
-  "changed_paths_sha256": "536a64266dfce90426f40a43bf11e2538a16c23ad5671f05ddee6288df94eaaa",
+  "changed_paths_sha256": "9ff87f58658d4a0b38715fc013a0b72850aae0558193a8fb0c3e19d984954765",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/paper_shadow_bounded_orchestrator_v1/operational_run_v1.py"
+    "src/ops/paper_shadow_bounded_orchestrator_v1/operational_run_v1.py",
+    "src/ops/paper_shadow_bounded_orchestrator_v1/wallclock_forensic_cycle_record_v1.py",
+    "tests/ops/test_wallclock_dual_ledger_correlation_v1.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_paper_shadow_bounded_orchestrator_v1.py",
-    "tests/ops/test_canonical_shadow_runtime_enablement_v1.py",
-    "tests/ops/test_system_atlas_impact_v1.py"
+    "tests/ops/test_wallclock_dual_ledger_correlation_v1.py",
+    "tests/ops/test_wallclock_forensic_cycle_record_v1.py",
+    "tests/ops/test_operational_run_forensic_telemetry_wiring_v1.py"
   ],
-  "reason": "PR #7055 D001 aligns Paper-Shadow shadow session bundle instrument_id to existing CANONICAL_INSTRUMENT_ID at an already-present operational_run boundary; no CSIA authority-edge or interaction-semantics change; Atlas provenance records topology review only.",
+  "reason": "Run003 passive dual-ledger forensic correlation fields on wallclock_forensic_cycle_record_v1; projects existing PRE_EXTERNAL event_key and shadow route evidence; no CSIA authority-edge change.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

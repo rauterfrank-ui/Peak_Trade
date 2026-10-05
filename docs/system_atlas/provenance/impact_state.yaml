@@ -1,10 +1,10 @@
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CHANGE:pr_7055_d001_canonical_shadow_instrument_v1
-modified_by: CHANGE:pr_7055_d001_canonical_shadow_instrument_v1
+introduced_by: CHANGE:run003_obs_dual_ledger_correlation_v1
+modified_by: CHANGE:run003_obs_dual_ledger_correlation_v1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'PR #7055 D001 canonical shadow instrument identity at operational_run bundle boundary; topology review only; no trading or POST authority change.'
+note: 'Run003 passive dual-ledger forensic correlation on wallclock cycle records; observability only; no trading or POST authority change.'
 changed_entities:
 - RUNTIME_COMPONENT:paper_shadow_bounded_orchestrator_v1
 changed_relations: []
