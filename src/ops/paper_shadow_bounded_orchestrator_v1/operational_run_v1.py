@@ -196,7 +196,7 @@ def run_paper_shadow_bounded_operational_run_v1(
     session_id = f"paper-shadow-{contract.run_id}"
     bridge_state = HardenedBridgeSessionStateV2(instrument_id=CANONICAL_INSTRUMENT_ID)
     shadow_session, shadow_portfolio, shadow_ledger = default_shadow_session_bundle_v1(
-        instrument_id="ETH-USD_UM_XPERP-TEST",
+        instrument_id=CANONICAL_INSTRUMENT_ID,
         state_root=None,
     )
     obs_tok, act_tok = _extract_auth_tokens(authorization_path)
