@@ -40,19 +40,30 @@ class RunEvidenceAccumulatorV1:
             return
         outcome = str(bridge_cycle.get("decision_outcome") or "")
         self.decision_outcomes[outcome] = int(self.decision_outcomes.get(outcome, 0)) + 1
+        if outcome in {"enter_long", "enter_short"}:
+            self.natural_enter_count += 1
         side = str(bridge_cycle.get("selected_side") or "").lower()
         if side == "long":
             self.long_count += 1
         elif side == "short":
             self.short_count += 1
         if len(self.cycle_samples) < 50:
-            self.cycle_samples.append(
-                {
-                    "cycle_id": bridge_cycle.get("cycle_id"),
-                    "decision_outcome": outcome,
-                    "selected_side": bridge_cycle.get("selected_side"),
-                }
-            )
+            sample: dict[str, Any] = {
+                "cycle_id": bridge_cycle.get("cycle_id"),
+                "decision_outcome": outcome,
+                "selected_side": bridge_cycle.get("selected_side"),
+            }
+            # Passive observability only — values already computed in bridge_cycle.
+            for key in (
+                "reason_codes",
+                "feature_blockers",
+                "required_window_complete",
+                "regime_id",
+                "direction",
+            ):
+                if key in bridge_cycle:
+                    sample[key] = bridge_cycle.get(key)
+            self.cycle_samples.append(sample)
 
     def record_pre_external(self) -> None:
         self.pre_external_count += 1

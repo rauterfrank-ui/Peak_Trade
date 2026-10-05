@@ -688,3 +688,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_paper_shadow_run_contract_v1.py
   notes: 'Paper-Shadow bounded run contract RUN_ID schema PAPER_SHADOW_RUN_NNN (001-999); removes accidental RUN_001-only loader guard; no authority/safety/digest semantic change; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:paper_shadow_wallclock_pre_external_projection_v1
+  from: c9db3d52ca09205f5b904347862bd06bdd1f29e3
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_wallclock_pre_external_projection_v1.py
+  notes: 'PR bounded repair: project_wallclock_pre_external_from_bridge_cycle_v1 connects existing enter_* bridge truth to Paper Shadow PRE_EXTERNAL seam; passive run evidence telemetry; no selection/decision/confirmation semantic change; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

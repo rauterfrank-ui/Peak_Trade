@@ -9,8 +9,14 @@ from typing import Any, Callable, Optional
 from src.ops.integrated_paper_shadow_observation_session_v1.market_data_policy_v1 import (
     ObservationMarketTickV1,
 )
+from src.ops.integrated_paper_shadow_observation_wallclock_session_execution_v1.constants_v1 import (
+    CANONICAL_INSTRUMENT_ID,
+)
 from src.ops.paper_shadow_bounded_orchestrator_v1.shadow_routing_v1 import (
     PreExternalProductiveEventV1,
+)
+from src.ops.paper_shadow_bounded_orchestrator_v1.wallclock_pre_external_projection_v1 import (
+    project_wallclock_pre_external_from_bridge_cycle_v1,
 )
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2.hardening_cycle_bridge_v2 import (
     HardenedBridgeSessionStateV2,
@@ -78,11 +84,17 @@ def run_hardened_bridge_productive_cycle_step_v1(
             for b in outcome.md_blockers
         )
     )
+    bridge_cycle = outcome.bridge_cycle
+    pre_external = project_wallclock_pre_external_from_bridge_cycle_v1(
+        bridge_cycle if isinstance(bridge_cycle, dict) else None,
+        session_id=session_id,
+        instrument_id=CANONICAL_INSTRUMENT_ID,
+    )
     return ProductiveCycleStepOutcomeV1(
         ok=outcome.ok,
         productive_cycle_ran=True,
-        bridge_cycle=outcome.bridge_cycle,
-        pre_external_event=None,
+        bridge_cycle=bridge_cycle,
+        pre_external_event=pre_external,
         md_blockers=tuple(outcome.md_blockers),
         fail_fatal=fatal and not outcome.ok,
         labels=dict(outcome.labels),
