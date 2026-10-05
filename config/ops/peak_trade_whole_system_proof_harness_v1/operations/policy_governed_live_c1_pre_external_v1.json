@@ -1,0 +1,203 @@
+{
+  "OPERATION_ID": "BOUNDED_CONTINUOUS_PRODUCTIVE_S6_OBSERVATION_WITH_PUBLIC_READONLY_FRESH_C1_GET_THROUGH_NATURAL_ENTER_PATH_TO_PRE_EXTERNAL",
+  "REAL_LAUNCHER": "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+  "REAL_COMPOSITION_ROOT": "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+  "TERMINAL_BOUNDARY": "PRE_EXTERNAL",
+  "AUTHORIZED_TERMINAL_DISPOSITIONS": [
+    "DISPOSITION_PRE_EXTERNAL_EFFECT",
+    "MAX_CYCLES",
+    "MAX_DURATION",
+    "STALL",
+    "WAIT",
+    "HOLD_CONTINUE_CLOSED"
+  ],
+  "PROHIBITED_EFFECTS": [
+    "venue_POST",
+    "permit_mint",
+    "credential_keychain",
+    "REAL_VENUE_POST"
+  ],
+  "SEMANTIC_NODES": [
+    {
+      "id": "N_LAUNCHER",
+      "role": "CLI entry",
+      "owner": "ops",
+      "location": "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+      "binding": "productive"
+    },
+    {
+      "id": "N_29P_IDENTITY",
+      "role": "execution identity / protected surface",
+      "owner": "governed_productive_account_equity",
+      "location": "current_productive_29p_chain_baseline_contract_v1",
+      "binding": "productive"
+    },
+    {
+      "id": "N_EEA_ACQ",
+      "role": "public universe inventory GET",
+      "owner": "ops",
+      "location": "current_productive_eea_universe_inventory_acquisition_v1",
+      "binding": "productive",
+      "external_read_only": true
+    },
+    {
+      "id": "N_CAP24_WRITE",
+      "role": "selection state canonical write",
+      "owner": "ops",
+      "location": "current_productive_cap24_selection_state_canonical_writer_v1",
+      "binding": "productive",
+      "governance": "CAP24 owner-go scoped"
+    },
+    {
+      "id": "N_CAP24_HANDOFF",
+      "role": "bound instrument provenance",
+      "owner": "ops",
+      "location": "current_productive_29p_cap24_bound_instrument_provenance_handoff_v1",
+      "binding": "productive"
+    },
+    {
+      "id": "N_PREFLIGHT",
+      "role": "S8/cursor reconciliation preflight",
+      "owner": "ops",
+      "location": "current_productive_persistent_natural_enter_convergence_v1.preflight",
+      "binding": "productive"
+    },
+    {
+      "id": "N_OWNER_GO",
+      "role": "bounded continuous + Fresh-C1 GET decision gate",
+      "owner": "governance",
+      "location": "current_productive_bounded_continuous_run_owner_go_wiring_v1",
+      "binding": "productive"
+    },
+    {
+      "id": "N_GET_TRANSPORT",
+      "role": "read-only fresh pretrade GET bind",
+      "owner": "ops",
+      "location": "current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1",
+      "binding": "productive"
+    },
+    {
+      "id": "N_S6_LIVE_C1",
+      "role": "continuous observation source",
+      "owner": "ops",
+      "location": "current_productive_s6_live_fresh_c1_continuous_observation_source_v1",
+      "binding": "productive"
+    },
+    {
+      "id": "N_S8_CONVERGENCE",
+      "role": "S8→S6→S7 composition",
+      "owner": "ops",
+      "location": "current_productive_persistent_natural_enter_convergence_v1",
+      "binding": "productive"
+    },
+    {
+      "id": "N_S6_ORCH",
+      "role": "bounded continuous cycle orchestrator",
+      "owner": "ops",
+      "location": "current_productive_governed_continuous_cycle_orchestrator_v1",
+      "binding": "productive"
+    },
+    {
+      "id": "N_N1_JOIN",
+      "role": "occupied lane N1 consumer join",
+      "owner": "ops",
+      "location": "current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1",
+      "binding": "productive"
+    },
+    {
+      "id": "N_MV2_DP_S7",
+      "role": "MV2+DoublePlay durable cycle compose",
+      "owner": "trading/master_v2",
+      "location": "current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1",
+      "binding": "productive"
+    },
+    {
+      "id": "N_TERMINAL_GUARD",
+      "role": "PRE_EXTERNAL + external effect leak guard",
+      "owner": "ops",
+      "location": "current_productive_persistent_natural_enter_convergence_v1",
+      "binding": "productive",
+      "terminal": true
+    }
+  ],
+  "SEMANTIC_EDGES": [
+    {
+      "producer": "N_LAUNCHER",
+      "consumer": "N_29P_IDENTITY",
+      "contract": "29p_identity_bootstrap",
+      "condition": "launcher_main"
+    },
+    {
+      "producer": "N_29P_IDENTITY",
+      "consumer": "N_EEA_ACQ",
+      "contract": "eea_universe_inventory",
+      "condition": "identity_ready"
+    },
+    {
+      "producer": "N_EEA_ACQ",
+      "consumer": "N_CAP24_WRITE",
+      "contract": "cap24_selection_write",
+      "condition": "inventory_acquired"
+    },
+    {
+      "producer": "N_CAP24_WRITE",
+      "consumer": "N_CAP24_HANDOFF",
+      "contract": "cap24_handoff",
+      "condition": "selection_written"
+    },
+    {
+      "producer": "N_CAP24_HANDOFF",
+      "consumer": "N_PREFLIGHT",
+      "contract": "preflight_inputs",
+      "condition": "handoff_complete"
+    },
+    {
+      "producer": "N_PREFLIGHT",
+      "consumer": "N_OWNER_GO",
+      "contract": "owner_go_gate",
+      "condition": "preflight_pass"
+    },
+    {
+      "producer": "N_OWNER_GO",
+      "consumer": "N_GET_TRANSPORT",
+      "contract": "get_transport_bind",
+      "condition": "owner_go_authorized"
+    },
+    {
+      "producer": "N_GET_TRANSPORT",
+      "consumer": "N_S6_LIVE_C1",
+      "contract": "fresh_c1_observation",
+      "condition": "transport_bound"
+    },
+    {
+      "producer": "N_S6_LIVE_C1",
+      "consumer": "N_S8_CONVERGENCE",
+      "contract": "s8_convergence_compose",
+      "condition": "observation_active"
+    },
+    {
+      "producer": "N_S8_CONVERGENCE",
+      "consumer": "N_S6_ORCH",
+      "contract": "continuous_orchestration",
+      "condition": "convergence_wired"
+    },
+    {
+      "producer": "N_S6_ORCH",
+      "consumer": "N_N1_JOIN",
+      "contract": "n1_consumer_join",
+      "condition": "cycle_tick"
+    },
+    {
+      "producer": "N_N1_JOIN",
+      "consumer": "N_MV2_DP_S7",
+      "contract": "mv2_dp_compose",
+      "condition": "join_complete"
+    },
+    {
+      "producer": "N_MV2_DP_S7",
+      "consumer": "N_TERMINAL_GUARD",
+      "contract": "pre_external_terminal",
+      "condition": "decision_complete"
+    }
+  ]
+}
