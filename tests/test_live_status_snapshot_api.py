@@ -383,4 +383,3 @@ def test_json_panel_status_values(test_client):
 
     for panel in data["panels"]:
         assert panel["status"] in valid_statuses, f"Invalid status: {panel['status']}"
-

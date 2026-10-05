@@ -340,4 +340,3 @@ def test_host_contract_isolation_regression() -> None:
     from tests.webui import test_market_landscape_dashboard_host_contract_isolation_v1 as mod
 
     mod.test_canonical_webui_poll_declares_archive_host_contract()
-

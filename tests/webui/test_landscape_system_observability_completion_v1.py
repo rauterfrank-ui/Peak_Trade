@@ -216,6 +216,7 @@ def test_regressions_6681_through_6685() -> None:
     )
     from tests.webui import test_landscape_universe_top20_selection_rail_fidelity_v1 as s01
     from tests.webui import test_market_landscape_dashboard_host_contract_isolation_v1 as host
+
     host.test_canonical_webui_poll_declares_archive_host_contract()
     s01.test_row_order_follows_readmodel_not_score_sort()
     v03v04.test_v03_slot_matrix_deterministic_twelve_rows_default_not_bound()
