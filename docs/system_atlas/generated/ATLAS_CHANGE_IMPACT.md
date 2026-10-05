@@ -14,16 +14,16 @@
 This view is topology change-coupling, not canonical authority.
 
 ```text
-ATLAS_IMPACT=NONE_WITH_PROOF
-ATLAS_CHANGED_ENTITY_COUNT=1
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_IMPACT=UPDATED
+ATLAS_CHANGED_ENTITY_COUNT=12
+ATLAS_CHANGED_RELATION_COUNT=5
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:current_system_census_edge_reconciliation_repair_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7059_natural_enter_rc_imp_ord_convergence_v1`.
 
 ## Workflow
 
@@ -40,13 +40,28 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `NAVIGATION_INDEX:current_universe_landscape_snapshot_v1` |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_decision_state_addressing_join_v1` |
+| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1` |
+| `CONTRACT:current_mf_n5_isolated_lane_instance_topology_v1` |
+| `CONTRACT:p5_10_productive_activation_and_binding_v1` |
+| `GATE:portfolio_capital_reservation_budget_v1` |
+| `RUNTIME_COMPONENT:current_productive_forensic_executable_quantity_override_v1` |
+| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
+| `RUNTIME_COMPONENT:current_productive_synthetic_enter_forensic_v1` |
+| `RUNTIME_COMPONENT:elementary_direction_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `RUNTIME_COMPONENT:productive_golden_happy_vector_forensic_observability_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:r_full_core_cycle_observes_elementary_direction` |
+| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget` |
+| `REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_s8_addressing` |
+| `REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_fa_mv2_dp_handoff` |
+| `REL:s_fa_occupied_lane_mv2_dp_decision_state_addressing_depends_on_n5_lane_topology` |
 
 ## NEW_RELATIONS
 
@@ -92,8 +107,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Census graph edge_reconciliation bookkeeping only; materialized semantic_edges unchanged; no trading or POST authority change.
-- introduced_by=CHANGE:current_system_census_edge_reconciliation_repair_v1
-- modified_by=CHANGE:current_system_census_edge_reconciliation_repair_v1
+- PR #7059 Natural Enter RC-IMP-01/RC-ORD-01 productive seam convergence; topology review records accepted C1 identity and EG cursor carry; no trading, POST, or configuration authority change.
+- introduced_by=CHANGE:pr_7059_natural_enter_rc_imp_ord_convergence_v1
+- modified_by=CHANGE:pr_7059_natural_enter_rc_imp_ord_convergence_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

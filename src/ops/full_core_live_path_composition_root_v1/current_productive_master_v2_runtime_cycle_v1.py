@@ -496,6 +496,17 @@ def extract_position_truth_v1(
     return "FLAT", True, ExistingPositionSide.NONE
 
 
+def resolve_host_market_sample_venue_event_time_unix_v1(
+    *,
+    last_finalized_event_ts_unix: float,
+    accepted_c1_venue_event_time_unix: float | None = None,
+) -> float:
+    """Canonical accepted C1 venue_event_time for host C1 evaluation when present."""
+    if accepted_c1_venue_event_time_unix is not None:
+        return float(accepted_c1_venue_event_time_unix)
+    return float(last_finalized_event_ts_unix)
+
+
 def _blocked_cycle_result(
     *,
     cycle_id: str,
@@ -605,6 +616,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     last_finalized_event_ts_unix: float,
     venue_flat: bool,
     existing_position_side: ExistingPositionSide,
+    accepted_c1_venue_event_time_unix: float | None = None,
     incoming_cursor: object | None = None,
     g17_typed_vol_producer: CanonicalVolatilityTypedRuntimeProducerScaffoldV1 | None = None,
     productive_layered_core_bind_requested: bool = False,
@@ -696,12 +708,16 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     now_tick = 1 if restored is None else int(restored.now_tick) + 1
     existing_scope = None if restored is None else restored.existing_scope
     runtime_scope_state = None if restored is None else restored.runtime_scope_state
+    host_market_sample_venue_event_time_unix = resolve_host_market_sample_venue_event_time_unix_v1(
+        last_finalized_event_ts_unix=float(last_finalized_event_ts_unix),
+        accepted_c1_venue_event_time_unix=accepted_c1_venue_event_time_unix,
+    )
     try:
         cap61_binding = _bind_cap61_confirmation_v1(instrument_id=instrument_id, restored=restored)
         observation_acceptance_result = evaluate_host_observation_acceptance_v1(
             cap61_binding,
             mid_price=float(mark_px),
-            event_ts_unix=float(last_finalized_event_ts_unix),
+            event_ts_unix=float(host_market_sample_venue_event_time_unix),
             cycle_index=int(now_tick),
         )
         elementary_direction = evaluate_elementary_direction_from_observation_acceptance_v1(
