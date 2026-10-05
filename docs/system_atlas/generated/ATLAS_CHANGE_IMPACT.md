@@ -14,7 +14,7 @@
 This view is topology change-coupling, not canonical authority.
 
 ```text
-ATLAS_IMPACT=UPDATED
+ATLAS_IMPACT=NONE_WITH_PROOF
 ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:run003_obs_dual_ledger_correlation_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:current_system_census_edge_reconciliation_repair_v1`.
 
 ## Workflow
 
@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:paper_shadow_bounded_orchestrator_v1` |
+| `NAVIGATION_INDEX:current_universe_landscape_snapshot_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Run003 passive dual-ledger forensic correlation on wallclock cycle records; observability only; no trading or POST authority change.
-- introduced_by=CHANGE:run003_obs_dual_ledger_correlation_v1
-- modified_by=CHANGE:run003_obs_dual_ledger_correlation_v1
+- Census graph edge_reconciliation bookkeeping only; materialized semantic_edges unchanged; no trading or POST authority change.
+- introduced_by=CHANGE:current_system_census_edge_reconciliation_repair_v1
+- modified_by=CHANGE:current_system_census_edge_reconciliation_repair_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

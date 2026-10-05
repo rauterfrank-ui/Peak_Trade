@@ -182,7 +182,7 @@ entities:
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
   semantic_authority: false
-  modified_by: CHANGE:pr_7032_ghv_current_residency_migration_v1
+  modified_by: CHANGE:current_system_census_edge_reconciliation_repair_v1
   authority_sources:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   evidence_sources:

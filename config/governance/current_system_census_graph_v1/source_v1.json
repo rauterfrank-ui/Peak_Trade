@@ -11606,11 +11606,11 @@
     "map_and_system_edge_count": 31,
     "system_only_edge_count": 9,
     "map_only_edge_count": 44,
-    "edge_conflict_count": 0,
-    "reconciliation_status": "CURRENT_ALIGNED",
-    "reconciliation_note": "Reported MAP_AND_SYSTEM+MAP_ONLY+CONFLICT counts reference census Phase-2 narrative; materialized map_relationship tallies may differ by 1 CODE_AND_MAP because only 75 map edges exist.",
+    "edge_conflict_count": 1,
+    "reconciliation_status": "DISCREPANCY_PRESERVED",
+    "reconciliation_note": "Phase-2 census narrative counts (31+44+1+9) are preserved alongside materialized semantic_edges map_relationship tallies (32 CODE_AND_MAP, 43 MAP_ONLY, 9 CODE_ONLY, 0 CONFLICTING); see census_discrepancies CD-006 and CD-008.",
     "materialized_map_relationship_tally": {
-      "CODE_AND_MAP": 31,
+      "CODE_AND_MAP": 32,
       "MAP_ONLY": 43,
       "CONFLICTING": 0,
       "CODE_ONLY": 9
