@@ -339,83 +339,6 @@ class TestApiLiveSessionsEndpoint:
 
 
 # =============================================================================
-# Tests: Dashboard HTML Rendering
-# =============================================================================
-
-
-class TestDashboardRendering:
-    """Tests für das Dashboard HTML-Rendering mit Live-Track-Daten."""
-
-    @pytest.fixture
-    def test_client(self):
-        """Erstellt einen TestClient für die FastAPI-App."""
-        from fastapi.testclient import TestClient
-        from src.webui.app import create_app
-
-        app = create_app()
-        return TestClient(app)
-
-    def test_dashboard_returns_200(self, test_client):
-        """Test: Dashboard gibt 200 zurück."""
-        response = test_client.get("/")
-        assert response.status_code == 200
-
-    def test_dashboard_contains_live_track_section(self, test_client):
-        """Test: Dashboard enthält Live-Track-Sektion."""
-        response = test_client.get("/")
-        assert "Live-Track" in response.text
-
-    def test_dashboard_contains_workflow_officer_section(self, test_client):
-        """Test: Dashboard enthält read-only Workflow-Officer-Panel."""
-        response = test_client.get("/")
-        assert response.status_code == 200
-        assert "Workflow Officer" in response.text
-        assert "Ops snapshot" in response.text
-        assert "Executive decision package · read-only" in response.text
-
-    def test_dashboard_workflow_officer_empty_state_mentions_executive_snapshot(
-        self, test_client, tmp_path, monkeypatch
-    ):
-        """Regression: leerer Workflow-Officer-Block nennt executive snapshot im Template-Text."""
-        from src.webui import app as app_mod
-        from src.webui.ops_cockpit import build_workflow_officer_panel_context as _build_wf_panel
-
-        monkeypatch.setattr(
-            app_mod,
-            "build_workflow_officer_panel_context",
-            lambda _root=None: _build_wf_panel(tmp_path),
-        )
-        response = test_client.get("/")
-        assert response.status_code == 200
-        assert "No local Workflow Officer report (executive snapshot)" in response.text
-
-    def test_dashboard_workflow_officer_panel_shows_executive_heading_and_followups(
-        self, test_client
-    ):
-        """Regression: Executive-Überschrift und Follow-up-Listen bleiben im Dashboard sichtbar."""
-        response = test_client.get("/")
-        assert response.status_code == 200
-        body = response.text
-        assert "Executive decision package · read-only" in body
-        assert "Top follow-ups" in body
-
-    def test_dashboard_shows_empty_state(self, test_client, monkeypatch):
-        """Test: Dashboard zeigt leeren Zustand wenn keine Sessions."""
-
-        # Leere Registry erzwingen, damit Empty-State gerendert wird
-        def _empty_sessions(*, limit=10):
-            return {"sessions": [], "latest": None, "has_sessions": False}
-
-        monkeypatch.setattr(
-            "src.webui.app.load_live_sessions",
-            _empty_sessions,
-        )
-        response = test_client.get("/")
-        # Dashboard-Empty-State muss den exakten kanonischen Template-Text rendern
-        assert "Keine Live-Sessions gefunden." in response.text
-
-
-# =============================================================================
 # Tests: Integration mit Live-Session-Registry
 # =============================================================================
 
@@ -859,48 +782,6 @@ class TestPhase85ApiEndpoints:
         """Test: /session/{id} gibt 404 wenn nicht gefunden."""
         response = test_client.get("/session/nonexistent_session_id")
         assert response.status_code == 404
-
-
-# =============================================================================
-# Phase 85 Tests: Dashboard with Filters
-# =============================================================================
-
-
-class TestDashboardWithFilters:
-    """Tests für Dashboard mit Filter-UI (Phase 85)."""
-
-    @pytest.fixture
-    def test_client(self):
-        """Erstellt einen TestClient für die FastAPI-App."""
-        from fastapi.testclient import TestClient
-        from src.webui.app import create_app
-
-        app = create_app()
-        return TestClient(app)
-
-    def test_dashboard_accepts_mode_filter(self, test_client):
-        """Test: Dashboard akzeptiert mode Query-Parameter."""
-        response = test_client.get("/?mode=shadow")
-        assert response.status_code == 200
-        assert "shadow" in response.text.lower()
-
-    def test_dashboard_accepts_status_filter(self, test_client):
-        """Test: Dashboard akzeptiert status Query-Parameter."""
-        response = test_client.get("/?status=completed")
-        assert response.status_code == 200
-
-    def test_dashboard_contains_filter_ui(self, test_client):
-        """Test: Dashboard enthält Filter-UI."""
-        response = test_client.get("/")
-        assert response.status_code == 200
-        # Filter-Links sollten vorhanden sein
-        assert "Filter" in response.text
-
-    def test_dashboard_session_explorer_title(self, test_client):
-        """Test: Dashboard zeigt Session Explorer Titel."""
-        response = test_client.get("/")
-        assert response.status_code == 200
-        assert "Session Explorer" in response.text
 
 
 # =============================================================================

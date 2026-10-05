@@ -130,7 +130,7 @@ def test_viewport_fit_playwright_layout(width: int, height: int, min_stage_px: i
                 route.continue_()
 
             page.route("**/*", _handler)
-            page.goto("http://127.0.0.1:8765/market", wait_until="load")
+            page.goto("http://127.0.0.1:8000/market", wait_until="load")
             metrics = page.evaluate(_VIEWPORT_FIT_JS)
         finally:
             context.close()

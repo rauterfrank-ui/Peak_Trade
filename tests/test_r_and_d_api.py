@@ -707,7 +707,7 @@ class TestRnDCanonicalListGlobalNavHtml:
     """Phase 76 Slice 11: base.html + Preset/Strategy-Drilldown auf /r_and_d/experiments."""
 
     def test_dashboard_home_includes_base_nav_canonical_list_link(self, client):
-        resp = client.get("/")
+        resp = client.get("/r_and_d/experiments")
         assert resp.status_code == 200
         assert 'href="/r_and_d/experiments"' in resp.text
 

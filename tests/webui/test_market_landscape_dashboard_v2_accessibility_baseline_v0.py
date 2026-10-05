@@ -222,7 +222,7 @@ def test_real_chrome_keyboard_focus_accessibility_baseline(tmp_path: Path) -> No
 
                 def _handler(route, request, _html=html):  # type: ignore[no-untyped-def]
                     url = request.url
-                    if url.endswith("/market") or url.rstrip("/").endswith(":8765"):
+                    if url.endswith("/market") or url.rstrip("/").endswith(":8000"):
                         route.fulfill(status=200, content_type="text/html", body=_html)
                         return
                     if "/static/" in url:
@@ -241,7 +241,7 @@ def test_real_chrome_keyboard_focus_accessibility_baseline(tmp_path: Path) -> No
                     route.fulfill(status=404, body=b"missing")
 
                 page.route("**/*", _handler)
-                page.goto("http://127.0.0.1:8765/market", wait_until="domcontentloaded")
+                page.goto("http://127.0.0.1:8000/market", wait_until="domcontentloaded")
 
                 root = page.locator('[data-market-landscape-v2="true"]')
                 assert root.count() == 1

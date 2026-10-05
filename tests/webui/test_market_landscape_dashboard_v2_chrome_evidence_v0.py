@@ -82,7 +82,7 @@ def live_server_url() -> str:
     Prefer uvicorn subprocess through review harness launch helper when available;
     fallback: sync TestClient HTML + playwright route fulfill for static checks.
     """
-    return "http://127.0.0.1:8765"
+    return "http://127.0.0.1:8000"
 
 
 def _collect_asgi_html() -> str:
@@ -304,7 +304,7 @@ def _run_chrome_against_html(
 
                 def _handler(route, request, _html=html):  # type: ignore[no-untyped-def]
                     url = request.url
-                    if url.endswith("/market") or url.rstrip("/").endswith(":8765"):
+                    if url.endswith("/market") or url.rstrip("/").endswith(":8000"):
                         route.fulfill(status=200, content_type="text/html", body=_html)
                         return
                     if "/static/" in url:
@@ -323,7 +323,7 @@ def _run_chrome_against_html(
                     route.fulfill(status=404, body=b"missing")
 
                 page.route("**/*", _handler)
-                page.goto("http://127.0.0.1:8765/market", wait_until="domcontentloaded")
+                page.goto("http://127.0.0.1:8000/market", wait_until="domcontentloaded")
 
                 root = page.locator('[data-market-landscape-v2="true"]')
                 assert root.count() == 1

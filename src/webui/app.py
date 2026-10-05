@@ -3,8 +3,7 @@
 Peak_Trade: Web Dashboard v1.4 (R&D Comparison View)
 ====================================================
 
-FastAPI-App für read-only Status-Ansichten:
-- v1.0 Projekt-Status & Snapshot
+FastAPI-App für read-only Operator-Ansichten:
 - Strategy-Tiering Übersicht
 - Live-Track Panel mit letzten Sessions (Phase 82)
 - Session Explorer mit Filter & Detail-View (Phase 85)
@@ -477,10 +476,10 @@ def load_live_status_snapshot_home_context() -> Dict[str, Any]:
 
 def create_app() -> FastAPI:
     app = FastAPI(
-        title="Peak_Trade Dashboard v1.2",
+        title="Peak_Trade Operator WebUI",
         description=(
-            "Read-only Dashboard für Projekt-Status, Strategy-Tiering, Live-Sessions und R&D-Experimente. "
-            "v1.2: R&D Dashboard API (Phase 76) mit Experiments, Aggregations und Stats. "
+            "Read-only Operator-WebUI für Live-Sessions, Ops-Ansichten, Market Landscape und R&D-Experimente. "
+            "R&D Dashboard API (Phase 76) mit Experiments, Aggregations und Stats. "
             "Live-Mode ist bewusst gesperrt (Safety-First)."
         ),
         version="1.2.0",
@@ -595,48 +594,6 @@ def create_app() -> FastAPI:
                 "status": proj_status,
                 "last_paper_run_panel": last_paper_run_panel,
                 "workflow_dashboard": workflow_dashboard,
-            },
-        )
-
-    @app.get("/", response_class=HTMLResponse)
-    async def index(
-        request: Request,
-        mode: Optional[str] = Query(None, description="Filter: shadow, testnet, paper, live"),
-        status: Optional[str] = Query(
-            None, description="Filter: completed, failed, aborted, started"
-        ),
-        include_research: bool = Query(False, description="Zeige auch R&D/Research-Strategien"),
-    ) -> Any:
-        """HTML Dashboard mit Projekt-Status, Strategy-Tiering und Live-Track."""
-        proj_status = get_project_status()
-        strategy_tiering = load_strategy_tiering(include_research=include_research)
-        strategy_tiering["include_research"] = include_research
-
-        # Phase 85: Filter anwenden wenn gesetzt
-        if mode or status:
-            live_track = load_filtered_sessions(limit=20, mode_filter=mode, status_filter=status)
-        else:
-            live_track = load_live_sessions(limit=10)
-
-        # Filter-State für Template
-        live_track["active_mode_filter"] = mode
-        live_track["active_status_filter"] = status
-
-        # Session-Statistiken
-        live_track["stats"] = get_session_stats()
-
-        workflow_officer_panel = build_workflow_officer_panel_context(BASE_DIR)
-        live_status_snapshot_home = load_live_status_snapshot_home_context()
-
-        return templates.TemplateResponse(
-            request,
-            "index.html",
-            {
-                "status": proj_status,
-                "strategy_tiering": strategy_tiering,
-                "live_track": live_track,
-                "workflow_officer_panel": workflow_officer_panel,
-                "live_status_snapshot_home": live_status_snapshot_home,
             },
         )
 
