@@ -1,12 +1,11 @@
 schema_version: system_atlas.v1
-pending_change: true
-introduced_by: CHANGE:pr_7045_shadow_runtime_enablement_v1
-modified_by: CHANGE:paper_shadow_wallclock_forensic_telemetry_completion_v1
+pending_change: false
+introduced_by: CHANGE:pr_7055_d001_canonical_shadow_instrument_v1
+modified_by: CHANGE:pr_7055_d001_canonical_shadow_instrument_v1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'Post-#7052 DEF-002/003 forensic cycle record and run evidence liveness; integration-only; no trading or POST authority change.'
+note: 'PR #7055 D001 canonical shadow instrument identity at operational_run bundle boundary; topology review only; no trading or POST authority change.'
 changed_entities:
-- RUNTIME_COMPONENT:canonical_shadow_runtime_enablement_v1
 - RUNTIME_COMPONENT:paper_shadow_bounded_orchestrator_v1
 changed_relations: []
 changed_closures: []
