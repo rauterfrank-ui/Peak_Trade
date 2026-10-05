@@ -3805,12 +3805,13 @@ entities:
 - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
   # atlas_entity_review: PR #7028 BWP-03 INJ-001/002 launcher wiring (_build_f1_m9_evaluator G17 bind; residency handoff); defaults OFF; no Natural-Enter forcing; SEMANTIC_CHANGE_FROM_PR7028=NONE; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: default-off --enable-ghv-system-wide-canary-surface-discovery-v1 product flag; CANARY_AUTHORITY=NONE.
+  # atlas_entity_review: PR #7060 Owner-GO revalidation baseline rebind 049fc18->c752284; decision JSON + normative spec + contract tests only; clears immutable-surface lineage drift gate; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive persistent Natural-ENTER policy-governed live Fresh-C1 continuous run v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: GHV_SYSTEM_WIDE_CANARY_SURFACE_DISCOVERY_V1
+  modified_by: PR_7060_OWNER_GO_REVALIDATION_BASELINE_REBIND_V1
   source_paths:
   - scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1.py
