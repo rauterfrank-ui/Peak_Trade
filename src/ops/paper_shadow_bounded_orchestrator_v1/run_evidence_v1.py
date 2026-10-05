@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any
 
+ZERO_ENTER_LIVENESS_INVESTIGATION_THRESHOLD = 200
+
 
 @dataclass
 class RunEvidenceAccumulatorV1:
@@ -34,19 +36,37 @@ class RunEvidenceAccumulatorV1:
     external_effect_count: int = 0
     cycle_samples: list[dict[str, Any]] = field(default_factory=list)
     shadow_samples: list[dict[str, Any]] = field(default_factory=list)
+    forensic_cycle_records: list[dict[str, Any]] = field(default_factory=list)
+    consecutive_zero_enter_cycles: int = 0
+    max_consecutive_zero_enter_cycles: int = 0
 
-    def record_productive_cycle(self, *, bridge_cycle: dict[str, Any] | None) -> None:
+    def record_productive_cycle(
+        self,
+        *,
+        bridge_cycle: dict[str, Any] | None,
+        forensic_record: dict[str, Any] | None = None,
+    ) -> None:
         if bridge_cycle is None:
             return
         outcome = str(bridge_cycle.get("decision_outcome") or "")
         self.decision_outcomes[outcome] = int(self.decision_outcomes.get(outcome, 0)) + 1
-        if outcome in {"enter_long", "enter_short"}:
+        is_enter = outcome in {"enter_long", "enter_short"}
+        if is_enter:
             self.natural_enter_count += 1
+            self.consecutive_zero_enter_cycles = 0
+        else:
+            self.consecutive_zero_enter_cycles += 1
+            self.max_consecutive_zero_enter_cycles = max(
+                self.max_consecutive_zero_enter_cycles,
+                self.consecutive_zero_enter_cycles,
+            )
         side = str(bridge_cycle.get("selected_side") or "").lower()
         if side == "long":
             self.long_count += 1
         elif side == "short":
             self.short_count += 1
+        if forensic_record is not None and len(self.forensic_cycle_records) < 250:
+            self.forensic_cycle_records.append(dict(forensic_record))
         if len(self.cycle_samples) < 50:
             sample: dict[str, Any] = {
                 "cycle_id": bridge_cycle.get("cycle_id"),
@@ -81,8 +101,19 @@ class RunEvidenceAccumulatorV1:
         self.end_wall_unix = end_wall
         return self.to_dict()
 
+    def forensic_liveness_alarm_v1(self) -> str | None:
+        """Passive observability only — does not alter trading decisions.
+
+        Fires after ``ZERO_ENTER_LIVENESS_INVESTIGATION_THRESHOLD`` consecutive
+        productive cycles without enter_long/enter_short. Any Enter resets the streak.
+        """
+        if self.consecutive_zero_enter_cycles >= ZERO_ENTER_LIVENESS_INVESTIGATION_THRESHOLD:
+            return "ZERO_ENTER_LIVENESS_INVESTIGATION"
+        return None
+
     def to_dict(self) -> dict[str, Any]:
-        return {
+        alarm = self.forensic_liveness_alarm_v1()
+        payload = {
             "RUN_ID": self.run_id,
             "FIXPOINT_SHA": self.fixpoint_sha,
             "FIXPOINT_TREE": self.fixpoint_tree,
@@ -109,5 +140,12 @@ class RunEvidenceAccumulatorV1:
             "EXTERNAL_EFFECT_COUNT": self.external_effect_count,
             "cycle_samples": list(self.cycle_samples),
             "shadow_samples": list(self.shadow_samples),
+            "forensic_cycle_records": list(self.forensic_cycle_records),
+            "forensic_cycle_record_count": len(self.forensic_cycle_records),
+            "consecutive_zero_enter_cycles": self.consecutive_zero_enter_cycles,
+            "max_consecutive_zero_enter_cycles": self.max_consecutive_zero_enter_cycles,
             "AUTO_RESTART": False,
+            "ZERO_ENTER_LIVENESS_INVESTIGATION_THRESHOLD": ZERO_ENTER_LIVENESS_INVESTIGATION_THRESHOLD,
+            "FORENSIC_LIVENESS_ALARM": alarm,
         }
+        return payload

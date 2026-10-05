@@ -284,7 +284,22 @@ def run_paper_shadow_bounded_operational_run_v1(
             if step.productive_cycle_ran:
                 counters.cycle_count += 1
                 evidence.cycle_count = counters.cycle_count
-            evidence.record_productive_cycle(bridge_cycle=step.bridge_cycle)
+            from src.ops.paper_shadow_bounded_orchestrator_v1.wallclock_forensic_cycle_record_v1 import (
+                build_wallclock_forensic_cycle_record_v1,
+            )
+
+            forensic_record = build_wallclock_forensic_cycle_record_v1(
+                bridge_cycle=step.bridge_cycle if isinstance(step.bridge_cycle, dict) else None,
+                cycle_sequence=productive_cycle_index,
+                timestamp_unix=hooks.clock_wall(),
+                instrument_id=str(getattr(fetch.tick, "instrument_id", "") or ""),
+                pre_external_emitted=step.pre_external_event is not None,
+                paper_shadow_consumed=None,
+            )
+            evidence.record_productive_cycle(
+                bridge_cycle=step.bridge_cycle,
+                forensic_record=forensic_record,
+            )
 
             if step.fail_fatal:
                 stop_reason = "PRODUCTIVE_CYCLE_FATAL"
@@ -315,6 +330,8 @@ def run_paper_shadow_bounded_operational_run_v1(
                         sample=route.to_dict(),
                         reconcile_ok=bool(route.reconcile and route.reconcile.get("ok")),
                     )
+                if evidence.forensic_cycle_records:
+                    evidence.forensic_cycle_records[-1]["paper_shadow_consumed"] = bool(route.ok)
                 elif route.fail_reason == "MAX_SIMULATED_OPEN_POSITION_COUNT":
                     evidence.duplicate_prevented_count += 1
                 elif route.event_substitution_count > 0:
