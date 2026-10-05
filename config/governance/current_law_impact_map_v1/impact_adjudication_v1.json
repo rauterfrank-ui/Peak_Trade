@@ -1,25 +1,45 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "c9db3d52ca09205f5b904347862bd06bdd1f29e3",
+  "base_sha": "b83724e2f35798ba8ca68a4ac627de80847677de",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/paper_shadow_bounded_orchestrator_v1/productive_cycle_step_v1.py",
+    "src/ops/paper_shadow_bounded_orchestrator_v1/operational_run_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/run_evidence_v1.py",
-    "src/ops/paper_shadow_bounded_orchestrator_v1/wallclock_pre_external_projection_v1.py",
+    "src/ops/paper_shadow_bounded_orchestrator_v1/wallclock_forensic_cycle_record_v1.py",
+    "tests/ops/test_operational_run_forensic_telemetry_wiring_v1.py",
     "tests/ops/test_paper_shadow_bounded_orchestrator_v1.py",
+    "tests/ops/test_productive_cycle_step_pre_external_wiring_v1.py",
+    "tests/ops/test_run_evidence_forensic_liveness_v1.py",
+    "tests/ops/test_wallclock_forensic_cycle_record_v1.py",
+    "tests/ops/test_wallclock_position_closure_bridge_v1.py",
     "tests/ops/test_wallclock_pre_external_projection_v1.py"
   ],
-  "changed_paths_sha256": "00f1afad5f24165a7c11f3190103e233a7c0ca835ec13e55d3c86a3658131991",
+  "changed_paths_sha256": "2cfc6bfb9269b56a4467444782905950a8c9ac4e437c851cae8a085c12bf83c5",
   "evidence_refs": [
-    "tests/ops/test_wallclock_pre_external_projection_v1.py",
-    "tests/ops/test_paper_shadow_bounded_orchestrator_v1.py"
+    "tests/ops/test_operational_run_forensic_telemetry_wiring_v1.py",
+    "tests/ops/test_paper_shadow_bounded_orchestrator_v1.py",
+    "tests/ops/test_productive_cycle_step_pre_external_wiring_v1.py",
+    "tests/ops/test_run_evidence_forensic_liveness_v1.py",
+    "tests/ops/test_wallclock_forensic_cycle_record_v1.py",
+    "tests/ops/test_wallclock_position_closure_bridge_v1.py",
+    "tests/ops/test_wallclock_pre_external_projection_v1.py"
   ],
-  "reason": "NO_LAW_IMPACT: integration-only Paper Shadow wallclock PRE_EXTERNAL projection and passive telemetry; no normative law or trading authority change.",
+  "reason": "NO_LAW_IMPACT: complete DEF-002/003 Paper Shadow wallclock forensic telemetry and natural_enter propagation; integration-only; no normative law or trading authority change.",
   "selector_used_as_law_impact_authority": false,
-  "verdict": "NO_LAW_IMPACT"
+  "verdict": "NO_LAW_IMPACT",
+  "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "src/ops/paper_shadow_bounded_orchestrator_v1/operational_run_v1.py",
+    "src/ops/paper_shadow_bounded_orchestrator_v1/run_evidence_v1.py",
+    "src/ops/paper_shadow_bounded_orchestrator_v1/wallclock_forensic_cycle_record_v1.py",
+    "tests/ops/test_operational_run_forensic_telemetry_wiring_v1.py",
+    "tests/ops/test_paper_shadow_bounded_orchestrator_v1.py",
+    "tests/ops/test_productive_cycle_step_pre_external_wiring_v1.py",
+    "tests/ops/test_run_evidence_forensic_liveness_v1.py",
+    "tests/ops/test_wallclock_forensic_cycle_record_v1.py",
+    "tests/ops/test_wallclock_position_closure_bridge_v1.py",
+    "tests/ops/test_wallclock_pre_external_projection_v1.py"
+  ]
 }

@@ -234,6 +234,25 @@ def test_cli_preflight_only_exit_zero(tmp_path: Path) -> None:
     assert payload["FINAL_PREFLIGHT_STATE"] == "GO_READY_AWAITING_EXPLICIT_OWNER_GO"
 
 
+def test_zero_enter_liveness_alarm_passive() -> None:
+    from src.ops.paper_shadow_bounded_orchestrator_v1.run_evidence_v1 import (
+        RunEvidenceAccumulatorV1,
+        ZERO_ENTER_LIVENESS_INVESTIGATION_THRESHOLD,
+    )
+
+    acc = RunEvidenceAccumulatorV1(
+        run_id="PAPER_SHADOW_RUN_TEST",
+        fixpoint_sha="abc",
+        fixpoint_tree="def",
+        settings_digest="digest",
+    )
+    cycle = {"decision_outcome": "blocked", "cycle_id": "c", "reason_codes": []}
+    for _ in range(ZERO_ENTER_LIVENESS_INVESTIGATION_THRESHOLD):
+        acc.record_productive_cycle(bridge_cycle=cycle)
+    payload = acc.to_dict()
+    assert payload["FORENSIC_LIVENESS_ALARM"] == "ZERO_ENTER_LIVENESS_INVESTIGATION"
+
+
 def test_record_productive_cycle_passive_telemetry_projection() -> None:
     from src.ops.paper_shadow_bounded_orchestrator_v1.run_evidence_v1 import (
         RunEvidenceAccumulatorV1,
