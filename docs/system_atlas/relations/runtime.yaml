@@ -646,6 +646,7 @@ relations:
   notes: Halt joins typed OWNER_ONE_SHOT permit evidence. Does not admit Live. Does
     not override FILEGATE. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_path_calls_fresh_pretrade_runtime_get
+  # atlas_entity_review: PR #7074 binding package under composition root; CALLS edge semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CALLS
   target: GATE:full_core_fresh_pretrade_runtime_get_v1
@@ -672,6 +673,7 @@ relations:
     POST. Does not override FILEGATE, permit, or GET. Atlas is not trading authority.
     ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_live_account_bound_composes_fresh_get
+  # atlas_entity_review: PR #7074 no live_account_bound semantic change; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   source: GATE:full_core_live_account_bound_v1
   type: CONSUMES
   target: GATE:full_core_fresh_pretrade_runtime_get_v1
@@ -895,6 +897,7 @@ relations:
   notes: LIVE_ENABLED, LIVE_ARMED, and WIRE_SEND_PERMITTED cannot mint Treasury mutation
     authority. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: REL:r_full_core_fresh_pretrade_get_composes_permit
+  # atlas_entity_review: PR #7074 Demo transport class acceptance only; CONSUMES edge unchanged; AUTHORITY=NONE; POST_COUNT=0.
   source: GATE:full_core_fresh_pretrade_runtime_get_v1
   type: CONSUMES
   target: GATE:full_core_owner_one_shot_permit_v1

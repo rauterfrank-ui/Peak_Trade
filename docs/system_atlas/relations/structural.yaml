@@ -121,6 +121,7 @@ relations:
 
     '
 - id: REL:s_private_state_runtime_adapts_fresh_pretrade_get
+  # atlas_entity_review: PR #7074 parallel Demo GET binding does not alter WP-B adapter DEPENDS_ON edge; AUTHORITY=NONE; POST_COUNT=0.
   source: CAPABILITY:okx_eea_private_account_state_runtime_v1
   type: DEPENDS_ON
   target: GATE:full_core_fresh_pretrade_runtime_get_v1
