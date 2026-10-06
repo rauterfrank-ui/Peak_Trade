@@ -45,8 +45,7 @@
   ],
   "evidence_refs": [
     "src/trading/master_v2/golden_geometry_engine_v1.py",
-    "config/governance/technical_canonical_wiring_authorization_v1.json",
-    "evidence/research/golden_geometry_engine_v1/20261006T051500Z/09_selected_model_freeze.md"
+    "config/governance/technical_canonical_wiring_authorization_v1.json"
   ],
   "reason": "PR #7064 Golden Geometry Engine V1 wiring closure: semantics-neutral technical canonical wiring and governance/map/law adjudication; CSIA open epistemic record pr_7064_golden_geometry_engine_v1; no interaction-authority edge or Selection/Ranking/Binding/Entry/Exit/POST authority change; AUTHORITY=NONE; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,

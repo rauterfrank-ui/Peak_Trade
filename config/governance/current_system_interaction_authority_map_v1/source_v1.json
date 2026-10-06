@@ -5471,7 +5471,6 @@
       "epistemic_class": "PARTIAL",
       "statement": "PR #7064: Golden Geometry Engine V1 as canonical base geometry magnitude owner (D_gge=volatility_estimate×mark_price) with semantics-neutral technical wiring on scope init, Layer-C distances, integrated replay, Double Play trailing boundaries, and focused contract tests; SAFE CORRECTION removed unauthorized CLASS C validation semantics; reference semantic equivalence and differential replay A–G identical to authorized baseline; no Entry/Exit/Reversal/MV2 decision-semantics change; diff-bound MAP_UPDATE_REQUIRED + prior Atlas review; AUTHORITY=NONE; POST_COUNT=0.",
       "evidence_refs": [
-        "evidence/research/golden_geometry_engine_v1/20261006T051500Z/09_selected_model_freeze.md",
         "src/trading/master_v2/golden_geometry_engine_v1.py",
         "src/trading/master_v2/canonical_scope_initialization_v1.py",
         "src/trading/master_v2/layer_c_scope_event_distance_binding_v1.py",
