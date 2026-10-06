@@ -1,24 +1,26 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "dd4c23da1f3f519413fe8c9f04ddd0050ff3f026",
+  "base_sha": "8cf74278712bf2db247884cc102cc516165c1abf",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py"
+    "scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "tests/ops/test_pre_external_convergence_natural_enter_reporting_v1.py"
   ],
-  "changed_paths_sha256": "a93cc2b8a147fe98b79f2489f8fecd649b1752c304e8db93d1d3f58e952fec1b",
+  "changed_paths_sha256": "3366e0c98185c4184f0b014a3c0e39df2a97b363cbaa21ac9ccd6c1b187903e7",
   "evidence_refs": [
-    "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
     "docs/system_atlas/provenance/changes.yaml",
-    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py"
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "tests/ops/test_pre_external_convergence_natural_enter_reporting_v1.py"
   ],
-  "reason": "PR #7065 Owner-GO baseline lineage rebind post-#7064; governance and Atlas provenance only; no Current Law semantic or authority change.",
+  "reason": "PR #7066: PRE_EXTERNAL convergence reporting accounting only; no Current Law semantic or authority change; AUTHORITY=NONE; POST_COUNT=0.",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT"
 }

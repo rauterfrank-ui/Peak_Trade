@@ -1,12 +1,13 @@
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CHANGE:pr_7064_golden_geometry_engine_v1
-modified_by: PR_7065_OWNER_GO_BASELINE_REBIND_POST_7064_V1
+introduced_by: CHANGE:pr_7066_pre_external_natural_enter_reporting_correlation_v1
+modified_by: PR_7066_PRE_EXTERNAL_NATURAL_ENTER_REPORTING_CORRELATION_V1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'PR #7065 Owner-GO baseline lineage rebind c752284->dd4c23 after PR #7064; governance/spec/test pins only; clears immutable-surface lineage drift for bounded Fresh-C1 S6 admission; no trading, POST, or configuration authority change.'
+note: 'PR #7066: PRE_EXTERNAL convergence reporting correlates S5 cycle_index to ordinal productive live-c1 DPO; RUN_REPORT_ACCOUNTING_GAP closure; reporting only; no trading, POST, or configuration authority change.'
 changed_entities:
 - RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
+- RUNTIME_COMPONENT:current_productive_forensic_executable_quantity_override_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []
