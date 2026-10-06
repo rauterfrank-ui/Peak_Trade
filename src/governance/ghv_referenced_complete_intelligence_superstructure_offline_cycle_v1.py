@@ -84,7 +84,6 @@ class GhvReferencedIntelligenceOfflineCycleRequestV1:
     cycle_index: int = 0
     productive_cycle_id: str | None = None
     selected_instrument: str | None = None
-    geometry_evidence_ref: str | None = None
     pending_outcome_ref: str | None = None
     ghv_reference_digest: str | None = None
 
@@ -259,7 +258,6 @@ def _lineage_shell(
         "gvef_ref": _slot(None, status=LineageSlotStatusV1.NOT_REACHED),
         "proposal_ref": _slot(None, status=LineageSlotStatusV1.NOT_REACHED),
         "m10_ref": _slot(None, status=LineageSlotStatusV1.NOT_REACHED),
-        "geometry_evidence_ref": _slot(None, status=LineageSlotStatusV1.NOT_REACHED),
         "ghv_reference_ref": _slot(None, status=LineageSlotStatusV1.NOT_REACHED),
         "structural_outcome_completeness": "UNAVAILABLE",
         "realized_economic_completeness": "UNAVAILABLE",
@@ -296,12 +294,6 @@ def _lineage_from_complete_cycle(
     meta = cycle.get("meta_learning_evidence") or {}
     learning_input = chain.get("learning_input_validation") or {}
     le = request.learning_evidence
-    geometry_ref = str(request.geometry_evidence_ref or "")
-    if not geometry_ref:
-        for src in le.get("evidence_source_refs") or ():
-            if str(src).startswith("ghv.gev."):
-                geometry_ref = str(src)
-                break
     structural = derive_structural_outcome_completeness_v1(le)
     realized = derive_realized_economic_completeness_v1(le)
     ghv_digest = str(request.ghv_reference_digest or "")
@@ -312,12 +304,6 @@ def _lineage_from_complete_cycle(
             ghv_digest,
             status=(
                 LineageSlotStatusV1.PRESENT if ghv_digest else LineageSlotStatusV1.NOT_APPLICABLE
-            ),
-        ),
-        "geometry_evidence_ref": _slot(
-            geometry_ref,
-            status=(
-                LineageSlotStatusV1.PRESENT if geometry_ref else LineageSlotStatusV1.NOT_APPLICABLE
             ),
         ),
         "decision_event_ref": _slot(

@@ -23,9 +23,6 @@ from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session
     pending_outcome_has_closed_outcome_in_ddo_ledger_v1,
     persist_record_v1,
 )
-from src.ops.full_core_live_path_composition_root_v1.ghv_decision_time_geometry_evidence_v1 import (
-    resolve_geometry_evidence_for_pending_v1,
-)
 from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.types_v1 import (
     NaturalEnterPendingOutcomeRecordV1,
 )
@@ -108,10 +105,6 @@ def maybe_create_natural_enter_pending_outcome_v1(
     session_part = cycle_id.rsplit(":cycle:", 1)[0] if ":cycle:" in cycle_id else cycle_id
     correlation_id = f"ddo.corr.{session_part}" if session_part else ""
     now = _utc_now_iso_v1()
-    geometry_ref, geometry_digest = resolve_geometry_evidence_for_pending_v1(
-        evidence_root=evidence_root,
-        cycle_id=cycle_id,
-    )
     record = NaturalEnterPendingOutcomeRecordV1(
         schema_version="natural_enter_pending_outcome.v1",
         pending_outcome_id=pending_id,
@@ -135,8 +128,6 @@ def maybe_create_natural_enter_pending_outcome_v1(
         status=STATUS_PENDING,
         created_at_utc=now,
         updated_at_utc=now,
-        geometry_evidence_ref=geometry_ref,
-        geometry_evidence_digest=geometry_digest,
     )
     persist_record_v1(
         lane_state_root,

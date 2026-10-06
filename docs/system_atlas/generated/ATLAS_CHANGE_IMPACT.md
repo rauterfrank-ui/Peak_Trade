@@ -15,8 +15,8 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=10
-ATLAS_CHANGED_RELATION_COUNT=4
+ATLAS_CHANGED_ENTITY_COUNT=9
+ATLAS_CHANGED_RELATION_COUNT=3
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
@@ -43,7 +43,6 @@ Do not manually patch generated Markdown.
 | `CONTRACT:p5_10_productive_activation_and_binding_v1` |
 | `RUNTIME_COMPONENT:elementary_direction_v1` |
 | `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
-| `RUNTIME_COMPONENT:ghv_decision_time_geometry_evidence_v1` |
 | `RUNTIME_COMPONENT:ghv_intelligence_lineage_completeness_v1` |
 | `RUNTIME_COMPONENT:ghv_intelligence_lineage_forensic_observability_v1` |
 | `RUNTIME_COMPONENT:ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1` |
@@ -58,7 +57,6 @@ Do not manually patch generated Markdown.
 | `REL:r_full_core_cycle_observes_elementary_direction` |
 | `REL:r_full_core_mv2_appends_ghv_intelligence_lineage_observability_v1` |
 | `REL:r_ghv_offline_cycle_uses_intelligence_lineage_completeness_v1` |
-| `REL:r_productive_ghv_forensic_appends_decision_time_geometry_evidence_v1` |
 
 ## NEW_RELATIONS
 
@@ -104,7 +102,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7081: GHV-referenced intelligence superstructure offline orchestrator (compose-only, M10 hard stop) plus default-off GHV intelligence-lineage forensic append on MV2 cycle, decision-time geometry evidence bridge, and honest lineage completeness; observation-only; GHV_AUTHORITY=NONE; no trading semantics change; POST_COUNT=0.
+- PR #7081: GHV-referenced intelligence superstructure offline orchestrator (compose-only, M10 hard stop) plus default-off GHV intelligence-lineage forensic append on MV2 cycle and honest lineage completeness; GHV geometry bridge retired; canonical DDO dynamic_scope capture wiring; observation-only; GHV_AUTHORITY=NONE; no trading semantics change; POST_COUNT=0.
 - introduced_by=CHANGE:pr_7081_ghv_intelligence_superstructure_integration_closure_v1
 - modified_by=CHANGE:pr_7081_ghv_intelligence_superstructure_integration_closure_v1
 

@@ -27,7 +27,6 @@ from src.ops.full_core_live_path_composition_root_v1.productive_golden_happy_vec
     OBSERVABILITY_CAPTURE_FAILURE_CHANGES_DECISION,
     GoldenHappyVectorForensicObservabilityError,
     active_forensic_observability_session_v1,
-    geometry_evidence_refs_for_cycle_v1,
 )
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     IntegratedOfflineReplayResultV1,
@@ -79,14 +78,6 @@ def build_intelligence_lineage_observability_record_v1(
         if ids:
             decision_ref = str(ids[-1])
     handoff_ok = bool(ddo_offline_export_handoff and ddo_offline_export_handoff.get("ok"))
-    session = active_forensic_observability_session_v1()
-    geometry_ref = ""
-    geometry_digest = ""
-    if session is not None:
-        geo = geometry_evidence_refs_for_cycle_v1(session, cycle_id)
-        geometry_ref = str(geo.get("geometry_evidence_ref") or "")
-        geometry_digest = str(geo.get("geometry_evidence_digest") or "")
-
     pending_ref = ""
     pending_status = LineageSlotStatusV1.NOT_REACHED
     if lane_state_root is not None and decision_ref:
@@ -94,9 +85,6 @@ def build_intelligence_lineage_observability_record_v1(
         if pending is not None:
             pending_ref = pending.pending_outcome_id
             pending_status = LineageSlotStatusV1.PRESENT
-            if not geometry_ref:
-                geometry_ref = str(pending.geometry_evidence_ref or "")
-                geometry_digest = str(pending.geometry_evidence_digest or "")
 
     dpo_ref = ""
     dpo_status = LineageSlotStatusV1.NOT_REACHED
@@ -138,15 +126,7 @@ def build_intelligence_lineage_observability_record_v1(
         ),
         "ghv_reference_digest": ghv_bundle.get("ghv_reference_digest") or "",
         "instrument_ref": _slot(instrument_id, LineageSlotStatusV1.PRESENT),
-        "geometry_evidence_ref": _slot(
-            geometry_ref,
-            LineageSlotStatusV1.PRESENT if geometry_ref else LineageSlotStatusV1.NOT_REACHED,
-        ),
-        "geometry_evidence_digest": geometry_digest,
-        "scope_ref": _slot(
-            cycle_id,
-            LineageSlotStatusV1.PRESENT if geometry_ref else LineageSlotStatusV1.NOT_REACHED,
-        ),
+        "scope_ref": _slot(cycle_id, LineageSlotStatusV1.PRESENT),
         "cap61_ref": _slot(None, LineageSlotStatusV1.NOT_APPLICABLE),
         "sidestate_ref": _slot(None, LineageSlotStatusV1.HISTORICAL_REF_NOT_PRESENT),
         "mv2_ref": _slot(cycle_id, LineageSlotStatusV1.PRESENT),

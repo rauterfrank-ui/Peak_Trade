@@ -53,6 +53,11 @@ def run_integrated_offline_replay_with_productive_ddo_capture_v1(
         if capture_token is not None:
             reset_capture_session_v0(capture_token)
 
+    scope_capture_binding: Any = None
+    intermediate = getattr(replay, "intermediate", None)
+    if intermediate is not None:
+        scope_capture_binding = getattr(intermediate, "scope_event", None)
+
     summary: dict[str, Any] | None = None
     if ddo_capture_binding is not None and ddo_capture_binding.enabled:
         summary = dict(
@@ -66,6 +71,7 @@ def run_integrated_offline_replay_with_productive_ddo_capture_v1(
                 features=features,
                 replay=replay,
                 confirmation_binding=confirmation_binding,
+                dynamic_scope_binding=scope_capture_binding,
             )
         )
     return replay, summary

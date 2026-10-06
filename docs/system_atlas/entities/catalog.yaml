@@ -3914,7 +3914,6 @@ entities:
   - tests/ops/test_current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1.py
   notes: 'Owner-GO decision + consume evidence for bounded continuous run and public readonly Fresh-C1 GET; S6 observation poll only; PRE_EXTERNAL terminal; CONTINUOUS_RUN_AUTHORIZED=false; ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6951 productive entry script + cold-lane bootstrap; baseline rebind 27c3cd4; # ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6952 post-merge Owner-GO baseline lineage (ancestor bind + MV2/DP drift gate); # wiring-only; module pins unchanged; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6980 Cap24 witness epoch + Owner-GO re-pin 7a3597e; integration-only; # src/trading/master_v2 untouched; ATLAS_AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6994 Owner-GO baseline reissued to 049fc18 after #6993 Dynamic-Scope cutover; decision JSON + harness/supervisor baseline pins only; Golden-Happy inject-transport PRE_EXTERNAL proof; no live-market Natural Enter claim; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6995 Fresh-C1 dynamic GET cache policy on productive transport for S6 candle polls only; observation transport liveness; offline proof; Real-Venue effectiveness UNKNOWN pre-merge; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6996 shared transport max_request_count derived from bounded continuous poll contract SSOT; no cache/transport semantic change; offline regression only; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6997 pre-S6 selection-vs-cursor reconciliation for legitimate Cap23 instrument rotation; archive superseded cursor; fresh lane via existing bootstrap; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6998 optional default-off delegating transport capture for verbatim natural GET payloads under evidence_root; observation-only; no trading/threshold/budget change; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #6999 default-off Golden Happy forensic observability CLI for directional signal_strength/threshold evidence and immutable entry-state snapshot; observation-only; src/trading/master_v2 net diff zero; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7003 productive S6 mark-price GET requires DYNAMIC_REFRESH_REQUIRED (parity with candle polls); fixes proven CACHEABLE_SNAPSHOT stale mark reuse; transport default/cache key unchanged; no trading/threshold/selection change;     Real-Venue reproof deferred post-merge; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7004 bounded continuous GET budget SSOT counts two dynamic wire GETs per S6 poll (candle+mark); 12/900 max_request_count 205→405; no cache/transport/trading threshold change; offline contract tests only; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7006 default-off --enable-synthetic-enter-forensic-v1 CLI wiring; synthetic overlay does not contaminate NATURAL_ENTER_OBSERVED; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7008 pass fresh pretrade GET transport from launcher into S5 runner for LIVE-29P injected GET resolution; wiring-only; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7009 bind ephemeral K1 GET-only credential handle to productive fresh-pretrade transport on GHV product path; no POST/external-effect pin change; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7073 cross-session pending Natural-Enter outcome persistence/resolver wiring at launcher boundary; harness-only; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7078 PRE_EXTERNAL report get_count delegation on pending-outcome observation wrapper; reporting-only; AUTHORITY=NONE; POST_COUNT=0.'
 - id: RUNTIME_COMPONENT:natural_enter_cross_session_outcome_closure_v1
-  # atlas_entity_review: PR #7081 optional geometry_evidence_ref/digest on pending outcome records; refs-only; no poll/outcome semantics change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7073 durable pending Natural-Enter outcomes under lane_state; cross-session N_BARS via lawful O4; existing eval/learning closure; harness-only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7078 read-only get_count/poll_count observability delegation on session_integration wrapper; no poll/outcome semantics change; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
@@ -3943,7 +3942,6 @@ entities:
   - tests/ops/test_productive_natural_market_data_capture_sink_v1.py
   notes: Append-only evidence wrapper around FullCoreProductiveReadOnlyGetTransportV1; 1:1 delegate GET passthrough; default disabled at product entry; CORRELATION_STATUS=PARTIAL; no poll-bundle claim; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:productive_golden_happy_vector_forensic_observability_v1
-  # atlas_entity_review: PR #7081 append ghv_decision_time_geometry_evidence ledger after scope trace; read-only refs; GHV observability semantics unchanged for trading; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7081 sibling ghv_intelligence_lineage_forensic_observability_v1 append hook; GHV session observability semantics unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7059 adjacent runtime_cycle file touched; GHV observability reads unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7037 GHV reproof lane CRS propagation fix; observability module unchanged; AUTHORITY=NONE; POST_COUNT=0.
@@ -3963,7 +3961,7 @@ entities:
   notes: Default-off session-bound append-only directional signal_strength/threshold JSONL, golden_happy_scope_decision_trace_v1.jsonl (G17→Scope causal refs), plus single entry-state JSON snapshot; reads productive replay intermediate and cursor carrier; no signal/scope recompute; no trading/threshold/budget/GET semantic change; CORRELATION_STATUS=PARTIAL; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:ghv_intelligence_lineage_forensic_observability_v1
   # atlas_entity_review: PR #7081 refs-only GHV intelligence lineage JSONL; session-gated; capture_failure_changes_decision=false; GHV_AUTHORITY=NONE; POST_COUNT=0.
-  # atlas_entity_review: PR #7081 schema v2 completeness slots + geometry/pre_external refs; append-only; no trading consumption; AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #7081 schema v2 completeness slots + pre_external refs; append-only; no trading consumption; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: GHV intelligence lineage forensic observability v1
   epistemic_class: FORENSIC_RAW
@@ -3975,24 +3973,9 @@ entities:
   - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
   evidence_sources:
   - tests/governance/test_ghv_referenced_complete_intelligence_superstructure_integration_v1.py
-  - tests/governance/test_ghv_referenced_geometry_lineage_closure_v1.py
+  - tests/governance/test_ghv_geometry_bridge_retirement_and_ddo_dynamic_scope_v1.py
   - config/governance/ghv_referenced_complete_intelligence_superstructure_integration_v1_ghv_reference_manifest_v1.json
   notes: Append-only ghv_intelligence_lineage_trace_v1.jsonl when GHV forensic session active; refs-only slots for DDO/export handoff; no consumption for trading/learning/optimization; AUTHORITY=NONE; POST_COUNT=0.
-- id: RUNTIME_COMPONENT:ghv_decision_time_geometry_evidence_v1
-  # atlas_entity_review: PR #7081 read-only geometry evidence bridge from golden_happy_scope_decision_trace; GEOMETRY_EVIDENCE_AUTHORITY=NONE; POST_COUNT=0.
-  kind: RUNTIME_COMPONENT
-  name: GHV decision-time geometry evidence v1
-  epistemic_class: FORENSIC_RAW
-  current_canonical: false
-  current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7081_ghv_intelligence_superstructure_integration_closure_v1
-  source_paths:
-  - src/ops/full_core_live_path_composition_root_v1/ghv_decision_time_geometry_evidence_v1.py
-  - src/ops/full_core_live_path_composition_root_v1/productive_golden_happy_vector_forensic_observability_v1.py
-  evidence_sources:
-  - tests/governance/test_ghv_referenced_geometry_lineage_closure_v1.py
-  - config/governance/ghv_referenced_complete_intelligence_superstructure_integration_v1_ghv_reference_manifest_v1.json
-  notes: Immutable read-only geometry evidence ledger derived from scope decision trace; refs-only ghv.gev.* slots; no recompute of signal/scope; GEOMETRY_EVIDENCE_AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:ghv_intelligence_lineage_completeness_v1
   # atlas_entity_review: PR #7081 honest structural vs realized economic completeness adjudication for offline intelligence lineage; no ghost economic fields; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
@@ -4005,7 +3988,7 @@ entities:
   - src/governance/ghv_intelligence_lineage_completeness_v1.py
   - src/governance/ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1.py
   evidence_sources:
-  - tests/governance/test_ghv_referenced_geometry_lineage_closure_v1.py
+  - tests/governance/test_ghv_geometry_bridge_retirement_and_ddo_dynamic_scope_v1.py
   - tests/governance/test_ghv_referenced_complete_intelligence_superstructure_integration_v1.py
   - config/governance/ghv_referenced_complete_intelligence_superstructure_integration_v1_ghv_reference_manifest_v1.json
   notes: Structural vs realized economic completeness labels for GHV-referenced intelligence superstructure offline cycle; NO_FILL realized path UNAVAILABLE; no trading/apply authority; AUTHORITY=NONE; POST_COUNT=0.

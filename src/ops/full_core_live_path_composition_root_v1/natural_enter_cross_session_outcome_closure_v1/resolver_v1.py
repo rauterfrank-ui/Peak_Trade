@@ -535,8 +535,6 @@ def try_close_pending_outcome_v1(
         "learning_state_record_ref": str(learning_state.get("record_id") or ""),
         "learning_evidence_record_id": str(evidence.get("record_id") or ""),
         "optimization_ack_status": str(ack.get("status") or ""),
-        "geometry_evidence_ref": str(pending.geometry_evidence_ref or ""),
-        "geometry_evidence_digest": str(pending.geometry_evidence_digest or ""),
     }
     closed = replace_record_v1(
         pending,

@@ -90,7 +90,6 @@ class GoldenHappyVectorForensicObservabilitySessionV1:
     cycle_instance_id: str = ""
     c1_venue_event_time: float | None = None
     _entry_snapshot_written: bool = field(default=False, repr=False)
-    _geometry_evidence_by_cycle: dict[str, dict[str, str]] = field(default_factory=dict, repr=False)
 
     def with_cycle_from_s5_evidence_root_v1(self, *, s5_evidence_root: Path) -> None:
         auth_path = Path(s5_evidence_root).parent / "s5_cycle_authorization_v1.json"
@@ -702,28 +701,7 @@ def append_scope_decision_trace_from_productive_cycle_v1(
         record = {**record, "capture_error": str(exc), "capture_ok": False}
     else:
         record = {**record, "capture_ok": True}
-    from src.ops.full_core_live_path_composition_root_v1.ghv_decision_time_geometry_evidence_v1 import (
-        append_geometry_evidence_from_scope_trace_v1,
-    )
-
-    try:
-        geometry = append_geometry_evidence_from_scope_trace_v1(
-            evidence_root=session.product_evidence_root,
-            scope_trace=record,
-        )
-        session._geometry_evidence_by_cycle[str(cycle_id)] = {
-            "geometry_evidence_ref": str(geometry.get("geometry_evidence_id") or ""),
-            "geometry_evidence_digest": str(geometry.get("content_digest") or ""),
-        }
-    except (OSError, ValueError):
-        pass
     return record
-
-
-def geometry_evidence_refs_for_cycle_v1(
-    session: GoldenHappyVectorForensicObservabilitySessionV1, cycle_id: str
-) -> dict[str, str]:
-    return dict(session._geometry_evidence_by_cycle.get(str(cycle_id)) or {})
 
 
 def persist_continuous_run_entry_state_snapshot_v1(
@@ -777,7 +755,6 @@ __all__ = [
     "append_directional_signal_observability_v1",
     "append_scope_decision_trace_from_productive_cycle_v1",
     "build_scope_decision_trace_record_v1",
-    "geometry_evidence_refs_for_cycle_v1",
     "bind_golden_happy_vector_forensic_observability_session_v1",
     "build_continuous_run_entry_state_snapshot_v1",
     "build_directional_signal_observability_record_v1",
