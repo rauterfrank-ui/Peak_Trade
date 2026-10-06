@@ -1,37 +1,41 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "c752284ac86af46d04244421bb0e30c425d619b8",
+  "base_sha": "2761aab69beb00564892d417818b7a35eb6794a7",
   "changed_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/productive_real_carrier_passive_capture_v1.py",
+    "tests/ops/test_productive_real_carrier_passive_capture_v1.py"
   ],
-  "changed_paths_sha256": "bc7761f147e47d474bf4cd50ea9727d8177645066ff8d1d7d71fa04e0925540d",
+  "changed_paths_sha256": "f62dea7abc8a5452684cf7e0b1af66c1d408da2a62ae01ba7839aa34a7444d70",
   "covered_candidate_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
-    "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/productive_real_carrier_passive_capture_v1.py",
+    "tests/ops/test_productive_real_carrier_passive_capture_v1.py"
   ],
   "evidence_refs": [
-    "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py"
+    "tests/ops/test_productive_real_carrier_passive_capture_v1.py"
   ],
-  "reason": "PR #7060: Human Owner-GO revalidation rebinding bounded continuous-run + Fresh-C1 GET baseline to c752284; Atlas/CSIA provenance currency only; no interaction-authority or runtime semantic change; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #7062: passive default-off real-carrier CB-001/CB-002 observability at pre-replay host boundary; Atlas provenance + CSIA candidate catalog path pin; no CSIA source_v1.json or interaction-authority change; AUTHORITY=NONE; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

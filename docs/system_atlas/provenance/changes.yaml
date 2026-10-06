@@ -737,3 +737,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json
   notes: 'PR #7060: Human Owner-GO revalidation rebinding bounded continuous-run + Fresh-C1 GET decision baseline from 049fc18 to post-PR7059 fixpoint c752284; clears BASELINE_LINEAGE_IMMUTABLE_SURFACE_DRIFT for future S6 preflight; governance/spec/test pins only; no trading semantics change; no authority expansion; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7062_passive_real_carrier_capture_v1
+  from: 2761aab69beb00564892d417818b7a35eb6794a7
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_productive_real_carrier_passive_capture_v1.py
+  notes: 'PR #7062: default-off passive CB-001/CB-002 real-carrier capture at pre-replay host boundary; lossless replay_input.json + same_run_join_manifest to isolated /tmp; armed fail-closed before protected replay; no Master-V2/Double-Play/trading/config semantic change; Real-Venue not executed; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
