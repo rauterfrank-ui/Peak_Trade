@@ -20,31 +20,6 @@ def _utc_iso() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def _extract_latest_dpo_cycle2(lane: Path) -> dict[str, str]:
-    ddo = lane / "LANE_1/ddo_learning_capture_v1.jsonl"
-    out: dict[str, str] = {}
-    if not ddo.is_file():
-        return out
-    for line in ddo.read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
-        row = json.loads(line)
-        if row.get("record_type") != "double_play_entry_exit_observation":
-            continue
-        p = row.get("payload") or {}
-        if ":cycle:2" not in str(p.get("cycle_id") or ""):
-            continue
-        canon = p.get("producer_canonical_payload") or {}
-        out = {
-            "decision_event_ref": str(p.get("decision_event_ref") or ""),
-            "dpo_ref": str(p.get("record_id") or ""),
-            "decision_outcome": str(canon.get("decision_outcome") or ""),
-            "selected_side": str(canon.get("selected_side") or ""),
-            "execution_eligible": str(canon.get("execution_eligible") or "").lower(),
-        }
-    return out
-
-
 def _build_f1_m9_evaluator(
     *,
     ledger_root: Path,
@@ -622,14 +597,19 @@ def _main() -> int:
             return 2
         raise
 
-    orch = result.orchestrator_result
-    dpo = _extract_latest_dpo_cycle2(lane_state_root)
-    outcome = str(dpo.get("decision_outcome") or "").lower()
-    natural_pre_external = (
-        orch.disposition == DISPOSITION_PRE_EXTERNAL_EFFECT
-        and outcome in {"enter_long", "enter_short"}
-        and str(dpo.get("execution_eligible") or "").lower() == "true"
+    from scripts.ops.pre_external_convergence_natural_enter_reporting_v1 import (
+        evaluate_natural_enter_reporting_v1,
     )
+
+    orch = result.orchestrator_result
+    reporting = evaluate_natural_enter_reporting_v1(
+        cycle_records=orch.cycle_records,
+        terminal_disposition=str(orch.disposition or ""),
+        ddo_jsonl=lane_state_root / "LANE_1/ddo_learning_capture_v1.jsonl",
+    )
+    dpo = dict(reporting.dpo)
+    outcome = str(dpo.get("decision_outcome") or "").lower()
+    natural_pre_external = reporting.natural_pre_external_reached
 
     fresh_c1_ledger = evidence_root / "fresh_c1_get_owner_go_consumptions_v1.jsonl"
     fresh_c1_count = 0
@@ -647,7 +627,7 @@ def _main() -> int:
         for rec in orch.cycle_records
     ]
     pre_external_reached = orch.disposition == DISPOSITION_PRE_EXTERNAL_EFFECT
-    natural_enter = outcome in {"enter_long", "enter_short"}
+    natural_enter = reporting.natural_enter_observed
     synthetic_summary_path = evidence_root / "synthetic_enter_forensic_summary_v1.json"
     synthetic_enter_observed = False
     synthetic_enter_count = 0
@@ -680,7 +660,13 @@ def _main() -> int:
         "NATURAL_ENTER_OBSERVED": str(natural_enter).lower(),
         "SYNTHETIC_ENTER_OBSERVED": str(synthetic_enter_observed).lower(),
         "SYNTHETIC_ENTER_COUNT": synthetic_enter_count,
-        "ENTER_SIDE": outcome if natural_enter else "",
+        "ENTER_SIDE": reporting.enter_side if natural_enter else "",
+        "REPORTING_S5_CYCLE_INDEX": (
+            ""
+            if reporting.reporting_s5_cycle_index is None
+            else str(reporting.reporting_s5_cycle_index)
+        ),
+        "REPORTING_S5_DISPOSITION": reporting.reporting_s5_disposition,
         "S5_CYCLE_SUMMARIES": cycle_summaries,
         "DPO": dpo,
         "CONTINUOUS_RUN_AUTHORIZED_MODULE_PIN": str(CONTINUOUS_RUN_AUTHORIZED).lower(),

@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7064_golden_geometry_engine_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7066_pre_external_natural_enter_reporting_correlation_v1`.
 
 ## Workflow
 
@@ -41,6 +41,7 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
+| `RUNTIME_COMPONENT:current_productive_forensic_executable_quantity_override_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7065 Owner-GO baseline lineage rebind c752284->dd4c23 after PR #7064; governance/spec/test pins only; clears immutable-surface lineage drift for bounded Fresh-C1 S6 admission; no trading, POST, or configuration authority change.
-- introduced_by=CHANGE:pr_7064_golden_geometry_engine_v1
-- modified_by=PR_7065_OWNER_GO_BASELINE_REBIND_POST_7064_V1
+- PR #7066: PRE_EXTERNAL convergence reporting correlates S5 cycle_index to ordinal productive live-c1 DPO; RUN_REPORT_ACCOUNTING_GAP closure; reporting only; no trading, POST, or configuration authority change.
+- introduced_by=CHANGE:pr_7066_pre_external_natural_enter_reporting_correlation_v1
+- modified_by=PR_7066_PRE_EXTERNAL_NATURAL_ENTER_REPORTING_CORRELATION_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

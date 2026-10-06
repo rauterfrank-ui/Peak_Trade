@@ -3833,13 +3833,15 @@ entities:
   # atlas_entity_review: default-off --enable-ghv-system-wide-canary-surface-discovery-v1 product flag; CANARY_AUTHORITY=NONE.
   # atlas_entity_review: PR #7060 Owner-GO revalidation baseline rebind 049fc18->c752284; decision JSON + normative spec + contract tests only; clears immutable-surface lineage drift gate; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7065 Owner-GO baseline rebind c752284->dd4c23 post-PR7064 GGE Master-V2 lineage; governance/spec/test/Atlas provenance only; AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #7066 PRE_EXTERNAL convergence report correlates S5 cycle_index to ordinal live-c1 DPO; NATURAL_ENTER_OBSERVED accounting only; no trading/threshold/selection change; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive persistent Natural-ENTER policy-governed live Fresh-C1 continuous run v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7065_OWNER_GO_BASELINE_REBIND_POST_7064_V1
+  modified_by: PR_7066_PRE_EXTERNAL_NATURAL_ENTER_REPORTING_CORRELATION_V1
   source_paths:
+  - scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py
   - scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_get_budget_contract_v1.py
@@ -3857,6 +3859,7 @@ entities:
   - docs/ops/specs/CURRENT_PRODUCTIVE_CONTINUOUS_OBSERVATION_BUDGET_V1.md
   - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_V1.md
   - tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py
+  - tests/ops/test_pre_external_convergence_natural_enter_reporting_v1.py
   - tests/ops/full_core_live_path_composition_root_v1/test_productive_continuous_observation_budget_v1.py
   - tests/ops/test_golden_happy_t2_cycle2_ddo_o4_session_scope_regression_v1.py
   - tests/ops/full_core_live_path_composition_root_v1/test_productive_bounded_continuous_get_budget_contract_v1.py
@@ -3952,6 +3955,7 @@ entities:
   # atlas_entity_review: PR #7059 N1 consumer path-index coupling only; quantity override module unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7019 default-off forensic executable quantity override after real LIVE-29P sizing; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7028 BWP-03 dependency-closure only; launcher/residency/F1-M9 wiring; no override semantic change; SEMANTIC_CHANGE_FROM_PR7028=NONE; AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #7066 convergence launcher path only; quantity override module unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive forensic executable quantity override v1
   epistemic_class: FORENSIC_RAW

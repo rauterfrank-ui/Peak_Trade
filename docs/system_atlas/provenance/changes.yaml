@@ -765,3 +765,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json
   notes: 'PR #7065: Owner-GO revalidation rebinding bounded continuous-run + Fresh-C1 GET decision baseline from c752284 to post-PR7064 dd4c23; clears BASELINE_LINEAGE_IMMUTABLE_SURFACE_DRIFT for S6 preflight; governance/spec/test/Atlas provenance only; no trading semantics change; no authority expansion; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7066_pre_external_natural_enter_reporting_correlation_v1
+  from: 8cf74278712bf2db247884cc102cc516165c1abf
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py
+  notes: 'PR #7066: PRE_EXTERNAL convergence run report correlates productive live-c1 DPO ordinal to S5 cycle_index; fixes RUN_REPORT_ACCOUNTING_GAP (hardcoded DDO :cycle:2); reporting/accounting only; no trading, threshold, selection, or POST authority change; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
