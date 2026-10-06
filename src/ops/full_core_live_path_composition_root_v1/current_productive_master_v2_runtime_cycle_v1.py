@@ -973,6 +973,33 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         bind_input,
         instrument_id=instrument_id,
     )
+    from src.ops.full_core_live_path_composition_root_v1.productive_real_carrier_passive_capture_v1 import (
+        enforce_real_carrier_passive_capture_before_replay_v1,
+    )
+
+    capture_block = enforce_real_carrier_passive_capture_before_replay_v1(
+        replay_input=bind_input,
+        cycle_id=cycle_id,
+        replay_id=replay_id,
+        instrument_id=instrument_id,
+        selection_id=str(bound_instrument.selection_id or ""),
+        binding_id=str(bound_instrument.selection_integrity_digest or ""),
+        trading_epoch=int(trading_epoch),
+        market_observation_epoch=int(trading_epoch),
+        confirmation_epoch=int(CANONICAL_CONFIRMATION_EPOCHS),
+        side_state=bind_input.side_state,
+        venue_event_time=float(host_market_sample_venue_event_time_unix),
+        context_reference=str(bind_input.context_reference or ""),
+        input_digest=str(bind_input.input_digest or input_digest),
+        cursor_restore_status=restore.disposition.value,
+    )
+    if capture_block is not None:
+        return _blocked_cycle_result(
+            cycle_id=cycle_id,
+            fail_reason=capture_block,
+            provenance="REAL_CARRIER_PASSIVE_CAPTURE_FAIL_CLOSED",
+            cursor_restore_status=restore.disposition.value,
+        )
     ddo_binding = (
         build_productive_ddo_capture_binding_v1(ledger_path=ddo_durable_evidence_ledger_path)
         if ddo_durable_evidence_ledger_path is not None
