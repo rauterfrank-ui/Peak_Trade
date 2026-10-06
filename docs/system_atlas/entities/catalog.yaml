@@ -3901,6 +3901,21 @@ entities:
   - tests/ops/test_productive_golden_happy_vector_forensic_observability_v1.py
   - tests/ops/test_golden_happy_scope_decision_trace_observability_v1.py
   notes: Default-off session-bound append-only directional signal_strength/threshold JSONL, golden_happy_scope_decision_trace_v1.jsonl (G17→Scope causal refs), plus single entry-state JSON snapshot; reads productive replay intermediate and cursor carrier; no signal/scope recompute; no trading/threshold/budget/GET semantic change; CORRELATION_STATUS=PARTIAL; AUTHORITY=NONE; POST_COUNT=0.
+- id: RUNTIME_COMPONENT:current_productive_golden_happy_vector_startability_evaluator_v1
+  # atlas_entity_review: AUTHORITY=NONE offline GHV startability preflight; composes CURRENT GGE/Scope/DP/PRE_EXTERNAL validators against reference bundle; no selection/ranking/POST; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.
+  kind: RUNTIME_COMPONENT
+  name: Current productive Golden Happy Vector startability evaluator v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: CHANGE:current_productive_ghv_startability_evaluator_v1
+  source_paths:
+  - scripts/ops/run_current_productive_golden_happy_vector_startability_evaluator_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_golden_happy_vector_startability_evaluator_v1.py
+  evidence_sources:
+  - tests/fixtures/current_productive_golden_happy_vector_post_7065_reference_v1/golden_vector_manifest_v1.json
+  - tests/ops/test_current_productive_golden_happy_vector_startability_evaluator_v1.py
+  notes: Read-only structural startability adjudication vs stored Natural-Enter/PRE_EXTERNAL reference; separates OFFLINE_STARTABLE_TO_PRE_EXTERNAL from IMMEDIATE_CURRENT_INPUT_STARTABLE; uses productive GGE/Layer-C owners only; no network in structural mode; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:productive_real_carrier_passive_capture_v1
   # atlas_entity_review: PR #7062 passive CB-001/CB-002 real-carrier capture; default-off ContextVar session; pre-replay lossless serialize only; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT

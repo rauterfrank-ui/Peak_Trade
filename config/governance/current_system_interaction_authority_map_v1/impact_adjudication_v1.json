@@ -1,6 +1,6 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "8cf74278712bf2db247884cc102cc516165c1abf",
+  "base_sha": "ffbc8fbe606640fff19b1094a1873b3f684499c7",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -8,30 +8,46 @@
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py",
-    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
-    "tests/ops/test_pre_external_convergence_natural_enter_reporting_v1.py"
+    "scripts/ops/run_current_productive_golden_happy_vector_startability_evaluator_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_golden_happy_vector_startability_evaluator_v1.py",
+    "tests/fixtures/current_productive_golden_happy_vector_post_7065_reference_v1/PRE_EXTERNAL_CONVERGENCE_REPORT.json",
+    "tests/fixtures/current_productive_golden_happy_vector_post_7065_reference_v1/golden_vector_manifest_v1.json",
+    "tests/fixtures/current_productive_golden_happy_vector_post_7065_reference_v1/lane_state/LANE_1/current_productive_sidestate_confirmation_cursor_v1.json",
+    "tests/fixtures/current_productive_golden_happy_vector_post_7065_reference_v1/lane_state/LANE_1/ddo_learning_capture_v1.jsonl",
+    "tests/fixtures/current_productive_golden_happy_vector_post_7065_reference_v1/single_selected_future_selection_v1.json",
+    "tests/ops/test_current_productive_golden_happy_vector_startability_evaluator_v1.py"
   ],
-  "changed_paths_sha256": "3366e0c98185c4184f0b014a3c0e39df2a97b363cbaa21ac9ccd6c1b187903e7",
+  "changed_paths_sha256": "e8b4a6260f44ad51739fcbdc8ee5197c9084cc11c62410cf35e6eb2ce434c574",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py",
-    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
-    "tests/ops/test_pre_external_convergence_natural_enter_reporting_v1.py"
+    "scripts/ops/run_current_productive_golden_happy_vector_startability_evaluator_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_golden_happy_vector_startability_evaluator_v1.py",
+    "tests/fixtures/current_productive_golden_happy_vector_post_7065_reference_v1/PRE_EXTERNAL_CONVERGENCE_REPORT.json",
+    "tests/fixtures/current_productive_golden_happy_vector_post_7065_reference_v1/golden_vector_manifest_v1.json",
+    "tests/fixtures/current_productive_golden_happy_vector_post_7065_reference_v1/lane_state/LANE_1/current_productive_sidestate_confirmation_cursor_v1.json",
+    "tests/fixtures/current_productive_golden_happy_vector_post_7065_reference_v1/lane_state/LANE_1/ddo_learning_capture_v1.jsonl",
+    "tests/fixtures/current_productive_golden_happy_vector_post_7065_reference_v1/single_selected_future_selection_v1.json",
+    "tests/ops/test_current_productive_golden_happy_vector_startability_evaluator_v1.py"
   ],
   "evidence_refs": [
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "tests/ops/test_pre_external_convergence_natural_enter_reporting_v1.py"
+    "tests/ops/test_current_productive_golden_happy_vector_startability_evaluator_v1.py"
   ],
-  "reason": "PR #7066: PRE_EXTERNAL convergence reporting correlates S5 cycle_index to ordinal productive live-c1 DPO; closes RUN_REPORT_ACCOUNTING_GAP; reporting/accounting and Atlas provenance only; no interaction-authority or trading semantic change; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #7067: authority-none GHV startability evaluator composes existing CURRENT owners only; offline structural PRE_EXTERNAL replay; no interaction-authority or trading semantic change; AUTHORITY=NONE; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
