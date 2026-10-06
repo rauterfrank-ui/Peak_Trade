@@ -1,0 +1,1 @@
+python scripts/ops/run_okx_futures_shadow_no_order_v0.py --mode shadow

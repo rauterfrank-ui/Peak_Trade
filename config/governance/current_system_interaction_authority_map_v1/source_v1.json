@@ -5486,9 +5486,9 @@
       "epistemic_class": "PARTIAL",
       "statement": "PR #7069: retire pre-completion Paper/Shadow/Testnet run evidence from active evidence/ops after slim contract-fixture migration and explicit RETIRED_PRE_COMPLETION_EVIDENCE semantics; reference/docs/tests/config rebind only; preserves Canary and post-completion full-system evidence; diff-bound MAP_UPDATE_REQUIRED; no interaction-authority edge or trading/runtime semantic change; AUTHORITY=NONE; POST_COUNT=0.",
       "evidence_refs": [
-        "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/step_29u_canonical_shadow_binding_contract_v1/evidence_manifest.sha256",
         "docs/system_atlas/provenance/changes.yaml",
-        "config/ops/integrated_offline_replay_and_correctness_head_bound_v1.toml"
+        "config/ops/integrated_offline_replay_and_correctness_head_bound_v1.toml",
+        "tests/ops/test_step_29u_audit_provenance_v0.py"
       ],
       "closure_adjudication_class": "REPRESENTATION_ONLY",
       "closure_note": "Evidence retirement + fixture migration closure; TRADING_SEMANTICS_CHANGED=false at governance boundary."

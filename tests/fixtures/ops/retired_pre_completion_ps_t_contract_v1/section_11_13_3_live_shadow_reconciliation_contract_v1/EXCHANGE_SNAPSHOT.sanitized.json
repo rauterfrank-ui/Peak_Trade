@@ -1,0 +1,46 @@
+{
+  "layers": {
+    "balances_equity_and_available_margin": {
+      "digest": "0acd1d0d4a559c4b",
+      "status": "observed"
+    },
+    "credential_and_account_identity": {
+      "account_scope_redacted": true,
+      "digest": "cb6700002a552f3d",
+      "status": "bound"
+    },
+    "evidence_and_commit_cursors": {
+      "digest": "7ee5ead901fd4376",
+      "status": "flat_or_empty"
+    },
+    "local_portfolio_and_accounting": {
+      "digest": "0acd1d0d4a559c4b",
+      "status": "observed"
+    },
+    "open_orders": {
+      "digest": "7ee5ead901fd4376",
+      "status": "flat_or_empty"
+    },
+    "pending_commands": {
+      "digest": "7ee5ead901fd4376",
+      "status": "flat_or_empty"
+    },
+    "positions": {
+      "digest": "7ee5ead901fd4376",
+      "status": "flat_or_empty"
+    },
+    "recent_orders_and_trades": {
+      "digest": "7ee5ead901fd4376",
+      "status": "flat_or_empty"
+    },
+    "risk_reservations": {
+      "digest": "7ee5ead901fd4376",
+      "status": "flat_or_empty"
+    },
+    "venue_instrument_and_contract_metadata": {
+      "digest": "f6d05c187291e03e",
+      "status": "observed"
+    }
+  },
+  "sanitized": true
+}

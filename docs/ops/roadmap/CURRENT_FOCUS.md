@@ -222,7 +222,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - Guarantees observed: no orders, no network, no runtime/scheduler activation;
   BTC/Spot/Kraken-legacy excluded.
 - Durable evidence:
-  [`tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/step_29u_post_merge_shadow_soak_contract_v1/`](../../../tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/step_29u_post_merge_shadow_soak_contract_v1/)
+  `tests&#47;fixtures&#47;ops&#47;retired_pre_completion_ps_t_contract_v1&#47;step_29u_post_merge_shadow_soak_contract_v1&#47;`
 - Owner surfaces:
   [STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md](../runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md),
   [SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md](../runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md).

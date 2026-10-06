@@ -1,0 +1,223 @@
+{
+  "auth_headers_presence": [
+    {
+      "OK-ACCESS-KEY_PRESENT": true,
+      "OK-ACCESS-PASSPHRASE_PRESENT": true,
+      "OK-ACCESS-SIGN_PRESENT": true,
+      "OK-ACCESS-TIMESTAMP_PRESENT": true,
+      "SIMULATION_HEADER_PRESENT": false,
+      "method_allowlist": [
+        "GET"
+      ]
+    },
+    {
+      "OK-ACCESS-KEY_PRESENT": true,
+      "OK-ACCESS-PASSPHRASE_PRESENT": true,
+      "OK-ACCESS-SIGN_PRESENT": true,
+      "OK-ACCESS-TIMESTAMP_PRESENT": true,
+      "SIMULATION_HEADER_PRESENT": false,
+      "method_allowlist": [
+        "GET"
+      ]
+    },
+    {
+      "OK-ACCESS-KEY_PRESENT": true,
+      "OK-ACCESS-PASSPHRASE_PRESENT": true,
+      "OK-ACCESS-SIGN_PRESENT": true,
+      "OK-ACCESS-TIMESTAMP_PRESENT": true,
+      "SIMULATION_HEADER_PRESENT": false,
+      "method_allowlist": [
+        "GET"
+      ]
+    },
+    {
+      "OK-ACCESS-KEY_PRESENT": true,
+      "OK-ACCESS-PASSPHRASE_PRESENT": true,
+      "OK-ACCESS-SIGN_PRESENT": true,
+      "OK-ACCESS-TIMESTAMP_PRESENT": true,
+      "SIMULATION_HEADER_PRESENT": false,
+      "method_allowlist": [
+        "GET"
+      ]
+    }
+  ],
+  "counters": {
+    "AMEND_REQUEST_COUNT": 0,
+    "CANCEL_REQUEST_COUNT": 0,
+    "GET_REQUEST_COUNT": 4,
+    "ORDER_REQUEST_COUNT": 0,
+    "REQUEST_COUNT": 4,
+    "TRANSFER_REQUEST_COUNT": 0,
+    "WITHDRAW_REQUEST_COUNT": 0,
+    "WRITE_REQUEST_COUNT": 0,
+    "endpoints_used": [
+      "/api/v5/account/config",
+      "/api/v5/account/balance",
+      "/api/v5/account/positions",
+      "/api/v5/trade/orders-pending"
+    ],
+    "http_result_classes": [
+      "HTTP_200_OK",
+      "HTTP_200_OK",
+      "HTTP_200_OK",
+      "HTTP_200_OK"
+    ],
+    "methods_used": [
+      "GET",
+      "GET",
+      "GET",
+      "GET"
+    ]
+  },
+  "permission_attestation": {
+    "READ": true,
+    "TRADE": false,
+    "WITHDRAW": false
+  },
+  "reconciliation": {
+    "ACCOUNT_MUTATION_EFFECT": "NONE",
+    "ALL_LAYERS_MATCH": false,
+    "AUTOMATIC_STAGE_PROMOTION": false,
+    "BLOCKS_NEW_ENTRY": true,
+    "DOCUMENT_CLASS": "BOUNDED_LIVE_SHADOW_EXCHANGE_RECONCILIATION_LAYER_EVAL_V1",
+    "EXCHANGE_TRUTH_ADOPTION_REQUIRES_EXPLICIT_POLICY": true,
+    "NO_ACCOUNT_MUTATION_FROM_SHADOW_RECONCILIATION": true,
+    "NO_AUTOMATIC_STAGE_PROMOTION": true,
+    "NO_LIVE_ORDER_FROM_SHADOW_RECONCILIATION": true,
+    "ORDER_EFFECT": "NONE",
+    "RECONCILIATION_BEFORE_ALPHA": true,
+    "RECONCILIATION_CONTINUOUS": true,
+    "SILENT_LOCAL_HISTORY_OVERWRITE_FORBIDDEN": true,
+    "UNRESOLVED_ECONOMIC_DIVERGENCE": true,
+    "UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY": true,
+    "layers": [
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "credential_and_account_identity",
+        "outcome": "MATCH"
+      },
+      {
+        "blocks_new_entry": true,
+        "divergence_detected": true,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "venue_instrument_and_contract_metadata",
+        "outcome": "HARD_STOP_OWNER_REVIEW"
+      },
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "open_orders",
+        "outcome": "MATCH"
+      },
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "recent_orders_and_trades",
+        "outcome": "MATCH"
+      },
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "positions",
+        "outcome": "MATCH"
+      },
+      {
+        "blocks_new_entry": true,
+        "divergence_detected": true,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "balances_equity_and_available_margin",
+        "outcome": "HARD_STOP_OWNER_REVIEW"
+      },
+      {
+        "blocks_new_entry": true,
+        "divergence_detected": true,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "local_portfolio_and_accounting",
+        "outcome": "HARD_STOP_OWNER_REVIEW"
+      },
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "risk_reservations",
+        "outcome": "MATCH"
+      },
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "pending_commands",
+        "outcome": "MATCH"
+      },
+      {
+        "blocks_new_entry": false,
+        "divergence_detected": false,
+        "exchange_truth_adoption_policy_id": null,
+        "layer": "evidence_and_commit_cursors",
+        "outcome": "MATCH"
+      }
+    ]
+  },
+  "redacted_sample": {
+    "uid": "85***99"
+  },
+  "successes": [
+    {
+      "account_identity_hash": "2444af6ea59bad87ee2aa709df3aa6888607cb3ba31f1946729f3f4f4697fb2c",
+      "account_identity_redacted": "85***99",
+      "account_scope_match": true,
+      "authenticated_read_success": true,
+      "fixture_or_demo_or_testnet": false,
+      "http_status": 200,
+      "okx_code": "0",
+      "response_digest": "5e497460021a25fe11c5d42c3f7cc06d0ee549f0edbf687f438fff54c20a815b",
+      "response_type": "application/json",
+      "transport_class": "LIVE_PRODUCTIVE_HTTP",
+      "venue_live_contact": true
+    },
+    {
+      "account_identity_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "account_identity_redacted": "<ABSENT>",
+      "account_scope_match": true,
+      "authenticated_read_success": true,
+      "fixture_or_demo_or_testnet": false,
+      "http_status": 200,
+      "okx_code": "0",
+      "response_digest": "28b671455b264ced479a1c35fdf7e299e6a45bc0b5948104d47761240f319bf7",
+      "response_type": "application/json",
+      "transport_class": "LIVE_PRODUCTIVE_HTTP",
+      "venue_live_contact": true
+    },
+    {
+      "account_identity_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "account_identity_redacted": "<ABSENT>",
+      "account_scope_match": true,
+      "authenticated_read_success": true,
+      "fixture_or_demo_or_testnet": false,
+      "http_status": 200,
+      "okx_code": "0",
+      "response_digest": "fc24d69479edbb84f22c7d5bd4525349734056ad3baf7a5adf7e553f68c06a3a",
+      "response_type": "application/json",
+      "transport_class": "LIVE_PRODUCTIVE_HTTP",
+      "venue_live_contact": true
+    },
+    {
+      "account_identity_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "account_identity_redacted": "<ABSENT>",
+      "account_scope_match": true,
+      "authenticated_read_success": true,
+      "fixture_or_demo_or_testnet": false,
+      "http_status": 200,
+      "okx_code": "0",
+      "response_digest": "fc24d69479edbb84f22c7d5bd4525349734056ad3baf7a5adf7e553f68c06a3a",
+      "response_type": "application/json",
+      "transport_class": "LIVE_PRODUCTIVE_HTTP",
+      "venue_live_contact": true
+    }
+  ]
+}

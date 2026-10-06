@@ -1,0 +1,18 @@
+{
+  "LIVE_ARMED": false,
+  "LIVE_AUTHORIZED": false,
+  "LIVE_ENABLED": false,
+  "LIVE_ORDER_AUTHORIZED": false,
+  "LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION_AUTHORIZED": true,
+  "authorization_scope": "LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION",
+  "authorization_validated": true,
+  "bound_config_digest": "40c720ab855983615e9cdad424c9948bca3662a8dd969852ba82e7c1eb07633c",
+  "bound_origin_main_sha": "c9c70233db9787f54b164026501ff3aaad286c38",
+  "owner_go": "OWNER_GO_LIVE_SHADOW_WITH_EXCHANGE_RECONCILIATION",
+  "permission_attestation": {
+    "READ": true,
+    "TRADE": false,
+    "WITHDRAW": false
+  },
+  "reusable_for_later_live_stages": false
+}

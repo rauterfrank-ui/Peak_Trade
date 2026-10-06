@@ -1,0 +1,15 @@
+{
+  "activation_authorized": false,
+  "binding_owner": "ops.step_29u_canonical_shadow_binding_v0",
+  "canonical_entrypoint": "ops.okx_futures_shadow_no_order_entrypoint_v0",
+  "canonical_step_29u_evidence_relpath": "evidence/ops/step_29u_offline_capability/2026-07-25_capability_hold_cycle",
+  "evidence_verified": true,
+  "evidence_verify_reasons": [],
+  "network_used": false,
+  "orders_created": false,
+  "orders_submitted": false,
+  "runtime_activated": false,
+  "source_capability_result": "STEP_29U_OFFLINE_CAPABILITY_PASS",
+  "source_git_sha": "237cfe07850d9a579f73f596bb4df18adddfbe69",
+  "step_29u_lifecycle_owner": "ops.step_29u_offline_capability_v0"
+}
