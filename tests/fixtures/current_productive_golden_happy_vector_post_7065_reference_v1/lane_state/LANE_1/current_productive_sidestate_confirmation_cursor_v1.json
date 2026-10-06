@@ -1,0 +1,25 @@
+{
+  "existing_scope": {
+    "initial_volatility_distance": 0.0023874328296904688,
+    "initialized_at_trading_epoch": 1,
+    "instrument_id": "okx_eea:linear_perpetual:API3:USDT:USDT:api3-usdt-swap",
+    "lifecycle_state": "scope_valid",
+    "max_scope_band": 1.0,
+    "min_scope_band": 1.0,
+    "neutral_lower_boundary": 0.33791256717030954,
+    "neutral_upper_boundary": 0.34268743282969044,
+    "policy_version": "canonical_scope_initialization_policy_instrument_relative_v1",
+    "reason_codes": [],
+    "reference_price": 0.3403,
+    "scope_band": 0.0023874328296904688,
+    "scope_id": "scope-okx_eea:linear_perpetual:API3:USDT:USDT:api3-usdt-swap-epoch1-ctx-okx_eea:linear_perpetual:API3:USDT:USDT:api3-usdt-swap-epoch1-full-core-current-v1",
+    "semantic_digest": "80f5179585910ba23807d66ffa53b53c677c0a0c1731720665c3807abe5c0137",
+    "source_input_digest": "f292a459b44d05ff640d2bb0b24bbe8a5e4c7a1184fc44af04204b70e4f784ab",
+    "source_market_context_id": "ctx-okx_eea:linear_perpetual:API3:USDT:USDT:api3-usdt-swap-epoch1-full-core-current-v1",
+    "trailing_anchor": 0.3403,
+    "volatility_estimate": 0.007015670965884422
+  },
+  "cap61_confirmation_state": {
+    "confirmation_session_id": "cfsess-okx-okx_eea:linear_perpetual:API3:USDT:USDT:api3-usdt-swap-694188a0e96e701ef346c5ff"
+  }
+}

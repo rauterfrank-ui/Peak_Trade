@@ -1,13 +1,12 @@
 schema_version: system_atlas.v1
-pending_change: false
-introduced_by: CHANGE:pr_7066_pre_external_natural_enter_reporting_correlation_v1
-modified_by: PR_7066_PRE_EXTERNAL_NATURAL_ENTER_REPORTING_CORRELATION_V1
+pending_change: true
+introduced_by: CHANGE:current_productive_ghv_startability_evaluator_v1
+modified_by: CHANGE:current_productive_ghv_startability_evaluator_v1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'PR #7066: PRE_EXTERNAL convergence reporting correlates S5 cycle_index to ordinal productive live-c1 DPO; RUN_REPORT_ACCOUNTING_GAP closure; reporting only; no trading, POST, or configuration authority change.'
+note: 'GHV startability evaluator v1 (AUTHORITY=NONE): offline structural startability preflight vs Natural-Enter reference; no trading/POST/selection/geometry authority; TRADING_SEMANTICS_CHANGED=false.'
 changed_entities:
-- RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
-- RUNTIME_COMPONENT:current_productive_forensic_executable_quantity_override_v1
+- RUNTIME_COMPONENT:current_productive_golden_happy_vector_startability_evaluator_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []

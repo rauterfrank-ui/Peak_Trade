@@ -772,3 +772,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py
   notes: 'PR #7066: PRE_EXTERNAL convergence run report correlates productive live-c1 DPO ordinal to S5 cycle_index; fixes RUN_REPORT_ACCOUNTING_GAP (hardcoded DDO :cycle:2); reporting/accounting only; no trading, threshold, selection, or POST authority change; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:current_productive_ghv_startability_evaluator_v1
+  from: ffbc8fbe606640fff19b1094a1873b3f684499c7
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_current_productive_golden_happy_vector_startability_evaluator_v1.py
+  notes: 'GHV startability evaluator v1: AUTHORITY=NONE read-only preflight composing CURRENT contracts against post-7065 Natural-Enter reference fixture; dual verdict OFFLINE_STARTABLE vs IMMEDIATE_CURRENT_INPUT; fail-closed negative vectors; no trading/selection/geometry/execution authority; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
