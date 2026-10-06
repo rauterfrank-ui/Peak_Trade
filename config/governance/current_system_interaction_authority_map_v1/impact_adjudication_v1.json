@@ -2,6 +2,7 @@
   "authority_effect": "NONE",
   "base_sha": "2761aab69beb00564892d417818b7a35eb6794a7",
   "changed_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
@@ -16,8 +17,9 @@
     "src/ops/full_core_live_path_composition_root_v1/productive_real_carrier_passive_capture_v1.py",
     "tests/ops/test_productive_real_carrier_passive_capture_v1.py"
   ],
-  "changed_paths_sha256": "f62dea7abc8a5452684cf7e0b1af66c1d408da2a62ae01ba7839aa34a7444d70",
+  "changed_paths_sha256": "1c738ef8044cccc6a1296e9173e1b00195b155c4ff9ff093437591dcdafb2a62",
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
