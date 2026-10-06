@@ -291,7 +291,10 @@ FIRST_PARTY_EVIDENCE_RECORDS_V1: tuple[FirstPartyEvidenceRecordV1, ...] = (
     ),
     FirstPartyEvidenceRecordV1(
         record_id="TESTNET_POSITION_POSIDE",
-        path="evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/PATH_restart_with_open_position.json",
+        path=(
+            "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/"
+            "section_11_12_testnet_restart_negation_stub/PATH_restart_with_open_position.json"
+        ),
         symbol_or_range="positions row posSide net",
         evidence_role="TESTNET_POSITION_EVIDENCE",
         authority_class="HISTORICAL_INTERMEDIATE",

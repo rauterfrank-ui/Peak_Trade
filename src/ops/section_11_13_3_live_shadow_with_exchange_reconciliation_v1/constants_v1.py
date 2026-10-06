@@ -207,7 +207,8 @@ TRANSPORT_CLASS_PREFLIGHT_NO_NETWORK = "PREFLIGHT_NO_NETWORK"
 
 # Evidence root contract.
 EVIDENCE_ROOT_TEMPLATE = (
-    "evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1/<RUN_ID>/"
+    "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/"
+    "section_11_13_3_live_shadow_reconciliation_contract_v1/"
 )
 EVIDENCE_DIRNAME = "section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1"
 MANIFEST_FILENAME = "MANIFEST.sha256"

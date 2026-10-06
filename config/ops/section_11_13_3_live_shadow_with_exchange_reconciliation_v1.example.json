@@ -21,7 +21,7 @@
   "max_request_count": 4,
   "timeout_seconds": 10.0,
   "max_retries": 2,
-  "evidence_root": "evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1",
+  "evidence_root": "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/section_11_13_3_live_shadow_reconciliation_contract_v1",
   "evidence_version": "section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1",
   "expected_live_marker": "LIVE",
   "expected_demo_marker_absent": true,

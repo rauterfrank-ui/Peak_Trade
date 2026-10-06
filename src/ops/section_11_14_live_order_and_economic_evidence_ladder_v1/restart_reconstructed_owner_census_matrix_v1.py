@@ -81,7 +81,10 @@ _OWNER_MATRIX_ROWS: tuple[dict[str, Any], ...] = (
             "durable_campaign_state_v1.py"
         ),
         "implementation_owner": "section_11_12_8",
-        "read_path": "evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/",
+        "read_path": (
+            "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/"
+            "section_11_12_8_long_running_historical_refuse_contract_v1/"
+        ),
         "write_path": (
             "src/ops/section_11_12_8_productive_campaign_run_activation_and_executable_handoff_v1/"
             "durable_campaign_state_v1.py::write_campaign_durable_state_v1"

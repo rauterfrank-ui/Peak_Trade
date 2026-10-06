@@ -5480,6 +5480,18 @@
       ],
       "closure_adjudication_class": "REPRESENTATION_ONLY",
       "closure_note": "Governance wiring/map/law closure for GGE V1; TRADING_SEMANTICS_CHANGED=false at governance boundary."
+    },
+    {
+      "id": "pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #7069: retire pre-completion Paper/Shadow/Testnet run evidence from active evidence/ops after slim contract-fixture migration and explicit RETIRED_PRE_COMPLETION_EVIDENCE semantics; reference/docs/tests/config rebind only; preserves Canary and post-completion full-system evidence; diff-bound MAP_UPDATE_REQUIRED; no interaction-authority edge or trading/runtime semantic change; AUTHORITY=NONE; POST_COUNT=0.",
+      "evidence_refs": [
+        "docs/system_atlas/provenance/changes.yaml",
+        "config/ops/integrated_offline_replay_and_correctness_head_bound_v1.toml",
+        "tests/ops/test_step_29u_audit_provenance_v0.py"
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "Evidence retirement + fixture migration closure; TRADING_SEMANTICS_CHANGED=false at governance boundary."
     }
   ]
 }

@@ -44,9 +44,14 @@ PASS_MINIMA_ORDER_ACK_COUNT_GTE_1 = True
 PASS_MINIMA_CLEAN_CANCEL_OR_RECONCILE_SAME_RUN = True
 PASS_MINIMA_TRANSPORT_ONLY_403_REFUSED = True
 
+RETIRED_PRE_COMPLETION_DEMO_XPERP_EXECUTE_ROOT = (
+    "RETIRED_PRE_COMPLETION_EVIDENCE_DEMO_XPERP_EXECUTE_v1"
+)
+
 FORBIDDEN_HISTORICAL_EVIDENCE_ROOTS: tuple[str, ...] = (
-    "evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/20260808T181528Z",
-    "evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z",
+    "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/"
+    "section_11_12_8_long_running_historical_refuse_contract_v1",
+    RETIRED_PRE_COMPLETION_DEMO_XPERP_EXECUTE_ROOT,
 )
 
 EVIDENCE_DIRNAME = "capability_11_long_running_testnet_proven_prep_eval_v1"

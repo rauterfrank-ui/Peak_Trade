@@ -175,7 +175,7 @@ def load_live_dry_run_order_plan_config_v1(
     predecessor = str(
         payload.get(
             "predecessor_shadow_evidence_root",
-            "evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1/20260811T211828Z/",
+            "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/section_11_13_3_live_shadow_reconciliation_contract_v1/",
         )
     ).strip()
 
@@ -290,8 +290,8 @@ def example_incomplete_config_dict_v1() -> dict[str, Any]:
         "config_version": CONFIG_VERSION,
         "schema_version": SCHEMA_VERSION,
         "predecessor_shadow_evidence_root": (
-            "evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1/"
-            "20260811T211828Z/"
+            "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/"
+            "section_11_13_3_live_shadow_reconciliation_contract_v1/"
         ),
         "notes": (
             "Owner fills productive fields at execute time. Reuse §11.13.3 proven binding "

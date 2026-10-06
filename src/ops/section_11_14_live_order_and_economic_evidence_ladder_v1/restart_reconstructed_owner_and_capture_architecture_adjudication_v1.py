@@ -484,7 +484,10 @@ def bind_capture_seam_graph_census_v1() -> dict[str, Any]:
         ),
         _seam(
             seam_id="S14_TESTNET_DURABLE_STATE",
-            location="evidence/ops/section_11_12_testnet_restart_proven_v1/",
+            location=(
+                "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/"
+                "section_11_12_testnet_restart_negation_stub/"
+            ),
             upstream_producers=("TESTNET_CAMPAIGN_DURABLE_STATE",),
             available_fields=(),
             missing_fields=tuple(required),

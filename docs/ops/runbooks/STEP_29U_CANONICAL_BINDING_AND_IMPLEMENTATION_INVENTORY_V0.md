@@ -50,8 +50,8 @@ STEP_29U_IMPLEMENTATION_PATH=src/ops/step_29u_offline_capability_v0/__init__.py
 | STEP 29U semantics SSOT | `docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.12.md` section `## STEP 29U — Shadow` | Sole normative meaning of STEP 29U |
 | Preparation gap classification | `ops.shadow_preparation_readiness_gate_v0` + `config/ops/shadow_preparation_readiness_gate_v0.toml` | Classifies absence / non-readiness only |
 | Binding + implementation inventory contract (this file) | `docs/ops/runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md` | State model + pass predicates; not semantics SSOT |
-| Offline no-order operational evidence | `evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/` | Proves offline HOLD path only |
-| Post-merge Step 29U bound Shadow soak evidence | `evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z/` | Proves bound entrypoint soak; not activation |
+| Offline no-order operational evidence | `RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)&#47;` | Proves offline HOLD path only |
+| Post-merge Step 29U bound Shadow soak evidence | `tests&#47;fixtures&#47;ops&#47;retired_pre_completion_ps_t_contract_v1&#47;step_29u_post_merge_shadow_soak_contract_v1&#47;` | Proves bound entrypoint soak; not activation |
 
 ```text
 STEP_29U_SEMANTICS_SSOT=runbook.STEP_29U
@@ -263,7 +263,7 @@ CONFIG_OR_JOB_PRESENCE_IS_NOT_ACTIVATION=true
 ## 6. Soak evidence interpretation
 
 Durable evidence:
-`evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/`
+`RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)&#47;`
 (`OFFLINE_OKX_FUTURES_SHADOW_NO_ORDER_E2E_STATUS=PROVEN_POST_MERGE_600S_SOAK`).
 
 ### Proves
@@ -299,7 +299,7 @@ implementation under separate Operator-GO — not offline soak evidence alone.
 ### Post-merge Step 29U bound Shadow soak (after #5550)
 
 Durable evidence:
-`evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z/`
+`tests&#47;fixtures&#47;ops&#47;retired_pre_completion_ps_t_contract_v1&#47;step_29u_post_merge_shadow_soak_contract_v1&#47;`
 
 ```text
 TESTED_MERGE_SHA=cd6d465c83c6c65733e5d85238aa223d4bffd548

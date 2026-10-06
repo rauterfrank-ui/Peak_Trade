@@ -23,7 +23,10 @@ from src.ops.step_29u_audit_provenance_v0 import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-CANONICAL_SOAK = REPO_ROOT / "evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z"
+CANONICAL_SOAK = (
+    REPO_ROOT
+    / "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/step_29u_post_merge_shadow_soak_contract_v1"
+)
 CANONICAL_OFFLINE = (
     REPO_ROOT / "evidence/ops/step_29u_offline_capability/2026-07-25_capability_hold_cycle"
 )

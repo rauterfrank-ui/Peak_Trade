@@ -17,7 +17,7 @@
 
 <a id="ev-20260814-eg-i17-shadow-canonical-7200s-qualification-closeout"></a>
 - 2026-08-14 — EG-I17-SHADOW canonical 7200s qualification closeout
-  - Source: [Closeout package](../../evidence/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/20260814T170331Z/derived_forensic_canonical_7200s_qualification_closeout_v1/) · Session evidence: [20260814T170331Z](../../evidence/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1/20260814T170331Z/) · Contract: [productive issuance + real network](runbooks/INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1.md) · Documentation Anchor: `docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260814-eg-i17-shadow-canonical-7200s-qualification-closeout`
+  - Source: [Closeout package](../../RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)) · Session evidence: [20260814T170331Z](../../RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)) · Contract: [productive issuance + real network](runbooks/INTEGRATED_PAPER_SHADOW_PRODUCTIVE_AUTHORIZATION_ISSUANCE_AND_REAL_NETWORK_EXECUTION_CAPABILITY_V1.md) · Documentation Anchor: `docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260814-eg-i17-shadow-canonical-7200s-qualification-closeout`
   - Session: `pso_wallclock_prod_71ebbd4fb8a057504c944bfb8de83fe3` · Origin SHA: `9f09d6d18484e35e788f5e4eaada2c598926b77f` · Verifier: `WALLCLOCK_OBSERVATION_EVIDENCE_VERIFIED`
   - Claim: `CLOSED_PROVEN_PASS` for canonical 7200s I17 Paper-Shadow qualification — natural `TIMED_OUT` wallclock end (`elapsed_ms=7202714`, `EXIT_CODE=0`); runtime `terminal_verdict=PASS`; integrity/evidence seal; 3152 contiguous MD/decision cycles; 1052 heartbeats; `ORDER_EFFECT=NONE`.
   - Classification: `EG_I17_SHADOW_STATUS=CLOSED_PROVEN`; `PRODUCTIVE_SHADOW_EVIDENCE_PROVEN=true`; `ECONOMIC_VALIDITY_PASS=false`; `PROMOTION_PASS=false` (not I17 fail). Historical abort `pso_wallclock_prod_3faa0a7558c6c7851b16459dc1bd7be5` remains `OPEN_BLOCKED_WITH_EXACT_REASON`. Failed start `pso_wallclock_prod_4e992d5a604f5f94324ac433a1d9d445` is not qualification.
@@ -56,7 +56,7 @@
 
 <a id="ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout"></a>
 - 2026-07-30 — Integrated Paper-Shadow productive 6h technical runtime evidence closeout
-  - Source: [Repo pointer](../../evidence/ops/integrated_paper_shadow_productive_6h_technical_closeout/20260730T084108Z/) · Documentation Anchor: `docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout` · Durable root (outside `/tmp`): `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/ops/integrated_paper_shadow_productive_6h_20260729T205830Z` · Closeout package: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/integrated_paper_shadow_productive_6h_technical_evidence_closeout_20260730T084108Z`
+  - Source: [Repo pointer](../../RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/20260730T084108Z/) · Documentation Anchor: `docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout` · Durable root (outside `/tmp`): `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/ops/integrated_paper_shadow_productive_6h_20260729T205830Z` · Closeout package: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/integrated_paper_shadow_productive_6h_technical_evidence_closeout_20260730T084108Z`
   - Session: `pso_wallclock_prod_69ffce43e0bba94f176d3aa22db7cf17` · Baseline SHA: `4d0ad446b00442698ea4a7a385e1f1d9faa19ed2` · Verifier: `WALLCLOCK_OBSERVATION_EVIDENCE_VERIFIED`
   - Claim: `TECHNICAL_PASS_ECONOMIC_EVIDENCE_NOT_PRODUCED` — six-hour productive OKX-EEA public MD observation completed (`PLANNED_DURATION_REACHED`); 10243 observation cycles; 3415 heartbeats; 0 data gaps; no Orders/private API/Paper/Testnet/Live; technical/safety/lifecycle evidence PASS.
   - Classification: `PRIMARY_TECHNICAL_RUNTIME_EVIDENCE=PASS`; `ECONOMIC_EVIDENCE_CLASS=INCOMPLETE_STUB_ONLY`; `ECONOMIC_EVIDENCE_COMPLETE=false`; `ECONOMIC_VALIDITY_PASS=false`; `STRATEGY_VALIDITY_PASS=false`; `PROMOTION_ELIGIBLE=false`.
@@ -172,7 +172,7 @@
 
 <a id="ev-20260726-step-29u-post-merge-shadow-soak"></a>
 - **EV-20260726-STEP-29U-POST-MERGE-SHADOW-SOAK** | Date: 2026-07-26 | Owner: ops | Scope: docs/evidence capability closeout | Risk: LOW
-  - Source: [Durable soak bundle](../../evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z/) · Contract: [STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md](runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md) · Merge: `cd6d465c83c6c65733e5d85238aa223d4bffd548` (PR **#5550**)
+  - Source: [Durable soak bundle](../../tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/step_29u_post_merge_shadow_soak_contract_v1/) · Contract: [STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md](runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md) · Merge: `cd6d465c83c6c65733e5d85238aa223d4bffd548` (PR **#5550**)
 
   - Claim: Post-merge canonical OKX Futures Shadow no-order entrypoint with Step 29U
     truthfully bound — monotonic soak 600.148698s; 1299/1299 full-chain HOLD
@@ -203,7 +203,7 @@
 
 <a id="ev-20260725-okx-shadow-offline-no-order-600s-soak"></a>
 - **EV-20260725-OKX-SHADOW-OFFLINE-NO-ORDER-600S-SOAK** | Date: 2026-07-25 | Owner: ops | Scope: docs/evidence-only closeout | Risk: LOW  
-  - Source: [Durable soak bundle](../../evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/) · Contract: [SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md](runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md) · PR: [#5544](https://github.com/rauterfrank-ui/Peak_Trade/pull/5544) · Merge: `bc7b9309b1f7e2e1411e22b483388331f355d0dd`  
+  - Source: [Durable soak bundle](../../RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/) · Contract: [SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md](runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md) · PR: [#5544](https://github.com/rauterfrank-ui/Peak_Trade/pull/5544) · Merge: `bc7b9309b1f7e2e1411e22b483388331f355d0dd`  
   - Claim: Canonical offline OKX Futures Shadow no-order E2E path
     `PROVEN_POST_MERGE_600S_SOAK` — monotonic soak 600.370976375s; 1287/1287
     BINDING_PASS HOLD cycles; orders/network/runtime activation = false.

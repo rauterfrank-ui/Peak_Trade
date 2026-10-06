@@ -471,7 +471,10 @@ _CANDIDATES: tuple[dict[str, Any], ...] = (
     ),
     _candidate(
         candidate_id="C14_TESTNET_DURABLE_STATE",
-        source_path="evidence/ops/section_11_12_testnet_restart_proven_v1/",
+        source_path=(
+            "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/"
+            "section_11_12_testnet_restart_negation_stub/"
+        ),
         symbol_or_field="testnet restart durable_state",
         authority_class="TESTNET_CAMPAIGN_DURABLE_STATE",
         runtime_or_offline="OFFLINE",

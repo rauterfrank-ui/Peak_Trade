@@ -10,7 +10,7 @@ last_updated: 2026-07-30
 **Purpose:** One short, **human-updated** place so chats and operators know **what we are doing now**.  
 This is **not** produced by Workflow Officer or Update Officer; officers aggregate checks and summaries — they do not replace this note.
 
-**Related:** [Finish Plan (MVP→v1.0)](FINISH_PLAN.md) · [Truth Core](../registry/TRUTH_CORE.md) · [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) · [Release docs (index)](../release/README.md) · [Chat continuity bootstrap](../runbooks/PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md)
+**Related:** [Finish Plan (MVP→v1.0)](FINISH_PLAN.md) · [Truth Core](../registry/TRUTH_CORE.md) · [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) · [Release checklist (Finish Plan PR 8)](FINISH_PLAN.md#pr-8-release-checklist-gono-go-rubric-docs-only) · [Chat continuity bootstrap](../runbooks/PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md)
 
 
 ---
@@ -89,7 +89,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - Flags: `TECHNICAL_RUNTIME_EVIDENCE=PASS`; `ECONOMIC_EVIDENCE_COMPLETE=false`;
   `ECONOMIC_VALIDITY_PASS=false`; `PROMOTION_ELIGIBLE=false`
 - Repo pointer:
-  [`evidence/ops/integrated_paper_shadow_productive_6h_technical_closeout/20260730T084108Z/`](../../../evidence/ops/integrated_paper_shadow_productive_6h_technical_closeout/20260730T084108Z/)
+  `RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)&#47;20260730T084108Z&#47;`
 - Documentation Anchor:
   [`docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout`](../EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout)
 
@@ -216,13 +216,13 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 - Tested merge SHA: `cd6d465c83c6c65733e5d85238aa223d4bffd548` (PR **#5550** merged on `origin&#47;main`).
 - Canonical command:
-  `python scripts/ops/run_okx_futures_shadow_no_order_v0.py --mode shadow`
+  `python scripts&#47;ops&#47;run_okx_futures_shadow_no_order_v0.py --mode shadow`
 - Monotonic soak: **600.148698s**; **1299/1299** full-chain HOLD cycles;
   Step 29U verified on every cycle; `STEP_29U_ABSENT_COUNT=0`.
 - Guarantees observed: no orders, no network, no runtime/scheduler activation;
   BTC/Spot/Kraken-legacy excluded.
 - Durable evidence:
-  [`evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z/`](../../../evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z/)
+  `tests&#47;fixtures&#47;ops&#47;retired_pre_completion_ps_t_contract_v1&#47;step_29u_post_merge_shadow_soak_contract_v1&#47;`
 - Owner surfaces:
   [STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md](../runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md),
   [SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md](../runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md).
@@ -239,7 +239,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
   `ops.step_29u_audit_provenance_v0`,
   `ops.step_29u_economic_validity_readiness_v0`
 - Contract: [STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0.md](../runbooks/STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0.md)
-- Command: `python scripts/ops/run_step_29u_activation_eligibility_inventory_v0.py`
+- Command: `python scripts&#47;ops&#47;run_step_29u_activation_eligibility_inventory_v0.py`
 - Canonical result: `STEP_29U_AUDIT_PROVENANCE_COMPLETE=true`,
   `ECONOMIC_VALIDITY_PROVEN=false` (`FAIL`),
   `FUTURE_OPERATOR_GO_PRESENT=false`,
@@ -251,7 +251,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - Capability: `STEP_29U_ECONOMIC_FAILURE_CLOSEOUT_RECOVERY_DECISION_V0`
 - Owner: `ops.step_29u_economic_failure_closeout_recovery_decision_v0`
 - Contract: [STEP_29U_ECONOMIC_FAILURE_CLOSEOUT_AND_RECOVERY_DECISION_V0.md](../runbooks/STEP_29U_ECONOMIC_FAILURE_CLOSEOUT_AND_RECOVERY_DECISION_V0.md)
-- Command: `python scripts/ops/run_step_29u_economic_failure_closeout_recovery_decision_v0.py`
+- Command: `python scripts&#47;ops&#47;run_step_29u_economic_failure_closeout_recovery_decision_v0.py`
 - Canonical result: `ECONOMIC_CLOSEOUT=COMPLETE`,
   `ECONOMIC_VALIDITY_STATUS=FAIL`, `ECONOMIC_VALIDITY_PROVEN=false`,
   `ACTIVATION_ELIGIBLE=false`, `STEP_29U_ACTIVATED=false`,
@@ -266,7 +266,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - Capability: `STEP_29U_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESIS_RETIREMENT_V0`
 - Owner: `ops.step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0`
 - Contract: [STEP_29U_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESIS_RETIREMENT_V0.md](../runbooks/STEP_29U_TERMINAL_UNCHANGED_FINAL_FLEET_HYPOTHESIS_RETIREMENT_V0.md)
-- Command: `python scripts/ops/run_step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0.py`
+- Command: `python scripts&#47;ops&#47;run_step_29u_terminal_unchanged_final_fleet_hypothesis_retirement_v0.py`
 - Retired IDs: `trend_following&#47;v1`, `bollinger_bands&#47;v1`, `momentum_1h&#47;v1`
 - Canonical result: `RETIREMENT_STATUS=COMPLETE`,
   `RETIREMENT_SCOPE=UNCHANGED_FINAL_FLEET_ONLY`,
@@ -292,7 +292,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - Soak: 600.370976375s monotonic; **1287/1287** successful complete HOLD cycles;
   BINDING_PASS=1287; orders/network/runtime activation = **false**.
 - Durable evidence:
-  [`evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/`](../../../evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/)
+  `RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)&#47;`
   (source soak manifest SHA256
   `c1aa75a0794488f3fb9a9b76f9734779f0ab65d00b8be7c81f8fa7654de8747a`).
 - Owner status surface:
@@ -302,7 +302,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 
 - Owner: `ops.step_29u_offline_capability_v0`
 - Operator command:
-  `python scripts/ops/run_step_29u_offline_capability_v0.py --cycle-count N --output-path PATH`
+  `python scripts&#47;ops&#47;run_step_29u_offline_capability_v0.py --cycle-count N --output-path PATH`
 - Inventory/contract:
   [STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md](../runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md)
 - Status tokens:
@@ -345,7 +345,7 @@ explicit Activation GO remain open. Canonical record:
 
 ## Active goal (one sentence)
 
-**Finish Plan PRs 6–8** bilden die **abgeschlossene** Navigations-Spine auf `main` (docs-only / snapshot-only): [PR 6 — Live-Ops runbook pack](FINISH_PLAN.md#pr-6-live-ops-runbook-pack-docs-only) · [PR 7 — Observability / status reports](FINISH_PLAN.md#pr-7-observabilitystatus-report-hardening-code-docs) · [PR 8 — Release checklist / Go–No-Go](FINISH_PLAN.md#pr-8-release-checklist-gono-go-rubric-docs-only) — Einstieg weiter über [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) und [Release docs](../release/README.md); **NO** live unlocks. **Aktueller Fokus:** schmale Slices aus [FINISH_PLAN — Workstreams](FINISH_PLAN.md#workstreams-16--inputs--outputs--contracts--tests) und den Runbooks (z. B. [Stufe J](../runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md#stufe-j--scripts--demo-daten-operativ-niedrig-priorisiert), [Chat-led gaps](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md)) — kein weiterer nummerierter PR 9+ im Finish-Plan. **Truth/docs governance, PR truth gates, officer truth integration, bounded-pilot / canary-live-entry docs, J1 forward-pipeline slices, the J2 Optuna demo-runner slice, and the J3 placeholder-inventory tooling smoke are landed** — see **Recently landed** below.
+**Finish Plan PRs 6–8** bilden die **abgeschlossene** Navigations-Spine auf `main` (docs-only / snapshot-only): [PR 6 — Live-Ops runbook pack](FINISH_PLAN.md#pr-6-live-ops-runbook-pack-docs-only) · [PR 7 — Observability / status reports](FINISH_PLAN.md#pr-7-observabilitystatus-report-hardening-code-docs) · [PR 8 — Release checklist / Go–No-Go](FINISH_PLAN.md#pr-8-release-checklist-gono-go-rubric-docs-only) — Einstieg weiter über [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) und [Release checklist (Finish Plan PR 8)](FINISH_PLAN.md#pr-8-release-checklist-gono-go-rubric-docs-only); **NO** live unlocks. **Aktueller Fokus:** schmale Slices aus [FINISH_PLAN — Workstreams](FINISH_PLAN.md#workstreams-16--inputs--outputs--contracts--tests) und den Runbooks (z. B. [Stufe J](../runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md#stufe-j--scripts--demo-daten-operativ-niedrig-priorisiert), [Chat-led gaps](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md)) — kein weiterer nummerierter PR 9+ im Finish-Plan. **Truth/docs governance, PR truth gates, officer truth integration, bounded-pilot / canary-live-entry docs, J1 forward-pipeline slices, the J2 Optuna demo-runner slice, and the J3 placeholder-inventory tooling smoke are landed** — see **Recently landed** below.
 
 ---
 
@@ -418,7 +418,7 @@ GitHub (Links zur Nachverfolgung): https://github.com/rauterfrank-ui/Peak_Trade/
 - **J2 (Optuna placeholder slice, PR #2168):** `scripts/run_study_optuna_placeholder.py` — CLI, dry-run default, optional in-memory toy study (`--no-dry-run`); no market/live execution. Full strategy optimization remains `scripts/run_optuna_study.py` (incl. GridSampler / CI alignment with Optuna 3.6).
 - **J3 (placeholder inventory tooling, PR #2170):** `scripts/ops/placeholders/generate_placeholder_reports.py` — local inventory Markdown under `.ops_local` (gitignored); smoke `tests/ops/test_generate_placeholder_reports_smoke.py`; no new CI gate; **NO-LIVE**.
 - **Finish Plan PR 7 (operator verify, PR #2177):** kanonischer Ablauf in [LIVE_STATUS_REPORTS.md](../../LIVE_STATUS_REPORTS.md#7-operator-verify-finish-plan-pr-7) · `FINISH_PLAN` PR 7; Docs-only; **NO-LIVE**.
-- **Finish Plan PR 8 (release / Go–No-Go, PR #2178):** Rubric §4 + `CURRENT_FOCUS`/`FINISH_PLAN`-Anker; [Release checklist & Go/No-Go rubric](../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md); Docs-only; **NO-LIVE**.
+- **Finish Plan PR 8 (release / Go–No-Go, PR #2178):** Rubric §4 + `CURRENT_FOCUS`/`FINISH_PLAN`-Anker; [Release checklist & Go/No-Go rubric (Finish Plan PR 8)](FINISH_PLAN.md#pr-8-release-checklist-gono-go-rubric-docs-only); Docs-only; **NO-LIVE**.
 - **Chat-led gap sync (PR #2182):** Querverweis [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md) → [RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md](../runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md) (Stufe J); Docs-only; **NO-LIVE**.
 - **Chat-led mini-slice — backtest evidence symbol (PR #2184):** `scripts/run_backtest.py` — `resolve_backtest_symbol()` für Evidence-Chain-Metadaten (Config-first); Runbook-Stichprobe §5 in [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md); **NO-LIVE**.
 - **Chat-led Stichprobe §5 — Scripts (PR #2193):** `run_backtest.py` / Evidence-Metadaten `symbol` (`resolve_backtest_symbol`); [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md); **NO-LIVE**.
@@ -483,7 +483,7 @@ GitHub (Links zur Nachverfolgung): https://github.com/rauterfrank-ui/Peak_Trade/
 ## Next small focus (suggestion)
 
 - **Primary:** [Stufe J — Forward-Pipeline / Demo-Stub](../runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md#stufe-j--scripts--demo-daten-operativ-niedrig-priorisiert) (weiter **STUB**, **NO-LIVE**) oder ein **einzelner** Chat-led Gap aus [RUNBOOK_CHAT_LED_OPEN_FEATURES.md](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md).
-- **Optional:** Bei einem **Release-Kandidaten** die Rubric nutzen — [Release checklist & Go/No-Go rubric](../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md) §4; regelmäßig `bash scripts&#47;ops&#47;pt_docs_gates_snapshot.sh --changed`. Kein Scope-Creep; keine Live-Freigabe durch bloßes Dokumentieren.
+- **Optional:** Bei einem **Release-Kandidaten** die Rubric nutzen — [Release checklist & Go/No-Go rubric (Finish Plan PR 8)](FINISH_PLAN.md#pr-8-release-checklist-gono-go-rubric-docs-only) §4; regelmäßig `bash scripts&#47;ops&#47;pt_docs_gates_snapshot.sh --changed`. Kein Scope-Creep; keine Live-Freigabe durch bloßes Dokumentieren.
 
 ---
 
@@ -506,7 +506,7 @@ GitHub (Links zur Nachverfolgung): https://github.com/rauterfrank-ui/Peak_Trade/
 | 2026-03-26 | PR #2047 merged: `CURRENT_FOCUS.md`, `PEAK_TRADE_CHAT_CONTINUITY_BOOTSTRAP.md`, FINISH_PLAN cross-link | https://github.com/rauterfrank-ui/Peak_Trade/pull/2047 (merged 2026-03-26T18:40:04Z) |
 | 2026-03-27 | Finish Plan **PR 6** slice: Live-Ops pack cross-links (Frontdoor, runbooks, safety) | https://github.com/rauterfrank-ui/Peak_Trade/pull/2059 |
 | 2026-03-27 | Finish Plan **PR 7** slice: observability / status report navigation | https://github.com/rauterfrank-ui/Peak_Trade/pull/2060 |
-| 2026-03-27 | Finish Plan **PR 8** slice: release checklist + Go/No-Go rubric (`docs/ops/release/`) | https://github.com/rauterfrank-ui/Peak_Trade/pull/2061 |
+| 2026-03-27 | Finish Plan **PR 8** slice: release checklist + Go/No-Go rubric (`docs&#47;ops&#47;release&#47;`) | https://github.com/rauterfrank-ui/Peak_Trade/pull/2061 |
 | 2026-03-27 | `CURRENT_FOCUS` refresh post PR 6–8 (this file) | https://github.com/rauterfrank-ui/Peak_Trade/pull/2062 |
 | 2026-03-27 | `CURRENT_FOCUS` post-merge finalize (table + branch pointer on `main`) | https://github.com/rauterfrank-ui/Peak_Trade/pull/2063 |
 | 2026-04-01 | Post–truth-layer / gates / officers: `CURRENT_FOCUS` human anchor updated (this file); docs gates snapshot PASS locally | `bash scripts&#47;ops&#47;pt_docs_gates_snapshot.sh --changed` |

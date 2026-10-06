@@ -220,7 +220,7 @@ DEFAULT_FEE_BPS_ASSUMPTION = "2.0"
 DEFAULT_SLIPPAGE_BPS_ASSUMPTION = "5.0"
 MIN_NOTIONAL_USDT_ASSUMPTION = "5.0"
 
-REUSED_SECTION_11_13_3_BINDING_SOURCE = "evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1/20260811T211828Z/"
+REUSED_SECTION_11_13_3_BINDING_SOURCE = "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/section_11_13_3_live_shadow_reconciliation_contract_v1/"
 REUSED_SECTION_11_13_3_BINDING_VENUE = "OKX"
 REUSED_SECTION_11_13_3_BINDING_ENTITY = "OKX Europe Limited"
 REUSED_SECTION_11_13_3_BINDING_REGION = "EEA/DE"

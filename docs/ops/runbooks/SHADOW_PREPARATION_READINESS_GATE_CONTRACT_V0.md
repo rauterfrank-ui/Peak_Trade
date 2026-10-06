@@ -327,7 +327,7 @@ ACTIVATION_AUTHORITY_GRANTED_ANY=false
 CANONICAL_STEP_29U_ABSENT=CLEARED_COMPOSITION_BOUND_ACTIVATION_STILL_UNAUTHORIZED
 RUNTIME_BRIDGE=BOUND_NOT_ACTIVATED
 ECONOMIC_VALIDITY=NOT_PROVEN_BLOCKED
-DURABLE_EVIDENCE_PATH=evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak
+DURABLE_EVIDENCE_PATH=RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
 SOURCE_EVIDENCE_MANIFEST_SHA256=c1aa75a0794488f3fb9a9b76f9734779f0ab65d00b8be7c81f8fa7654de8747a
 ```
 
@@ -370,7 +370,7 @@ CANONICAL_STEP_29U_ABSENT=CLEARED_COMPOSITION_BOUND_ACTIVATION_STILL_UNAUTHORIZE
 STEP_29U_ACTIVATED=false
 RUNTIME_BRIDGE=BOUND_NOT_ACTIVATED
 ECONOMIC_VALIDITY=NOT_PROVEN_BLOCKED
-DURABLE_EVIDENCE_PATH=evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z
+DURABLE_EVIDENCE_PATH=tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/step_29u_post_merge_shadow_soak_contract_v1
 ```
 
 This soak proves the merged #5550 composition remains Step-29U-bound for at
@@ -413,8 +413,8 @@ canonical operator command.
 | OKX Futures no-order cycle (component) | `scripts/ops/run_okx_futures_shadow_no_order_v0.py` |
 | Config (static, non-activating) | `config/ops/shadow_preparation_readiness_gate_v0.toml` |
 | Contract doc (this file) | `docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md` |
-| Post-merge 600s offline no-order soak evidence (docs/evidence-only) | `evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/` |
-| Post-merge Step 29U bound Shadow no-order soak evidence | `evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z/` |
+| Post-merge 600s offline no-order soak evidence (docs/evidence-only) | `RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)&#47;` |
+| Post-merge Step 29U bound Shadow no-order soak evidence | `tests&#47;fixtures&#47;ops&#47;retired_pre_completion_ps_t_contract_v1&#47;step_29u_post_merge_shadow_soak_contract_v1&#47;` |
 | Related charter (non-activating) | `docs/ops/runbooks/SHADOW_247_GOVERNANCE_CHARTER_V0.md` |
 | Focused tests | `tests/ops/test_shadow_preparation_readiness_gate_v0.py` |
 | Pipeline focused tests | `tests/ops/test_shadow_preparation_readiness_offline_projection_pipeline_v0.py` |

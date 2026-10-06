@@ -169,8 +169,9 @@ def test_testnet_durable_state_cannot_set_field_true() -> None:
         handoff=_identity_handoff(),
         source_kind=ADMISSIBLE_SOURCE_KIND,
         source_path=(
-            "evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/"
-            "20260808T181528Z/durable_state/actual_start_durable_state_v1.json"
+            "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/"
+            "section_11_12_testnet_durable_state_negation_stub/"
+            "section_11_12/durable_state/actual_start_durable_state_v1.json"
         ),
         contemporaneous_capture_proven=True,
         provenance_class="CONTEMPORANEOUS_PEAK_TRADE_PRE_RESTART_CAPTURE",
@@ -320,7 +321,7 @@ def test_a1_crash_durability_remains_unproven() -> None:
 
 def test_full_core_29p_authority_remains_unchanged() -> None:
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET"
+        "CURRENT_PRODUCTIVE_TREASURY_SINGLE_SOURCE_CAPITAL_HANDOFF_REQUIRES_FRESH_TRUSTED_GET"
     )
     assert CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY is False
     assert CANARY_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY is False

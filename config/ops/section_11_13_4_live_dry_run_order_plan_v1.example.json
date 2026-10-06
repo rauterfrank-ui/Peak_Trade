@@ -36,6 +36,6 @@
   "owner_declared_host_allowlist": [],
   "config_version": "section_11_13_4_live_dry_run_order_plan_config.v1",
   "schema_version": "section_11_13_4_live_dry_run_order_plan.v1",
-  "predecessor_shadow_evidence_root": "evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1/20260811T211828Z/",
+  "predecessor_shadow_evidence_root": "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/section_11_13_3_live_shadow_reconciliation_contract_v1/",
   "notes": "Owner fills productive fields at execute time. Reuse \u00a711.13.3 proven binding with secretref://vault/peak-trade/live-dry-run-order-plan/okx."
 }

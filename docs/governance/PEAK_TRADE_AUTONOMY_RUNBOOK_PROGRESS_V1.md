@@ -25,7 +25,7 @@ DOCUMENT_CLASS=CURRENT_RUNTIME_TRUTH
 - Economic evidence class: `INCOMPLETE_STUB_ONLY`
 - Durable evidence root: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/ops/integrated_paper_shadow_productive_6h_20260729T205830Z`
 - Closeout package: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/integrated_paper_shadow_productive_6h_technical_evidence_closeout_20260730T084108Z`
-- Repo pointer: `evidence/ops/integrated_paper_shadow_productive_6h_technical_closeout/20260730T084108Z/`
+- Repo pointer: `RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)&#47;20260730T084108Z&#47;`
 - Documentation Anchor: `docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout`
 - Technical facts: 6h OKX public MD observation; 10243 cycles; 3415 heartbeats; 0 data gaps; terminal `PASS` via `PLANNED_DURATION_REACHED`; no Orders/private API/Paper/Testnet/Live
 - Flags: `TECHNICAL_RUNTIME_EVIDENCE=PASS`; `ECONOMIC_EVIDENCE_COMPLETE=false`; `ECONOMIC_VALIDITY_PASS=false`; `STRATEGY_VALIDITY_PASS=false`; `PROMOTION_ELIGIBLE=false`; `signals_generated=0`; `hypothetical_trades=0`; `all_decisions_hold=true`
@@ -809,8 +809,8 @@ DOCUMENT_CLASS=CURRENT_RUNTIME_TRUTH
 | `ARMSTRONG_CYCLE_V1_INCONCLUSIVE_REGISTRATION_V0_CONFIG_REF` | `config/research/armstrong_cycle_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.json` |
 | `ARMSTRONG_CYCLE_V1_INCONCLUSIVE_REGISTRATION_V0_GOVERNANCE_REF` | `docs/governance/ARMSTRONG_CYCLE_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0.md` |
 | `ARMSTRONG_CYCLE_V1_GOVERNANCE_REF` | `docs/governance/ARMSTRONG_CYCLE_V1_REPAIRED_BINDING_INCONCLUSIVE_BASELINE_EVIDENCE_AND_UNCHANGED_RETRY_BLOCK_V0.md` |
-| `ARMSTRONG_CYCLE_V1_VERSIONED_BINDING_CONFIG_REF` | `config/research/armstrong_cycle_v1_versioned_research_binding_v0.json` |
-| `ARMSTRONG_CYCLE_V1_SCOPE_RATIFICATION_CONFIG_REF` | `config/research/armstrong_cycle_v1_offline_economic_evaluation_scope_ratification_v0.json` |
+| `ARMSTRONG_CYCLE_V1_VERSIONED_BINDING_CONFIG_REF` | `config&#47;research&#47;armstrong_cycle_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.json` |
+| `ARMSTRONG_CYCLE_V1_SCOPE_RATIFICATION_CONFIG_REF` | `config&#47;research&#47;armstrong_cycle_v1_repaired_binding_inconclusive_baseline_evidence_and_unchanged_retry_block_v0.json` |
 | `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_RESEARCH_SCOPE_RATIFIED` | `true` |
 | `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_BINDING_RATIFIED` | `true` |
 | `BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |

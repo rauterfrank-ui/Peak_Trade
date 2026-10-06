@@ -204,7 +204,8 @@ def test_reject_testnet_state_substitution() -> None:
         handoff=_identity_handoff(),
         source_kind=ADMISSIBLE_SOURCE_KIND,
         source_path=(
-            "evidence/ops/section_11_12_testnet_restart_proven_v1/"
+            "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/"
+            "section_11_12_testnet_restart_negation_stub/"
             "20260810T223606Z/durable_state/restart_with_open_position_pre_restart_v1.json"
         ),
     )
@@ -373,7 +374,7 @@ def test_all_pos_derivations_are_refused() -> None:
 
 def test_no_full_core_29p_or_master_v2_mutation() -> None:
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET"
+        "CURRENT_PRODUCTIVE_TREASURY_SINGLE_SOURCE_CAPITAL_HANDOFF_REQUIRES_FRESH_TRUSTED_GET"
     )
     assert CANARY_PATH_IS_PARALLEL_PRODUCTIVE_LIVE_AUTHORITY is False
     assert HOST_CRASH_DURABILITY == "UNPROVEN"

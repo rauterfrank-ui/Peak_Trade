@@ -86,8 +86,8 @@ def verify_capability_11_long_running_testnet_proven_prep_eval_v1(
     try:
         hist = evaluate_long_running_testnet_proven_evidence_v1(
             evidence_root=Path(
-                "evidence/ops/section_11_12_8_bounded_long_running_productive_testnet_campaign_now/"
-                "20260808T181528Z"
+                "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/"
+                "section_11_12_8_long_running_historical_refuse_contract_v1"
             ),
             campaign_payload={
                 "BOUND_REACHED_REASON": "DURATION_BOUND",

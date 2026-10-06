@@ -786,3 +786,11 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/durable/current_productive_ghv_bounded_runtime_convergence_proof_v1.json
   notes: 'CURRENT-input GHV readiness adapter + evaluator extension + WP runner: read-only public GET observation, fail-closed CURRENT vs fixture; historical bounded Natural Enter LONG to PRE_EXTERNAL (POST_COUNT=0); parent outer watchdog on optional bounded child; AUTHORITY=NONE; no trading semantic change.'
+- id: CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1
+  from: 2bcf835a3ef00085be1d6325b38b22031d3b0416
+  to: PENDING_CHANGE
+  type: EVIDENCE_RETIREMENT
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/
+  notes: 'PR #7069: retire 566 pre-completion Paper/Shadow/Testnet run evidence trees from active repo after slim contract-fixture migration; rebind docs/tests/config/src references; preserve Canary + post-completion full-system evidence; RUNTIME_SEMANTICS_CHANGED=false; TRADING_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.'
+

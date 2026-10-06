@@ -436,7 +436,10 @@ _POS_PRODUCERS: tuple[dict[str, Any], ...] = (
     ),
     _row(
         producer_id="TESTNET_DURABLE_STATE",
-        path="evidence/ops/section_11_12_testnet_restart_proven_v1/",
+        path=(
+            "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/"
+            "section_11_12_testnet_restart_negation_stub/"
+        ),
         symbol="restart_with_open_position_pre_restart_v1.json",
         value_semantics="testnet_restart_handoff",
         source_kind="TESTNET_CAMPAIGN_DURABLE_STATE",
