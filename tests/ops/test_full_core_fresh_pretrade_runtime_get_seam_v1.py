@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from urllib.parse import parse_qs, urlparse
 
 import pytest
 
@@ -76,6 +77,7 @@ _REQUIRED_PATHS = (
     ENDPOINT_MARKET_INDEX_TICKERS,
 )
 from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
+    USDT_USDC_PAIR_NATIVE_ID,
     USDT_USDC_SOURCE_IDENTITY,
 )
 from tests.ops._monetary_normalization_test_helpers_v1 import (
@@ -110,9 +112,14 @@ class InjectedFreshGetTransportV1:
         self.method = method
         self.payload_override = payload_override
         self.error_class = error_class
+        self._cache: dict[str, FreshPretradeGetTransportResultV1] = {}
 
     def get(self, *, endpoint, auth_required, pretrade_decision_id):
-        path = str(endpoint or "").split("?", 1)[0]
+        full = str(endpoint or "").strip()
+        cached = self._cache.get(full)
+        if cached is not None:
+            return cached
+        path = full.split("?", 1)[0]
         if path in self.missing_paths:
             return FreshPretradeGetTransportResultV1(
                 get_performed=False,
@@ -131,8 +138,18 @@ class InjectedFreshGetTransportV1:
             auth_sent = bool(auth_required)
         payload = self.payload_override
         if payload is None:
-            payload = self.payloads.get(path, _OK_PAYLOAD)
-        return FreshPretradeGetTransportResultV1(
+            lookup_keys = [full]
+            if "?" in full:
+                inst_ids = parse_qs(urlparse(full).query).get("instId") or []
+                if inst_ids:
+                    lookup_keys.append(f"{path}#instId={inst_ids[0]}")
+            lookup_keys.append(path)
+            payload = _OK_PAYLOAD
+            for key in lookup_keys:
+                if key in self.payloads:
+                    payload = self.payloads[key]
+                    break
+        result = FreshPretradeGetTransportResultV1(
             get_performed=True,
             method=self.method,
             endpoint=endpoint,
@@ -144,6 +161,8 @@ class InjectedFreshGetTransportV1:
             historical_reuse=self.historical_reuse,
             error_class=self.error_class,
         )
+        self._cache[full] = result
+        return result
 
 
 def _bind_state_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
@@ -228,6 +247,7 @@ def test_flag_and_standing_gates_remain_false() -> None:
         "MARGIN_MODE",
         "AVAILABLE_MARGIN",
         "MONETARY_NORMALIZATION_USDT_USDC_INDEX",
+        "MONETARY_NORMALIZATION_CONVERSION_PAIR_INSTRUMENTS",
     }
 
 
@@ -316,8 +336,12 @@ def test_duplicate_ambiguous_payload_is_grouped_once() -> None:
     instrument_items = [
         item for item in evidence.items if item.endpoint_path == ENDPOINT_PUBLIC_INSTRUMENTS
     ]
-    assert len(instrument_items) == 2
-    assert {item.item_id for item in instrument_items} == {"INSTRUMENT_STATE", "MAX_SIZE"}
+    assert len(instrument_items) == 3
+    assert {item.item_id for item in instrument_items} == {
+        "INSTRUMENT_STATE",
+        "MAX_SIZE",
+        "MONETARY_NORMALIZATION_CONVERSION_PAIR_INSTRUMENTS",
+    }
 
 
 def test_post_method_is_forbidden() -> None:

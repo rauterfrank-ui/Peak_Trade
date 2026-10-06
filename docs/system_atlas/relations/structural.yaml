@@ -132,6 +132,7 @@ relations:
   - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
   notes: 'Thin non-authoritative observation hints into existing fresh-pretrade GET
     seam; cached WP-B state must not substitute FRESH_GET_PER_PRETRADE_DECISION. ATLAS_AUTHORITY=NONE.
+    # atlas_entity_review: PR #7079 DEPENDS_ON edge unchanged; conversion-pair GET is productive fresh-pretrade wiring only; AUTHORITY=NONE; POST_COUNT=0.
 
     '
 - id: REL:s_system_has_md_private_runtime_convergence_v1

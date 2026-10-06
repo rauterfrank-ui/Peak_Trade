@@ -660,6 +660,7 @@ relations:
     owned and does not change this CALLS edge. S2C DataSafetyGate.check conjunct does
     not change this CALLS edge. DataSafetyGate=CONJUNCT_NOT_OWNER. evaluate_execution_admission_v1
     remains the sole admission owner. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+    # atlas_entity_review: PR #7079 CALLS edge unchanged; additional required GET item is internal to fresh-pretrade gate; AUTHORITY=NONE; POST_COUNT=0.
 - id: REL:r_full_core_path_calls_live_account_bound
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CALLS
@@ -682,6 +683,7 @@ relations:
   notes: LIVE_ACCOUNT_BOUND seam consumes Fresh GET identity extracts. Bound cannot
     override GET, permit, or FILEGATE. S1 data_safety_source_kind stamp does not change
     this CONSUMES edge. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+    # atlas_entity_review: PR #7079 CONSUMES edge unchanged; conversion-pair GET is separate fresh-pretrade item; AUTHORITY=NONE; POST_COUNT=0.
 - id: REL:r_full_core_path_calls_capital_admission
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CALLS
@@ -905,6 +907,7 @@ relations:
   notes: Fresh GET seam composes OWNER_ONE_SHOT permit join. GET cannot override permit
     or FILEGATE. S1 data_safety_source_kind stamp does not change this CONSUMES edge.
     Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+    # atlas_entity_review: PR #7079 CONSUMES edge unchanged; dedup GET budget 8→9 only; AUTHORITY=NONE; POST_COUNT=0.
 - id: REL:r_full_core_owner_one_shot_permit_composes_filegate
   source: GATE:full_core_owner_one_shot_permit_v1
   type: CONSUMES

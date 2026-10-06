@@ -828,6 +828,13 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_pre_external_convergence_observation_source_get_count_delegation_v1.py
   notes: 'PR #7078: read-only get_count/poll_count delegation on PendingOutcomeAdvanceObservationSourceV1 for PRE_EXTERNAL convergence report observability; fixes report write crash after bounded S5 cycles; single counter authority on inner LiveFreshC1 source; no trading/threshold/selection/POST change; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7079_conversion_pair_monetary_metadata_closure_v1
+  from: f7ea81c735361203451e32228ee6e8d9c7199839
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_governed_productive_monetary_normalization_v1.py
+  notes: 'PR #7079: productive Fresh Pretrade GET for USDC-USDT-SWAP conversion-pair instrument metadata + common-epoch handoff separates bound vs pair payloads; closes GATE_006 INSTRUMENT_MONETARY_IDENTITY_MISSING wiring on main; dedup GET budget 8→9; no monetary semantics/threshold/POST change; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
 - id: CHANGE:legacy_paper_shadow_daemon_retirement_bp_v1
   from: 1bac0d93302c6e589effafe46fccb055d82bd44e
   to: PENDING_CHANGE

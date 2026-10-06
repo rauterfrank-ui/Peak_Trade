@@ -1,6 +1,6 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "b18a49ce7268dcadadaacba389c97b7273ae9175",
+  "base_sha": "f7ea81c735361203451e32228ee6e8d9c7199839",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
@@ -8,16 +8,25 @@
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/session_integration_v1.py",
-    "tests/ops/test_pre_external_convergence_observation_source_get_count_delegation_v1.py"
+    "docs/system_atlas/relations/runtime.yaml",
+    "docs/system_atlas/relations/structural.yaml",
+    "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py",
+    "tests/ops/test_full_core_current_productive_29p_cap24_bound_instrument_provenance_handoff_v1.py",
+    "tests/ops/test_full_core_current_productive_29p_chain_cap24_writer_to_common_epoch_join_v1.py",
+    "tests/ops/test_full_core_current_productive_29p_common_epoch_handoff_v1.py",
+    "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py",
+    "tests/ops/test_governed_productive_monetary_normalization_v1.py"
   ],
-  "changed_paths_sha256": "9868bedae3307f912b26e76a3e3a3b4a66cba256fb653639b86811d74eeb2472",
+  "changed_paths_sha256": "3c78655f77c32fbbd30bb5215e750f4d728a17750d1b8795d82fa9a40801fde8",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT",
-  "reason": "PR #7078: PRE_EXTERNAL report observability get_count delegation; law-map adjudication refresh only; no normative law or structured law-map source change; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #7079: productive Fresh Pretrade GET for USDC-USDT-SWAP conversion-pair instrument metadata + common-epoch handoff payload separation; law-map adjudication refresh only; no normative law or structured law-map source change; AUTHORITY=NONE; POST_COUNT=0.",
   "evidence_refs": [
     "docs/system_atlas/provenance/changes.yaml",
-    "tests/ops/test_pre_external_convergence_observation_source_get_count_delegation_v1.py"
+    "docs/system_atlas/entities/catalog.yaml",
+    "tests/ops/test_governed_productive_monetary_normalization_v1.py"
   ],
   "covered_candidate_paths": []
 }

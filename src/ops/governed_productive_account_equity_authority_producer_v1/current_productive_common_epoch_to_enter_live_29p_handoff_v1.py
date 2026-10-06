@@ -24,17 +24,22 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     ENDPOINT_ACCOUNT_BALANCE,
     ENDPOINT_PUBLIC_INSTRUMENTS,
+    MONETARY_NORMALIZATION_CONVERSION_PAIR_INSTRUMENTS_ITEM_ID,
     FullCoreFreshPretradeGetTransportV1,
+    REQUIRED_GET_ITEM_SPECS,
     TRANSPORT_CLASS_INJECTED_TEST_DOUBLE,
     TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+    build_required_get_endpoint_v1,
 )
 from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
     USDT_USDC_PAIR_NATIVE_ID,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
-    CurrentProductive29PCommonEpochHandoffError,
     CurrentProductive29PCommonEpochHandoffResultV1,
     payload_from_fresh_get_transport_v1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_risk_capital_model_v1 import (
+    REQUIRED_TD_MODE,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.available_margin_observation_v1 import (
     account_balance_query_path_v1,
@@ -74,6 +79,88 @@ def _require_productive_transport_v1(transport: FullCoreFreshPretradeGetTranspor
         )
 
 
+def _fresh_pretrade_item_spec_v1(*, item_id: str):
+    for spec in REQUIRED_GET_ITEM_SPECS:
+        if spec.item_id == item_id:
+            return spec
+    raise CurrentProductiveCommonEpochToEnterLive29PHandoffError("FRESH_PRETRADE_ITEM_SPEC_MISSING")
+
+
+def _payload_from_decision_epoch_get_v1(
+    *,
+    transport: FullCoreFreshPretradeGetTransportV1,
+    endpoint: str,
+    auth_required: bool,
+    decision_epoch: str,
+) -> Any:
+    endpoint_key = str(endpoint or "").strip()
+    cache = getattr(transport, "_cache", None)
+    if isinstance(cache, dict) and endpoint_key in cache:
+        cached = cache[endpoint_key]
+        if hasattr(cached, "payload"):
+            return cached.payload
+        if isinstance(cached, Mapping):
+            return cached.get("payload")
+    try:
+        return payload_from_fresh_get_transport_v1(
+            transport,
+            endpoint=endpoint_key,
+            auth_required=auth_required,
+            decision_epoch=decision_epoch,
+        )
+    except Exception as exc:
+        raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(
+            "FRESH_PRETRADE_PAYLOAD_RETRIEVAL_FAILED"
+        ) from exc
+
+
+def _require_bound_instruments_payload_v1(
+    *,
+    payload: Any,
+    bound_venue_native_id: str,
+) -> Mapping[str, Any]:
+    if not isinstance(payload, Mapping):
+        raise CurrentProductiveCommonEpochToEnterLive29PHandoffError("INSTRUMENTS_PAYLOAD_MISSING")
+    data = payload.get("data")
+    if not isinstance(data, list):
+        raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(
+            "INSTRUMENTS_PAYLOAD_MALFORMED"
+        )
+    bound_id = str(bound_venue_native_id or "").strip()
+    has_bound = any(
+        isinstance(row, Mapping) and str(row.get("instId") or "").strip() == bound_id
+        for row in data
+    )
+    if not has_bound:
+        raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(
+            "BOUND_INSTRUMENT_METADATA_MISSING"
+        )
+    return payload
+
+
+def _require_conversion_pair_instruments_payload_v1(*, payload: Any) -> Mapping[str, Any]:
+    if not isinstance(payload, Mapping):
+        raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(
+            "CONVERSION_PAIR_INSTRUMENTS_PAYLOAD_MISSING"
+        )
+    data = payload.get("data")
+    if not isinstance(data, list):
+        raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(
+            "CONVERSION_PAIR_INSTRUMENTS_PAYLOAD_MALFORMED"
+        )
+    pair_rows = [
+        row
+        for row in data
+        if isinstance(row, Mapping)
+        and str(row.get("instId") or "").strip() == USDT_USDC_PAIR_NATIVE_ID
+    ]
+    if len(pair_rows) != 1:
+        raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(
+            "CONVERSION_PAIR_INSTRUMENTS_ROW_MISSING"
+        )
+    return payload
+
+
 def build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v1(
     *,
     handoff: CurrentProductive29PCommonEpochHandoffResultV1,
@@ -94,12 +181,18 @@ def build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v
             "LIVE_ACCOUNT_BOUND_NOT_TRUSTED"
         )
 
+    bound_venue_native_id = str(handoff.bound_instrument.venue_native_id or "").strip()
+    if not bound_venue_native_id:
+        raise CurrentProductiveCommonEpochToEnterLive29PHandoffError("BOUND_INSTRUMENT_ID_MISSING")
+
+    public_inst_type = str(handoff.public_inst_type or "").strip().upper() or "FUTURES"
+
     payloads = getattr(transport, "payloads_by_path", None) or {}
     balance_path = account_balance_query_path_v1()
     balance_payload = payloads.get(balance_path) or payloads.get(ENDPOINT_ACCOUNT_BALANCE)
     if balance_payload is None:
-        balance_payload = payload_from_fresh_get_transport_v1(
-            transport,
+        balance_payload = _payload_from_decision_epoch_get_v1(
+            transport=transport,
             endpoint=balance_path,
             auth_required=True,
             decision_epoch=epoch,
@@ -107,22 +200,38 @@ def build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v
     if not isinstance(balance_payload, Mapping):
         raise CurrentProductiveCommonEpochToEnterLive29PHandoffError("BALANCE_PAYLOAD_MISSING")
 
-    instruments_payload = payloads.get(ENDPOINT_PUBLIC_INSTRUMENTS)
-    if instruments_payload is None:
-        instruments_payload = payload_from_fresh_get_transport_v1(
-            transport,
-            endpoint=ENDPOINT_PUBLIC_INSTRUMENTS,
-            auth_required=False,
-            decision_epoch=epoch,
-        )
-    if not isinstance(instruments_payload, Mapping):
-        raise CurrentProductiveCommonEpochToEnterLive29PHandoffError("INSTRUMENTS_PAYLOAD_MISSING")
+    instrument_state_spec = _fresh_pretrade_item_spec_v1(item_id="INSTRUMENT_STATE")
+    bound_instruments_endpoint = build_required_get_endpoint_v1(
+        instrument_state_spec,
+        instrument_id=bound_venue_native_id,
+        td_mode=REQUIRED_TD_MODE,
+        limit_px="",
+        inst_type=public_inst_type,
+    )
+    instruments_payload = _payload_from_decision_epoch_get_v1(
+        transport=transport,
+        endpoint=bound_instruments_endpoint,
+        auth_required=False,
+        decision_epoch=epoch,
+    )
+    instruments_payload = _require_bound_instruments_payload_v1(
+        payload=instruments_payload,
+        bound_venue_native_id=bound_venue_native_id,
+    )
 
+    index_spec = _fresh_pretrade_item_spec_v1(item_id="MONETARY_NORMALIZATION_USDT_USDC_INDEX")
+    index_tickers_endpoint = build_required_get_endpoint_v1(
+        index_spec,
+        instrument_id=bound_venue_native_id,
+        td_mode=REQUIRED_TD_MODE,
+        limit_px="",
+        inst_type=public_inst_type,
+    )
     index_tickers_payload = payloads.get(ENDPOINT_MARKET_INDEX_TICKERS)
     if index_tickers_payload is None:
-        index_tickers_payload = payload_from_fresh_get_transport_v1(
-            transport,
-            endpoint=ENDPOINT_MARKET_INDEX_TICKERS,
+        index_tickers_payload = _payload_from_decision_epoch_get_v1(
+            transport=transport,
+            endpoint=index_tickers_endpoint,
             auth_required=False,
             decision_epoch=epoch,
         )
@@ -131,16 +240,30 @@ def build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v
             "MONETARY_NORMALIZATION_INDEX_TICKERS_MISSING"
         )
 
-    conversion_pair_payload = instruments_payload
-    data = instruments_payload.get("data")
-    if isinstance(data, list):
-        has_pair = any(
-            isinstance(row, Mapping)
-            and str(row.get("instId") or "").strip() == USDT_USDC_PAIR_NATIVE_ID
-            for row in data
+    conversion_pair_spec = _fresh_pretrade_item_spec_v1(
+        item_id=MONETARY_NORMALIZATION_CONVERSION_PAIR_INSTRUMENTS_ITEM_ID
+    )
+    conversion_pair_endpoint = build_required_get_endpoint_v1(
+        conversion_pair_spec,
+        instrument_id=bound_venue_native_id,
+        td_mode=REQUIRED_TD_MODE,
+        limit_px="",
+        inst_type=public_inst_type,
+    )
+    conversion_pair_payload = _payload_from_decision_epoch_get_v1(
+        transport=transport,
+        endpoint=conversion_pair_endpoint,
+        auth_required=False,
+        decision_epoch=epoch,
+    )
+    conversion_pair_payload = _require_conversion_pair_instruments_payload_v1(
+        payload=conversion_pair_payload
+    )
+
+    if conversion_pair_payload is instruments_payload:
+        raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(
+            "CONVERSION_PAIR_INSTRUMENTS_NOT_SEPARATE_FROM_BOUND"
         )
-        if not has_pair:
-            conversion_pair_payload = dict(instruments_payload)
 
     body_sha256 = ""
     if handoff.observation is not None:

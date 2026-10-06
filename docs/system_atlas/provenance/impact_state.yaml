@@ -1,16 +1,25 @@
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CHANGE:pr_7078_pre_external_observation_get_count_delegation_v1
-modified_by: CHANGE:pr_7078_pre_external_observation_get_count_delegation_v1
+introduced_by: CHANGE:pr_7079_conversion_pair_monetary_metadata_closure_v1
+modified_by: CHANGE:pr_7079_conversion_pair_monetary_metadata_closure_v1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #7078: PRE_EXTERNAL convergence report observability — delegate get_count through pending-outcome
-  observation wrapper; reporting-only; no trading authority change; AUTHORITY=NONE; POST_COUNT=0.
+  PR #7079: conversion-pair monetary metadata productive GET + handoff separation;
+  wiring-only closure for GATE_006; no trading authority change; AUTHORITY=NONE;
+  POST_COUNT=0.
 changed_entities:
-  - RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
-  - RUNTIME_COMPONENT:natural_enter_cross_session_outcome_closure_v1
-changed_relations: []
+  - CAPABILITY:okx_eea_private_account_state_runtime_v1
+  - GATE:full_core_fresh_pretrade_runtime_get_v1
+  - GATE:full_core_live_account_bound_v1
+  - GATE:full_core_owner_one_shot_permit_v1
+  - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  - RUNTIME_COMPONENT:governed_productive_monetary_normalization_v1
+changed_relations:
+  - REL:r_full_core_fresh_pretrade_get_composes_permit
+  - REL:r_full_core_live_account_bound_composes_fresh_get
+  - REL:r_full_core_path_calls_fresh_pretrade_runtime_get
+  - REL:s_private_state_runtime_adapts_fresh_pretrade_get
 changed_closures: []
 changed_wiring: []
 changed_venue: []
@@ -19,4 +28,5 @@ changed_generated:
   - generated/ATLAS_CHANGE_IMPACT.md
   - generated/COVERAGE_REPORT.md
   - generated/ORPHAN_AND_WIRING_GAPS.md
+  - generated/RUNTIME_GRAPH.md
   - generated/SYSTEM_ATLAS.md

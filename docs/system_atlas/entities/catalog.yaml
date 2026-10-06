@@ -501,7 +501,7 @@ entities:
   - docs/ops/specs/OKX_EEA_PRIVATE_ACCOUNT_STATE_RUNTIME_V1.md
   - config/governance/okx_eea_private_account_state_runtime_v1_policy_v1.json
   - tests/ops/test_okx_eea_private_account_state_runtime_v1.py
-  notes: 'Observation-only OKX EEA private state plane: OKX_EEA_PRIVATE_OBSERVATION_READ_V1 credential class, GET-only REST baseline/recovery, private WS login/subscribe only, normalized account/balance/position/order/fill state, reconciliation/durability, thin adapters into existing fresh-pretrade seams. No POST, WS order send/amend/cancel, trade-credential fallback, account-equity sizing authority, selection, strategy, execution, or wire authority. MULTI_FUTURE_RUNTIME_AUTHORIZED remains false; MAX_POSITIONS_EFFECTIVE=1. ATLAS_AUTHORITY=NONE.'
+  notes: 'Observation-only OKX EEA private state plane: OKX_EEA_PRIVATE_OBSERVATION_READ_V1 credential class, GET-only REST baseline/recovery, private WS login/subscribe only, normalized account/balance/position/order/fill state, reconciliation/durability, thin adapters into existing fresh-pretrade seams. No POST, WS order send/amend/cancel, trade-credential fallback, account-equity sizing authority, selection, strategy, execution, or wire authority. MULTI_FUTURE_RUNTIME_AUTHORIZED remains false; MAX_POSITIONS_EFFECTIVE=1. ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #7079 indirect DEPENDS_ON fresh-pretrade GET topology only; no private-state semantics change; AUTHORITY=NONE; POST_COUNT=0.'
 - id: RUNTIME_COMPONENT:current_productive_sidestate_confirmation_cursor_v1
   # atlas_entity_review: PR #7037 test expectation update only (CRS at MV2 host); cursor seam unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
@@ -4881,6 +4881,7 @@ entities:
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
   # atlas_entity_review: PR #7069 pre-completion P/S/T run evidence retirement; reference/fixture rebind only; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  # atlas_entity_review: PR #7079 fresh-pretrade required GET adds USDC-USDT-SWAP conversion-pair instruments fetch group; wiring-only GATE_006 closure; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7059 RC-IMP-01 resolve_host_market_sample_venue_event_time_unix_v1 + accepted C1 in run_current_productive_master_v2_runtime_cycle_v1; MATERIALLY_CHANGED wiring only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7037 WIRING_ONLY CRS boundary propagation via build_simulated_economics_crs_boundary_state_file_v1 before integrated replay; no trading-decision change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7035 LIVE-29P join Layer-C adverse-exit protective-stop binding aligned with productive MV2; downstream binding only; AUTHORITY=NONE; POST_COUNT=0.
@@ -5609,14 +5610,14 @@ entities:
   - src/ops/full_core_live_path_composition_root_v1/owner_one_shot_permit_v1.py
   - tests/ops/test_full_core_owner_one_shot_typed_permit_seam_v1.py
   - docs/ops/specs/FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM_V1.md
-  notes: Joins FullCoreLivePathInputV1.owner_go into Full-Core admission as typed permit evidence. Exact token match only. Does not arm Live. Does not GET. Does not admit. Does not override FILEGATE. Does not consume the token. Canary OWNER_GO_EXECUTE is mismatch. 11.2.1.Q does not consume OWNER_ONE_SHOT as Live arming. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+  notes: Joins FullCoreLivePathInputV1.owner_go into Full-Core admission as typed permit evidence. Exact token match only. Does not arm Live. Does not GET. Does not admit. Does not override FILEGATE. Does not consume the token. Canary OWNER_GO_EXECUTE is mismatch. 11.2.1.Q does not consume OWNER_ONE_SHOT as Live arming. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #7079 indirect topology touch via fresh-pretrade GET composition only; no permit semantics change; AUTHORITY=NONE; POST_COUNT=0.
 - id: GATE:full_core_fresh_pretrade_runtime_get_v1
   kind: GATE
   name: Full-core fresh pretrade runtime GET seam v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7077_monetary_normalization_implementation_v1
+  modified_by: CHANGE:pr_7079_conversion_pair_monetary_metadata_closure_v1
   fail_closed: true
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
@@ -5646,14 +5647,14 @@ entities:
   - docs/ops/specs/FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md
   - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_FRESH_TRUSTED_USDC_FREE_MARGIN_GET_AND_PRODUCE_SIZING_VALUE_V1.md
   notes: 'Joins decision-bound Fresh Pretrade GET evidence into Full-Core admission. Injectable GET-only port. Does not arm Live. Does not POST. Does not admit. Does not override FILEGATE or permit. Injected test doubles cannot claim venue contact. Canary HTTP is not Full-Core transport. S1: FreshPretradeGetTransportResultV1.data_safety_source_kind is an explicit provenance carrier (default None=UNBOUND). REAL is stamped only by FullCoreProductiveReadOnlyGetTransportV1.get under direct eea.okx.com acquisition evidence. No VENUE_NATIVE remap. No DataSafetyGate/usage_context join in S1. S2B: ratified Full-Core composition-root binder may compose DataSafetyContext(REAL, LIVE_TRADE) from the S1 stamp at this result type before A1/A2/A3 unwrap. Fail-closed unbound when stamp is None. S2C: DataSafetyGate.check is a fail-closed conjunct of evaluate_execution_admission_v1. DataSafetyGate=CONJUNCT_NOT_OWNER. ALLOW is not admission. No second admission owner. No activation/POST/wire. Prior S2B DATASAFETYGATE_JOIN=false
-    / S2C_UNAUTHORIZED notes are superseded for this implemented coupling. 11.2.1.Q productive GETs live in a sibling package, not this seam. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6995 typed GET cache policy GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED for S6 Fresh-C1 candle polls; default CACHEABLE_SNAPSHOT preserved; no POST/keychain; Real-Venue cache effectiveness proof deferred post-merge; AUTHORITY=NONE; POST_COUNT=0.'
+    / S2C_UNAUTHORIZED notes are superseded for this implemented coupling. 11.2.1.Q productive GETs live in a sibling package, not this seam. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6995 typed GET cache policy GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED for S6 Fresh-C1 candle polls; default CACHEABLE_SNAPSHOT preserved; no POST/keychain; Real-Venue cache effectiveness proof deferred post-merge; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7079 adds required productive public instruments GET for USDC-USDT-SWAP conversion-pair metadata (10th dedup group); same transport/freshness; no POST; AUTHORITY=NONE; POST_COUNT=0.'
 - id: GATE:full_core_live_account_bound_v1
   kind: GATE
   name: Full-core LIVE_ACCOUNT_BOUND seam v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7077_monetary_normalization_implementation_v1
+  modified_by: CHANGE:pr_7079_conversion_pair_monetary_metadata_closure_v1
   fail_closed: true
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
@@ -5667,7 +5668,7 @@ entities:
   - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
   - tests/ops/test_full_core_live_account_bound_and_remaining_closeout_v1.py
   - docs/ops/specs/FULL_CORE_REMAINING_ADMISSION_CHAIN_CLOSEOUT_V1.md
-  notes: Joins typed LIVE_ACCOUNT_BOUND identity evidence into Full-Core admission. Fresh GET success alone does not prove bound. String passthrough is not authority. Does not arm Live. Does not POST. Does not admit. Does not override FILEGATE, permit, or GET. 11.2.1.Q GET execute does not mint LIVE_ACCOUNT_BOUND. 11.2.1.R LIVE_ACCOUNT_BOUND_JOIN_EXECUTED_THIS_SLICE=false. 11.2.1.S LIVE_ACCOUNT_BOUND_JOIN_EXECUTED_THIS_SLICE=false. GET execute still hardcodes live_account_bound_status=MISSING. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+  notes: Joins typed LIVE_ACCOUNT_BOUND identity evidence into Full-Core admission. Fresh GET success alone does not prove bound. String passthrough is not authority. Does not arm Live. Does not POST. Does not admit. Does not override FILEGATE, permit, or GET. 11.2.1.Q GET execute does not mint LIVE_ACCOUNT_BOUND. 11.2.1.R LIVE_ACCOUNT_BOUND_JOIN_EXECUTED_THIS_SLICE=false. 11.2.1.S LIVE_ACCOUNT_BOUND_JOIN_EXECUTED_THIS_SLICE=false. GET execute still hardcodes live_account_bound_status=MISSING. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #7079 co-present USDC-USDT-SWAP authorized on fresh GET items only; bound-instrument LAB semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
 - id: GATE:full_core_capital_admission_v1
   kind: GATE
   name: Full-core Pre-Live Capital Admission seam v1
@@ -6040,7 +6041,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7077_monetary_normalization_implementation_v1
+  modified_by: CHANGE:pr_7079_conversion_pair_monetary_metadata_closure_v1
   source_paths:
   - src/ops/governed_productive_monetary_normalization_v1/__init__.py
   - src/ops/governed_productive_monetary_normalization_v1/constants_v1.py
@@ -6063,7 +6064,7 @@ entities:
   - docs/governance/MONETARY_NORMALIZATION_IMPLEMENTATION_V1.md
   - tests/ops/test_governed_productive_monetary_normalization_v1.py
   - tests/ops/_monetary_normalization_test_helpers_v1.py
-  notes: 'PR #7077: productive USDT→USDC normalization via Fresh Pretrade index-tickers GET (USDC-USDT idxPx); Enter-Live-29P seam before CRS; no POST; ATLAS_AUTHORITY=NONE.'
+  notes: 'PR #7077: productive USDT→USDC normalization via Fresh Pretrade index-tickers GET (USDC-USDT idxPx); Enter-Live-29P seam before CRS; no POST; ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #7079 common-epoch handoff separates bound vs conversion-pair instrument payloads for GATE_006 identity join; no normalization formula change; AUTHORITY=NONE; POST_COUNT=0.'
 - id: RUNTIME_COMPONENT:governed_productive_instrument_metadata_authority_producer_v1
   kind: RUNTIME_COMPONENT
   name: Governed productive instrument metadata authority producer v1

@@ -44,6 +44,7 @@ from src.ops.full_core_live_path_composition_root_v1.owner_one_shot_permit_v1 im
     join_owner_one_shot_permit_into_admission_inputs_v1,
 )
 from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
+    USDT_USDC_PAIR_NATIVE_ID,
     USDT_USDC_SOURCE_IDENTITY,
 )
 
@@ -105,6 +106,17 @@ REQUIRED_GET_ITEM_SPECS: Tuple[FreshPretradeGetItemSpecV1, ...] = (
         "monetary_normalization_usdt_usdc_index",
         USDT_USDC_SOURCE_IDENTITY,
     ),
+    FreshPretradeGetItemSpecV1(
+        "MONETARY_NORMALIZATION_CONVERSION_PAIR_INSTRUMENTS",
+        ENDPOINT_PUBLIC_INSTRUMENTS,
+        False,
+        "monetary_normalization_conversion_pair_instruments",
+        USDT_USDC_PAIR_NATIVE_ID,
+    ),
+)
+
+MONETARY_NORMALIZATION_CONVERSION_PAIR_INSTRUMENTS_ITEM_ID = (
+    "MONETARY_NORMALIZATION_CONVERSION_PAIR_INSTRUMENTS"
 )
 
 PUBLIC_GET_PATHS: frozenset[str] = frozenset(
@@ -258,7 +270,11 @@ def build_required_get_endpoint_v1(
     px = str(limit_px or "").strip()
     itype = str(inst_type or "").strip() or "FUTURES"
     if path == ENDPOINT_PUBLIC_INSTRUMENTS:
-        return f"{path}?{urlencode({'instType': itype, 'instId': inst})}"
+        fixed_inst = str(spec.fixed_inst_id or "").strip()
+        inst_for_query = fixed_inst if fixed_inst else inst
+        if not inst_for_query:
+            raise ValueError("PUBLIC_INSTRUMENTS_REQUIRES_INST_ID")
+        return f"{path}?{urlencode({'instType': itype, 'instId': inst_for_query})}"
     if path == ENDPOINT_PUBLIC_PRICE_LIMIT:
         return f"{path}?{urlencode({'instId': inst})}"
     if path == ENDPOINT_ACCOUNT_MAX_SIZE:
