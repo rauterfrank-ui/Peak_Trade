@@ -71,6 +71,14 @@ class _ObservationSourceLike(Protocol):
     def poll(self) -> InjectedContinuousObservationV1 | None: ...
 
 
+def _read_only_observability_int_from_inner_v1(inner: object, attribute: str) -> int:
+    """Read-only observability delegation; never mutates or duplicates counter authority."""
+    value = getattr(inner, attribute, 0)
+    if isinstance(value, bool) or not isinstance(value, int):
+        return 0
+    return int(value)
+
+
 @dataclass
 class PendingOutcomeAdvanceObservationSourceV1:
     """Delegates poll; advances open pending outcomes from accepted mark observations."""
@@ -81,6 +89,14 @@ class PendingOutcomeAdvanceObservationSourceV1:
     canonical_instrument_id: str
     native_id: str
     repository_sha: str
+
+    @property
+    def get_count(self) -> int:
+        return _read_only_observability_int_from_inner_v1(self.inner, "get_count")
+
+    @property
+    def poll_count(self) -> int:
+        return _read_only_observability_int_from_inner_v1(self.inner, "poll_count")
 
     def poll(self) -> InjectedContinuousObservationV1 | None:
         observation = self.inner.poll()
