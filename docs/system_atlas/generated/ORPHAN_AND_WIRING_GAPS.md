@@ -88,13 +88,13 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:external_data_archive_locator_consumers | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:external_data_archive_locator_consumers | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:gfu_eligibility | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:gfu_eligibility | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_current_residency_decoupling_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_current_residency_decoupling_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_decision_time_geometry_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_decision_time_geometry_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_e2e_productive_pre_external_tail_bind_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_e2e_productive_pre_external_tail_bind_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_intelligence_lineage_forensic_observability_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_intelligence_lineage_forensic_observability_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_pre_external_continuation_harness_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_pre_external_continuation_harness_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_pre_external_continuation_snapshot_hydration_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_pre_external_continuation_snapshot_hydration_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_pre_external_runtime_flight_recorder_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_pre_external_runtime_flight_recorder_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_pre_external_whole_cycle_causal_observability_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_pre_external_whole_cycle_causal_observability_v1 | STATUS=OPEN (not proven) |  |
-| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_system_wide_canary_surface_discovery_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_system_wide_canary_surface_discovery_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:governance_policy_critic_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:governance_policy_critic_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:governed_authority_map_atlas_guided_whole_system_g2_primary_causal_e2e_v1 | STATUS=OPEN (not proven) |  |

@@ -524,6 +524,20 @@ Inverse CALLS edges are derived as CALLED_BY for downstream listing only; they a
 - direct_downstream: `(none)`
 - transitive_downstream: `(none)`
 
+### RUNTIME_COMPONENT:ghv_intelligence_lineage_completeness_v1
+
+- direct_upstream: `(none)`
+- transitive_upstream: `(none)`
+- direct_downstream: `RUNTIME_COMPONENT:ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1`
+- transitive_downstream: `(none)`
+
+### RUNTIME_COMPONENT:ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1
+
+- direct_upstream: `RUNTIME_COMPONENT:ghv_intelligence_lineage_completeness_v1`
+- transitive_upstream: `RUNTIME_COMPONENT:ghv_intelligence_lineage_completeness_v1`
+- direct_downstream: `(none)`
+- transitive_downstream: `(none)`
+
 ### RUNTIME_COMPONENT:governed_f1_m9_scoped_owner_apply_execution_real_mechanical_continuation_v1
 
 - direct_upstream: `RUNTIME_COMPONENT:governed_p4_l6_seam_to_runtime_apply_materialization_real_mechanical_continuation_v1`

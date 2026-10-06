@@ -90,9 +90,7 @@ class GoldenHappyVectorForensicObservabilitySessionV1:
     cycle_instance_id: str = ""
     c1_venue_event_time: float | None = None
     _entry_snapshot_written: bool = field(default=False, repr=False)
-    _geometry_evidence_by_cycle: dict[str, dict[str, str]] = field(
-        default_factory=dict, repr=False
-    )
+    _geometry_evidence_by_cycle: dict[str, dict[str, str]] = field(default_factory=dict, repr=False)
 
     def with_cycle_from_s5_evidence_root_v1(self, *, s5_evidence_root: Path) -> None:
         auth_path = Path(s5_evidence_root).parent / "s5_cycle_authorization_v1.json"

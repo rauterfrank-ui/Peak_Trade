@@ -848,7 +848,7 @@ changes:
   type: RUNTIME_WIRING
   epistemic_status: FORENSIC_RAW
   evidence: tests/governance/test_ghv_referenced_complete_intelligence_superstructure_integration_v1.py
-  notes: 'PR #7081: GHV-referenced intelligence superstructure offline integration (M4–M8→M10 hard stop) + refs-only GHV intelligence-lineage observability on MV2 cycle; GHV_AUTHORITY=NONE; no trading/MV2/POST/apply change; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+  notes: 'PR #7081: GHV-referenced intelligence superstructure offline integration (M4–M8→M10 hard stop) + refs-only GHV intelligence-lineage observability on MV2 cycle + decision-time geometry evidence bridge + honest lineage completeness; GHV_AUTHORITY=NONE; no trading/MV2/POST/apply change; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
 - id: CHANGE:legacy_paper_shadow_daemon_retirement_bp_v1
   from: 1bac0d93302c6e589effafe46fccb055d82bd44e
   to: PENDING_CHANGE
