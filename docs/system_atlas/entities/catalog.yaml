@@ -3764,6 +3764,7 @@ entities:
   - tests/ops/test_pre_live_fresh_runtime_root_isolation_v1.py
   notes: POST-slice recorded baseline fca07afa with live integrity drift gate; fresh Cap-24 root; fail-closed historical POST-store isolation; no venue POST; stop before Actual-Venue-POST Owner-GO; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1
+  # atlas_entity_review: PR #7062 optional enable_real_carrier_passive_capture_v1 session bind only; observability activation seam; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7059 upstream S6/S7 Natural Enter seam fix in sibling joins; convergence orchestrator unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7035 allow fail-closed continuous segment terminal disposition when POST=0; orchestration-only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: optional GHV system-wide Canary session bind; CANARY_AUTHORITY=NONE.
@@ -3871,6 +3872,21 @@ entities:
   - tests/ops/test_productive_golden_happy_vector_forensic_observability_v1.py
   - tests/ops/test_golden_happy_scope_decision_trace_observability_v1.py
   notes: Default-off session-bound append-only directional signal_strength/threshold JSONL, golden_happy_scope_decision_trace_v1.jsonl (G17→Scope causal refs), plus single entry-state JSON snapshot; reads productive replay intermediate and cursor carrier; no signal/scope recompute; no trading/threshold/budget/GET semantic change; CORRELATION_STATUS=PARTIAL; AUTHORITY=NONE; POST_COUNT=0.
+- id: RUNTIME_COMPONENT:productive_real_carrier_passive_capture_v1
+  # atlas_entity_review: PR #7062 passive CB-001/CB-002 real-carrier capture; default-off ContextVar session; pre-replay lossless serialize only; AUTHORITY=NONE; POST_COUNT=0.
+  kind: RUNTIME_COMPONENT
+  name: Productive real-carrier passive capture v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: PR_7062_PASSIVE_REAL_CARRIER_CAPTURE_V1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/productive_real_carrier_passive_capture_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py
+  evidence_sources:
+  - tests/ops/test_productive_real_carrier_passive_capture_v1.py
+  notes: Default-off armed-only passive capture of IntegratedOfflineReplayInputV1 plus same-run join manifest to isolated /tmp root immediately before protected replay; fail-closed before replay on armed persistence failure; no replay-input mutation; no trading/threshold/config/selection change; Real-Venue not executed in PR; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:ghv_e2e_productive_pre_external_tail_bind_v1
   # atlas_entity_review: PR #7038 GHV E2E pre-decision productive Closure bind; harness-only; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT

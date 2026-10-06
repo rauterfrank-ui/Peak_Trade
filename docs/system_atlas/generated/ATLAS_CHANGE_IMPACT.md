@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7059_natural_enter_rc_imp_ord_convergence_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7062_passive_real_carrier_capture_v1`.
 
 ## Workflow
 
@@ -40,7 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
+| `RUNTIME_COMPONENT:productive_real_carrier_passive_capture_v1` |
+| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7060 Owner-GO revalidation baseline rebind to c752284; governance/spec currency for bounded continuous Fresh-C1 run; no trading, POST, or configuration authority change.
-- introduced_by=CHANGE:pr_7059_natural_enter_rc_imp_ord_convergence_v1
-- modified_by=PR_7060_OWNER_GO_REVALIDATION_BASELINE_REBIND_V1
+- PR #7062 passive real-carrier observability (CB-001/CB-002); default-off; pre-replay lossless capture only; no trading, POST, or configuration authority change.
+- introduced_by=CHANGE:pr_7062_passive_real_carrier_capture_v1
+- modified_by=PR_7062_PASSIVE_REAL_CARRIER_CAPTURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -845,6 +845,8 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     synthetic_enter_forensic_cycle_index: int = 1,
     enable_forensic_executable_quantity_override_v1: bool = False,
     forensic_executable_quantity: str = "",
+    enable_real_carrier_passive_capture_v1: bool = False,
+    real_carrier_passive_capture_root: Path | None = None,
     selection_id: str = "",
     binding_epoch: str = "",
     cap24_reselection_performed: bool = False,
@@ -877,6 +879,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
     canary_session_reset = None
     synthetic_session_reset = None
     forensic_quantity_override_session_reset = None
+    real_carrier_capture_session_reset = None
     pairs = build_s8_occupied_lane_pairs_v1(
         lane_state_root=Path(lane_state_root),
         bound=bound,
@@ -940,6 +943,27 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
         )
         forensic_session_reset = bind_golden_happy_vector_forensic_observability_session_v1(
             forensic_session
+        )
+    if enable_real_carrier_passive_capture_v1:
+        if real_carrier_passive_capture_root is None:
+            raise PersistentNaturalEnterConvergenceError(
+                "REAL_CARRIER_PASSIVE_CAPTURE_ROOT_REQUIRED"
+            )
+        from src.ops.full_core_live_path_composition_root_v1.productive_real_carrier_passive_capture_v1 import (
+            RealCarrierPassiveCaptureSessionV1,
+            bind_real_carrier_passive_capture_session_v1,
+        )
+
+        capture_root = Path(real_carrier_passive_capture_root).expanduser().resolve()
+        real_carrier_session = RealCarrierPassiveCaptureSessionV1(
+            enabled=True,
+            capture_armed=True,
+            capture_root=capture_root,
+            run_id=run_id,
+            continuous_run_id=run_id,
+        )
+        real_carrier_capture_session_reset = bind_real_carrier_passive_capture_session_v1(
+            real_carrier_session
         )
     if enable_ghv_pre_external_runtime_flight_recorder_v1:
         from src.ops.full_core_live_path_composition_root_v1.ghv_pre_external_runtime_flight_recorder_v1 import (
@@ -1080,6 +1104,12 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
             )
 
             reset_ghv_system_wide_canary_session_v1(canary_session_reset)
+        if real_carrier_capture_session_reset is not None:
+            from src.ops.full_core_live_path_composition_root_v1.productive_real_carrier_passive_capture_v1 import (
+                reset_real_carrier_passive_capture_session_v1,
+            )
+
+            reset_real_carrier_passive_capture_session_v1(real_carrier_capture_session_reset)
 
     orch = result.orchestrator_result
     if orch.post_count != 0 or orch.permit_created or orch.external_effect_count != 0:
