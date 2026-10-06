@@ -12,6 +12,7 @@ BOOTSTRAP_DDO_SESSION_MARKER = "persistent-natural-enter-bootstrap"
 PRODUCTIVE_LANE_ID = "LANE_1"
 S5_PRE_EXTERNAL_DISPOSITION = "PRE_EXTERNAL_EFFECT"
 _ENTER_OUTCOMES = frozenset({"enter_long", "enter_short"})
+CURSOR_FILENAME = "current_productive_sidestate_confirmation_cursor_v1.json"
 
 
 class _CycleRecordLike(Protocol):
@@ -151,6 +152,34 @@ def correlate_dpo_to_s5_cycle_index_v1(
     return None
 
 
+def read_lane_trading_epoch_v1(lane_state_root: Path) -> int | None:
+    cursor_path = Path(lane_state_root) / PRODUCTIVE_LANE_ID / CURSOR_FILENAME
+    if not cursor_path.is_file():
+        return None
+    try:
+        payload = json.loads(cursor_path.read_text(encoding="utf-8"))
+        return int(payload["trading_epoch"])
+    except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError):
+        return None
+
+
+def correlate_dpo_to_trading_epoch_v1(
+    observations: Sequence[ProductiveDpoObservationV1],
+    *,
+    trading_epoch: int,
+) -> ProductiveDpoObservationV1 | None:
+    if trading_epoch < 1:
+        return None
+    matches = [
+        item
+        for item in observations
+        if item.trading_epoch is not None and int(item.trading_epoch) == int(trading_epoch)
+    ]
+    if not matches:
+        return None
+    return matches[-1]
+
+
 def dpo_observation_to_report_dict_v1(obs: ProductiveDpoObservationV1) -> dict[str, str]:
     return {
         "cycle_id": obs.cycle_id,
@@ -169,6 +198,7 @@ def evaluate_natural_enter_reporting_v1(
     cycle_records: Sequence[_CycleRecordLike],
     terminal_disposition: str,
     ddo_jsonl: Path,
+    lane_state_root: Path | None = None,
 ) -> NaturalEnterReportingResultV1:
     reporting = select_reporting_s5_cycle_record_v1(
         cycle_records,
@@ -184,10 +214,19 @@ def evaluate_natural_enter_reporting_v1(
             natural_pre_external_reached=False,
             enter_side="",
         )
-    correlated = correlate_dpo_to_s5_cycle_index_v1(
-        observations,
-        s5_cycle_index=int(reporting.cycle_index),
-    )
+    correlated: ProductiveDpoObservationV1 | None = None
+    if lane_state_root is not None:
+        trading_epoch = read_lane_trading_epoch_v1(Path(lane_state_root))
+        if trading_epoch is not None:
+            correlated = correlate_dpo_to_trading_epoch_v1(
+                observations,
+                trading_epoch=trading_epoch,
+            )
+    if correlated is None:
+        correlated = correlate_dpo_to_s5_cycle_index_v1(
+            observations,
+            s5_cycle_index=int(reporting.cycle_index),
+        )
     if correlated is None:
         return NaturalEnterReportingResultV1(
             reporting_s5_cycle_index=int(reporting.cycle_index),

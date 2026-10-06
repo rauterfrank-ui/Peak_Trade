@@ -8,6 +8,7 @@ from pathlib import Path
 
 from scripts.ops.pre_external_convergence_natural_enter_reporting_v1 import (
     S5_PRE_EXTERNAL_DISPOSITION,
+    correlate_dpo_to_trading_epoch_v1,
     evaluate_natural_enter_reporting_v1,
     load_productive_live_dpo_observations_v1,
 )
@@ -214,6 +215,50 @@ def test_case6_enter_without_pre_external_on_same_cycle(tmp_path: Path) -> None:
     )
     assert result.natural_enter_observed is True
     assert result.natural_pre_external_reached is False
+
+
+def test_trading_epoch_correlation_prefers_canonical_epoch_over_list_position(
+    tmp_path: Path,
+) -> None:
+    ddo = _write_ddo(
+        tmp_path,
+        _dpo_line(
+            cycle_id=f"{_LIVE}:cycle:2",
+            trading_epoch=2,
+            decision_outcome="no_action",
+            record_id="ddo.dpo:old",
+        ),
+        _dpo_line(
+            cycle_id=f"{_LIVE}:cycle:14",
+            trading_epoch=14,
+            decision_outcome="observe",
+            record_id="ddo.dpo:epoch14",
+        ),
+    )
+    lane = tmp_path / "lane"
+    (lane / "LANE_1").mkdir(parents=True)
+    cursor = {
+        "trading_epoch": 14,
+        "schema_name": "current_productive_sidestate_confirmation_cursor.v1",
+        "schema_version": "v1",
+    }
+    (lane / "LANE_1/current_productive_sidestate_confirmation_cursor_v1.json").write_text(
+        json.dumps(cursor) + "\n",
+        encoding="utf-8",
+    )
+    observations = load_productive_live_dpo_observations_v1(ddo)
+    picked = correlate_dpo_to_trading_epoch_v1(observations, trading_epoch=14)
+    assert picked is not None
+    assert picked.dpo_ref == "ddo.dpo:epoch14"
+    records = (_Rec(1, "FAIL_CLOSED"),)
+    result = evaluate_natural_enter_reporting_v1(
+        cycle_records=records,
+        terminal_disposition="FAIL_CLOSED",
+        ddo_jsonl=ddo,
+        lane_state_root=lane,
+    )
+    assert result.dpo.get("trading_epoch") == "14"
+    assert result.dpo.get("dpo_ref") == "ddo.dpo:epoch14"
 
 
 def test_historical_evidence_rerun_post_7065_without_live_execution() -> None:

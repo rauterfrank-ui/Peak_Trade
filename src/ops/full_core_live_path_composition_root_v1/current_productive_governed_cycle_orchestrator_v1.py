@@ -11,6 +11,7 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 from __future__ import annotations
 
 import json
+import traceback
 from dataclasses import dataclass, field
 from hashlib import sha256
 from pathlib import Path
@@ -305,10 +306,87 @@ def _t2_n1_consumer_join_failure_v1(exc: BaseException) -> tuple[str, str] | Non
     from src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 import (
         FullAutonomyOccupiedLaneGovernedCycleN1ConsumerJoinError,
     )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1 import (
+        CurrentProductiveEnterLive29PJoinError,
+    )
 
     if isinstance(exc, FullAutonomyOccupiedLaneGovernedCycleN1ConsumerJoinError):
         return str(exc.failure_code or "T2_JOIN_FAIL_CLOSED"), str(exc.detail or "")
+    if isinstance(exc, CurrentProductiveEnterLive29PJoinError):
+        return "LIVE_29P_JOIN_FAIL_CLOSED", str(exc.args[0] if exc.args else "LIVE_29P_JOIN")
     return None
+
+
+def _read_trading_epoch_for_t2_evidence_v1(cursor_store_root: Path) -> str:
+    path = Path(cursor_store_root) / CURSOR_FILENAME
+    if not path.is_file():
+        return ""
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        return str(int(payload["trading_epoch"]))
+    except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError):
+        return ""
+
+
+def _bounded_traceback_frames_v1(exc: BaseException, *, max_frames: int = 12) -> str:
+    frames = traceback.extract_tb(exc.__traceback__)
+    tail = frames[-max_frames:] if len(frames) > max_frames else frames
+    encoded = [
+        {
+            "file": str(item.filename or ""),
+            "line": int(item.lineno or 0),
+            "function": str(item.name or ""),
+            "code": str(item.line or "")[:240],
+        }
+        for item in tail
+    ]
+    return json.dumps(encoded, sort_keys=True, ensure_ascii=True)
+
+
+def capture_t2_unexpected_exception_evidence_v1(
+    exc: BaseException,
+    *,
+    authorization: CurrentProductiveGovernedCycleAuthorizationV1,
+    observation: Any,
+    evidence_root: Path,
+    cursor_store_root: Path,
+    t2_dispatch_stage: str = "T2_DISPATCH",
+) -> dict[str, str]:
+    """Deterministic fail-closed diagnostic payload for unmapped T2 exceptions."""
+    frames = traceback.extract_tb(exc.__traceback__)
+    throw_file = ""
+    throw_function = ""
+    throw_line = ""
+    if frames:
+        last = frames[-1]
+        throw_file = str(last.filename or "")
+        throw_function = str(last.name or "")
+        throw_line = str(int(last.lineno or 0))
+    event_time = ""
+    if observation is not None:
+        try:
+            event_time = str(float(getattr(observation, "venue_event_time", 0) or 0))
+        except (TypeError, ValueError):
+            event_time = ""
+    consume_id = str(Path(evidence_root).parent.name or "")
+    message = str(exc)
+    if len(message) > 512:
+        message = message[:512]
+    return {
+        "exception_type": type(exc).__name__,
+        "exception_module": type(exc).__module__,
+        "exception_message": message,
+        "throw_file": throw_file,
+        "throw_function": throw_function,
+        "throw_line": throw_line,
+        "t2_dispatch_stage": str(t2_dispatch_stage or "T2_DISPATCH"),
+        "cycle_id": consume_id,
+        "trading_epoch": _read_trading_epoch_for_t2_evidence_v1(Path(cursor_store_root)),
+        "instrument_id": str(authorization.native_id or ""),
+        "consume_id": consume_id,
+        "event_time": event_time,
+        "traceback_frames_json": _bounded_traceback_frames_v1(exc),
+    }
 
 
 def run_current_productive_governed_cycle_v1(
@@ -779,7 +857,18 @@ def run_current_productive_governed_cycle_v1(
                     cursor_floor_before=cursor_floor_before,
                 )
             first_blocker = "T2_CYCLE_EXCEPTION"
-            _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": first_blocker})
+            t2_exception_evidence = capture_t2_unexpected_exception_evidence_v1(
+                exc,
+                authorization=authorization,
+                observation=observation,
+                evidence_root=Path(evidence_root),
+                cursor_store_root=Path(cursor_store_root),
+            )
+            ledger_extra: dict[str, str] = {
+                "reason_code": first_blocker,
+                **t2_exception_evidence,
+            }
+            _write_ledger(state=STATE_FAILED_STOP, extra=ledger_extra)
             return _result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=first_blocker,
@@ -798,6 +887,7 @@ def run_current_productive_governed_cycle_v1(
                 transitions=tuple(transitions + [STATE_FAILED_STOP]),
                 c1_used=c1_used,
                 cursor_floor_before=cursor_floor_before,
+                extra_fields=t2_exception_evidence,
             )
         t2_consumed = True
         t2_consume_count = 1
@@ -957,7 +1047,15 @@ def _result(
     transitions: tuple[str, ...] = (),
     cursor_floor_before: float | None = None,
     cursor_floor_after: float | None = None,
+    extra_fields: Mapping[str, str] | None = None,
 ) -> CurrentProductiveGovernedCycleResultV1:
+    merged_extra = {
+        "STEP_29Q_STATUS": STEP_29Q_PLAN_ONLY,
+        "DIRECT_V5": DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT,
+        "REMAINDER_IS_CONSUME_LICENSE": FALSE_TOKEN,
+    }
+    if extra_fields:
+        merged_extra.update({str(k): str(v) for k, v in extra_fields.items()})
     return CurrentProductiveGovernedCycleResultV1(
         disposition=disposition,
         reason_code=reason_code,
@@ -999,9 +1097,5 @@ def _result(
         lock_released=lock_released,
         ledger_state=ledger_state,
         transitions=transitions,
-        extra={
-            "STEP_29Q_STATUS": STEP_29Q_PLAN_ONLY,
-            "DIRECT_V5": DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT,
-            "REMAINDER_IS_CONSUME_LICENSE": FALSE_TOKEN,
-        },
+        extra=merged_extra,
     )
