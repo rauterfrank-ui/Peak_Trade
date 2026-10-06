@@ -212,6 +212,7 @@ entities:
   - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
   notes: Navigation/topology record for the passive C1 mark-to-mark identity {BULL, BEAR, NEUTRAL}. AUTHORITY_EFFECT=NONE. Not a trading-decision owner. Not consumed by Replay, Double Play, ScopeEvent, SideState, Entry, Risk, Intent, Execution, or POST. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:elementary_direction_v1
+  # atlas_entity_review: PR #7081 adjacent GHV intelligence-lineage observability hook on MV2 cycle; elementary_direction semantics unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7059 RC-IMP-01 host C1 evaluation uses accepted_c1_venue_event_time_unix at runtime_cycle seam; elementary_direction primitive unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7037 adjacent MV2 CRS boundary wiring-only; elementary_direction semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
@@ -2995,6 +2996,7 @@ entities:
   - config/governance/productive_activation_boundary_forensic_review_v1_decision_v1.json
   notes: Post-#6889 Owner-GO forensic census + static proof; consumer reachability does not mint Productive Activation; PRODUCTIVE_ACTIVATION_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
 - id: CONTRACT:p5_10_productive_activation_and_binding_v1
+  # atlas_entity_review: PR #7081 post-replay GHV intelligence-lineage append only; P5.10 bind/activation semantics unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7064 adjacent productive bind seam touch in GGE PR; P5.10 bind/activation semantics unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7059 adjacent runtime_cycle C1 timestamp seam only; P5.10 bind/activation semantics unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7037 MV2 host CRS boundary attach after prepare_productive_layered_core_replay_bind_v1; bind seam semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
@@ -3940,6 +3942,7 @@ entities:
   - tests/ops/test_productive_natural_market_data_capture_sink_v1.py
   notes: Append-only evidence wrapper around FullCoreProductiveReadOnlyGetTransportV1; 1:1 delegate GET passthrough; default disabled at product entry; CORRELATION_STATUS=PARTIAL; no poll-bundle claim; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:productive_golden_happy_vector_forensic_observability_v1
+  # atlas_entity_review: PR #7081 sibling ghv_intelligence_lineage_forensic_observability_v1 append hook; GHV session observability semantics unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7059 adjacent runtime_cycle file touched; GHV observability reads unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7037 GHV reproof lane CRS propagation fix; observability module unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
@@ -3956,6 +3959,37 @@ entities:
   - tests/ops/test_productive_golden_happy_vector_forensic_observability_v1.py
   - tests/ops/test_golden_happy_scope_decision_trace_observability_v1.py
   notes: Default-off session-bound append-only directional signal_strength/threshold JSONL, golden_happy_scope_decision_trace_v1.jsonl (G17→Scope causal refs), plus single entry-state JSON snapshot; reads productive replay intermediate and cursor carrier; no signal/scope recompute; no trading/threshold/budget/GET semantic change; CORRELATION_STATUS=PARTIAL; AUTHORITY=NONE; POST_COUNT=0.
+- id: RUNTIME_COMPONENT:ghv_intelligence_lineage_forensic_observability_v1
+  # atlas_entity_review: PR #7081 refs-only GHV intelligence lineage JSONL; session-gated; capture_failure_changes_decision=false; GHV_AUTHORITY=NONE; POST_COUNT=0.
+  kind: RUNTIME_COMPONENT
+  name: GHV intelligence lineage forensic observability v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: CHANGE:pr_7081_ghv_intelligence_superstructure_integration_closure_v1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/ghv_intelligence_lineage_forensic_observability_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
+  evidence_sources:
+  - tests/governance/test_ghv_referenced_complete_intelligence_superstructure_integration_v1.py
+  - config/governance/ghv_referenced_complete_intelligence_superstructure_integration_v1_ghv_reference_manifest_v1.json
+  notes: Append-only ghv_intelligence_lineage_trace_v1.jsonl when GHV forensic session active; refs-only slots for DDO/export handoff; no consumption for trading/learning/optimization; AUTHORITY=NONE; POST_COUNT=0.
+- id: RUNTIME_COMPONENT:ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1
+  # atlas_entity_review: PR #7081 compose-only offline M4–M8→M10 hard stop orchestrator; no productive apply/POST/EIP/supervisor; GHV_AUTHORITY=NONE; POST_COUNT=0.
+  kind: RUNTIME_COMPONENT
+  name: GHV-referenced complete intelligence superstructure offline cycle v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: CHANGE:pr_7081_ghv_intelligence_superstructure_integration_closure_v1
+  source_paths:
+  - src/governance/ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1.py
+  - src/governance/ghv_referenced_intelligence_superstructure_ghv_reference_manifest_v1.py
+  - src/governance/ghv_referenced_static_semantic_look_ahead_v1.py
+  evidence_sources:
+  - tests/governance/test_ghv_referenced_complete_intelligence_superstructure_integration_v1.py
+  - config/governance/ghv_referenced_complete_intelligence_superstructure_integration_v1_ghv_reference_manifest_v1.json
+  notes: Offline compose-only intelligence cycle terminating at M10 explicit-auth hard stop; reuses canonical M4–M8 and governance ingress; no daemon/productive mutation; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:current_productive_golden_happy_vector_startability_evaluator_v1
   # atlas_entity_review: AUTHORITY=NONE offline GHV startability preflight; composes CURRENT GGE/Scope/DP/PRE_EXTERNAL validators against reference bundle; no selection/ranking/POST; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
@@ -3990,6 +4024,7 @@ entities:
   - evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/durable/current_productive_ghv_bounded_runtime_convergence_proof_v1.json
   notes: Observes CURRENT productive inputs for GHV readiness only; cannot masquerade fixture as CURRENT; no trading authority; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:productive_real_carrier_passive_capture_v1
+  # atlas_entity_review: PR #7081 adjacent MV2 cycle GHV intelligence-lineage observability append; real-carrier capture semantics unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7062 passive CB-001/CB-002 real-carrier capture; default-off ContextVar session; pre-replay lossless serialize only; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Productive real-carrier passive capture v1
@@ -4884,6 +4919,7 @@ entities:
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
   # atlas_entity_review: PR #7069 pre-completion P/S/T run evidence retirement; reference/fixture rebind only; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  # atlas_entity_review: PR #7081 GHV-referenced intelligence superstructure integration; default-off GHV intelligence-lineage append after scope trace; offline orchestrator separate; no trading/MV2/DDO authority change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7080 governed-cycle T2 unexpected-exception diagnostic evidence capture; fail-closed T2_CYCLE_EXCEPTION disposition unchanged; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7079 fresh-pretrade required GET adds USDC-USDT-SWAP conversion-pair instruments fetch group; wiring-only GATE_006 closure; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7059 RC-IMP-01 resolve_host_market_sample_venue_event_time_unix_v1 + accepted C1 in run_current_productive_master_v2_runtime_cycle_v1; MATERIALLY_CHANGED wiring only; AUTHORITY=NONE; POST_COUNT=0.
