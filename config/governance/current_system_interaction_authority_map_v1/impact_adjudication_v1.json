@@ -3,6 +3,7 @@
   "base_sha": "9d2087b58f960536549764d9c9cdc72431ef1316",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/ghv_referenced_complete_intelligence_superstructure_integration_v1_ghv_reference_manifest_v1.json",
@@ -22,7 +23,7 @@
     "src/ops/full_core_live_path_composition_root_v1/ghv_intelligence_lineage_forensic_observability_v1.py",
     "tests/governance/test_ghv_referenced_complete_intelligence_superstructure_integration_v1.py"
   ],
-  "changed_paths_sha256": "264867a522776ae193738da17afb4e1bffc9c5dbe627bf97ee54ec5c9720e75d",
+  "changed_paths_sha256": "b62fd5fc06ed6bd51604e7f5571b0e2da993273f9262141f7b20916b343f6426",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT",
   "reason": "PR #7081: GHV-referenced intelligence superstructure offline compose-only integration + refs-only GHV intelligence-lineage observability; Atlas provenance/catalog refresh + CSIA/law-map adjudication only; no CSIA structured source or trading authority change; GHV_AUTHORITY=NONE; POST_COUNT=0.",
@@ -32,6 +33,8 @@
     "tests/governance/test_ghv_referenced_complete_intelligence_superstructure_integration_v1.py"
   ],
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/ghv_referenced_complete_intelligence_superstructure_integration_v1_ghv_reference_manifest_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
