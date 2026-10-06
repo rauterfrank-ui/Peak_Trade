@@ -196,7 +196,9 @@ def release_ghv_testnet_demo_opaque_handle_v1(handle: FullCoreDemoBoundVenueAuth
     release_demo_venue_auth_session_v1(handle)
 
 
-def prove_demo_credential_presence_gate_v1(*, vault_file: Path | str | None = None) -> dict[str, bool]:
+def prove_demo_credential_presence_gate_v1(
+    *, vault_file: Path | str | None = None
+) -> dict[str, bool]:
     """Boolean-only gate for preflight. Does not return reconstructable material."""
 
     out = {
@@ -218,7 +220,9 @@ def prove_demo_credential_presence_gate_v1(*, vault_file: Path | str | None = No
     out["DEMO_API_KEY_PRESENT"] = int(identity.get("API_KEY_LEN") or 0) > 0
     out["DEMO_SECRET_PRESENT"] = int(identity.get("API_SECRET_LEN") or 0) > 0
     out["DEMO_PASSPHRASE_PRESENT"] = int(identity.get("PASSPHRASE_LEN") or 0) > 0
-    out["DEMO_CREDENTIAL_CLASS_VALID"] = str(identity.get("CREDENTIAL_CLASS") or "") == CREDENTIAL_CLASS
+    out["DEMO_CREDENTIAL_CLASS_VALID"] = (
+        str(identity.get("CREDENTIAL_CLASS") or "") == CREDENTIAL_CLASS
+    )
     out["DEMO_CREDENTIAL_SET_COMPLETE"] = (
         out["DEMO_API_KEY_PRESENT"]
         and out["DEMO_SECRET_PRESENT"]

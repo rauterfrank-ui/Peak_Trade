@@ -1,14 +1,13 @@
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CHANGE:pr_7074_ghv_full_system_testnet_observation_pre_external_binding_v1
-modified_by: CHANGE:pr_7074_ghv_full_system_testnet_observation_pre_external_binding_v1
+introduced_by: CHANGE:pr_7075_ghv_demo_credential_provisioning_private_get_preflight_v1
+modified_by: CHANGE:pr_7075_ghv_demo_credential_provisioning_private_get_preflight_v1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #7074: GHV Full-System Testnet Observation PRE_EXTERNAL binding (Demo GET-only
-  private account observation seam, Live K1 isolation, scoped Owner-GO); same GHV
-  carrier; no trading/Cap23/Cap24/PRE_EXTERNAL semantic change; AUTHORITY=NONE;
-  POST_COUNT=0.
+  PR #7075: GHV Demo SecretRef vault loader + private GET preflight runner; extends
+  #7074 Demo GET-only bind without GHV observation execution; Live K1 isolation;
+  AUTHORITY=NONE; POST_COUNT=0.
 changed_entities:
   - RUNTIME_COMPONENT:ghv_full_system_testnet_observation_pre_external_v1
   - RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1

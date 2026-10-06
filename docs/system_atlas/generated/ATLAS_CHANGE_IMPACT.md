@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7074_ghv_full_system_testnet_observation_pre_external_binding_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7075_ghv_demo_credential_provisioning_private_get_preflight_v1`.
 
 ## Workflow
 
@@ -95,8 +95,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7074: GHV Full-System Testnet Observation PRE_EXTERNAL binding (Demo GET-only private account observation seam, Live K1 isolation, scoped Owner-GO); same GHV carrier; no trading/Cap23/Cap24/PRE_EXTERNAL semantic change; AUTHORITY=NONE; POST_COUNT=0.
-- introduced_by=CHANGE:pr_7074_ghv_full_system_testnet_observation_pre_external_binding_v1
-- modified_by=CHANGE:pr_7074_ghv_full_system_testnet_observation_pre_external_binding_v1
+- PR #7075: GHV Demo SecretRef vault loader + private GET preflight runner; extends #7074 Demo GET-only bind without GHV observation execution; Live K1 isolation; AUTHORITY=NONE; POST_COUNT=0.
+- introduced_by=CHANGE:pr_7075_ghv_demo_credential_provisioning_private_get_preflight_v1
+- modified_by=CHANGE:pr_7075_ghv_demo_credential_provisioning_private_get_preflight_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

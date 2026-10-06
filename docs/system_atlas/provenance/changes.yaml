@@ -821,6 +821,13 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_ghv_full_system_testnet_observation_pre_external_v1.py
   notes: 'PR #7074: GHV Full-System Testnet Observation PRE_EXTERNAL binding (Demo GET-only transport + credential isolation + Cap24-bound env validation) on unchanged GHV entrypoint; no trading semantic change; READY_TO_EXECUTE=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7075_ghv_demo_credential_provisioning_private_get_preflight_v1
+  from: 9451f8c24bed6078bfbf3bade70c094a0b29bc0d
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_ghv_full_system_testnet_observation_pre_external_v1.py
+  notes: 'PR #7075: GHV Demo SecretRef vault loader + bounded private GET preflight seam; fail-closed operator-local credential bind; no GHV observation/Cap23/Cap24/POST; AUTHORITY=NONE; POST_COUNT=0.'
 - id: CHANGE:legacy_paper_shadow_daemon_retirement_bp_v1
   from: 1bac0d93302c6e589effafe46fccb055d82bd44e
   to: PENDING_CHANGE
