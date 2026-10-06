@@ -1118,6 +1118,18 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         scope_direction=str(scope_direction_from_side_state_v1(side_state).value),
         replay=replay,
     )
+    from src.ops.full_core_live_path_composition_root_v1.ghv_intelligence_lineage_forensic_observability_v1 import (
+        append_intelligence_lineage_observability_from_productive_cycle_v1,
+    )
+
+    append_intelligence_lineage_observability_from_productive_cycle_v1(
+        cycle_id=cycle_id,
+        instrument_id=instrument_id,
+        venue_native_id=str(venue_native_id or ""),
+        ddo_capture_summary=ddo_summary,
+        ddo_offline_export_handoff=ddo_export_handoff,
+        replay=replay,
+    )
     if replay.intermediate is not None:
         commit_host_confirmation_after_replay_v1(
             cap61_binding,
