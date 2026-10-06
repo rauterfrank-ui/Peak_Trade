@@ -842,6 +842,13 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_session004_t2_exception_diagnostic_and_dpo_correlation_v1.py
   notes: 'PR #7080: Session 004 T2_CYCLE_EXCEPTION diagnostic evidence preservation (fail-closed unchanged) + PRE_EXTERNAL DPO reporting correlation to canonical trading_epoch; no functional T2 root-cause repair; no trading authority/semantics change; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7081_ghv_intelligence_superstructure_integration_closure_v1
+  from: 9d2087b58f960536549764d9c9cdc72431ef1316
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/governance/test_ghv_referenced_complete_intelligence_superstructure_integration_v1.py
+  notes: 'PR #7081: GHV-referenced intelligence superstructure offline integration (M4–M8→M10 hard stop) + refs-only GHV intelligence-lineage observability on MV2 cycle + decision-time geometry evidence bridge + honest lineage completeness; GHV_AUTHORITY=NONE; no trading/MV2/POST/apply change; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
 - id: CHANGE:legacy_paper_shadow_daemon_retirement_bp_v1
   from: 1bac0d93302c6e589effafe46fccb055d82bd44e
   to: PENDING_CHANGE

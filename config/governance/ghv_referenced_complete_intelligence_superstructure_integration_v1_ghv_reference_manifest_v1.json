@@ -1,0 +1,31 @@
+{
+  "schema_version": "ghv_referenced_complete_intelligence_superstructure_integration_v1_ghv_reference_manifest_v1",
+  "work_package_id": "GHV_REFERENCED_COMPLETE_INTELLIGENCE_SUPERSTRUCTURE_INTEGRATION_FUNCTIONAL_CLOSURE_V1",
+  "ghv_authority": "NONE",
+  "ghv_reference_root": "evidence/research/ghv_referenced_full_system_natural_enter_pre_external_proof_v3/20261006T182600Z",
+  "primary_bounded_run_evidence_subdir": "bounded_run_post_merge_t2_causal_reproof_001",
+  "baseline_sha_at_bind": "9d2087b58f960536549764d9c9cdc72431ef1316",
+  "reference_instrument_forensic_only": "MINA-USDT-SWAP",
+  "semantic_checkpoint_keys": [
+    "GENUINE_NATURAL_ENTER",
+    "PRE_EXTERNAL_REACHED",
+    "POST_COUNT_ZERO",
+    "EXTERNAL_EFFECT_COUNT_ZERO"
+  ],
+  "intelligence_lineage_schema_version": "ghv_intelligence_lineage_forensic_observability.v2",
+  "structural_outcome_completeness_owner": "src.governance.ghv_intelligence_lineage_completeness_v1",
+  "productive_path_owner_snapshot_module": "src.evaluation.golden_vectors.evaluators.ptp_owners_v1",
+  "intelligence_boundary_invariants": {
+    "ghv_authority": "NONE",
+    "gvef_authority": "NONE",
+    "ddo_trading_authority": "NONE",
+    "m10_authorized_promotion_implies_runtime_apply": false,
+    "eip_productive_activation_authorized": false,
+    "autonomy_supervisor_runtime_reachability": false,
+    "post_allowed": false,
+    "external_effect_authorized": false
+  },
+  "artifact_relative_paths": [
+    "bounded_run_post_merge_t2_causal_reproof_001/PRE_EXTERNAL_CONVERGENCE_REPORT.json"
+  ]
+}

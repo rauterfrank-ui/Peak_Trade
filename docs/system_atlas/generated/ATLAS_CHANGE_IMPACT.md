@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=9
+ATLAS_CHANGED_RELATION_COUNT=3
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7080_session004_t2_diagnostic_evidence_closure_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7081_ghv_intelligence_superstructure_integration_closure_v1`.
 
 ## Workflow
 
@@ -40,15 +40,23 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:current_productive_forensic_executable_quantity_override_v1` |
-| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
+| `CONTRACT:p5_10_productive_activation_and_binding_v1` |
+| `RUNTIME_COMPONENT:elementary_direction_v1` |
 | `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `RUNTIME_COMPONENT:ghv_intelligence_lineage_completeness_v1` |
+| `RUNTIME_COMPONENT:ghv_intelligence_lineage_forensic_observability_v1` |
+| `RUNTIME_COMPONENT:ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1` |
+| `RUNTIME_COMPONENT:natural_enter_cross_session_outcome_closure_v1` |
+| `RUNTIME_COMPONENT:productive_golden_happy_vector_forensic_observability_v1` |
+| `RUNTIME_COMPONENT:productive_real_carrier_passive_capture_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:r_full_core_cycle_observes_elementary_direction` |
+| `REL:r_full_core_mv2_appends_ghv_intelligence_lineage_observability_v1` |
+| `REL:r_ghv_offline_cycle_uses_intelligence_lineage_completeness_v1` |
 
 ## NEW_RELATIONS
 
@@ -94,8 +102,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7080: T2 unexpected-exception forensic evidence on governed cycle orchestrator; PRE_EXTERNAL Natural-Enter DPO correlation prefers lane trading_epoch over s5_cycle_index; observability/reporting only; fail-closed T2 disposition unchanged; AUTHORITY=NONE; POST_COUNT=0.
-- introduced_by=CHANGE:pr_7080_session004_t2_diagnostic_evidence_closure_v1
-- modified_by=CHANGE:pr_7080_session004_t2_diagnostic_evidence_closure_v1
+- PR #7081: GHV-referenced intelligence superstructure offline orchestrator (compose-only, M10 hard stop) plus default-off GHV intelligence-lineage forensic append on MV2 cycle and honest lineage completeness; GHV geometry bridge retired; canonical DDO dynamic_scope capture wiring; observation-only; GHV_AUTHORITY=NONE; no trading semantics change; POST_COUNT=0.
+- introduced_by=CHANGE:pr_7081_ghv_intelligence_superstructure_integration_closure_v1
+- modified_by=CHANGE:pr_7081_ghv_intelligence_superstructure_integration_closure_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

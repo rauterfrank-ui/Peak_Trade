@@ -537,7 +537,25 @@ relations:
     adjacent default-off forensic observability on runtime cycle path; observation-only;
     AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7001 adds default-off
     scope-decision trace append on same cycle hook; observation-only; AUTHORITY=NONE;
-    POST_COUNT=0. # atlas_entity_review: PR #7037 MV2 CRS boundary wiring-only on same cycle hook; relation semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.'
+    POST_COUNT=0. # atlas_entity_review: PR #7037 MV2 CRS boundary wiring-only on same cycle hook; relation semantics unchanged; AUTHORITY=NONE; POST_COUNT=0. # atlas_entity_review: PR #7081 adds default-off GHV intelligence-lineage append on same hook; observation-only; AUTHORITY=NONE; POST_COUNT=0.'
+- id: REL:r_full_core_mv2_appends_ghv_intelligence_lineage_observability_v1
+  source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  type: OBSERVES
+  target: RUNTIME_COMPONENT:ghv_intelligence_lineage_forensic_observability_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/ghv_intelligence_lineage_forensic_observability_v1.py
+  notes: 'Default-off GHV session append of refs-only intelligence lineage trace after productive replay; no trading/learning/optimization consumption. AUTHORITY=NONE; POST_COUNT=0.'
+- id: REL:r_ghv_offline_cycle_uses_intelligence_lineage_completeness_v1
+  source: RUNTIME_COMPONENT:ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1
+  type: CALLS
+  target: RUNTIME_COMPONENT:ghv_intelligence_lineage_completeness_v1
+  epistemic_status: FORENSIC_RAW
+  evidence_sources:
+  - src/governance/ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1.py
+  - src/governance/ghv_intelligence_lineage_completeness_v1.py
+  notes: 'Offline compose-only structural/realized completeness labels for intelligence lineage; no apply/POST; AUTHORITY=NONE; POST_COUNT=0.'
 - id: REL:r_full_core_path_calls_venue_translation
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   type: CALLS
