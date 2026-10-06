@@ -65,7 +65,7 @@ def test_armed_capture_writes_atomic_bundle(tmp_path: Path) -> None:
         run_id="run-a",
         continuous_run_id="cont-b",
     )
-    token = bind_real_carrier_passive_capture_session_v1(session)
+    session_reset = bind_real_carrier_passive_capture_session_v1(session)
     try:
         block = enforce_real_carrier_passive_capture_before_replay_v1(
             replay_input=replay_input,
@@ -85,7 +85,7 @@ def test_armed_capture_writes_atomic_bundle(tmp_path: Path) -> None:
         )
         assert block is None
     finally:
-        reset_real_carrier_passive_capture_session_v1(token)
+        reset_real_carrier_passive_capture_session_v1(session_reset)
 
     manifest = tmp_path / "MANIFEST.sha256"
     assert verify_real_carrier_capture_manifest_v1(manifest) == 0
@@ -143,7 +143,7 @@ def test_enabled_non_interference_replay_object_unchanged(tmp_path: Path) -> Non
         capture_root=tmp_path,
         run_id="r",
     )
-    token = bind_real_carrier_passive_capture_session_v1(session)
+    session_reset = bind_real_carrier_passive_capture_session_v1(session)
     try:
         enforce_real_carrier_passive_capture_before_replay_v1(
             replay_input=replay_input,
@@ -163,7 +163,7 @@ def test_enabled_non_interference_replay_object_unchanged(tmp_path: Path) -> Non
         )
         replay = run_integrated_offline_trading_logic_replay_v1(replay_input)
     finally:
-        reset_real_carrier_passive_capture_session_v1(token)
+        reset_real_carrier_passive_capture_session_v1(session_reset)
     assert replay_input_json_digest_v1(replay_input) == replay_input_json_digest_v1(snapshot)
     assert replay.evidence.instrument_id == replay_input.instrument_id
 
@@ -176,7 +176,7 @@ def test_armed_sink_failure_fail_closed_before_replay(tmp_path: Path) -> None:
         capture_root=tmp_path,
         run_id="r",
     )
-    token = bind_real_carrier_passive_capture_session_v1(session)
+    session_reset = bind_real_carrier_passive_capture_session_v1(session)
     replay_calls: list[int] = []
 
     def _count_replay(_inp: object) -> object:
@@ -215,7 +215,7 @@ def test_armed_sink_failure_fail_closed_before_replay(tmp_path: Path) -> None:
             if block is None:
                 run_integrated_offline_trading_logic_replay_v1(replay_input)
     finally:
-        reset_real_carrier_passive_capture_session_v1(token)
+        reset_real_carrier_passive_capture_session_v1(session_reset)
     assert replay_calls == []
 
 
