@@ -523,6 +523,7 @@
     "tests/governance/test_governed_runtime_g2_to_m4_m8_real_mechanical_continuation_v1.py",
     "tests/governance/test_governed_runtime_learning_input_to_optimization_universe_learning_input_binding_v1.py",
     "tests/governance/test_governed_runtime_primary_to_offline_observation_projection_v1.py",
+    "tests/governance/test_ghv_geometry_bridge_retirement_and_ddo_dynamic_scope_v1.py",
     "tests/governance/test_ghv_referenced_complete_intelligence_superstructure_integration_v1.py",
     "tests/governance/test_ghv_referenced_geometry_lineage_closure_v1.py",
     "tests/governance/test_m4_m8_optimization_meta_learning_evidence_return_closure_v1.py",

@@ -202,6 +202,7 @@
     "tests/fixtures/ops/",
     "tests/governance/policy_critic/test_rules.py",
     "tests/governance/test_current_system_census_graph_v1.py",
+    "tests/governance/test_ghv_geometry_bridge_retirement_and_ddo_dynamic_scope_v1.py",
     "tests/governance/test_ghv_referenced_complete_intelligence_superstructure_integration_v1.py",
     "tests/governance/test_ghv_referenced_geometry_lineage_closure_v1.py",
     "tests/governance/test_governed_productive_runtime_parameter_seam_session_bind_v1.py",

@@ -34,9 +34,12 @@
   "evidence_refs": [
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/entities/catalog.yaml",
-    "tests/governance/test_ghv_referenced_complete_intelligence_superstructure_integration_v1.py"
+    "tests/governance/test_ghv_referenced_complete_intelligence_superstructure_integration_v1.py",
+    "tests/governance/test_ghv_geometry_bridge_retirement_and_ddo_dynamic_scope_v1.py"
   ],
   "covered_candidate_paths": [
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/ghv_referenced_complete_intelligence_superstructure_integration_v1_ghv_reference_manifest_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
@@ -53,6 +56,7 @@
     "src/governance/ghv_referenced_intelligence_superstructure_ghv_reference_manifest_v1.py",
     "src/governance/ghv_referenced_static_semantic_look_ahead_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_ddo_learning_capture_join_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/ghv_intelligence_lineage_forensic_observability_v1.py",
     "tests/governance/test_ghv_geometry_bridge_retirement_and_ddo_dynamic_scope_v1.py",
     "tests/governance/test_ghv_referenced_complete_intelligence_superstructure_integration_v1.py"
