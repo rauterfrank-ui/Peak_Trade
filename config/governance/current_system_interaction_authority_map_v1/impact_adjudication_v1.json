@@ -1,43 +1,23 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "2761aab69beb00564892d417818b7a35eb6794a7",
+  "base_sha": "3f671f03543fa429facfd052618c837608aa7ad2",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/productive_real_carrier_passive_capture_v1.py",
-    "tests/ops/test_productive_real_carrier_passive_capture_v1.py"
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
   ],
-  "changed_paths_sha256": "1c738ef8044cccc6a1296e9173e1b00195b155c4ff9ff093437591dcdafb2a62",
+  "changed_paths_sha256": "55bb9455d0787805cec95aaddde4e68ac908bfe3a394df44e469d6996f2198f1",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
-    "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/productive_real_carrier_passive_capture_v1.py",
-    "tests/ops/test_productive_real_carrier_passive_capture_v1.py"
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
   ],
   "evidence_refs": [
-    "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "tests/ops/test_productive_real_carrier_passive_capture_v1.py"
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
   ],
-  "reason": "PR #7062: passive default-off real-carrier CB-001/CB-002 observability at pre-replay host boundary; Atlas provenance + CSIA candidate catalog path pin; no CSIA source_v1.json or interaction-authority change; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR canonical repo-currency closure: align Master Runbook and Map-of-Truth review stamps to post-#7062 origin/main; navigation/review binding only; AUTHORITY=NONE; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
