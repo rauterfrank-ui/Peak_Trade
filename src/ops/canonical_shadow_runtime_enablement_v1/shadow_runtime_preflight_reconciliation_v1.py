@@ -1,4 +1,4 @@
-"""Reconcile PAPER_SHADOW_247 preflight vs canonical Shadow activatable state."""
+"""Reconcile bounded Shadow preflight contract vs canonical Shadow activatable state."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ PREFLIGHT_CONFIG_RELPATH = "config/ops/paper_shadow_247_preflight.toml"
 
 
 @dataclass(frozen=True)
-class PaperShadow247PreflightReconciliationV1:
+class ShadowRuntimePreflightReconciliationV1:
     preflight_contract_status: str
     technical_readiness: bool
     operator_authorization: bool
@@ -35,13 +35,13 @@ def _load_preflight_flags(repo_root: Path) -> dict[str, Any]:
     return tomllib.loads(path.read_text(encoding="utf-8"))
 
 
-def evaluate_paper_shadow_247_preflight_reconciliation_v1(
+def evaluate_shadow_runtime_preflight_reconciliation_v1(
     *,
     repo_root: Path | None = None,
     shadow_implemented: bool,
     shadow_activatable: bool,
     shadow_authorized: bool,
-) -> PaperShadow247PreflightReconciliationV1:
+) -> ShadowRuntimePreflightReconciliationV1:
     """Distinguish BLOCKED vs READY_BUT_NOT_AUTHORIZED without lifting preflight contract."""
     root = (repo_root or Path(__file__).resolve().parents[3]).resolve()
     flags = _load_preflight_flags(root)
@@ -72,7 +72,7 @@ def evaluate_paper_shadow_247_preflight_reconciliation_v1(
         status = "AUTHORIZED_PENDING_BOUNDED_RUN"
         blockers.append("OPERATIONAL_RUN_OUT_OF_SCOPE_FOR_THIS_WP")
 
-    return PaperShadow247PreflightReconciliationV1(
+    return ShadowRuntimePreflightReconciliationV1(
         preflight_contract_status=status,
         technical_readiness=technical,
         operator_authorization=operator_authorization,

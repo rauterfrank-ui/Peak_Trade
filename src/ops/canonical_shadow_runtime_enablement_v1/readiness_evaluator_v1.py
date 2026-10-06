@@ -12,8 +12,8 @@ from src.ops.canonical_shadow_runtime_enablement_v1.constants_v1 import (
 from src.ops.canonical_shadow_runtime_enablement_v1.observation_authorization_v1 import (
     evaluate_observation_authorization_mechanism_v1,
 )
-from src.ops.canonical_shadow_runtime_enablement_v1.paper_shadow_247_preflight_reconciliation_v1 import (
-    evaluate_paper_shadow_247_preflight_reconciliation_v1,
+from src.ops.canonical_shadow_runtime_enablement_v1.shadow_runtime_preflight_reconciliation_v1 import (
+    evaluate_shadow_runtime_preflight_reconciliation_v1,
 )
 from src.ops.canonical_shadow_runtime_enablement_v1.shadow_kill_switch_v1 import (
     evaluate_shadow_kill_switch_v1,
@@ -37,7 +37,7 @@ def evaluate_shadow_readiness_dimensions_v1(
         instrument_id="ETH-USD_UM_XPERP-TEST",
         state_root=None,
     )
-    preflight = evaluate_paper_shadow_247_preflight_reconciliation_v1(
+    preflight = evaluate_shadow_runtime_preflight_reconciliation_v1(
         repo_root=root,
         shadow_implemented=True,
         shadow_activatable=for_activatable or bridge_activated,

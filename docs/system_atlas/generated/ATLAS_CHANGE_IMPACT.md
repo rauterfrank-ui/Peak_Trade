@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=4
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7071_universe_cartography_non_authority_refresh_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:legacy_paper_shadow_daemon_retirement_bp_v1`.
 
 ## Workflow
 
@@ -40,10 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
+| `RUNTIME_COMPONENT:canonical_shadow_runtime_enablement_v1` |
 | `NAVIGATION_INDEX:current_universe_landscape_snapshot_v1` |
-| `NAVIGATION_INDEX:current_whole_system_functional_causal_model_v1` |
-| `NAVIGATION_INDEX:map_of_truth` |
-| `RUNBOOK:canonical_master_runbook` |
 
 ## CHANGED_RELATIONS
 
@@ -95,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7071: navigation-only refresh of whole-system functional model and sole persisted CURRENT universe/non-universe cartography with explicit non-authority pins; no runtime or trading semantic change; AUTHORITY=NONE; POST_COUNT=0.
-- introduced_by=CHANGE:pr_7071_universe_cartography_non_authority_refresh_v1
-- modified_by=CHANGE:pr_7071_universe_cartography_non_authority_refresh_v1
+- LEGACY_PAPER_SHADOW_DAEMON_RETIREMENT_BP_V1: retired bounded Paper/Shadow daemon orchestrator shell; GHV Full-Core remains productive carrier; shadow preflight reconciliation neutralized; discovery retargeted; no trading semantic change; AUTHORITY=NONE; POST_COUNT=0.
+- introduced_by=CHANGE:legacy_paper_shadow_daemon_retirement_bp_v1
+- modified_by=CHANGE:legacy_paper_shadow_daemon_retirement_bp_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

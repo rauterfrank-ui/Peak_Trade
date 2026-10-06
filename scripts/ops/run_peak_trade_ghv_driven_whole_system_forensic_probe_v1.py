@@ -97,14 +97,18 @@ NATURAL_ENTER = frozenset({"enter_long", "enter_short"})
 
 
 def _productive_wallclock_pre_external_wired_v1() -> bool:
-    proj = (
+    """GHV Full-Core natural-enter convergence is the CURRENT PRE_EXTERNAL carrier."""
+    step = (
         MAIN_REPO
-        / "src/ops/paper_shadow_bounded_orchestrator_v1/wallclock_pre_external_projection_v1.py"
+        / "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py"
     )
-    step = MAIN_REPO / "src/ops/paper_shadow_bounded_orchestrator_v1/productive_cycle_step_v1.py"
-    if not proj.is_file() or not step.is_file():
+    if not step.is_file():
         return False
-    return "project_wallclock_pre_external_from_bridge_cycle_v1" in step.read_text(encoding="utf-8")
+    text = step.read_text(encoding="utf-8")
+    return (
+        "DISPOSITION_PRE_EXTERNAL_EFFECT" in text
+        and "run_current_productive_persistent_natural_enter_convergence_v1" in text
+    )
 
 
 def _canonical_json(obj: object) -> str:
@@ -617,13 +621,13 @@ def main() -> int:
         },
     )
 
-    main_pre_ext_none = "pre_external_event=None" in subprocess.check_output(
+    main_pre_ext_none = "DISPOSITION_PRE_EXTERNAL_EFFECT" not in subprocess.check_output(
         [
             "git",
             "-C",
             str(REPO),
             "show",
-            f"{origin}:src/ops/paper_shadow_bounded_orchestrator_v1/productive_cycle_step_v1.py",
+            f"{origin}:src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
         ],
         text=True,
     )
@@ -642,18 +646,18 @@ def main() -> int:
             ghv_expected = "ghv_matrix_bound_instrument_metadata"
         elif stage in {"PRODUCTIVE_COMPOSITION", "PRE_EXTERNAL"}:
             prod_obs = (
-                "project_wallclock_pre_external_from_bridge_cycle_v1"
+                "current_productive_persistent_natural_enter_convergence_v1"
                 if repo_head_pre_external_wired
-                else "origin/main_pre_external_None"
+                else "origin/main_pre_external_absent"
             )
             match = repo_head_pre_external_wired
             ghv_expected = "invoke_ghv_e2e_productive_pre_external_closure_v1"
         elif stage == "EVIDENCE":
-            prod_obs = "RunEvidenceAccumulatorV1_forensic_cycle_records"
+            prod_obs = "ghv_pre_external_runtime_flight_recorder_v1"
             match = repo_head_pre_external_wired
             ghv_expected = "ghv_e2e_artifact_accumulation"
         elif stage in {"SIMULATED_EXECUTION", "POSITION", "ACCOUNTING", "RECONCILIATION"}:
-            prod_obs = "paper_shadow_route_pre_external_to_shadow_v1"
+            prod_obs = "canonical_shadow_runtime_enablement_v1_offline_cycle"
             match = False
             ghv_expected = "ghv_harness_simulated_economics_tail"
         else:
@@ -790,13 +794,13 @@ def main() -> int:
                 {
                     "GHV_EDGE": "NATURAL_ENTER→invoke_ghv_e2e_productive_pre_external_closure_v1",
                     "PRODUCTIVE_EDGE_MAIN": (
-                        "NATURAL_ENTER→project_wallclock_pre_external_from_bridge_cycle_v1"
+                        "NATURAL_ENTER→current_productive_persistent_natural_enter_convergence_v1"
                         if local_has_projection
                         else "NATURAL_ENTER→bridge_cycle only (PRE_EXTERNAL not projected)"
                     ),
                     "CLASSIFICATION": "EDGE_PRESENT" if local_has_projection else "EDGE_MISSING",
                     "PROVEN_CALLSITE_MAIN": (
-                        "productive_cycle_step_v1.project_wallclock_pre_external_from_bridge_cycle_v1"
+                        "full_core_natural_enter_convergence.DISPOSITION_PRE_EXTERNAL_EFFECT"
                         if local_has_projection
                         else "productive_cycle_step_v1 returns pre_external_event=None"
                     ),
@@ -989,7 +993,7 @@ def main() -> int:
             "CAUSAL_DIMENSION": "ORCHESTRATION",
             "GHV_EXPECTED": "PreExternalProductiveEventV1",
             "PRODUCTIVE_OBSERVED": (
-                "project_wallclock_pre_external_from_bridge_cycle_v1"
+                "current_productive_persistent_natural_enter_convergence_v1"
                 if repo_head_pre_external_wired and pre_ext_match
                 else "pre_external_projection_not_proven_on_current_repo"
             ),
@@ -1064,8 +1068,8 @@ def main() -> int:
     )
     pytest_pr = _run_pytest(
         [
-            "tests/ops/test_wallclock_pre_external_projection_v1.py",
-            "tests/ops/test_paper_shadow_bounded_orchestrator_v1.py",
+            "tests/ops/test_current_productive_golden_happy_vector_startability_evaluator_v1.py",
+            "tests/ops/test_canonical_shadow_runtime_enablement_v1.py",
         ]
     )
     _write(
@@ -1132,9 +1136,9 @@ def main() -> int:
         (
             "PRE_EXTERNAL",
             "invoke_ghv_e2e_productive_pre_external_closure_v1",
-            "project_wallclock_pre_external_from_bridge_cycle_v1",
+            "current_productive_persistent_natural_enter_convergence_v1",
         ),
-        ("EVIDENCE", "ghv_e2e artifacts", "RunEvidenceAccumulatorV1"),
+        ("EVIDENCE", "ghv_e2e artifacts", "ghv_pre_external_runtime_flight_recorder_v1"),
     ]
     for ghv_s, ghv_i, prod_i in mapping:
         twins.append(
