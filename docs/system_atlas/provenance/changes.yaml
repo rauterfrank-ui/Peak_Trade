@@ -793,4 +793,11 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/
   notes: 'PR #7069: retire 566 pre-completion Paper/Shadow/Testnet run evidence trees from active repo after slim contract-fixture migration; rebind docs/tests/config/src references; preserve Canary + post-completion full-system evidence; RUNTIME_SEMANTICS_CHANGED=false; TRADING_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.'
+- id: CHANGE:pr_7070_simple_run_evidence_owner_retention_v1
+  from: 45635cbf22a8a1a245497d5aa8ebc9b680f4816d
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_simple_run_evidence_retention_v1.py
+  notes: 'PR #7070: owner-local durable evidence for future Paper/Shadow/Testnet runs under PEAK_TRADE_OWNER_RUN_EVIDENCE_ROOT; reuses primary_evidence_retention_v0; navigation index only; no trading/selection/POST authority change; AUTHORITY=NONE; POST_COUNT=0.'
 

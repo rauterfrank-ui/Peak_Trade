@@ -1,17 +1,13 @@
 schema_version: system_atlas.v1
 pending_change: true
-introduced_by: CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1
-modified_by: CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1
+introduced_by: CHANGE:pr_7070_simple_run_evidence_owner_retention_v1
+modified_by: CHANGE:pr_7070_simple_run_evidence_owner_retention_v1
 superseded_by: null
-last_recorded_impact: NONE_WITH_PROOF
-note: 'PR #7069 pre-completion P/S/T evidence retirement: fixture/reference migration only; no trading or runtime authority change; AUTHORITY=NONE; POST_COUNT=0.'
+last_recorded_impact: UPDATED
+note: 'PR #7070 simple owner run evidence retention: owner-home P/S/T durable copy + JSONL navigation; no trading or runtime authority change; AUTHORITY=NONE; POST_COUNT=0.'
 changed_entities:
-- CAPABILITY:integrated_offline_replay_correctness_head_bound_v1
-- NAVIGATION_INDEX:map_of_truth
-- RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1
-- RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-- RUNTIME_COMPONENT:ghv_current_residency_decoupling_v1
-- RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1
+- RUNTIME_COMPONENT:simple_run_evidence_owner_retention_v1
+- RUNTIME_COMPONENT:post_6939_paper_g2_primary_run_metadata_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []

@@ -152,6 +152,7 @@ REQUIRED_PARTIAL_IDS = (
     "pr_7037_crs_boundary_mv2_wiring_v1",
     "pr_7064_golden_geometry_engine_v1",
     "pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1",
+    "pr_7070_simple_run_evidence_owner_retention_v1",
     "treasury_import_wording",
     "m4_nongoals_vs_modules",
 )

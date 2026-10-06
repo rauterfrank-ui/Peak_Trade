@@ -169,6 +169,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:productive_real_carrier_passive_capture_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:productive_real_carrier_passive_capture_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:recon_startup_gate_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:recon_startup_gate_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:running_account_equity_parallel_decoupled_tracks_authority_interface_reconciliation_contract_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:running_account_equity_parallel_decoupled_tracks_authority_interface_reconciliation_contract_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:simple_run_evidence_owner_retention_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:simple_run_evidence_owner_retention_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:simulated_execution_port_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:simulated_execution_port_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:source_to_semantic_mapping_and_sizing_producer_bind_under_parallel_decoupled_tracks_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:source_to_semantic_mapping_and_sizing_producer_bind_under_parallel_decoupled_tracks_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:treasury_separation_gate_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:treasury_separation_gate_v1 | STATUS=OPEN (not proven) |  |

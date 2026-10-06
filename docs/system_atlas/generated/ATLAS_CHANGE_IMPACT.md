@@ -14,8 +14,8 @@
 This view is topology change-coupling, not canonical authority.
 
 ```text
-ATLAS_IMPACT=NONE_WITH_PROOF
-ATLAS_CHANGED_ENTITY_COUNT=6
+ATLAS_IMPACT=UPDATED
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7070_simple_run_evidence_owner_retention_v1`.
 
 ## Workflow
 
@@ -40,12 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CAPABILITY:integrated_offline_replay_correctness_head_bound_v1` |
-| `NAVIGATION_INDEX:map_of_truth` |
-| `RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1` |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
-| `RUNTIME_COMPONENT:ghv_current_residency_decoupling_v1` |
-| `RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1` |
+| `RUNTIME_COMPONENT:simple_run_evidence_owner_retention_v1` |
+| `RUNTIME_COMPONENT:post_6939_paper_g2_primary_run_metadata_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -97,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7069 pre-completion P/S/T evidence retirement: fixture/reference migration only; no trading or runtime authority change; AUTHORITY=NONE; POST_COUNT=0.
-- introduced_by=CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1
-- modified_by=CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1
+- PR #7070 simple owner run evidence retention: owner-home P/S/T durable copy + JSONL navigation; no trading or runtime authority change; AUTHORITY=NONE; POST_COUNT=0.
+- introduced_by=CHANGE:pr_7070_simple_run_evidence_owner_retention_v1
+- modified_by=CHANGE:pr_7070_simple_run_evidence_owner_retention_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
