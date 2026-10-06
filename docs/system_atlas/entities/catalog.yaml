@@ -10,6 +10,7 @@
 # atlas_entity_review: PR #7028 — BWP-03 configuration injection (INJ-001 F1/M9 per-cycle G17 bind; INJ-002 optional scoped residency propagation default OFF; INJ-003 governance-only); SEMANTIC_CHANGE_FROM_PR7028=NONE on ranking/selection/MV2/DP/admission/capital/PRE_EXTERNAL/POST; AUTHORITY=NONE; POST_COUNT=0; REVIEWED_HEAD=7ee392714.
 # atlas_entity_review: PR #7035 — Natural-Enter downstream LIVE-29P Layer-C protective-stop binding + treasury BASE epoch rebind on duplicate GET; persistent convergence fail-closed segment terminal; binding-only; MV2/DP unchanged; AUTHORITY=NONE; POST_COUNT=0.
 # atlas_entity_review: PR #7069 historical pre-completion Paper/Shadow/Testnet evidence retirement; contract fixtures + explicit RETIRED semantics; no trading/runtime authority change; AUTHORITY=NONE.
+# atlas_entity_review: PR #7070 owner-local simple run evidence retention for P/S/T; reuses primary_evidence_retention_v0; navigation-only index; AUTHORITY=NONE; POST_COUNT=0.
 entities:
 - id: SYSTEM:peak_trade
   kind: SYSTEM
@@ -3620,7 +3621,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: POST_6939_BOUNDED_PAPER_PRIMARY_G2_M8_CAUSAL_CLOSURE_V1
+  modified_by: CHANGE:pr_7070_simple_run_evidence_owner_retention_v1
   source_paths:
   - scripts/ops/run_paper_only_bounded_observation_adapter_v0.py
   evidence_sources:
@@ -3628,7 +3629,34 @@ entities:
   - scripts/ops/run_post_6939_bounded_paper_primary_to_g2_m8_causal_closure_e2e_v1.py
   - config/governance/post_6939_bounded_paper_primary_g2_closure_v1/owner_go_bounded_paper_approval_v1.md
   - tests/ops/test_run_paper_only_bounded_observation_adapter_v0.py
-  notes: Whole-system terminal at scheduler HOLD_NO_PAPER_RUN after PAPER adapter admission check; PAPER_RUNTIME_STARTED=false; START_RC=2; no OBSERVED_BOUNDED_RUNTIME primary archive; G2→M4–M8 fixture-control only for mechanics; PAPER_STATUS=PARKED after post-6940 controlled abort; AUTHORITY=NONE.
+  notes: Whole-system terminal at scheduler HOLD_NO_PAPER_RUN after PAPER adapter admission check; PAPER_RUNTIME_STARTED=false; START_RC=2; no OBSERVED_BOUNDED_RUNTIME primary archive; G2→M4–M8 fixture-control only for mechanics; PAPER_STATUS=PARKED after post-6940 controlled abort; PR #7070 adds optional owner-home evidence persist hook after archive closeout (non-authorizing); AUTHORITY=NONE.
+- id: RUNTIME_COMPONENT:simple_run_evidence_owner_retention_v1
+  kind: RUNTIME_COMPONENT
+  name: Simple owner run evidence retention v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: CHANGE:pr_7070_simple_run_evidence_owner_retention_v1
+  source_paths:
+  - src/ops/simple_run_evidence_retention_v1/__init__.py
+  - src/ops/simple_run_evidence_retention_v1/constants_v1.py
+  - src/ops/simple_run_evidence_retention_v1/discover_v1.py
+  - src/ops/simple_run_evidence_retention_v1/index_v1.py
+  - src/ops/simple_run_evidence_retention_v1/metadata_v1.py
+  - src/ops/simple_run_evidence_retention_v1/persist_v1.py
+  - src/ops/simple_run_evidence_retention_v1/storage_v1.py
+  - scripts/ops/build_simple_run_evidence_index_v1.py
+  - scripts/ops/simple_run_evidence_v1.py
+  - scripts/ops/run_paper_only_bounded_observation_adapter_v0.py
+  - scripts/ops/run_shadow_bounded_observation_adapter_v0.py
+  - scripts/ops/run_testnet_bounded_observation_adapter_v0.py
+  - tests/ops/test_simple_run_evidence_retention_v1.py
+  - tests/ops/test_bounded_adapter_invoke_durable_closeout_v0.py
+  - tests/ops/test_bounded_adapter_durable_chain_synthetic_e2e_v0.py
+  evidence_sources:
+  - scripts/ops/primary_evidence_retention_v0.py
+  - scripts/ops/durable_closeout_copy_verify_v0.py
+  notes: Owner-home durable copy for future Paper/Shadow/Testnet primary evidence after validation; JSONL list/show navigation only; no migration; Canary read-only discovery; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:post_6940_live_readiness_convergence_v1
   kind: RUNTIME_COMPONENT
   name: Post-6940 live-readiness convergence v1

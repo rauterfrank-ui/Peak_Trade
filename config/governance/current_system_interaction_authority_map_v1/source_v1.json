@@ -5492,6 +5492,19 @@
       ],
       "closure_adjudication_class": "REPRESENTATION_ONLY",
       "closure_note": "Evidence retirement + fixture migration closure; TRADING_SEMANTICS_CHANGED=false at governance boundary."
+    },
+    {
+      "id": "pr_7070_simple_run_evidence_owner_retention_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #7070: owner-local durable evidence for future Paper/Shadow/Testnet bounded runs (PEAK_TRADE_OWNER_RUN_EVIDENCE_ROOT / $HOME/Peak_Trade_Run_Evidence); reuses primary_evidence_retention_v0 validation and durable_closeout_copy_verify_v0 copy; JSONL navigation index only; no implicit PEAK_TRADE_DATA_ARCHIVE_ROOT write; no trading/selection/POST authority change; diff-bound MAP_UPDATE_REQUIRED; AUTHORITY=NONE; POST_COUNT=0.",
+      "evidence_refs": [
+        "docs/system_atlas/provenance/changes.yaml",
+        "tests/ops/test_simple_run_evidence_retention_v1.py",
+        "src/ops/simple_run_evidence_retention_v1/persist_v1.py"
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "Owner evidence persistence + navigation closure; TRADING_SEMANTICS_CHANGED=false at governance boundary."
     }
   ]
 }
+

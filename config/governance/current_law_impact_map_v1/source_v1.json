@@ -1942,7 +1942,7 @@
     "bootstrap_exhaustive": false,
     "census_method": "UCS_FROZEN_WORKSET_EVIDENCE_BINDING_V1",
     "unclassified_sample_cap": 120,
-    "notes": "Navigation-only UCS pass; dispositions in ucs_frozen_workset_v1.json. PR #7069 pre-completion P/S/T evidence retirement: representation-only law-map adjudication for fixture/reference migration; no normative law change; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE.",
+    "notes": "Navigation-only UCS pass; dispositions in ucs_frozen_workset_v1.json. PR #7070 simple owner run evidence retention: representation-only law-map adjudication for owner-home P/S/T durable copy + navigation index; no normative law change; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.",
     "frozen_workset_sha256": "1faa5ad603886a2d77f4c11465cb989a9b7ddd0d3aae758378287a6739a5b8c3",
     "frozen_workset_count": 78
   }

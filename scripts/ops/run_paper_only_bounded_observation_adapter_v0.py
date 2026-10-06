@@ -821,9 +821,37 @@ def maybe_invoke_durable_closeout_after_archive(
     ctx: ExecuteContext,
     archive_dest: Path,
     *,
+    owner_persist_run_class: str | None = None,
     durable_closeout_invoker: DurableCloseoutInvoker | None = None,
 ) -> int:
     """Return adapter exit code after optional durable closeout invocation."""
+    from src.ops.simple_run_evidence_retention_v1.persist_v1 import (
+        emit_owner_persist_machine_lines,
+        infer_run_class_from_archive_dest,
+        persist_bounded_run_to_owner_evidence,
+    )
+
+    run_class = owner_persist_run_class or infer_run_class_from_archive_dest(archive_dest)
+    if run_class is not None:
+        owner_result = persist_bounded_run_to_owner_evidence(
+            archive_dest,
+            run_class=run_class,
+            run_id=ctx.run_id,
+        )
+        emit_owner_persist_machine_lines(owner_result)
+        if owner_result.rc != 0:
+            return VALIDATION_EXIT
+    else:
+        from src.ops.simple_run_evidence_retention_v1.persist_v1 import OwnerPersistResult
+
+        emit_owner_persist_machine_lines(
+            OwnerPersistResult(
+                0,
+                "skipped_no_run_class",
+                "owner persist skipped; run_class not inferred (non-execute archive layout)",
+            )
+        )
+
     chain_requested = bool(getattr(ctx.args, "run_local_post_closeout_chain_v0", False))
     chain_archive_root: Path | None = None
     if chain_requested:
@@ -1260,6 +1288,7 @@ def execute_plan(
     return maybe_invoke_durable_closeout_after_archive(
         ctx,
         archive_dest,
+        owner_persist_run_class="paper",
         durable_closeout_invoker=durable_closeout_invoker,
     )
 

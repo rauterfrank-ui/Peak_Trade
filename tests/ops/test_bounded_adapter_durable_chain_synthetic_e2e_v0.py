@@ -31,6 +31,20 @@ FORBIDDEN_DIRECT_SCRIPTS = (
 )
 
 
+@pytest.fixture(autouse=True)
+def _stub_owner_run_evidence_persist(monkeypatch: pytest.MonkeyPatch):
+    from src.ops.simple_run_evidence_retention_v1 import persist_v1
+
+    def _stub(*_args, **_kwargs):
+        return persist_v1.OwnerPersistResult(0, "test_stub", "owner persist stubbed in test")
+
+    monkeypatch.setattr(
+        persist_v1,
+        "persist_bounded_run_to_owner_evidence",
+        _stub,
+    )
+
+
 def _load_paper():
     return adapter_tests._load_paper()
 
