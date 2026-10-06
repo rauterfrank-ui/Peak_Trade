@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+from datetime import datetime, timezone
 
 import pytest
 
@@ -14,6 +15,12 @@ from trading.master_v2.canonical_market_context_v1 import (
     FEATURE_CONTRACT_VERSION,
     WarmupStatus,
     with_computed_input_digest,
+)
+from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
+    bind_typed_canonical_volatility_estimate_into_market_context_v1,
+)
+from trading.master_v2.canonical_volatility_estimate_typed_consumption_contract_v1 import (
+    build_canonical_volatility_estimate_v1,
 )
 from trading.master_v2.double_play_futures_input import FuturesMarketType
 from trading.master_v2.golden_geometry_engine_v1 import (
@@ -29,7 +36,7 @@ from trading.master_v2.golden_geometry_engine_v1 import (
 
 
 def _ctx(*, mark: float, sigma: float) -> CanonicalMarketContextV1:
-    return with_computed_input_digest(
+    base = with_computed_input_digest(
         CanonicalMarketContextV1(
             context_id="ctx-gge-v1",
             instrument_id="inst-gge-v1",
@@ -59,6 +66,12 @@ def _ctx(*, mark: float, sigma: float) -> CanonicalMarketContextV1:
             input_digest="",
         )
     )
+    estimate = build_canonical_volatility_estimate_v1(
+        value=sigma,
+        observation_count=60,
+        as_of_event_time=datetime(2026, 10, 6, 12, 0, tzinfo=timezone.utc),
+    )
+    return bind_typed_canonical_volatility_estimate_into_market_context_v1(base, estimate)
 
 
 GOLDEN_VECTORS = [
@@ -172,3 +185,13 @@ def test_magnitude_finite_positive() -> None:
     assert result.ok and result.output is not None
     assert math.isfinite(result.output.magnitude)
     assert result.output.magnitude > 0
+
+
+def test_blank_instrument_id_fail_closed() -> None:
+    result = compute_canonical_base_geometry_magnitude_from_mark_and_volatility_v1(
+        instrument_id="",
+        mark_price=50.0,
+        volatility_estimate=0.1,
+    )
+    assert not result.ok
+    assert "instrument_id_blank" in result.failure_codes

@@ -771,12 +771,12 @@ def run_current_productive_master_v2_runtime_cycle_v1(
     typed_volatility_eligibility = evaluate_typed_volatility_binding_eligibility_v1(market_context)
     scope_resolved_volatility: float | None = None
     try:
-        from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
-            resolve_legacy_volatility_float_for_consumer_v1,
+        from trading.master_v2.canonical_geometry_volatility_v1 import (
+            resolve_canonical_geometry_volatility_v1,
         )
 
         scope_resolved_volatility = float(
-            resolve_legacy_volatility_float_for_consumer_v1(market_context)
+            resolve_canonical_geometry_volatility_v1(market_context).value
         )
     except (ValueError, TypeError):
         scope_resolved_volatility = None

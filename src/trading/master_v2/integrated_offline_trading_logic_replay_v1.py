@@ -200,7 +200,6 @@ from trading.master_v2.survival_assessment_v1 import (
 )
 from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
     CanonicalVolatilityBindingError,
-    resolve_legacy_volatility_float_for_consumer_v1,
 )
 from trading.master_v2.canonical_volatility_default_quarantine_v1 import (
     CanonicalVolatilityQuarantineError,
@@ -1019,10 +1018,13 @@ def _rules_for_cycle_v1(
         if provided.volatility_estimate is None:
             raise ValueError("dynamic_scope_rules_volatility_estimate_missing")
         return provided
-    # Typed CMC present → sole adapter (resolve_legacy_volatility_float_for_consumer_v1).
-    # Typed absent → existing CMC/snapshot float. Never max(..., 1e-9). Never invent 1.0.
+    # Geometry path: typed G17 only when CMC bound; else stateful snapshot σ.
     if bound_context is not None:
-        raw_vol = resolve_legacy_volatility_float_for_consumer_v1(bound_context)
+        from trading.master_v2.canonical_geometry_volatility_v1 import (
+            resolve_canonical_geometry_volatility_v1,
+        )
+
+        raw_vol = float(resolve_canonical_geometry_volatility_v1(bound_context).value)
     else:
         raw_vol = float(snapshot.volatility_estimate)
     admitted = admit_positive_volatility_without_strategy_floor_v1(
@@ -1726,6 +1728,7 @@ def run_integrated_offline_trading_logic_replay_v1(
             st=runtime_scope_before,
             rules=rules,
             env=runtime_envelope,
+            instrument_id=str(inp.instrument_id),
         )
         trailing_anchor_used = (
             float(runtime_scope_pre.anchor_price)
@@ -1937,6 +1940,7 @@ def run_integrated_offline_trading_logic_replay_v1(
             st=runtime_scope_after_switch,
             rules=rules,
             env=runtime_envelope,
+            instrument_id=str(inp.instrument_id),
         )
         state_switch_id = _derive_state_switch_id(
             inp.instrument_id, inp.trading_epoch, scope_event.scope_event_id

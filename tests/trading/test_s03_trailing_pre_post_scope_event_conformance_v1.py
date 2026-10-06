@@ -153,6 +153,7 @@ def _trail(
         st=st,
         rules=_RULES,
         env=_ENVELOPE,
+        instrument_id="test-instrument",
     )
     assert isinstance(out, RuntimeScopeState)
     assert not isinstance(out, SideState)

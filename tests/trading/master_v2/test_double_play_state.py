@@ -221,7 +221,12 @@ def test_trailing_long_anchor_upward():
         volatility_estimate=0.05,
     )
     st2 = update_dynamic_boundaries(
-        mark_price=120.0, side=ActiveSide.LONG, st=st, rules=r, env=GOOD_ENVELOPE
+        mark_price=120.0,
+        side=ActiveSide.LONG,
+        st=st,
+        rules=r,
+        env=GOOD_ENVELOPE,
+        instrument_id="test-instrument",
     )
     assert st2.anchor_price == 120.0
     assert st2.current_downscope_boundary < st2.anchor_price
@@ -241,7 +246,12 @@ def test_trailing_short_anchor_downward():
         volatility_estimate=0.05,
     )
     st2 = update_dynamic_boundaries(
-        mark_price=80.0, side=ActiveSide.SHORT, st=st, rules=r, env=GOOD_ENVELOPE
+        mark_price=80.0,
+        side=ActiveSide.SHORT,
+        st=st,
+        rules=r,
+        env=GOOD_ENVELOPE,
+        instrument_id="test-instrument",
     )
     assert st2.anchor_price == 80.0
     assert st2.current_upscope_boundary > st2.anchor_price
