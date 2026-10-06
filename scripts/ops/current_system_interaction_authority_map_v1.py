@@ -150,6 +150,7 @@ REQUIRED_PARTIAL_IDS = (
     "pr_6993_dynamic_scope_authority_and_productive_bridge_boundaries_v1",
     "pr_7036_raw_instrument_relative_scope_cutover_v1",
     "pr_7037_crs_boundary_mv2_wiring_v1",
+    "pr_7064_golden_geometry_engine_v1",
     "treasury_import_wording",
     "m4_nongoals_vs_modules",
 )
