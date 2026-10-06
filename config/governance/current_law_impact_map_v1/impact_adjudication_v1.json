@@ -4,8 +4,10 @@
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "docs/ops/specs/PAPER_SHADOW_BOUNDED_RUN_SETTINGS_DIGEST_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
@@ -19,7 +21,6 @@
     "scripts/ops/run_current_full_repository_recartography_and_whole_system_fixpoint_continuation_v1.py",
     "scripts/ops/run_paper_shadow_bounded_orchestrator_v1.py",
     "scripts/ops/run_peak_trade_ghv_driven_whole_system_forensic_probe_v1.py",
-    "src/ops/canonical_shadow_runtime_enablement_v1/paper_shadow_247_preflight_reconciliation_v1.py",
     "src/ops/canonical_shadow_runtime_enablement_v1/readiness_evaluator_v1.py",
     "src/ops/canonical_shadow_runtime_enablement_v1/shadow_runtime_preflight_reconciliation_v1.py",
     "src/ops/paper_shadow_bounded_orchestrator_v1/__init__.py",
@@ -52,13 +53,13 @@
     "tests/ops/test_wallclock_forensic_cycle_record_v1.py",
     "tests/ops/test_wallclock_pre_external_projection_v1.py"
   ],
-  "changed_paths_sha256": "eb244b89625a4d726cd6a95a37058e07bbd65d6d37d20868a719f92954587b6d",
+  "changed_paths_sha256": "45dbfe1fb090a1553e28cafc618679eb3f2a2f194957a129d96a15da4fb0dcb0",
   "selector_used_as_law_impact_authority": false,
   "verdict": "LAW_MAP_UPDATE_REQUIRED",
   "evidence_refs": [
+    "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/entities/catalog.yaml"
+    "docs/system_atlas/provenance/changes.yaml"
   ],
-  "reason": "LEGACY_PAPER_SHADOW_DAEMON_RETIREMENT_BP_V1: retire bounded orchestrator shell; atlas/governance navigation refresh; no normative law meaning change; AUTHORITY=NONE; POST_COUNT=0."
+  "reason": "LEGACY_PAPER_SHADOW_DAEMON_RETIREMENT_BP_V1: retire bounded orchestrator shell; rebound law/CSIA map baseline_sha; atlas navigation refresh; AUTHORITY=NONE; POST_COUNT=0."
 }
