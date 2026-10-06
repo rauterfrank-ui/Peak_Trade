@@ -193,22 +193,6 @@ def _main() -> int:
     parser.add_argument("--evidence-root", type=Path, required=True)
     parser.add_argument("--lane-state-root", type=Path, required=True)
     parser.add_argument("--productivity-root", type=Path, required=True)
-    parser.add_argument(
-        "--private-account-transport-mode",
-        default="live_k1",
-        choices=("live_k1", "ghv_full_system_testnet_observation_v1"),
-        help=(
-            "Private-account Fresh-Pretrade GET transport bind (default live_k1). "
-            "ghv_full_system_testnet_observation_v1 uses Demo GET-only observation bind."
-        ),
-    )
-    parser.add_argument(
-        "--full-system-testnet-observation-owner-go",
-        default=None,
-        help=(
-            "Required when --private-account-transport-mode=ghv_full_system_testnet_observation_v1"
-        ),
-    )
     parser.add_argument("--binding-epoch", default=None)
     parser.add_argument(
         "--wp-branch-evidence-run",
@@ -380,36 +364,8 @@ def _main() -> int:
     evidence_root = Path(args.evidence_root)
     lane_state_root = Path(args.lane_state_root)
     productivity_root = Path(args.productivity_root)
-    testnet_observation_mode = (
-        str(args.private_account_transport_mode or "") == "ghv_full_system_testnet_observation_v1"
-    )
     for p in (evidence_root, lane_state_root, productivity_root):
         p.mkdir(parents=True, exist_ok=True)
-    if testnet_observation_mode:
-        from src.ops.full_core_live_path_composition_root_v1.ghv_full_system_testnet_observation_pre_external_v1.constants_v1 import (
-            PACKAGE_MARKER as GHV_TESTNET_OBSERVATION_PACKAGE_MARKER,
-        )
-        from src.ops.full_core_live_path_composition_root_v1.ghv_full_system_testnet_observation_pre_external_v1.state_roots_v1 import (
-            assert_ghv_testnet_observation_state_roots_isolated_v1,
-        )
-
-        isolation_proof = assert_ghv_testnet_observation_state_roots_isolated_v1(
-            evidence_root=evidence_root,
-            lane_state_root=lane_state_root,
-            productivity_root=productivity_root,
-        )
-        (evidence_root / "ghv_testnet_observation_state_isolation_proof_v1.json").write_text(
-            json.dumps(
-                {
-                    **isolation_proof,
-                    "GHV_TESTNET_OBSERVATION_PACKAGE": GHV_TESTNET_OBSERVATION_PACKAGE_MARKER,
-                },
-                sort_keys=True,
-                indent=2,
-            )
-            + "\n",
-            encoding="utf-8",
-        )
 
     backend = GitCurrentProductive29PRuntimeIntegrityBackendV1(repo_root=REPO_ROOT)
     baseline_sha = backend.resolve_origin_main_sha_v1()
@@ -493,61 +449,6 @@ def _main() -> int:
     )
     bound = handoff.bound_instrument
     native_id = str(bound.venue_native_id or "").strip()
-    if testnet_observation_mode:
-        from src.ops.full_core_live_path_composition_root_v1.ghv_full_system_testnet_observation_pre_external_v1.environment_validation_v1 import (
-            GhvTestnetEnvironmentValidationError,
-            GhvTestnetEnvironmentValidationInputV1,
-            assert_ghv_testnet_environment_validation_pass_v1,
-            evaluate_ghv_testnet_environment_validation_v1,
-        )
-        from src.ops.full_core_live_path_composition_root_v1.ghv_full_system_testnet_observation_pre_external_v1.governance_v1 import (
-            GhvTestnetObservationGovernanceError,
-            assert_full_system_testnet_observation_owner_go_v1,
-        )
-
-        try:
-            governance_proof = assert_full_system_testnet_observation_owner_go_v1(
-                args.full_system_testnet_observation_owner_go
-            )
-            env_result = evaluate_ghv_testnet_environment_validation_v1(
-                input_v1=GhvTestnetEnvironmentValidationInputV1(
-                    cap23_selected_native_id=native_id,
-                    cap24_bound_native_id=native_id,
-                    validation_native_id=native_id,
-                ),
-            )
-            assert_ghv_testnet_environment_validation_pass_v1(env_result)
-        except (
-            GhvTestnetObservationGovernanceError,
-            GhvTestnetEnvironmentValidationError,
-        ) as exc:
-            out = {
-                "status": "FAIL",
-                "blocker": "GHV_TESTNET_OBSERVATION_BINDING_FAIL_CLOSED",
-                "detail": str(exc),
-            }
-            print(json.dumps(out, sort_keys=True))
-            return 2
-        (evidence_root / "ghv_testnet_observation_governance_proof_v1.json").write_text(
-            json.dumps(governance_proof, sort_keys=True, indent=2) + "\n",
-            encoding="utf-8",
-        )
-        (evidence_root / "ghv_testnet_environment_validation_v1.json").write_text(
-            json.dumps(
-                {
-                    "status": env_result.status,
-                    "fail_closed": env_result.fail_closed,
-                    "reason_codes": list(env_result.reason_codes),
-                    "cap23_selected_native_id": env_result.cap23_selected_native_id,
-                    "cap24_bound_native_id": env_result.cap24_bound_native_id,
-                    "testnet_selected_native_id": env_result.testnet_selected_native_id,
-                },
-                sort_keys=True,
-                indent=2,
-            )
-            + "\n",
-            encoding="utf-8",
-        )
     pre = preflight_current_productive_persistent_natural_enter_v1(
         productivity_root=productivity_root,
         lane_state_root=lane_state_root,
@@ -583,71 +484,19 @@ def _main() -> int:
     max_request_count = (
         compute_productive_policy_governed_live_c1_shared_transport_max_request_count_v1(auth)
     )
-    transport_ctx: Any
-    if testnet_observation_mode:
-        from src.ops.full_core_live_path_composition_root_v1.ghv_full_system_testnet_observation_pre_external_v1.demo_credential_bind_v1 import (
-            GhvTestnetDemoCredentialBindError,
-            open_ghv_testnet_demo_get_only_fresh_pretrade_transport_v1,
-        )
-
-        transport_ctx = open_ghv_testnet_demo_get_only_fresh_pretrade_transport_v1(
-            owner_go=str(args.full_system_testnet_observation_owner_go or ""),
-            max_request_count=max_request_count,
-        )
-        bind_proof_name = "ghv_testnet_demo_get_only_transport_bind_proof_v1.json"
-        transport_bind_error_types: tuple[type[Exception], ...] = (
-            GhvTestnetDemoCredentialBindError,
-        )
-    else:
-        from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1 import (
-            GovernedLiveC1GetOnlyFreshPretradeTransportBindError,
-            open_governed_live_c1_get_only_fresh_pretrade_transport_v1,
-        )
-
-        transport_ctx = open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
-            max_request_count=max_request_count,
-        )
-        bind_proof_name = "get_only_credential_transport_bind_proof_v1.json"
-        transport_bind_error_types = (GovernedLiveC1GetOnlyFreshPretradeTransportBindError,)
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1 import (
+        GovernedLiveC1GetOnlyFreshPretradeTransportBindError,
+        open_governed_live_c1_get_only_fresh_pretrade_transport_v1,
+    )
 
     try:
-        with transport_ctx as (transport, credential_bind_proof):
-            (evidence_root / bind_proof_name).write_text(
+        with open_governed_live_c1_get_only_fresh_pretrade_transport_v1(
+            max_request_count=max_request_count,
+        ) as (transport, credential_bind_proof):
+            (evidence_root / "get_only_credential_transport_bind_proof_v1.json").write_text(
                 json.dumps(credential_bind_proof, sort_keys=True, indent=2) + "\n",
                 encoding="utf-8",
             )
-            if testnet_observation_mode:
-                from src.ops.full_core_live_path_composition_root_v1.ghv_full_system_testnet_observation_pre_external_v1.account_observation_evidence_v1 import (
-                    prove_outcome_closure_evidence_separation_v1,
-                    write_demo_account_observation_evidence_v1,
-                )
-                from src.ops.full_core_live_path_composition_root_v1.ghv_full_system_testnet_observation_pre_external_v1.constants_v1 import (
-                    write_contract_proof_v1,
-                )
-
-                write_demo_account_observation_evidence_v1(
-                    evidence_root=evidence_root,
-                    observation_summary={
-                        "transport_mode": "ghv_full_system_testnet_observation_v1",
-                        "native_id": native_id,
-                        "private_get_catalog_only": True,
-                    },
-                )
-                (evidence_root / "ghv_testnet_observation_environment_contract_v1.json").write_text(
-                    json.dumps(write_contract_proof_v1(), sort_keys=True, indent=2) + "\n",
-                    encoding="utf-8",
-                )
-                (
-                    evidence_root / "ghv_testnet_outcome_closure_evidence_separation_v1.json"
-                ).write_text(
-                    json.dumps(
-                        prove_outcome_closure_evidence_separation_v1(),
-                        sort_keys=True,
-                        indent=2,
-                    )
-                    + "\n",
-                    encoding="utf-8",
-                )
             if args.enable_natural_market_data_capture_v1:
                 from src.ops.full_core_live_path_composition_root_v1.productive_natural_market_data_capture_sink_v1 import (
                     wrap_productive_transport_with_natural_market_data_capture_v1,
@@ -735,7 +584,7 @@ def _main() -> int:
                 }
                 print(json.dumps(out, sort_keys=True))
                 return 2
-    except transport_bind_error_types as exc:
+    except GovernedLiveC1GetOnlyFreshPretradeTransportBindError as exc:
         out = {
             "status": "FAIL",
             "blocker": "GET_ONLY_CREDENTIAL_TRANSPORT_BIND_FAIL_CLOSED",
