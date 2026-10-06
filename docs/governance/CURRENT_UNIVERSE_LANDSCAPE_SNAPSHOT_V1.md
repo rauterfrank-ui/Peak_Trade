@@ -5,8 +5,8 @@ AUTHORITY=NONE
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 NOT_A_RUNTIME_AUTHORITY=true
 NOT_A_UNIVERSE_RATIFICATION=true
-EVIDENCE_BASELINE_SHA=dfcf4d04b8400763bee6ab0b465fa182927dea75
-EVIDENCE_BASELINE_TREE_SHA=4e5de1cdbf1958e2e0290b4867b1609441e1c660
+EVIDENCE_BASELINE_SHA=6422bfde79fd5aa45d2939a821980abf9aa4e3df
+EVIDENCE_BASELINE_TREE_SHA=6422bfde79fd5aa45d2939a821980abf9aa4e3df
 ARCHITECTURE_FIXPOINT_SOURCE=FINAL_CURRENT_ARCHITECTURE_CLOSURE_FIXPOINT_ADJUDICATION_V1
 ARCHITECTURE_CLOSURE=PROVEN_CURRENT
 MATERIAL_ARCHITECTURE_BLOCKER_COUNT=0
@@ -78,3 +78,33 @@ Full-Core constants and post-6941 seam adjudication records.
 4. Use System Atlas generated views (`ATLAS_AUTHORITY=NONE`) for topology wiring.
 5. Resolve conflicts against Master Runbook operational semantics and canonical
    code/config evidence — not against this snapshot alone.
+
+## Cartography refresh @ 6422bfde (navigation only)
+
+```text
+CARTOGRAPHY_REFRESH_BASELINE=6422bfde79fd5aa45d2939a821980abf9aa4e3df
+GGE_IS_AUTHORITY_UNIVERSE=false
+GGE_REPRESENTED_AS=NON_UNIVERSE_MV2_GEOMETRY_SUBSYSTEM (SURFACE:TD-MV2-GGE-SCOPE-GEOMETRY)
+FULL_CORE_GHV_CARRIER=TD-FULL-CORE orchestration plane (not a new authority universe)
+PAPER_SHADOW_247_NOT_CURRENT_FULL_SYSTEM_CARRIER=true
+PRE_EXTERNAL_POST_ALLOWED=false
+```
+
+- **GGE / Scope:** sole base-geometry owner on the MV2 path; classified **outside**
+  authority universes (boundary subsystem), not Cap21–Cap23-style universes.
+- **Full-Core / GHV:** productive PRE_EXTERNAL convergence entry and GHV startability
+  evaluators are the CURRENT full-system **orchestration** carrier (`TD-FULL-CORE`).
+- **Paper-Shadow-247:** separate governed lane; not modeled here as a CURRENT universe
+  or primary system carrier.
+- **Learning / Optimization / MI:** remain non-universe planes (`TD-DDO-LEARNING`,
+  `TD-MI-OFFLINE`, research corpus); optimization export is offline-only on the DDO
+  surface — no productive trading authority.
+
+### Distinct companion (do not merge taxonomies)
+
+[`docs/ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md`](../ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md)
+describes **productive causal machine order** and Q1–Q5 quality layers. This snapshot
+classifies **authority universes vs planes/boundaries**. Both must agree on Cap2.3
+sole selection, Cap2.4 bind-only, GGE non-universe status, Full-Core GHV carrier,
+PRE_EXTERNAL terminal, and Learning/OPT/MI `AUTHORITY=NONE`, but they serve different
+navigation purposes.

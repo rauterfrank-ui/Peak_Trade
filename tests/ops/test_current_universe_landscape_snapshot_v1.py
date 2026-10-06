@@ -12,7 +12,8 @@ SNAPSHOT = REPO / "config/governance/current_universe_landscape_snapshot_v1/sour
 
 def test_universe_landscape_snapshot_baseline_and_coverage() -> None:
     doc = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
-    assert doc["evidence_baseline_sha"] == "dfcf4d04b8400763bee6ab0b465fa182927dea75"
+    assert doc["evidence_baseline_sha"] == "6422bfde79fd5aa45d2939a821980abf9aa4e3df"
+    assert doc["coverage_counts"]["material_surface_count"] == 19
     assert doc["architecture_fixpoint"]["closure"] == "PROVEN_CURRENT"
     counts = doc["coverage_counts"]
     assert counts["unmapped_material_surface_count"] == 0
