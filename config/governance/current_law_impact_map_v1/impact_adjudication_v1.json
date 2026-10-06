@@ -15,6 +15,7 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
+    "scripts/ops/current_system_interaction_authority_map_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py",
@@ -36,7 +37,7 @@
     "tests/ops/test_full_core_fresh_pretrade_runtime_get_seam_v1.py",
     "tests/ops/test_governed_productive_monetary_normalization_v1.py"
   ],
-  "changed_paths_sha256": "cb314aff303baac4fef3c3d8f83fb56264bd8175e61fb93e9489ebd82af7a83b",
+  "changed_paths_sha256": "c399e7a028067ea117aa26cea84374b94ef1af4c3aaa8567b99d771e7f0188f6",
   "selector_used_as_law_impact_authority": false,
   "verdict": "LAW_MAP_UPDATE_REQUIRED",
   "reason": "PR #7077: MONETARY_NORMALIZATION_IMPLEMENTATION_V1 — representation-only law-map navigation update for productive monetary normalization wiring; no normative law change; AUTHORITY=NONE; POST_COUNT=0.",
