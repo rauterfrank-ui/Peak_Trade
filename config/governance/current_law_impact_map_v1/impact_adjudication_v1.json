@@ -1,28 +1,25 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "2761aab69beb00564892d417818b7a35eb6794a7",
+  "base_sha": "3f671f03543fa429facfd052618c837608aa7ad2",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/productive_real_carrier_passive_capture_v1.py",
-    "tests/ops/test_productive_real_carrier_passive_capture_v1.py"
+    "docs/system_atlas/provenance/impact_state.yaml"
   ],
-  "changed_paths_sha256": "1c738ef8044cccc6a1296e9173e1b00195b155c4ff9ff093437591dcdafb2a62",
+  "changed_paths_sha256": "bb5c84d4268665f83c48d39da7f4e6b25bfcc847c912189fc533b7a75cadac6e",
   "evidence_refs": [
-    "docs/system_atlas/provenance/changes.yaml",
-    "tests/ops/test_productive_real_carrier_passive_capture_v1.py"
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
+    "docs/system_atlas/provenance/changes.yaml"
   ],
-  "reason": "PR #7062: passive real-carrier observability only; Atlas provenance currency; no Current Law semantic or authority change.",
+  "reason": "PR #7063 repo-currency closure: RUNBOOK-VENUE-PLAN-TDMODE-AUTHORITY-V1 source_sha256 refresh after review-stamp rebind; regenerated law reference index; Atlas NAVIGATION_REBIND; documentation currency only; TRADING_SEMANTICS_CHANGED=false; POST_COUNT=0.",
   "selector_used_as_law_impact_authority": false,
-  "verdict": "NO_LAW_IMPACT"
+  "verdict": "LAW_MAP_UPDATE_REQUIRED"
 }
