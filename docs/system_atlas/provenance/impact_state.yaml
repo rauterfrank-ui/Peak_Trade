@@ -1,17 +1,17 @@
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CHANGE:legacy_paper_shadow_daemon_retirement_bp_v1
-modified_by: CHANGE:legacy_paper_shadow_daemon_retirement_bp_v1
+introduced_by: CHANGE:pr_7073_full_system_natural_enter_cross_session_outcome_closure_v1
+modified_by: CHANGE:pr_7073_full_system_natural_enter_cross_session_outcome_closure_v1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  LEGACY_PAPER_SHADOW_DAEMON_RETIREMENT_BP_V1: retired bounded Paper/Shadow daemon
-  orchestrator shell; GHV Full-Core remains productive carrier; shadow preflight
-  reconciliation neutralized; discovery retargeted; no trading semantic change;
+  PR #7073: Natural-Enter cross-session pending outcome harness under persistent lane_state;
+  lawful O4 N_BARS closure via existing evaluation/learning owners; no trading semantic change;
   AUTHORITY=NONE; POST_COUNT=0.
 changed_entities:
-  - RUNTIME_COMPONENT:canonical_shadow_runtime_enablement_v1
-  - NAVIGATION_INDEX:current_universe_landscape_snapshot_v1
+  - RUNTIME_COMPONENT:natural_enter_cross_session_outcome_closure_v1
+  - RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
+  - RUNTIME_COMPONENT:current_productive_forensic_executable_quantity_override_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []
@@ -20,4 +20,5 @@ changed_census: []
 changed_generated:
   - generated/ATLAS_CHANGE_IMPACT.md
   - generated/COVERAGE_REPORT.md
+  - generated/ORPHAN_AND_WIRING_GAPS.md
   - generated/SYSTEM_ATLAS.md

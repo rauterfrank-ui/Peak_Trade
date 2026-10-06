@@ -5504,6 +5504,19 @@
       ],
       "closure_adjudication_class": "REPRESENTATION_ONLY",
       "closure_note": "Owner evidence persistence + navigation closure; TRADING_SEMANTICS_CHANGED=false at governance boundary."
+    },
+    {
+      "id": "pr_7073_natural_enter_cross_session_outcome_closure_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #7073: cross-session Natural-Enter pending outcome persistence under persistent lane_state; advance N_BARS via lawful public O4 observation; close via existing evaluation/attribution/learning hosts; harness/persistence wiring at PRE_EXTERNAL convergence launcher only; no MV2/Double Play/threshold/PRE_EXTERNAL disposition/POST authority change; diff-bound MAP_UPDATE_REQUIRED; AUTHORITY=NONE; POST_COUNT=0.",
+      "evidence_refs": [
+        "docs/system_atlas/provenance/changes.yaml",
+        "docs/system_atlas/entities/catalog.yaml",
+        "tests/ops/test_natural_enter_cross_session_outcome_closure_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/__init__.py"
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "Cross-session outcome-learning bridge closure; TRADING_SEMANTICS_CHANGED=false at governance boundary."
     }
   ]
 }

@@ -807,6 +807,13 @@ changes:
   epistemic_status: NAVIGATION_ONLY
   evidence: config/governance/current_universe_landscape_snapshot_v1/source_v1.json
   notes: 'PR #7071: refresh whole-system functional model + sole persisted CURRENT universe/non-universe cartography with explicit MAP_AUTHORITY=NONE (not operational SSOT); GGE/Full-Core GHV navigation pins; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.'
+- id: CHANGE:pr_7073_full_system_natural_enter_cross_session_outcome_closure_v1
+  from: 6b7b6058c978fe5e96e9aa977dbe7d479d9c0453
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_natural_enter_cross_session_outcome_closure_v1.py
+  notes: 'PR #7073: cross-session Natural-Enter pending outcome persistence under lane_state; advance N_BARS via lawful public O4; close via existing eval/attribution/learning hosts; harness-only; no MV2/DP/threshold/PRE_EXTERNAL/POST change; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
 - id: CHANGE:legacy_paper_shadow_daemon_retirement_bp_v1
   from: 1bac0d93302c6e589effafe46fccb055d82bd44e
   to: PENDING_CHANGE

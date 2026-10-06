@@ -521,6 +521,18 @@ def _main() -> int:
                 native_id=native_id,
                 transport=transport,
             )
+            from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.session_integration_v1 import (
+                wrap_observation_source_for_pending_outcome_advance_v1,
+            )
+
+            obs_source = wrap_observation_source_for_pending_outcome_advance_v1(
+                obs_source,
+                lane_state_root=lane_state_root,
+                evidence_root=evidence_root,
+                canonical_instrument_id=str(bound.instrument_id or ""),
+                native_id=native_id,
+                repository_sha=origin_sha,
+            )
 
             try:
                 result = run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
@@ -635,6 +647,40 @@ def _main() -> int:
         syn = json.loads(synthetic_summary_path.read_text(encoding="utf-8"))
         synthetic_enter_observed = bool(syn.get("synthetic_enter_observed"))
         synthetic_enter_count = int(syn.get("synthetic_enter_count") or 0)
+    decision_timestamp_unix = 0.0
+    decision_reference_price = 0.0
+    if reporting.reporting_s5_cycle_index is not None:
+        for rec in orch.cycle_records:
+            if int(rec.cycle_index) == int(reporting.reporting_s5_cycle_index):
+                decision_timestamp_unix = float(rec.c1_venue_event_time or 0.0)
+                break
+    trace_path = evidence_root / "golden_happy_scope_decision_trace_v1.jsonl"
+    if trace_path.is_file():
+        for line in trace_path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            if str(row.get("master_v2_decision_outcome") or "").lower() in {
+                "enter_long",
+                "enter_short",
+            }:
+                decision_reference_price = float(row.get("decision_input_mark") or 0.0)
+    from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.session_integration_v1 import (
+        finalize_pre_external_session_pending_outcomes_v1,
+    )
+
+    pending_session = finalize_pre_external_session_pending_outcomes_v1(
+        lane_state_root=lane_state_root,
+        reporting=reporting,
+        run_id=run_id,
+        evidence_root=evidence_root,
+        canonical_instrument_id=str(bound.instrument_id or ""),
+        native_id=native_id,
+        decision_timestamp_unix=decision_timestamp_unix,
+        decision_reference_price=decision_reference_price,
+        synthetic_enter_observed=synthetic_enter_observed,
+        repository_sha=origin_sha,
+    )
     report = {
         "BASELINE_SHA": origin_sha,
         "EXECUTION_HEAD_SHA": execution_head_sha,
@@ -674,6 +720,9 @@ def _main() -> int:
         "PERMIT_CREATED": str(orch.permit_created).lower(),
         "EXTERNAL_EFFECT_COUNT": orch.external_effect_count,
         "GET_REQUEST_COUNT": transport.request_count,
+        "PENDING_OUTCOME_CREATED": str(pending_session.pending_created).lower(),
+        "PENDING_OUTCOME_CREATION_REASON": pending_session.pending_creation_reason,
+        "PENDING_OUTCOME_ID": pending_session.pending_outcome_id or "",
     }
     (evidence_root / "PRE_EXTERNAL_CONVERGENCE_REPORT.json").write_text(
         json.dumps(report, sort_keys=True, indent=2) + "\n",
