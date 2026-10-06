@@ -105,18 +105,8 @@ def resolve_layer_c_event_distances_from_mark_and_volatility_v1(
         compute_canonical_base_geometry_magnitude_from_mark_and_volatility_v1,
     )
 
-    bound_id = str(instrument_id or "").strip()
-    if not bound_id:
-        return LayerCEventDistancesBindingResultV1(
-            ok=False,
-            up_distance=None,
-            adverse_exit_distance=None,
-            reversal_distance=None,
-            dynamic_scope_magnitude=None,
-            failure_codes=("instrument_id_blank",),
-        )
     gge = compute_canonical_base_geometry_magnitude_from_mark_and_volatility_v1(
-        instrument_id=bound_id,
+        instrument_id=instrument_id or "unknown",
         mark_price=float(mark_price),
         volatility_estimate=float(volatility_estimate),
     )

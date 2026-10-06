@@ -144,7 +144,6 @@ def test_multi_cycle_chop_continuity_and_recovery() -> None:
         st=st,
         rules=_rules(),
         env=_env(),
-        instrument_id="test-instrument",
     )
     assert frozen.anchor_price == st.anchor_price
     assert frozen.chop_latched is True

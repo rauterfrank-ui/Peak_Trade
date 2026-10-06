@@ -1045,7 +1045,6 @@ def run_offline_double_play_scenario_replay_v0(
             st=scope_state,
             rules=rules,
             env=_RUNTIME_ENVELOPE,
-            instrument_id=str(inp.selected_future_id),
         )
 
         scope_event_binding = evaluate_scenario_scope_event_v0(
@@ -1091,7 +1090,6 @@ def run_offline_double_play_scenario_replay_v0(
             st=scope_state,
             rules=rules,
             env=_RUNTIME_ENVELOPE,
-            instrument_id=str(inp.selected_future_id),
         )
 
         if tick.realized_or_settled_slot_equity is not None:

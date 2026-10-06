@@ -29,11 +29,9 @@ from trading.master_v2.canonical_scope_initialization_v1 import (
     CanonicalScopeLifecycleState,
     CanonicalScopeSnapshotV1,
 )
-from trading.master_v2.canonical_geometry_volatility_v1 import (
-    CanonicalGeometryVolatilityError,
-    CanonicalGeometryVolatilityErrorCode,
-)
 from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
+    CanonicalVolatilityBindingError,
+    CanonicalVolatilityBindingErrorCode,
     bind_typed_canonical_volatility_estimate_into_market_context_v1,
 )
 from trading.master_v2.canonical_volatility_estimate_typed_consumption_contract_v1 import (
@@ -197,12 +195,7 @@ def test_long_active_anchor_still_max_previous_mark() -> None:
     env = _runtime_envelope_containing_scope_v1(snap)
     st = RuntimeScopeState(anchor_price=100.0, now_tick=0)
     st2 = update_dynamic_boundaries(
-        mark_price=120.0,
-        side=ActiveSide.LONG,
-        st=st,
-        rules=rules,
-        env=env,
-        instrument_id="test-instrument",
+        mark_price=120.0, side=ActiveSide.LONG, st=st, rules=rules, env=env
     )
     assert st2.anchor_price == 120.0
 
@@ -212,12 +205,7 @@ def test_short_active_anchor_still_min_previous_mark() -> None:
     env = _runtime_envelope_containing_scope_v1(snap)
     st = RuntimeScopeState(anchor_price=100.0, now_tick=0)
     st2 = update_dynamic_boundaries(
-        mark_price=80.0,
-        side=ActiveSide.SHORT,
-        st=st,
-        rules=rules,
-        env=env,
-        instrument_id="test-instrument",
+        mark_price=80.0, side=ActiveSide.SHORT, st=st, rules=rules, env=env
     )
     assert st2.anchor_price == 80.0
 
@@ -227,12 +215,7 @@ def test_neutral_and_armed_still_freeze() -> None:
     env = _runtime_envelope_containing_scope_v1(snap)
     st = RuntimeScopeState(anchor_price=100.0, now_tick=0)
     frozen_neutral = update_dynamic_boundaries(
-        mark_price=180.0,
-        side=ActiveSide.NEUTRAL,
-        st=st,
-        rules=rules,
-        env=env,
-        instrument_id="test-instrument",
+        mark_price=180.0, side=ActiveSide.NEUTRAL, st=st, rules=rules, env=env
     )
     assert frozen_neutral.anchor_price == 100.0
     for side in (
@@ -307,9 +290,9 @@ def test_invalid_nonfinite_typed_volatility_fails_closed() -> None:
         volatility_estimate=0.05,
     )
     snap = _snapshot()
-    with pytest.raises(CanonicalGeometryVolatilityError) as exc:
+    with pytest.raises(CanonicalVolatilityBindingError) as exc:
         _rules_for_cycle_v1(provided=None, snapshot=snap, bound_context=ctx)
-    assert exc.value.code is CanonicalGeometryVolatilityErrorCode.INVALID_TYPED_ESTIMATE
+    assert exc.value.code is CanonicalVolatilityBindingErrorCode.INVALID_ESTIMATE
     assert math.isnan(invalid.value)
 
 
@@ -323,16 +306,16 @@ def test_legacy_float_cannot_silently_override_admitted_typed_value() -> None:
         }
     )
     snap = _snapshot(volatility_estimate=0.99)
-    with pytest.raises(CanonicalGeometryVolatilityError) as exc:
+    with pytest.raises(CanonicalVolatilityBindingError) as exc:
         _rules_for_cycle_v1(provided=None, snapshot=snap, bound_context=mismatched)
-    assert exc.value.code is CanonicalGeometryVolatilityErrorCode.LEGACY_FLOAT_MISMATCH
+    assert exc.value.code is CanonicalVolatilityBindingErrorCode.LEGACY_FLOAT_MISMATCH
 
 
 def test_no_new_volatility_estimator_in_replay_owner() -> None:
     src = REPLAY_PATH.read_text(encoding="utf-8")
     assert "compute_canonical_volatility_estimate_from_mark_prices_v1" not in src
     assert "derive_scope_event_distances_v1" not in src
-    assert "resolve_canonical_geometry_volatility_v1" in src
+    assert "resolve_legacy_volatility_float_for_consumer_v1" in src
 
 
 # --- DS-C ---

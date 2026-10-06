@@ -69,15 +69,8 @@ def _positive_finite(value: object) -> bool:
     return math.isfinite(f) and f > 0.0
 
 
-def _productive_instrument_id(raw: str) -> str | None:
-    inst = str(raw or "").strip()
-    return inst if inst else None
-
-
 def _input_digest_material(inp: CanonicalGeometryInputV1) -> str:
-    inst = _productive_instrument_id(inp.instrument_id)
-    if inst is None:
-        inst = "unspecified"
+    inst = str(inp.instrument_id or "").strip() or "unspecified"
     payload = {
         "instrument_id": inst,
         "mark_price": float(inp.mark_price),
@@ -114,8 +107,6 @@ class GoldenGeometryEngineV1:
         inp: CanonicalGeometryInputV1,
     ) -> GoldenGeometryEngineResultV1:
         failures: list[str] = []
-        if _productive_instrument_id(inp.instrument_id) is None:
-            failures.append("instrument_id_blank")
         if not _positive_finite(inp.mark_price):
             failures.append("mark_price_non_positive")
         if not _positive_finite(inp.volatility_estimate):
@@ -143,7 +134,7 @@ class GoldenGeometryEngineV1:
             unit_semantic=GGE_OUTPUT_UNIT,
             model_id=GGE_MODEL_ID,
             model_version=GGE_MODEL_VERSION,
-            instrument_id=str(_productive_instrument_id(inp.instrument_id) or ""),
+            instrument_id=str(inp.instrument_id or "").strip() or "unspecified",
             input_digest=digest,
             mark_price=mark_price,
             volatility_estimate=volatility_estimate,
@@ -175,24 +166,16 @@ def compute_canonical_base_geometry_magnitude_from_mark_and_volatility_v1(
 def compute_canonical_base_geometry_magnitude_from_market_context_v1(
     market_context: CanonicalMarketContextV1,
 ) -> GoldenGeometryEngineResultV1:
-    from trading.master_v2.canonical_geometry_volatility_v1 import (
-        CanonicalGeometryVolatilityError,
-        resolve_canonical_geometry_volatility_v1,
-    )
     from trading.master_v2.canonical_market_context_v1 import CanonicalMarketContextV1
+    from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
+        resolve_legacy_volatility_float_for_consumer_v1,
+    )
 
     if not isinstance(market_context, CanonicalMarketContextV1):
         return GoldenGeometryEngineResultV1(
             ok=False,
             output=None,
             failure_codes=("market_context_invalid",),
-        )
-
-    if _productive_instrument_id(market_context.instrument_id) is None:
-        return GoldenGeometryEngineResultV1(
-            ok=False,
-            output=None,
-            failure_codes=("instrument_id_blank",),
         )
 
     if not _positive_finite(market_context.mark_price):
@@ -203,15 +186,7 @@ def compute_canonical_base_geometry_magnitude_from_market_context_v1(
         )
 
     try:
-        geom_vol = resolve_canonical_geometry_volatility_v1(market_context)
-        vol = float(geom_vol.value)
-    except CanonicalGeometryVolatilityError as exc:
-        code = exc.code.value.lower()
-        return GoldenGeometryEngineResultV1(
-            ok=False,
-            output=None,
-            failure_codes=(f"geometry_volatility_{code}",),
-        )
+        vol = float(resolve_legacy_volatility_float_for_consumer_v1(market_context))
     except Exception:
         return GoldenGeometryEngineResultV1(
             ok=False,
@@ -221,7 +196,7 @@ def compute_canonical_base_geometry_magnitude_from_market_context_v1(
 
     lineage = str(market_context.input_digest or market_context.context_id or "")
     return compute_canonical_base_geometry_magnitude_from_mark_and_volatility_v1(
-        instrument_id=str(market_context.instrument_id).strip(),
+        instrument_id=str(market_context.instrument_id),
         mark_price=float(market_context.mark_price),
         volatility_estimate=vol,
         observation_lineage_id=lineage,

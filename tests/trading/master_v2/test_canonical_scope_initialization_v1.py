@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import ast
 from dataclasses import replace
-from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
@@ -16,12 +15,6 @@ from trading.master_v2.canonical_market_context_v1 import (
     DataIntegrityStatus,
     WarmupStatus,
     with_computed_input_digest,
-)
-from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
-    bind_typed_canonical_volatility_estimate_into_market_context_v1,
-)
-from trading.master_v2.canonical_volatility_estimate_typed_consumption_contract_v1 import (
-    build_canonical_volatility_estimate_v1,
 )
 from trading.master_v2.canonical_scope_initialization_v1 import (
     CANONICAL_SCOPE_INITIALIZATION_LAYER_VERSION,
@@ -78,21 +71,7 @@ def _context(**overrides: object) -> CanonicalMarketContextV1:
         "input_digest": "",
     }
     base.update(overrides)
-    ctx = CanonicalMarketContextV1(**base)
-    if ctx.canonical_volatility_estimate is not None:
-        return ctx
-    vol = float(ctx.volatility_estimate)
-    if vol <= 0.0 or not str(ctx.instrument_id or "").strip():
-        return ctx
-    estimate = build_canonical_volatility_estimate_v1(
-        value=vol,
-        observation_count=60,
-        as_of_event_time=datetime(2026, 6, 30, 12, 0, tzinfo=timezone.utc),
-    )
-    digest_ctx = ctx if ctx.input_digest else with_computed_input_digest(ctx)
-    return bind_typed_canonical_volatility_estimate_into_market_context_v1(
-        digest_ctx, estimate
-    )
+    return CanonicalMarketContextV1(**base)
 
 
 def _policy(**overrides: object) -> CanonicalScopeInitializationPolicyV1:

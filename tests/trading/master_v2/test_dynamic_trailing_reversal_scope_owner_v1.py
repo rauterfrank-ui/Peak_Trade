@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import ast
-from datetime import datetime, timezone
 from pathlib import Path
 
 import pytest
@@ -15,13 +14,6 @@ from trading.master_v2.canonical_market_context_v1 import (
     ClockTrustStatus,
     DataIntegrityStatus,
     WarmupStatus,
-    with_computed_input_digest,
-)
-from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
-    bind_typed_canonical_volatility_estimate_into_market_context_v1,
-)
-from trading.master_v2.canonical_volatility_estimate_typed_consumption_contract_v1 import (
-    build_canonical_volatility_estimate_v1,
 )
 from trading.master_v2.canonical_scope_initialization_v1 import (
     PRODUCTIVE_RAW_SCOPE_DISTANCE_PRODUCER_ID,
@@ -51,42 +43,34 @@ from tests.trading.master_v2.test_double_play_state import GOOD_ENVELOPE
 
 def _context(*, mark: float, vol: float) -> CanonicalMarketContextV1:
     mark_f = float(mark)
-    base = with_computed_input_digest(
-        CanonicalMarketContextV1(
-            context_id="ctx-owner-scope-v1",
-            instrument_id="inst-low-price",
-            market_type=FuturesMarketType.PERPETUAL,
-            trading_epoch=1,
-            market_event_time="2026-10-01T12:00:00+00:00",
-            decision_time="2026-10-01T12:00:01+00:00",
-            bar_interval="1m",
-            bar_finality_status=BarFinalityStatus.FINALIZED,
-            mark_price=mark_f,
-            index_price=mark_f,
-            best_bid=mark_f,
-            best_ask=mark_f,
-            spread=0.0,
-            volume=1.0,
-            open_interest=1.0,
-            funding_rate=0.0,
-            volatility_estimate=float(vol),
-            trend_feature_set={},
-            momentum_feature_set={},
-            liquidity_feature_set={},
-            market_structure_feature_set={},
-            data_integrity_status=DataIntegrityStatus.TRUSTED,
-            clock_trust_status=ClockTrustStatus.TRUSTED,
-            warmup_status=WarmupStatus.WARMUP_COMPLETE,
-            feature_contract_version=FEATURE_CONTRACT_VERSION,
-            input_digest="",
-        )
+    return CanonicalMarketContextV1(
+        context_id="ctx-owner-scope-v1",
+        instrument_id="inst-low-price",
+        market_type=FuturesMarketType.PERPETUAL,
+        trading_epoch=1,
+        market_event_time="2026-10-01T12:00:00+00:00",
+        decision_time="2026-10-01T12:00:01+00:00",
+        bar_interval="1m",
+        bar_finality_status=BarFinalityStatus.FINALIZED,
+        mark_price=mark_f,
+        index_price=mark_f,
+        best_bid=mark_f,
+        best_ask=mark_f,
+        spread=0.0,
+        volume=1.0,
+        open_interest=1.0,
+        funding_rate=0.0,
+        volatility_estimate=float(vol),
+        trend_feature_set={},
+        momentum_feature_set={},
+        liquidity_feature_set={},
+        market_structure_feature_set={},
+        data_integrity_status=DataIntegrityStatus.TRUSTED,
+        clock_trust_status=ClockTrustStatus.TRUSTED,
+        warmup_status=WarmupStatus.WARMUP_COMPLETE,
+        feature_contract_version=FEATURE_CONTRACT_VERSION,
+        input_digest="a" * 64,
     )
-    estimate = build_canonical_volatility_estimate_v1(
-        value=float(vol),
-        observation_count=60,
-        as_of_event_time=datetime(2026, 10, 1, 12, 0, tzinfo=timezone.utc),
-    )
-    return bind_typed_canonical_volatility_estimate_into_market_context_v1(base, estimate)
 
 
 def test_price_scale_two_instruments_different_absolute_scope_same_vol() -> None:
@@ -129,12 +113,7 @@ def test_bull_trailing_favorable_uncapped_reversal_below() -> None:
         volatility_estimate=0.05,
     )
     st2 = update_dynamic_boundaries(
-        mark_price=130.0,
-        side=ActiveSide.LONG,
-        st=st,
-        rules=rules,
-        env=GOOD_ENVELOPE,
-        instrument_id="test-instrument",
+        mark_price=130.0, side=ActiveSide.LONG, st=st, rules=rules, env=GOOD_ENVELOPE
     )
     assert st2.anchor_price == 130.0
     assert st2.current_downscope_boundary < st2.anchor_price
@@ -153,12 +132,7 @@ def test_bear_trailing_favorable_uncapped_reversal_above() -> None:
         volatility_estimate=0.05,
     )
     st2 = update_dynamic_boundaries(
-        mark_price=70.0,
-        side=ActiveSide.SHORT,
-        st=st,
-        rules=rules,
-        env=GOOD_ENVELOPE,
-        instrument_id="test-instrument",
+        mark_price=70.0, side=ActiveSide.SHORT, st=st, rules=rules, env=GOOD_ENVELOPE
     )
     assert st2.anchor_price == 70.0
     assert st2.current_upscope_boundary > st2.anchor_price
@@ -214,14 +188,10 @@ def test_layer_c_event_distances_derive_from_dynamic_scope_magnitude() -> None:
 
 def test_layer_c_scales_with_mark_and_vol_not_cap63_constants() -> None:
     low = resolve_layer_c_event_distances_from_mark_and_volatility_v1(
-        mark_price=0.05,
-        volatility_estimate=0.02,
-        instrument_id="inst-low-price",
+        mark_price=0.05, volatility_estimate=0.02
     )
     high = resolve_layer_c_event_distances_from_mark_and_volatility_v1(
-        mark_price=5000.0,
-        volatility_estimate=0.02,
-        instrument_id="inst-high-price",
+        mark_price=5000.0, volatility_estimate=0.02
     )
     assert low.ok and high.ok
     assert low.up_distance == pytest.approx(0.001)

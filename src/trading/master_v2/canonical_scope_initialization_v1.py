@@ -264,12 +264,12 @@ def compute_raw_volatility_times_price_scope_distance_v1(
         )
         vol: float | None = None
         if mark_price is not None:
-            from trading.master_v2.canonical_geometry_volatility_v1 import (
-                resolve_canonical_geometry_volatility_v1,
+            from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
+                resolve_legacy_volatility_float_for_consumer_v1,
             )
 
             try:
-                vol = float(resolve_canonical_geometry_volatility_v1(market_context).value)
+                vol = float(resolve_legacy_volatility_float_for_consumer_v1(market_context))
             except Exception:
                 vol = None
         return RawVolatilityTimesPriceScopeDistanceResultV1(
@@ -456,14 +456,14 @@ def _build_initialized_scope(
     *,
     reason_codes: Tuple[str, ...] = (),
 ) -> CanonicalScopeSnapshotV1:
-    from trading.master_v2.canonical_geometry_volatility_v1 import (
-        resolve_canonical_geometry_volatility_v1,
+    from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
+        resolve_legacy_volatility_float_for_consumer_v1,
     )
 
     bound_context = context if context.input_digest else with_computed_input_digest(context)
     reference_price = float(bound_context.mark_price)
-    geometry_vol = resolve_canonical_geometry_volatility_v1(bound_context)
-    volatility_estimate = float(geometry_vol.value)
+    # Typed present → single owned adapter; typed absent → legacy float unchanged.
+    volatility_estimate = float(resolve_legacy_volatility_float_for_consumer_v1(bound_context))
     from trading.master_v2.golden_geometry_engine_v1 import (
         compute_canonical_base_geometry_magnitude_from_mark_and_volatility_v1,
     )

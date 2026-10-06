@@ -220,7 +220,6 @@ def update_dynamic_boundaries(
     st: RuntimeScopeState,
     rules: DynamicScopeRules,
     env: RuntimeEnvelope,
-    instrument_id: str,
 ) -> RuntimeScopeState:
     """
     Update trailing anchor and scope boundaries; band width is clamped (manifest §6–7).
@@ -241,11 +240,8 @@ def update_dynamic_boundaries(
         compute_canonical_base_geometry_magnitude_from_mark_and_volatility_v1,
     )
 
-    bound_id = str(instrument_id or "").strip()
-    if not bound_id:
-        return st
     gge = compute_canonical_base_geometry_magnitude_from_mark_and_volatility_v1(
-        instrument_id=bound_id,
+        instrument_id="",
         mark_price=float(mark_price),
         volatility_estimate=float(rules.volatility_estimate),
     )
