@@ -4,11 +4,13 @@
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_universe_landscape_snapshot_v1/source_v1.json",
     "docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
     "docs/ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/census/census_meta.yaml",
@@ -21,13 +23,13 @@
     "tests/ops/test_current_universe_landscape_snapshot_v1.py",
     "tests/ops/test_system_atlas_v1.py"
   ],
-  "changed_paths_sha256": "7bfcd8a4cbafd0f4596871027d7c84e9e304b45bfa0c26b58daa21b70a1160e3",
+  "changed_paths_sha256": "bad62d8de351e0097cfb635627211e3d4f93ffe2a68f984a8014aa0b1585c4b0",
   "selector_used_as_law_impact_authority": false,
-  "verdict": "NO_LAW_IMPACT",
+  "verdict": "LAW_MAP_UPDATE_REQUIRED",
   "evidence_refs": [
-    "docs/system_atlas/provenance/changes.yaml",
-    "config/governance/current_universe_landscape_snapshot_v1/source_v1.json",
-    "docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md"
+    "config/governance/current_law_impact_map_v1/source_v1.json",
+    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
+    "docs/system_atlas/provenance/changes.yaml"
   ],
-  "reason": "PR #7071: navigation-only universe cartography and whole-system model refresh; law-map candidate catalog extension only; no normative law meaning change; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0."
+  "reason": "PR #7071: refresh RUNBOOK-VENUE-PLAN source_sha256 after navigation-only Master Runbook edit; law reference index regen; no normative law meaning change; AUTHORITY=NONE; POST_COUNT=0."
 }
