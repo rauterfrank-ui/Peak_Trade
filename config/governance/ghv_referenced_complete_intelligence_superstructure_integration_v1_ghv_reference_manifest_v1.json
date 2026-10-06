@@ -12,6 +12,9 @@
     "POST_COUNT_ZERO",
     "EXTERNAL_EFFECT_COUNT_ZERO"
   ],
+  "geometry_evidence_ledger_basename": "ghv_decision_time_geometry_evidence_v1.jsonl",
+  "intelligence_lineage_schema_version": "ghv_intelligence_lineage_forensic_observability.v2",
+  "structural_outcome_completeness_owner": "src.governance.ghv_intelligence_lineage_completeness_v1",
   "productive_path_owner_snapshot_module": "src.evaluation.golden_vectors.evaluators.ptp_owners_v1",
   "intelligence_boundary_invariants": {
     "ghv_authority": "NONE",

@@ -40,6 +40,10 @@ from src.governance.optimization_proposal_governance_ingress_v1 import (
     build_optimization_proposal_governance_ingress_from_plane_and_evidence_v1,
     evaluate_optimization_proposal_governance_admission_v1,
 )
+from src.governance.ghv_intelligence_lineage_completeness_v1 import (
+    derive_realized_economic_completeness_v1,
+    derive_structural_outcome_completeness_v1,
+)
 from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256
 
 SCHEMA_VERSION: Final[str] = "ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1"
@@ -63,6 +67,7 @@ class LineageSlotStatusV1(str, Enum):
     INSUFFICIENT_EVIDENCE = "INSUFFICIENT_EVIDENCE"
     NOT_APPLICABLE = "NOT_APPLICABLE"
     INTENTIONALLY_DISCONNECTED = "INTENTIONALLY_DISCONNECTED"
+    HISTORICAL_REF_NOT_PRESENT = "HISTORICAL_REF_NOT_PRESENT"
 
 
 class GhvReferencedIntelligenceOfflineCycleError(ValueError):
@@ -79,6 +84,9 @@ class GhvReferencedIntelligenceOfflineCycleRequestV1:
     cycle_index: int = 0
     productive_cycle_id: str | None = None
     selected_instrument: str | None = None
+    geometry_evidence_ref: str | None = None
+    pending_outcome_ref: str | None = None
+    ghv_reference_digest: str | None = None
 
 
 def run_ghv_referenced_intelligence_superstructure_offline_cycle_v1(
@@ -251,8 +259,10 @@ def _lineage_shell(
         "gvef_ref": _slot(None, status=LineageSlotStatusV1.NOT_REACHED),
         "proposal_ref": _slot(None, status=LineageSlotStatusV1.NOT_REACHED),
         "m10_ref": _slot(None, status=LineageSlotStatusV1.NOT_REACHED),
-        "economic_outcome_quality": "UNAVAILABLE",
-        "cost_model_quality": "UNAVAILABLE",
+        "geometry_evidence_ref": _slot(None, status=LineageSlotStatusV1.NOT_REACHED),
+        "ghv_reference_ref": _slot(None, status=LineageSlotStatusV1.NOT_REACHED),
+        "structural_outcome_completeness": "UNAVAILABLE",
+        "realized_economic_completeness": "UNAVAILABLE",
     }
 
 
@@ -286,14 +296,30 @@ def _lineage_from_complete_cycle(
     meta = cycle.get("meta_learning_evidence") or {}
     learning_input = chain.get("learning_input_validation") or {}
     le = request.learning_evidence
-    economic = le.get("economic_outcome") or le.get("outcome_economics") or {}
-    economic_quality = str(
-        economic.get("quality") or economic.get("outcome_quality") or "UNAVAILABLE"
-    )
-    cost_quality = str(economic.get("cost_model_quality") or "UNAVAILABLE")
+    geometry_ref = str(request.geometry_evidence_ref or "")
+    if not geometry_ref:
+        for src in le.get("evidence_source_refs") or ():
+            if str(src).startswith("ghv.gev."):
+                geometry_ref = str(src)
+                break
+    structural = derive_structural_outcome_completeness_v1(le)
+    realized = derive_realized_economic_completeness_v1(le)
+    ghv_digest = str(request.ghv_reference_digest or "")
     return {
         "productive_cycle_id": request.productive_cycle_id or "",
         "selected_instrument": request.selected_instrument or "",
+        "ghv_reference_ref": _slot(
+            ghv_digest,
+            status=(
+                LineageSlotStatusV1.PRESENT if ghv_digest else LineageSlotStatusV1.NOT_APPLICABLE
+            ),
+        ),
+        "geometry_evidence_ref": _slot(
+            geometry_ref,
+            status=(
+                LineageSlotStatusV1.PRESENT if geometry_ref else LineageSlotStatusV1.NOT_APPLICABLE
+            ),
+        ),
         "decision_event_ref": _slot(
             str(le.get("decision_event_ref") or ""),
             status=(
@@ -303,7 +329,14 @@ def _lineage_from_complete_cycle(
             ),
         ),
         "dpo_ref": _slot(None, status=LineageSlotStatusV1.NOT_APPLICABLE),
-        "pending_outcome_ref": _slot(None, status=LineageSlotStatusV1.NOT_APPLICABLE),
+        "pending_outcome_ref": _slot(
+            str(request.pending_outcome_ref or ""),
+            status=(
+                LineageSlotStatusV1.PRESENT
+                if request.pending_outcome_ref
+                else LineageSlotStatusV1.NOT_APPLICABLE
+            ),
+        ),
         "outcome_ref": _slot(
             str(le.get("outcome_record_id") or le.get("source_outcome_ref") or ""),
             status=(
@@ -364,8 +397,8 @@ def _lineage_from_complete_cycle(
             str(getattr(m10, "replay_bundle_digest", None) or ""),
             status=LineageSlotStatusV1.PRESENT,
         ),
-        "economic_outcome_quality": economic_quality,
-        "cost_model_quality": cost_quality,
+        "structural_outcome_completeness": structural,
+        "realized_economic_completeness": realized,
         "m10_hard_stop": True,
         "m10_promotion_state": getattr(
             getattr(m10, "promotion_state", None), "value", m10.promotion_state

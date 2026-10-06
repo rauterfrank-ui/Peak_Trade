@@ -32,6 +32,8 @@ class NaturalEnterPendingOutcomeRecordV1:
     updated_at_utc: str
     closure_refs: Mapping[str, str] = field(default_factory=dict)
     failure_reason: str = ""
+    geometry_evidence_ref: str = ""
+    geometry_evidence_digest: str = ""
 
     def to_index_dict_v1(self) -> dict[str, Any]:
         return {
@@ -59,6 +61,8 @@ class NaturalEnterPendingOutcomeRecordV1:
             "updated_at_utc": self.updated_at_utc,
             "closure_refs": dict(self.closure_refs),
             "failure_reason": self.failure_reason,
+            "geometry_evidence_ref": self.geometry_evidence_ref,
+            "geometry_evidence_digest": self.geometry_evidence_digest,
         }
 
     @classmethod
@@ -90,4 +94,6 @@ class NaturalEnterPendingOutcomeRecordV1:
             updated_at_utc=str(raw.get("updated_at_utc") or ""),
             closure_refs={str(k): str(v) for k, v in dict(closure).items()},
             failure_reason=str(raw.get("failure_reason") or ""),
+            geometry_evidence_ref=str(raw.get("geometry_evidence_ref") or ""),
+            geometry_evidence_digest=str(raw.get("geometry_evidence_digest") or ""),
         )
