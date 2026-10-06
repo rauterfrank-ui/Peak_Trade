@@ -800,4 +800,11 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_simple_run_evidence_retention_v1.py
   notes: 'PR #7070: owner-local durable evidence for future Paper/Shadow/Testnet runs under PEAK_TRADE_OWNER_RUN_EVIDENCE_ROOT; reuses primary_evidence_retention_v0; navigation index only; no trading/selection/POST authority change; AUTHORITY=NONE; POST_COUNT=0.'
+- id: CHANGE:pr_7071_universe_cartography_non_authority_refresh_v1
+  from: 6422bfde79fd5aa45d2939a821980abf9aa4e3df
+  to: PENDING_CHANGE
+  type: NAVIGATION_REBIND
+  epistemic_status: NAVIGATION_ONLY
+  evidence: config/governance/current_universe_landscape_snapshot_v1/source_v1.json
+  notes: 'PR #7071: refresh whole-system functional model + sole persisted CURRENT universe/non-universe cartography with explicit MAP_AUTHORITY=NONE (not operational SSOT); GGE/Full-Core GHV navigation pins; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.'
 
