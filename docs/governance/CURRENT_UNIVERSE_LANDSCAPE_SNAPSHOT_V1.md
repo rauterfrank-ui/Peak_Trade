@@ -2,19 +2,35 @@
 
 ```text
 AUTHORITY=NONE
+MAP_AUTHORITY=NONE
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 NOT_A_RUNTIME_AUTHORITY=true
 NOT_A_UNIVERSE_RATIFICATION=true
-EVIDENCE_BASELINE_SHA=dfcf4d04b8400763bee6ab0b465fa182927dea75
-EVIDENCE_BASELINE_TREE_SHA=4e5de1cdbf1958e2e0290b4867b1609441e1c660
+NOT_OPERATIONAL_SSOT=true
+TRADING_AUTHORITY=false
+SELECTION_AUTHORITY=false
+BINDING_AUTHORITY=false
+RUNTIME_AUTHORITY=false
+CONFIGURATION_AUTHORITY=false
+GOVERNANCE_DECISION_AUTHORITY=false
+DESCRIPTIVE_CURRENT_CARTOGRAPHY=true
+NAVIGATION_AND_UNDERSTANDING_ONLY=true
+ONE_PERSISTED_CURRENT_UNIVERSE_CARTOGRAPHY=true
+ONE_AUTHORITATIVE_UNIVERSE_MAP=false
+CURRENT_UNIVERSE_LANDSCAPE_IS_AUTHORITY=false
+EVIDENCE_BASELINE_SHA=6422bfde79fd5aa45d2939a821980abf9aa4e3df
+EVIDENCE_BASELINE_TREE_SHA=6422bfde79fd5aa45d2939a821980abf9aa4e3df
 ARCHITECTURE_FIXPOINT_SOURCE=FINAL_CURRENT_ARCHITECTURE_CLOSURE_FIXPOINT_ADJUDICATION_V1
 ARCHITECTURE_CLOSURE=PROVEN_CURRENT
 MATERIAL_ARCHITECTURE_BLOCKER_COUNT=0
 ```
 
-Persisted adjudicated **CURRENT** architecture and evidence snapshot. This document
-is navigation and convergence metadata only. It does **not** mint runtime
-authority, permits, Testnet/Live enablement, or external-effect authorization.
+Persisted **descriptive CURRENT** Universe/Non-Universe cartography at the architecture
+fixpoint. This document and `source_v1.json` are for navigation and understanding only.
+They are **not** operational SSOT, not an authoritative universe map, and do **not**
+mint runtime authority, selection/binding authority, permits, Testnet/Live enablement,
+or external-effect authorization. On conflict, this snapshot **always loses** against
+the Master Runbook, CURRENT code/contracts, and proven evidence.
 
 ## Machine-readable source
 
@@ -78,3 +94,42 @@ Full-Core constants and post-6941 seam adjudication records.
 4. Use System Atlas generated views (`ATLAS_AUTHORITY=NONE`) for topology wiring.
 5. Resolve conflicts against Master Runbook operational semantics and canonical
    code/config evidence — not against this snapshot alone.
+
+## Universe map consolidation v1 (descriptive only)
+
+After crosswalk against census graph, CSIA, META/MF domain contracts, and POST-6828
+ratifications: **one** tracked persisted CURRENT universe/plane cartography remains this
+snapshot pair. Consolidation does **not** promote the landscape to authority. Retained
+separate artifacts (not retired) still own normative or index functions — e.g. census
+object index (`universe_landscape_snapshot_ref`), CSIA owner graph, META three-universe
+planning spec, universe/ranking/selection/binding domain ratification JSON.
+
+## Cartography refresh @ 6422bfde (navigation only)
+
+```text
+CARTOGRAPHY_REFRESH_BASELINE=6422bfde79fd5aa45d2939a821980abf9aa4e3df
+GGE_IS_AUTHORITY_UNIVERSE=false
+GGE_REPRESENTED_AS=NON_UNIVERSE_MV2_GEOMETRY_SUBSYSTEM (SURFACE:TD-MV2-GGE-SCOPE-GEOMETRY)
+FULL_CORE_GHV_CARRIER=TD-FULL-CORE orchestration plane (not a new authority universe)
+PAPER_SHADOW_247_NOT_CURRENT_FULL_SYSTEM_CARRIER=true
+PRE_EXTERNAL_POST_ALLOWED=false
+```
+
+- **GGE / Scope:** sole base-geometry owner on the MV2 path; classified **outside**
+  authority universes (boundary subsystem), not Cap21–Cap23-style universes.
+- **Full-Core / GHV:** productive PRE_EXTERNAL convergence entry and GHV startability
+  evaluators are the CURRENT full-system **orchestration** carrier (`TD-FULL-CORE`).
+- **Paper-Shadow-247:** separate governed lane; not modeled here as a CURRENT universe
+  or primary system carrier.
+- **Learning / Optimization / MI:** remain non-universe planes (`TD-DDO-LEARNING`,
+  `TD-MI-OFFLINE`, research corpus); optimization export is offline-only on the DDO
+  surface — no productive trading authority.
+
+### Distinct companion (do not merge taxonomies)
+
+[`docs/ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md`](../ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md)
+describes **productive causal machine order** and Q1–Q5 quality layers. This snapshot
+classifies **authority universes vs planes/boundaries**. Both must agree on Cap2.3
+sole selection, Cap2.4 bind-only, GGE non-universe status, Full-Core GHV carrier,
+PRE_EXTERNAL terminal, and Learning/OPT/MI `AUTHORITY=NONE`, but they serve different
+navigation purposes.

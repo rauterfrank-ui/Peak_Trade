@@ -10,7 +10,7 @@ NOT_OPERATIONAL_SSOT=true
 NOT_RUNTIME_AUTHORIZATION=true
 GRAPH_LOSES_TO_CANONICAL_CURRENT_CODE=true
 CANONICAL_OPERATIONAL_SSOT=docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
-CANONICAL_BASELINE_SHA=dc0320a4d3814e5b555c936ec5a4eb63ffd5a5fc
+CANONICAL_BASELINE_SHA=6422bfde79fd5aa45d2939a821980abf9aa4e3df
 STATIC_CARTOGRAPHY_COMPLETE=true
 STATIC_COHERENCE_READY=true
 RUNTIME_PROOF_COMPLETE=false
@@ -63,8 +63,10 @@ defined in §9.
 | **Selection** | **Cap2.3 — SOLE_SELECTION_OWNER** (`CAP23_SOLE_SELECTION_OWNER=true`) |
 | **Binding** | **Cap2.4 — BIND_ONLY** (`CAP24_BIND_ONLY=true`; no selection) |
 | G17 typed-vol context | Per-run LANE_1 producer from mark history; per-cycle CMC bind on MV2 and F1/M9 paths |
+| **Base geometry magnitude (GGE)** | **`GoldenGeometryEngineV1`** — sole productive owner of `CanonicalBaseGeometryMagnitudeV1` (`GGE_OWNER=trading.master_v2.golden_geometry_engine_v1`; D=σ×mark); no Scope/SideState/position inputs |
+| **Scope / Layer-C geometry** | `canonical_scope_initialization_v1` + `layer_c_scope_event_distance_binding_v1` — consumes GGE magnitude; **no second base-geometry authority** |
 | Cycle gate / threshold consumer | F1/M9 productive runtime threshold consumer (INJ-001 via M01 `_build_f1_m9_evaluator`) |
-| Trading decision (MV2/DP) | `run_current_productive_master_v2_runtime_cycle_v1` after S7 T2 compose |
+| Trading decision (MV2/DP) | `run_current_productive_master_v2_runtime_cycle_v1` after S7 T2 compose (post GGE→Scope on MV2 path) |
 | Confirmation / candidate | Sidestate confirmation cursor + policy iteration gate (`require_f1_m9_each_cycle`) |
 | Capital / risk admissibility | Full-Core capital/risk modules (see Master Runbook § risk) |
 | Intent / plan / envelope | Full-Core order-intent owners; envelope ≠ POST authorization |
@@ -87,11 +89,12 @@ MAX_POSITIONS_ONE_INVARIANT=true
 
 ## 3. Productive causal path (machine order)
 
-Entry (Owner-GO bounded):  
-`scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py`
+Entry (Owner-GO bounded; **Full-Core GHV carrier**):  
+`scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py`  
+(composition root: `src/ops/full_core_live_path_composition_root_v1/`)
 
 **STATICALLY_PROVEN** wiring (PR #7029 cartography, PR #7030 M01 regression lock,
-deterministic tests):
+PR #7064 GGE wiring, deterministic tests):
 
 1. Cap21→Cap23 productive persist (universe, economic MD, residency where configured)
 2. Cap2.3 selection → Cap2.4 bind-only → S8 occupied lane / cursor
@@ -100,15 +103,23 @@ deterministic tests):
 5. Cold bootstrap via S7 compose when cursor absent
 6. Policy-governed persistent Natural Enter live C1 continuous run (S6)
 7. Each cycle: iteration gate → F1/M9 (G17 CMC bind → threshold consumer)
-8. Parallel N1/S5 runner → S7 T2 compose → MV2 cycle (G17 bind → typed vol gate → MV2/DP)
-9. Capital/risk → intent/envelope → S5 disposition → **PRE_EXTERNAL**
+8. Parallel N1/S5 runner → S7 T2 compose → MV2 cycle: market context (mark + vol) → **GGE** → scope init / Layer-C distances → typed-vol gate → **MV2/Double Play**
+9. Capital/risk admissibility → intent/envelope → S5 disposition → **PRE_EXTERNAL**
 
-**RUNTIME_PROOF_REQUIRED** (do not label as static defects):
+**RUNTIME_PROOF_REQUIRED** (do not label as static defects; Master Runbook register
+remains `RUNTIME_PROOF_DEBT=OPEN`):
 
 - Fresh PT1M mark ingestion vs duplicate/no-op producer cycles on gate path
 - Observation generation alignment (F1/M9 scaffold vs S7/MV2 CMC)
 - `confirmation_epochs=2` on contiguous valid live C1 only
 - Natural Enter disposition reaching PRE_EXTERNAL under bounded productive observation
+
+**Bounded convergence evidence (navigation; `AUTHORITY=NONE`):** sealed research
+manifest `evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/durable/current_productive_ghv_bounded_runtime_convergence_proof_v1.json`
+documents one historical bounded run with `PRE_EXTERNAL_REACHED=true` and
+`POST_COUNT=0`. It does **not** supersede Master Runbook
+`PRODUCTIVE_RUNTIME_PROOF_COMPLETE=false` / `NATURAL_ENTER_TO_PRE_EXTERNAL_PROVEN=false`
+or close the standing runtime-proof debt register.
 
 ------------------------------------------------------------------------
 
@@ -119,20 +130,28 @@ GHV_FORENSIC_PROBE=true
 GHV_IS_NOT_THE_WHOLE_SYSTEM=true
 GHV_IS_NOT_PROFIT_PROOF=true
 GHV_IS_NOT_RUNTIME_LIVENESS_WITHOUT_PRODUCTIVE_EVIDENCE=true
+GHV_CURRENT_FULL_SYSTEM_CARRIER=FULL_CORE_PRODUCTIVE_GHV_CONVERGENCE_AND_STARTABILITY
+PAPER_SHADOW_247_NOT_CURRENT_FULL_SYSTEM_CARRIER=true
 ```
 
 GHV traversals expose configuration propagation, state propagation, ownership,
-authority, gates, joins, branches, transitions, and terminal boundaries.
+authority, gates, joins, branches, transitions, and terminal boundaries. The
+**CURRENT** full-system productive proof carrier is the **Full-Core** policy-governed
+Natural Enter / PRE_EXTERNAL convergence path (§3 entry script) plus GHV
+startability/readiness evaluators under
+`src/ops/full_core_live_path_composition_root_v1/`. Historical **Paper-Shadow-247**
+charter/daemon surfaces remain separate governed lanes — not the primary CURRENT
+whole-system runtime carrier.
 
 **Branch vocabulary (navigation; not separate SSOTs):**
 
 | Branch | Role |
 | --- | --- |
-| GHV_MAIN_PATH / ON_GHV_CRITICAL_ROUTE | Cap21–Cap24 → C1/cursor → MV2+DP → admission → S5 → PRE_EXTERNAL |
+| GHV_MAIN_PATH / ON_GHV_CRITICAL_ROUTE | Cap21–Cap24 → C1/cursor → GGE→Scope → MV2+DP → admission → S5 → PRE_EXTERNAL |
 | GHV_SIDE_BRANCH / PARALLEL_GHV_SECTOR | F1/M9 typed-vol consumer; parallel N1/S5 lane |
 | GHV_CONTROL_BRANCH | Policy iteration gates, confirmation cursor, continuous-run policy |
-| GHV_EVIDENCE_BRANCH | Sealed ops evidence, cartography JSON, adjudication reports |
-| GHV_SHADOW_BRANCH | Shadow treasury, offline replay, research-only surfaces |
+| GHV_EVIDENCE_BRANCH | Sealed ops evidence, cartography JSON, adjudication reports, bounded convergence manifest (§3) |
+| GHV_SHADOW_BRANCH | Shadow treasury, offline replay, Paper-Shadow research lanes — not primary Full-Core carrier |
 | INDEPENDENT_CURRENT_SUBSYSTEM | Public-MD runtime, private read, WebUI, learning loops — integrated but not collapsed into GHV |
 
 Static GHV-relevant path: **coherent** at static closure. Remaining GHV transitions
@@ -221,9 +240,9 @@ No document in this set implies real-order authorization.
 | Register | CURRENT |
 | --- | --- |
 | STATIC_REPAIR_DEBT | 0 |
-| RUNTIME_PROOF_DEBT | OPEN |
+| RUNTIME_PROOF_DEBT | OPEN (Master Runbook-aligned; bounded convergence manifest is non-authorizing) |
 | NAVIGATION_DEBT | residual cross-index (see exhaustive fixpoint) |
-| TEST_COVERAGE_DEBT | bounded; M01 closure locked #7030 |
+| TEST_COVERAGE_DEBT | bounded; M01 closure locked #7030; GGE contract tests `tests/trading/master_v2/test_golden_geometry_engine_v1.py` |
 
 ```text
 NEXT_AUTHORIZED_PHASE=GHV_DRIVEN_BOUNDED_PRODUCTIVE_PRE_EXTERNAL_RUNTIME_PROOF
@@ -235,10 +254,11 @@ This section does **not** authorize that phase.
 
 ## 9. TRADING-QUALITY SEMANTIC CONTRACT AUDIT V1 (embedded)
 
-**Audit baseline:** `origin/main` @ `dc0320a4d3814e5b555c936ec5a4eb63ffd5a5fc`.  
-**Method:** read productive path owners, DDO offline contract, MV2 runtime cycle
-dispositions, treasury read-only bindings, and sealed static-closure evidence — not
-prior narrative prose.
+**Audit baseline:** `origin/main` @ `6422bfde79fd5aa45d2939a821980abf9aa4e3df`.  
+**Method:** read productive path owners (incl. GGE V1 post-#7064), DDO offline
+contract, MV2 runtime cycle dispositions, treasury read-only bindings, sealed
+static-closure evidence, and non-authorizing bounded runtime manifests — not prior
+narrative prose.
 
 ```text
 TRADING_QUALITY_SPECIAL_AUDIT_PERFORMED=true
@@ -274,9 +294,10 @@ Every Q3 label requires explicit separation:
 ```text
 DECISION_TIMESTAMP=observation/cycle boundary at MV2/DP disposition (productive: current_productive_master_v2_runtime_cycle_v1)
 OBSERVATION_CUTOFF=Live C1 + bound context available to that cycle (see §5 freshness)
-AVAILABLE_INFORMATION=ex-ante inputs bound before disposition
+AVAILABLE_INFORMATION=ex-ante inputs bound before disposition (incl. canonical mark/vol at GGE seam and scope/Layer-C state derived from GGE magnitude)
 FUTURE_INFORMATION=marks, exits, funding, fees, and PnL after cutoff — ex-post only
 EVALUATION_HORIZON=UNDEFINED_CURRENT for productive Natural Enter quality score
+GGE_SCOPE_QUALITY_LAYER=Q1 structural fail-closed only (invalid/missing base geometry blocks downstream scope distance materialization; not a Q3 trade-quality score)
 ```
 
 **LOOKAHEAD_BIAS / HINDSIGHT_BIAS:** forbidden for Q3 labels unless a **separate**
@@ -299,6 +320,8 @@ contracts; those do not automatically apply to productive MV2 dispositions.
 | `FAVORABLE_MOVE` / `ADVERSE_MOVE` | **UNDEFINED_CURRENT** for productive path | Offline backtest computes MFE/MAE (`src/backtest/economic_observability_advanced_capabilities_v1.py`); not productive default |
 | `SUCCESS_CRITERION` / `FAILURE_CRITERION` | **UNDEFINED_CURRENT** | Do not infer from post-hoc price direction |
 | `NEUTRAL_OR_UNRESOLVED` | **PROVEN_CURRENT** as admissible | Holds, blocks, and non-enter dispositions are first-class MV2 outcomes |
+| `BASE_GEOMETRY_MAGNITUDE` (GGE) | **PROVEN_CURRENT** (Q1 owner/wiring); **UNDEFINED_CURRENT** (Q3 enter quality) | Sole owner `golden_geometry_engine_v1`; scope init delegates via `PRODUCTIVE_RAW_SCOPE_DISTANCE_PRODUCER_ID` |
+| `SCOPE_GEOMETRY_CONFORMANCE` | **UNKNOWN_CURRENT** productive aggregate | Layer-C / scope init consume GGE; no separate GOOD/BAD scope-quality SSOT |
 
 **Forbidden shortcut (not canonical):** “price later went up ⇒ good LONG entry”.
 
@@ -427,7 +450,8 @@ Primary probe path:
 
 ```text
 observation → ranking/preselection → Cap2.3 → Cap2.4 → C1/G17/F1M9 → confirmation
-→ MV2/DP → candidate/entry disposition → capital/risk → intent → PRE_EXTERNAL
+→ market context → GGE → scope/Layer-C → MV2/DP → candidate/entry disposition
+→ capital/risk/admission → intent → PRE_EXTERNAL
 ```
 
 | Stage | WHAT_IS_KNOWN (static) | WHAT_CAN_BE_JUDGED now | QUALITY_LAYER | FUTURE_EVIDENCE_REQUIRED |
@@ -435,6 +459,7 @@ observation → ranking/preselection → Cap2.3 → Cap2.4 → C1/G17/F1M9 → c
 | Observation | Wiring + freshness semantics (§5) | Q1 partial | Q1/Q2 | Live mark progression |
 | Ranking/selection | Cap2.3 owner, Cap2.4 bind-only | Q1 | Q1 | Runtime selection snapshots |
 | G17/F1M9 | INJ-001 bind path proven | Q1 | Q1 | Aligned generations live |
+| GGE / Scope | GGE sole base-geometry owner; scope/Layer-C consume magnitude | Q1 partial | Q1 | Runtime geometry input validity under live CMC |
 | Confirmation | Cursor/policy gate exists | Q1 | Q1/Q2 | Epoch-2 progression live |
 | MV2/DP | Disposition emission proven structurally | Q1 | Q1/Q3 | Ex-ante quality methodology |
 | Capital/risk | Admissibility modules present | Q1 | Q1/Q4 | Conformance under load |
@@ -450,6 +475,7 @@ observation → ranking/preselection → Cap2.3 → Cap2.4 → C1/G17/F1M9 → c
 | `DATA_FAILURE` | Missing/invalid observation | Runtime logs |
 | `FRESHNESS_FAILURE` | Stale consumption where forbidden | Runtime + config proof |
 | `SIGNAL_FAILURE` | Signal producer defect | Stage-local proof |
+| `GEOMETRY_FAILURE` | GGE fail-closed or scope/Layer-C distance unavailable | GGE/scope module evidence |
 | `SELECTION_FAILURE` | Cap2.3 policy violation | Selection audit |
 | `BINDING_FAILURE` | Cap2.4 bind-only violation | Bind audit |
 | `CONFIRMATION_FAILURE` | Cursor/epoch gate fail-closed | Runtime trace |
@@ -488,9 +514,12 @@ observation → ranking/preselection → Cap2.3 → Cap2.4 → C1/G17/F1M9 → c
 | TQ-009 | §9.7 | Missed opportunity undefined | Q3 | ex-post | PROVEN_CURRENT |
 | TQ-010 | §9.12 | N=1 cannot prove edge | Q5 | n/a | PROVEN_CURRENT |
 | TQ-011 | §9.13 | Real execution performance not established | Q5 | n/a | PROVEN_CURRENT |
+| TQ-012 | §2/§3 | GGE sole base-geometry owner; scope consumes; no duplicate authority | Q1 | ex-ante structure | PROVEN_CURRENT |
+| TQ-013 | §3/§8 | Bounded GHV convergence manifest exists; runtime debt register still OPEN | Q2 | ex-post bounded | PROVEN_CURRENT |
+| TQ-014 | §4 | Full-Core GHV carrier; Paper-Shadow-247 not primary whole-system carrier | meta | n/a | PROVEN_CURRENT |
 
 ```text
-QUALITY_CLAIM_COUNT=11
+QUALITY_CLAIM_COUNT=14
 UNAUDITED_TRADING_QUALITY_CLAIMS=0
 TRADING_QUALITY_UNDEFINED_CURRENT_COUNT=6
 TRADING_QUALITY_RUNTIME_EVIDENCE_REQUIRED_COUNT=4
@@ -512,6 +541,9 @@ HORIZON_RULES_DEFINED_OR_EXPLICITLY_UNDEFINED=true
 STATISTICAL_LIMITATIONS_DEFINED=true
 AUTHORITY_BOUNDARIES_PRESERVED=true
 GHV_QUALITY_TRACE_COMPLETE=true
+GGE_MODEL_CURRENT=true
+GHV_MODEL_CURRENT=true
+TRADING_QUALITY_MODEL_CURRENT=true
 QUALITY_DOCUMENT_HARD_GATE_PASS=true
 WHOLE_SYSTEM_MODEL_CURRENT=true
 ```
@@ -525,5 +557,9 @@ WHOLE_SYSTEM_MODEL_CURRENT=true
 | Operational SSOT | [`PEAK_TRADE_MASTER_RUNBOOK.md`](../../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) |
 | Navigation only | [`PEAK_TRADE_MAP_OF_TRUTH.md`](../../governance/PEAK_TRADE_MAP_OF_TRUTH.md) |
 | M01 regression lock | `tests/ops/test_current_productive_m01_f1_m9_g17_production_closure_v1.py` |
+| GGE V1 owner | `src/trading/master_v2/golden_geometry_engine_v1.py` |
+| GGE contract tests | `tests/trading/master_v2/test_golden_geometry_engine_v1.py` |
+| GHV startability (offline) | `src/ops/full_core_live_path_composition_root_v1/current_productive_golden_happy_vector_startability_evaluator_v1.py` |
+| Bounded convergence manifest (non-authorizing) | `evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/durable/current_productive_ghv_bounded_runtime_convergence_proof_v1.json` |
 | INJ-001 evidence | [`WHOLE_SYSTEM_CONFIGURATION_INJECTION_GHV_BWP03_V1.md`](WHOLE_SYSTEM_CONFIGURATION_INJECTION_GHV_BWP03_V1.md) |
 | WSRC adjudication | `evidence&#47;ops&#47;whole_system_radiograph_coherence_adjudication_v1&#47;20261002T233600Z&#47;REP_WSRC_001_PRE_REPAIR_FORENSIC_ADJUDICATION_V1.json` |

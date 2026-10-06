@@ -94,13 +94,13 @@ entities:
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
   semantic_authority: false
-  modified_by: CHANGE:pr_7031_post_static_closure_documentation_fixpoint_v1
+  modified_by: CHANGE:pr_7071_universe_cartography_non_authority_refresh_v1
   authority_sources:
   - docs/ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md
   evidence_sources:
   - docs/ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md
   - docs/ops/evidence/POST_STATIC_CLOSURE_DOCUMENTATION_FIXPOINT_V1.md
-  notes: Descriptive whole-system machine model with TRADING-QUALITY SEMANTIC CONTRACT AUDIT V1; AUTHORITY=NONE; not operational SSOT; does not override Master Runbook or code; POST_COUNT=0.
+  notes: Descriptive whole-system machine model with TRADING-QUALITY SEMANTIC CONTRACT AUDIT V1; AUTHORITY=NONE; MAP_AUTHORITY=NONE; not operational SSOT; does not override Master Runbook or code; POST_COUNT=0.
 - id: NAVIGATION_INDEX:map_of_truth
   atlas_documentation_fixpoint: CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1
   # atlas_entity_review: PR #7069 Map-of-Truth locator rebind to retired pre-completion P/S/T evidence + contract fixtures; navigation-only; AUTHORITY=NONE; POST_COUNT=0.
@@ -113,7 +113,7 @@ entities:
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
   semantic_authority: false
-  modified_by: CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1
+  modified_by: CHANGE:pr_7071_universe_cartography_non_authority_refresh_v1
   authority_sources:
   - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
   evidence_sources:
@@ -190,7 +190,7 @@ entities:
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
   semantic_authority: false
-  modified_by: CHANGE:current_system_census_edge_reconciliation_repair_v1
+  modified_by: CHANGE:pr_7071_universe_cartography_non_authority_refresh_v1
   authority_sources:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   evidence_sources:
@@ -198,7 +198,7 @@ entities:
   - config/governance/current_universe_landscape_snapshot_v1/source_v1.json
   - config/governance/current_system_census_graph_v1/source_v1.json
   - config/governance/current_system_interaction_authority_map_v1/source_v1.json
-  notes: 'Persisted adjudicated CURRENT Universe/Plane landscape at architecture fixpoint (MATERIAL_ARCHITECTURE_BLOCKER_COUNT=0). Not runtime authority. PR #6974 reconciliation→MV2 admission semantics recorded. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.'
+  notes: 'Sole persisted CURRENT Universe/Non-Universe descriptive cartography (ONE_AUTHORITATIVE_UNIVERSE_MAP=false; MAP_AUTHORITY=NONE). Not operational SSOT or runtime authority. PR #6974 reconciliation→MV2 admission navigation retained. ATLAS_AUTHORITY=NONE.'
 - id: CONTRACT:elementary_direction_primitive_v1
   kind: CONTRACT
   name: Elementary Direction Primitive V1

@@ -5,9 +5,61 @@
   "runtime_authorization_effect": "NONE",
   "not_a_runtime_authority": true,
   "not_a_universe_ratification": true,
-  "evidence_baseline_sha": "dfcf4d04b8400763bee6ab0b465fa182927dea75",
-  "evidence_baseline_tree_sha": "4e5de1cdbf1958e2e0290b4867b1609441e1c660",
-  "ssot_companion_doc": "docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md",
+  "not_operational_ssot": true,
+  "companion_navigation_doc": "docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md",
+  "cartography_semantics": {
+    "AUTHORITY": "NONE",
+    "MAP_AUTHORITY": "NONE",
+    "TRADING_AUTHORITY": false,
+    "SELECTION_AUTHORITY": false,
+    "BINDING_AUTHORITY": false,
+    "RUNTIME_AUTHORITY": false,
+    "CONFIGURATION_AUTHORITY": false,
+    "GOVERNANCE_DECISION_AUTHORITY": false,
+    "DESCRIPTIVE_CURRENT_CARTOGRAPHY": true,
+    "NAVIGATION_AND_UNDERSTANDING_ONLY": true,
+    "ONE_PERSISTED_CURRENT_UNIVERSE_CARTOGRAPHY": true,
+    "ONE_AUTHORITATIVE_UNIVERSE_MAP": false,
+    "CURRENT_UNIVERSE_LANDSCAPE_IS_AUTHORITY": false,
+    "CONFLICT_LOSING_AUTHORITY": "Master Runbook, code, contracts, proven evidence"
+  },
+  "evidence_baseline_sha": "6422bfde79fd5aa45d2939a821980abf9aa4e3df",
+  "evidence_baseline_tree_sha": "6422bfde79fd5aa45d2939a821980abf9aa4e3df",
+  "cartography_refresh_note": "Navigation-only realignment at origin/main 6422bfde (GGE non-universe subsystem, Full-Core GHV carrier, PRE_EXTERNAL pin fix); AUTHORITY=NONE",
+  "universe_map_consolidation_v1": {
+    "consolidation_baseline_sha": "6422bfde79fd5aa45d2939a821980abf9aa4e3df",
+    "persisted_current_universe_cartography_count": 1,
+    "canonical_persisted_cartography_artifact_id": "current_universe_landscape_snapshot_v1",
+    "legacy_persisted_universe_maps_retired": [],
+    "legacy_retention_reason_summary": "No second tracked persisted universe/plane landscape JSON on origin/main; census/CSIA/atlas/META/MF domain contracts retain separate CURRENT functions (navigation index, owner graph, normative contracts).",
+    "unique_descriptive_semantics_merged": [
+      "Explicit non-authority cartography pins (MAP_AUTHORITY=NONE)",
+      "Planning-universe slice crosswalk for DDO/META (descriptive only; authority remains in code/spec contracts)"
+    ],
+    "related_planning_universe_slices_descriptive_only": {
+      "SELF_LEARNING_UNIVERSE": {
+        "role": "Outcome/evaluation to learning evidence export",
+        "productive_authority": "NONE",
+        "normative_spec": "docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md",
+        "landscape_surface_anchor": "SURFACE:TD-DDO-LEARNING"
+      },
+      "OPTIMIZATION_UNIVERSE": {
+        "role": "Offline research input validation only",
+        "productive_authority": "NONE",
+        "normative_spec": "docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md",
+        "landscape_surface_anchor": "SURFACE:TD-DDO-LEARNING"
+      },
+      "GOVERNANCE_RISK": {
+        "role": "Unchanged promotion/risk/execution gates",
+        "productive_authority": "unchanged_by_meta_slice",
+        "landscape_surface_anchor": null
+      }
+    },
+    "domain_ratification_cross_refs_not_duplicate_maps": [
+      "config/governance/universe_ranking_selection_binding_domain_ratification_v1.json",
+      "config/governance/meta_learning_optimization_universe_boundary_decision_v1.json"
+    ]
+  },
   "architecture_fixpoint": {
     "source": "FINAL_CURRENT_ARCHITECTURE_CLOSURE_FIXPOINT_ADJUDICATION_V1",
     "closure": "PROVEN_CURRENT",
@@ -15,9 +67,9 @@
     "census_graph_evidence": "config/governance/current_system_census_graph_v1/source_v1.json"
   },
   "coverage_counts": {
-    "material_surface_count": 18,
+    "material_surface_count": 19,
     "positive_membership_count": 11,
-    "proven_outside_universe_count": 14,
+    "proven_outside_universe_count": 15,
     "unknown_taxonomy_count": 0,
     "unmapped_material_surface_count": 0
   },
@@ -355,9 +407,9 @@
       "unknown_taxonomy": false,
       "positive_membership": "TD-MV2-DP",
       "outside_universe_classification": null,
-      "start_boundary": "BoundInstrumentV1",
-      "end_boundary": "trading decision cycle output",
-      "responsibility": "MV2 / Double Play",
+      "start_boundary": "BoundInstrumentV1 + canonical market context",
+      "end_boundary": "trading decision cycle output (after GGE→scope/Layer-C on MV2 path)",
+      "responsibility": "MV2 / Double Play (trading decision authority; includes scope state, not GGE as separate universe)",
       "authority_owner": "trading.master_v2",
       "decision_owner": "trading.master_v2",
       "must_not_decide": [
@@ -381,9 +433,71 @@
         "SO-OPS-PKG:stateful_confirmation_and_c1_productive_binding_v1"
       ],
       "cross_universe_handoffs": [],
-      "handoff_contracts": [],
+      "handoff_contracts": [
+        "src/trading/master_v2/golden_geometry_engine_v1.py",
+        "src/trading/master_v2/canonical_scope_initialization_v1.py",
+        "src/trading/master_v2/layer_c_scope_event_distance_binding_v1.py"
+      ],
       "authority_transfer": false,
-      "current_evidence_references": []
+      "current_evidence_references": [
+        "src/trading/master_v2/golden_geometry_engine_v1.py",
+        "src/trading/master_v2/canonical_scope_initialization_v1.py",
+        "src/trading/master_v2/layer_c_scope_event_distance_binding_v1.py",
+        "tests/trading/master_v2/test_golden_geometry_engine_v1.py"
+      ]
+    },
+    {
+      "surface_id": "SURFACE:TD-MV2-GGE-SCOPE-GEOMETRY",
+      "status": "PROVEN_CURRENT",
+      "topology_class": "CROSS_UNIVERSE_BOUNDARY",
+      "domain_universe": false,
+      "authority_universe": false,
+      "data_observation_plane": false,
+      "orchestration_plane": false,
+      "learning_plane": false,
+      "offline_evidence_plane": false,
+      "presentation_plane": false,
+      "cross_universe_boundary": true,
+      "shared_infrastructure": false,
+      "support_infrastructure": false,
+      "unknown_taxonomy": false,
+      "positive_membership": null,
+      "outside_universe_classification": "NON_UNIVERSE_MV2_GEOMETRY_SUBSYSTEM",
+      "start_boundary": "canonical mark + volatility (market context)",
+      "end_boundary": "scope init / Layer-C distance inputs for MV2",
+      "responsibility": "GGE base geometry magnitude + scope/Layer-C binding (MV2 path subsystem)",
+      "authority_owner": "trading.master_v2.golden_geometry_engine_v1",
+      "decision_owner": null,
+      "must_not_decide": [
+        "trading selection",
+        "execution",
+        "second base geometry authority",
+        "reclassify as authority universe"
+      ],
+      "producers": [],
+      "consumers": [],
+      "inputs": [],
+      "outputs": [],
+      "state_owner": null,
+      "persistence_owner": null,
+      "replay_owner": null,
+      "productive_reachability": true,
+      "productive_runtime_roots": [
+        "SO-SRC-PKG:trading"
+      ],
+      "cross_universe_handoffs": [
+        "market_context→gge→scope→mv2_double_play"
+      ],
+      "handoff_contracts": [
+        "src/trading/master_v2/golden_geometry_engine_v1.py",
+        "src/trading/master_v2/canonical_scope_initialization_v1.py",
+        "src/trading/master_v2/layer_c_scope_event_distance_binding_v1.py"
+      ],
+      "authority_transfer": false,
+      "current_evidence_references": [
+        "src/trading/master_v2/golden_geometry_engine_v1.py",
+        "tests/trading/master_v2/test_golden_geometry_engine_v1.py"
+      ]
     },
     {
       "surface_id": "SURFACE:TD-FULL-CORE",
@@ -404,11 +518,12 @@
       "outside_universe_classification": "ORCHESTRATION_PLANE",
       "start_boundary": "governed cycle entry",
       "end_boundary": "PRE_EXTERNAL_EFFECT",
-      "responsibility": "Full-Core PRE_EXTERNAL orchestration",
+      "responsibility": "Full-Core PRE_EXTERNAL orchestration (CURRENT productive GHV/full-system carrier; not Paper-Shadow-247 daemon)",
       "authority_owner": "full_core_live_path_composition_root_v1",
       "decision_owner": null,
       "must_not_decide": [
-        "default POST"
+        "default POST",
+        "paper_shadow_247_daemon_as_primary_full_system_carrier"
       ],
       "producers": [],
       "consumers": [],
@@ -431,11 +546,15 @@
       ],
       "cross_universe_handoffs": [],
       "handoff_contracts": [
-        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py"
+        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
+        "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py"
       ],
       "authority_transfer": false,
       "current_evidence_references": [
-        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py"
+        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_golden_happy_vector_startability_evaluator_v1.py",
+        "evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/durable/current_productive_ghv_bounded_runtime_convergence_proof_v1.json",
+        "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py"
       ]
     },
     {
@@ -520,12 +639,14 @@
       "positive_membership": "TD-DDO-LEARNING",
       "outside_universe_classification": "LEARNING_PLANE",
       "start_boundary": "decision capture",
-      "end_boundary": "learning records/evidence",
-      "responsibility": "DDO Learning",
+      "end_boundary": "learning records/evidence / optimization-universe export",
+      "responsibility": "DDO Learning + Optimization Universe offline intake (no productive trading authority)",
       "authority_owner": "src.learning.deterministic_decision_outcome_v0",
       "decision_owner": null,
       "must_not_decide": [
-        "trading authority"
+        "trading authority",
+        "productive selection",
+        "promotion without separate governed authorization"
       ],
       "producers": [],
       "consumers": [],
@@ -539,9 +660,14 @@
         "SO-SRC-PKG:learning"
       ],
       "cross_universe_handoffs": [],
-      "handoff_contracts": [],
+      "handoff_contracts": [
+        "docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md"
+      ],
       "authority_transfer": false,
-      "current_evidence_references": []
+      "current_evidence_references": [
+        "src/experiments/canonical_optimization_universe_learning_input_v1.py",
+        "docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md"
+      ]
     },
     {
       "surface_id": "SURFACE:TD-MI-OFFLINE",
@@ -855,10 +981,11 @@
       "authority_transfer": false,
       "productive_reachability": true,
       "PRE_EXTERNAL_TERMINAL": true,
-      "POST_ALLOWED": true,
-      "EXTERNAL_EFFECT_AUTHORIZED": true,
+      "POST_ALLOWED": false,
+      "EXTERNAL_EFFECT_AUTHORIZED": false,
       "current_evidence_references": [
-        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py"
+        "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
+        "docs/ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md"
       ],
       "domain_universe": false,
       "authority_universe": false,

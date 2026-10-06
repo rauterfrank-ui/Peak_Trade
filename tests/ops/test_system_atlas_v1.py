@@ -454,7 +454,7 @@ def test_incompleteness_missing_reason_fails(atlas: dict) -> None:
 
 def test_atlas_legacy_eradication_v1_current_okx_and_terminology(atlas: dict) -> None:
     meta = atlas["records"]["census/census_meta.yaml"]
-    assert meta["navigation_rebind_kind"] == "FINAL_CURRENT_UNIVERSE_LANDSCAPE_CONVERGENCE_V1"
+    assert meta["navigation_rebind_kind"] == "PR_7071_UNIVERSE_CARTOGRAPHY_NON_AUTHORITY_REFRESH_V1"
     assert meta["historical_domain_census_payload_count"] == 0
     assert meta["okx_historical_census_complete"] is False
     assert meta["historical_terminology_census_complete"] is False
@@ -573,11 +573,11 @@ def test_repo_atlas_v1_final_closure(atlas: dict) -> None:
 
 def test_census_navigation_rebind_atlas_legacy_eradication_v1(atlas: dict) -> None:
     meta = atlas["records"]["census/census_meta.yaml"]
-    reviewed = "dfcf4d04b8400763bee6ab0b465fa182927dea75"
+    reviewed = "6422bfde79fd5aa45d2939a821980abf9aa4e3df"
     assert meta["current_reviewed_at_sha"] == reviewed
     assert meta["origin_main_sha"] == reviewed
     assert meta["navigation_rebind_sha"] == reviewed
-    assert meta["navigation_rebind_kind"] == "FINAL_CURRENT_UNIVERSE_LANDSCAPE_CONVERGENCE_V1"
+    assert meta["navigation_rebind_kind"] == "PR_7071_UNIVERSE_CARTOGRAPHY_NON_AUTHORITY_REFRESH_V1"
     assert meta["domain_census_payloads_bound_sha"] is None
     assert meta["historical_domain_census_payload_count"] == 0
 

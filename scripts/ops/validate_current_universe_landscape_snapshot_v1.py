@@ -32,6 +32,36 @@ def main() -> int:
     if doc.get("runtime_authorization_effect") != "NONE":
         print("runtime_authorization_effect must be NONE", file=sys.stderr)
         return 1
+    if doc.get("not_operational_ssot") is not True:
+        print("not_operational_ssot must be true", file=sys.stderr)
+        return 1
+    if "ssot_companion_doc" in doc:
+        print("ssot_companion_doc is forbidden (use companion_navigation_doc)", file=sys.stderr)
+        return 1
+    if not doc.get("companion_navigation_doc"):
+        print("companion_navigation_doc required", file=sys.stderr)
+        return 1
+    cart = doc.get("cartography_semantics") or {}
+    if cart.get("AUTHORITY") != "NONE" or cart.get("MAP_AUTHORITY") != "NONE":
+        print("cartography_semantics authority pins must be NONE", file=sys.stderr)
+        return 1
+    if cart.get("CURRENT_UNIVERSE_LANDSCAPE_IS_AUTHORITY") is not False:
+        print("CURRENT_UNIVERSE_LANDSCAPE_IS_AUTHORITY must be false", file=sys.stderr)
+        return 1
+    if cart.get("ONE_AUTHORITATIVE_UNIVERSE_MAP") is not False:
+        print("ONE_AUTHORITATIVE_UNIVERSE_MAP must be false", file=sys.stderr)
+        return 1
+    for flag in (
+        "TRADING_AUTHORITY",
+        "SELECTION_AUTHORITY",
+        "BINDING_AUTHORITY",
+        "RUNTIME_AUTHORITY",
+        "CONFIGURATION_AUTHORITY",
+        "GOVERNANCE_DECISION_AUTHORITY",
+    ):
+        if cart.get(flag) is not False:
+            print(f"cartography_semantics.{flag} must be false", file=sys.stderr)
+            return 1
     fix = doc.get("architecture_fixpoint") or {}
     if fix.get("closure") != "PROVEN_CURRENT":
         print("architecture_fixpoint.closure must be PROVEN_CURRENT", file=sys.stderr)

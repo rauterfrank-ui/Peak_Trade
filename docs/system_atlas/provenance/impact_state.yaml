@@ -1,17 +1,24 @@
 schema_version: system_atlas.v1
-pending_change: true
-introduced_by: CHANGE:pr_7070_simple_run_evidence_owner_retention_v1
-modified_by: CHANGE:pr_7070_simple_run_evidence_owner_retention_v1
+pending_change: false
+introduced_by: CHANGE:pr_7071_universe_cartography_non_authority_refresh_v1
+modified_by: CHANGE:pr_7071_universe_cartography_non_authority_refresh_v1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'PR #7070 simple owner run evidence retention: owner-home P/S/T durable copy + JSONL navigation; no trading or runtime authority change; AUTHORITY=NONE; POST_COUNT=0.'
+note: >-
+  PR #7071: navigation-only refresh of whole-system functional model and sole persisted
+  CURRENT universe/non-universe cartography with explicit non-authority pins; no runtime
+  or trading semantic change; AUTHORITY=NONE; POST_COUNT=0.
 changed_entities:
-- RUNTIME_COMPONENT:simple_run_evidence_owner_retention_v1
-- RUNTIME_COMPONENT:post_6939_paper_g2_primary_run_metadata_v1
+  - NAVIGATION_INDEX:current_universe_landscape_snapshot_v1
+  - NAVIGATION_INDEX:current_whole_system_functional_causal_model_v1
+  - NAVIGATION_INDEX:map_of_truth
+  - RUNBOOK:canonical_master_runbook
 changed_relations: []
 changed_closures: []
 changed_wiring: []
 changed_venue: []
 changed_census: []
 changed_generated:
-- generated/ATLAS_CHANGE_IMPACT.md
+  - generated/ATLAS_CHANGE_IMPACT.md
+  - generated/COVERAGE_REPORT.md
+  - generated/SYSTEM_ATLAS.md

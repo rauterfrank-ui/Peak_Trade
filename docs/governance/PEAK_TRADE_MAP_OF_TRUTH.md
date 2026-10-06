@@ -265,7 +265,7 @@ authority and must not be read as activation or next-step instructions.
 | --- | --- |
 | [`config/governance/current_system_interaction_authority_map_v1/source_v1.json`](../../config/governance/current_system_interaction_authority_map_v1/source_v1.json) | **Navigation only:** structured source for CURRENT System Interaction & Authority Map (`AUTHORITY=NONE`, `map_authority=NONE`); derived read-only views under [`docs/governance/current_system_interaction_authority_map_v1/generated/`](current_system_interaction_authority_map_v1/generated/); not operational SSOT |
 | [`config/governance/current_system_census_graph_v1/source_v1.json`](../../config/governance/current_system_census_graph_v1/source_v1.json) | **Navigation only:** CURRENT Complete System Census graph index (`AUTHORITY=NONE`); package/surface topology and semantic edges; not runtime authority |
-| [`docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md`](CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md) / [`config/governance/current_universe_landscape_snapshot_v1/source_v1.json`](../../config/governance/current_universe_landscape_snapshot_v1/source_v1.json) | **Navigation only:** persisted CURRENT Universe/Plane landscape at architecture fixpoint (`AUTHORITY=NONE`); links to census, authority map, and evidence; not runtime authority |
+| [`docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md`](CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md) / [`config/governance/current_universe_landscape_snapshot_v1/source_v1.json`](../../config/governance/current_universe_landscape_snapshot_v1/source_v1.json) | **Descriptive cartography only:** sole persisted CURRENT Universe/Non-Universe landscape (`AUTHORITY=NONE`, `MAP_AUTHORITY=NONE`); not operational SSOT; not an authoritative universe map; loses on conflict to runbook/code/contracts/evidence |
 | [`docs/ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md`](../ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md) | **Navigation/descriptive only:** whole-system functional/causal model; `AUTHORITY=NONE`; does not override Master Runbook or code |
 | [`docs/ops/evidence/WHOLE_SYSTEM_EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_FIXPOINT_V1.md`](../ops/evidence/WHOLE_SYSTEM_EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_FIXPOINT_V1.md) | **Evidence index:** exhaustive cartography closure (31/120/396/145); not authorization |
 | [`docs/system_atlas/generated/SYSTEM_ATLAS.md`](../system_atlas/generated/SYSTEM_ATLAS.md) | **Navigation only:** System Atlas generated views (`ATLAS_AUTHORITY=NONE`); reconcile with CSIA and census graph before use |
@@ -292,6 +292,10 @@ CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1=docs/governance/CURRENT_UNIVERSE_LANDSCAP
 CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1_SOURCE=config/governance/current_universe_landscape_snapshot_v1/source_v1.json
 CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1_ROLE=NAVIGATION_ONLY
 CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1_AUTHORITY=NONE
+ONE_PERSISTED_CURRENT_UNIVERSE_CARTOGRAPHY=true
+ONE_AUTHORITATIVE_UNIVERSE_MAP=false
+CURRENT_UNIVERSE_LANDSCAPE_IS_AUTHORITY=false
+CURRENT_UNIVERSE_LANDSCAPE_MAP_AUTHORITY=NONE
 DDO_AUTHORITY_EFFECT=NONE
 RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_CONTRACT_NAV=docs/ops/specs/FULL_CORE_RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_AUTHORITY_INTERFACE_RECONCILIATION_CONTRACT_V1.md
 RUNNING_ACCOUNT_EQUITY_PARALLEL_DECOUPLED_TRACKS_CONTRACT_ROLE=NAVIGATION_POINTER_ONLY
