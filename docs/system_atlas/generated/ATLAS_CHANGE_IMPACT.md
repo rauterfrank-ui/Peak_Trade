@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -41,6 +41,7 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `RUNTIME_COMPONENT:current_productive_golden_happy_vector_startability_evaluator_v1` |
+| `RUNTIME_COMPONENT:current_productive_golden_happy_vector_current_input_observation_adapter_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- GHV startability evaluator v1 (AUTHORITY=NONE): offline structural startability preflight vs Natural-Enter reference; no trading/POST/selection/geometry authority; TRADING_SEMANTICS_CHANGED=false.
+- CURRENT-input GHV readiness (AUTHORITY=NONE): live read-only observation adapter + startability extension; historical bounded Natural Enter to PRE_EXTERNAL proof manifest; no trading/POST authority; TRADING_SEMANTICS_CHANGED=false.
 - introduced_by=CHANGE:current_productive_ghv_startability_evaluator_v1
-- modified_by=CHANGE:current_productive_ghv_startability_evaluator_v1
+- modified_by=CHANGE:current_productive_ghv_current_input_readiness_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

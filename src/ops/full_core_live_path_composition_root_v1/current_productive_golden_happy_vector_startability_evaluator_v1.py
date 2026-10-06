@@ -9,7 +9,12 @@ from __future__ import annotations
 import json
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Mapping, Sequence
+from typing import Any, Mapping, Sequence, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_golden_happy_vector_current_input_observation_adapter_v1 import (
+        CurrentProductiveGhvInputObservationV1,
+    )
 
 from scripts.ops.pre_external_convergence_natural_enter_reporting_v1 import (
     evaluate_natural_enter_reporting_v1,
@@ -88,6 +93,16 @@ class StartabilityEvaluationReportV1:
     evaluation_mode: str = EVALUATION_MODE_OFFLINE_EVIDENCE
     post_required: bool = False
     trading_semantics_changed: bool = False
+    current_input_blocker: str = "OFFLINE_MODE_MARKET_DATA_NOT_EVALUATED"
+    current_input_provenance_valid: bool = False
+    current_input_freshness_valid: bool = False
+    current_input_type_valid: bool = False
+    current_input_unit_valid: bool = False
+    current_selection_binding_valid: bool = False
+    gge_current_input_valid: bool = False
+    scope_current_input_valid: bool = False
+    mv2_current_input_valid: bool = False
+    double_play_current_input_valid: bool = False
 
 
 @dataclass(frozen=True)
@@ -276,30 +291,53 @@ def _evaluate_double_play_natural_enter_domain_v1(root: Path) -> DomainEvaluatio
     )
 
 
-def _evaluate_market_data_domain_v1(*, live_inputs_required: bool) -> DomainEvaluationV1:
-    if live_inputs_required:
+def _evaluate_market_data_domain_v1(
+    *,
+    live_inputs_required: bool,
+    current_observation: CurrentProductiveGhvInputObservationV1 | None,
+) -> DomainEvaluationV1:
+    if not live_inputs_required:
         return _domain(
             "MARKET_DATA",
             ok=False,
             unknown=True,
             classification="UNKNOWN_CURRENT",
             evidence={
-                "reason": "Fresh-C1 and live venue inputs not evaluated without network in GHV mode",
-                "STRUCTURAL_CONTRACT": "LiveFreshC1 + G17 mark-history → CMC",
+                "mode": "golden_vector_bundle_only",
+                "live_freshness": "not_claimed",
+                "STRUCTURALLY_STARTABLE": "does_not_require_live_freshness_proof",
             },
             blocks_input=True,
         )
+    if current_observation is None:
+        return _domain(
+            "MARKET_DATA",
+            ok=False,
+            unknown=True,
+            classification="UNKNOWN_CURRENT",
+            evidence={
+                "reason": "LIVE_CURRENT_INPUT_OBSERVATION_MISSING",
+                "STRUCTURAL_CONTRACT": "LiveFreshC1 + G17 mark-history → CMC",
+                "ADAPTER_OWNER": (
+                    "current_productive_golden_happy_vector_current_input_observation_adapter_v1"
+                ),
+            },
+            blocks_input=True,
+        )
+    ok = bool(current_observation.observation_ok)
     return _domain(
         "MARKET_DATA",
-        ok=False,
-        unknown=True,
-        classification="UNKNOWN_CURRENT",
+        ok=ok,
+        classification="PROVEN_CURRENT" if ok else "CONFLICTING_CURRENT",
         evidence={
-            "mode": "golden_vector_bundle_only",
-            "live_freshness": "not_claimed",
-            "STRUCTURALLY_STARTABLE": "does_not_require_live_freshness_proof",
+            "source_kind": current_observation.source_kind,
+            "current_input_blocker": current_observation.current_input_blocker,
+            "mark_price": current_observation.mark_price,
+            "volatility_estimate": current_observation.volatility_estimate,
+            "http_get_count": current_observation.http_get_count,
+            "gap_row_count": len(current_observation.gap_rows),
         },
-        blocks_input=True,
+        blocks_input=not ok,
     )
 
 
@@ -365,6 +403,7 @@ def evaluate_current_productive_golden_happy_vector_startability_v1(
     expected_baseline_sha: str | None = None,
     actual_head_sha: str | None = None,
     live_inputs_required: bool = False,
+    current_input_observation: CurrentProductiveGhvInputObservationV1 | None = None,
 ) -> StartabilityEvaluationReportV1:
     root = golden_vector_root or (repository_root / DEFAULT_FIXTURE_REL)
     manifest = _load_manifest(root)
@@ -395,7 +434,10 @@ def evaluate_current_productive_golden_happy_vector_startability_v1(
         )
     )
     report.domains.append(
-        _evaluate_market_data_domain_v1(live_inputs_required=live_inputs_required)
+        _evaluate_market_data_domain_v1(
+            live_inputs_required=live_inputs_required,
+            current_observation=current_input_observation,
+        )
     )
     report.domains.append(_evaluate_gge_scope_domain_v1(root))
     report.domains.append(
@@ -453,8 +495,27 @@ def evaluate_current_productive_golden_happy_vector_startability_v1(
     report.structurally_startable = report.golden_vector_replay_valid and not structural_blocks
     if live_inputs_required:
         report.current_input_ready = not input_blocks
+        if current_input_observation is not None:
+            obs = current_input_observation
+            report.current_input_blocker = (
+                ""
+                if report.current_input_ready
+                else str(obs.current_input_blocker or "CURRENT_INPUT_BLOCKED")
+            )
+            report.current_input_provenance_valid = obs.current_input_provenance_valid
+            report.current_input_freshness_valid = obs.current_input_freshness_valid
+            report.current_input_type_valid = obs.current_input_type_valid
+            report.current_input_unit_valid = obs.current_input_unit_valid
+            report.current_selection_binding_valid = obs.current_selection_binding_valid
+            report.gge_current_input_valid = obs.gge_current_input_valid
+            report.scope_current_input_valid = obs.scope_current_input_valid
+            report.mv2_current_input_valid = obs.mv2_current_input_valid
+            report.double_play_current_input_valid = obs.double_play_current_input_valid
+        else:
+            report.current_input_blocker = "LIVE_CURRENT_INPUT_OBSERVATION_MISSING"
     else:
         report.current_input_ready = False
+        report.current_input_blocker = "OFFLINE_MODE_MARKET_DATA_NOT_EVALUATED"
     report.post_required = False
     offline_ok = (
         report.structurally_startable
@@ -498,6 +559,17 @@ def report_to_machine_json_v1(report: StartabilityEvaluationReportV1) -> dict[st
         if report.evaluation_mode == EVALUATION_MODE_OFFLINE_EVIDENCE
         else "LIVE_INPUTS_EVALUATED"
     )
+    payload["CURRENT_INPUT_BLOCKER"] = report.current_input_blocker
+    payload["CURRENT_INPUT_PROVENANCE_VALID"] = report.current_input_provenance_valid
+    payload["CURRENT_INPUT_FRESHNESS_VALID"] = report.current_input_freshness_valid
+    payload["CURRENT_INPUT_TYPE_VALID"] = report.current_input_type_valid
+    payload["CURRENT_INPUT_UNIT_VALID"] = report.current_input_unit_valid
+    payload["CURRENT_SELECTION_BINDING_VALID"] = report.current_selection_binding_valid
+    payload["GGE_CURRENT_INPUT_VALID"] = report.gge_current_input_valid
+    payload["SCOPE_CURRENT_INPUT_VALID"] = report.scope_current_input_valid
+    payload["MV2_CURRENT_INPUT_VALID"] = report.mv2_current_input_valid
+    payload["DOUBLE_PLAY_CURRENT_INPUT_VALID"] = report.double_play_current_input_valid
+    payload["CURRENT_INPUT_READY"] = report.current_input_ready
     return payload
 
 

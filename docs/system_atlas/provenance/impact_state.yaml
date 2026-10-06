@@ -1,12 +1,13 @@
 schema_version: system_atlas.v1
 pending_change: true
 introduced_by: CHANGE:current_productive_ghv_startability_evaluator_v1
-modified_by: CHANGE:current_productive_ghv_startability_evaluator_v1
+modified_by: CHANGE:current_productive_ghv_current_input_readiness_v1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'GHV startability evaluator v1 (AUTHORITY=NONE): offline structural startability preflight vs Natural-Enter reference; no trading/POST/selection/geometry authority; TRADING_SEMANTICS_CHANGED=false.'
+note: 'CURRENT-input GHV readiness (AUTHORITY=NONE): live read-only observation adapter + startability extension; historical bounded Natural Enter to PRE_EXTERNAL proof manifest; no trading/POST authority; TRADING_SEMANTICS_CHANGED=false.'
 changed_entities:
 - RUNTIME_COMPONENT:current_productive_golden_happy_vector_startability_evaluator_v1
+- RUNTIME_COMPONENT:current_productive_golden_happy_vector_current_input_observation_adapter_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []
