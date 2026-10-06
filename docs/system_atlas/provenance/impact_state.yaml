@@ -1,18 +1,34 @@
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CHANGE:pr_7073_full_system_natural_enter_cross_session_outcome_closure_v1
-modified_by: CHANGE:pr_7073_full_system_natural_enter_cross_session_outcome_closure_v1
+introduced_by: CHANGE:pr_7077_monetary_normalization_implementation_v1
+modified_by: CHANGE:pr_7077_monetary_normalization_implementation_v1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #7073: Natural-Enter cross-session pending outcome harness under persistent lane_state;
-  lawful O4 N_BARS closure via existing evaluation/learning owners; no trading semantic change;
-  AUTHORITY=NONE; POST_COUNT=0.
+  PR #7077: productive monetary normalization (USDT→USDC via index-tickers GET) at Fresh Pretrade +
+  Enter-Live-29P before CRS; no trading authority change; AUTHORITY=NONE; POST_COUNT=0.
 changed_entities:
-  - RUNTIME_COMPONENT:natural_enter_cross_session_outcome_closure_v1
-  - RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
+  - RUNTIME_COMPONENT:governed_productive_monetary_normalization_v1
+  - CAPABILITY:okx_eea_private_account_state_runtime_v1
+  - CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
+  - GATE:full_core_capital_admission_v1
+  - GATE:full_core_fresh_pretrade_runtime_get_v1
+  - GATE:full_core_live_account_bound_v1
+  - GATE:full_core_owner_one_shot_permit_v1
+  - GATE:portfolio_capital_reservation_budget_v1
   - RUNTIME_COMPONENT:current_productive_forensic_executable_quantity_override_v1
-changed_relations: []
+  - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  - RUNTIME_COMPONENT:governed_productive_instrument_metadata_authority_producer_v1
+  - RUNTIME_COMPONENT:governed_productive_reference_price_authority_producer_v1
+changed_relations:
+  - REL:r_enter_live_29p_join_consumes_portfolio_budget
+  - REL:r_full_core_capital_admission_composes_live_account_bound
+  - REL:r_full_core_fresh_pretrade_get_composes_permit
+  - REL:r_full_core_live_account_bound_composes_fresh_get
+  - REL:r_full_core_path_calls_fresh_pretrade_runtime_get
+  - REL:r_full_core_path_calls_live_account_bound
+  - REL:s_fa_occupied_lane_governed_cycle_n1_consumer_depends_on_portfolio_budget
+  - REL:s_private_state_runtime_adapts_fresh_pretrade_get
 changed_closures: []
 changed_wiring: []
 changed_venue: []
