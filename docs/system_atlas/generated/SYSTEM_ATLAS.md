@@ -638,7 +638,7 @@ Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md), [COVERAGE_RE
 
 ## 16. Orphan / missing-wiring findings
 
-Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `170`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
+Declared gaps: `12`. Auto-detected `DEFINED_BUT_NO_CONSUMER` orphans: `171`. Auto-orphans are coverage notes, not proof of unused code. Drill-down: [ORPHAN_AND_WIRING_GAPS.md](ORPHAN_AND_WIRING_GAPS.md).
 
 | id | class | entity | epistemic |
 | --- | --- | --- | --- |
@@ -709,7 +709,7 @@ Drill-down: [DOD_MAP.md](DOD_MAP.md), [SCHEMA_MAP.md](SCHEMA_MAP.md), [DATA_CONT
 
 ```text
 CURRENT_ORIGIN_MAIN_SHA=6422bfde79fd5aa45d2939a821980abf9aa4e3df
-ENTITY_TOTAL=350
+ENTITY_TOTAL=351
 HUB_RELATION_COUNT=72
 STRUCTURAL_RELATION_COUNT=246
 RUNTIME_RELATION_COUNT=101
@@ -802,7 +802,7 @@ Remaining census domains:
 | OWNER_DECISION | 2 |
 | PHASE | 1 |
 | RUNBOOK | 2 |
-| RUNTIME_COMPONENT | 177 |
+| RUNTIME_COMPONENT | 178 |
 | SCHEMA | 5 |
 | SCRIPT | 3 |
 | SELECTOR | 2 |
