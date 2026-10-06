@@ -12,16 +12,17 @@ from pathlib import Path
 from typing import Any
 
 PRODUCTIVE_HINTS = (
-    "run_paper_shadow_bounded_orchestrator",
-    "run_integrated_paper_shadow",
+    "run_current_productive_golden_happy_vector",
+    "run_current_productive_ghv",
+    "run_current_productive_policy_governed",
+    "current_productive_governed_cycle",
     "current_productive_master_v2_runtime_cycle",
-    "operational_run",
     "full_core_live_path",
 )
 
 COMPOSITION_ENTRY_FUNCS = (
-    "run_paper_shadow_bounded_operational_run_v1",
     "run_current_productive_master_v2_runtime_cycle_v1",
+    "evaluate_current_productive_golden_happy_vector_startability_v1",
 )
 
 
@@ -106,8 +107,6 @@ def classify_root(rel: str, ev: StructuralEvidence) -> tuple[str, bool, str]:
             return "OPERATOR_TOOL_ROOT", False, "generate_materialize_without_main"
         if "run_fingerprint" in low:
             return "LIBRARY_MODULE_NOT_ROOT", False, "pure_library_function_no_launcher"
-        if "operational_run_v1" in low and ev.composition_entry_fn:
-            return "CONDITIONAL_PRODUCTIVE_ROOT", True, "composition_entry_fn_with_script_launchers"
         return "SUPPORT_MODULE_NOT_ROOT", False, "no_structural_launch_evidence"
 
     # structural root — classify by role

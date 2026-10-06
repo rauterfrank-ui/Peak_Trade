@@ -153,7 +153,6 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p1_d5_checkpoint_freshness_witness_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p1_d5_checkpoint_freshness_witness_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p1_observation_restart_durability_witness_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p1_observation_restart_durability_witness_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p1_time_domain_completeness_witness_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p1_time_domain_completeness_witness_v1 | STATUS=OPEN (not proven) |  |
-| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:paper_shadow_bounded_orchestrator_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:paper_shadow_bounded_orchestrator_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:phase_24_representation_feedback_loop_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:phase_24_representation_feedback_loop_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:phase_25_dp_attribution_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:phase_25_dp_attribution_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_6939_paper_g2_primary_run_metadata_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_6939_paper_g2_primary_run_metadata_v1 | STATUS=OPEN (not proven) |  |
