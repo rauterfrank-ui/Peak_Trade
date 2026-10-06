@@ -413,7 +413,7 @@ canonical operator command.
 | OKX Futures no-order cycle (component) | `scripts/ops/run_okx_futures_shadow_no_order_v0.py` |
 | Config (static, non-activating) | `config/ops/shadow_preparation_readiness_gate_v0.toml` |
 | Contract doc (this file) | `docs/ops/runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md` |
-| Post-merge 600s offline no-order soak evidence (docs/evidence-only) | `RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/` |
+| Post-merge 600s offline no-order soak evidence (docs/evidence-only) | `RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)&#47;` |
 | Post-merge Step 29U bound Shadow no-order soak evidence | `tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/step_29u_post_merge_shadow_soak_contract_v1/` |
 | Related charter (non-activating) | `docs/ops/runbooks/SHADOW_247_GOVERNANCE_CHARTER_V0.md` |
 | Focused tests | `tests/ops/test_shadow_preparation_readiness_gate_v0.py` |

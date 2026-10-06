@@ -1,13 +1,17 @@
 schema_version: system_atlas.v1
 pending_change: true
-introduced_by: CHANGE:current_productive_ghv_startability_evaluator_v1
-modified_by: CHANGE:current_productive_ghv_current_input_readiness_v1
+introduced_by: CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1
+modified_by: CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1
 superseded_by: null
-last_recorded_impact: UPDATED
-note: 'CURRENT-input GHV readiness (AUTHORITY=NONE): live read-only observation adapter + startability extension; historical bounded Natural Enter to PRE_EXTERNAL proof manifest; no trading/POST authority; TRADING_SEMANTICS_CHANGED=false.'
+last_recorded_impact: NONE_WITH_PROOF
+note: 'PR #7069 pre-completion P/S/T evidence retirement: fixture/reference migration only; no trading or runtime authority change; AUTHORITY=NONE; POST_COUNT=0.'
 changed_entities:
-- RUNTIME_COMPONENT:current_productive_golden_happy_vector_startability_evaluator_v1
-- RUNTIME_COMPONENT:current_productive_golden_happy_vector_current_input_observation_adapter_v1
+- CAPABILITY:integrated_offline_replay_correctness_head_bound_v1
+- NAVIGATION_INDEX:map_of_truth
+- RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1
+- RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+- RUNTIME_COMPONENT:ghv_current_residency_decoupling_v1
+- RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []

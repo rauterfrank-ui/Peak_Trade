@@ -9,6 +9,7 @@
 # atlas_entity_review: PR #7027 — BWP-01 post-cartography GHV finding adjudication + bounded stale-governance test repair; docs/evidence only; FULL_CORE identity spec clarification; AUTHORITY=NONE; POST_COUNT=0; Residency default OFF; F1/M9 fixture wiring deferred to BWP-03 PR #7028.
 # atlas_entity_review: PR #7028 — BWP-03 configuration injection (INJ-001 F1/M9 per-cycle G17 bind; INJ-002 optional scoped residency propagation default OFF; INJ-003 governance-only); SEMANTIC_CHANGE_FROM_PR7028=NONE on ranking/selection/MV2/DP/admission/capital/PRE_EXTERNAL/POST; AUTHORITY=NONE; POST_COUNT=0; REVIEWED_HEAD=7ee392714.
 # atlas_entity_review: PR #7035 — Natural-Enter downstream LIVE-29P Layer-C protective-stop binding + treasury BASE epoch rebind on duplicate GET; persistent convergence fail-closed segment terminal; binding-only; MV2/DP unchanged; AUTHORITY=NONE; POST_COUNT=0.
+# atlas_entity_review: PR #7069 historical pre-completion Paper/Shadow/Testnet evidence retirement; contract fixtures + explicit RETIRED semantics; no trading/runtime authority change; AUTHORITY=NONE.
 entities:
 - id: SYSTEM:peak_trade
   kind: SYSTEM
@@ -100,7 +101,8 @@ entities:
   - docs/ops/evidence/POST_STATIC_CLOSURE_DOCUMENTATION_FIXPOINT_V1.md
   notes: Descriptive whole-system machine model with TRADING-QUALITY SEMANTIC CONTRACT AUDIT V1; AUTHORITY=NONE; not operational SSOT; does not override Master Runbook or code; POST_COUNT=0.
 - id: NAVIGATION_INDEX:map_of_truth
-  atlas_documentation_fixpoint: CHANGE:pr_7063_canonical_repo_currency_closure_v1
+  atlas_documentation_fixpoint: CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1
+  # atlas_entity_review: PR #7069 Map-of-Truth locator rebind to retired pre-completion P/S/T evidence + contract fixtures; navigation-only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7063 CURRENT_REVIEWED_AT_SHA rebind to post-#7062 origin/main; navigation-only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7036 raw instrument-relative Scope cutover navigation inventory; bridge + Surface-P harness; AUTHORITY=NONE; POST_COUNT=0.
 # atlas_entity_review: PR #7037 MV2 simulated-economics CRS boundary wiring-only on current_productive_master_v2_runtime_cycle_v1; propagation to IntegratedOfflineReplayInputV1; TRADING_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.
@@ -110,7 +112,7 @@ entities:
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
   semantic_authority: false
-  modified_by: CHANGE:pr_7063_canonical_repo_currency_closure_v1
+  modified_by: CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1
   authority_sources:
   - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
   evidence_sources:
@@ -163,6 +165,7 @@ entities:
     \ polarity and PENDING departing-side generator orientation (ARMED residual unresolved; freeze exception unauthorized; last_active_side unauthorized; MODEL_B remains productive baseline). SideState ARMED identity split (Neutral-Start vs Switch-Terminal) is navigation inventory only; last_active_side remains unauthorized; LIVE_ARMED is unchanged. Wallclock/Hardening Entry/Exit session cursors consume Replay `_side_state_to_entry_exit_direction`; PENDING rows are not re-adjudicated. DDO durable evidence storage owner contract is a navigation pointer only; no productive host ledger_path. T016 learning/blueprint family absorption index is a navigation pointer only; AUTHORITY=NONE; not Master Runbook; not SSOT. RANKING_UNIVERSE_TO_FULL_CORE_SSF_HANDOFF_CONTRACT_V1 is a navigation pointer only; AUTHORITY_EFFECT=NONE; not selection authority; not a second SSOT. ELEMENTARY_DIRECTION_PRIMITIVE_V1 is a navigation pointer only; AUTHORITY_EFFECT=NONE; C1 mark-to-mark identity, not a trading-decision\
     \ owner; not Double Play / ScopeEvent / Entry consumer. Notion is not a Peak_Trade component; NOTION_PEAK_TRADE_COMPONENT=false; NOTION_REPOSITORY_MIRROR_CURRENT=false; CURRENT truth is Runtime Truth Map. Atlas is not trading authority.\n      PR #6993 atlas review: dynamic scope + bridge boundary closure; topology/navigation only; ATLAS_AUTHORITY=NONE; POST_COUNT=0.\n      PR #7036 atlas review: productive Scope-Init instrument-relative σ×mark cutover on bridge + Surface-P parity harness; navigation/evidence only; ATLAS_AUTHORITY=NONE; POST_COUNT=0."
   source_paths:
+  - docs/runbooks/canonical/PEAK_TRADE_CANONICAL_CYBERSECURITY_RUNBOOK_V2_1.md
   - docs/ops/specs/CAPABILITY_6_2_DYNAMIC_SCOPE_PERSISTENCE_BINDING_V1.md
   - docs/ops/specs/SCOPE_INIT_MIN_MAX_SEMANTIC_CLASS_OWNER_DECISION_V1.md
   - src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py
@@ -366,13 +369,14 @@ entities:
   - tests/ops/test_scoped_productive_residency_evaluation_completion_v1.py
   - tests/ops/test_scoped_residency_integrated_evaluation_propagation_v1.py
   notes: 'PR #7025: coalesce scoped integrated evaluation config at Cap21→23 from Cap2.2 rank-1 identity vs registered offline GHV datasets; fail-closed on mismatch; config propagation only; no ranking/selection/trading authority; POST_COUNT=0; ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #7028 BWP-03 propagation/coalesce wiring only; ACTIVATION_DEFAULT=OFF; SEMANTIC_CHANGE_FROM_PR7028=NONE; AUTHORITY=NONE.'
+  # atlas_entity_review: PR #7069 pre-completion P/S/T run evidence retirement; reference/fixture rebind only; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:ghv_current_residency_decoupling_v1
   kind: RUNTIME_COMPONENT
   name: GHV current residency decoupling (O5, materializers, archive root)
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7032_ghv_current_residency_migration_v1
+  modified_by: CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1
   source_paths:
   - src/ops/canonical_derived_public_md_read_model_v1/
   - src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/
@@ -1941,13 +1945,14 @@ entities:
   - src/learning/deterministic_decision_outcome_v0/authority_v0.py
   - src/experiments/canonical_experiment_identity_v1.py
   notes: Binds to the existing Canonical Experiment Identity v1 owner. Does not mint a competing identity. Does not import src.experiments. AUTHORITY_OWNER=NONE. PRODUCTIVE_AI_AUTHORITY_COUNT=0. SECOND_TRADING_AUTHORITY=false. SECOND_RISK_AUTHORITY=false. SECOND_SAFETY_AUTHORITY=false. SECOND_PROMOTION_AUTHORITY=false. RUNTIME_LINEAGE_PARTIAL=true. Atlas is not trading authority.
+  # atlas_entity_review: PR #7069 pre-completion P/S/T run evidence retirement; reference/fixture rebind only; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
 - id: CAPABILITY:integrated_offline_replay_correctness_head_bound_v1
   kind: CAPABILITY
   name: Integrated offline replay correctness HEAD-bound proof
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: INTEGRATED_SHADOW_READINESS_HEAD_BOUND_V1
+  modified_by: CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1
   source_paths:
   - config/ops/integrated_offline_replay_and_correctness_head_bound_v1.toml
   - scripts/ops/run_integrated_offline_replay_correctness_and_paper_shadow_readiness_head_bound_v1.py
@@ -4615,13 +4620,14 @@ entities:
   - config/governance/governed_productive_configuration_v1_decision_v1.json
   - config/governance/authorized_productive_parameter_seam_v1_decision_v1.json
   notes: "Configuration, authorized parameter seam, and research-evidence join epistemic lane (UNRESOLVED join vs RATIFIED productive gate telemetry); no runtime apply, enforcement, trading-decision authority shift, or external effect. ATLAS_AUTHORITY=NONE.\n      PR #6993 atlas review: dynamic scope + bridge boundary closure; topology/navigation only; ATLAS_AUTHORITY=NONE; POST_COUNT=0."
+  # atlas_entity_review: PR #7069 pre-completion P/S/T run evidence retirement; reference/fixture rebind only; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1
   kind: RUNTIME_COMPONENT
   name: Offline Funding Account balance read producer v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PENDING_CHANGE
+  modified_by: CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1
   source_paths:
   - src/ops/offline_funding_balance_read_producer_v1/__init__.py
   - src/ops/offline_funding_balance_read_producer_v1/constants_v1.py
@@ -4824,6 +4830,7 @@ entities:
   - tests/ops/test_companion_c2_fraction_to_units_runtime_completion_v1.py
   - tests/governance/test_companion_c2_fraction_to_units_runtime_completion_v1.py
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
+  # atlas_entity_review: PR #7069 pre-completion P/S/T run evidence retirement; reference/fixture rebind only; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   # atlas_entity_review: PR #7059 RC-IMP-01 resolve_host_market_sample_venue_event_time_unix_v1 + accepted C1 in run_current_productive_master_v2_runtime_cycle_v1; MATERIALLY_CHANGED wiring only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7037 WIRING_ONLY CRS boundary propagation via build_simulated_economics_crs_boundary_state_file_v1 before integrated replay; no trading-decision change; AUTHORITY=NONE; POST_COUNT=0.
@@ -4837,8 +4844,12 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7059_natural_enter_rc_imp_ord_convergence_v1
+  modified_by: CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1
   source_paths:
+  - src/ops/capability_11_long_running_testnet_proven_prep_eval_v1/verifier_v1.py
+  - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_net_mode_posside_first_party_census_v1.py
+  - src/ops/step_29u_activation_eligibility_inventory_v0.py
+  - src/ops/step_29u_audit_provenance_v0.py
   - src/ops/full_core_live_path_composition_root_v1/__init__.py
   - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
   - src/ops/full_core_live_path_composition_root_v1/checkout_independent_credential_capability_v1.py
@@ -6129,13 +6140,14 @@ entities:
   - tests/ops/test_risk_gate.py
   - tests/risk_layer/kill_switch/test_durable_execution_authority_v1.py
   notes: Inventory of the execution-side durable kill. Canonical block reader is kill_switch_should_block_trading. Operator CLI trigger/recover persist KillSwitchState via StatePersistence. Full-Core admission consumes the same FILEGATE via GATE:full_core_durable_filegate_join_v1 as typed evidence without Live arming. PEAK_KILL_SWITCH=1 is an operator deny overlay, not a second state machine. Auto-trip Threshold/Watchdog/ External trigger library was removed (KS_THIN_01); not re-wired. Does not split killswitch_blocked. Does not authorize Live flatten. Does not set LIVE_RESTART_RECONSTRUCTED. Pipeline observability cost/edge gating binds policy_v1 only; policy_v0 is removed. FILEGATE semantics and execution authority are unchanged. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
+  # atlas_entity_review: PR #7069 pre-completion P/S/T run evidence retirement; reference/fixture rebind only; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:full_core_live_path_canary_isolation_v1
   kind: RUNTIME_COMPONENT
   name: Full-core versus canary venue-proof isolation v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PENDING_CHANGE
+  modified_by: CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/canary_isolation_v1.py
   source_symbols:
