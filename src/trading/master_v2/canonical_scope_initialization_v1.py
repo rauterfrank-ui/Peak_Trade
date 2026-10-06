@@ -228,7 +228,7 @@ def clamp_scope_band(
 
 
 PRODUCTIVE_RAW_SCOPE_DISTANCE_PRODUCER_ID = (
-    "trading.master_v2.canonical_scope_initialization_v1/raw_volatility_times_price/v1"
+    "trading.master_v2.golden_geometry_engine_v1/gge_v1_volatility_times_mark_price/v1"
 )
 
 
@@ -246,60 +246,43 @@ def compute_raw_volatility_times_price_scope_distance_v1(
     market_context: CanonicalMarketContextV1,
 ) -> RawVolatilityTimesPriceScopeDistanceResultV1:
     """
-    Canonical productive Dynamic Scope magnitude: current volatility_estimate × current mark.
+    Legacy adapter: delegates to Golden Geometry Engine V1 (canonical base geometry owner).
 
     Does not apply legacy absolute min/max scope band clamps (50/500). Fail-closed when σ or P
     are unavailable or non-positive.
     """
-    from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
-        resolve_legacy_volatility_float_for_consumer_v1,
+    from trading.master_v2.golden_geometry_engine_v1 import (
+        compute_canonical_base_geometry_magnitude_from_market_context_v1,
     )
 
-    failures: list[str] = []
-    if not _positive_finite(market_context.mark_price):
-        failures.append("mark_price_non_positive")
-        return RawVolatilityTimesPriceScopeDistanceResultV1(
-            distance=None,
-            mark_price=None,
-            volatility_estimate=None,
-            failure_codes=tuple(failures),
+    gge = compute_canonical_base_geometry_magnitude_from_market_context_v1(market_context)
+    if not gge.ok or gge.output is None:
+        mark_price = (
+            float(market_context.mark_price)
+            if _positive_finite(market_context.mark_price)
+            else None
         )
+        vol: float | None = None
+        if mark_price is not None:
+            from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
+                resolve_legacy_volatility_float_for_consumer_v1,
+            )
 
-    mark_price = float(market_context.mark_price)
-    try:
-        volatility_estimate = float(resolve_legacy_volatility_float_for_consumer_v1(market_context))
-    except Exception:
-        failures.append("volatility_unavailable")
-        return RawVolatilityTimesPriceScopeDistanceResultV1(
-            distance=None,
-            mark_price=mark_price,
-            volatility_estimate=None,
-            failure_codes=tuple(failures),
-        )
-
-    if not _positive_finite(volatility_estimate):
-        failures.append("volatility_non_positive")
+            try:
+                vol = float(resolve_legacy_volatility_float_for_consumer_v1(market_context))
+            except Exception:
+                vol = None
         return RawVolatilityTimesPriceScopeDistanceResultV1(
             distance=None,
             mark_price=mark_price,
-            volatility_estimate=volatility_estimate,
-            failure_codes=tuple(failures),
+            volatility_estimate=vol,
+            failure_codes=gge.failure_codes or ("base_geometry_unavailable",),
         )
-
-    distance = volatility_estimate * mark_price
-    if not _positive_finite(distance):
-        failures.append("scope_distance_invalid")
-        return RawVolatilityTimesPriceScopeDistanceResultV1(
-            distance=None,
-            mark_price=mark_price,
-            volatility_estimate=volatility_estimate,
-            failure_codes=tuple(failures),
-        )
-
+    out = gge.output
     return RawVolatilityTimesPriceScopeDistanceResultV1(
-        distance=distance,
-        mark_price=mark_price,
-        volatility_estimate=volatility_estimate,
+        distance=float(out.magnitude),
+        mark_price=float(out.mark_price),
+        volatility_estimate=float(out.volatility_estimate),
         failure_codes=(),
     )
 
@@ -481,7 +464,22 @@ def _build_initialized_scope(
     reference_price = float(bound_context.mark_price)
     # Typed present → single owned adapter; typed absent → legacy float unchanged.
     volatility_estimate = float(resolve_legacy_volatility_float_for_consumer_v1(bound_context))
-    initial_volatility_distance = volatility_estimate * reference_price
+    from trading.master_v2.golden_geometry_engine_v1 import (
+        compute_canonical_base_geometry_magnitude_from_mark_and_volatility_v1,
+    )
+
+    gge_init = compute_canonical_base_geometry_magnitude_from_mark_and_volatility_v1(
+        instrument_id=str(bound_context.instrument_id),
+        mark_price=reference_price,
+        volatility_estimate=volatility_estimate,
+        observation_lineage_id=str(bound_context.input_digest or bound_context.context_id),
+        reference_timestamp=str(bound_context.decision_time or bound_context.market_event_time),
+    )
+    if not gge_init.ok or gge_init.output is None:
+        raise ValueError(
+            "gge_base_geometry_unavailable:" + ",".join(gge_init.failure_codes or ("unknown",))
+        )
+    initial_volatility_distance = float(gge_init.output.magnitude)
     scope_band = resolve_authoritative_scope_band_v1(initial_volatility_distance, policy)
     neutral_upper_boundary = reference_price + scope_band
     neutral_lower_boundary = reference_price - scope_band

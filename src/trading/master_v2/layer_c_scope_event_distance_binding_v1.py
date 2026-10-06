@@ -1,7 +1,8 @@
-"""Productive Layer-C event distance binding from authoritative Dynamic Scope magnitude (σ×P).
+"""Productive Layer-C event distance binding from Dynamic Scope magnitude (stateful or fresh GGE).
 
+Fresh base geometry for CMC bridges uses Golden Geometry Engine V1. Stateful paths use
+``current_hysteresis_band`` via resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1.
 Owner-authorized cutover: derive_scope_event_distances_v1 ratios 1.0 / 0.4 / 0.6 × D_t.
-Cap 6.3 fixed 200/80/120 are not CURRENT productive event-distance authority.
 """
 
 from __future__ import annotations
@@ -97,37 +98,39 @@ def resolve_layer_c_event_distances_from_mark_and_volatility_v1(
     *,
     mark_price: float,
     volatility_estimate: float,
+    instrument_id: str = "",
 ) -> LayerCEventDistancesBindingResultV1:
-    """σ×P at current canonical mark, then Layer-C derive (same magnitude SSOT as scope init)."""
-    if not _positive_finite(mark_price):
+    """Fresh base geometry via GGE V1, then Layer-C derive (productive exit/CMC path)."""
+    from trading.master_v2.golden_geometry_engine_v1 import (
+        compute_canonical_base_geometry_magnitude_from_mark_and_volatility_v1,
+    )
+
+    gge = compute_canonical_base_geometry_magnitude_from_mark_and_volatility_v1(
+        instrument_id=instrument_id or "unknown",
+        mark_price=float(mark_price),
+        volatility_estimate=float(volatility_estimate),
+    )
+    if not gge.ok or gge.output is None:
         return LayerCEventDistancesBindingResultV1(
             ok=False,
             up_distance=None,
             adverse_exit_distance=None,
             reversal_distance=None,
             dynamic_scope_magnitude=None,
-            failure_codes=("mark_price_non_positive",),
+            failure_codes=gge.failure_codes or ("base_geometry_unavailable",),
         )
-    if not _positive_finite(volatility_estimate):
-        return LayerCEventDistancesBindingResultV1(
-            ok=False,
-            up_distance=None,
-            adverse_exit_distance=None,
-            reversal_distance=None,
-            dynamic_scope_magnitude=None,
-            failure_codes=("volatility_non_positive",),
-        )
-    magnitude = float(volatility_estimate) * float(mark_price)
-    return resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1(magnitude)
+    return resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1(
+        float(gge.output.magnitude)
+    )
 
 
 def resolve_layer_c_event_distances_from_canonical_market_context_v1(
     market_context: object,
 ) -> LayerCEventDistancesBindingResultV1:
-    """Authoritative σ×P from finalized CMC, then Layer-C derive (all productive bridges)."""
+    """Fresh base geometry from finalized CMC via GGE V1 (FRESH_BASE_GEOMETRY exit path)."""
     from trading.master_v2.canonical_market_context_v1 import CanonicalMarketContextV1
-    from trading.master_v2.canonical_volatility_binding_and_provenance_transport_v1 import (
-        resolve_legacy_volatility_float_for_consumer_v1,
+    from trading.master_v2.golden_geometry_engine_v1 import (
+        compute_canonical_base_geometry_magnitude_from_market_context_v1,
     )
 
     if not isinstance(market_context, CanonicalMarketContextV1):
@@ -139,18 +142,16 @@ def resolve_layer_c_event_distances_from_canonical_market_context_v1(
             dynamic_scope_magnitude=None,
             failure_codes=("market_context_invalid",),
         )
-    try:
-        vol = float(resolve_legacy_volatility_float_for_consumer_v1(market_context))
-    except Exception:
+    gge = compute_canonical_base_geometry_magnitude_from_market_context_v1(market_context)
+    if not gge.ok or gge.output is None:
         return LayerCEventDistancesBindingResultV1(
             ok=False,
             up_distance=None,
             adverse_exit_distance=None,
             reversal_distance=None,
             dynamic_scope_magnitude=None,
-            failure_codes=("volatility_unavailable",),
+            failure_codes=gge.failure_codes or ("base_geometry_unavailable",),
         )
-    return resolve_layer_c_event_distances_from_mark_and_volatility_v1(
-        mark_price=float(market_context.mark_price),
-        volatility_estimate=vol,
+    return resolve_layer_c_event_distances_from_dynamic_scope_magnitude_v1(
+        float(gge.output.magnitude)
     )

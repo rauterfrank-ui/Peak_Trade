@@ -1039,7 +1039,20 @@ def _rules_for_cycle_v1(
             if bound_context is not None
             else float(snapshot.reference_price)
         )
-        live_raw_band = float(volatility_estimate) * mark
+        from trading.master_v2.golden_geometry_engine_v1 import (
+            compute_canonical_base_geometry_magnitude_from_mark_and_volatility_v1,
+        )
+
+        gge_band = compute_canonical_base_geometry_magnitude_from_mark_and_volatility_v1(
+            instrument_id=str(snapshot.instrument_id),
+            mark_price=mark,
+            volatility_estimate=float(volatility_estimate),
+        )
+        if not gge_band.ok or gge_band.output is None:
+            raise ValueError(
+                "gge_base_geometry_unavailable:" + ",".join(gge_band.failure_codes or ("unknown",))
+            )
+        live_raw_band = float(gge_band.output.magnitude)
         max_band_width = max(live_raw_band, float(snapshot.scope_band), 0.0)
         min_band_width = 0.0
     else:

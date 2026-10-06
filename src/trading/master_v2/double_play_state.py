@@ -236,7 +236,18 @@ def update_dynamic_boundaries(
     if rules.volatility_estimate is None:
         # Unknown volatility: freeze trailing (fail-closed; no 1.0 invention).
         return st
-    band = clamp_band_width(float(rules.volatility_estimate) * mark_price, rules, env)
+    from trading.master_v2.golden_geometry_engine_v1 import (
+        compute_canonical_base_geometry_magnitude_from_mark_and_volatility_v1,
+    )
+
+    gge = compute_canonical_base_geometry_magnitude_from_mark_and_volatility_v1(
+        instrument_id="",
+        mark_price=float(mark_price),
+        volatility_estimate=float(rules.volatility_estimate),
+    )
+    if not gge.ok or gge.output is None:
+        return st
+    band = clamp_band_width(float(gge.output.magnitude), rules, env)
     if side == ActiveSide.LONG:
         new_anchor = max(st.anchor_price, mark_price) if st.anchor_price > 0 else mark_price
         down = new_anchor - band

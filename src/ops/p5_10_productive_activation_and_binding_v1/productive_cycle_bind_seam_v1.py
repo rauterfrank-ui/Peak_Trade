@@ -297,7 +297,8 @@ def prepare_productive_layered_core_replay_bind_v1(
         observation_lineage_id=lineage_id,
         proposal_id=f"productive-dynamic-scope-{lineage_id[:48]}",
         parameter_provenance={
-            "formula": "volatility_estimate_times_mark_price",
+            "formula": "gge_v1_volatility_times_mark_price",
+            "gge_model_id": "gge_v1_volatility_times_mark_price",
             "mark_price": float(scope_magnitude.mark_price),
             "volatility_estimate": float(scope_magnitude.volatility_estimate),
             "global_usdt_clamp": "none",
