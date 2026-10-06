@@ -1122,6 +1122,9 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         append_intelligence_lineage_observability_from_productive_cycle_v1,
     )
 
+    _lane_state_root = None
+    if ddo_durable_evidence_ledger_path is not None:
+        _lane_state_root = ddo_durable_evidence_ledger_path.parent.parent
     append_intelligence_lineage_observability_from_productive_cycle_v1(
         cycle_id=cycle_id,
         instrument_id=instrument_id,
@@ -1129,6 +1132,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         ddo_capture_summary=ddo_summary,
         ddo_offline_export_handoff=ddo_export_handoff,
         replay=replay,
+        lane_state_root=_lane_state_root,
     )
     if replay.intermediate is not None:
         commit_host_confirmation_after_replay_v1(
