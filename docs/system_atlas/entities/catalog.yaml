@@ -3869,12 +3869,13 @@ entities:
   # atlas_entity_review: PR #7066 PRE_EXTERNAL convergence report correlates S5 cycle_index to ordinal live-c1 DPO; NATURAL_ENTER_OBSERVED accounting only; no trading/threshold/selection change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7073 wires cross-session Natural-Enter pending outcome create/resolve on PRE_EXTERNAL and observation poll; harness/persistence only; no trading/threshold/PRE_EXTERNAL disposition change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7078 PRE_EXTERNAL report get_count read-only delegation on pending-outcome observation wrapper; reporting observability only; no poll/trading/threshold change; AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #7080 PRE_EXTERNAL DPO reporting correlation prefers canonical lane trading_epoch over s5_cycle_index; reporting only; no trading/threshold change; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive persistent Natural-ENTER policy-governed live Fresh-C1 continuous run v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7073_FULL_SYSTEM_NATURAL_ENTER_CROSS_SESSION_OUTCOME_CLOSURE_V1
+  modified_by: CHANGE:pr_7080_session004_t2_diagnostic_evidence_closure_v1
   source_paths:
   - scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py
   - scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py
@@ -3896,6 +3897,7 @@ entities:
   - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_GOVERNED_CONTINUOUS_CYCLE_ORCHESTRATOR_V1.md
   - tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py
   - tests/ops/test_pre_external_convergence_natural_enter_reporting_v1.py
+  - tests/ops/test_session004_t2_exception_diagnostic_and_dpo_correlation_v1.py
   - tests/ops/test_pre_external_convergence_observation_source_get_count_delegation_v1.py
   - tests/ops/test_natural_enter_cross_session_outcome_closure_v1.py
   - tests/ops/full_core_live_path_composition_root_v1/test_productive_continuous_observation_budget_v1.py
@@ -4043,12 +4045,13 @@ entities:
   # atlas_entity_review: PR #7028 BWP-03 dependency-closure only; launcher/residency/F1-M9 wiring; no override semantic change; SEMANTIC_CHANGE_FROM_PR7028=NONE; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7066 convergence launcher path only; quantity override module unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7073 convergence launcher path only; quantity override module unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #7080 convergence launcher path only; quantity override module unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive forensic executable quantity override v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7019_FORENSIC_EXECUTABLE_QUANTITY_PRE_EXTERNAL_V1
+  modified_by: CHANGE:pr_7080_session004_t2_diagnostic_evidence_closure_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/current_productive_forensic_executable_quantity_override_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
@@ -4881,6 +4884,7 @@ entities:
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
   # atlas_entity_review: PR #7069 pre-completion P/S/T run evidence retirement; reference/fixture rebind only; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  # atlas_entity_review: PR #7080 governed-cycle T2 unexpected-exception diagnostic evidence capture; fail-closed T2_CYCLE_EXCEPTION disposition unchanged; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7079 fresh-pretrade required GET adds USDC-USDT-SWAP conversion-pair instruments fetch group; wiring-only GATE_006 closure; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7059 RC-IMP-01 resolve_host_market_sample_venue_event_time_unix_v1 + accepted C1 in run_current_productive_master_v2_runtime_cycle_v1; MATERIALLY_CHANGED wiring only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7037 WIRING_ONLY CRS boundary propagation via build_simulated_economics_crs_boundary_state_file_v1 before integrated replay; no trading-decision change; AUTHORITY=NONE; POST_COUNT=0.
@@ -4894,7 +4898,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1
+  modified_by: CHANGE:pr_7080_session004_t2_diagnostic_evidence_closure_v1
   source_paths:
   - src/ops/capability_11_long_running_testnet_proven_prep_eval_v1/verifier_v1.py
   - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_net_mode_posside_first_party_census_v1.py

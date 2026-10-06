@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=6
-ATLAS_CHANGED_RELATION_COUNT=4
+ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7079_conversion_pair_monetary_metadata_closure_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7080_session004_t2_diagnostic_evidence_closure_v1`.
 
 ## Workflow
 
@@ -40,21 +40,15 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CAPABILITY:okx_eea_private_account_state_runtime_v1` |
-| `GATE:full_core_fresh_pretrade_runtime_get_v1` |
-| `GATE:full_core_live_account_bound_v1` |
-| `GATE:full_core_owner_one_shot_permit_v1` |
+| `RUNTIME_COMPONENT:current_productive_forensic_executable_quantity_override_v1` |
+| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
 | `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
-| `RUNTIME_COMPONENT:governed_productive_monetary_normalization_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:r_full_core_fresh_pretrade_get_composes_permit` |
-| `REL:r_full_core_live_account_bound_composes_fresh_get` |
-| `REL:r_full_core_path_calls_fresh_pretrade_runtime_get` |
-| `REL:s_private_state_runtime_adapts_fresh_pretrade_get` |
+| _(none)_ |
 
 ## NEW_RELATIONS
 
@@ -100,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7079: conversion-pair monetary metadata productive GET + handoff separation; wiring-only closure for GATE_006; no trading authority change; AUTHORITY=NONE; POST_COUNT=0.
-- introduced_by=CHANGE:pr_7079_conversion_pair_monetary_metadata_closure_v1
-- modified_by=CHANGE:pr_7079_conversion_pair_monetary_metadata_closure_v1
+- PR #7080: T2 unexpected-exception forensic evidence on governed cycle orchestrator; PRE_EXTERNAL Natural-Enter DPO correlation prefers lane trading_epoch over s5_cycle_index; observability/reporting only; fail-closed T2 disposition unchanged; AUTHORITY=NONE; POST_COUNT=0.
+- introduced_by=CHANGE:pr_7080_session004_t2_diagnostic_evidence_closure_v1
+- modified_by=CHANGE:pr_7080_session004_t2_diagnostic_evidence_closure_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

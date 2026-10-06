@@ -835,6 +835,13 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_governed_productive_monetary_normalization_v1.py
   notes: 'PR #7079: productive Fresh Pretrade GET for USDC-USDT-SWAP conversion-pair instrument metadata + common-epoch handoff separates bound vs pair payloads; closes GATE_006 INSTRUMENT_MONETARY_IDENTITY_MISSING wiring on main; dedup GET budget 8→9; no monetary semantics/threshold/POST change; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7080_session004_t2_diagnostic_evidence_closure_v1
+  from: 889b0d04c3d1697aaa98194f82386a2e017edf60
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_session004_t2_exception_diagnostic_and_dpo_correlation_v1.py
+  notes: 'PR #7080: Session 004 T2_CYCLE_EXCEPTION diagnostic evidence preservation (fail-closed unchanged) + PRE_EXTERNAL DPO reporting correlation to canonical trading_epoch; no functional T2 root-cause repair; no trading authority/semantics change; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
 - id: CHANGE:legacy_paper_shadow_daemon_retirement_bp_v1
   from: 1bac0d93302c6e589effafe46fccb055d82bd44e
   to: PENDING_CHANGE
