@@ -2,9 +2,22 @@
 
 ```text
 AUTHORITY=NONE
+MAP_AUTHORITY=NONE
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 NOT_A_RUNTIME_AUTHORITY=true
 NOT_A_UNIVERSE_RATIFICATION=true
+NOT_OPERATIONAL_SSOT=true
+TRADING_AUTHORITY=false
+SELECTION_AUTHORITY=false
+BINDING_AUTHORITY=false
+RUNTIME_AUTHORITY=false
+CONFIGURATION_AUTHORITY=false
+GOVERNANCE_DECISION_AUTHORITY=false
+DESCRIPTIVE_CURRENT_CARTOGRAPHY=true
+NAVIGATION_AND_UNDERSTANDING_ONLY=true
+ONE_PERSISTED_CURRENT_UNIVERSE_CARTOGRAPHY=true
+ONE_AUTHORITATIVE_UNIVERSE_MAP=false
+CURRENT_UNIVERSE_LANDSCAPE_IS_AUTHORITY=false
 EVIDENCE_BASELINE_SHA=6422bfde79fd5aa45d2939a821980abf9aa4e3df
 EVIDENCE_BASELINE_TREE_SHA=6422bfde79fd5aa45d2939a821980abf9aa4e3df
 ARCHITECTURE_FIXPOINT_SOURCE=FINAL_CURRENT_ARCHITECTURE_CLOSURE_FIXPOINT_ADJUDICATION_V1
@@ -12,9 +25,12 @@ ARCHITECTURE_CLOSURE=PROVEN_CURRENT
 MATERIAL_ARCHITECTURE_BLOCKER_COUNT=0
 ```
 
-Persisted adjudicated **CURRENT** architecture and evidence snapshot. This document
-is navigation and convergence metadata only. It does **not** mint runtime
-authority, permits, Testnet/Live enablement, or external-effect authorization.
+Persisted **descriptive CURRENT** Universe/Non-Universe cartography at the architecture
+fixpoint. This document and `source_v1.json` are for navigation and understanding only.
+They are **not** operational SSOT, not an authoritative universe map, and do **not**
+mint runtime authority, selection/binding authority, permits, Testnet/Live enablement,
+or external-effect authorization. On conflict, this snapshot **always loses** against
+the Master Runbook, CURRENT code/contracts, and proven evidence.
 
 ## Machine-readable source
 
@@ -78,6 +94,15 @@ Full-Core constants and post-6941 seam adjudication records.
 4. Use System Atlas generated views (`ATLAS_AUTHORITY=NONE`) for topology wiring.
 5. Resolve conflicts against Master Runbook operational semantics and canonical
    code/config evidence — not against this snapshot alone.
+
+## Universe map consolidation v1 (descriptive only)
+
+After crosswalk against census graph, CSIA, META/MF domain contracts, and POST-6828
+ratifications: **one** tracked persisted CURRENT universe/plane cartography remains this
+snapshot pair. Consolidation does **not** promote the landscape to authority. Retained
+separate artifacts (not retired) still own normative or index functions — e.g. census
+object index (`universe_landscape_snapshot_ref`), CSIA owner graph, META three-universe
+planning spec, universe/ranking/selection/binding domain ratification JSON.
 
 ## Cartography refresh @ 6422bfde (navigation only)
 

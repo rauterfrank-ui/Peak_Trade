@@ -225,17 +225,19 @@ Runtime truth is owned by code, config, persistence, tests, and sealed
 evidence on current `origin/main`. This runbook owns operational semantic
 interpretation. Chat memory is not authority.
 
-### CURRENT Universe Landscape fixpoint (navigation anchor)
+### CURRENT Universe Landscape fixpoint (descriptive cartography anchor)
 
-Adjudicated **CURRENT** architecture at baseline `dfcf4d04b8400763bee6ab0b465fa182927dea75`
-(`ARCHITECTURE_CLOSURE=PROVEN_CURRENT`, `MATERIAL_ARCHITECTURE_BLOCKER_COUNT=0`) is
-persisted for navigation — not runtime authorization — in:
+**Descriptive CURRENT** Universe/Non-Universe cartography (`ONE_PERSISTED_CURRENT_UNIVERSE_CARTOGRAPHY=true`;
+`ONE_AUTHORITATIVE_UNIVERSE_MAP=false`; `CURRENT_UNIVERSE_LANDSCAPE_IS_AUTHORITY=false`;
+`MAP_AUTHORITY=NONE`) is persisted for navigation and understanding — **not** operational
+SSOT and **not** runtime authorization — in:
 
 - [`docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md`](../../governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md)
 - [`config/governance/current_universe_landscape_snapshot_v1/source_v1.json`](../../../config/governance/current_universe_landscape_snapshot_v1/source_v1.json)
 
-Use the Authority Map and Census graph as complementary navigation (`AUTHORITY=NONE`;
-graph loses on conflict). Standing productive safety remains
+On conflict this landscape loses to this runbook, CURRENT code/contracts, and proven
+evidence. Use the Authority Map and Census graph as complementary navigation
+(`AUTHORITY=NONE`; graph loses on conflict). Standing productive safety remains
 `PRE_EXTERNAL_TERMINAL=true`, `POST_ALLOWED=false`, `EXTERNAL_EFFECT_AUTHORIZED=false`.
 
 **Productive reconciliation → Master V2 (PR #6974, CURRENT):** Cap 1.1 reconciliation

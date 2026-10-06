@@ -5,10 +5,61 @@
   "runtime_authorization_effect": "NONE",
   "not_a_runtime_authority": true,
   "not_a_universe_ratification": true,
+  "not_operational_ssot": true,
+  "companion_navigation_doc": "docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md",
+  "cartography_semantics": {
+    "AUTHORITY": "NONE",
+    "MAP_AUTHORITY": "NONE",
+    "TRADING_AUTHORITY": false,
+    "SELECTION_AUTHORITY": false,
+    "BINDING_AUTHORITY": false,
+    "RUNTIME_AUTHORITY": false,
+    "CONFIGURATION_AUTHORITY": false,
+    "GOVERNANCE_DECISION_AUTHORITY": false,
+    "DESCRIPTIVE_CURRENT_CARTOGRAPHY": true,
+    "NAVIGATION_AND_UNDERSTANDING_ONLY": true,
+    "ONE_PERSISTED_CURRENT_UNIVERSE_CARTOGRAPHY": true,
+    "ONE_AUTHORITATIVE_UNIVERSE_MAP": false,
+    "CURRENT_UNIVERSE_LANDSCAPE_IS_AUTHORITY": false,
+    "CONFLICT_LOSING_AUTHORITY": "Master Runbook, code, contracts, proven evidence"
+  },
   "evidence_baseline_sha": "6422bfde79fd5aa45d2939a821980abf9aa4e3df",
   "evidence_baseline_tree_sha": "6422bfde79fd5aa45d2939a821980abf9aa4e3df",
   "cartography_refresh_note": "Navigation-only realignment at origin/main 6422bfde (GGE non-universe subsystem, Full-Core GHV carrier, PRE_EXTERNAL pin fix); AUTHORITY=NONE",
-  "ssot_companion_doc": "docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md",
+  "universe_map_consolidation_v1": {
+    "consolidation_baseline_sha": "6422bfde79fd5aa45d2939a821980abf9aa4e3df",
+    "persisted_current_universe_cartography_count": 1,
+    "canonical_persisted_cartography_artifact_id": "current_universe_landscape_snapshot_v1",
+    "legacy_persisted_universe_maps_retired": [],
+    "legacy_retention_reason_summary": "No second tracked persisted universe/plane landscape JSON on origin/main; census/CSIA/atlas/META/MF domain contracts retain separate CURRENT functions (navigation index, owner graph, normative contracts).",
+    "unique_descriptive_semantics_merged": [
+      "Explicit non-authority cartography pins (MAP_AUTHORITY=NONE)",
+      "Planning-universe slice crosswalk for DDO/META (descriptive only; authority remains in code/spec contracts)"
+    ],
+    "related_planning_universe_slices_descriptive_only": {
+      "SELF_LEARNING_UNIVERSE": {
+        "role": "Outcome/evaluation to learning evidence export",
+        "productive_authority": "NONE",
+        "normative_spec": "docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md",
+        "landscape_surface_anchor": "SURFACE:TD-DDO-LEARNING"
+      },
+      "OPTIMIZATION_UNIVERSE": {
+        "role": "Offline research input validation only",
+        "productive_authority": "NONE",
+        "normative_spec": "docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_BOUNDARY_AND_LEARNING_EVIDENCE_EXPORT_NORMATIVE_V1.md",
+        "landscape_surface_anchor": "SURFACE:TD-DDO-LEARNING"
+      },
+      "GOVERNANCE_RISK": {
+        "role": "Unchanged promotion/risk/execution gates",
+        "productive_authority": "unchanged_by_meta_slice",
+        "landscape_surface_anchor": null
+      }
+    },
+    "domain_ratification_cross_refs_not_duplicate_maps": [
+      "config/governance/universe_ranking_selection_binding_domain_ratification_v1.json",
+      "config/governance/meta_learning_optimization_universe_boundary_decision_v1.json"
+    ]
+  },
   "architecture_fixpoint": {
     "source": "FINAL_CURRENT_ARCHITECTURE_CLOSURE_FIXPOINT_ADJUDICATION_V1",
     "closure": "PROVEN_CURRENT",
