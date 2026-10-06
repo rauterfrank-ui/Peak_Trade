@@ -758,3 +758,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: src/trading/master_v2/golden_geometry_engine_v1.py
   notes: 'PR #7064: Golden Geometry Engine V1 wiring with D_gge=volatility_estimate×mark_price; SAFE CORRECTION reverted unauthorized CLASS C validation semantics; reference semantic equivalence to authorized GGE baseline; differential replay A–G identical; GGE test suite 153/153 local pass; clean-core seal + atlas impact closure in same PR; no POST/external effect; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7065_owner_go_baseline_rebind_post_7064_v1
+  from: c752284ac86af46d04244421bb0e30c425d619b8
+  to: dd4c23da1f3f519413fe8c9f04ddd0050ff3f026
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json
+  notes: 'PR #7065: Owner-GO revalidation rebinding bounded continuous-run + Fresh-C1 GET decision baseline from c752284 to post-PR7064 dd4c23; clears BASELINE_LINEAGE_IMMUTABLE_SURFACE_DRIFT for S6 preflight; governance/spec/test/Atlas provenance only; no trading semantics change; no authority expansion; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

@@ -1,39 +1,24 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "0491e3cc0df8fe9f13d93dc1ca49eb00949dd811",
+  "base_sha": "dd4c23da1f3f519413fe8c9f04ddd0050ff3f026",
   "changed_paths": [
-    "config/governance/clean_core_seal_manifest_v1.json",
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/source_v1.json",
+    "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/technical_canonical_wiring_authorization_v1.json",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "docs/system_atlas/relations/runtime.yaml",
-    "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "src/ops/p5_10_productive_activation_and_binding_v1/productive_cycle_bind_seam_v1.py",
-    "src/trading/master_v2/canonical_scope_initialization_v1.py",
-    "src/trading/master_v2/double_play_state.py",
-    "src/trading/master_v2/golden_geometry_engine_v1.py",
-    "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py",
-    "src/trading/master_v2/layer_c_scope_event_distance_binding_v1.py",
-    "tests/trading/master_v2/test_double_play_asymmetric_dynamic_scope_recovery_v1.py",
-    "tests/trading/master_v2/test_dynamic_trailing_reversal_scope_owner_v1.py",
-    "tests/trading/master_v2/test_golden_geometry_engine_v1.py"
+    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py"
   ],
-  "changed_paths_sha256": "1aeef752811ff4c334a90efcf80dd7d280b760c128cf2c464e1e073d7f51829c",
+  "changed_paths_sha256": "a93cc2b8a147fe98b79f2489f8fecd649b1752c304e8db93d1d3f58e952fec1b",
   "evidence_refs": [
-    "src/trading/master_v2/golden_geometry_engine_v1.py",
-    "config/governance/technical_canonical_wiring_authorization_v1.json"
+    "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
+    "docs/system_atlas/provenance/changes.yaml",
+    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py"
   ],
-  "reason": "PR #7064 Golden Geometry Engine V1 wiring closure: GGE magnitude owner (D_gge=volatility_estimate×mark_price) and semantics-neutral technical canonical wiring; SAFE CORRECTION baseline; Entry/Exit/Reversal/MV2 decision semantics unchanged at governance boundary; technical wiring authorization extended; representation-only law-map update; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #7065 Owner-GO baseline lineage rebind post-#7064; governance and Atlas provenance only; no Current Law semantic or authority change.",
   "selector_used_as_law_impact_authority": false,
-  "verdict": "LAW_MAP_UPDATE_REQUIRED"
+  "verdict": "NO_LAW_IMPACT"
 }
