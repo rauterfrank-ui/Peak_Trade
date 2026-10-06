@@ -34,7 +34,10 @@ from src.ops.step_29u_economic_validity_readiness_v0 import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-CANONICAL_SOAK = REPO_ROOT / "evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z"
+CANONICAL_SOAK = (
+    REPO_ROOT
+    / "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/step_29u_post_merge_shadow_soak_contract_v1"
+)
 CLI = REPO_ROOT / "scripts/ops/run_step_29u_activation_eligibility_inventory_v0.py"
 SRC = REPO_ROOT / "src/ops/step_29u_activation_eligibility_inventory_v0.py"
 

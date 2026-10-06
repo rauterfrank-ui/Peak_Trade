@@ -60,7 +60,7 @@ BINDING_INVENTORY_RUNBOOK = (
     "docs/ops/runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md"
 )
 READINESS_CONFIG_RELPATH = "config/ops/shadow_preparation_readiness_gate_v0.toml"
-CANONICAL_SOAK_RELPATH = "evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z"
+CANONICAL_SOAK_RELPATH = "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/step_29u_post_merge_shadow_soak_contract_v1"
 EXPECTED_SOAK_TESTED_HEAD_SHA = "cd6d465c83c6c65733e5d85238aa223d4bffd548"
 
 STATE_SATISFIED = "SATISFIED"

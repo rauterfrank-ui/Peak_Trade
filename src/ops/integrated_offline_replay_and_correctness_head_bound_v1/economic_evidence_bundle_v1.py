@@ -45,9 +45,7 @@ BUNDLE_SCHEMA_ID = "ops.integrated_paper_shadow_economic_evidence_bundle_head_bo
 BUNDLE_ARTIFACT = "INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE_BUNDLE.json"
 BUNDLE_MANIFEST = "evidence_manifest.sha256"
 
-PREDECESSOR_MD_EVIDENCE_RELPATH = (
-    "evidence/ops/integrated_paper_shadow_productive_6h_technical_closeout"
-)
+PREDECESSOR_MD_EVIDENCE_RELPATH = "RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)"
 
 
 def _relative_or_absolute(repo_root: Path, path: Path) -> str:

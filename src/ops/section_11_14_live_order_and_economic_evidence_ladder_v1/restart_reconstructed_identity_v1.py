@@ -24,9 +24,7 @@ from src.ops.section_11_14_live_order_and_economic_evidence_ladder_v1.fill_obser
 )
 
 BOUND_ACCOUNTING_EVIDENCE_RUN_ID = "20260904T185000Z"
-TESTNET_RESTART_PROVEN_EVIDENCE_RELPATH = (
-    "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/"
-)
+TESTNET_RESTART_PROVEN_EVIDENCE_RELPATH = "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/section_11_12_testnet_restart_negation_stub/"
 TESTNET_RESTART_PROVEN_INSTID = "BTC-USD_UM_XPERP-310328"
 TESTNET_RESTART_PROVEN_ENVIRONMENT = "DEMO"
 KNOWN_LIVE_EVIDENCE_RUN_IDS: tuple[str, ...] = (

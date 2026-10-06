@@ -89,7 +89,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - Flags: `TECHNICAL_RUNTIME_EVIDENCE=PASS`; `ECONOMIC_EVIDENCE_COMPLETE=false`;
   `ECONOMIC_VALIDITY_PASS=false`; `PROMOTION_ELIGIBLE=false`
 - Repo pointer:
-  [`evidence/ops/integrated_paper_shadow_productive_6h_technical_closeout/20260730T084108Z/`](../../../evidence/ops/integrated_paper_shadow_productive_6h_technical_closeout/20260730T084108Z/)
+  [`RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/20260730T084108Z/`](../../../RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/20260730T084108Z/)
 - Documentation Anchor:
   [`docs&#47;ops&#47;EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout`](../EVIDENCE_INDEX.md#ev-20260730-integrated-paper-shadow-productive-6h-technical-runtime-evidence-closeout)
 
@@ -222,7 +222,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - Guarantees observed: no orders, no network, no runtime/scheduler activation;
   BTC/Spot/Kraken-legacy excluded.
 - Durable evidence:
-  [`evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z/`](../../../evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z/)
+  [`tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/step_29u_post_merge_shadow_soak_contract_v1/`](../../../tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/step_29u_post_merge_shadow_soak_contract_v1/)
 - Owner surfaces:
   [STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md](../runbooks/STEP_29U_CANONICAL_BINDING_AND_IMPLEMENTATION_INVENTORY_V0.md),
   [SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md](../runbooks/SHADOW_PREPARATION_READINESS_GATE_CONTRACT_V0.md).
@@ -292,7 +292,7 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 - Soak: 600.370976375s monotonic; **1287/1287** successful complete HOLD cycles;
   BINDING_PASS=1287; orders/network/runtime activation = **false**.
 - Durable evidence:
-  [`evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/`](../../../evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/)
+  [`RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/`](../../../RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/)
   (source soak manifest SHA256
   `c1aa75a0794488f3fb9a9b76f9734779f0ab65d00b8be7c81f8fa7654de8747a`).
 - Owner status surface:

@@ -725,8 +725,8 @@ def test_qualitative_wallclock_acceptance_not_removed() -> None:
 def test_historical_abort_session_not_reclassified_by_duration_contract() -> None:
     abort_root = (
         REPO_ROOT
-        / "evidence/ops/integrated_paper_shadow_observation_wallclock_session_execution_v1"
-        / "20260814T131252Z"
+        / "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1"
+        / "integrated_paper_shadow_wallclock_abort_contract_stub"
     )
     machine = (
         abort_root

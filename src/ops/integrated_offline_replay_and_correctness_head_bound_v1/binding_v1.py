@@ -80,6 +80,7 @@ def resolve_configured_economic_bundle_evidence_relpath_v1(
     if rel:
         return rel
     return (
-        "evidence/ops/integrated_paper_shadow_economic_evidence_bundle_head_bound_v1/"
+        "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/"
+        "integrated_paper_shadow_economic_bundle_contract_v1/"
         f"{fallback_head_sha}"
     )

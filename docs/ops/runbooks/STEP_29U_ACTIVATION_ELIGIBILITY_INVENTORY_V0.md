@@ -50,8 +50,8 @@ IMPLEMENTATION_AUTHORIZATION_IS_NOT_ACTIVATION_GO=true
 | Input | Path |
 |---|---|
 | Offline capability evidence | `evidence/ops/step_29u_offline_capability/2026-07-25_capability_hold_cycle/` |
-| Canonical binding evidence | `evidence/ops/step_29u_canonical_shadow_binding/2026-07-26_capability_v0/` |
-| Post-merge soak | `evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z/` |
+| Canonical binding evidence | `tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/step_29u_canonical_shadow_binding_contract_v1/` |
+| Post-merge soak | `tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/step_29u_post_merge_shadow_soak_contract_v1/` |
 | Readiness gate config | `config/ops/shadow_preparation_readiness_gate_v0.toml` |
 | Fleet economic FAIL closeout | `config/research/post_pr4940_final_research_fleet_negative_evidence_terminalization_and_next_material_research_boundary_v0.json` |
 | Economic policy identity | `src/backtest/economic_validity_policy_v1.py` |

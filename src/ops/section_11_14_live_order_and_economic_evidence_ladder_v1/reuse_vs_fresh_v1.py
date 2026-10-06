@@ -61,7 +61,7 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
             ),
             evidence_paths=(
                 "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-                "evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1/20260811T211828Z/",
+                "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/section_11_13_3_live_shadow_reconciliation_contract_v1/",
             ),
         ),
         _row(
@@ -501,7 +501,7 @@ def build_reuse_vs_fresh_matrix_v1() -> dict[str, Any]:
                 "evidence field. Field-name similarity is not semantic identity."
             ),
             evidence_paths=(
-                "evidence/ops/section_11_12_testnet_restart_proven_v1/20260810T223606Z/",
+                "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/section_11_12_testnet_restart_negation_stub/",
             ),
         ),
         _row(

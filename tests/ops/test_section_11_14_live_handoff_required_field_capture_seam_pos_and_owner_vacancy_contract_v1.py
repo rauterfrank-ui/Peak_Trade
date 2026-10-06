@@ -204,7 +204,8 @@ def test_reject_testnet_state_substitution() -> None:
         handoff=_identity_handoff(),
         source_kind=ADMISSIBLE_SOURCE_KIND,
         source_path=(
-            "evidence/ops/section_11_12_testnet_restart_proven_v1/"
+            "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/"
+            "section_11_12_testnet_restart_negation_stub/"
             "20260810T223606Z/durable_state/restart_with_open_position_pre_restart_v1.json"
         ),
     )

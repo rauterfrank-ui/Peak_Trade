@@ -179,80 +179,80 @@ okx_named_files:
   - docs/ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_EEA_DEMO_XPERP_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md
   - docs/ops/specs/CAPABILITY_11_SECTION_11_12_8_OKX_GLOBAL_DEMO_VENUE_HOST_ACCOUNT_INSTRUMENT_BINDING_V1.md
   - docs/webui/observability/OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/DESTINATION_RATIONALE.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/EVIDENCE_MANIFEST_SHA256.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/README.md
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/evidence_manifest.sha256
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/git_state.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/interpretation.md
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/END_MONOTONIC.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/END_UTC.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/EVIDENCE_MANIFEST_SHA256.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/MANIFEST.sha256
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/START_MONOTONIC.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/START_UTC.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/command.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/env_names_relevant.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/git_sha.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/git_status_after.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/git_status_before.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/heartbeat.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/invocations_sample/inv_0001.json
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/invocations_sample/inv_0001.stderr.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/invocations_sample/inv_0001.stdout.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/invocations_sample/inv_0002.json
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/invocations_sample/inv_0002.stderr.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/invocations_sample/inv_0002.stdout.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/invocations_sample/inv_0644.json
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/invocations_sample/inv_0644.stderr.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/invocations_sample/inv_0644.stdout.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/invocations_sample/inv_1286.json
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/invocations_sample/inv_1286.stderr.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/invocations_sample/inv_1286.stdout.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/invocations_sample/inv_1287.json
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/invocations_sample/inv_1287.stderr.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/invocations_sample/inv_1287.stdout.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/post_merge_sha.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/progress.jsonl
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/progress_300s.json
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/python_version.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/soak_summary.json
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/primary/soak_worktree.txt
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/source_inventory.json
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/source_manifest.sha256
-  - evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak/summary.json
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/EXECUTION_STARTED.marker
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/LAUNCH_META.sanitized.json
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/SANITIZED_FINAL_REPORT.json
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/derived_forensic_closeout_v1/ACCEPTANCE_MATRIX.json
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/derived_forensic_closeout_v1/EXCHANGE_REJECT_CLASSIFICATION.json
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/derived_forensic_closeout_v1/FORENSIC_EVALUATION_REPORT.md
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/derived_forensic_closeout_v1/MACHINE_READABLE_CLOSEOUT.json
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/derived_forensic_closeout_v1/MANIFEST.sha256
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/derived_forensic_closeout_v1/NOTION_MIRROR_ATTESTATION.json
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/derived_forensic_closeout_v1/PRIMARY_EVIDENCE_MANIFEST.json
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/derived_forensic_closeout_v1/PRIMARY_EVIDENCE_SHA256SUMS.txt
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/derived_forensic_closeout_v1/PROVENANCE_INDEX.json
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/derived_forensic_closeout_v1/REDACTION_AND_SECRET_HANDLING_ATTESTATION.md
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/durable_state/actual_start_durable_state_v1.json
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/entrypoint.pid
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/entrypoint_stdout.jsonl
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/entrypoint_stdout.sanitized.json
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/MANIFEST.sha256
-  - evidence/ops/section_11_12_8_bounded_okx_eea_demo_xperp_campaign_execute_v1/20260810T181703Z/execution_evidence/productive_execution_evidence_v1.json
-  - evidence/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/20260810T171225Z/BINDING_CONTRACT_PROOF.json
-  - evidence/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/20260810T171225Z/MANIFEST.sha256
-  - evidence/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/20260810T171225Z/SUMMARY.json
-  - evidence/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/20260810T171225Z/THREAT_MODEL_DELTA.json
-  - evidence/ops/section_11_12_8_okx_eea_demo_xperp_venue_host_account_instrument_binding_v1/20260810T171225Z/claims.json
-  - evidence/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/20260810T151323Z/BASELINE_VALIDATION.txt
-  - evidence/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/20260810T151323Z/BINDING_CONTRACT_PROOF.json
-  - evidence/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/20260810T151323Z/MANIFEST.sha256
-  - evidence/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/20260810T151323Z/OWNER_INTERVENTION_REQUIRED.json
-  - evidence/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/20260810T151323Z/SANITIZED_FINAL_REPORT.json
-  - evidence/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/20260810T151323Z/SUMMARY.json
-  - evidence/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/20260810T151323Z/THREAT_MODEL_DELTA.json
-  - evidence/ops/section_11_12_8_okx_global_demo_venue_host_account_instrument_binding_v1/20260810T151323Z/claims.json
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/DESTINATION_RATIONALE.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/EVIDENCE_MANIFEST_SHA256.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/README.md
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/evidence_manifest.sha256
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/git_state.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/interpretation.md
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/END_MONOTONIC.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/END_UTC.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/EVIDENCE_MANIFEST_SHA256.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/MANIFEST.sha256
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/START_MONOTONIC.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/START_UTC.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/command.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/env_names_relevant.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/git_sha.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/git_status_after.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/git_status_before.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/heartbeat.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/invocations_sample/inv_0001.json
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/invocations_sample/inv_0001.stderr.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/invocations_sample/inv_0001.stdout.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/invocations_sample/inv_0002.json
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/invocations_sample/inv_0002.stderr.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/invocations_sample/inv_0002.stdout.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/invocations_sample/inv_0644.json
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/invocations_sample/inv_0644.stderr.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/invocations_sample/inv_0644.stdout.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/invocations_sample/inv_1286.json
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/invocations_sample/inv_1286.stderr.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/invocations_sample/inv_1286.stdout.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/invocations_sample/inv_1287.json
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/invocations_sample/inv_1287.stderr.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/invocations_sample/inv_1287.stdout.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/post_merge_sha.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/progress.jsonl
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/progress_300s.json
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/python_version.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/soak_summary.json
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/primary/soak_worktree.txt
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/source_inventory.json
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/source_manifest.sha256
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)/summary.json
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
+  - RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)
   - evidence/ops/section_11_13_5_economic_baseline_and_okx_clearance_v1/20260812T153425Z/ECONOMIC_BASELINE_AND_OKX_CLEARANCE_RESULT.json
   - evidence/ops/section_11_13_5_economic_baseline_and_okx_clearance_v1/20260812T153425Z/EXCHANGE_SNAPSHOT.sanitized.json
   - evidence/ops/section_11_13_5_economic_baseline_and_okx_clearance_v1/20260812T153425Z/LIVE_CANARY_CYBERSECURITY_GATE.json

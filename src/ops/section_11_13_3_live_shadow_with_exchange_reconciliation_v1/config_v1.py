@@ -222,7 +222,10 @@ def example_incomplete_config_dict_v1() -> dict[str, Any]:
         "max_request_count": DEFAULT_MAX_REQUEST_COUNT,
         "timeout_seconds": DEFAULT_TIMEOUT_SECONDS,
         "max_retries": DEFAULT_MAX_RETRIES,
-        "evidence_root": "evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1",
+        "evidence_root": (
+            "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/"
+            "section_11_13_3_live_shadow_reconciliation_contract_v1"
+        ),
         "evidence_version": "section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1",
         "expected_live_marker": "LIVE",
         "expected_demo_marker_absent": True,

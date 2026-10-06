@@ -339,10 +339,7 @@ POST_ENDPOINTS_GATED: tuple[str, ...] = (
 REUSED_SECTION_11_13_4_BINDING_SOURCE = (
     "evidence/ops/section_11_13_4_live_dry_run_order_plan_proven_v1/20260811T230805Z/"
 )
-REUSED_SECTION_11_13_3_BINDING_SOURCE = (
-    "evidence/ops/section_11_13_3_live_shadow_with_exchange_reconciliation_proven_v1/"
-    "20260811T211828Z/"
-)
+REUSED_SECTION_11_13_3_BINDING_SOURCE = "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/section_11_13_3_live_shadow_reconciliation_contract_v1/"
 REUSED_BINDING_VENUE = "OKX"
 REUSED_BINDING_ENTITY = "OKX Europe Limited"
 REUSED_BINDING_REGION = "EEA/DE"

@@ -47,8 +47,8 @@ VALID_STATUSES = frozenset(
 )
 
 OFFLINE_CAPABILITY_RELPATH = CANONICAL_STEP_29U_EVIDENCE_RELPATH
-BINDING_EVIDENCE_RELPATH = "evidence/ops/step_29u_canonical_shadow_binding/2026-07-26_capability_v0"
-SOAK_EVIDENCE_RELPATH = "evidence/ops/step_29u_post_merge_shadow_soak/20260725T222915Z"
+BINDING_EVIDENCE_RELPATH = "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/step_29u_canonical_shadow_binding_contract_v1"
+SOAK_EVIDENCE_RELPATH = "tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/step_29u_post_merge_shadow_soak_contract_v1"
 INVENTORY_OWNER_RELPATH = "src/ops/step_29u_activation_eligibility_inventory_v0.py"
 INVENTORY_RUNBOOK_RELPATH = "docs/ops/runbooks/STEP_29U_ACTIVATION_ELIGIBILITY_INVENTORY_V0.md"
 BINDING_RUNBOOK_RELPATH = (
@@ -61,7 +61,7 @@ EXPECTED_OFFLINE_SOURCE_GIT_SHA = "237cfe07850d9a579f73f596bb4df18adddfbe69"
 
 # Superseded soak / capability dirs that must not silently become current.
 SUPERSEDED_EVIDENCE_MARKERS: tuple[str, ...] = (
-    "evidence/ops/okx_futures_shadow_no_order/2026-07-25_postmerge_600s_soak",
+    "RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)",
 )
 
 
@@ -762,7 +762,7 @@ def evaluate_step_29u_audit_provenance_v0(
         links.append(
             _link(
                 link_id="supersession_guard",
-                path="evidence/ops/step_29u_post_merge_shadow_soak/",
+                path="tests/fixtures/ops/retired_pre_completion_ps_t_contract_v1/step_29u_post_merge_shadow_soak_contract_v1/",
                 status=STATUS_COMPLETE,
                 reason_code="CANONICAL_SOAK_NOT_SUPERSEDED_MARKER",
                 details={"superseded_markers_checked": list(SUPERSEDED_EVIDENCE_MARKERS)},
