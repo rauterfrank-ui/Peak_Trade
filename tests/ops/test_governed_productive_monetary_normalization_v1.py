@@ -335,6 +335,7 @@ def test_adjudicated_endpoint_constants() -> None:
 
 def test_productive_fx_get_enrolled_in_fresh_pretrade_v1() -> None:
     from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+        ENDPOINT_PUBLIC_INSTRUMENTS,
         REQUIRED_GET_ITEM_SPECS,
         build_required_get_endpoint_v1,
         collect_fresh_pretrade_runtime_get_v1,
@@ -370,7 +371,15 @@ def test_productive_fx_get_enrolled_in_fresh_pretrade_v1() -> None:
         def get(self, *, endpoint, auth_required, pretrade_decision_id):
             self.endpoints.append(str(endpoint))
             path = str(endpoint).split("?", 1)[0]
-            payload = usdt_usdc_index_tickers_payload_v1()
+            text = str(endpoint)
+            if path == ENDPOINT_PUBLIC_INSTRUMENTS and "USDC-USDT-SWAP" in text:
+                payload: dict[str, object] = conversion_pair_instruments_payload_v1()
+            elif path == ENDPOINT_PUBLIC_INSTRUMENTS:
+                payload = {"code": "0", "data": [{"instId": "API3-USDT-SWAP"}]}
+            elif path == USDT_USDC_ENDPOINT:
+                payload = usdt_usdc_index_tickers_payload_v1()
+            else:
+                payload = {"code": "0", "data": [{"instId": "API3-USDT-SWAP"}]}
             self.payloads_by_path[path] = payload
             return FreshPretradeGetTransportResultV1(
                 get_performed=True,
@@ -402,6 +411,126 @@ def test_productive_fx_get_enrolled_in_fresh_pretrade_v1() -> None:
         item for item in evidence.items if item.item_id == "MONETARY_NORMALIZATION_USDT_USDC_INDEX"
     )
     assert fx_item.evidence_status == FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
+
+
+def test_productive_conversion_pair_get_enrolled_in_fresh_pretrade_v1() -> None:
+    from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+        ENDPOINT_PUBLIC_INSTRUMENTS,
+        REQUIRED_GET_ITEM_SPECS,
+        FreshPretradeGetTransportResultV1,
+        TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+        build_required_get_endpoint_v1,
+        collect_fresh_pretrade_runtime_get_v1,
+    )
+    from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
+        USDT_USDC_PAIR_NATIVE_ID,
+    )
+
+    pair_specs = [
+        spec
+        for spec in REQUIRED_GET_ITEM_SPECS
+        if spec.item_id == "MONETARY_NORMALIZATION_CONVERSION_PAIR_INSTRUMENTS"
+    ]
+    assert len(pair_specs) == 1
+    spec = pair_specs[0]
+    endpoint = build_required_get_endpoint_v1(
+        spec,
+        instrument_id="API3-USDT-SWAP",
+        td_mode="cross",
+        limit_px="",
+        inst_type="SWAP",
+    )
+    assert endpoint == (
+        f"{ENDPOINT_PUBLIC_INSTRUMENTS}?instType=SWAP&instId={USDT_USDC_PAIR_NATIVE_ID}"
+    )
+
+    class _RecordingTransport:
+        transport_class = TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET
+        venue_live_contact = True
+
+        def __init__(self) -> None:
+            self.endpoints: list[str] = []
+
+        def get(self, *, endpoint, auth_required, pretrade_decision_id):
+            self.endpoints.append(str(endpoint))
+            path = str(endpoint).split("?", 1)[0]
+            if path == ENDPOINT_PUBLIC_INSTRUMENTS and USDT_USDC_PAIR_NATIVE_ID in str(endpoint):
+                payload = conversion_pair_instruments_payload_v1()
+            else:
+                payload = {"code": "0", "data": [{"instId": "API3-USDT-SWAP"}]}
+            return FreshPretradeGetTransportResultV1(
+                get_performed=True,
+                method="GET",
+                endpoint=endpoint,
+                http_status=200,
+                payload=payload,
+                auth_header_sent=bool(auth_required),
+                transport_class=TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+                venue_live_contact=True,
+                historical_reuse=False,
+                error_class="",
+            )
+
+    transport = _RecordingTransport()
+    evidence = collect_fresh_pretrade_runtime_get_v1(
+        pretrade_decision_id=_EPOCH,
+        instrument_id="API3-USDT-SWAP",
+        td_mode="cross",
+        inst_type="SWAP",
+        transport=transport,
+        require_collection=True,
+    )
+    assert any(USDT_USDC_PAIR_NATIVE_ID in ep for ep in transport.endpoints)
+    pair_item = next(
+        item
+        for item in evidence.items
+        if item.item_id == "MONETARY_NORMALIZATION_CONVERSION_PAIR_INSTRUMENTS"
+    )
+    assert pair_item.evidence_status == FreshPretradeGetStatusV1.TRUSTED_PRESENT.value
+    assert USDT_USDC_PAIR_NATIVE_ID in pair_item.observed_inst_ids
+
+
+def test_common_epoch_handoff_keeps_bound_and_conversion_pair_payloads_separate_v1() -> None:
+    bound, _handoff, injected, _transport = _api3_productive_handoff_injected_v1()
+    assert injected.conversion_pair_instruments_payload is not None
+    assert injected.instruments_payload is not injected.conversion_pair_instruments_payload
+    pair_data = injected.conversion_pair_instruments_payload.get("data")
+    bound_data = injected.instruments_payload.get("data")
+    assert isinstance(pair_data, list) and isinstance(bound_data, list)
+    pair_ids = {str(row.get("instId")) for row in pair_data if isinstance(row, dict)}
+    bound_ids = {str(row.get("instId")) for row in bound_data if isinstance(row, dict)}
+    assert "USDC-USDT-SWAP" in pair_ids
+    assert bound.venue_native_id in bound_ids
+    assert bound.venue_native_id not in pair_ids
+
+
+def test_common_epoch_handoff_fail_closed_without_conversion_pair_metadata_v1() -> None:
+    from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+        ENDPOINT_PUBLIC_INSTRUMENTS,
+    )
+    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_common_epoch_to_enter_live_29p_handoff_v1 import (
+        CurrentProductiveCommonEpochToEnterLive29PHandoffError,
+        build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v1,
+    )
+    from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
+        USDT_USDC_PAIR_NATIVE_ID,
+    )
+    from tests.ops.test_full_core_current_productive_29p_common_epoch_handoff_v1 import (
+        _identity_payloads,
+    )
+    from tests.ops.test_full_core_current_productive_pre_external_closure_v1 import (
+        ProductiveClassFreshGetTransportV1,
+    )
+
+    bound, handoff, _injected, _transport = _api3_productive_handoff_injected_v1()
+    payloads = dict(_identity_payloads(instrument_id=bound.venue_native_id))
+    del payloads[f"{ENDPOINT_PUBLIC_INSTRUMENTS}#instId={USDT_USDC_PAIR_NATIVE_ID}"]
+    transport = ProductiveClassFreshGetTransportV1(payloads=payloads)
+    with pytest.raises(CurrentProductiveCommonEpochToEnterLive29PHandoffError):
+        build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v1(
+            handoff=handoff,
+            transport=transport,
+        )
 
 
 def _api3_productive_handoff_injected_v1():
@@ -439,10 +568,13 @@ def _api3_productive_handoff_injected_v1():
         selected_future_count=1,
         max_positions_effective=MAX_POSITIONS_EFFECTIVE,
     )
+    from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
+        USDT_USDC_PAIR_NATIVE_ID,
+    )
+
     payloads = dict(_identity_payloads(instrument_id=api3))
-    payloads[ENDPOINT_PUBLIC_INSTRUMENTS] = combined_instruments_payload_v1(
-        api3_usdt_swap_instruments_row_v1(inst_id=api3),
-        usdc_usdt_swap_instruments_row_v1(),
+    payloads[f"{ENDPOINT_PUBLIC_INSTRUMENTS}#instId={USDT_USDC_PAIR_NATIVE_ID}"] = (
+        combined_instruments_payload_v1(usdc_usdt_swap_instruments_row_v1())
     )
     transport = ProductiveClassFreshGetTransportV1(payloads=payloads)
     handoff = compose_current_productive_29p_common_epoch_handoff_v1(

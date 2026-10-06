@@ -153,8 +153,8 @@ HISTORICAL_PROVENANCE_REF_ONLY = (
     "20260922T051458Z"
 )
 AUTHORIZED_HOST = "eea.okx.com"
-MINIMUM_DEDUPLICATED_GET_COUNT = 8
-MAXIMUM_AUTHORIZED_DEDUPLICATED_GET_COUNT = 8
+MINIMUM_DEDUPLICATED_GET_COUNT = 9
+MAXIMUM_AUTHORIZED_DEDUPLICATED_GET_COUNT = 9
 SECRET_MARKERS: tuple[str, ...] = (
     "ok-access",
     "api_secret",
@@ -207,6 +207,7 @@ class CurrentProductive29PCommonEpochHandoffResultV1:
     config_get_count: int
     balance_get_count: int
     bound_uid: str
+    public_inst_type: str
 
 
 @dataclass(frozen=True)
@@ -722,6 +723,7 @@ def compose_current_productive_29p_common_epoch_handoff_v1(
         config_get_count=config_count,
         balance_get_count=balance_count,
         bound_uid=bound_uid,
+        public_inst_type=str(inst_type or "").strip().upper() or "FUTURES",
     )
 
 

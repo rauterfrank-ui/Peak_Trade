@@ -54,7 +54,7 @@ def test_common_epoch_resolves_legacy_cap24_repository_sha(tmp_path: Path) -> No
             execution_integrity_backend=_INTEGRITY,
         )
     assert result.bound_instrument_id == chain["instrument_id"]
-    assert result.deduplicated_get_count == 8
+    assert result.deduplicated_get_count == 9
     claims = json.loads((tmp_path / "pack" / "claims.json").read_text(encoding="utf-8"))
     assert claims["CAP24_PROVENANCE_HANDOFF_STATUS"] == "ACQUIRED"
     assert claims["EXPECTED_ORIGIN_MAIN"] == TRUSTED_TEST_ORIGIN_MAIN_SHA

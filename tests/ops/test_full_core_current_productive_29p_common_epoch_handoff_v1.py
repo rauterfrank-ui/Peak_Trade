@@ -66,7 +66,12 @@ from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     ENDPOINT_MARKET_INDEX_TICKERS,
 )
+from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
+    USDT_USDC_PAIR_NATIVE_ID,
+)
 from tests.ops._monetary_normalization_test_helpers_v1 import (
+    combined_instruments_payload_v1,
+    usdc_usdt_swap_instruments_row_v1,
     usdt_usdc_index_tickers_payload_v1,
 )
 from tests.ops.test_full_core_fresh_pretrade_runtime_get_seam_v1 import (
@@ -107,7 +112,23 @@ def _identity_payloads(
     extra_usdc_row: bool = False,
 ) -> dict[str, object]:
     uid_value = uid or REUSED_BINDING_ACCOUNT_SCOPE
-    inst_row = {"instId": instrument_id, "tdMode": _TEST_TD, "mgnMode": _TEST_TD}
+    base_ccy = str(instrument_id or "").split("-", 1)[0]
+    inst_row: dict[str, object] = {
+        "instId": instrument_id,
+        "instType": "SWAP",
+        "state": "live",
+        "ctType": "linear",
+        "baseCcy": base_ccy,
+        "quoteCcy": "USDT",
+        "settleCcy": "USDT",
+        "ctVal": "0.01",
+        "ctValCcy": base_ccy,
+        "lotSz": "1",
+        "minSz": "1",
+        "tickSz": "0.01",
+        "tdMode": _TEST_TD,
+        "mgnMode": _TEST_TD,
+    }
     details: list[dict[str, object]] = [
         {
             "ccy": "USDC",
@@ -132,8 +153,11 @@ def _identity_payloads(
     }
     if acct_lv is not None:
         config_row["acctLv"] = acct_lv
+    instruments = {"code": "0", "data": [dict(inst_row)]}
+    conversion_pair = combined_instruments_payload_v1(usdc_usdt_swap_instruments_row_v1())
     return {
-        ENDPOINT_PUBLIC_INSTRUMENTS: {"code": "0", "data": [dict(inst_row)]},
+        ENDPOINT_PUBLIC_INSTRUMENTS: instruments,
+        f"{ENDPOINT_PUBLIC_INSTRUMENTS}#instId={USDT_USDC_PAIR_NATIVE_ID}": conversion_pair,
         ENDPOINT_PUBLIC_PRICE_LIMIT: {"code": "0", "data": [{"instId": instrument_id}]},
         ENDPOINT_ACCOUNT_MAX_SIZE: {"code": "0", "data": [dict(inst_row)]},
         ENDPOINT_ACCOUNT_LEVERAGE_INFO: {"code": "0", "data": [dict(inst_row)]},
@@ -162,6 +186,9 @@ class CountingInjectedFreshGetTransportV1(InjectedFreshGetTransportV1):
         self.payloads_by_path = dict(self.payloads)
 
     def get(self, *, endpoint, auth_required, pretrade_decision_id):
+        full = str(endpoint or "").strip()
+        if full in self._cache:
+            return self._cache[full]
         self.get_call_count += 1
         if self.get_call_count > MAXIMUM_AUTHORIZED_DEDUPLICATED_GET_COUNT:
             raise CurrentProductive29PCommonEpochHandoffError("GET_BUDGET_EXCEEDS_MAXIMUM")
@@ -234,8 +261,8 @@ def test_standing_flags_and_owner_go_tokens() -> None:
     assert RUNTIME_INTEGRITY_CONTRACT_VERSION.startswith(
         "current_productive_29p_chain_runtime_integrity"
     )
-    assert MINIMUM_DEDUPLICATED_GET_COUNT == 8
-    assert MAXIMUM_AUTHORIZED_DEDUPLICATED_GET_COUNT == 8
+    assert MINIMUM_DEDUPLICATED_GET_COUNT == 9
+    assert MAXIMUM_AUTHORIZED_DEDUPLICATED_GET_COUNT == 9
 
 
 def test_futures_inst_type_empty_public_instruments_malformed() -> None:
@@ -296,8 +323,8 @@ def test_swap_inst_type_trusted_with_valid_payloads() -> None:
 
 def test_happy_path_seven_gets_same_epoch_full_chain() -> None:
     handoff, transport = _compose()
-    assert transport.get_call_count == 8
-    assert handoff.deduplicated_get_count == 8
+    assert transport.get_call_count == 9
+    assert handoff.deduplicated_get_count == 9
     assert handoff.config_get_count == 1
     assert handoff.balance_get_count == 1
     assert handoff.adaptation.status == "ELIGIBLE"
@@ -427,10 +454,10 @@ def test_decision_epoch_malformed_fail_closed() -> None:
         )
 
 
-def test_get_budget_invariant_rejects_more_than_eight() -> None:
+def test_get_budget_invariant_rejects_more_than_nine() -> None:
     with pytest.raises(CurrentProductive29PCommonEpochHandoffError, match="EXCEEDS_MAXIMUM"):
         enforce_deduplicated_get_budget_v1(
-            deduplicated_get_count=9,
+            deduplicated_get_count=10,
             config_get_count=1,
             balance_get_count=1,
         )
@@ -464,7 +491,7 @@ def test_execute_happy_injected_not_productive_29p(tmp_path: Path) -> None:
         cap21_public_inst_type="SWAP",
         execution_integrity_backend=_INTEGRITY,
     )
-    assert result.deduplicated_get_count == 8
+    assert result.deduplicated_get_count == 9
     assert result.step_29p_risk_admissible == "false"
     assert result.first_real_blocker == (
         "CURRENT_PRODUCTIVE_29P_REQUIRES_PRODUCTIVE_TRUSTED_GET_AND_CAP24_BOUND_INSTRUMENT"
@@ -474,7 +501,7 @@ def test_execute_happy_injected_not_productive_29p(tmp_path: Path) -> None:
     items_path = tmp_path / "pack" / FRESH_PRETRADE_ITEMS_FILE
     assert items_path.is_file()
     items = json.loads(items_path.read_text(encoding="utf-8"))["items"]
-    assert len(items) == 10
+    assert len(items) == 11
     assert all("REASON_CODES" in row for row in items)
 
 
