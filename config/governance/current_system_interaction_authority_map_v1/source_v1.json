@@ -5517,6 +5517,19 @@
       ],
       "closure_adjudication_class": "REPRESENTATION_ONLY",
       "closure_note": "Cross-session outcome-learning bridge closure; TRADING_SEMANTICS_CHANGED=false at governance boundary."
+    },
+    {
+      "id": "pr_7077_monetary_normalization_implementation_v1",
+      "epistemic_class": "PARTIAL",
+      "statement": "PR #7077: MONETARY_NORMALIZATION_IMPLEMENTATION_V1 — productive Fresh Pretrade FX GET (index-tickers USDC-USDT idxPx) and Enter-Live-29P USDT→USDC normalization before CRS; no Master V2/Double Play/Cap23/Cap24/Treasury/Venue-Plan authority change; diff-bound MAP_UPDATE_REQUIRED; AUTHORITY=NONE; POST_COUNT=0.",
+      "evidence_refs": [
+        "docs/governance/MONETARY_NORMALIZATION_IMPLEMENTATION_V1.md",
+        "docs/system_atlas/provenance/changes.yaml",
+        "docs/system_atlas/entities/catalog.yaml",
+        "tests/ops/test_governed_productive_monetary_normalization_v1.py"
+      ],
+      "closure_adjudication_class": "REPRESENTATION_ONLY",
+      "closure_note": "Monetary normalization wiring closure; TRADING_SEMANTICS_CHANGED=false at governance boundary."
     }
   ]
 }

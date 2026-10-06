@@ -5612,7 +5612,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_6995_FRESH_C1_DYNAMIC_GET_CACHE_REPAIR_V1
+  modified_by: CHANGE:pr_7077_monetary_normalization_implementation_v1
   fail_closed: true
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
@@ -5649,7 +5649,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CURRENT_PRODUCTIVE_LAB_PRETRADE_TRUSTED_ACCOUNT_CONFIG_U01_CLOSURE_V1
+  modified_by: CHANGE:pr_7077_monetary_normalization_implementation_v1
   fail_closed: true
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
@@ -6030,6 +6030,36 @@ entities:
   - tests/governance/test_risk_sizing_reference_price_authority_owner_full_core_track_ratification_v1.py
   - tests/ops/test_governed_productive_reference_price_authority_producer_v1.py
   notes: 'B05 Full-Core REFERENCE_PRICE authority owner ratification (mark_price semantics): governed MV2 mark producer + enter-live-29p CRS handoff; REFERENCE_PRICE_AUTHORITY_CHAIN_CLOSED=false; no conversion-ready flip; ATLAS_AUTHORITY=NONE.'
+- id: RUNTIME_COMPONENT:governed_productive_monetary_normalization_v1
+  kind: RUNTIME_COMPONENT
+  name: Governed productive monetary normalization v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: CHANGE:pr_7077_monetary_normalization_implementation_v1
+  source_paths:
+  - src/ops/governed_productive_monetary_normalization_v1/__init__.py
+  - src/ops/governed_productive_monetary_normalization_v1/constants_v1.py
+  - src/ops/governed_productive_monetary_normalization_v1/contracts_v1.py
+  - src/ops/governed_productive_monetary_normalization_v1/identity_edge_v1.py
+  - src/ops/governed_productive_monetary_normalization_v1/instrument_monetary_identity_v1.py
+  - src/ops/governed_productive_monetary_normalization_v1/normalize_v1.py
+  - src/ops/governed_productive_monetary_normalization_v1/usdt_usdc_index_observation_v1.py
+  - docs/governance/MONETARY_NORMALIZATION_IMPLEMENTATION_V1.md
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_enter_live_29p_join_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py
+  - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_common_epoch_handoff_v1.py
+  - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_common_epoch_to_enter_live_29p_handoff_v1.py
+  source_symbols:
+  - MONETARY_NORMALIZATION_USDT_USDC_INDEX_ITEM
+  - normalize_productive_monetary_values_v1
+  - build_usdt_usdc_index_observation_v1
+  evidence_sources:
+  - docs/governance/MONETARY_NORMALIZATION_IMPLEMENTATION_V1.md
+  - tests/ops/test_governed_productive_monetary_normalization_v1.py
+  - tests/ops/_monetary_normalization_test_helpers_v1.py
+  notes: 'PR #7077: productive USDT→USDC normalization via Fresh Pretrade index-tickers GET (USDC-USDT idxPx); Enter-Live-29P seam before CRS; no POST; ATLAS_AUTHORITY=NONE.'
 - id: RUNTIME_COMPONENT:governed_productive_instrument_metadata_authority_producer_v1
   kind: RUNTIME_COMPONENT
   name: Governed productive instrument metadata authority producer v1

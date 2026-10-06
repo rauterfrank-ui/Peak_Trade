@@ -161,6 +161,8 @@ class CurrentProductiveEnterLive29PInjectedGetV1:
     expected_account_identity: str = REUSED_BINDING_ACCOUNT_SCOPE
     fresh_pretrade_get_status: str = FreshPretradeGetStatusV1.MISSING.value
     instruments_payload: Mapping[str, Any] | None = None
+    index_tickers_payload: Mapping[str, Any] | None = None
+    conversion_pair_instruments_payload: Mapping[str, Any] | None = None
 
 
 @dataclass(frozen=True)
@@ -702,12 +704,65 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             reasons=tuple(str(code) for code in metadata_output.reason_codes),
         )
 
+    index_tickers_payload = injected.index_tickers_payload if injected is not None else None
+    conversion_pair_payload = (
+        injected.conversion_pair_instruments_payload if injected is not None else None
+    )
+    if index_tickers_payload is None or not isinstance(index_tickers_payload, Mapping):
+        return _deny(
+            status=STATUS_FAIL,
+            blocker="MONETARY_NORMALIZATION_INDEX_TICKERS_MISSING",
+            replay=replay,
+            get_count=get_count,
+            producer_output_value=str(output.value),
+            producer_output_status="PRODUCED",
+            step_29p_risk_admissible=TRUE_TOKEN,
+            reasons=("MISSING_EDGE",),
+        )
+    try:
+        from src.ops.governed_productive_monetary_normalization_v1.contracts_v1 import (
+            MonetaryNormalizationError,
+        )
+        from src.ops.governed_productive_monetary_normalization_v1.normalize_v1 import (
+            build_capital_risk_sizing_monetary_context_v1,
+            crs_operands_from_monetary_context_v1,
+        )
+
+        monetary_ctx = build_capital_risk_sizing_monetary_context_v1(
+            decision_epoch=str(decision_epoch or observed_at),
+            observed_at=observed_at,
+            fresh_pretrade_get_status=get_status,
+            account_equity_amount=producer_equity,
+            account_equity_currency="USDC",
+            native_reference_price=reference,
+            native_protective_stop_price=stop,
+            instruments_payload=instruments_payload,
+            venue_native_id=venue_native_id,
+            index_tickers_payload=index_tickers_payload,
+            conversion_pair_instruments_payload=conversion_pair_payload,
+        )
+        canonical_equity, canonical_reference, canonical_stop = (
+            crs_operands_from_monetary_context_v1(monetary_ctx)
+        )
+    except MonetaryNormalizationError as exc:
+        blocker = str(exc) or "MONETARY_NORMALIZATION_FAIL_CLOSED"
+        return _deny(
+            status=STATUS_FAIL,
+            blocker=blocker,
+            replay=replay,
+            get_count=get_count,
+            producer_output_value=str(output.value),
+            producer_output_status="PRODUCED",
+            step_29p_risk_admissible=TRUE_TOKEN,
+            reasons=(blocker,),
+        )
+
     try:
         live_ctx = build_current_productive_live_account_capital_context_v1(
             instrument_id=str(replay.evidence.instrument_id),
-            typed_account_equity=producer_equity,
-            reference_price=reference,
-            protective_stop_price=stop,
+            typed_account_equity=canonical_equity,
+            reference_price=canonical_reference,
+            protective_stop_price=canonical_stop,
             instrument_constraints=metadata_output.constraints,
         )
     except CurrentProductiveMv2CapitalContextRebindError as exc:
@@ -742,8 +797,8 @@ def join_current_productive_enter_live_29p_before_venue_plan_v1(
             price_output=price_output,
             metadata_output=metadata_output,
             live_ctx=live_ctx,
-            typed_account_equity=producer_equity,
-            reference_price=reference,
+            typed_account_equity=canonical_equity,
+            reference_price=canonical_reference,
         )
     except B05FullCoreAuthorityChainClosureError as exc:
         blocker = str(exc) or "B05_AUTHORITY_CHAIN_WITNESS_FAIL_CLOSED"

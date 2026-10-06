@@ -18,12 +18,18 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_enter_li
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
     FreshPretradeGetStatusV1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+    ENDPOINT_MARKET_INDEX_TICKERS,
+)
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     ENDPOINT_ACCOUNT_BALANCE,
     ENDPOINT_PUBLIC_INSTRUMENTS,
     FullCoreFreshPretradeGetTransportV1,
     TRANSPORT_CLASS_INJECTED_TEST_DOUBLE,
     TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+)
+from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
+    USDT_USDC_PAIR_NATIVE_ID,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_common_epoch_handoff_v1 import (
     CurrentProductive29PCommonEpochHandoffError,
@@ -112,6 +118,30 @@ def build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v
     if not isinstance(instruments_payload, Mapping):
         raise CurrentProductiveCommonEpochToEnterLive29PHandoffError("INSTRUMENTS_PAYLOAD_MISSING")
 
+    index_tickers_payload = payloads.get(ENDPOINT_MARKET_INDEX_TICKERS)
+    if index_tickers_payload is None:
+        index_tickers_payload = payload_from_fresh_get_transport_v1(
+            transport,
+            endpoint=ENDPOINT_MARKET_INDEX_TICKERS,
+            auth_required=False,
+            decision_epoch=epoch,
+        )
+    if not isinstance(index_tickers_payload, Mapping):
+        raise CurrentProductiveCommonEpochToEnterLive29PHandoffError(
+            "MONETARY_NORMALIZATION_INDEX_TICKERS_MISSING"
+        )
+
+    conversion_pair_payload = instruments_payload
+    data = instruments_payload.get("data")
+    if isinstance(data, list):
+        has_pair = any(
+            isinstance(row, Mapping)
+            and str(row.get("instId") or "").strip() == USDT_USDC_PAIR_NATIVE_ID
+            for row in data
+        )
+        if not has_pair:
+            conversion_pair_payload = dict(instruments_payload)
+
     body_sha256 = ""
     if handoff.observation is not None:
         body_sha256 = str(handoff.observation.provenance_digest or "").strip()
@@ -141,6 +171,8 @@ def build_current_productive_enter_live_29p_injected_from_common_epoch_handoff_v
         expected_account_identity=str(expected_account_identity or REUSED_BINDING_ACCOUNT_SCOPE),
         fresh_pretrade_get_status=str(handoff.get_status),
         instruments_payload=dict(instruments_payload),
+        index_tickers_payload=dict(index_tickers_payload),
+        conversion_pair_instruments_payload=dict(conversion_pair_payload),
     )
 
 

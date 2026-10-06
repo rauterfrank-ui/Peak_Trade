@@ -61,6 +61,12 @@ from tests.ops.test_full_core_current_productive_host_enter_29p_invalid_stop_pri
 from tests.ops.test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1 import (
     _bound,
 )
+from tests.ops._monetary_normalization_test_helpers_v1 import (
+    combined_instruments_payload_v1,
+    conversion_pair_instruments_payload_v1,
+    eth_usdt_swap_instruments_row_v1,
+    usdt_usdc_index_tickers_payload_v1,
+)
 from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
     CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
     CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
@@ -99,21 +105,7 @@ def _sha256_payload(payload: dict[str, object]) -> str:
 
 
 def _instruments_payload(*, inst_id: str = "inst-eth-usdt-perp") -> dict[str, object]:
-    return {
-        "code": "0",
-        "data": [
-            {
-                "instId": inst_id,
-                "instType": "SWAP",
-                "state": "live",
-                "ctVal": "0.01",
-                "ctValCcy": "ETH",
-                "lotSz": "1",
-                "minSz": "1",
-                "tickSz": "0.01",
-            }
-        ],
-    }
+    return combined_instruments_payload_v1(eth_usdt_swap_instruments_row_v1(inst_id=inst_id))
 
 
 def _balance_payload(*, avail_eq: str = DISTINCTIVE_EQUITY) -> dict[str, object]:
@@ -146,6 +138,8 @@ def _injected(
     *,
     payload: dict[str, object] | None = None,
     instruments_payload: dict[str, object] | None = None,
+    index_tickers_payload: dict[str, object] | None = None,
+    conversion_pair_instruments_payload: dict[str, object] | None = None,
     get_performed: bool = True,
     http_status: int = 200,
     error_class: str = "",
@@ -170,6 +164,12 @@ def _injected(
         instruments_payload=instruments_payload
         if instruments_payload is not None
         else _instruments_payload(),
+        index_tickers_payload=index_tickers_payload
+        if index_tickers_payload is not None
+        else usdt_usdc_index_tickers_payload_v1(),
+        conversion_pair_instruments_payload=conversion_pair_instruments_payload
+        if conversion_pair_instruments_payload is not None
+        else conversion_pair_instruments_payload_v1(),
     )
 
 

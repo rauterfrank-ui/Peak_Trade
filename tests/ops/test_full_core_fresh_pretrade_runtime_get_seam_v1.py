@@ -26,6 +26,9 @@ from src.ops.full_core_live_path_composition_root_v1.execution_admission_contrac
     PretradeFreshnessStatusV1,
     evaluate_execution_admission_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+    ENDPOINT_MARKET_INDEX_TICKERS,
+)
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     ENDPOINT_ACCOUNT_BALANCE,
     ENDPOINT_ACCOUNT_CONFIG,
@@ -34,6 +37,7 @@ from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_
     ENDPOINT_ACCOUNT_POSITIONS,
     ENDPOINT_PUBLIC_INSTRUMENTS,
     ENDPOINT_PUBLIC_PRICE_LIMIT,
+    build_required_get_endpoint_v1,
     JOIN_SEAM_ID,
     PRIVATE_GET_PATHS,
     PUBLIC_GET_PATHS,
@@ -69,6 +73,13 @@ _REQUIRED_PATHS = (
     ENDPOINT_ACCOUNT_CONFIG,
     ENDPOINT_ACCOUNT_POSITIONS,
     ENDPOINT_ACCOUNT_BALANCE,
+    ENDPOINT_MARKET_INDEX_TICKERS,
+)
+from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
+    USDT_USDC_SOURCE_IDENTITY,
+)
+from tests.ops._monetary_normalization_test_helpers_v1 import (
+    usdt_usdc_index_tickers_payload_v1,
 )
 
 
@@ -184,7 +195,7 @@ def test_flag_and_standing_gates_remain_false() -> None:
     assert LIVE_ARMED is True
     assert WIRE_SEND_PERMITTED is True
     assert EARLIEST_UNRESOLVED_FULL_CORE_DEPENDENCY == (
-        "CURRENT_PRODUCTIVE_29P_RISK_CAPITAL_SURFACE_BOUND_VALUE_REQUIRES_FRESH_TRUSTED_GET"
+        "CURRENT_PRODUCTIVE_TREASURY_SINGLE_SOURCE_CAPITAL_HANDOFF_REQUIRES_FRESH_TRUSTED_GET"
     )
     assert FRESH_EXTERNAL_EVIDENCE_REQUIRED_FOR_NEXT_SLICE is False
     node = gap_node_v1("FRESH_GET_PER_PRETRADE_DECISION")
@@ -197,6 +208,7 @@ def test_flag_and_standing_gates_remain_false() -> None:
     assert PUBLIC_GET_PATHS == {
         ENDPOINT_PUBLIC_INSTRUMENTS,
         ENDPOINT_PUBLIC_PRICE_LIMIT,
+        ENDPOINT_MARKET_INDEX_TICKERS,
     }
     assert PRIVATE_GET_PATHS == {
         ENDPOINT_ACCOUNT_MAX_SIZE,
@@ -215,6 +227,7 @@ def test_flag_and_standing_gates_remain_false() -> None:
         "ACCOUNT_MODE",
         "MARGIN_MODE",
         "AVAILABLE_MARGIN",
+        "MONETARY_NORMALIZATION_USDT_USDC_INDEX",
     }
 
 

@@ -63,6 +63,12 @@ from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
     MockCurrentProductive29PIntegrityBackendV1,
     TRUSTED_TEST_ORIGIN_MAIN_SHA,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+    ENDPOINT_MARKET_INDEX_TICKERS,
+)
+from tests.ops._monetary_normalization_test_helpers_v1 import (
+    usdt_usdc_index_tickers_payload_v1,
+)
 from tests.ops.test_full_core_fresh_pretrade_runtime_get_seam_v1 import (
     InjectedFreshGetTransportV1,
 )
@@ -145,6 +151,7 @@ def _identity_payloads(
                 }
             ],
         },
+        ENDPOINT_MARKET_INDEX_TICKERS: usdt_usdc_index_tickers_payload_v1(),
     }
 
 
@@ -158,11 +165,15 @@ class CountingInjectedFreshGetTransportV1(InjectedFreshGetTransportV1):
         self.get_call_count += 1
         if self.get_call_count > MAXIMUM_AUTHORIZED_DEDUPLICATED_GET_COUNT:
             raise CurrentProductive29PCommonEpochHandoffError("GET_BUDGET_EXCEEDS_MAXIMUM")
-        return super().get(
+        result = super().get(
             endpoint=endpoint,
             auth_required=auth_required,
             pretrade_decision_id=pretrade_decision_id,
         )
+        path = str(endpoint or "").split("?", 1)[0]
+        if result.payload is not None:
+            self.payloads_by_path[path] = result.payload
+        return result
 
 
 class MismatchInstrumentTransportV1(InjectedFreshGetTransportV1):
@@ -223,8 +234,8 @@ def test_standing_flags_and_owner_go_tokens() -> None:
     assert RUNTIME_INTEGRITY_CONTRACT_VERSION.startswith(
         "current_productive_29p_chain_runtime_integrity"
     )
-    assert MINIMUM_DEDUPLICATED_GET_COUNT == 7
-    assert MAXIMUM_AUTHORIZED_DEDUPLICATED_GET_COUNT == 7
+    assert MINIMUM_DEDUPLICATED_GET_COUNT == 8
+    assert MAXIMUM_AUTHORIZED_DEDUPLICATED_GET_COUNT == 8
 
 
 def test_futures_inst_type_empty_public_instruments_malformed() -> None:
@@ -285,8 +296,8 @@ def test_swap_inst_type_trusted_with_valid_payloads() -> None:
 
 def test_happy_path_seven_gets_same_epoch_full_chain() -> None:
     handoff, transport = _compose()
-    assert transport.get_call_count == 7
-    assert handoff.deduplicated_get_count == 7
+    assert transport.get_call_count == 8
+    assert handoff.deduplicated_get_count == 8
     assert handoff.config_get_count == 1
     assert handoff.balance_get_count == 1
     assert handoff.adaptation.status == "ELIGIBLE"
@@ -416,10 +427,10 @@ def test_decision_epoch_malformed_fail_closed() -> None:
         )
 
 
-def test_get_budget_invariant_rejects_more_than_seven() -> None:
+def test_get_budget_invariant_rejects_more_than_eight() -> None:
     with pytest.raises(CurrentProductive29PCommonEpochHandoffError, match="EXCEEDS_MAXIMUM"):
         enforce_deduplicated_get_budget_v1(
-            deduplicated_get_count=8,
+            deduplicated_get_count=9,
             config_get_count=1,
             balance_get_count=1,
         )
@@ -453,7 +464,7 @@ def test_execute_happy_injected_not_productive_29p(tmp_path: Path) -> None:
         cap21_public_inst_type="SWAP",
         execution_integrity_backend=_INTEGRITY,
     )
-    assert result.deduplicated_get_count == 7
+    assert result.deduplicated_get_count == 8
     assert result.step_29p_risk_admissible == "false"
     assert result.first_real_blocker == (
         "CURRENT_PRODUCTIVE_29P_REQUIRES_PRODUCTIVE_TRUSTED_GET_AND_CAP24_BOUND_INSTRUMENT"
@@ -463,7 +474,7 @@ def test_execute_happy_injected_not_productive_29p(tmp_path: Path) -> None:
     items_path = tmp_path / "pack" / FRESH_PRETRADE_ITEMS_FILE
     assert items_path.is_file()
     items = json.loads(items_path.read_text(encoding="utf-8"))["items"]
-    assert len(items) == 9
+    assert len(items) == 10
     assert all("REASON_CODES" in row for row in items)
 
 

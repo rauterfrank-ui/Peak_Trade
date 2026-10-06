@@ -41,6 +41,9 @@ from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_
     contains_fixture_or_historical_marker_v1,
     join_fresh_pretrade_runtime_get_into_admission_inputs_v1,
 )
+from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
+    USDT_USDC_PAIR_NATIVE_ID,
+)
 
 JOIN_SEAM_ID = "FULL_CORE_LIVE_ACCOUNT_BOUND_SEAM_V1"
 LIVE_ACCOUNT_BOUND_AUTHORITY = "capital_risk_sizing_v1/STEP_29P"
@@ -53,6 +56,9 @@ INSTRUMENT_BEARING_ITEM_IDS: frozenset[str] = frozenset(
         "MAX_AVAILABLE",
         "LEVERAGE",
     }
+)
+AUTHORIZED_CO_PRESENT_INSTRUMENT_IDS_FOR_MONETARY_NORMALIZATION_V1: frozenset[str] = frozenset(
+    {USDT_USDC_PAIR_NATIVE_ID}
 )
 ACCOUNT_UID_ITEM_IDS: frozenset[str] = frozenset({"POS_MODE", "ACCOUNT_MODE"})
 
@@ -345,17 +351,22 @@ def evaluate_live_account_bound_v1(
             ),
         )
     if instrument_inst_ids != (expected_instrument_id,):
-        return _denied(
-            status=LiveAccountBoundStatusV1.MISMATCH.value,
-            expected=expected,
-            observed_account_identity=observed_uid,
-            observed_inst_ids=instrument_inst_ids,
-            observed_td_modes=td_modes,
-            reasons=(
-                "LIVE_ACCOUNT_BOUND_MISMATCH",
-                "LIVE_ACCOUNT_BOUND_WRONG_INSTRUMENT",
-            ),
-        )
+        allowed_inst_ids = {
+            expected_instrument_id
+        } | AUTHORIZED_CO_PRESENT_INSTRUMENT_IDS_FOR_MONETARY_NORMALIZATION_V1
+        unexpected = set(instrument_inst_ids) - allowed_inst_ids
+        if unexpected or expected_instrument_id not in instrument_inst_ids:
+            return _denied(
+                status=LiveAccountBoundStatusV1.MISMATCH.value,
+                expected=expected,
+                observed_account_identity=observed_uid,
+                observed_inst_ids=instrument_inst_ids,
+                observed_td_modes=td_modes,
+                reasons=(
+                    "LIVE_ACCOUNT_BOUND_MISMATCH",
+                    "LIVE_ACCOUNT_BOUND_WRONG_INSTRUMENT",
+                ),
+            )
     if td_modes and instrument_inst_ids:
         unexpected_td = tuple(mode for mode in td_modes if mode != expected_td_mode)
         if unexpected_td:
