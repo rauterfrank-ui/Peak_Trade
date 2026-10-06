@@ -20,6 +20,10 @@ from src.ops.full_core_live_path_composition_root_v1.ghv_full_system_testnet_obs
 from src.ops.full_core_live_path_composition_root_v1.ghv_full_system_testnet_observation_pre_external_v1.demo_read_only_get_transport_v1 import (
     GhvDemoReadOnlyGetTransportV1,
 )
+from src.ops.full_core_live_path_composition_root_v1.ghv_full_system_testnet_observation_pre_external_v1.demo_vault_credential_loader_v1 import (
+    GhvTestnetDemoSecretrefVaultLoaderError,
+    load_ghv_testnet_demo_credential_handle_for_bind_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.ghv_full_system_testnet_observation_pre_external_v1.governance_v1 import (
     assert_full_system_testnet_observation_owner_go_v1,
     prove_standing_fail_closed_pins_v1,
@@ -63,9 +67,16 @@ def prove_credential_isolation_v1() -> dict[str, str]:
 def fail_closed_demo_credential_loader_v1(
     *_a: object, **_k: object
 ) -> FullCoreDemoBoundVenueAuthHandleV1:
-    """Executable binder slot: fail-closed until a later Owner-GO execution WP supplies vault."""
+    """Explicit fail-closed slot when auto SecretRef resolution must not run."""
 
-    raise GhvTestnetDemoCredentialBindError("DEMO_CREDENTIAL_BIND_NOT_EXECUTABLE_IN_THIS_WP")
+    raise GhvTestnetDemoCredentialBindError("DEMO_CREDENTIAL_BIND_FAIL_CLOSED")
+
+
+def _default_demo_credential_loader_v1() -> FullCoreDemoBoundVenueAuthHandleV1:
+    try:
+        return load_ghv_testnet_demo_credential_handle_for_bind_v1()
+    except GhvTestnetDemoSecretrefVaultLoaderError as exc:
+        raise GhvTestnetDemoCredentialBindError(str(exc)) from exc
 
 
 @contextmanager
@@ -74,7 +85,7 @@ def open_ghv_testnet_demo_get_only_fresh_pretrade_transport_v1(
     owner_go: str,
     max_request_count: int,
     demo_handle: FullCoreDemoBoundVenueAuthHandleV1 | None = None,
-    credential_loader: object = fail_closed_demo_credential_loader_v1,
+    credential_loader: object = _default_demo_credential_loader_v1,
 ) -> Iterator[tuple[GhvDemoReadOnlyGetTransportV1, dict[str, str]]]:
     governance = assert_full_system_testnet_observation_owner_go_v1(owner_go)
     prove_standing_fail_closed_pins_v1()

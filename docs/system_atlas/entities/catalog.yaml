@@ -3870,6 +3870,7 @@ entities:
   # atlas_entity_review: PR #7066 PRE_EXTERNAL convergence report correlates S5 cycle_index to ordinal live-c1 DPO; NATURAL_ENTER_OBSERVED accounting only; no trading/threshold/selection change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7073 wires cross-session Natural-Enter pending outcome create/resolve on PRE_EXTERNAL and observation poll; harness/persistence only; no trading/threshold/PRE_EXTERNAL disposition change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7074 optional Demo GET-only private-account transport mode + scoped Owner-GO on same GHV launcher; binding-only; no trading graph change; AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #7075 Demo SecretRef vault loader + preflight runner only; GHV launcher unchanged in this PR; no trading/threshold/PRE_EXTERNAL disposition change; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive persistent Natural-ENTER policy-governed live Fresh-C1 continuous run v1
   epistemic_class: FORENSIC_RAW
@@ -3927,15 +3928,17 @@ entities:
   notes: Persist incomplete Natural-Enter N-bar horizons in persistent lane_state; advance via CanonicalPublicMdBarProducer O4 path; close through existing N_BARS evaluation and learning ingest; no trading decision replay; POST_COUNT=0; AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:ghv_full_system_testnet_observation_pre_external_v1
   # atlas_entity_review: PR #7074 explicit OKX EEA public + Demo private GET-only observation contract; Live K1 isolation; Cap24-bound environment validation; no POST/external effect; READY_TO_EXECUTE=false; AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #7075 adds fail-closed SecretRef vault loader + bounded private GET preflight runner; GET-only; Live K1 isolation preserved; no GHV observation execution; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: GHV Full-System Testnet Observation PRE_EXTERNAL binding v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7074_GHV_FULL_SYSTEM_TESTNET_OBSERVATION_PRE_EXTERNAL_BINDING_V1
+  modified_by: PR_7075_GHV_DEMO_CREDENTIAL_PROVISIONING_PRIVATE_GET_PREFLIGHT_V1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/ghv_full_system_testnet_observation_pre_external_v1/
   - scripts/ops/run_ghv_full_system_testnet_observation_pre_external_binding_v1.py
+  - scripts/ops/run_ghv_testnet_demo_private_get_preflight_v1.py
   evidence_sources:
   - tests/ops/test_ghv_full_system_testnet_observation_pre_external_v1.py
   notes: Non-trading binding layer for Demo authenticated GET-only Fresh-Pretrade transport on the proven GHV entrypoint; Demo account observation evidence separated from O4 REAL_PUBLIC; fail-closed credential class isolation; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
@@ -5630,6 +5633,7 @@ entities:
   notes: Joins FullCoreLivePathInputV1.owner_go into Full-Core admission as typed permit evidence. Exact token match only. Does not arm Live. Does not GET. Does not admit. Does not override FILEGATE. Does not consume the token. Canary OWNER_GO_EXECUTE is mismatch. 11.2.1.Q does not consume OWNER_ONE_SHOT as Live arming. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 - id: GATE:full_core_fresh_pretrade_runtime_get_v1
   # atlas_entity_review: PR #7074 accepts GHV Demo read-only transport class in item status path; no admission/POST/permit change; AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #7075 does not modify fresh_pretrade_runtime_get_v1; Demo transport bind remains sibling package only; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   kind: GATE
   name: Full-core fresh pretrade runtime GET seam v1
   epistemic_class: FORENSIC_RAW

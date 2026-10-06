@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from unittest.mock import MagicMock
 
 import pytest
@@ -20,6 +21,8 @@ from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_
     ENDPOINT_ACCOUNT_BALANCE,
 )
 from src.ops.full_core_live_path_composition_root_v1.ghv_full_system_testnet_observation_pre_external_v1.constants_v1 import (
+    CREDENTIAL_CLASS as DEMO_CREDENTIAL_CLASS,
+    DEMO_SECRET_REFERENCE,
     PRIVATE_DEMO_HEADER_NAME,
     TRANSPORT_CLASS_DEMO_READ_ONLY_GET,
     write_contract_proof_v1,
@@ -28,8 +31,16 @@ from src.ops.full_core_live_path_composition_root_v1.ghv_full_system_testnet_obs
     GhvTestnetDemoCredentialBindError,
     assert_demo_credential_class_v1,
     assert_live_k1_credential_class_v1,
+    fail_closed_demo_credential_loader_v1,
     open_ghv_testnet_demo_get_only_fresh_pretrade_transport_v1,
     prove_credential_isolation_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.ghv_full_system_testnet_observation_pre_external_v1.demo_vault_credential_loader_v1 import (
+    GhvTestnetDemoSecretrefVaultLoaderError,
+    acquire_ghv_testnet_demo_opaque_handle_v1,
+    demo_secretref_identity_without_values_v1,
+    load_ghv_testnet_demo_credential_handle_v1,
+    prove_demo_credential_presence_gate_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.ghv_full_system_testnet_observation_pre_external_v1.demo_okx_venue_auth_headers_v1 import (
     GhvDemoOkxVenueAuthError,
@@ -63,6 +74,7 @@ from src.ops.full_core_live_path_composition_root_v1.ghv_full_system_testnet_obs
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import (
     REQUIRED_CREDENTIAL_CLASS as LIVE_K1_CREDENTIAL_CLASS,
+    REQUIRED_SECRETREF_URI as LIVE_K1_SECRETREF_URI,
 )
 
 _SYNTH_KEY = "k-demo"
@@ -300,12 +312,97 @@ def test_outcome_closure_demo_account_not_o4() -> None:
 
 
 def test_demo_bind_fail_closed_without_executable_loader() -> None:
-    with pytest.raises(GhvTestnetDemoCredentialBindError):
+    with pytest.raises(GhvTestnetDemoCredentialBindError, match="DEMO_CREDENTIAL_BIND_FAIL_CLOSED"):
         with open_ghv_testnet_demo_get_only_fresh_pretrade_transport_v1(
             owner_go=f"OWNER_GO_{OWNER_GO}",
             max_request_count=4,
+            credential_loader=fail_closed_demo_credential_loader_v1,
         ):
             pass
+
+
+def _write_demo_vault(
+    tmp_path, material: dict | None = None, *, secretref: str = DEMO_SECRET_REFERENCE
+) -> object:
+    base = material or {
+        "api_key": _SYNTH_KEY,
+        "api_secret": _SYNTH_SECRET,
+        "passphrase": _SYNTH_PASS,
+        "credential_class": DEMO_CREDENTIAL_CLASS,
+    }
+    vault = tmp_path / "secretref_vault.json"
+    vault.write_text(json.dumps({secretref: base}), encoding="utf-8")
+    return vault
+
+
+def test_demo_secretref_identity_never_includes_values(tmp_path) -> None:
+    vault = _write_demo_vault(tmp_path)
+    identity = demo_secretref_identity_without_values_v1(vault_file=vault)
+    assert identity["VALUES_INCLUDED"] is False
+    assert "api_key" not in identity
+    assert identity["SECRETREF_URI"] == DEMO_SECRET_REFERENCE
+
+
+def test_demo_vault_missing_fail_closed(tmp_path) -> None:
+    with pytest.raises(GhvTestnetDemoSecretrefVaultLoaderError, match="VAULT_FILE_MISSING"):
+        load_ghv_testnet_demo_credential_handle_v1(vault_file=tmp_path / "missing.json")
+
+
+def test_demo_vault_incomplete_fields_fail_closed(tmp_path) -> None:
+    vault = _write_demo_vault(tmp_path, {"api_key": "k", "api_secret": "", "passphrase": "p"})
+    with pytest.raises(
+        GhvTestnetDemoSecretrefVaultLoaderError, match="CREDENTIAL_FIELDS_INCOMPLETE"
+    ):
+        load_ghv_testnet_demo_credential_handle_v1(vault_file=vault)
+
+
+def test_demo_vault_wrong_secretref_fail_closed(tmp_path) -> None:
+    vault = _write_demo_vault(tmp_path, secretref=LIVE_K1_SECRETREF_URI)
+    with pytest.raises(GhvTestnetDemoSecretrefVaultLoaderError, match="SECRETREF_URI_UNBOUND"):
+        load_ghv_testnet_demo_credential_handle_v1(vault_file=vault)
+
+
+def test_demo_vault_wrong_credential_class_fail_closed(tmp_path) -> None:
+    vault = _write_demo_vault(
+        tmp_path,
+        {
+            "api_key": _SYNTH_KEY,
+            "api_secret": _SYNTH_SECRET,
+            "passphrase": _SYNTH_PASS,
+            "credential_class": LIVE_K1_CREDENTIAL_CLASS,
+        },
+    )
+    with pytest.raises(
+        GhvTestnetDemoSecretrefVaultLoaderError, match="DEMO_CREDENTIAL_CLASS_REJECTED"
+    ):
+        load_ghv_testnet_demo_credential_handle_v1(vault_file=vault)
+
+
+def test_demo_acquire_rejects_wrong_secretref_uri(tmp_path) -> None:
+    vault = _write_demo_vault(tmp_path)
+    with pytest.raises(GhvTestnetDemoSecretrefVaultLoaderError, match="SECRETREF_URI_MISMATCH"):
+        acquire_ghv_testnet_demo_opaque_handle_v1(
+            secret_reference=LIVE_K1_SECRETREF_URI,
+            vault_backend=vault,
+        )
+
+
+def test_demo_presence_gate_complete_with_vault(tmp_path) -> None:
+    vault = _write_demo_vault(tmp_path)
+    gate = prove_demo_credential_presence_gate_v1(vault_file=vault)
+    assert gate["DEMO_CREDENTIAL_SET_COMPLETE"] is True
+    assert gate["K1_FALLBACK_POSSIBLE"] is False
+
+
+def test_demo_bind_loads_from_vault_file(tmp_path) -> None:
+    vault = _write_demo_vault(tmp_path)
+    with open_ghv_testnet_demo_get_only_fresh_pretrade_transport_v1(
+        owner_go=f"OWNER_GO_{OWNER_GO}",
+        max_request_count=4,
+        credential_loader=lambda: load_ghv_testnet_demo_credential_handle_v1(vault_file=vault),
+    ) as (transport, proof):
+        assert transport.transport_class == TRANSPORT_CLASS_DEMO_READ_ONLY_GET
+        assert proof["CREDENTIAL_HANDLE_PRESENT"] == "true"
 
 
 def test_demo_bind_accepts_injected_demo_handle() -> None:
