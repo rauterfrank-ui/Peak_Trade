@@ -396,7 +396,7 @@ def test_entry_exit_remains_downstream_and_position_flip_forbidden() -> None:
 def test_model_c_remains_unbound_zero_productive_consumers() -> None:
     replay_src = REPLAY_PATH.read_text(encoding="utf-8")
     assert "derive_scope_event_distances_v1" not in replay_src
-    assert "up_distance=float(inp.up_distance)" in replay_src
+    assert "up_distance=cycle_up_distance" in replay_src
     consumers = []
     for path in (
         REPLAY_PATH,

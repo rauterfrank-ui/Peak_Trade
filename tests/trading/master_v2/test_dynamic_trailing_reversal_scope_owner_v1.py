@@ -151,8 +151,8 @@ def test_productive_bind_seam_no_cap63_up_distance_as_proposed_d_t() -> None:
     assert "PRODUCTIVE_RAW_SCOPE_DISTANCE_PRODUCER_ID" in text
 
 
-def test_raw_scope_producer_id_is_canonical_scope_owner() -> None:
-    assert "canonical_scope_initialization_v1" in PRODUCTIVE_RAW_SCOPE_DISTANCE_PRODUCER_ID
+def test_raw_scope_producer_id_is_gge_owner() -> None:
+    assert "golden_geometry_engine_v1" in PRODUCTIVE_RAW_SCOPE_DISTANCE_PRODUCER_ID
 
 
 def test_single_magnitude_truth_productive_raw_equals_replay_scope_init() -> None:

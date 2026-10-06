@@ -10,6 +10,7 @@
     "src/trading/master_v2/strategy_suitability_agreement_material_v1.py",
     "src/trading/master_v2/suitability_binding_v1.py",
     "src/trading/master_v2/evaluate_double_play_authority_boundary_v0.py",
+    "src/trading/master_v2/golden_geometry_engine_v1.py",
     "src/trading/master_v2/decision_packet_v1.py",
     "src/trading/master_v2/decision_packet_snapshot_v1.py",
     "src/trading/master_v2/decision_packet_from_integrated_replay_v1.py",
@@ -117,6 +118,7 @@
     "tests/trading/master_v2/naked_single_boundary_replay_test_support_v1.py",
     "tests/trading/master_v2/test_chop_scope_event_policy_binding_contract_v1.py",
     "tests/trading/master_v2/test_double_play_state.py",
+    "tests/trading/master_v2/test_double_play_asymmetric_dynamic_scope_recovery_v1.py",
     "tests/trading/master_v2/test_double_play_composition.py",
     "tests/trading/master_v2/test_master_v2_capital_risk_sizing_safety_intent_restore_contract_v1.py",
     "tests/trading/master_v2/test_master_v2_a06_capital_risk_sizing_intent_restore_contract_v1.py",
@@ -774,6 +776,7 @@
     "tests/trading/master_v2/test_canonical_scope_initialization_v1.py",
     "src/trading/master_v2/layer_c_scope_event_distance_binding_v1.py",
     "tests/trading/master_v2/test_dynamic_trailing_reversal_scope_owner_v1.py",
+    "tests/trading/master_v2/test_golden_geometry_engine_v1.py",
     "tests/trading/master_v2/test_canonical_volatility_binding_and_provenance_transport_v1.py",
     "docs/ops/specs/MASTER_V2_CANONICAL_VOLATILITY_BINDING_AND_PROVENANCE_TRANSPORT_V1.md",
     "src/trading/master_v2/canonical_volatility_default_quarantine_v1.py",
@@ -1266,6 +1269,7 @@
     "M9_S1_DURABLE_MARKET_SESSION_EVIDENCE_ACCUMULATION_V1: authorize exact-file passive M9-S1 market session observation ledger, fail-safe bridge delegation to productive accumulation, offline 8-candidate counterfactual replay, owner-review artifacts, focused tests and docs. Reuses productive/join ledgers. No numeric max-age selection, enforcement, Alpha/presence gate semantic change, or external effect.",
     "PR6993_DYNAMIC_SCOPE_PRODUCTIVE_BRIDGE_BOUNDARIES_V1: authorize exact-file Layer-C scope event distance binding, canonical scope initialization continuity, integrated replay scope wiring, typed volatility presence gate bridge consumption, and focused Master-V2 scope tests for dynamic scope magnitude + Cap 6.2 restart continuity + WP1/WP2 productive bridge boundaries. CORE_SEMANTICS unchanged at governance boundary; no live/testnet/orders.",
     "PR7036_RAW_INSTRUMENT_RELATIVE_SCOPE_CUTOVER_V1: authorize exact-file productive Scope initialization policy cutover from legacy absolute [50,500] injection to existing instrument-relative σ×mark policy on canonical_core_runtime_integration_bridge_v0 and integrated_vs_scenario_replay_full_system_parity_harness_v0; focused cutover contract tests, GHV reproof evidence runner/manifests, and SCOPE_INIT navigation docs. No new Scope formula; Double Play / Layer-C / LIVE29P unchanged; CORE_SEMANTICS unchanged at governance boundary; no live/testnet/orders.",
-    "PR7037_CRS_BOUNDARY_MV2_WIRING_V1: authorize exact-file WIRING_ONLY MV2 CRS boundary propagation on current_productive_master_v2_runtime_cycle_v1 via build_simulated_economics_crs_boundary_state_file_v1 onto IntegratedOfflineReplayInputV1; focused wiring tests and updated enter/29p join regression expectations. No trading-decision, Scope, Layer-C, or POST authority change; CORE_SEMANTICS unchanged at governance boundary; no live/testnet/orders."
+    "PR7037_CRS_BOUNDARY_MV2_WIRING_V1: authorize exact-file WIRING_ONLY MV2 CRS boundary propagation on current_productive_master_v2_runtime_cycle_v1 via build_simulated_economics_crs_boundary_state_file_v1 onto IntegratedOfflineReplayInputV1; focused wiring tests and updated enter/29p join regression expectations. No trading-decision, Scope, Layer-C, or POST authority change; CORE_SEMANTICS unchanged at governance boundary; no live/testnet/orders.",
+    "PR7064_GOLDEN_GEOMETRY_ENGINE_V1: authorize exact-file Golden Geometry Engine V1 module and focused GGE/scope/trailing contract tests plus asymmetric dynamic-scope recovery replay-string contract alignment. Semantics-neutral technical canonical wiring only: D_gge=volatility_estimate×mark_price magnitude owner; SAFE CORRECTION baseline; no Entry/Exit/Reversal/MV2 decision-semantics change at governance boundary; CORE_SEMANTICS/RISK_SIZING/SAFETY invariants unchanged; no live/testnet/orders/POST."
   ]
 }

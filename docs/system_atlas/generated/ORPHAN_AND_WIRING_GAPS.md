@@ -128,6 +128,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_canonical_volatility | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_canonical_volatility | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_capital_risk_sizing | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_capital_risk_sizing | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_directional_assessment | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_directional_assessment | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_golden_geometry_engine | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_golden_geometry_engine | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_input_happy_path | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_input_happy_path | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_local_evaluator | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_local_evaluator | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:mv2_offline_boundary_adapters | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:mv2_offline_boundary_adapters | STATUS=OPEN (not proven) |  |
