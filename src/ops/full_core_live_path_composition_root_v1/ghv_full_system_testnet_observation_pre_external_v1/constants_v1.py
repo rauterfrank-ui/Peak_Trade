@@ -42,6 +42,15 @@ DEMO_CREDENTIAL_LIVE_K1_REUSE_ALLOWED = False
 LIVE_CREDENTIAL_DEMO_REUSE_ALLOWED = False
 
 DEMO_SECRET_REFERENCE = "secretref://vault/peak-trade/testnet-demo"
+VAULT_FILE_ENV_VAR = "PEAK_TRADE_TESTNET_DEMO_VAULT_FILE"
+DEFAULT_VAULT_RELATIVE = (
+    ".ops_local/section_11_12_8_okx_eea_demo_xperp/secrets/secretref_vault.json"
+)
+FORBIDDEN_CROSS_PACKAGE_SECRETREF_URIS: frozenset[str] = frozenset(
+    {
+        "secretref://vault/peak-trade/live-canary-minimum-exposure/okx",
+    }
+)
 
 TRANSPORT_CLASS_DEMO_READ_ONLY_GET = "GHV_FULL_SYSTEM_TESTNET_DEMO_READ_ONLY_GET_V1"
 USER_AGENT_DEMO_READ_ONLY_GET = "PeakTrade-GHV-FullSystem-Testnet-Demo-ReadOnly-GET/1"
