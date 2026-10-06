@@ -618,6 +618,7 @@ def _main() -> int:
         cycle_records=orch.cycle_records,
         terminal_disposition=str(orch.disposition or ""),
         ddo_jsonl=lane_state_root / "LANE_1/ddo_learning_capture_v1.jsonl",
+        lane_state_root=lane_state_root,
     )
     dpo = dict(reporting.dpo)
     outcome = str(dpo.get("decision_outcome") or "").lower()
