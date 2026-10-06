@@ -825,6 +825,7 @@ def execute_plan(
     return maybe_invoke_durable_closeout_after_archive(
         ctx,
         archive_dest,
+        owner_persist_run_class="testnet",
         durable_closeout_invoker=durable_closeout_invoker,
     )
 

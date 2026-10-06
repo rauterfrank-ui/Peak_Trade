@@ -73,6 +73,21 @@ def _durable_args(**overrides: object) -> argparse.Namespace:
     return argparse.Namespace(**base)
 
 
+@pytest.fixture(autouse=True)
+def _stub_owner_run_evidence_persist(monkeypatch: pytest.MonkeyPatch):
+    """Legacy durable-closeout tests use minimal archive fixtures (not full primary evidence)."""
+    from src.ops.simple_run_evidence_retention_v1 import persist_v1
+
+    def _stub(*_args, **_kwargs):
+        return persist_v1.OwnerPersistResult(0, "test_stub", "owner persist stubbed in test")
+
+    monkeypatch.setattr(
+        persist_v1,
+        "persist_bounded_run_to_owner_evidence",
+        _stub,
+    )
+
+
 @pytest.fixture(scope="module")
 def paper():
     return _load_paper()
