@@ -2,6 +2,8 @@
   "authority_effect": "NONE",
   "base_sha": "6b7b6058c978fe5e96e9aa977dbe7d479d9c0453",
   "changed_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
@@ -24,17 +26,20 @@
     "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/types_v1.py",
     "tests/ops/test_natural_enter_cross_session_outcome_closure_v1.py"
   ],
-  "changed_paths_sha256": "7b4f117a08e6e2efcfea155a0e1c75fb17e004ecd96a4e67dde7b1984ff700ae",
+  "changed_paths_sha256": "408abc299ec40fe785a23ac6af7b4963bceb9820cfc59d307c6ea3c4826f33c5",
   "selector_used_as_map_impact_authority": false,
   "verdict": "MAP_UPDATE_REQUIRED",
-  "reason": "PR #7073: Natural-Enter cross-session pending outcome harness; diff-bound map/atlas navigation update; no interaction-authority edge or trading semantic change; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #7073: Natural-Enter cross-session pending outcome harness; diff-bound map/atlas/law navigation update; no interaction-authority edge or trading semantic change; AUTHORITY=NONE; POST_COUNT=0.",
   "evidence_refs": [
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/entities/catalog.yaml",
     "tests/ops/test_natural_enter_cross_session_outcome_closure_v1.py"
   ],
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
