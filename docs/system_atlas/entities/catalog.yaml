@@ -470,6 +470,7 @@ entities:
   - src/ops/peak_trade_public_market_data_runtime_v1/wp_c_converged_o4_public_handoff_v1.py
   notes: "Observation-only OKX EEA public data plane: ratified WS binding (wseea), REST bootstrap/gap recovery, canonical public facts, tiered durability, historical query/replay, and governed consumer adapters (B05 61 PT1M marks, O4 PT1H envelope, landscape readmodel). No credentials, POST, selection, strategy, promotion, execution, wire, or multi-future trading authority. MULTI_FUTURE_RUNTIME_AUTHORIZED remains false; MAX_POSITIONS_EFFECTIVE=1. ATLAS_AUTHORITY=NONE.\n      PR #6993 atlas review: dynamic scope + bridge boundary closure; topology/navigation only; ATLAS_AUTHORITY=NONE; POST_COUNT=0."
 - id: CAPABILITY:okx_eea_private_account_state_runtime_v1
+  # atlas_entity_review: PR #7074 GHV Full-System Testnet Observation binding adds parallel Demo GET-only seam; does not mutate okx_eea_private_account_state_runtime_v1; AUTHORITY=NONE; POST_COUNT=0.
   kind: CAPABILITY
   name: OKX EEA Private Account State Runtime (observation-only)
   epistemic_class: CANONICAL_AUTHORITY
@@ -3868,6 +3869,7 @@ entities:
   # atlas_entity_review: PR #7065 Owner-GO baseline rebind c752284->dd4c23 post-PR7064 GGE Master-V2 lineage; governance/spec/test/Atlas provenance only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7066 PRE_EXTERNAL convergence report correlates S5 cycle_index to ordinal live-c1 DPO; NATURAL_ENTER_OBSERVED accounting only; no trading/threshold/selection change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7073 wires cross-session Natural-Enter pending outcome create/resolve on PRE_EXTERNAL and observation poll; harness/persistence only; no trading/threshold/PRE_EXTERNAL disposition change; AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #7074 optional Demo GET-only private-account transport mode + scoped Owner-GO on same GHV launcher; binding-only; no trading graph change; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive persistent Natural-ENTER policy-governed live Fresh-C1 continuous run v1
   epistemic_class: FORENSIC_RAW
@@ -3877,6 +3879,8 @@ entities:
   source_paths:
   - scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py
   - scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py
+  - scripts/ops/run_ghv_full_system_testnet_observation_pre_external_binding_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/ghv_full_system_testnet_observation_pre_external_v1/
   - src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/
   - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_live_c1_get_only_fresh_pretrade_transport_bind_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_get_budget_contract_v1.py
@@ -3896,6 +3900,7 @@ entities:
   - tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py
   - tests/ops/test_pre_external_convergence_natural_enter_reporting_v1.py
   - tests/ops/test_natural_enter_cross_session_outcome_closure_v1.py
+  - tests/ops/test_ghv_full_system_testnet_observation_pre_external_v1.py
   - tests/ops/full_core_live_path_composition_root_v1/test_productive_continuous_observation_budget_v1.py
   - tests/ops/test_golden_happy_t2_cycle2_ddo_o4_session_scope_regression_v1.py
   - tests/ops/full_core_live_path_composition_root_v1/test_productive_bounded_continuous_get_budget_contract_v1.py
@@ -3920,6 +3925,20 @@ entities:
   evidence_sources:
   - tests/ops/test_natural_enter_cross_session_outcome_closure_v1.py
   notes: Persist incomplete Natural-Enter N-bar horizons in persistent lane_state; advance via CanonicalPublicMdBarProducer O4 path; close through existing N_BARS evaluation and learning ingest; no trading decision replay; POST_COUNT=0; AUTHORITY=NONE.
+- id: RUNTIME_COMPONENT:ghv_full_system_testnet_observation_pre_external_v1
+  # atlas_entity_review: PR #7074 explicit OKX EEA public + Demo private GET-only observation contract; Live K1 isolation; Cap24-bound environment validation; no POST/external effect; READY_TO_EXECUTE=false; AUTHORITY=NONE; POST_COUNT=0.
+  kind: RUNTIME_COMPONENT
+  name: GHV Full-System Testnet Observation PRE_EXTERNAL binding v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: PR_7074_GHV_FULL_SYSTEM_TESTNET_OBSERVATION_PRE_EXTERNAL_BINDING_V1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/ghv_full_system_testnet_observation_pre_external_v1/
+  - scripts/ops/run_ghv_full_system_testnet_observation_pre_external_binding_v1.py
+  evidence_sources:
+  - tests/ops/test_ghv_full_system_testnet_observation_pre_external_v1.py
+  notes: Non-trading binding layer for Demo authenticated GET-only Fresh-Pretrade transport on the proven GHV entrypoint; Demo account observation evidence separated from O4 REAL_PUBLIC; fail-closed credential class isolation; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:productive_natural_market_data_capture_sink_v1
   kind: RUNTIME_COMPONENT
   name: Productive natural market-data GET capture sink v1
@@ -4039,6 +4058,7 @@ entities:
   # atlas_entity_review: PR #7028 BWP-03 dependency-closure only; launcher/residency/F1-M9 wiring; no override semantic change; SEMANTIC_CHANGE_FROM_PR7028=NONE; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7066 convergence launcher path only; quantity override module unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7073 convergence launcher path only; quantity override module unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #7074 GHV launcher transport-mode flag only; override module unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive forensic executable quantity override v1
   epistemic_class: FORENSIC_RAW
@@ -4877,6 +4897,7 @@ entities:
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
   # atlas_entity_review: PR #7069 pre-completion P/S/T run evidence retirement; reference/fixture rebind only; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  # atlas_entity_review: PR #7074 adds ghv_full_system_testnet_observation_pre_external_v1 package under composition root; binding-only; no trading semantic change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7059 RC-IMP-01 resolve_host_market_sample_venue_event_time_unix_v1 + accepted C1 in run_current_productive_master_v2_runtime_cycle_v1; MATERIALLY_CHANGED wiring only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7037 WIRING_ONLY CRS boundary propagation via build_simulated_economics_crs_boundary_state_file_v1 before integrated replay; no trading-decision change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7035 LIVE-29P join Layer-C adverse-exit protective-stop binding aligned with productive MV2; downstream binding only; AUTHORITY=NONE; POST_COUNT=0.
@@ -5586,6 +5607,7 @@ entities:
   - docs/ops/specs/FULL_CORE_DURABLE_FILEGATE_JOIN_SEAM_V1.md
   notes: Joins durable KillSwitchState into Full-Core admission as typed evidence. Does not arm Live. Does not GET. Does not admit. PEAK_KILL_SWITCH is overlay only. Replay remains unjoined. 11.2.1.Q does not let STEP-29P override FILEGATE. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 - id: GATE:full_core_owner_one_shot_permit_v1
+  # atlas_entity_review: PR #7074 no permit seam change; indirect fresh-pretrade review only; AUTHORITY=NONE; POST_COUNT=0.
   kind: GATE
   name: Full-core typed OWNER_ONE_SHOT permit seam v1
   epistemic_class: FORENSIC_RAW
@@ -5607,6 +5629,7 @@ entities:
   - docs/ops/specs/FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM_V1.md
   notes: Joins FullCoreLivePathInputV1.owner_go into Full-Core admission as typed permit evidence. Exact token match only. Does not arm Live. Does not GET. Does not admit. Does not override FILEGATE. Does not consume the token. Canary OWNER_GO_EXECUTE is mismatch. 11.2.1.Q does not consume OWNER_ONE_SHOT as Live arming. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 - id: GATE:full_core_fresh_pretrade_runtime_get_v1
+  # atlas_entity_review: PR #7074 accepts GHV Demo read-only transport class in item status path; no admission/POST/permit change; AUTHORITY=NONE; POST_COUNT=0.
   kind: GATE
   name: Full-core fresh pretrade runtime GET seam v1
   epistemic_class: FORENSIC_RAW
@@ -5639,11 +5662,13 @@ entities:
   - tests/ops/full_core_live_path_composition_root_v1/test_s1_datasafety_source_kind_stamp_at_productive_get_transport_v1.py
   - tests/ops/full_core_live_path_composition_root_v1/test_s2c_datasafetygate_productive_admission_join_v1.py
   - tests/ops/full_core_live_path_composition_root_v1/test_golden_happy_fresh_c1_dynamic_get_cache_repair_v1.py
+  - tests/ops/test_ghv_full_system_testnet_observation_pre_external_v1.py
   - docs/ops/specs/FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1.md
   - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_29P_FRESH_TRUSTED_USDC_FREE_MARGIN_GET_AND_PRODUCE_SIZING_VALUE_V1.md
   notes: 'Joins decision-bound Fresh Pretrade GET evidence into Full-Core admission. Injectable GET-only port. Does not arm Live. Does not POST. Does not admit. Does not override FILEGATE or permit. Injected test doubles cannot claim venue contact. Canary HTTP is not Full-Core transport. S1: FreshPretradeGetTransportResultV1.data_safety_source_kind is an explicit provenance carrier (default None=UNBOUND). REAL is stamped only by FullCoreProductiveReadOnlyGetTransportV1.get under direct eea.okx.com acquisition evidence. No VENUE_NATIVE remap. No DataSafetyGate/usage_context join in S1. S2B: ratified Full-Core composition-root binder may compose DataSafetyContext(REAL, LIVE_TRADE) from the S1 stamp at this result type before A1/A2/A3 unwrap. Fail-closed unbound when stamp is None. S2C: DataSafetyGate.check is a fail-closed conjunct of evaluate_execution_admission_v1. DataSafetyGate=CONJUNCT_NOT_OWNER. ALLOW is not admission. No second admission owner. No activation/POST/wire. Prior S2B DATASAFETYGATE_JOIN=false
     / S2C_UNAUTHORIZED notes are superseded for this implemented coupling. 11.2.1.Q productive GETs live in a sibling package, not this seam. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #6995 typed GET cache policy GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED for S6 Fresh-C1 candle polls; default CACHEABLE_SNAPSHOT preserved; no POST/keychain; Real-Venue cache effectiveness proof deferred post-merge; AUTHORITY=NONE; POST_COUNT=0.'
 - id: GATE:full_core_live_account_bound_v1
+  # atlas_entity_review: PR #7074 Demo observation bind does not change LIVE_ACCOUNT_BOUND semantics; AUTHORITY=NONE; POST_COUNT=0.
   kind: GATE
   name: Full-core LIVE_ACCOUNT_BOUND seam v1
   epistemic_class: FORENSIC_RAW

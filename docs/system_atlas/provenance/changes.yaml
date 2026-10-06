@@ -814,6 +814,13 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_natural_enter_cross_session_outcome_closure_v1.py
   notes: 'PR #7073: cross-session Natural-Enter pending outcome persistence under lane_state; advance N_BARS via lawful public O4; close via existing eval/attribution/learning hosts; harness-only; no MV2/DP/threshold/PRE_EXTERNAL/POST change; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7074_ghv_full_system_testnet_observation_pre_external_binding_v1
+  from: 341eeecaab0c58eb3ad234bb49c9b9b67f82b4f6
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_ghv_full_system_testnet_observation_pre_external_v1.py
+  notes: 'PR #7074: GHV Full-System Testnet Observation PRE_EXTERNAL binding (Demo GET-only transport + credential isolation + Cap24-bound env validation) on unchanged GHV entrypoint; no trading semantic change; READY_TO_EXECUTE=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
 - id: CHANGE:legacy_paper_shadow_daemon_retirement_bp_v1
   from: 1bac0d93302c6e589effafe46fccb055d82bd44e
   to: PENDING_CHANGE

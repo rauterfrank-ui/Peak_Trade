@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_ENTITY_COUNT=4
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7073_full_system_natural_enter_cross_session_outcome_closure_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7074_ghv_full_system_testnet_observation_pre_external_binding_v1`.
 
 ## Workflow
 
@@ -40,9 +40,10 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:natural_enter_cross_session_outcome_closure_v1` |
+| `RUNTIME_COMPONENT:ghv_full_system_testnet_observation_pre_external_v1` |
 | `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
-| `RUNTIME_COMPONENT:current_productive_forensic_executable_quantity_override_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `GATE:full_core_fresh_pretrade_runtime_get_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -94,8 +95,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7073: Natural-Enter cross-session pending outcome harness under persistent lane_state; lawful O4 N_BARS closure via existing evaluation/learning owners; no trading semantic change; AUTHORITY=NONE; POST_COUNT=0.
-- introduced_by=CHANGE:pr_7073_full_system_natural_enter_cross_session_outcome_closure_v1
-- modified_by=CHANGE:pr_7073_full_system_natural_enter_cross_session_outcome_closure_v1
+- PR #7074: GHV Full-System Testnet Observation PRE_EXTERNAL binding (Demo GET-only private account observation seam, Live K1 isolation, scoped Owner-GO); same GHV carrier; no trading/Cap23/Cap24/PRE_EXTERNAL semantic change; AUTHORITY=NONE; POST_COUNT=0.
+- introduced_by=CHANGE:pr_7074_ghv_full_system_testnet_observation_pre_external_binding_v1
+- modified_by=CHANGE:pr_7074_ghv_full_system_testnet_observation_pre_external_binding_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

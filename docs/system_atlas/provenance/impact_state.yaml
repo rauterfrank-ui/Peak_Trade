@@ -1,17 +1,19 @@
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CHANGE:pr_7073_full_system_natural_enter_cross_session_outcome_closure_v1
-modified_by: CHANGE:pr_7073_full_system_natural_enter_cross_session_outcome_closure_v1
+introduced_by: CHANGE:pr_7074_ghv_full_system_testnet_observation_pre_external_binding_v1
+modified_by: CHANGE:pr_7074_ghv_full_system_testnet_observation_pre_external_binding_v1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #7073: Natural-Enter cross-session pending outcome harness under persistent lane_state;
-  lawful O4 N_BARS closure via existing evaluation/learning owners; no trading semantic change;
-  AUTHORITY=NONE; POST_COUNT=0.
+  PR #7074: GHV Full-System Testnet Observation PRE_EXTERNAL binding (Demo GET-only
+  private account observation seam, Live K1 isolation, scoped Owner-GO); same GHV
+  carrier; no trading/Cap23/Cap24/PRE_EXTERNAL semantic change; AUTHORITY=NONE;
+  POST_COUNT=0.
 changed_entities:
-  - RUNTIME_COMPONENT:natural_enter_cross_session_outcome_closure_v1
+  - RUNTIME_COMPONENT:ghv_full_system_testnet_observation_pre_external_v1
   - RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
-  - RUNTIME_COMPONENT:current_productive_forensic_executable_quantity_override_v1
+  - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  - GATE:full_core_fresh_pretrade_runtime_get_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []
