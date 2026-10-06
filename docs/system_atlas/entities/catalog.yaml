@@ -22,18 +22,20 @@ entities:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   notes: Futures-only trading engine. Master V2 / Double Play target system. DDO durable evidence storage owner is evidence-domain storage only and is not trading authority. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 - id: SUBSYSTEM:master_v2
+  # atlas_entity_review: PR #7064 Golden Geometry Engine V1 + SAFE CORRECTION; D_gge=volatility_estimate×mark_price; reference semantic equivalence; unauthorized CLASS C removed; navigation only; TRADING_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
   kind: SUBSYSTEM
   name: Master V2
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: STILL_CURRENT_AND_CANONICALLY_SUPPORTED
-  modified_by: PR_6993_DYNAMIC_SCOPE_BRIDGE_CLOSURE_V1
+  modified_by: CHANGE:pr_7064_golden_geometry_engine_v1
   authority_sources:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   evidence_sources:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
-  notes: "Not a competing generation versus Double Play. Typed ReplayExecutionSafetyV1 is mapper-facing evidence, not a second compute owner. OD1 single-lane confirmation activation is presence/lifecycle only and is not a second direction evaluator. ATLAS_AUTHORITY=NONE.\n      PR #6993 atlas review: dynamic scope + bridge boundary closure; topology/navigation only; ATLAS_AUTHORITY=NONE; POST_COUNT=0."
+  - src/trading/master_v2/golden_geometry_engine_v1.py
+  notes: "Not a competing generation versus Double Play. Typed ReplayExecutionSafetyV1 is mapper-facing evidence, not a second compute owner. OD1 single-lane confirmation activation is presence/lifecycle only and is not a second direction evaluator. ATLAS_AUTHORITY=NONE.\n      PR #6993 atlas review: dynamic scope + bridge boundary closure; topology/navigation only; ATLAS_AUTHORITY=NONE; POST_COUNT=0.\n      PR #7064 atlas review: Golden Geometry Engine V1 wiring; D_gge=volatility_estimate×mark_price; reference semantic equivalence to authorized baseline; SAFE CORRECTION removed unauthorized CLASS C; topology/navigation only; ATLAS_AUTHORITY=NONE; POST_COUNT=0."
 - id: RUNTIME_COMPONENT:external_data_archive_locator_consumers
   kind: RUNTIME_COMPONENT
   name: External data-archive locator consumers
@@ -1535,11 +1537,13 @@ entities:
   - src/trading/master_v2/double_play_futures_input.py
   - docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md
 - id: RUNTIME_COMPONENT:dp_state
+  # atlas_entity_review: PR #7064 GGE consumer wiring on double_play_state; SideState/dynamic-scope authority unchanged; TRADING_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Double Play state / dynamic scope
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+  modified_by: CHANGE:pr_7064_golden_geometry_engine_v1
   evidence_sources:
   - src/trading/master_v2/double_play_state.py
   notes: SideState is the directional/lifecycle authority. Neutral-Start ARMED (LONG_ARMED_NEUTRAL_START / SHORT_ARMED_NEUTRAL_START) and Switch-Terminal ARMED (LONG_ARMED_SWITCH_TERMINAL / SHORT_ARMED_SWITCH_TERMINAL) are distinct identities. Legacy long_armed/short_armed remain parseable as LEGACY_AMBIGUOUS and are not origin-reconstructed. LIVE_ARMED is unchanged. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
@@ -1781,12 +1785,13 @@ entities:
     is proven with bound assumptions; process-crash durability is partial; host-crash and power-loss remain unproven; durability_proven=True is not manufacturable; a separate storage durability architecture is required before host-crash can be claimed. PEAK_TRADE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1 is bound as an isolated mutation-critical control-state storage owner with CUSTOM_FILE_WAL_JOURNAL_V1. It is not the DDO observation ledger owner, not trading/execution/supervisor/promotion authority, and not a productive host binding. Host-crash and power-loss remain unproven. DDO_OFFLINE_EXISTING_OWNER_VALIDATION_EVIDENCE_INGEST_AND_PROMOTION_ELIGIBILITY_DRY_RUN_V1 is bound as typed existing-owner artifact ingest plus pack aggregation and promotion-eligibility dry-run. DDO does not execute Walk-Forward, Monte Carlo, Stress, Fault, or Safety Replay engines and does not activate promotion, deployment, or rollback. DDO_SEMANTIC_REPLAY_PARITY_V1 is bound as offline typed
     producer-output reconstruction replay from immutable Double-Play observation evidence. Classifier/token replay remains distinct. Producer-function replay is NOT_REPLAYABLE in C because C is output-semantic parity and does not invoke the producer. Producer input was absent at the time of the C persist and is now available via DDO_DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURE_V1. Function-replay owner policy is persisted separately and is not implementation. Atlas catalog presence is navigation only and is not activation. Atlas is not trading authority.'
 - id: RUNTIME_COMPONENT:ddo_capture_v0
+  # atlas_entity_review: PR #7064 adjacent integrated-replay/GGE wiring; DDO capture remains observation-only; TRADING_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: DDO capture adapter v0
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_6993_DYNAMIC_SCOPE_BRIDGE_CLOSURE_V1
+  modified_by: CHANGE:pr_7064_golden_geometry_engine_v1
   source_paths:
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
   - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
@@ -2984,6 +2989,7 @@ entities:
   - config/governance/productive_activation_boundary_forensic_review_v1_decision_v1.json
   notes: Post-#6889 Owner-GO forensic census + static proof; consumer reachability does not mint Productive Activation; PRODUCTIVE_ACTIVATION_AUTHORIZED=false; ATLAS_AUTHORITY=NONE.
 - id: CONTRACT:p5_10_productive_activation_and_binding_v1
+  # atlas_entity_review: PR #7064 adjacent productive bind seam touch in GGE PR; P5.10 bind/activation semantics unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7059 adjacent runtime_cycle C1 timestamp seam only; P5.10 bind/activation semantics unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7037 MV2 host CRS boundary attach after prepare_productive_layered_core_replay_bind_v1; bind seam semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: CONTRACT
@@ -2991,7 +2997,7 @@ entities:
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
-  modified_by: PR_6993_DYNAMIC_SCOPE_BRIDGE_CLOSURE_V1
+  modified_by: CHANGE:pr_7064_golden_geometry_engine_v1
   authority_sources:
   - docs/ops/specs/P5_10_PRODUCTIVE_ACTIVATION_AND_BINDING_V1.md
   source_paths:
@@ -3110,6 +3116,21 @@ entities:
   - src/trading/master_v2/canonical_volatility_estimate_materializer_v1.py
   - docs/system_atlas/census/master_v2_semantic_map.yaml
   notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
+- id: RUNTIME_COMPONENT:mv2_golden_geometry_engine
+  # atlas_entity_review: PR #7064 introduces Golden Geometry Engine V1; D_gge=volatility_estimate×mark_price; reference semantic equivalence; navigation only; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
+  kind: RUNTIME_COMPONENT
+  name: Golden Geometry Engine V1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+  module_role: current_noncanonical
+  modified_by: CHANGE:pr_7064_golden_geometry_engine_v1
+  source_paths:
+  - src/trading/master_v2/golden_geometry_engine_v1.py
+  evidence_sources:
+  - src/trading/master_v2/golden_geometry_engine_v1.py
+  - tests/trading/master_v2/test_golden_geometry_engine_v1.py
+  notes: "Single geometry authority for D_gge=volatility_estimate×mark_price on the Master-V2/Double-Play path. Implementation is not activation. Atlas is not trading authority. ATLAS_AUTHORITY=NONE."
 - id: RUNTIME_COMPONENT:mv2_canonical_market_context
   kind: RUNTIME_COMPONENT
   name: Canonical market context
@@ -3124,6 +3145,7 @@ entities:
   - docs/system_atlas/census/master_v2_semantic_map.yaml
   notes: Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.
 - id: RUNTIME_COMPONENT:mv2_canonical_scope
+  # atlas_entity_review: PR #7064 GGE wiring on scope init + layer_c distance binding; scope authority unchanged; TRADING_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Canonical scope initialization
   epistemic_class: FORENSIC_RAW
@@ -3137,8 +3159,8 @@ entities:
   - src/trading/master_v2/canonical_scope_initialization_v1.py
   - docs/system_atlas/census/master_v2_semantic_map.yaml
   - src/trading/master_v2/layer_c_scope_event_distance_binding_v1.py
-  notes: "Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.\n      PR #6993 atlas review: dynamic scope + bridge boundary closure; topology/navigation only; ATLAS_AUTHORITY=NONE; POST_COUNT=0."
-  modified_by: PR_6993_DYNAMIC_SCOPE_BRIDGE_CLOSURE_V1
+  notes: "Cluster entity. Full file membership in census/master_v2_semantic_map.yaml. Implementation is not activation.\n      PR #6993 atlas review: dynamic scope + bridge boundary closure; topology/navigation only; ATLAS_AUTHORITY=NONE; POST_COUNT=0.\n      PR #7064 atlas review: Golden Geometry Engine V1 consumer wiring; scope initialization authority unchanged; ATLAS_AUTHORITY=NONE; POST_COUNT=0."
+  modified_by: CHANGE:pr_7064_golden_geometry_engine_v1
 - id: RUNTIME_COMPONENT:mv2_canonical_trading_decision_evidence
   kind: RUNTIME_COMPONENT
   name: Canonical trading decision evidence
@@ -3284,12 +3306,13 @@ entities:
   - config/governance/double_play_old_effective_host_contract_v1_decision_v1.json
   notes: Navigation-only Atlas entity for PR
 - id: RUNTIME_COMPONENT:mv2_integrated_replay
+  # atlas_entity_review: PR #7064 GGE wiring in integrated offline replay; replay safety/authority unchanged; TRADING_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Integrated offline trading-logic replay
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_6993_DYNAMIC_SCOPE_BRIDGE_CLOSURE_V1
+  modified_by: CHANGE:pr_7064_golden_geometry_engine_v1
   module_role: offline_replay
   source_paths:
   - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py

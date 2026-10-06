@@ -751,3 +751,10 @@ changes:
   epistemic_status: NAVIGATION_ONLY
   evidence: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   notes: 'PR #7063: rebind Master Runbook and Map-of-Truth CURRENT_REVIEWED_AT_SHA/BOUND_ORIGIN_MAIN_SHA to post-#7062 origin/main; resolve internal runbook stamp conflict; navigation/review binding only; no trading/config/authority change; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7064_golden_geometry_engine_v1
+  from: 0491e3cc0df8fe9f13d93dc1ca49eb00949dd811
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: src/trading/master_v2/golden_geometry_engine_v1.py
+  notes: 'PR #7064: Golden Geometry Engine V1 wiring with D_gge=volatility_estimate×mark_price; SAFE CORRECTION reverted unauthorized CLASS C validation semantics; reference semantic equivalence to authorized GGE baseline; differential replay A–G identical; GGE test suite 153/153 local pass; clean-core seal + atlas impact closure in same PR; no POST/external effect; ATLAS_AUTHORITY=NONE.'

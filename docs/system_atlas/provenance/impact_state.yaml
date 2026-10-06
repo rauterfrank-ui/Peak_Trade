@@ -1,17 +1,27 @@
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CHANGE:pr_7063_canonical_repo_currency_closure_v1
-modified_by: PR_7063_CANONICAL_REPO_CURRENCY_CLOSURE_V1
+introduced_by: CHANGE:pr_7064_golden_geometry_engine_v1
+modified_by: PR_7064_GOLDEN_GEOMETRY_ENGINE_V1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'PR #7063 canonical repo-currency closure: Master Runbook + Map-of-Truth review stamp rebind; no trading, POST, or configuration authority change.'
+note: 'PR #7064 Golden Geometry Engine V1 atlas review closure: catalog entity for GGE V1; reviewed Master-V2/Double-Play/replay/P5.10/DDO observation wiring; navigation only; no trading authority or POST change.'
 changed_entities:
-- NAVIGATION_INDEX:map_of_truth
-- RUNBOOK:canonical_master_runbook
-changed_relations: []
+- CONTRACT:p5_10_productive_activation_and_binding_v1
+- RUNTIME_COMPONENT:ddo_capture_v0
+- RUNTIME_COMPONENT:dp_state
+- RUNTIME_COMPONENT:mv2_canonical_scope
+- RUNTIME_COMPONENT:mv2_golden_geometry_engine
+- RUNTIME_COMPONENT:mv2_integrated_replay
+- SUBSYSTEM:master_v2
+changed_relations:
+- REL:r_ddo_capture_observes_integrated_replay
 changed_closures: []
 changed_wiring: []
 changed_venue: []
 changed_census: []
 changed_generated:
 - generated/ATLAS_CHANGE_IMPACT.md
+- generated/FULL_DEPENDENCY_GRAPH.md
+- generated/ORPHAN_AND_WIRING_GAPS.md
+- generated/RUNTIME_GRAPH.md
+- generated/SYSTEM_ATLAS.md
