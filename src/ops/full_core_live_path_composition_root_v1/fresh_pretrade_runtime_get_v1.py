@@ -37,8 +37,14 @@ from src.ops.full_core_live_path_composition_root_v1.execution_admission_contrac
     PRETRADE_SOURCE_FROZEN_OFFLINE,
     PretradeFreshnessStatusV1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+    ENDPOINT_MARKET_INDEX_TICKERS,
+)
 from src.ops.full_core_live_path_composition_root_v1.owner_one_shot_permit_v1 import (
     join_owner_one_shot_permit_into_admission_inputs_v1,
+)
+from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
+    USDT_USDC_SOURCE_IDENTITY,
 )
 
 JOIN_SEAM_ID = "FULL_CORE_FRESH_PRETRADE_RUNTIME_GET_SEAM_V1"
@@ -77,6 +83,7 @@ class FreshPretradeGetItemSpecV1:
     endpoint_path: str
     auth_required: bool
     fetch_group: str
+    fixed_inst_id: str = ""
 
 
 REQUIRED_GET_ITEM_SPECS: Tuple[FreshPretradeGetItemSpecV1, ...] = (
@@ -91,6 +98,13 @@ REQUIRED_GET_ITEM_SPECS: Tuple[FreshPretradeGetItemSpecV1, ...] = (
     FreshPretradeGetItemSpecV1("ACCOUNT_MODE", ENDPOINT_ACCOUNT_CONFIG, True, "config"),
     FreshPretradeGetItemSpecV1("MARGIN_MODE", ENDPOINT_ACCOUNT_POSITIONS, True, "positions"),
     FreshPretradeGetItemSpecV1("AVAILABLE_MARGIN", ENDPOINT_ACCOUNT_BALANCE, True, "balance"),
+    FreshPretradeGetItemSpecV1(
+        "MONETARY_NORMALIZATION_USDT_USDC_INDEX",
+        ENDPOINT_MARKET_INDEX_TICKERS,
+        False,
+        "monetary_normalization_usdt_usdc_index",
+        USDT_USDC_SOURCE_IDENTITY,
+    ),
 )
 
 PUBLIC_GET_PATHS: frozenset[str] = frozenset(
@@ -254,6 +268,11 @@ def build_required_get_endpoint_v1(
         return f"{path}?{urlencode(params)}"
     if path == ENDPOINT_ACCOUNT_LEVERAGE_INFO:
         return f"{path}?{urlencode({'instId': inst, 'mgnMode': mode})}"
+    if path == ENDPOINT_MARKET_INDEX_TICKERS:
+        index_inst = str(spec.fixed_inst_id or "").strip()
+        if not index_inst:
+            raise ValueError("INDEX_TICKERS_REQUIRES_FIXED_INST_ID")
+        return f"{path}?{urlencode({'instId': index_inst})}"
     return path
 
 

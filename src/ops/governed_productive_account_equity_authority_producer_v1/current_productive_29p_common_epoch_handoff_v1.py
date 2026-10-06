@@ -54,6 +54,7 @@ from src.ops.governed_futures_universe_producer_v1.persistence_v1 import (
     load_and_validate_universe_snapshot_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.live_account_bound_v1 import (
+    AUTHORIZED_CO_PRESENT_INSTRUMENT_IDS_FOR_MONETARY_NORMALIZATION_V1,
     LiveAccountBoundEvidenceV1,
     evaluate_live_account_bound_v1,
 )
@@ -152,8 +153,8 @@ HISTORICAL_PROVENANCE_REF_ONLY = (
     "20260922T051458Z"
 )
 AUTHORIZED_HOST = "eea.okx.com"
-MINIMUM_DEDUPLICATED_GET_COUNT = 7
-MAXIMUM_AUTHORIZED_DEDUPLICATED_GET_COUNT = 7
+MINIMUM_DEDUPLICATED_GET_COUNT = 8
+MAXIMUM_AUTHORIZED_DEDUPLICATED_GET_COUNT = 8
 SECRET_MARKERS: tuple[str, ...] = (
     "ok-access",
     "api_secret",
@@ -649,7 +650,13 @@ def compose_current_productive_29p_common_epoch_handoff_v1(
     produced = output.produced == TRUE_TOKEN
     lab_trusted = lab_status == LiveAccountBoundStatusV1.TRUSTED_PRESENT.value
     observed_instrument_id = ""
-    if lab.observed_inst_ids == (bound.venue_native_id,):
+    allowed_inst_ids = {
+        bound.venue_native_id
+    } | AUTHORIZED_CO_PRESENT_INSTRUMENT_IDS_FOR_MONETARY_NORMALIZATION_V1
+    observed_inst_set = set(lab.observed_inst_ids or ())
+    if observed_inst_set <= allowed_inst_ids and bound.venue_native_id in observed_inst_set:
+        observed_instrument_id = bound.venue_native_id
+    elif lab.observed_inst_ids == (bound.venue_native_id,):
         observed_instrument_id = bound.venue_native_id
     elif lab.observed_inst_ids:
         observed_instrument_id = ""

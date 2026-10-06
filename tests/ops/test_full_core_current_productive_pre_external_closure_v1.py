@@ -122,6 +122,10 @@ def _productive_instruments_row_for_enter_metadata_v1(
         "instId": instrument_id,
         "instType": "SWAP",
         "state": "live",
+        "ctType": "linear",
+        "baseCcy": "ADA",
+        "quoteCcy": "USDT",
+        "settleCcy": "USDT",
         "ctVal": "0.01",
         "ctValCcy": "ADA",
         "lotSz": "1",
@@ -133,11 +137,23 @@ def _productive_instruments_row_for_enter_metadata_v1(
 
 
 def _productive_transport(**kwargs) -> ProductiveClassFreshGetTransportV1:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+        ENDPOINT_MARKET_INDEX_TICKERS,
+    )
+    from tests.ops._monetary_normalization_test_helpers_v1 import (
+        usdc_usdt_swap_instruments_row_v1,
+        usdt_usdc_index_tickers_payload_v1,
+    )
+
     payloads = dict(_identity_payloads(instrument_id=_TEST_INST, **kwargs))
     payloads[ENDPOINT_PUBLIC_INSTRUMENTS] = {
         "code": "0",
-        "data": [_productive_instruments_row_for_enter_metadata_v1()],
+        "data": [
+            _productive_instruments_row_for_enter_metadata_v1(),
+            usdc_usdt_swap_instruments_row_v1(),
+        ],
     }
+    payloads[ENDPOINT_MARKET_INDEX_TICKERS] = usdt_usdc_index_tickers_payload_v1()
     return ProductiveClassFreshGetTransportV1(payloads=payloads)
 
 

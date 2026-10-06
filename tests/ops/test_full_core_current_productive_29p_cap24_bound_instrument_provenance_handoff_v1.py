@@ -463,7 +463,7 @@ def test_execute_acquires_cap24_without_manual_bound(tmp_path: Path) -> None:
             execution_integrity_backend=_INTEGRITY,
         )
     assert result.bound_instrument_id == chain["instrument_id"]
-    assert result.deduplicated_get_count == 7
+    assert result.deduplicated_get_count == 8
     claims = json.loads((tmp_path / "pack" / "claims.json").read_text(encoding="utf-8"))
     assert claims["CAP24_PROVENANCE_HANDOFF_STATUS"] == "ACQUIRED"
     assert claims["CAP24_BOUND_INSTRUMENT_ID"] == chain["instrument_id"]
