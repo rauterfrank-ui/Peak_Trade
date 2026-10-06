@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7065_owner_go_baseline_rebind_post_7064_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7064_golden_geometry_engine_v1`.
 
 ## Workflow
 
@@ -92,7 +92,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7065 Owner-GO baseline lineage rebind c752284->dd4c23 after PR #7064; governance/spec currency for bounded continuous Fresh-C1 run; no trading, POST, or configuration authority change.
+- PR #7065 Owner-GO baseline lineage rebind c752284->dd4c23 after PR #7064; governance/spec/test pins only; clears immutable-surface lineage drift for bounded Fresh-C1 S6 admission; no trading, POST, or configuration authority change.
 - introduced_by=CHANGE:pr_7064_golden_geometry_engine_v1
 - modified_by=PR_7065_OWNER_GO_BASELINE_REBIND_POST_7064_V1
 
