@@ -779,3 +779,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_current_productive_golden_happy_vector_startability_evaluator_v1.py
   notes: 'GHV startability evaluator v1: AUTHORITY=NONE read-only preflight composing CURRENT contracts against post-7065 Natural-Enter reference fixture; dual verdict OFFLINE_STARTABLE vs IMMEDIATE_CURRENT_INPUT; fail-closed negative vectors; no trading/selection/geometry/execution authority; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:current_productive_ghv_current_input_readiness_v1
+  from: b74fa827b9dd645195f45f673fa5880a2ec0414c
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/durable/current_productive_ghv_bounded_runtime_convergence_proof_v1.json
+  notes: 'CURRENT-input GHV readiness adapter + evaluator extension + WP runner: read-only public GET observation, fail-closed CURRENT vs fixture; historical bounded Natural Enter LONG to PRE_EXTERNAL (POST_COUNT=0); parent outer watchdog on optional bounded child; AUTHORITY=NONE; no trading semantic change.'

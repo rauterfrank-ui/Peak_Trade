@@ -1,6 +1,6 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "ffbc8fbe606640fff19b1094a1873b3f684499c7",
+  "base_sha": "b74fa827b9dd645195f45f673fa5880a2ec0414c",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -13,22 +13,20 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/run_current_productive_golden_happy_vector_startability_evaluator_v1.py",
+    "evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/durable/current_productive_ghv_bounded_runtime_convergence_proof_v1.json",
+    "scripts/ops/run_current_productive_ghv_input_readiness_and_convergence_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_golden_happy_vector_current_input_observation_adapter_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_golden_happy_vector_startability_evaluator_v1.py",
-    "tests/fixtures/current_productive_golden_happy_vector_post_7065_reference_v1/PRE_EXTERNAL_CONVERGENCE_REPORT.json",
-    "tests/fixtures/current_productive_golden_happy_vector_post_7065_reference_v1/golden_vector_manifest_v1.json",
-    "tests/fixtures/current_productive_golden_happy_vector_post_7065_reference_v1/lane_state/LANE_1/current_productive_sidestate_confirmation_cursor_v1.json",
-    "tests/fixtures/current_productive_golden_happy_vector_post_7065_reference_v1/lane_state/LANE_1/ddo_learning_capture_v1.jsonl",
-    "tests/fixtures/current_productive_golden_happy_vector_post_7065_reference_v1/single_selected_future_selection_v1.json",
-    "tests/ops/test_current_productive_golden_happy_vector_startability_evaluator_v1.py"
+    "tests/ops/test_current_productive_golden_happy_vector_current_input_readiness_v1.py",
+    "tests/ops/test_run_current_productive_ghv_input_readiness_and_convergence_v1.py"
   ],
-  "changed_paths_sha256": "e8b4a6260f44ad51739fcbdc8ee5197c9084cc11c62410cf35e6eb2ce434c574",
+  "changed_paths_sha256": "6f0c3abb385b4f2fccc99728621216106492fcae453a43b7170f3ec1aeaf85f3",
   "evidence_refs": [
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "tests/ops/test_current_productive_golden_happy_vector_startability_evaluator_v1.py"
+    "evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/durable/current_productive_ghv_bounded_runtime_convergence_proof_v1.json"
   ],
-  "reason": "PR #7067: authority-none CURRENT productive GHV startability evaluator (offline evidence-backed replay); Atlas provenance and impact-candidate catalog only; no Current Law semantic or authority change; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "CURRENT-input GHV readiness productization; Atlas provenance and impact-candidate catalog only; no Current Law semantic or authority change; AUTHORITY=NONE; POST_COUNT=0.",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT"
 }

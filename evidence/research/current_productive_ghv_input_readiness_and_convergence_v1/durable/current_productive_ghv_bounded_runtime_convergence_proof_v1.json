@@ -1,0 +1,56 @@
+{
+  "ARTIFACT_KIND": "HISTORICAL_BOUNDED_CURRENT_RUNTIME_PROOF_MANIFEST",
+  "AUTHORITY_EFFECT": "NONE",
+  "BASELINE_SHA": "b74fa827b9dd645195f45f673fa5880a2ec0414c",
+  "BOUNDING": {
+    "EFFECTIVE_MAX_CYCLES": 12,
+    "EFFECTIVE_MAX_RUN_DURATION_SECONDS": 900.0,
+    "OUTER_WATCHDOG_SECONDS": 960.0,
+    "POLL_INTERVAL_SECONDS": 5.0
+  },
+  "CANDIDATE_OBSERVED": true,
+  "CANDIDATE_SIDE": "LONG",
+  "CONFIRMATION": {
+    "CONFIRMATION_EPOCHS_REQUIRED": 2,
+    "CONTIGUOUS_CONFIRMATION_MAX": 2,
+    "MAX_CONFIRMATION_EPOCH_OBSERVED": 5
+  },
+  "CYCLE_PROGRESSION": [
+    {
+      "cycle_index": 1,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "cycle_index": 2,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "cycle_index": 3,
+      "s5_disposition": "HOLD_CLOSED"
+    },
+    {
+      "cycle_index": 4,
+      "s5_disposition": "PRE_EXTERNAL_EFFECT"
+    }
+  ],
+  "DISCLAIMER": "Documents one bounded historical CURRENT productive run at the cited timestamp. Does not guarantee future Natural Enter, side, or cycle under different market conditions.",
+  "EXECUTION_HEAD_SHA": "b74fa827b9dd645195f45f673fa5880a2ec0414c",
+  "EXTERNAL_EFFECT_COUNT": 0,
+  "FIRST_GENUINE_BLOCKER_AT_PRE_EXTERNAL": "OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1",
+  "GET_REQUEST_COUNT": 85,
+  "INSTRUMENT_ID": "okx_eea:linear_perpetual:API3:USDT:USDT:api3-usdt-swap",
+  "NATURAL_ENTER_CYCLE": 4,
+  "NATURAL_ENTER_OBSERVED": true,
+  "NATURAL_ENTER_SIDE": "LONG",
+  "NATURAL_ENTER_TIMESTAMP_UTC": "2026-10-06T08:18:05.291475Z",
+  "NATIVE_ID": "API3-USDT-SWAP",
+  "POST_COUNT": 0,
+  "PRE_EXTERNAL_REACHED": true,
+  "RUN_DURATION_SECONDS": 527.737,
+  "RUN_ID": "5446f25f95a30e4f",
+  "RUN_TERMINATION_REASON": "PRE_EXTERNAL_EFFECT",
+  "RUNTIME_PROOF": "CURRENT_PRODUCTIVE_GHV_BOUNDED_RUNTIME_CONVERGENCE_V1",
+  "SOURCE_EVIDENCE_ROOT": "evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/20261006T100500Z_bounded_runtime_convergence_v1",
+  "SOURCE_PRE_EXTERNAL_REPORT_SHA256": "058b1405b0a6a57505558d5244887bdf7c8280333ef591580ffd3a8a00ab7c02",
+  "WP_ID": "CURRENT_PRODUCTIVE_GHV_INPUT_READINESS_AND_CONVERGENCE_V1"
+}

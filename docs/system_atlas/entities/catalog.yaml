@@ -3911,11 +3911,29 @@ entities:
   modified_by: CHANGE:current_productive_ghv_startability_evaluator_v1
   source_paths:
   - scripts/ops/run_current_productive_golden_happy_vector_startability_evaluator_v1.py
+  - scripts/ops/run_current_productive_ghv_input_readiness_and_convergence_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_golden_happy_vector_startability_evaluator_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_golden_happy_vector_current_input_observation_adapter_v1.py
   evidence_sources:
   - tests/fixtures/current_productive_golden_happy_vector_post_7065_reference_v1/golden_vector_manifest_v1.json
   - tests/ops/test_current_productive_golden_happy_vector_startability_evaluator_v1.py
-  notes: Read-only structural startability adjudication vs stored Natural-Enter/PRE_EXTERNAL reference; separates OFFLINE_STARTABLE_TO_PRE_EXTERNAL from IMMEDIATE_CURRENT_INPUT_STARTABLE; uses productive GGE/Layer-C owners only; no network in structural mode; AUTHORITY=NONE; POST_COUNT=0.
+  - tests/ops/test_current_productive_golden_happy_vector_current_input_readiness_v1.py
+  - evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/durable/current_productive_ghv_bounded_runtime_convergence_proof_v1.json
+  notes: Read-only structural startability adjudication vs stored Natural-Enter/PRE_EXTERNAL reference; separates OFFLINE_STARTABLE_TO_PRE_EXTERNAL from IMMEDIATE_CURRENT_INPUT_STARTABLE; optional live CURRENT-input observation via adapter; uses productive GGE/Layer-C owners only; AUTHORITY=NONE; POST_COUNT=0.
+- id: RUNTIME_COMPONENT:current_productive_golden_happy_vector_current_input_observation_adapter_v1
+  # atlas_entity_review: AUTHORITY=NONE read-only CURRENT MD observation for GHV evaluation; productive public GET + G17→CMC bind; no cycle dispatch/POST/selection; fail-closed vs fixture replay.
+  kind: RUNTIME_COMPONENT
+  name: Current productive Golden Happy Vector current input observation adapter v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: CHANGE:current_productive_ghv_current_input_readiness_v1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_golden_happy_vector_current_input_observation_adapter_v1.py
+  evidence_sources:
+  - tests/ops/test_current_productive_golden_happy_vector_current_input_readiness_v1.py
+  - evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/durable/current_productive_ghv_bounded_runtime_convergence_proof_v1.json
+  notes: Observes CURRENT productive inputs for GHV readiness only; cannot masquerade fixture as CURRENT; no trading authority; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:productive_real_carrier_passive_capture_v1
   # atlas_entity_review: PR #7062 passive CB-001/CB-002 real-carrier capture; default-off ContextVar session; pre-replay lossless serialize only; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
