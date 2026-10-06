@@ -5,9 +5,13 @@
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
-    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml"
   ],
-  "changed_paths_sha256": "55bb9455d0787805cec95aaddde4e68ac908bfe3a394df44e469d6996f2198f1",
+  "changed_paths_sha256": "9a2a40c4a47e7d7f7b5dbdb7fb53d79004c12956c00d78946a4ccdde49f313e0",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
@@ -17,7 +21,7 @@
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
   ],
-  "reason": "PR canonical repo-currency closure: align Master Runbook and Map-of-Truth review stamps to post-#7062 origin/main; navigation/review binding only; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #7063 canonical repo-currency closure: review stamp rebind plus Atlas provenance for MoT/runbook navigation touch; AUTHORITY=NONE; POST_COUNT=0.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

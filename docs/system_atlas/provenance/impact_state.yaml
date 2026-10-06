@@ -1,13 +1,13 @@
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CHANGE:pr_7062_passive_real_carrier_capture_v1
-modified_by: PR_7062_PASSIVE_REAL_CARRIER_CAPTURE_V1
+introduced_by: CHANGE:pr_7063_canonical_repo_currency_closure_v1
+modified_by: PR_7063_CANONICAL_REPO_CURRENCY_CLOSURE_V1
 superseded_by: null
 last_recorded_impact: UPDATED
-note: 'PR #7062 passive real-carrier observability (CB-001/CB-002); default-off; pre-replay lossless capture only; no trading, POST, or configuration authority change.'
+note: 'PR #7063 canonical repo-currency closure: Master Runbook + Map-of-Truth review stamp rebind; no trading, POST, or configuration authority change.'
 changed_entities:
-- RUNTIME_COMPONENT:productive_real_carrier_passive_capture_v1
-- RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1
+- NAVIGATION_INDEX:map_of_truth
+- RUNBOOK:canonical_master_runbook
 changed_relations: []
 changed_closures: []
 changed_wiring: []

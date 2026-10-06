@@ -744,3 +744,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_productive_real_carrier_passive_capture_v1.py
   notes: 'PR #7062: default-off passive CB-001/CB-002 real-carrier capture at pre-replay host boundary; lossless replay_input.json + same_run_join_manifest to isolated /tmp; armed fail-closed before protected replay; no Master-V2/Double-Play/trading/config semantic change; Real-Venue not executed; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7063_canonical_repo_currency_closure_v1
+  from: 3f671f03543fa429facfd052618c837608aa7ad2
+  to: PENDING_CHANGE
+  type: NAVIGATION_REBIND
+  epistemic_status: NAVIGATION_ONLY
+  evidence: docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
+  notes: 'PR #7063: rebind Master Runbook and Map-of-Truth CURRENT_REVIEWED_AT_SHA/BOUND_ORIGIN_MAIN_SHA to post-#7062 origin/main; resolve internal runbook stamp conflict; navigation/review binding only; no trading/config/authority change; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

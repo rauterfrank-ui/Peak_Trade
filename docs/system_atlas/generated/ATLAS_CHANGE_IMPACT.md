@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7062_passive_real_carrier_capture_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7063_canonical_repo_currency_closure_v1`.
 
 ## Workflow
 
@@ -40,8 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:productive_real_carrier_passive_capture_v1` |
-| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_convergence_v1` |
+| `NAVIGATION_INDEX:map_of_truth` |
+| `RUNBOOK:canonical_master_runbook` |
 
 ## CHANGED_RELATIONS
 
@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7062 passive real-carrier observability (CB-001/CB-002); default-off; pre-replay lossless capture only; no trading, POST, or configuration authority change.
-- introduced_by=CHANGE:pr_7062_passive_real_carrier_capture_v1
-- modified_by=PR_7062_PASSIVE_REAL_CARRIER_CAPTURE_V1
+- PR #7063 canonical repo-currency closure: Master Runbook + Map-of-Truth review stamp rebind; no trading, POST, or configuration authority change.
+- introduced_by=CHANGE:pr_7063_canonical_repo_currency_closure_v1
+- modified_by=PR_7063_CANONICAL_REPO_CURRENCY_CLOSURE_V1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
