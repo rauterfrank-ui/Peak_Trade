@@ -6,11 +6,12 @@ DOCUMENT_ROLE=CURRENT_OPERATIONAL_SSOT
 AUTHORITY_EFFECT=IMPLEMENTATION_AND_OPERATIONAL_SEMANTIC_AUTHORITY
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 NO_PARALLEL_SEMANTIC_MODEL=true
-CURRENT_REVIEWED_AT_SHA=3f671f03543fa429facfd052618c837608aa7ad2
-BOUND_ORIGIN_MAIN_SHA=3f671f03543fa429facfd052618c837608aa7ad2
+CURRENT_REVIEWED_AT_SHA=6ed52d01ac181e629b2839271f83b52fc7ffe61f
+BOUND_ORIGIN_MAIN_SHA=6ed52d01ac181e629b2839271f83b52fc7ffe61f
 STALE_IF_HEAD_DIFFERS=true
 REVIEW_SHA_SEMANTICS=CONTENT_ORIGIN_SHA preserves evidence/workpackage collection baselines; CURRENT_REVIEWED_AT_SHA is navigation/review binding only
 TRACK_A_CLOSURE_CONTENT_ORIGIN_SHA=d0edb85fc83a5415a8a652299144cd0fe6da7644
+NATURAL_ENTER_PRE_EXTERNAL_CLOSURE_CONTENT_ORIGIN_SHA=6ed52d01ac181e629b2839271f83b52fc7ffe61f
 ```
 
 This document is the Owner-ratified CURRENT operational single source of
@@ -94,16 +95,24 @@ Descriptive whole-system functional/causal model (no operational SSOT):
 ## CURRENT Static Cartography, Coherence, and Open Debt (post dc0320a4d)
 
 ```text
-SYSTEM_BASELINE=dc0320a4d3814e5b555c936ec5a4eb63ffd5a5fc
+SYSTEM_BASELINE=6ed52d01ac181e629b2839271f83b52fc7ffe61f
 STATIC_CARTOGRAPHY_STATUS=COMPLETE
 STATIC_COHERENCE_STATUS=READY
 STATIC_REPAIR_REQUIRED=false
 STATIC_REPAIR_DEBT_COUNT=0
-RUNTIME_PROOF_STATUS=NOT_COMPLETE
+RUNTIME_PROOF_STATUS=THROUGH_PRE_EXTERNAL_PROVEN
 PRODUCTIVE_RUNTIME_PROOF_COMPLETE=false
-NATURAL_ENTER_TO_PRE_EXTERNAL_PROVEN=false
-CURRENT_RUNTIME_PROOF_READY=false
+NATURAL_ENTER_TO_PRE_EXTERNAL_PROVEN=true
+CURRENT_FUNCTIONAL_PATH_PROVEN_THROUGH_PRE_EXTERNAL=true
+CURRENT_FUNCTIONAL_PATH_PROVEN_BEYOND_PRE_EXTERNAL=false
+CURRENT_RUNTIME_PROOF_READY=true
 ```
+
+Canonical closure evidence (navigation; `AUTHORITY_EFFECT=NONE`):
+[`docs/ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md`](../../ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md).
+Bound witness: `origin&#47;main@6ed52d01` K1 bounded GET-only run
+`20261007T004808Z_witness_v1` (`NATURAL_ENTER_CYCLE=10`, `PRE_EXTERNAL_CYCLE=10`,
+`SAME_CAUSAL_ENTER=true`). Does **not** authorize POST.
 
 Exhaustive repository cartography (merged PR #7029; navigation index only):
 
@@ -170,33 +179,44 @@ Cap21→Cap23 productive persist (EEA universe inventory, economic MD, optional 
 Primary entry script (navigation):
 `scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py`.
 
-**RUNTIME_PROOF_REQUIRED (not established by static cartography alone):**
+**RUNTIME_PROOF_THROUGH_PRE_EXTERNAL (bound; not a standing POST authorization):**
 
-- per-cycle ingestion of new finalized PT1M marks into the shared LANE_1 G17
-  producer vs bind-only `on_runtime_cycle_without_sample_v1` on the F1 gate path;
-- aligned observation generations between F1/M9 gate scaffold and S7/MV2 CMC;
-- `confirmation_epochs=2` advancing only on valid contiguous live C1 observations;
-- Natural Enter (`enter_long` / `enter_short`) reaching PRE_EXTERNAL under bounded
-  productive Owner-GO observation.
+- Bound K1 GET-only witness on `6ed52d01` observed Natural Enter (`enter_long`)
+  and PRE_EXTERNAL in the same causal cycle (`NATURAL_ENTER_CYCLE=10`,
+  `PRE_EXTERNAL_CYCLE=10`, `SAME_CAUSAL_ENTER=true`).
+- Confirmation liveness and contiguous live-C1 progression were runtime-witnessed
+  under that bounded Owner-GO observation (`POST_ATTEMPTS=0`, `EXTERNAL_EFFECTS=0`).
 
-Do not classify the above as static defects without CURRENT fail-closed proof.
+**Still not proven / still unauthorized beyond PRE_EXTERNAL:**
+
+- any venue POST / external-effect path;
+- `CURRENT_FUNCTIONAL_PATH_PROVEN_BEYOND_PRE_EXTERNAL`;
+- profitability or future Natural Enter under different market conditions.
+
+Do not classify residual non-productive inventory noise as an open CURRENT
+functional-path blocker without CURRENT fail-closed proof.
 
 ### Open debt registers (CURRENT semantics)
 
 | Register | CURRENT count / status |
 | --- | --- |
 | STATIC_REPAIR_DEBT | 0 |
-| RUNTIME_PROOF_DEBT | OPEN (productive PRE_EXTERNAL / Natural Enter liveness) |
+| RUNTIME_PROOF_DEBT | CLOSED_THROUGH_PRE_EXTERNAL (POST / beyond PRE_EXTERNAL remains open and unauthorized) |
 | NAVIGATION_DEBT | residual dedup / cross-index (see exhaustive fixpoint evidence) |
 | EVIDENCE_DRIFT | reconcile stale *CURRENT* claims only; preserve sealed history |
 | TEST_COVERAGE_DEBT | bounded; M01 production closure locked at #7030 |
 | PERFORMANCE_VALIDATION_DEBT | decision/economic quality not established |
 
 ```text
-NEXT_AUTHORIZED_PHASE=GHV_DRIVEN_BOUNDED_PRODUCTIVE_PRE_EXTERNAL_RUNTIME_PROOF
+NEXT_AUTHORIZED_PHASE=NONE
+EARLIEST_REMAINING_EXTERNAL_EFFECT_DEPENDENCY=OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1
+POST_ALLOWED=false
+REAL_VENUE_POST_ALLOWED=false
+EXTERNAL_EFFECT_AUTHORIZED=false
 ```
 
-Requires explicit scoped Owner-GO; this runbook section does not authorize it.
+This runbook section does **not** authorize POST, venue write, credentials standing
+authority mutation, Testnet/Live order submission, or any beyond-PRE_EXTERNAL work.
 
 ### CURRENT global invariants (productive safety)
 

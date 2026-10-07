@@ -114,12 +114,19 @@ remains `RUNTIME_PROOF_DEBT=OPEN`):
 - `confirmation_epochs=2` on contiguous valid live C1 only
 - Natural Enter disposition reaching PRE_EXTERNAL under bounded productive observation
 
-**Bounded convergence evidence (navigation; `AUTHORITY=NONE`):** sealed research
-manifest `evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/durable/current_productive_ghv_bounded_runtime_convergence_proof_v1.json`
-documents one historical bounded run with `PRE_EXTERNAL_REACHED=true` and
-`POST_COUNT=0`. It does **not** supersede Master Runbook
-`PRODUCTIVE_RUNTIME_PROOF_COMPLETE=false` / `NATURAL_ENTER_TO_PRE_EXTERNAL_PROVEN=false`
-or close the standing runtime-proof debt register.
+**Bounded convergence evidence (navigation; `AUTHORITY=NONE`):**
+
+- Historical #7068 manifest
+  `evidence&#47;research&#47;current_productive_ghv_input_readiness_and_convergence_v1&#47;durable&#47;current_productive_ghv_bounded_runtime_convergence_proof_v1.json`
+  remains sealed navigation for an earlier baseline.
+- CURRENT canonical closure for Natural Enter → PRE_EXTERNAL on
+  `origin&#47;main@6ed52d01` is
+  [`CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md`](CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md)
+  (`NATURAL_ENTER_TO_PRE_EXTERNAL_PROVEN=true`,
+  `CURRENT_FUNCTIONAL_PATH_PROVEN_THROUGH_PRE_EXTERNAL=true`).
+- Explicitly preserved: `PRODUCTIVE_RUNTIME_PROOF_COMPLETE=false`,
+  `CURRENT_FUNCTIONAL_PATH_PROVEN_BEYOND_PRE_EXTERNAL=false`,
+  `POST_ALLOWED=false`, `EXTERNAL_EFFECT_AUTHORIZED=false`.
 
 ------------------------------------------------------------------------
 

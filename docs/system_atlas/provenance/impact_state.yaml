@@ -1,35 +1,21 @@
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CHANGE:pr_7081_ghv_intelligence_superstructure_integration_closure_v1
-modified_by: CHANGE:pr_7081_ghv_intelligence_superstructure_integration_closure_v1
+introduced_by: CHANGE:pr_current_natural_enter_pre_external_canonical_closure_v1
+modified_by: CHANGE:pr_current_natural_enter_pre_external_canonical_closure_v1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #7081: GHV-referenced intelligence superstructure offline orchestrator (compose-only,
-  M10 hard stop) plus default-off GHV intelligence-lineage forensic append on MV2 cycle
-  and honest lineage completeness; GHV geometry bridge retired; canonical DDO dynamic_scope
-  capture wiring; observation-only; GHV_AUTHORITY=NONE; no trading semantics change; POST_COUNT=0.
+  CURRENT Natural Enter → PRE_EXTERNAL canonical closure on origin/main@6ed52d01:
+  evidence/governance adjudication only; K1 GET-only witness bound; no trading/config/POST
+  authority mutation; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
 changed_entities:
-  - CONTRACT:p5_10_productive_activation_and_binding_v1
-  - RUNTIME_COMPONENT:elementary_direction_v1
-  - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-  - RUNTIME_COMPONENT:ghv_intelligence_lineage_completeness_v1
-  - RUNTIME_COMPONENT:ghv_intelligence_lineage_forensic_observability_v1
-  - RUNTIME_COMPONENT:ghv_referenced_complete_intelligence_superstructure_offline_cycle_v1
-  - RUNTIME_COMPONENT:natural_enter_cross_session_outcome_closure_v1
-  - RUNTIME_COMPONENT:productive_golden_happy_vector_forensic_observability_v1
-  - RUNTIME_COMPONENT:productive_real_carrier_passive_capture_v1
-changed_relations:
-  - REL:r_full_core_cycle_observes_elementary_direction
-  - REL:r_full_core_mv2_appends_ghv_intelligence_lineage_observability_v1
-  - REL:r_ghv_offline_cycle_uses_intelligence_lineage_completeness_v1
+  - NAVIGATION_INDEX:current_whole_system_functional_causal_model_v1
+  - NAVIGATION_INDEX:map_of_truth
+  - RUNBOOK:canonical_master_runbook
+changed_relations: []
 changed_closures: []
 changed_wiring: []
 changed_venue: []
 changed_census: []
 changed_generated:
   - generated/ATLAS_CHANGE_IMPACT.md
-  - generated/COVERAGE_REPORT.md
-  - generated/ORPHAN_AND_WIRING_GAPS.md
-  - generated/RUNTIME_GRAPH.md
-  - generated/SYSTEM_ATLAS.md

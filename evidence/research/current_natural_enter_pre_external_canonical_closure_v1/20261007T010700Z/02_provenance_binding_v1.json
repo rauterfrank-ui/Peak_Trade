@@ -1,0 +1,35 @@
+{
+  "WORK_PACKAGE": "CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_AND_MERGE_V1",
+  "ARTIFACT_KIND": "PROVENANCE_BINDING_V1",
+  "AUTHORITY_EFFECT": "NONE",
+  "BASELINE_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+  "WITNESS_RUN_ID": "20261007T004808Z_witness_v1",
+  "NATURAL_ENTER_CYCLE": 10,
+  "PRE_EXTERNAL_CYCLE": 10,
+  "SAME_CAUSAL_ENTER": true,
+  "BOUND_WITNESS": {
+    "FINAL_SUMMARY_PATH": "evidence/research/k1_bounded_get_only_natural_enter_witness_v1/20261007T004808Z_witness_v1/K1_BOUNDED_GET_ONLY_NATURAL_ENTER_WITNESS_FINAL_SUMMARY_V1.json",
+    "FINAL_SUMMARY_SHA256": "5eeaf527309e68e5f06e332293674c6f84267d1df6bbbac409a8a47e12b58afa",
+    "PRE_EXTERNAL_CONVERGENCE_REPORT_PATH": "evidence/research/k1_bounded_get_only_natural_enter_witness_v1/20261007T004808Z_witness_v1/bounded_run/PRE_EXTERNAL_CONVERGENCE_REPORT.json",
+    "PRE_EXTERNAL_CONVERGENCE_REPORT_SHA256": "347cb552414874a297e813ca2d78646f8e4e75bd0ede7f6a0e08f40e6f177cda",
+    "WITNESS_VERDICT": "NATURAL_ENTER_AND_PRE_EXTERNAL_PROVEN",
+    "NATURAL_ENTER_OBSERVED": true,
+    "PRE_EXTERNAL_REACHED": true,
+    "S5_TERMINAL_CLASS": "PRE_EXTERNAL_EFFECT",
+    "REPORTING_S5_DISPOSITION": "PRE_EXTERNAL_EFFECT"
+  },
+  "ROUND4_SEMANTIC_CLOSURE_INPUTS": {
+    "ROOT": "evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/20261006T234616Z_hard_wall_120s_v1/WHOLE_SYSTEM_SEMANTIC_EDGE_CLOSURE_ROUND_4_V1",
+    "FINAL_METRICS_PATH": "evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/20261006T234616Z_hard_wall_120s_v1/WHOLE_SYSTEM_SEMANTIC_EDGE_CLOSURE_ROUND_4_V1/14_final_metrics_and_fixpoints_v1.json",
+    "FINAL_METRICS_SHA256": "0bf1b249105876fb85567988e19f7c516a126cbc4066be4e92ba1a2095880966",
+    "ROLE": "STRUCTURAL_SEMANTIC_CLOSURE_INPUT_ONLY",
+    "HISTORICAL_INTERPRETATION_STATUS": "SUPERSEDED_FOR_CURRENT_FUNCTIONAL_PATH_THROUGH_PRE_EXTERNAL",
+    "SUPERSESSION_ARTIFACT": "evidence/research/current_natural_enter_pre_external_canonical_closure_v1/20261007T010700Z/04_round4_fixpoint_supersession_v1.json",
+    "DESTRUCTIVE_REWRITE_OF_HISTORICAL_EVIDENCE": false
+  },
+  "RELATED_HISTORICAL_NAVIGATION_ONLY": {
+    "PRIOR_BOUNDED_MANIFEST": "evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/durable/current_productive_ghv_bounded_runtime_convergence_proof_v1.json",
+    "PRIOR_BASELINE_SHA": "b74fa827b9dd645195f45f673fa5880a2ec0414c",
+    "NOTE": "Prior #7068 manifest remains historical navigation; this closure binds CURRENT origin/main@6ed52d01 via the K1 GET-only witness."
+  }
+}

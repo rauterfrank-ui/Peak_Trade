@@ -1,0 +1,1052 @@
+{
+  "ADDENDUM": "HISTORICAL_GIT_GITHUB_FORENSIC_PROVENANCE",
+  "AUTHORITATIVE_EFFECTS_TOTAL": 12,
+  "AUTHORITATIVE_EFFECTS_WITH_PROVEN_OWNER": 12,
+  "AUTHORITATIVE_EFFECTS_WITH_UNKNOWN_OWNER": 0,
+  "AUTHORITY_FIXPOINT": true,
+  "AUTHORITY_TRANSITIONS_RECONSTRUCTED": 3,
+  "BACKFLOW_BUCKETS_MATCH_TOTAL": true,
+  "BACKFLOW_BUCKET_SUM": 387,
+  "BACKFLOW_CLASSIFICATION_COUNTS": {
+    "EVIDENCE_ONLY": 175,
+    "IMPORT_ONLY_NO_FLOW": 175,
+    "OFFLINE_ONLY": 37
+  },
+  "BACKFLOW_CONFIG_CONSUMPTION": 3,
+  "BACKFLOW_EVIDENCE_ONLY": 169,
+  "BACKFLOW_FORBIDDEN": 0,
+  "BACKFLOW_GOVERNED_PRODUCTIVE_INPUT": 0,
+  "BACKFLOW_IMPORT_ONLY": 128,
+  "BACKFLOW_OBSERVATION_ONLY": 10,
+  "BACKFLOW_OFFLINE_ONLY": 47,
+  "BACKFLOW_PATHS_TOTAL": 387,
+  "BACKFLOW_PRODUCTIVE_AUTHORITY_TRANSFER": 0,
+  "BACKFLOW_PRODUCTIVE_NONAUTHORITY_INPUT": 0,
+  "BACKFLOW_PROPOSAL_ONLY": 8,
+  "BACKFLOW_TEST_ONLY": 22,
+  "BACKFLOW_UNKNOWN": 0,
+  "BASELINE_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+  "CAUSAL_SLICES_COMPLETE": 11,
+  "CAUSAL_SLICES_TOTAL": 11,
+  "COMPLETENESS_ATTACK_ROUNDS": 1,
+  "COMPLETENESS_ATTACK_ROUNDS_ROUND_4": 1,
+  "CONFIG_FIELDS_TOTAL": 1745,
+  "CONFIG_FIELDS_UNEXPLAINED": 227,
+  "CONFIG_FIELDS_WITH_CONSUMER": 3615,
+  "CONFIG_FILES_SAMPLE": [
+    "config/economic_observability_metric_registry_v1.json",
+    "config/strategy_tiering.toml",
+    "config/.DS_Store",
+    "config/risk_kill_switch_example.toml",
+    "config/var_backtest.toml",
+    "config/shadow_pipeline_example.toml",
+    "config/shadow_config.toml",
+    "config/live_policies.toml",
+    "config/risk_liquidity_gate_example.toml",
+    "config/default.toml",
+    "config/risk_var_gate_example.toml",
+    "config/portfolio_recipes.toml",
+    "config/live_environment.toml",
+    "config/README.md",
+    "config/risk_layer_v1_example.toml",
+    "config/learning_surfaces.toml",
+    "config/risk_liquidity_gate_paper.toml",
+    "config/promotion_loop_config.toml",
+    "config/regimes.toml",
+    "config/risk_stress_gate_example.toml",
+    "config/bounded_live.toml",
+    "config/config.toml",
+    "config/execution_telemetry.toml",
+    "config/config.test.toml",
+    "config/telemetry_alerting.toml",
+    "config/model_registry.toml",
+    "config/risk_layer_v1_scaffold.toml",
+    "config/test_health_profiles.toml",
+    "config/r_and_d_presets.toml",
+    "config/research/bollinger_mr_midband_exit_efficiency_preregistered_economic_hypothesis_measurement_contract_v2.json"
+  ],
+  "CONFIG_LIFECYCLE_FIXPOINT": true,
+  "CONFIG_MIGRATIONS_RECONSTRUCTED": 0,
+  "CONFIG_SURFACES_INVENTORIED": 1076,
+  "CONNECTED_COMPONENT_COUNT": 43,
+  "CROSS_PACKAGE_RECONCILIATION_FIXPOINT": false,
+  "CURRENT_ACTIVE_COUNT": 1404,
+  "CURRENT_AMBIGUITIES_RESOLVED_BY_HISTORY": 18,
+  "CURRENT_BACKFLOW_CANDIDATES_REMAINING": 387,
+  "CURRENT_CLASSIFICATIONS_REFINED_BY_HISTORY": 18,
+  "CURRENT_CONDITIONAL_COUNT": 3040,
+  "CURRENT_DORMANT_COUNT": 506,
+  "CURRENT_EDGE_COUNT": 16560,
+  "CURRENT_LEGACY_COUNT": 13,
+  "CURRENT_NODE_COUNT": 4992,
+  "CURRENT_REFERENCES_TO_HISTORICAL_COUNT": 104,
+  "CURRENT_TO_CURRENT_DORMANT": 390,
+  "CURRENT_TO_CURRENT_LEGACY": 10,
+  "CURRENT_TO_HISTORICAL_ISOLATED": 0,
+  "CURRENT_TO_RECENTLY_RETIRED_RELEVANT": 63,
+  "DYNAMIC_DISPATCH_EDGES": 489,
+  "DYNAMIC_DISPATCH_FIXPOINT": true,
+  "DYNAMIC_DISPATCH_NONPRODUCTIVE": 142,
+  "DYNAMIC_DISPATCH_PRODUCTIVE_CAUSAL": 260,
+  "DYNAMIC_DISPATCH_PRODUCTIVE_TARGET_UNKNOWN": 0,
+  "DYNAMIC_DISPATCH_RESOLVED": 323,
+  "DYNAMIC_DISPATCH_TOTAL": 402,
+  "EDGE_DISCOVERY_FIXPOINT": true,
+  "EDGE_LINEAGES_RECONSTRUCTED": 2,
+  "EPISTEMIC_BOUNDARIES": [
+    "PRODUCTIVE_CAUSAL_GETATTR_UNRESOLVED=79",
+    "FULL_PYTHON_POINTS_TO_NOT_EXHAUSTIVE"
+  ],
+  "EXCAVATION_BLOCKERS": [
+    "CONFIG_FIELDS_UNEXPLAINED",
+    "CROSS_PACKAGE_RECONCILIATION_FIXPOINT"
+  ],
+  "EXCAVATION_FIXPOINT": false,
+  "FIELDS_SAMPLE": [
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/run_strategy_from_config.py",
+        "scripts/preview_live_orders.py",
+        "scripts/run_risk_stress_report.py",
+        "scripts/run_idea_strategy.py",
+        "scripts/report_live_sessions.py"
+      ],
+      "FIELD": "tier",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/experiments/strategy_profiles.py",
+        "src/live/live_gates.py"
+      ],
+      "FIELD": "recommended_config_id",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/operator_dashboard.py",
+        "scripts/research_cli.py",
+        "scripts/ops/run_testnet_read_only_connectivity_adapter_v1.py",
+        "src/webui/app.py",
+        "src/experiments/strategy_profiles.py"
+      ],
+      "FIELD": "allow_live",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/reporting/live_run_report.py",
+        "src/reporting/regime_reporting.py",
+        "src/reporting/portfolio_psychology.py",
+        "src/reporting/live_session_report.py",
+        "src/reporting/live_status_report.py"
+      ],
+      "FIELD": "notes",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/analytics/explorer.py",
+        "src/analytics/experiments_analysis.py",
+        "src/analytics/regimes.py",
+        "src/analytics/leaderboard.py",
+        "src/analytics/portfolio_builder.py"
+      ],
+      "FIELD": "tier",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/experiments/strategy_profiles.py",
+        "src/live/live_gates.py"
+      ],
+      "FIELD": "recommended_config_id",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/webui/app.py",
+        "scripts/operator_dashboard.py",
+        "src/webui/ops_cockpit.py",
+        "scripts/research_cli.py",
+        "src/live/live_gates.py"
+      ],
+      "FIELD": "allow_live",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/run_live_dry_run_drills.py",
+        "scripts/risk/run_christoffersen_demo.py",
+        "scripts/risk/run_var_backtest_suite_snapshot.py",
+        "scripts/run_execution_session.py",
+        "scripts/generate_live_status_report.py"
+      ],
+      "FIELD": "notes",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/live_monitor_cli.py",
+        "scripts/run_research_golden_path.py",
+        "scripts/report_paper_kpis.py",
+        "src/analytics/explorer.py",
+        "src/analytics/experiments_analysis.py"
+      ],
+      "FIELD": "tier",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/experiments/strategy_profiles.py",
+        "src/live/live_gates.py"
+      ],
+      "FIELD": "recommended_config_id",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/research_cli.py",
+        "scripts/operator_dashboard.py",
+        "scripts/ops/run_testnet_read_only_connectivity_adapter_v1.py",
+        "src/experiments/r_and_d_presets.py",
+        "src/experiments/strategy_profiles.py"
+      ],
+      "FIELD": "allow_live",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/run_live_dry_run_drills.py",
+        "scripts/risk/run_christoffersen_demo.py",
+        "scripts/risk/run_var_backtest_suite_snapshot.py",
+        "scripts/example_psychology_heuristics.py",
+        "scripts/generate_live_status_report.py"
+      ],
+      "FIELD": "notes",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/analytics/explorer.py",
+        "src/analytics/experiments_analysis.py",
+        "src/analytics/regimes.py",
+        "src/analytics/leaderboard.py",
+        "src/analytics/portfolio_builder.py"
+      ],
+      "FIELD": "tier",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/live/live_gates.py",
+        "src/experiments/strategy_profiles.py"
+      ],
+      "FIELD": "recommended_config_id",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/experiments/r_and_d_presets.py",
+        "src/experiments/strategy_profiles.py",
+        "scripts/operator_dashboard.py",
+        "scripts/research_cli.py",
+        "scripts/ops/run_testnet_read_only_connectivity_adapter_v1.py"
+      ],
+      "FIELD": "allow_live",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/reporting/live_run_report.py",
+        "src/reporting/regime_reporting.py",
+        "src/reporting/live_status_report.py",
+        "src/reporting/live_session_report.py",
+        "src/risk_layer/var_backtest/duration_diagnostics.py"
+      ],
+      "FIELD": "notes",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/live_monitor_cli.py",
+        "scripts/run_research_golden_path.py",
+        "scripts/report_paper_kpis.py",
+        "src/analytics/explorer.py",
+        "src/scheduler/runner.py"
+      ],
+      "FIELD": "tier",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/live/live_gates.py",
+        "src/experiments/strategy_profiles.py"
+      ],
+      "FIELD": "recommended_config_id",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/research_cli.py",
+        "scripts/operator_dashboard.py",
+        "src/experiments/r_and_d_presets.py",
+        "src/experiments/strategy_profiles.py",
+        "src/webui/app.py"
+      ],
+      "FIELD": "allow_live",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/reporting/live_run_report.py",
+        "src/reporting/regime_reporting.py",
+        "src/reporting/live_status_report.py",
+        "src/reporting/live_session_report.py",
+        "src/reporting/portfolio_psychology.py"
+      ],
+      "FIELD": "notes",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/infra/escalation/manager.py",
+        "src/scheduler/runner.py",
+        "src/analytics/explorer.py",
+        "src/scheduler/config_loader.py",
+        "src/analytics/experiments_analysis.py"
+      ],
+      "FIELD": "tier",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/live/live_gates.py",
+        "src/experiments/strategy_profiles.py"
+      ],
+      "FIELD": "recommended_config_id",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/operator_dashboard.py",
+        "src/live/live_gates.py",
+        "scripts/research_cli.py",
+        "scripts/ops/run_testnet_read_only_connectivity_adapter_v1.py",
+        "scripts/ops/run_testnet_private_readonly_connectivity_adapter_v1.py"
+      ],
+      "FIELD": "allow_live",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/reporting/live_run_report.py",
+        "src/reporting/regime_reporting.py",
+        "src/reporting/live_status_report.py",
+        "src/reporting/live_session_report.py",
+        "src/reporting/portfolio_psychology.py"
+      ],
+      "FIELD": "notes",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/analytics/explorer.py",
+        "src/analytics/experiments_analysis.py",
+        "src/analytics/regimes.py",
+        "src/analytics/leaderboard.py",
+        "src/analytics/portfolio_builder.py"
+      ],
+      "FIELD": "tier",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/live/live_gates.py",
+        "src/experiments/strategy_profiles.py"
+      ],
+      "FIELD": "recommended_config_id",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/research_cli.py",
+        "scripts/operator_dashboard.py",
+        "scripts/ops/run_testnet_read_only_connectivity_adapter_v1.py",
+        "scripts/ops/run_testnet_private_readonly_connectivity_adapter_v1.py",
+        "src/webui/app.py"
+      ],
+      "FIELD": "allow_live",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/reporting/live_run_report.py",
+        "src/reporting/regime_reporting.py",
+        "src/reporting/live_status_report.py",
+        "src/reporting/live_session_report.py",
+        "src/reporting/portfolio_psychology.py"
+      ],
+      "FIELD": "notes",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/exchange/base.py",
+        "src/infra/escalation/manager.py",
+        "src/analytics/explorer.py",
+        "src/exchange/ccxt_client.py",
+        "src/exchange/dummy_client.py"
+      ],
+      "FIELD": "tier",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/live/live_gates.py",
+        "src/experiments/strategy_profiles.py"
+      ],
+      "FIELD": "recommended_config_id",
+      "SOURCE": "config/strategy_tiering.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/regime/canonical_regime_meta_gated_selection_v1/verifier_v1.py",
+        "src/regime/detectors.py",
+        "src/regime/__init__.py",
+        "src/regime/switching.py",
+        "src/regime/config.py"
+      ],
+      "FIELD": "enabled",
+      "SOURCE": "config/risk_kill_switch_example.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/risk/limits.py",
+        "scripts/run_simple_backtest.py",
+        "scripts/demo_risk_limits.py"
+      ],
+      "FIELD": "daily_loss_limit_pct",
+      "SOURCE": "config/risk_kill_switch_example.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/run_simple_backtest.py",
+        "scripts/strategy_smoke_check.py",
+        "src/risk/limits.py",
+        "src/backtest/engine.py",
+        "scripts/run_portfolio_smoke.py"
+      ],
+      "FIELD": "max_drawdown_pct",
+      "SOURCE": "config/risk_kill_switch_example.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/regime/canonical_regime_meta_gated_selection_v1/verifier_v1.py",
+        "src/regime/detectors.py",
+        "src/regime/__init__.py",
+        "src/regime/switching.py",
+        "src/regime/config.py"
+      ],
+      "FIELD": "enabled",
+      "SOURCE": "config/var_backtest.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/run_component_var_report.py",
+        "src/risk/validation/kupiec_pof.py",
+        "src/risk/validation/backtest_runner.py",
+        "src/risk/validation/var_suite_adapter.py",
+        "scripts/risk/run_var_backtest.py"
+      ],
+      "FIELD": "confidence_level",
+      "SOURCE": "config/var_backtest.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/risk/run_var_backtest.py",
+        "scripts/risk/run_var_backtest_suite_snapshot.py",
+        "src/risk_layer/var_backtest/duration_diagnostics.py",
+        "src/risk_layer/var_backtest/kupiec_pof.py",
+        "src/risk_layer/var_backtest/christoffersen_tests.py"
+      ],
+      "FIELD": "significance_level",
+      "SOURCE": "config/var_backtest.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/risk/validation/var_suite_adapter.py",
+        "scripts/risk/run_var_backtest.py",
+        "src/risk_layer/var_backtest/kupiec_pof.py",
+        "src/risk_layer/var_backtest/rolling_evaluation.py",
+        "src/risk_layer/var_backtest/var_backtest_runner.py"
+      ],
+      "FIELD": "min_observations",
+      "SOURCE": "config/var_backtest.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/risk/run_var_backtest.py",
+        "src/risk_layer/var_backtest/var_backtest_runner.py"
+      ],
+      "FIELD": "var_method",
+      "SOURCE": "config/var_backtest.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/regime/canonical_regime_meta_gated_selection_v1/verifier_v1.py",
+        "src/regime/detectors.py",
+        "src/regime/__init__.py",
+        "src/regime/switching.py",
+        "src/regime/config.py"
+      ],
+      "FIELD": "enabled",
+      "SOURCE": "config/var_backtest.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/live/risk_limits.py"
+      ],
+      "FIELD": "warning_threshold",
+      "SOURCE": "config/var_backtest.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [],
+      "FIELD": "critical_threshold",
+      "SOURCE": "config/var_backtest.toml",
+      "TERMINAL": "UNKNOWN"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/analytics/explorer.py",
+        "src/analytics/__init__.py",
+        "src/analytics/regimes.py",
+        "src/analytics/portfolio_builder.py",
+        "scripts/generate_live_run_report.py"
+      ],
+      "FIELD": "format",
+      "SOURCE": "config/var_backtest.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/run_versioned_strategy_model_parameter_artifact_v1.py",
+        "scripts/run_handoff_atomic_claim_consume_v1.py",
+        "scripts/run_registry_portfolio_backtest.py",
+        "scripts/report_paper_risk.py",
+        "scripts/research/run_evaluate_bollinger_mr_midband_exit_reentry_cooldown_holdout_v1.py"
+      ],
+      "FIELD": "output_dir",
+      "SOURCE": "config/var_backtest.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [],
+      "FIELD": "include_violation_details",
+      "SOURCE": "config/var_backtest.toml",
+      "TERMINAL": "UNKNOWN"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/analytics/notebook_helpers.py",
+        "src/analytics/i65_explorer_live_contract_join_v1.py",
+        "src/analytics/explorer.py",
+        "src/analytics/experiments_analysis.py",
+        "src/analytics/leaderboard.py"
+      ],
+      "FIELD": "symbol",
+      "SOURCE": "config/var_backtest.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/run_execution_session.py",
+        "scripts/run_experiment_sweep.py",
+        "src/regime/canonical_regime_meta_gated_selection_v1/verifier_v1.py",
+        "src/regime/detectors.py",
+        "src/regime/__init__.py"
+      ],
+      "FIELD": "enabled",
+      "SOURCE": "config/var_backtest.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/analytics/notebook_helpers.py",
+        "src/analytics/i65_explorer_live_contract_join_v1.py",
+        "src/analytics/explorer.py",
+        "src/analytics/experiments_analysis.py",
+        "src/analytics/leaderboard.py"
+      ],
+      "FIELD": "symbol",
+      "SOURCE": "config/var_backtest.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/regime/canonical_regime_meta_gated_selection_v1/verifier_v1.py",
+        "src/regime/detectors.py",
+        "src/regime/__init__.py",
+        "src/regime/switching.py",
+        "src/regime/config.py"
+      ],
+      "FIELD": "enabled",
+      "SOURCE": "config/var_backtest.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/orchestrator_dryrun.py",
+        "scripts/run_execution_session.py",
+        "scripts/run_experiment_sweep.py",
+        "src/regime/canonical_regime_meta_gated_selection_v1/verifier_v1.py",
+        "src/regime/detectors.py"
+      ],
+      "FIELD": "enabled",
+      "SOURCE": "config/shadow_pipeline_example.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/regime/canonical_regime_meta_gated_selection_v1/verifier_v1.py",
+        "src/regime/detectors.py",
+        "src/regime/__init__.py",
+        "src/regime/switching.py",
+        "src/regime/config.py"
+      ],
+      "FIELD": "enabled",
+      "SOURCE": "config/shadow_pipeline_example.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/shadow_run_tick_to_ohlcv_smoke.py",
+        "src/data/shadow/quality_monitor.py"
+      ],
+      "FIELD": "gap_severity",
+      "SOURCE": "config/shadow_pipeline_example.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/shadow_run_tick_to_ohlcv_smoke.py",
+        "src/data/shadow/quality_monitor.py"
+      ],
+      "FIELD": "spike_severity",
+      "SOURCE": "config/shadow_pipeline_example.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/shadow_run_tick_to_ohlcv_smoke.py",
+        "src/data/shadow/quality_monitor.py"
+      ],
+      "FIELD": "max_abs_log_return",
+      "SOURCE": "config/shadow_pipeline_example.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/shadow_run_tick_to_ohlcv_smoke.py",
+        "src/data/shadow/quality_monitor.py"
+      ],
+      "FIELD": "volume_spike_factor",
+      "SOURCE": "config/shadow_pipeline_example.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/regime/canonical_regime_meta_gated_selection_v1/verifier_v1.py",
+        "src/regime/detectors.py",
+        "src/regime/__init__.py",
+        "src/regime/switching.py",
+        "src/regime/config.py"
+      ],
+      "FIELD": "enabled",
+      "SOURCE": "config/shadow_pipeline_example.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/run_learning_manifest_bridge_v1.py",
+        "scripts/run_candidate_lineage_manifest_v1.py",
+        "src/analytics/notebook_helpers.py",
+        "scripts/run_deployed_inactive_verification_v1.py",
+        "src/analytics/i65_explorer_live_contract_join_v1.py"
+      ],
+      "FIELD": "path",
+      "SOURCE": "config/shadow_pipeline_example.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/ops/ingest_okx_futures_public_market_data_canonical_dataset_staging_v1.py",
+        "src/data/shadow/jsonl_logger.py"
+      ],
+      "FIELD": "max_bytes",
+      "SOURCE": "config/shadow_pipeline_example.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/data/shadow/jsonl_logger.py"
+      ],
+      "FIELD": "backup_count",
+      "SOURCE": "config/shadow_pipeline_example.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/reporting/live_status_report.py",
+        "src/regime/canonical_regime_meta_gated_selection_v1/verifier_v1.py",
+        "src/regime/detectors.py",
+        "src/regime/__init__.py",
+        "src/regime/switching.py"
+      ],
+      "FIELD": "enabled",
+      "SOURCE": "config/shadow_pipeline_example.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/run_live_beta_drill.py",
+        "src/live/live_gates.py"
+      ],
+      "FIELD": "min_sharpe_core",
+      "SOURCE": "config/live_policies.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/live/live_gates.py"
+      ],
+      "FIELD": "max_maxdd_core",
+      "SOURCE": "config/live_policies.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/live/live_gates.py"
+      ],
+      "FIELD": "min_sharpe_aux",
+      "SOURCE": "config/live_policies.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/live/live_gates.py"
+      ],
+      "FIELD": "max_maxdd_aux",
+      "SOURCE": "config/live_policies.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/operator_dashboard.py",
+        "scripts/run_live_beta_drill.py",
+        "src/backtest/mv2_research_wiring_v1.py",
+        "src/live/live_gates.py",
+        "src/ops/decision_config_ownership_and_consumer_closure_v1/host_binding_v1.py"
+      ],
+      "FIELD": "allow_legacy",
+      "SOURCE": "config/live_policies.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/webui/ops_cockpit.py",
+        "src/live/live_gates.py"
+      ],
+      "FIELD": "require_allow_live_flag",
+      "SOURCE": "config/live_policies.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/live/live_gates.py"
+      ],
+      "FIELD": "require_diversification",
+      "SOURCE": "config/live_policies.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/live/live_gates.py",
+        "src/experiments/canonical_portfolio_learning_v1.py"
+      ],
+      "FIELD": "max_concentration",
+      "SOURCE": "config/live_policies.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/regime/canonical_regime_meta_gated_selection_v1/verifier_v1.py",
+        "src/regime/detectors.py",
+        "src/regime/__init__.py",
+        "src/regime/switching.py",
+        "src/regime/config.py"
+      ],
+      "FIELD": "enabled",
+      "SOURCE": "config/risk_liquidity_gate_example.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/generate_infostream_packet.py",
+        "scripts/validate_ci_config.py",
+        "scripts/show_test_health_history.py",
+        "scripts/run_test_health_profile.py",
+        "scripts/ops/run_shadow_bounded_observation_adapter_v0.py"
+      ],
+      "FIELD": "profile_name",
+      "SOURCE": "config/risk_liquidity_gate_example.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "scripts/run_live_dry_run_drills.py",
+        "scripts/risk/run_christoffersen_demo.py",
+        "scripts/risk/run_var_backtest_suite_snapshot.py",
+        "scripts/example_psychology_heuristics.py",
+        "scripts/run_execution_session.py"
+      ],
+      "FIELD": "notes",
+      "SOURCE": "config/risk_liquidity_gate_example.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    },
+    {
+      "CONSUMERS_SAMPLE": [],
+      "FIELD": "max_spread_pct",
+      "SOURCE": "config/risk_liquidity_gate_example.toml",
+      "TERMINAL": "STALE_UNUSED"
+    },
+    {
+      "CONSUMERS_SAMPLE": [],
+      "FIELD": "warn_spread_pct",
+      "SOURCE": "config/risk_liquidity_gate_example.toml",
+      "TERMINAL": "STALE_UNUSED"
+    },
+    {
+      "CONSUMERS_SAMPLE": [],
+      "FIELD": "max_slippage_estimate_pct",
+      "SOURCE": "config/risk_liquidity_gate_example.toml",
+      "TERMINAL": "STALE_UNUSED"
+    },
+    {
+      "CONSUMERS_SAMPLE": [],
+      "FIELD": "warn_slippage_estimate_pct",
+      "SOURCE": "config/risk_liquidity_gate_example.toml",
+      "TERMINAL": "STALE_UNUSED"
+    },
+    {
+      "CONSUMERS_SAMPLE": [],
+      "FIELD": "min_book_depth_multiple",
+      "SOURCE": "config/risk_liquidity_gate_example.toml",
+      "TERMINAL": "STALE_UNUSED"
+    },
+    {
+      "CONSUMERS_SAMPLE": [],
+      "FIELD": "max_order_to_adv_pct",
+      "SOURCE": "config/risk_liquidity_gate_example.toml",
+      "TERMINAL": "STALE_UNUSED"
+    },
+    {
+      "CONSUMERS_SAMPLE": [],
+      "FIELD": "strict_for_market_orders",
+      "SOURCE": "config/risk_liquidity_gate_example.toml",
+      "TERMINAL": "STALE_UNUSED"
+    },
+    {
+      "CONSUMERS_SAMPLE": [],
+      "FIELD": "allow_limit_orders_when_spread_wide",
+      "SOURCE": "config/risk_liquidity_gate_example.toml",
+      "TERMINAL": "STALE_UNUSED"
+    },
+    {
+      "CONSUMERS_SAMPLE": [],
+      "FIELD": "require_micro_metrics",
+      "SOURCE": "config/risk_liquidity_gate_example.toml",
+      "TERMINAL": "STALE_UNUSED"
+    },
+    {
+      "CONSUMERS_SAMPLE": [
+        "src/core/tracking.py",
+        "src/infra/escalation/manager.py",
+        "src/core/errors.py",
+        "src/research/okx_distinct_external_reference_forward_open_interest_snapshot_materialization_v0.py",
+        "src/infra/escalation/network_gate.py"
+      ],
+      "FIELD": "enabled",
+      "SOURCE": "config/risk_liquidity_gate_example.toml",
+      "TERMINAL": "CONSUMED_CURRENT"
+    }
+  ],
+  "FORENSIC_TOOL_AUTHORITY": "NONE",
+  "GHV_79_ARCHITECTURALLY_EXPLAINED": 171,
+  "GHV_79_EFFECT_SURFACE_UNKNOWN": 0,
+  "GHV_79_PLACED": 170,
+  "HISTORICAL_BACKFLOW_CANDIDATES_QUARANTINED": 0,
+  "HISTORICAL_EDGES_REMOVED_FROM_CURRENT_GRAPH": 0,
+  "HISTORICAL_EVIDENCE_CONTRADICTING_CURRENT": 0,
+  "HISTORICAL_FINDINGS_WITH_NO_CURRENT_EFFECT": 0,
+  "HISTORICAL_ISOLATED_COUNT": 2,
+  "HISTORICAL_NODES_REMOVED_FROM_CURRENT_GRAPH": 2,
+  "HISTORICAL_PROVENANCE_PROBES": 30,
+  "HISTORICAL_QUARANTINE_CONSISTENT": true,
+  "HISTORICAL_SNAPSHOTS_USED": 2,
+  "IMPORT_CLASS_COUNTS": {
+    "EXTERNAL_LIBRARY": 6044,
+    "INTERNAL_RESOLVED": 15556,
+    "STDLIB": 13754,
+    "UNRESOLVED": 989
+  },
+  "IMPORT_RESOLUTIONS": {
+    "INTERNAL_RESOLVED": 15,
+    "STALE_REFERENCE": 3
+  },
+  "LONGITUDINAL_TRACES_COMPLETE": 40,
+  "LONGITUDINAL_TRACES_TOTAL": 40,
+  "LONGITUDINAL_TRACE_FIXPOINT": true,
+  "MAX_PROBE_DEPTH": 4,
+  "MAX_PROBE_DEPTH_ROUND4_CONTINUATION": 3,
+  "MAX_PROBE_DEPTH_ROUND_4": 4,
+  "NEW_SEMANTIC_EDGES_DISCOVERED": 20186,
+  "PERSISTED_STATE_FAMILIES": 8,
+  "PERSISTED_STATE_LIFECYCLES_COMPLETE": 6,
+  "PERSISTED_STATE_LIFECYCLES_INCOMPLETE": 0,
+  "PERSISTENCE_LIFECYCLE_FIXPOINT": true,
+  "PERSISTENCE_MIGRATIONS_RECONSTRUCTED": 2,
+  "PHASE": "CONTINUATION_CONCURRENT_CLOSURE",
+  "POINTS_TO_RELATIONS": 20186,
+  "PRESERVED": {
+    "BACKFLOW_UNKNOWN": 0,
+    "HISTORICAL_QUARANTINE_CONSISTENT": true,
+    "PRODUCTIVE_SINGLETONS_REMAINING": 0,
+    "TEMPORAL_CLASSIFICATION_COMPLETE": true,
+    "TRUE_UNRESOLVED_INTERNAL_IMPORTS": 0
+  },
+  "PROBES_UNKNOWN_TEMPORAL": 75,
+  "PRODUCTIVE_CONFIG_VALUES_TOTAL": 90,
+  "PRODUCTIVE_CONFIG_VALUES_UNEXPLAINED": 0,
+  "PRODUCTIVE_PERSISTENCE_VALUES_TOTAL": 6,
+  "PRODUCTIVE_PERSISTENCE_VALUES_UNEXPLAINED": 0,
+  "PRODUCTIVE_SINGLETONS_INPUT": 215,
+  "PRODUCTIVE_SINGLETONS_REMAINING": 0,
+  "PRODUCTIVE_SINGLETONS_RESOLVED": 1,
+  "RECENTLY_RETIRED_RELEVANT_COUNT": 29,
+  "ROUND_4_COMPLETE": false,
+  "RULE": "CURRENT_WINS_ON_CONTRADICTION",
+  "RUNTIME_WITNESSED_TARGETS": 68,
+  "SEMANTIC_EDGES": 34809,
+  "STALE_HISTORICAL_ASSUMPTIONS_FOUND": 0,
+  "SUBMISSION": "VALUE_FLOW_DYNAMIC_DISPATCH_AND_AUTHORITY_CLOSURE_V1",
+  "SYMBOL_LINEAGES_RECONSTRUCTED": 2,
+  "SYMBOL_NODES": 37895,
+  "SYMBOL_NODES_APPROX": 37895,
+  "TEMPORAL_ARTIFACTS_TOTAL": 4994,
+  "TEMPORAL_CLASSIFICATION_COMPLETE": true,
+  "TIMESTAMP_UTC": "2026-10-07T00:23:54Z",
+  "TOTAL_NEW_PROBES": 406,
+  "TOTAL_PROBES_CREATED_ROUND4_CONTINUATION": 233,
+  "TOTAL_PROBES_CREATED_ROUND_4": 876,
+  "TRACE_CLOSURE_PROBES": {
+    "C1": {
+      "BLOCKERS": [],
+      "COMPLETE": true,
+      "FINAL_TERMINAL": "src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py",
+      "FIRST_PRODUCER": "src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py",
+      "TRACE": "C1",
+      "TRANSFORMATIONS": []
+    },
+    "cursor": {
+      "BLOCKERS": [],
+      "COMPLETE": true,
+      "FINAL_TERMINAL": "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py",
+      "FIRST_PRODUCER": "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py",
+      "TRACE": "cursor",
+      "TRANSFORMATIONS": []
+    },
+    "native identity": {
+      "BLOCKERS": [],
+      "COMPLETE": true,
+      "FINAL_TERMINAL": "src/ops/governed_productive_instrument_metadata_authority_producer_v1/current_productive_okx_instruments_row_producer_v1.py",
+      "FIRST_PRODUCER": "src/ops/governed_productive_instrument_metadata_authority_producer_v1/current_productive_okx_instruments_row_producer_v1.py",
+      "TRACE": "native identity",
+      "TRANSFORMATIONS": [
+        "src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/__init__.py",
+        "src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/authority_inventory_v1.py",
+        "src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/constants_v1.py",
+        "src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/error_classes_v1.py",
+        "src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/mark_price_contract_v1.py",
+        "src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/normalized_market_data_v1.py",
+        "src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/offline_integration_probe_v1.py",
+        "src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/productive_md_fetch_v1.py",
+        "src/ops/okx_native_instrument_and_mark_price_runtime_binding_fail_closed_v1/public_instruments_validation_v1.py"
+      ]
+    },
+    "protective stop": {
+      "BLOCKERS": [],
+      "COMPLETE": true,
+      "FINAL_TERMINAL": "src/risk/stops_v1.py",
+      "FIRST_PRODUCER": "src/risk/stops_v1.py",
+      "TRACE": "protective stop",
+      "TRANSFORMATIONS": []
+    }
+  },
+  "TRUE_UNRESOLVED_INTERNAL_IMPORTS": 0,
+  "UNEXPLAINED_CONNECTED_COMPONENTS": 0,
+  "UNKNOWN_MODULES_REMAINING": [],
+  "UNKNOWN_TEMPORAL_STATUS_COUNT": 0,
+  "UNRESOLVED_AUTHORITIES": 1904,
+  "UNRESOLVED_CLOCKS": 4,
+  "UNRESOLVED_CONSUMERS": 0,
+  "UNRESOLVED_DYNAMIC_DISPATCH": 382,
+  "UNRESOLVED_IDENTITIES": 1,
+  "UNRESOLVED_PERSISTENCE": 0,
+  "UNRESOLVED_PRODUCERS": 0,
+  "UNRESOLVED_UNITS": "NOT_INDEXED_FIELD_LEVEL",
+  "VALUE_FLOW_EDGES": 20186,
+  "VALUE_FLOW_FIXPOINT": true,
+  "VALUE_FLOW_NODES": 6698,
+  "WORK_PACKAGE": "WHOLE_SYSTEM_SEMANTIC_EDGE_CLOSURE_ROUND_4_V1"
+}
