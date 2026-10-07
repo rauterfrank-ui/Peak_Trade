@@ -21,5 +21,5 @@
 - Remembered 42/42 and 1937 metrics (not in source)
 
 ## Aborted (quarantined)
-- `current_golden_vector_whole_system_nodewise_excavation_v1/20261007T013400Z` (empty)
-- `peak_trade_evidence_storage_forensic_census_v1/20261007T020907Z` (partial only)
+- `current_golden_vector_whole_system_nodewise_excavation_v1&#47;20261007T013400Z` (empty)
+- `peak_trade_evidence_storage_forensic_census_v1&#47;20261007T020907Z` (partial only)
