@@ -857,3 +857,10 @@ changes:
   evidence: scripts/ops/peak_trade_canonical_entrypoint_discovery_v2.py
   notes: 'LEGACY_PAPER_SHADOW_DAEMON_RETIREMENT_BP_V1: remove paper_shadow_bounded_orchestrator_v1 daemon shell + CLIs; rehome shadow preflight reconciliation; retarget discovery to GHV/Full-Core; bounded adapters retained; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
 
+- id: CHANGE:pr_current_natural_enter_pre_external_canonical_closure_v1
+  from: 6ed52d01ac181e629b2839271f83b52fc7ffe61f
+  to: PENDING_CHANGE
+  type: NAVIGATION_REBIND
+  epistemic_status: NAVIGATION_ONLY
+  evidence: docs/ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md
+  notes: 'CURRENT Natural Enter→PRE_EXTERNAL canonical closure on origin/main@6ed52d01; binds K1 GET-only witness 20261007T004808Z_witness_v1 (cycle 10 same-causal); NATURAL_ENTER_TO_PRE_EXTERNAL_PROVEN=true; POST unauthorized; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

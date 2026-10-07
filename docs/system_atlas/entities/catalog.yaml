@@ -71,13 +71,14 @@ entities:
   notes: Inner functional core census label for Double Play relative to Master V2. Exact token FUNCTIONAL_CORE not found on origin/main; proven as Modul-Owner of one Trading Core. Typed contract hardening does not move Double Play authority. SideState remains the directional/lifecycle authority; Neutral-Start ARMED and Switch-Terminal ARMED are distinct identities. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
 - id: RUNBOOK:canonical_master_runbook
   atlas_documentation_fixpoint: CHANGE:pr_7063_canonical_repo_currency_closure_v1
+  # atlas_entity_review: CURRENT Natural Enter→PRE_EXTERNAL canonical closure on 6ed52d01; navigation/status only; POST unauthorized; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7063 align header and §1349 CURRENT_REVIEWED_AT_SHA/BOUND_ORIGIN_MAIN_SHA to 3f671f035; review binding only; TRADING_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNBOOK
   name: Peak_Trade Master Runbook
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
-  modified_by: CHANGE:pr_7063_canonical_repo_currency_closure_v1
+  modified_by: CHANGE:pr_current_natural_enter_pre_external_canonical_closure_v1
   authority_sources:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   evidence_sources:
@@ -86,7 +87,7 @@ entities:
   - docs/ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK_RATIFICATION.json
   - docs/ops/specs/PEAK_TRADE_BIND_CURRENT_SUI_L4_FAIL_CLOSED_MAX_AVAILABLE_ZERO_END_STATE_NO_REPAIR_V1.md
-  notes: Canonical CURRENT operational SSOT. Describes what the system is now; historical Cap/Phase/Step/Section development chronology is not operational authority. CURRENT_CLEAN_TRADING_CORE_STATUS=CLOSED; EARLIEST_REMAINING_CORE_GAP=NONE. Primary semantic identities include capital_risk_admissibility_owner_v1, canonical_order_intent_owner_v1, stateful_no_order_host_join_v1, send_capable_adapter_v1, full_core_live_path_authority_v1, and governed_continuous_cycle_orchestrator_v1. Standing LIVE_* predicates do not imply EXTERNAL_EFFECT or venue POST. BOUND_ORIGIN_MAIN_SHA tracks revalidated origin/main head (document header 06ba8e88 as of Phase 16 rebind). Separate CURRENT boundaries document Learning/DDO, STEP29M, and Optimization Universe with authority NONE. Atlas is not canonical authority and not runtime authority.
+  notes: Canonical CURRENT operational SSOT. Describes what the system is now; historical Cap/Phase/Step/Section development chronology is not operational authority. CURRENT_CLEAN_TRADING_CORE_STATUS=CLOSED; EARLIEST_REMAINING_CORE_GAP=NONE. Primary semantic identities include capital_risk_admissibility_owner_v1, canonical_order_intent_owner_v1, stateful_no_order_host_join_v1, send_capable_adapter_v1, full_core_live_path_authority_v1, and governed_continuous_cycle_orchestrator_v1. NATURAL_ENTER_TO_PRE_EXTERNAL_PROVEN=true on bound baseline 6ed52d01 (through PRE_EXTERNAL only). Standing LIVE_* predicates do not imply EXTERNAL_EFFECT or venue POST. BOUND_ORIGIN_MAIN_SHA tracks revalidated origin/main head (document header 06ba8e88 as of Phase 16 rebind). Separate CURRENT boundaries document Learning/DDO, STEP29M, and Optimization Universe with authority NONE. Atlas is not canonical authority and not runtime authority.
 - id: NAVIGATION_INDEX:current_whole_system_functional_causal_model_v1
   kind: NAVIGATION_INDEX
   name: CURRENT Whole-System Functional and Causal Model V1
@@ -94,7 +95,7 @@ entities:
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
   semantic_authority: false
-  modified_by: CHANGE:pr_7071_universe_cartography_non_authority_refresh_v1
+  modified_by: CHANGE:pr_current_natural_enter_pre_external_canonical_closure_v1
   authority_sources:
   - docs/ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md
   evidence_sources:
@@ -113,7 +114,7 @@ entities:
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
   semantic_authority: false
-  modified_by: CHANGE:pr_7071_universe_cartography_non_authority_refresh_v1
+  modified_by: CHANGE:pr_current_natural_enter_pre_external_canonical_closure_v1
   authority_sources:
   - docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md
   evidence_sources:

@@ -110,7 +110,7 @@ CURRENT_RUNTIME_PROOF_READY=true
 
 Canonical closure evidence (navigation; `AUTHORITY_EFFECT=NONE`):
 [`docs/ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md`](../../ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md).
-Bound witness: `origin/main@6ed52d01` K1 bounded GET-only run
+Bound witness: `origin&#47;main@6ed52d01` K1 bounded GET-only run
 `20261007T004808Z_witness_v1` (`NATURAL_ENTER_CYCLE=10`, `PRE_EXTERNAL_CYCLE=10`,
 `SAME_CAUSAL_ENTER=true`). Does **not** authorize POST.
 
