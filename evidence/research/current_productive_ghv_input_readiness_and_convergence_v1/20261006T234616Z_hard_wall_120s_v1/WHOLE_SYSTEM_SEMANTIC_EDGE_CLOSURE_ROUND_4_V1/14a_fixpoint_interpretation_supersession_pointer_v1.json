@@ -1,0 +1,10 @@
+{
+  "ARTIFACT_KIND": "ADDITIVE_SUPERSESSION_POINTER_V1",
+  "DESTRUCTIVE_REWRITE": false,
+  "TARGET": "14_final_metrics_and_fixpoints_v1.json",
+  "TARGET_SHA256": "0bf1b249105876fb85567988e19f7c516a126cbc4066be4e92ba1a2095880966",
+  "SUPERSESSION_ARTIFACT": "evidence/research/current_natural_enter_pre_external_canonical_closure_v1/20261007T010700Z/04_round4_fixpoint_supersession_v1.json",
+  "CANONICAL_CLOSURE_INDEX": "docs/ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md",
+  "BASELINE_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+  "NOTE": "Historical 14_final_metrics_and_fixpoints_v1.json remains sealed. Obsolete CURRENT-functional-path fixpoint interpretation is superseded only via the additive closure pack."
+}

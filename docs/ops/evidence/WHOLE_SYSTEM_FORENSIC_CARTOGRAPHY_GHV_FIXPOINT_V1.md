@@ -107,11 +107,16 @@ MULTI_INSTRUMENT_MISMATCH_FAILS_CLOSED=true (GHV pass2)
 
 ```text
 PRE_EXTERNAL_PROPAGATION_AFTER_NATURAL_MV2_ENTER=PROVEN_IN_OFFLINE_CONVERGENCE_TEST_CHAIN
-PRODUCTIVE_NATURAL_ENTER_TO_PRE_EXTERNAL_PROVEN=false
+PRODUCTIVE_NATURAL_ENTER_TO_PRE_EXTERNAL_PROVEN=true
+CURRENT_FUNCTIONAL_PATH_PROVEN_THROUGH_PRE_EXTERNAL=true
+CURRENT_FUNCTIONAL_PATH_PROVEN_BEYOND_PRE_EXTERNAL=false
 ```
 
-Bulk 02B explicitly did **not** rerun the productive venue chain; that absence
-is intentional and must remain visible.
+Bulk 02B itself did **not** rerun the productive venue chain. The later CURRENT
+K1 bounded GET-only witness on `6ed52d01` (`20261007T004808Z_witness_v1`) is the
+canonical runtime binding for Natural Enter → PRE_EXTERNAL; see
+[`CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md`](CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md).
+POST remains unauthorized.
 
 ## Safety (unchanged)
 
