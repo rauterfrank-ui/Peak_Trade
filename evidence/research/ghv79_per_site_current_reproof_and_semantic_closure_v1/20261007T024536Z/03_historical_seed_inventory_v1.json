@@ -1,0 +1,1633 @@
+{
+  "DISPATCH_KIND_COUNTS": {
+    "getattr": 164,
+    "importlib": 7
+  },
+  "FILES": [
+    "src/governance/intent_compatibility_firewall_v1.py",
+    "src/governance/promotion_loop/promotion_economic_gate_v1.py",
+    "src/governance/v32_current_mv2_dp_concept_alignment_v1.py",
+    "src/ops/b05_full_core_governed_authority_chain_closure_v1/registry_and_witness_v1.py",
+    "src/ops/bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py",
+    "src/ops/bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0.py",
+    "src/ops/bounded_futures_testnet_capital_slot_ratchet_release_lifecycle_integration_contract_v0.py",
+    "src/ops/bounded_futures_testnet_cross_slice_proof_coherence_integration_contract_v0.py",
+    "src/ops/bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0.py",
+    "src/ops/bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0.py",
+    "src/ops/bounded_futures_testnet_operator_review_admission_presentation_lifecycle_integration_contract_v0.py",
+    "src/ops/bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0.py",
+    "src/ops/bounded_futures_testnet_operator_review_handoff_boundary_contract_v0.py",
+    "src/ops/bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0.py",
+    "src/ops/bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py",
+    "src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py",
+    "src/ops/bounded_futures_testnet_preflight_operator_review_proof_package_contract_v0.py",
+    "src/ops/bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0.py",
+    "src/ops/bounded_futures_testnet_preflight_packet_builder_contract_v0.py",
+    "src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py",
+    "src/ops/bounded_futures_testnet_preflight_source_state_capture_contract_v0.py",
+    "src/ops/bounded_futures_testnet_private_readonly_lifecycle_integration_contract_v0.py",
+    "src/ops/bounded_futures_testnet_readiness_review_admission_presentation_lifecycle_bridge_contract_v0.py",
+    "src/ops/bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py",
+    "src/ops/bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
+    "src/ops/bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py",
+    "src/ops/bounded_futures_testnet_validate_only_lifecycle_integration_contract_v0.py",
+    "src/ops/bounded_futures_testnet_zero_order_lifecycle_integration_contract_v0.py",
+    "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/authority_envelope_v1.py",
+    "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/registry_and_witness_v1.py",
+    "src/ops/config_truth_alignment_contract_v1.py",
+    "src/ops/derive_scope_event_distances_v1/result_v1.py",
+    "src/ops/double_play_archive_sibling_exporter_v1/exporter_v1.py",
+    "src/ops/durable_completion_validation/validators/completion_chain.py",
+    "src/ops/durable_completion_validation/validators/cross_slice_coherence.py",
+    "src/ops/durable_completion_validation/validators/event_stream.py",
+    "src/ops/durable_completion_validation/validators/operator_closure.py",
+    "src/ops/durable_completion_validation/validators/traceability.py",
+    "src/ops/exit_policy_producer_binding_v1/producers_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/session_integration_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/productive_natural_market_data_capture_sink_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/governed_p01_reduction_directive_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/normalization_inclusion_adjudication_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/p01_applicability_class_contract_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_identity_contract_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/p01_exact_member_identity_contract_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/p01_member_freshness_inheritance_contract_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/p01_value_unit_class_contract_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/sample_schema_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/venue_witness_observation_v1.py",
+    "src/ops/governed_productive_monetary_normalization_v1/contracts_v1.py",
+    "src/ops/hard_facts_system_closure_v1/__init__.py",
+    "src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/gated_entry_submit_surface_v1.py",
+    "src/ops/peak_trade_economic_ranking_runtime_v1/__init__.py",
+    "src/ops/phase_9_2_step_6_adverse_stale_data_session_continuation_v1/productive_executor_v1.py",
+    "src/ops/phase_9_2_step_6_governed_productive_real_network_session_execution_v1/session_executor_v1.py",
+    "src/ops/phase_9_2_step_6_governed_productive_real_network_session_executor_v1/adverse_stale_executor_v1.py",
+    "src/ops/phase_9_2_step_7_productive_campaign_execution_path_v1/productive_campaign_executor_v1.py",
+    "src/ops/presentation_archive_materializers_v1/bull_bear_regime_presentation_projection_materializer_v1.py",
+    "src/ops/presentation_archive_materializers_v1/canonical_decision_presentation_projection_materializer_v1.py",
+    "src/ops/presentation_archive_materializers_v1/double_play_presentation_projection_materializer_v1.py",
+    "src/ops/presentation_archive_materializers_v1/dynamic_scope_presentation_projection_materializer_v1.py",
+    "src/ops/presentation_archive_materializers_v1/economic_summary_presentation_projection_materializer_v1.py",
+    "src/ops/presentation_archive_materializers_v1/execution_reconciliation_presentation_projection_materializer_v1.py",
+    "src/ops/presentation_archive_materializers_v1/risk_sizing_capital_presentation_projection_materializer_v1.py",
+    "src/ops/presentation_archive_materializers_v1/safety_authority_presentation_projection_materializer_v1.py",
+    "src/ops/productive_pure_stack_stage2_shadow_campaign_input_authority_v1/pt1m_finalized_ohlcv_producer_v1.py",
+    "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/__init__.py",
+    "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/producer_v1.py",
+    "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/recovery_v1.py",
+    "src/ops/safety_authority_archive_sibling_exporter_v1/replay_commit_source_v1.py",
+    "src/ops/top20_opportunity_evaluation_residency_v1/scoped_productive_residency_evaluation_completion_v1.py",
+    "src/orders/__init__.py",
+    "src/trading/master_v2/canonical_trading_decision_evidence_v1.py",
+    "src/trading/master_v2/canonical_volatility_default_quarantine_v1.py",
+    "src/trading/master_v2/runtime_bridge_pre_activation_gate_v0.py"
+  ],
+  "HISTORICAL_SEED_FILES": 79,
+  "HISTORICAL_SEED_SITES": 171,
+  "HISTORICAL_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+  "NOTE": "Seed population only; not CURRENT confirmation",
+  "SITES": [
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/intent_compatibility_firewall_v1.py",
+      "LINE": 283,
+      "RECEIVER": "descriptor",
+      "SELECTOR": "field.name",
+      "SITE_ID": "GHV79-001",
+      "SYMBOL": "getattr@283"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/intent_compatibility_firewall_v1.py",
+      "LINE": 292,
+      "RECEIVER": "edge",
+      "SELECTOR": "field.name",
+      "SITE_ID": "GHV79-002",
+      "SYMBOL": "getattr@292"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/intent_compatibility_firewall_v1.py",
+      "LINE": 1053,
+      "RECEIVER": "assessment",
+      "SELECTOR": "field.name",
+      "SITE_ID": "GHV79-003",
+      "SYMBOL": "getattr@1053"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/intent_compatibility_firewall_v1.py",
+      "LINE": 308,
+      "RECEIVER": "descriptor",
+      "SELECTOR": "field.name",
+      "SITE_ID": "GHV79-004",
+      "SYMBOL": "getattr@308"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/intent_compatibility_firewall_v1.py",
+      "LINE": 322,
+      "RECEIVER": "edge",
+      "SELECTOR": "field.name",
+      "SITE_ID": "GHV79-005",
+      "SYMBOL": "getattr@322"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/intent_compatibility_firewall_v1.py",
+      "LINE": 1070,
+      "RECEIVER": "assessment",
+      "SELECTOR": "field.name",
+      "SITE_ID": "GHV79-006",
+      "SYMBOL": "getattr@1070"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/promotion_loop/promotion_economic_gate_v1.py",
+      "LINE": 452,
+      "RECEIVER": "input_data",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-007",
+      "SYMBOL": "getattr@452"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/promotion_loop/promotion_economic_gate_v1.py",
+      "LINE": 552,
+      "RECEIVER": "input_data",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-008",
+      "SYMBOL": "getattr@552"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/promotion_loop/promotion_economic_gate_v1.py",
+      "LINE": 612,
+      "RECEIVER": "input_data",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-009",
+      "SYMBOL": "getattr@612"
+    },
+    {
+      "DISPATCH_KIND": "importlib",
+      "FILE": "src/governance/v32_current_mv2_dp_concept_alignment_v1.py",
+      "LINE": 54,
+      "RECEIVER": "importlib",
+      "SELECTOR": "module_path",
+      "SITE_ID": "GHV79-010",
+      "SYMBOL": "import_module@54"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/governance/v32_current_mv2_dp_concept_alignment_v1.py",
+      "LINE": 55,
+      "RECEIVER": "mod",
+      "SELECTOR": "attr",
+      "SITE_ID": "GHV79-011",
+      "SYMBOL": "getattr@55"
+    },
+    {
+      "DISPATCH_KIND": "importlib",
+      "FILE": "src/ops/b05_full_core_governed_authority_chain_closure_v1/registry_and_witness_v1.py",
+      "LINE": 115,
+      "RECEIVER": "importlib",
+      "SELECTOR": "module_path",
+      "SITE_ID": "GHV79-012",
+      "SYMBOL": "import_module@115"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/b05_full_core_governed_authority_chain_closure_v1/registry_and_witness_v1.py",
+      "LINE": 116,
+      "RECEIVER": "mod",
+      "SELECTOR": "attr",
+      "SITE_ID": "GHV79-013",
+      "SYMBOL": "getattr@116"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py",
+      "LINE": 338,
+      "RECEIVER": "snapshot",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-014",
+      "SYMBOL": "getattr@338"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py",
+      "LINE": 394,
+      "RECEIVER": "integration_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-015",
+      "SYMBOL": "getattr@394"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py",
+      "LINE": 228,
+      "RECEIVER": "integration_input.capability_proofs",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-016",
+      "SYMBOL": "getattr@228"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0.py",
+      "LINE": 340,
+      "RECEIVER": "snapshot",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-017",
+      "SYMBOL": "getattr@340"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0.py",
+      "LINE": 544,
+      "RECEIVER": "chain",
+      "SELECTOR": "slot_name",
+      "SITE_ID": "GHV79-018",
+      "SYMBOL": "getattr@544"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0.py",
+      "LINE": 585,
+      "RECEIVER": "bridge_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-019",
+      "SYMBOL": "getattr@585"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_capital_slot_ratchet_release_lifecycle_integration_contract_v0.py",
+      "LINE": 672,
+      "RECEIVER": "snapshot",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-020",
+      "SYMBOL": "getattr@672"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_capital_slot_ratchet_release_lifecycle_integration_contract_v0.py",
+      "LINE": 1039,
+      "RECEIVER": "integration_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-021",
+      "SYMBOL": "getattr@1039"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_cross_slice_proof_coherence_integration_contract_v0.py",
+      "LINE": 334,
+      "RECEIVER": "snapshot",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-022",
+      "SYMBOL": "getattr@334"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_cross_slice_proof_coherence_integration_contract_v0.py",
+      "LINE": 681,
+      "RECEIVER": "integration_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-023",
+      "SYMBOL": "getattr@681"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0.py",
+      "LINE": 278,
+      "RECEIVER": "link",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-024",
+      "SYMBOL": "getattr@278"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0.py",
+      "LINE": 336,
+      "RECEIVER": "proof",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-025",
+      "SYMBOL": "getattr@336"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0.py",
+      "LINE": 435,
+      "RECEIVER": "snapshot",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-026",
+      "SYMBOL": "getattr@435"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0.py",
+      "LINE": 478,
+      "RECEIVER": "proof",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-027",
+      "SYMBOL": "getattr@478"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0.py",
+      "LINE": 628,
+      "RECEIVER": "integration_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-028",
+      "SYMBOL": "getattr@628"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_review_admission_presentation_lifecycle_integration_contract_v0.py",
+      "LINE": 352,
+      "RECEIVER": "snapshot",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-029",
+      "SYMBOL": "getattr@352"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_review_admission_presentation_lifecycle_integration_contract_v0.py",
+      "LINE": 582,
+      "RECEIVER": "chain",
+      "SELECTOR": "slot_name",
+      "SITE_ID": "GHV79-030",
+      "SYMBOL": "getattr@582"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_review_admission_presentation_lifecycle_integration_contract_v0.py",
+      "LINE": 620,
+      "RECEIVER": "integration_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-031",
+      "SYMBOL": "getattr@620"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0.py",
+      "LINE": 348,
+      "RECEIVER": "binding",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-032",
+      "SYMBOL": "getattr@348"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0.py",
+      "LINE": 515,
+      "RECEIVER": "proof_chain",
+      "SELECTOR": "slot_name",
+      "SITE_ID": "GHV79-033",
+      "SYMBOL": "getattr@515"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_review_handoff_boundary_contract_v0.py",
+      "LINE": 256,
+      "RECEIVER": "snapshot",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-034",
+      "SYMBOL": "getattr@256"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_operator_review_handoff_boundary_contract_v0.py",
+      "LINE": 518,
+      "RECEIVER": "boundary_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-035",
+      "SYMBOL": "getattr@518"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0.py",
+      "LINE": 402,
+      "RECEIVER": "snapshot",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-036",
+      "SYMBOL": "getattr@402"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0.py",
+      "LINE": 445,
+      "RECEIVER": "proof",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-037",
+      "SYMBOL": "getattr@445"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0.py",
+      "LINE": 564,
+      "RECEIVER": "integration_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-038",
+      "SYMBOL": "getattr@564"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py",
+      "LINE": 867,
+      "RECEIVER": "snapshot",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-039",
+      "SYMBOL": "getattr@867"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py",
+      "LINE": 968,
+      "RECEIVER": "integration_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-040",
+      "SYMBOL": "getattr@968"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py",
+      "LINE": 428,
+      "RECEIVER": "snapshot",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-041",
+      "SYMBOL": "getattr@428"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py",
+      "LINE": 843,
+      "RECEIVER": "chain",
+      "SELECTOR": "slot_name",
+      "SITE_ID": "GHV79-042",
+      "SYMBOL": "getattr@843"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py",
+      "LINE": 844,
+      "RECEIVER": "pe32_chain",
+      "SELECTOR": "slot_name",
+      "SITE_ID": "GHV79-043",
+      "SYMBOL": "getattr@844"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py",
+      "LINE": 918,
+      "RECEIVER": "chain",
+      "SELECTOR": "slot_name",
+      "SITE_ID": "GHV79-044",
+      "SYMBOL": "getattr@918"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py",
+      "LINE": 1020,
+      "RECEIVER": "integration_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-045",
+      "SYMBOL": "getattr@1020"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py",
+      "LINE": 798,
+      "RECEIVER": "proof",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-046",
+      "SYMBOL": "getattr@798"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_operator_review_proof_package_contract_v0.py",
+      "LINE": 458,
+      "RECEIVER": "review_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-047",
+      "SYMBOL": "getattr@458"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0.py",
+      "LINE": 296,
+      "RECEIVER": "review_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-048",
+      "SYMBOL": "getattr@296"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0.py",
+      "LINE": 337,
+      "RECEIVER": "policy",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-049",
+      "SYMBOL": "getattr@337"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0.py",
+      "LINE": 465,
+      "RECEIVER": "decision_record",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-050",
+      "SYMBOL": "getattr@465"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0.py",
+      "LINE": 525,
+      "RECEIVER": "review_input.contract_versions",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-051",
+      "SYMBOL": "getattr@525"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_packet_builder_contract_v0.py",
+      "LINE": 680,
+      "RECEIVER": "caps",
+      "SELECTOR": "cap_name",
+      "SITE_ID": "GHV79-052",
+      "SYMBOL": "getattr@680"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_packet_builder_contract_v0.py",
+      "LINE": 699,
+      "RECEIVER": "risk",
+      "SELECTOR": "meta_name",
+      "SITE_ID": "GHV79-053",
+      "SYMBOL": "getattr@699"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py",
+      "LINE": 351,
+      "RECEIVER": "risk",
+      "SELECTOR": "meta_name",
+      "SITE_ID": "GHV79-054",
+      "SYMBOL": "getattr@351"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py",
+      "LINE": 358,
+      "RECEIVER": "caps",
+      "SELECTOR": "cap_name",
+      "SITE_ID": "GHV79-055",
+      "SYMBOL": "getattr@358"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_source_state_capture_contract_v0.py",
+      "LINE": 307,
+      "RECEIVER": "capture_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-056",
+      "SYMBOL": "getattr@307"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_source_state_capture_contract_v0.py",
+      "LINE": 355,
+      "RECEIVER": "policy",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-057",
+      "SYMBOL": "getattr@355"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_preflight_source_state_capture_contract_v0.py",
+      "LINE": 415,
+      "RECEIVER": "capture_input.contract_versions",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-058",
+      "SYMBOL": "getattr@415"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_private_readonly_lifecycle_integration_contract_v0.py",
+      "LINE": 416,
+      "RECEIVER": "snapshot",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-059",
+      "SYMBOL": "getattr@416"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_private_readonly_lifecycle_integration_contract_v0.py",
+      "LINE": 614,
+      "RECEIVER": "integration_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-060",
+      "SYMBOL": "getattr@614"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_readiness_review_admission_presentation_lifecycle_bridge_contract_v0.py",
+      "LINE": 342,
+      "RECEIVER": "snapshot",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-061",
+      "SYMBOL": "getattr@342"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_readiness_review_admission_presentation_lifecycle_bridge_contract_v0.py",
+      "LINE": 563,
+      "RECEIVER": "chain",
+      "SELECTOR": "slot_name",
+      "SITE_ID": "GHV79-062",
+      "SYMBOL": "getattr@563"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_readiness_review_admission_presentation_lifecycle_bridge_contract_v0.py",
+      "LINE": 599,
+      "RECEIVER": "bridge_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-063",
+      "SYMBOL": "getattr@599"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py",
+      "LINE": 512,
+      "RECEIVER": "snapshot",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-064",
+      "SYMBOL": "getattr@512"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py",
+      "LINE": 871,
+      "RECEIVER": "integration_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-065",
+      "SYMBOL": "getattr@871"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
+      "LINE": 583,
+      "RECEIVER": "snapshot",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-066",
+      "SYMBOL": "getattr@583"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
+      "LINE": 912,
+      "RECEIVER": "integration_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-067",
+      "SYMBOL": "getattr@912"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py",
+      "LINE": 645,
+      "RECEIVER": "snapshot",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-068",
+      "SYMBOL": "getattr@645"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py",
+      "LINE": 1459,
+      "RECEIVER": "integration_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-069",
+      "SYMBOL": "getattr@1459"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_validate_only_lifecycle_integration_contract_v0.py",
+      "LINE": 474,
+      "RECEIVER": "snapshot",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-070",
+      "SYMBOL": "getattr@474"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_validate_only_lifecycle_integration_contract_v0.py",
+      "LINE": 867,
+      "RECEIVER": "integration_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-071",
+      "SYMBOL": "getattr@867"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_zero_order_lifecycle_integration_contract_v0.py",
+      "LINE": 378,
+      "RECEIVER": "snapshot",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-072",
+      "SYMBOL": "getattr@378"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/bounded_futures_testnet_zero_order_lifecycle_integration_contract_v0.py",
+      "LINE": 535,
+      "RECEIVER": "integration_input.contract_versions",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-073",
+      "SYMBOL": "getattr@535"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/authority_envelope_v1.py",
+      "LINE": 101,
+      "RECEIVER": "self",
+      "SELECTOR": "name",
+      "SITE_ID": "GHV79-074",
+      "SYMBOL": "getattr@101"
+    },
+    {
+      "DISPATCH_KIND": "importlib",
+      "FILE": "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/registry_and_witness_v1.py",
+      "LINE": 89,
+      "RECEIVER": "importlib",
+      "SELECTOR": "module_path",
+      "SITE_ID": "GHV79-075",
+      "SYMBOL": "import_module@89"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/registry_and_witness_v1.py",
+      "LINE": 90,
+      "RECEIVER": "mod",
+      "SELECTOR": "attr",
+      "SITE_ID": "GHV79-076",
+      "SYMBOL": "getattr@90"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/config_truth_alignment_contract_v1.py",
+      "LINE": 0,
+      "RECEIVER": "module_scope",
+      "SELECTOR": "dynamic",
+      "SITE_ID": "GHV79-077",
+      "SYMBOL": "FILE_LEVEL_DISPATCH"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/derive_scope_event_distances_v1/result_v1.py",
+      "LINE": 34,
+      "RECEIVER": "self",
+      "SELECTOR": "name",
+      "SITE_ID": "GHV79-078",
+      "SYMBOL": "getattr@34"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/double_play_archive_sibling_exporter_v1/exporter_v1.py",
+      "LINE": 114,
+      "RECEIVER": "panel",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-079",
+      "SYMBOL": "getattr@114"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/durable_completion_validation/validators/completion_chain.py",
+      "LINE": 48,
+      "RECEIVER": "chain",
+      "SELECTOR": "chain_field",
+      "SITE_ID": "GHV79-080",
+      "SYMBOL": "getattr@48"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/durable_completion_validation/validators/completion_chain.py",
+      "LINE": 59,
+      "RECEIVER": "chain",
+      "SELECTOR": "chain_field",
+      "SITE_ID": "GHV79-081",
+      "SYMBOL": "getattr@59"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/durable_completion_validation/validators/completion_chain.py",
+      "LINE": 60,
+      "RECEIVER": "binding",
+      "SELECTOR": "binding_field",
+      "SITE_ID": "GHV79-082",
+      "SYMBOL": "getattr@60"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/durable_completion_validation/validators/cross_slice_coherence.py",
+      "LINE": 53,
+      "RECEIVER": "pe33_proof",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-083",
+      "SYMBOL": "getattr@53"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/durable_completion_validation/validators/event_stream.py",
+      "LINE": 148,
+      "RECEIVER": "validation_input",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-084",
+      "SYMBOL": "getattr@148"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/durable_completion_validation/validators/event_stream.py",
+      "LINE": 743,
+      "RECEIVER": "validation_input",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-085",
+      "SYMBOL": "getattr@743"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/durable_completion_validation/validators/event_stream.py",
+      "LINE": 332,
+      "RECEIVER": "proof",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-086",
+      "SYMBOL": "getattr@332"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/durable_completion_validation/validators/operator_closure.py",
+      "LINE": 105,
+      "RECEIVER": "proof",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-087",
+      "SYMBOL": "getattr@105"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/durable_completion_validation/validators/traceability.py",
+      "LINE": 84,
+      "RECEIVER": "proof",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-088",
+      "SYMBOL": "getattr@84"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/exit_policy_producer_binding_v1/producers_v1.py",
+      "LINE": 0,
+      "RECEIVER": "module_scope",
+      "SELECTOR": "dynamic",
+      "SITE_ID": "GHV79-089",
+      "SYMBOL": "FILE_LEVEL_DISPATCH"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/session_integration_v1.py",
+      "LINE": 76,
+      "RECEIVER": "inner",
+      "SELECTOR": "attribute",
+      "SITE_ID": "GHV79-090",
+      "SYMBOL": "getattr@76"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/full_core_live_path_composition_root_v1/productive_natural_market_data_capture_sink_v1.py",
+      "LINE": 169,
+      "RECEIVER": "self._delegate",
+      "SELECTOR": "name",
+      "SITE_ID": "GHV79-091",
+      "SYMBOL": "getattr@169"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/governed_p01_reduction_directive_v1.py",
+      "LINE": 128,
+      "RECEIVER": "self",
+      "SELECTOR": "name",
+      "SITE_ID": "GHV79-092",
+      "SYMBOL": "getattr@128"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/governed_p01_reduction_directive_v1.py",
+      "LINE": 139,
+      "RECEIVER": "directive",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-093",
+      "SYMBOL": "getattr@139"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/governed_p01_reduction_directive_v1.py",
+      "LINE": 149,
+      "RECEIVER": "directive",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-094",
+      "SYMBOL": "getattr@149"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/governed_p01_reduction_directive_v1.py",
+      "LINE": 143,
+      "RECEIVER": "directive",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-095",
+      "SYMBOL": "getattr@143"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/normalization_inclusion_adjudication_v1.py",
+      "LINE": 775,
+      "RECEIVER": "adjudication",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-096",
+      "SYMBOL": "getattr@775"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_applicability_class_contract_v1.py",
+      "LINE": 352,
+      "RECEIVER": "self",
+      "SELECTOR": "name",
+      "SITE_ID": "GHV79-097",
+      "SYMBOL": "getattr@352"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_applicability_class_contract_v1.py",
+      "LINE": 399,
+      "RECEIVER": "contract",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-098",
+      "SYMBOL": "getattr@399"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_applicability_class_contract_v1.py",
+      "LINE": 394,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-099",
+      "SYMBOL": "getattr@394"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_applicability_class_contract_v1.py",
+      "LINE": 539,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-100",
+      "SYMBOL": "getattr@539"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_identity_contract_v1.py",
+      "LINE": 395,
+      "RECEIVER": "self",
+      "SELECTOR": "name",
+      "SITE_ID": "GHV79-101",
+      "SYMBOL": "getattr@395"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_identity_contract_v1.py",
+      "LINE": 438,
+      "RECEIVER": "contract",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-102",
+      "SYMBOL": "getattr@438"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_identity_contract_v1.py",
+      "LINE": 433,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-103",
+      "SYMBOL": "getattr@433"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_identity_contract_v1.py",
+      "LINE": 637,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-104",
+      "SYMBOL": "getattr@637"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py",
+      "LINE": 397,
+      "RECEIVER": "self",
+      "SELECTOR": "name",
+      "SITE_ID": "GHV79-105",
+      "SYMBOL": "getattr@397"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py",
+      "LINE": 480,
+      "RECEIVER": "contract",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-106",
+      "SYMBOL": "getattr@480"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py",
+      "LINE": 627,
+      "RECEIVER": "contract",
+      "SELECTOR": "result_field",
+      "SITE_ID": "GHV79-107",
+      "SYMBOL": "getattr@627"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py",
+      "LINE": 636,
+      "RECEIVER": "contract",
+      "SELECTOR": "forbidden_field",
+      "SITE_ID": "GHV79-108",
+      "SYMBOL": "getattr@636"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py",
+      "LINE": 473,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-109",
+      "SYMBOL": "getattr@473"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py",
+      "LINE": 730,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-110",
+      "SYMBOL": "getattr@730"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_exact_member_identity_contract_v1.py",
+      "LINE": 378,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-111",
+      "SYMBOL": "getattr@378"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_exact_member_identity_contract_v1.py",
+      "LINE": 266,
+      "RECEIVER": "self",
+      "SELECTOR": "name",
+      "SITE_ID": "GHV79-112",
+      "SYMBOL": "getattr@266"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_exact_member_identity_contract_v1.py",
+      "LINE": 301,
+      "RECEIVER": "contract",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-113",
+      "SYMBOL": "getattr@301"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_exact_member_identity_contract_v1.py",
+      "LINE": 296,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-114",
+      "SYMBOL": "getattr@296"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_exact_member_identity_contract_v1.py",
+      "LINE": 418,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-115",
+      "SYMBOL": "getattr@418"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py",
+      "LINE": 477,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-116",
+      "SYMBOL": "getattr@477"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py",
+      "LINE": 570,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-117",
+      "SYMBOL": "getattr@570"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py",
+      "LINE": 411,
+      "RECEIVER": "self",
+      "SELECTOR": "name",
+      "SITE_ID": "GHV79-118",
+      "SYMBOL": "getattr@411"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py",
+      "LINE": 483,
+      "RECEIVER": "contract",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-119",
+      "SYMBOL": "getattr@483"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py",
+      "LINE": 549,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-120",
+      "SYMBOL": "getattr@549"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py",
+      "LINE": 774,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-121",
+      "SYMBOL": "getattr@774"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_member_freshness_inheritance_contract_v1.py",
+      "LINE": 493,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-122",
+      "SYMBOL": "getattr@493"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_member_freshness_inheritance_contract_v1.py",
+      "LINE": 499,
+      "RECEIVER": "contract",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-123",
+      "SYMBOL": "getattr@499"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_member_freshness_inheritance_contract_v1.py",
+      "LINE": 652,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-124",
+      "SYMBOL": "getattr@652"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py",
+      "LINE": 248,
+      "RECEIVER": "self",
+      "SELECTOR": "name",
+      "SITE_ID": "GHV79-125",
+      "SYMBOL": "getattr@248"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py",
+      "LINE": 318,
+      "RECEIVER": "contract",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-126",
+      "SYMBOL": "getattr@318"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py",
+      "LINE": 311,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-127",
+      "SYMBOL": "getattr@311"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py",
+      "LINE": 455,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-128",
+      "SYMBOL": "getattr@455"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py",
+      "LINE": 464,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-129",
+      "SYMBOL": "getattr@464"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_value_unit_class_contract_v1.py",
+      "LINE": 273,
+      "RECEIVER": "self",
+      "SELECTOR": "name",
+      "SITE_ID": "GHV79-130",
+      "SYMBOL": "getattr@273"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_value_unit_class_contract_v1.py",
+      "LINE": 322,
+      "RECEIVER": "contract",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-131",
+      "SYMBOL": "getattr@322"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_value_unit_class_contract_v1.py",
+      "LINE": 317,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-132",
+      "SYMBOL": "getattr@317"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_value_unit_class_contract_v1.py",
+      "LINE": 425,
+      "RECEIVER": "contract",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-133",
+      "SYMBOL": "getattr@425"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/sample_schema_v1.py",
+      "LINE": 269,
+      "RECEIVER": "sample",
+      "SELECTOR": "_python_field_name(canonical)",
+      "SITE_ID": "GHV79-134",
+      "SYMBOL": "getattr@269"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/sample_schema_v1.py",
+      "LINE": 349,
+      "RECEIVER": "sample",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-135",
+      "SYMBOL": "getattr@349"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/venue_witness_observation_v1.py",
+      "LINE": 492,
+      "RECEIVER": "witness",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-136",
+      "SYMBOL": "getattr@492"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_monetary_normalization_v1/contracts_v1.py",
+      "LINE": 119,
+      "RECEIVER": "edge",
+      "SELECTOR": "field.name",
+      "SITE_ID": "GHV79-137",
+      "SYMBOL": "getattr@119"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/governed_productive_monetary_normalization_v1/contracts_v1.py",
+      "LINE": 121,
+      "RECEIVER": "edge",
+      "SELECTOR": "field.name",
+      "SITE_ID": "GHV79-138",
+      "SYMBOL": "getattr@121"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/hard_facts_system_closure_v1/__init__.py",
+      "LINE": 33,
+      "RECEIVER": "handoff",
+      "SELECTOR": "name",
+      "SITE_ID": "GHV79-139",
+      "SYMBOL": "getattr@33"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/gated_entry_submit_surface_v1.py",
+      "LINE": 68,
+      "RECEIVER": "LiveCanaryHttpClientV1",
+      "SELECTOR": "GATED_ENTRY_SUBMIT_METHOD_NAME",
+      "SITE_ID": "GHV79-140",
+      "SYMBOL": "getattr@68"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/peak_trade_economic_ranking_runtime_v1/__init__.py",
+      "LINE": 29,
+      "RECEIVER": "mod",
+      "SELECTOR": "name",
+      "SITE_ID": "GHV79-141",
+      "SYMBOL": "getattr@29"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/peak_trade_economic_ranking_runtime_v1/__init__.py",
+      "LINE": 33,
+      "RECEIVER": "mod",
+      "SELECTOR": "name",
+      "SITE_ID": "GHV79-142",
+      "SYMBOL": "getattr@33"
+    },
+    {
+      "DISPATCH_KIND": "importlib",
+      "FILE": "src/ops/phase_9_2_step_6_adverse_stale_data_session_continuation_v1/productive_executor_v1.py",
+      "LINE": 86,
+      "RECEIVER": "importlib",
+      "SELECTOR": "import_path",
+      "SITE_ID": "GHV79-143",
+      "SYMBOL": "import_module@86"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/phase_9_2_step_6_adverse_stale_data_session_continuation_v1/productive_executor_v1.py",
+      "LINE": 87,
+      "RECEIVER": "mod",
+      "SELECTOR": "attr",
+      "SITE_ID": "GHV79-144",
+      "SYMBOL": "getattr@87"
+    },
+    {
+      "DISPATCH_KIND": "importlib",
+      "FILE": "src/ops/phase_9_2_step_6_governed_productive_real_network_session_execution_v1/session_executor_v1.py",
+      "LINE": 28,
+      "RECEIVER": "importlib",
+      "SELECTOR": "import_path",
+      "SITE_ID": "GHV79-145",
+      "SYMBOL": "import_module@28"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/phase_9_2_step_6_governed_productive_real_network_session_execution_v1/session_executor_v1.py",
+      "LINE": 29,
+      "RECEIVER": "mod",
+      "SELECTOR": "attr",
+      "SITE_ID": "GHV79-146",
+      "SYMBOL": "getattr@29"
+    },
+    {
+      "DISPATCH_KIND": "importlib",
+      "FILE": "src/ops/phase_9_2_step_6_governed_productive_real_network_session_executor_v1/adverse_stale_executor_v1.py",
+      "LINE": 36,
+      "RECEIVER": "importlib",
+      "SELECTOR": "import_path",
+      "SITE_ID": "GHV79-147",
+      "SYMBOL": "import_module@36"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/phase_9_2_step_6_governed_productive_real_network_session_executor_v1/adverse_stale_executor_v1.py",
+      "LINE": 37,
+      "RECEIVER": "mod",
+      "SELECTOR": "attr",
+      "SITE_ID": "GHV79-148",
+      "SYMBOL": "getattr@37"
+    },
+    {
+      "DISPATCH_KIND": "importlib",
+      "FILE": "src/ops/phase_9_2_step_7_productive_campaign_execution_path_v1/productive_campaign_executor_v1.py",
+      "LINE": 142,
+      "RECEIVER": "importlib",
+      "SELECTOR": "import_path",
+      "SITE_ID": "GHV79-149",
+      "SYMBOL": "import_module@142"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/phase_9_2_step_7_productive_campaign_execution_path_v1/productive_campaign_executor_v1.py",
+      "LINE": 143,
+      "RECEIVER": "mod",
+      "SELECTOR": "attr",
+      "SITE_ID": "GHV79-150",
+      "SYMBOL": "getattr@143"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/bull_bear_regime_presentation_projection_materializer_v1.py",
+      "LINE": 144,
+      "RECEIVER": "source",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-151",
+      "SYMBOL": "getattr@144"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/canonical_decision_presentation_projection_materializer_v1.py",
+      "LINE": 127,
+      "RECEIVER": "source",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-152",
+      "SYMBOL": "getattr@127"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/canonical_decision_presentation_projection_materializer_v1.py",
+      "LINE": 130,
+      "RECEIVER": "source",
+      "SELECTOR": "optional",
+      "SITE_ID": "GHV79-153",
+      "SYMBOL": "getattr@130"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/double_play_presentation_projection_materializer_v1.py",
+      "LINE": 128,
+      "RECEIVER": "panel",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-154",
+      "SYMBOL": "getattr@128"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/double_play_presentation_projection_materializer_v1.py",
+      "LINE": 201,
+      "RECEIVER": "source",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-155",
+      "SYMBOL": "getattr@201"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/dynamic_scope_presentation_projection_materializer_v1.py",
+      "LINE": 151,
+      "RECEIVER": "source",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-156",
+      "SYMBOL": "getattr@151"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/economic_summary_presentation_projection_materializer_v1.py",
+      "LINE": 170,
+      "RECEIVER": "source",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-157",
+      "SYMBOL": "getattr@170"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/execution_reconciliation_presentation_projection_materializer_v1.py",
+      "LINE": 151,
+      "RECEIVER": "source",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-158",
+      "SYMBOL": "getattr@151"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/risk_sizing_capital_presentation_projection_materializer_v1.py",
+      "LINE": 148,
+      "RECEIVER": "source",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-159",
+      "SYMBOL": "getattr@148"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/presentation_archive_materializers_v1/safety_authority_presentation_projection_materializer_v1.py",
+      "LINE": 148,
+      "RECEIVER": "source",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-160",
+      "SYMBOL": "getattr@148"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/productive_pure_stack_stage2_shadow_campaign_input_authority_v1/pt1m_finalized_ohlcv_producer_v1.py",
+      "LINE": 32,
+      "RECEIVER": "binding",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-161",
+      "SYMBOL": "getattr@32"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/productive_pure_stack_stage2_shadow_campaign_input_authority_v1/pt1m_finalized_ohlcv_producer_v1.py",
+      "LINE": 45,
+      "RECEIVER": "candle",
+      "SELECTOR": "name",
+      "SITE_ID": "GHV79-162",
+      "SYMBOL": "getattr@45"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/__init__.py",
+      "LINE": 38,
+      "RECEIVER": "models_v1",
+      "SELECTOR": "name",
+      "SITE_ID": "GHV79-163",
+      "SYMBOL": "getattr@38"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/producer_v1.py",
+      "LINE": 44,
+      "RECEIVER": "bar",
+      "SELECTOR": "name",
+      "SITE_ID": "GHV79-164",
+      "SYMBOL": "getattr@44"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/recovery_v1.py",
+      "LINE": 177,
+      "RECEIVER": "cursor",
+      "SELECTOR": "field_name",
+      "SITE_ID": "GHV79-165",
+      "SYMBOL": "getattr@177"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/safety_authority_archive_sibling_exporter_v1/replay_commit_source_v1.py",
+      "LINE": 40,
+      "RECEIVER": "source",
+      "SELECTOR": "key",
+      "SITE_ID": "GHV79-166",
+      "SYMBOL": "getattr@40"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/ops/top20_opportunity_evaluation_residency_v1/scoped_productive_residency_evaluation_completion_v1.py",
+      "LINE": 0,
+      "RECEIVER": "module_scope",
+      "SELECTOR": "dynamic",
+      "SITE_ID": "GHV79-167",
+      "SYMBOL": "FILE_LEVEL_DISPATCH"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/orders/__init__.py",
+      "LINE": 74,
+      "RECEIVER": "exchange",
+      "SELECTOR": "name",
+      "SITE_ID": "GHV79-168",
+      "SYMBOL": "getattr@74"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/trading/master_v2/canonical_trading_decision_evidence_v1.py",
+      "LINE": 89,
+      "RECEIVER": "self",
+      "SELECTOR": "digest_name",
+      "SITE_ID": "GHV79-169",
+      "SYMBOL": "getattr@89"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/trading/master_v2/canonical_volatility_default_quarantine_v1.py",
+      "LINE": 196,
+      "RECEIVER": "self",
+      "SELECTOR": "digest_name",
+      "SITE_ID": "GHV79-170",
+      "SYMBOL": "getattr@196"
+    },
+    {
+      "DISPATCH_KIND": "getattr",
+      "FILE": "src/trading/master_v2/runtime_bridge_pre_activation_gate_v0.py",
+      "LINE": 96,
+      "RECEIVER": "inp",
+      "SELECTOR": "field",
+      "SITE_ID": "GHV79-171",
+      "SYMBOL": "getattr@96"
+    }
+  ],
+  "SOURCE": "61_ghv79_site_inventory_v1.json"
+}

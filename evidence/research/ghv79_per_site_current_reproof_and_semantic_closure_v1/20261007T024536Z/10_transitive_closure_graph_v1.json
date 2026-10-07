@@ -1,0 +1,642 @@
+{
+  "AUTHORITY_INVERSION_DETECTED": false,
+  "BASE_CURRENT_EDGES": 61,
+  "BASE_CURRENT_NODES": 57,
+  "BINDING_LEAKAGE_DETECTED": false,
+  "CAP22_REMAINS_RANK_ONLY": true,
+  "CAP23_REMAINS_SOLE_SELECTION_OWNER": true,
+  "CAP24_REMAINS_BIND_ONLY": true,
+  "CLOSURE_EDGE_COUNT": 102,
+  "CLOSURE_NODE_NAMES": [
+    "CAP22_FULL_RANK_ORDER",
+    "Full-Core composition root",
+    "Master-V2 + Double Play",
+    "Natural Enter disposition"
+  ],
+  "CYCLES_DETECTED": 0,
+  "DECISION_LEAKAGE_DETECTED": false,
+  "EDGES": [
+    {
+      "FROM": "GHV79-001",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:intent_compatibility|firewall",
+      "TO": "CURRENT_NODE:Master-V2 + Double Play"
+    },
+    {
+      "FROM": "GHV79-002",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:intent_compatibility|firewall",
+      "TO": "CURRENT_NODE:Master-V2 + Double Play"
+    },
+    {
+      "FROM": "GHV79-003",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:intent_compatibility|firewall",
+      "TO": "CURRENT_NODE:Master-V2 + Double Play"
+    },
+    {
+      "FROM": "GHV79-004",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:intent_compatibility|firewall",
+      "TO": "CURRENT_NODE:Master-V2 + Double Play"
+    },
+    {
+      "FROM": "GHV79-005",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:intent_compatibility|firewall",
+      "TO": "CURRENT_NODE:Master-V2 + Double Play"
+    },
+    {
+      "FROM": "GHV79-006",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:intent_compatibility|firewall",
+      "TO": "CURRENT_NODE:Master-V2 + Double Play"
+    },
+    {
+      "FROM": "GHV79-007",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:promotion",
+      "TO": "CURRENT_NODE:CAP22_FULL_RANK_ORDER"
+    },
+    {
+      "FROM": "GHV79-008",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:promotion",
+      "TO": "CURRENT_NODE:CAP22_FULL_RANK_ORDER"
+    },
+    {
+      "FROM": "GHV79-009",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:promotion",
+      "TO": "CURRENT_NODE:CAP22_FULL_RANK_ORDER"
+    },
+    {
+      "FROM": "GHV79-010",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:master_v2|double_play|mv2",
+      "TO": "CURRENT_NODE:Master-V2 + Double Play"
+    },
+    {
+      "FROM": "GHV79-011",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:master_v2|double_play|mv2",
+      "TO": "CURRENT_NODE:Master-V2 + Double Play"
+    },
+    {
+      "FROM": "GHV79-012",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:b05_full_core_governed_authority",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-013",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:b05_full_core_governed_authority",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-078",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-079",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:master_v2|double_play|mv2",
+      "TO": "CURRENT_NODE:Master-V2 + Double Play"
+    },
+    {
+      "FROM": "GHV79-080",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-081",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-082",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-083",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-084",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-085",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-086",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-087",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-088",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-090",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:natural_enter|enter_live",
+      "TO": "CURRENT_NODE:Natural Enter disposition"
+    },
+    {
+      "FROM": "GHV79-091",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:full_core_live_path_composition_root",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-092",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-093",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-094",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-095",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-096",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-097",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-098",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-099",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-100",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-101",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-102",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-103",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-104",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-105",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-106",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-107",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-108",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-109",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-110",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-111",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-112",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-113",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-114",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-115",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-116",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-117",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-118",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-119",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-120",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-121",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-122",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-123",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-124",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-125",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-126",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-127",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-128",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-129",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-130",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-131",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-132",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-133",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-134",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-135",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-136",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-137",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-138",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-139",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-140",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-141",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-142",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-143",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-144",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-145",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-146",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-147",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-148",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-149",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-150",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-151",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-152",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-153",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-154",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:master_v2|double_play|mv2",
+      "TO": "CURRENT_NODE:Master-V2 + Double Play"
+    },
+    {
+      "FROM": "GHV79-155",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:master_v2|double_play|mv2",
+      "TO": "CURRENT_NODE:Master-V2 + Double Play"
+    },
+    {
+      "FROM": "GHV79-156",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-157",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-158",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-160",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-161",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-162",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-163",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-164",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-166",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+      "TO": "CURRENT_NODE:Full-Core composition root"
+    },
+    {
+      "FROM": "GHV79-169",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:master_v2|double_play|mv2",
+      "TO": "CURRENT_NODE:Master-V2 + Double Play"
+    },
+    {
+      "FROM": "GHV79-170",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:master_v2|double_play|mv2",
+      "TO": "CURRENT_NODE:Master-V2 + Double Play"
+    },
+    {
+      "FROM": "GHV79-171",
+      "KIND": "SITE_OWNED_BY_NODE",
+      "PROVENANCE": "PATH_RULE:master_v2|double_play|mv2",
+      "TO": "CURRENT_NODE:Master-V2 + Double Play"
+    }
+  ],
+  "GHV_PRODUCTIVE_AUTHORITY_BACKFLOW": false,
+  "GVEF_PRODUCTIVE_AUTHORITY_BACKFLOW": false,
+  "GV_PRODUCTIVE_AUTHORITY_BACKFLOW": false,
+  "HIDDEN_BACKFLOW_DETECTED": false,
+  "NOTE": "PROVEN CURRENT facts only; GHV-only edges excluded from CURRENT authority",
+  "POST_AUTHORITY_PROVEN": false,
+  "POST_AUTHORIZED": false,
+  "POST_LEAKAGE_DETECTED": false,
+  "SELECTION_LEAKAGE_DETECTED": false,
+  "TARGET_OWNER_FAN_IN": {}
+}

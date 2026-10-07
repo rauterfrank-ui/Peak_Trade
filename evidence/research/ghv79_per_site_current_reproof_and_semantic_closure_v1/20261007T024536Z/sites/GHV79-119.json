@@ -1,0 +1,113 @@
+{
+  "ADJUDICATION": {
+    "CONFIDENCE": "HIGH",
+    "EVIDENCE": [
+      "CURRENT_AST_REPROOF",
+      "INTEGRATED_57_61_FIXPOINT",
+      "HISTORICAL_GHV79_SEED",
+      "EXACT_LINE_RECEIVER_SELECTOR"
+    ],
+    "OPEN_QUESTION": null,
+    "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE"
+  },
+  "AUTHORITY": {
+    "BINDING_AUTHORITY": "NONE",
+    "CAN_AFFECT_BINDING_RECOMPUTED": false,
+    "CAN_AFFECT_POST_RECOMPUTED": false,
+    "CAN_AFFECT_SELECTION_RECOMPUTED": false,
+    "DECISION_AUTHORITY": "NONE",
+    "EXECUTION_AUTHORITY": "NONE",
+    "GHV_AUTHORITY": "NONE",
+    "HISTORICAL_CAN_AFFECT_BINDING": false,
+    "HISTORICAL_CAN_AFFECT_POST": false,
+    "HISTORICAL_CAN_AFFECT_SELECTION": false,
+    "POST_AUTHORITY": "NONE",
+    "SELECTION_AUTHORITY": "NONE"
+  },
+  "CURRENT_SYSTEM_PLACEMENT": {
+    "CONTROL_FLOW_REACHABILITY": "STATIC_PRESENT",
+    "CURRENT_EDGE_IF_ALREADY_PROVEN": null,
+    "CURRENT_LAYER_OR_PLANE": "PRODUCTIVE_SUPPORT",
+    "CURRENT_NODE_NAME": "Full-Core composition root",
+    "CURRENT_NODE_OWNER": "full_core_live_path_composition_root_v1",
+    "DATA_FLOW_REACHABILITY": "LOCAL_DYNAMIC_FIELD_OR_IMPORT",
+    "DOWNSTREAM_CURRENT_NODE": "PROD.FULL_CORE",
+    "MAPPING_PROVENANCE": "GHV_LANE_HINT_ONLY:N16_N1_S7_T2_COMPOSE",
+    "PRODUCTIVE_REACHABILITY": "PRODUCTIVE_SUPPORT",
+    "UPSTREAM_CURRENT_NODE": "PROD.FULL_CORE"
+  },
+  "DISPATCH": {
+    "DISPATCH_KIND": "getattr",
+    "ERROR_BEHAVIOR": "PROPAGATE_ATTRIBUTEERROR",
+    "FALLBACK_BEHAVIOR": "ATTRIBUTE_ERROR_IF_MISSING",
+    "GETATTR_EXPRESSION": "getattr(contract, key)",
+    "IMPORT_MODULE_EXPRESSION": "",
+    "RECEIVER_EXPRESSION": "contract",
+    "SELECTOR_EXPRESSION": "key"
+  },
+  "GHV_COMPARISON": {
+    "CURRENT_PROVEN_PLACEMENT": "Full-Core composition root",
+    "GHV_EXPECTED_PLACEMENT": "N16_N1_S7_T2_COMPOSE",
+    "GHV_RELATION_HISTORICAL": "SPINE",
+    "PLACEMENT_RELATION": "IMPLEMENTATION_DETAIL"
+  },
+  "GRAPH_BUCKET": "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION",
+  "IDENTITY": {
+    "CURRENT_AST_FINGERPRINT": "cc7a89a077b3bd7e",
+    "CURRENT_FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py",
+    "CURRENT_LINE_OR_AST_LOCATOR": 483,
+    "CURRENT_SYMBOL": "getattr@483",
+    "HISTORICAL_FILE": "src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py",
+    "HISTORICAL_LINE": 483,
+    "HISTORICAL_SYMBOL": "getattr@483",
+    "SITE_ID": "GHV79-119"
+  },
+  "RESOLUTION": {
+    "POSSIBLE_TARGET_SET": [
+      "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+    ],
+    "PROVEN_TARGET_SET": [
+      "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+    ],
+    "RECEIVER_RESOLUTION": "EXPR:contract",
+    "RESOLUTION_CHAIN": [
+      "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py:483",
+      "KIND:getattr",
+      "RECV:contract",
+      "SEL:key",
+      "DYNAMIC_FIELD_NAME_REFLECTION",
+      "PROVEN_AS_DYNAMIC_FIELD_READ"
+    ],
+    "SELECTOR_RESOLUTION": "DYNAMIC_FIELD:key",
+    "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+    "UNRESOLVED_TARGET_SET": []
+  },
+  "SEMANTICS": {
+    "CALLEE_ROLE": [
+      "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+    ],
+    "CALLER_ROLE": "DYNAMIC_FIELD_ACCESS",
+    "CONFIG_READS": [],
+    "EXTERNAL_EFFECT_REACHABILITY": "NONE",
+    "INPUT_SEMANTICS": "CURRENT_BOUND_CONTEXT_OR_REGISTRY_HANDLE",
+    "OUTPUT_SEMANTICS": "TRANSFORMED_CONTEXT_OR_WITNESS_RECORD",
+    "SIDE_EFFECT_CLASS": "READ_ONLY_DISPATCH",
+    "STATE_READS": [
+      "receiver_object_fields"
+    ],
+    "STATE_WRITES": []
+  },
+  "SOURCE_PROVENANCE": {
+    "CURRENT_AUTHORITY_SHA": "620cd9da6f925fc29c69be3311e0c3288ab674a4",
+    "INTEGRATED_DOSSIER": "/Users/frnkhrz/Peak_Trade/evidence/research/current_proven_system_evidence_integration_and_transitive_closure_dossier_v1/20261007T021703Z",
+    "SEED_INVENTORY": "/Users/frnkhrz/Peak_Trade/evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/20261006T234616Z_hard_wall_120s_v1/WHOLE_SYSTEM_SEMANTIC_EDGE_CLOSURE_ROUND_4_V1/61_ghv79_site_inventory_v1.json",
+    "SEED_PLACEMENT_REGISTRY": "/Users/frnkhrz/Peak_Trade/evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/20261006T234616Z_hard_wall_120s_v1/WHOLE_SYSTEM_SEMANTIC_EDGE_CLOSURE_ROUND_4_V1/62_ghv79_placement_registry_v1.jsonl"
+  },
+  "TEMPORAL": {
+    "CURRENTNESS_PROOF": "EXACT_LINE_RECEIVER_SELECTOR",
+    "CURRENT_STATUS": "PROVEN_CURRENT",
+    "HISTORICAL_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+    "HISTORICAL_STATUS": "OBSERVED_AT_R4_SHA",
+    "SURVIVAL_CLASS": "SURVIVING"
+  }
+}
