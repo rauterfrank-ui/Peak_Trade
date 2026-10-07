@@ -1,0 +1,305 @@
+{
+  "ALL_MAJOR_CONCLUSIONS_HAVE_CURRENTNESS": true,
+  "ALL_MAJOR_CONCLUSIONS_HAVE_PROVENANCE": true,
+  "CONCLUSIONS": [
+    {
+      "CONCLUSION": "IU has 14 distinct semantic layers L00-L13",
+      "CONCLUSION_ID": "C_IU_14",
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "HISTORICAL_CORROBORATION": [],
+      "PRIMARY_CURRENT_PROOF": [
+        "IU/17_iu_final_fixpoint_v1.json"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CONCLUSION": "IU topology with L08 branch to L09/L10 and Cap23 sole selection",
+      "CONCLUSION_ID": "C_IU_TOPO",
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "HISTORICAL_CORROBORATION": [],
+      "PRIMARY_CURRENT_PROOF": [
+        "IU/03",
+        "IU/19"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CONCLUSION": "Four distinct universe populations",
+      "CONCLUSION_ID": "C_POPS",
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "HISTORICAL_CORROBORATION": [],
+      "PRIMARY_CURRENT_PROOF": [
+        "IU/04"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CONCLUSION": "Cap22 ranking context not selection",
+      "CONCLUSION_ID": "C_CAP22",
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "HISTORICAL_CORROBORATION": [],
+      "PRIMARY_CURRENT_PROOF": [
+        "IU/17",
+        "GVEF RU evaluator"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CONCLUSION": "Cap23 sole selection owner",
+      "CONCLUSION_ID": "C_CAP23",
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "HISTORICAL_CORROBORATION": [],
+      "PRIMARY_CURRENT_PROOF": [
+        "IU/17 SOLE_SELECTION_OWNER"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CONCLUSION": "Cap24 bind-only",
+      "CONCLUSION_ID": "C_CAP24",
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "HISTORICAL_CORROBORATION": [],
+      "PRIMARY_CURRENT_PROOF": [
+        "IU/17"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CONCLUSION": "Exactly 2 registered Golden Vectors",
+      "CONCLUSION_ID": "C_GV_COUNT",
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "HISTORICAL_CORROBORATION": [],
+      "PRIMARY_CURRENT_PROOF": [
+        "GVEF/06",
+        "GVEF/12"
+      ],
+      "PROVEN_BY_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CONCLUSION": "5 GVEF domain evaluators",
+      "CONCLUSION_ID": "C_GVEF_EVAL",
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "HISTORICAL_CORROBORATION": [],
+      "PRIMARY_CURRENT_PROOF": [
+        "GVEF evaluators package"
+      ],
+      "PROVEN_BY_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CONCLUSION": "No central GV assignment orchestrator; GenericRunner is run lifecycle only",
+      "CONCLUSION_ID": "C_NO_ORCH",
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "HISTORICAL_CORROBORATION": [
+        "chat forensic"
+      ],
+      "PRIMARY_CURRENT_PROOF": [
+        "GVEF/07 fabric",
+        "GenericRunnerV1"
+      ],
+      "PROVEN_BY_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CONCLUSION": "RU GV directly covers L07; observes L05/L08 multi-layer",
+      "CONCLUSION_ID": "C_RU_L07",
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "HISTORICAL_CORROBORATION": [],
+      "PRIMARY_CURRENT_PROOF": [
+        "IU/11",
+        "IU/12"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CONCLUSION": "PTP registered vector vec-gvef-ptp-mechanism-001",
+      "CONCLUSION_ID": "C_PTP_GV",
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "HISTORICAL_CORROBORATION": [],
+      "PRIMARY_CURRENT_PROOF": [
+        "GVEF/06"
+      ],
+      "PROVEN_BY_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CONCLUSION": "OU/SL/MI evaluator-only capability; no registered GV",
+      "CONCLUSION_ID": "C_OUSLMI",
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "HISTORICAL_CORROBORATION": [],
+      "PRIMARY_CURRENT_PROOF": [
+        "IU/12",
+        "IU/17"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CONCLUSION": "GHV AUTHORITY=NONE; no productive IU selection edge",
+      "CONCLUSION_ID": "C_GHV",
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "HISTORICAL_CORROBORATION": [
+        "GHV79"
+      ],
+      "PRIMARY_CURRENT_PROOF": [
+        "IU/17 GHV_ISOLATED",
+        "GVEF GHV relationship"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CONCLUSION": "GV/GVEF productive authority backflow false",
+      "CONCLUSION_ID": "C_BACKFLOW",
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "HISTORICAL_CORROBORATION": [
+        "R4 backflow"
+      ],
+      "PRIMARY_CURRENT_PROOF": [
+        "IU/15",
+        "IU/17",
+        "GVEF/09"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CONCLUSION": "IU+GVEF dynamic dispatch unknowns = 0; no evaluator factory",
+      "CONCLUSION_ID": "C_DISPATCH",
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "HISTORICAL_CORROBORATION": [],
+      "PRIMARY_CURRENT_PROOF": [
+        "IU/14",
+        "GVEF/08",
+        "GVEF/12"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CONCLUSION": "Natural Enter and PRE_EXTERNAL proven same causal enter; POST false",
+      "CONCLUSION_ID": "C_NE",
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "HISTORICAL_CORROBORATION": [
+        "K1 witness at 6ed52d01"
+      ],
+      "PRIMARY_CURRENT_PROOF": [
+        "CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md",
+        "NE/05"
+      ],
+      "PROVEN_BY_RUNS": [
+        "NE_CANONICAL_CLOSURE_20261007T010700Z",
+        "K1_WITNESS_20261007T004808Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+        "6ed52d01ac181e629b2839271f83b52fc7ffe61f"
+      ],
+      "STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CONCLUSION": "POST_AUTHORIZED=false; no implication from PRE_EXTERNAL",
+      "CONCLUSION_ID": "C_POST",
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "HISTORICAL_CORROBORATION": [
+        "R4 POST_ALLOWED=false"
+      ],
+      "PRIMARY_CURRENT_PROOF": [
+        "NE doc preserved fields",
+        "K1 summary"
+      ],
+      "PROVEN_BY_RUNS": [
+        "NE_CANONICAL_CLOSURE_20261007T010700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "STATUS": "PROVEN_CURRENT"
+    }
+  ]
+}

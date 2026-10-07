@@ -1,0 +1,123 @@
+{
+  "HARD_LAW": "GV!=GHV; GV!=GVEF; GVEF!=GHV",
+  "TERMS": [
+    {
+      "ACTUAL_CURRENT_MEANING": "Registered offline evaluation vector in GVEF corpus",
+      "ALIAS": [
+        "Golden Vector",
+        "vec-gvef-*"
+      ],
+      "AUTHORITY": "NONE",
+      "COMMON_CONFUSION": "Confused with GHV or Cap63 golden_vectors_v1",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OWNER": "config/evaluation/golden_vectors/fixture_corpus_v1",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST_ONLY",
+      "REMOVED_BY": null,
+      "SOURCE_EVIDENCE": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TERM": "GV"
+    },
+    {
+      "ACTUAL_CURRENT_MEANING": "Offline evaluation fabric under src/evaluation/golden_vectors",
+      "ALIAS": [
+        "Golden Vector Evaluation Fabric"
+      ],
+      "AUTHORITY": "NONE",
+      "COMMON_CONFUSION": "Treated as productive orchestrator / GHV",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OWNER": "src.evaluation.golden_vectors",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST_ONLY",
+      "REMOVED_BY": null,
+      "SOURCE_EVIDENCE": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TERM": "GVEF"
+    },
+    {
+      "ACTUAL_CURRENT_MEANING": "Productive readiness / forensic reference vector family; AUTHORITY=NONE",
+      "ALIAS": [
+        "Golden Happy Vector",
+        "current_productive_ghv_*"
+      ],
+      "AUTHORITY": "NONE",
+      "COMMON_CONFUSION": "VectorClass GoldenHappy == GHV product",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+      "OWNER": "governance/ops GHV surfaces",
+      "PRODUCTIVE_REACHABILITY": "REFERENCE_OBSERVATION",
+      "REMOVED_BY": null,
+      "SOURCE_EVIDENCE": [
+        "GHV79_DISPATCH_PLACEMENT",
+        "GVEF false-positive roots"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "HISTORICAL_STILL_VALID",
+      "TERM": "GHV"
+    },
+    {
+      "ACTUAL_CURRENT_MEANING": "GVEF taxonomy enum label only",
+      "ALIAS": [
+        "GoldenHappy"
+      ],
+      "AUTHORITY": "NONE",
+      "COMMON_CONFUSION": "Equated to GHV module",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OWNER": "src.evaluation.golden_vectors.contracts.enums",
+      "PRODUCTIVE_REACHABILITY": "SCHEMA_ONLY",
+      "REMOVED_BY": null,
+      "SOURCE_EVIDENCE": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TERM": "VectorClass.GoldenHappy"
+    },
+    {
+      "ACTUAL_CURRENT_MEANING": "Distance-formula fixtures; NOT GVEF Golden Vectors",
+      "ALIAS": [
+        "src/ops/derive_scope_event_distances_v1/golden_vectors_v1.py"
+      ],
+      "AUTHORITY": "NONE",
+      "COMMON_CONFUSION": "Keyword golden_vectors => GVEF",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OWNER": "ops.derive_scope_event_distances_v1",
+      "PRODUCTIVE_REACHABILITY": "OPS_FORMULA",
+      "REMOVED_BY": null,
+      "SOURCE_EVIDENCE": [
+        "GVEF false-positive roots"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TERM": "Cap63 golden_vectors_v1"
+    }
+  ]
+}

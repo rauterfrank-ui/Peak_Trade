@@ -1,0 +1,665 @@
+{
+  "CURRENT_ONLY_AUTHORITY": [
+    "Cap21",
+    "Economic MD",
+    "B05",
+    "B03",
+    "Cap22",
+    "Top20 Context",
+    "Residency",
+    "Cap23",
+    "Anti-Churn",
+    "Cap24",
+    "DDO",
+    "OU",
+    "SL",
+    "MI",
+    "GV",
+    "GVEF",
+    "GHV",
+    "Full-Core",
+    "Master-V2/DP",
+    "PRE_EXTERNAL",
+    "POST"
+  ],
+  "CURRENT_ONLY_CONFIG": [
+    "None::btc_excluded",
+    "None::selection_authority_added",
+    "None::SELECTION_AUTHORITY_ADDED",
+    "None::TOP20_CANDIDATE_CONTEXT_LIMIT",
+    "None::hysteresis_rank_improvement",
+    "None::min_holding_period_seconds",
+    "None::cap23_residency_eligibility_gate_enabled",
+    "None::TOP20_EVALUATION_RESIDENCY_ENABLED",
+    "None::DIRECT_INSTRUMENT_OVERRIDE_ALLOWED",
+    "None::selection_authority_owner",
+    "None::vector_ids",
+    "config/evaluation/golden_vectors/fixture_corpus_v1/corpus_manifest.json::vector_ids",
+    "config/evaluation/golden_vectors/authority_signal_flow_constraints/constraint_matrix_v1.json::matrix_digest"
+  ],
+  "CURRENT_ONLY_EDGES": [
+    {
+      "FROM": "L00",
+      "GLOBAL_EDGE_ID": "E.L00_L01",
+      "TO": "L01"
+    },
+    {
+      "FROM": "L01",
+      "GLOBAL_EDGE_ID": "E.L01_L02",
+      "TO": "L02"
+    },
+    {
+      "FROM": "L02",
+      "GLOBAL_EDGE_ID": "E.L02_L03",
+      "TO": "L03"
+    },
+    {
+      "FROM": "L03",
+      "GLOBAL_EDGE_ID": "E.L03_L04",
+      "TO": "L04"
+    },
+    {
+      "FROM": "L04",
+      "GLOBAL_EDGE_ID": "E.L04_L05",
+      "TO": "L05"
+    },
+    {
+      "FROM": "L05",
+      "GLOBAL_EDGE_ID": "E.L05_L06",
+      "TO": "L06"
+    },
+    {
+      "FROM": "L06",
+      "GLOBAL_EDGE_ID": "E.L06_L07",
+      "TO": "L07"
+    },
+    {
+      "FROM": "L07",
+      "GLOBAL_EDGE_ID": "E.L07_L08",
+      "TO": "L08"
+    },
+    {
+      "FROM": "L08",
+      "GLOBAL_EDGE_ID": "E.L08_L09",
+      "TO": "L09"
+    },
+    {
+      "FROM": "L08",
+      "GLOBAL_EDGE_ID": "E.L08_L10",
+      "TO": "L10"
+    },
+    {
+      "FROM": "L09",
+      "GLOBAL_EDGE_ID": "E.L09_L10",
+      "TO": "L10"
+    },
+    {
+      "FROM": "L10",
+      "GLOBAL_EDGE_ID": "E.L10_L11",
+      "TO": "L11"
+    },
+    {
+      "FROM": "L11",
+      "GLOBAL_EDGE_ID": "E.L11_L12",
+      "TO": "L12"
+    },
+    {
+      "FROM": "L12",
+      "GLOBAL_EDGE_ID": "E.L12_L13",
+      "TO": "L13"
+    },
+    {
+      "FROM": "L13",
+      "GLOBAL_EDGE_ID": "E.L13_OUT",
+      "TO": "OUTSIDE"
+    },
+    {
+      "FROM": "PARALLEL",
+      "GLOBAL_EDGE_ID": "E.LAT_DDO",
+      "TO": "PARALLEL"
+    },
+    {
+      "FROM": "L07",
+      "GLOBAL_EDGE_ID": "E.LAT_RU",
+      "TO": "PARALLEL"
+    },
+    {
+      "FROM": "PARALLEL",
+      "GLOBAL_EDGE_ID": "E.LAT_OU",
+      "TO": "PARALLEL"
+    },
+    {
+      "FROM": "PARALLEL",
+      "GLOBAL_EDGE_ID": "E.LAT_SL",
+      "TO": "PARALLEL"
+    },
+    {
+      "FROM": "PARALLEL",
+      "GLOBAL_EDGE_ID": "E.LAT_MI",
+      "TO": "PARALLEL"
+    },
+    {
+      "FROM": "L02",
+      "GLOBAL_EDGE_ID": "E.LAT_PROFILE",
+      "TO": "PARALLEL"
+    },
+    {
+      "FROM": "IU.L00",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L00->L01",
+      "TO": "IU.L01"
+    },
+    {
+      "FROM": "IU.L01",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L01->L02",
+      "TO": "IU.L02"
+    },
+    {
+      "FROM": "IU.L02",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L02->L03",
+      "TO": "IU.L03"
+    },
+    {
+      "FROM": "IU.L03",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L03->L04",
+      "TO": "IU.L04"
+    },
+    {
+      "FROM": "IU.L04",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L04->L05",
+      "TO": "IU.L05"
+    },
+    {
+      "FROM": "IU.L05",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L05->L06",
+      "TO": "IU.L06"
+    },
+    {
+      "FROM": "IU.L06",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L06->L07",
+      "TO": "IU.L07"
+    },
+    {
+      "FROM": "IU.L07",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L07->L08",
+      "TO": "IU.L08"
+    },
+    {
+      "FROM": "IU.L08",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L08->L09_OR_L10",
+      "TO": "IU.L09_OR_L10"
+    },
+    {
+      "FROM": "IU.L08",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L08->L09",
+      "TO": "IU.L09"
+    },
+    {
+      "FROM": "IU.L09",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L09->L10",
+      "TO": "IU.L10"
+    },
+    {
+      "FROM": "IU.L08|L09",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L08|L09->L10",
+      "TO": "IU.L10"
+    },
+    {
+      "FROM": "IU.L10",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L10->L11",
+      "TO": "IU.L11"
+    },
+    {
+      "FROM": "IU.L11",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L11->L12",
+      "TO": "IU.L12"
+    },
+    {
+      "FROM": "IU.L12",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L12->L13",
+      "TO": "IU.L13"
+    },
+    {
+      "FROM": "IU.L13",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L13->TERMINAL_TO_FULL_CORE",
+      "TO": "IU.TERMINAL_TO_FULL_CORE"
+    },
+    {
+      "FROM": "IU.L02",
+      "GLOBAL_EDGE_ID": "IU.BR.L02->L03_econ_md",
+      "TO": "IU.L03"
+    },
+    {
+      "FROM": "IU.L02",
+      "GLOBAL_EDGE_ID": "IU.BR.L02->L07_universe_validate",
+      "TO": "IU.L07"
+    },
+    {
+      "FROM": "IU.L08",
+      "GLOBAL_EDGE_ID": "IU.BR.L08->L09_conditional",
+      "TO": "IU.L09"
+    },
+    {
+      "FROM": "IU.L08",
+      "GLOBAL_EDGE_ID": "IU.BR.L08->L10_direct",
+      "TO": "IU.L10"
+    },
+    {
+      "FROM": "GVEF.CORPUS.MANIFEST",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.CORPUS.MANIFEST->GVEF.CORPUS.REGISTRY",
+      "TO": "GVEF.CORPUS.REGISTRY"
+    },
+    {
+      "FROM": "GVEF.CORPUS.REGISTRY",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.CORPUS.REGISTRY->GVEF.CORPUS.GATE",
+      "TO": "GVEF.CORPUS.GATE"
+    },
+    {
+      "FROM": "GVEF.CORPUS.GATE",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.CORPUS.GATE->GVEF.RUN.CONTEXT",
+      "TO": "GVEF.RUN.CONTEXT"
+    },
+    {
+      "FROM": "GVEF.RUN.CONTEXT",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.RUN.CONTEXT->GVEF.RUN.DEPS",
+      "TO": "GVEF.RUN.DEPS"
+    },
+    {
+      "FROM": "GVEF.RUN.DEPS",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.RUN.DEPS->GVEF.RUN.GENERIC",
+      "TO": "GVEF.RUN.GENERIC"
+    },
+    {
+      "FROM": "GVEF.RUN.GENERIC",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.RUN.GENERIC->GVEF.EVAL.RU",
+      "TO": "GVEF.EVAL.RU"
+    },
+    {
+      "FROM": "GVEF.RUN.GENERIC",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.RUN.GENERIC->GVEF.DIGEST.COMPARATOR",
+      "TO": "GVEF.DIGEST.COMPARATOR"
+    },
+    {
+      "FROM": "GVEF.RUN.GENERIC",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.RUN.GENERIC->GVEF.CONSTRAINTS",
+      "TO": "GVEF.CONSTRAINTS"
+    },
+    {
+      "FROM": "GVEF.RUN.GENERIC",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.RUN.GENERIC->GVEF.EVIDENCE.REGISTRY",
+      "TO": "GVEF.EVIDENCE.REGISTRY"
+    },
+    {
+      "FROM": "GVEF.EVIDENCE.REGISTRY",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.EVIDENCE.REGISTRY->GVEF.PROMOTION.ADAPTER",
+      "TO": "GVEF.PROMOTION.ADAPTER"
+    },
+    {
+      "FROM": "GVEF.GV.RU",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.GV.RU->GVEF.CORPUS.MANIFEST",
+      "TO": "GVEF.CORPUS.MANIFEST"
+    },
+    {
+      "FROM": "GVEF.GV.PTP",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.GV.PTP->GVEF.CORPUS.MANIFEST",
+      "TO": "GVEF.CORPUS.MANIFEST"
+    },
+    {
+      "FROM": "GVEF.EVAL.RU",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.EVAL.RU->IU.L07",
+      "TO": "IU.L07"
+    },
+    {
+      "FROM": "IU.L12",
+      "GLOBAL_EDGE_ID": "PROD.E.IU.L12->IU.L13",
+      "TO": "IU.L13"
+    },
+    {
+      "FROM": "IU.L13",
+      "GLOBAL_EDGE_ID": "PROD.E.IU.L13->PROD.FULL_CORE",
+      "TO": "PROD.FULL_CORE"
+    },
+    {
+      "FROM": "PROD.FULL_CORE",
+      "GLOBAL_EDGE_ID": "PROD.E.PROD.FULL_CORE->PROD.MV2_DP",
+      "TO": "PROD.MV2_DP"
+    },
+    {
+      "FROM": "PROD.MV2_DP",
+      "GLOBAL_EDGE_ID": "PROD.E.PROD.MV2_DP->PROD.CONFIRMATION",
+      "TO": "PROD.CONFIRMATION"
+    },
+    {
+      "FROM": "PROD.CONFIRMATION",
+      "GLOBAL_EDGE_ID": "PROD.E.PROD.CONFIRMATION->PROD.NATURAL_ENTER",
+      "TO": "PROD.NATURAL_ENTER"
+    },
+    {
+      "FROM": "PROD.NATURAL_ENTER",
+      "GLOBAL_EDGE_ID": "PROD.E.PROD.NATURAL_ENTER->PROD.PRE_EXTERNAL",
+      "TO": "PROD.PRE_EXTERNAL"
+    },
+    {
+      "FROM": "PROD.PRE_EXTERNAL",
+      "GLOBAL_EDGE_ID": "PROD.E.PROD.PRE_EXTERNAL->PROD.POST_BOUNDARY",
+      "TO": "PROD.POST_BOUNDARY"
+    }
+  ],
+  "CURRENT_ONLY_GHV_RELATIONS": [
+    "GHV_AUTHORITY=NONE isolation"
+  ],
+  "CURRENT_ONLY_GVEF_RELATIONS": [
+    "fabric pipeline AUTHORITY=NONE"
+  ],
+  "CURRENT_ONLY_GV_RELATIONS": [
+    "vec-gvef-ru-mechanism-001\u2192L07",
+    "vec-gvef-ptp-mechanism-001\u2192PTP"
+  ],
+  "CURRENT_ONLY_NODES": [
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "IU.L00",
+      "NAME": "EEA_UNIVERSE_ACQUISITION_INGRESS"
+    },
+    {
+      "AUTHORITY": "ELIGIBILITY_ONLY",
+      "GLOBAL_NODE_ID": "IU.L01",
+      "NAME": "CAP21_STRUCTURAL_FILTERING"
+    },
+    {
+      "AUTHORITY": "UNIVERSE_MEMBERSHIP",
+      "GLOBAL_NODE_ID": "IU.L02",
+      "NAME": "CAP21_GOVERNED_FUTURES_UNIVERSE"
+    },
+    {
+      "AUTHORITY": "MD_INPUT_ONLY",
+      "GLOBAL_NODE_ID": "IU.L03",
+      "NAME": "ECONOMIC_MD_INPUT"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "IU.L04",
+      "NAME": "B05_FEATURE_PRODUCTION"
+    },
+    {
+      "AUTHORITY": "RANKING_CONTEXT_MEMBERSHIP",
+      "GLOBAL_NODE_ID": "IU.L05",
+      "NAME": "S_STAR_ECONOMIC_SET"
+    },
+    {
+      "AUTHORITY": "SCORE_ONLY",
+      "GLOBAL_NODE_ID": "IU.L06",
+      "NAME": "B03_ECONOMIC_SCORING"
+    },
+    {
+      "AUTHORITY": "RANKING_CONTEXT_ONLY",
+      "GLOBAL_NODE_ID": "IU.L07",
+      "NAME": "CAP22_FULL_RANK_ORDER"
+    },
+    {
+      "AUTHORITY": "RANKING_PROJECTION",
+      "GLOBAL_NODE_ID": "IU.L08",
+      "NAME": "TOP20_CANDIDATE_CONTEXT"
+    },
+    {
+      "AUTHORITY": "EVALUATION_CONTINUITY_ONLY",
+      "GLOBAL_NODE_ID": "IU.L09",
+      "NAME": "TOP20_EVALUATION_RESIDENCY"
+    },
+    {
+      "AUTHORITY": "SELECTION_PREFILTER",
+      "GLOBAL_NODE_ID": "IU.L10",
+      "NAME": "CAP23_SELECTION_ELIGIBILITY"
+    },
+    {
+      "AUTHORITY": "SELECTION_OVERLAY_ON_UPSTREAM_RANK",
+      "GLOBAL_NODE_ID": "IU.L11",
+      "NAME": "CAP23_ANTI_CHURN_OVERLAY"
+    },
+    {
+      "AUTHORITY": "SOLE_PRODUCTIVE_SELECTION",
+      "GLOBAL_NODE_ID": "IU.L12",
+      "NAME": "CAP23_SINGLE_SELECTED_FUTURE"
+    },
+    {
+      "AUTHORITY": "VALIDATE_AND_BIND_ONLY",
+      "GLOBAL_NODE_ID": "IU.L13",
+      "NAME": "CAP24_RUNTIME_BINDING"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.N00",
+      "NAME": "IU.N00"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.N01",
+      "NAME": "IU.N01"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.N02",
+      "NAME": "IU.N02"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.N03",
+      "NAME": "IU.N03"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.N04",
+      "NAME": "IU.N04"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.N05",
+      "NAME": "IU.N05"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.N06",
+      "NAME": "IU.N06"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.N07",
+      "NAME": "IU.N07"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.N08",
+      "NAME": "IU.N08"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.N09",
+      "NAME": "IU.N09"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.N10",
+      "NAME": "IU.N10"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.N11",
+      "NAME": "IU.N11"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.N12",
+      "NAME": "IU.N12"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.N13",
+      "NAME": "IU.N13"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.P.DDO",
+      "NAME": "IU.P.DDO"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.P.GVEF_RU",
+      "NAME": "IU.P.GVEF_RU"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.P.GVEF_OU",
+      "NAME": "IU.P.GVEF_OU"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.P.GVEF_SL",
+      "NAME": "IU.P.GVEF_SL"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.P.GVEF_MI",
+      "NAME": "IU.P.GVEF_MI"
+    },
+    {
+      "AUTHORITY": null,
+      "GLOBAL_NODE_ID": "IU.P.PROFILE",
+      "NAME": "IU.P.PROFILE"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "GVEF.CORPUS.MANIFEST",
+      "NAME": "CorpusManifest"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "GVEF.CORPUS.REGISTRY",
+      "NAME": "VectorCorpusRegistryV1"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "GVEF.CORPUS.GATE",
+      "NAME": "VectorCorpusIntegrityGateV1"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "GVEF.RUN.CONTEXT",
+      "NAME": "DomainEvaluationContextV1"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "GVEF.RUN.DEPS",
+      "NAME": "GvefRunnerDependenciesV1"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "GVEF.RUN.GENERIC",
+      "NAME": "GenericRunnerV1"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "GVEF.EVAL.RU",
+      "NAME": "RankingUniverseEvaluatorV1"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "GVEF.EVAL.PTP",
+      "NAME": "ProductiveTradingPathEvaluatorV1"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "GVEF.EVAL.OU",
+      "NAME": "OptimizationUniverseEvaluatorV1"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "GVEF.EVAL.SL",
+      "NAME": "SelfLearningEvaluatorV1"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "GVEF.EVAL.MI",
+      "NAME": "MarketIntelligenceEvaluatorV1"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "GVEF.DIGEST.COMPARATOR",
+      "NAME": "ProtectedSemanticComparatorV1"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "GVEF.CONSTRAINTS",
+      "NAME": "ConstraintGates"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "GVEF.EVIDENCE.REGISTRY",
+      "NAME": "GvefEvidenceRegistryV1"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "GVEF.PROMOTION.ADAPTER",
+      "NAME": "PromotionEvidenceAdapterV1"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "GVEF.GV.RU",
+      "NAME": "vec-gvef-ru-mechanism-001"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "GVEF.GV.PTP",
+      "NAME": "vec-gvef-ptp-mechanism-001"
+    },
+    {
+      "AUTHORITY": "PRODUCTIVE_BOUNDED",
+      "GLOBAL_NODE_ID": "PROD.FULL_CORE",
+      "NAME": "Full-Core composition root"
+    },
+    {
+      "AUTHORITY": "PRODUCTIVE_BOUNDED",
+      "GLOBAL_NODE_ID": "PROD.MV2_DP",
+      "NAME": "Master-V2 + Double Play"
+    },
+    {
+      "AUTHORITY": "PRODUCTIVE_BOUNDED",
+      "GLOBAL_NODE_ID": "PROD.CONFIRMATION",
+      "NAME": "Confirmation / C1"
+    },
+    {
+      "AUTHORITY": "PRODUCTIVE_BOUNDED",
+      "GLOBAL_NODE_ID": "PROD.NATURAL_ENTER",
+      "NAME": "Natural Enter disposition"
+    },
+    {
+      "AUTHORITY": "NONE_BEYOND",
+      "GLOBAL_NODE_ID": "PROD.PRE_EXTERNAL",
+      "NAME": "PRE_EXTERNAL terminal"
+    },
+    {
+      "AUTHORITY": "NONE",
+      "GLOBAL_NODE_ID": "PROD.POST_BOUNDARY",
+      "NAME": "POST / external effect (NOT authorized)"
+    }
+  ],
+  "CURRENT_ONLY_PRODUCTIVE_PATHS": [
+    "L12\u2192L13\u2192Full-Core\u2192MV2/DP\u2192Confirmation\u2192NaturalEnter\u2192PRE_EXTERNAL\u2192HARD_STOP"
+  ],
+  "CURRENT_ONLY_STATE": [
+    "S_CAP21",
+    "S_ECON_MD",
+    "S_B05",
+    "S_CAP22",
+    "S_RESIDENCY",
+    "S_CAP23",
+    "S_CAP24",
+    "S_DDO",
+    "GVEF.RunnerState"
+  ],
+  "EXCLUDED_FROM_CURRENT": [
+    "HISTORICAL_SUPERSEDED",
+    "HISTORICAL_REMOVED",
+    "ABORTED_INCOMPLETE",
+    "UNKNOWN_CURRENTNESS"
+  ],
+  "TEMPORAL_VIEW": "CURRENT_ONLY"
+}

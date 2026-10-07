@@ -1,0 +1,71 @@
+{
+  "GAPS": [
+    {
+      "AUTHORITY_IMPACT": "NONE",
+      "BLOCKS_INTEGRATION_FIXPOINT": false,
+      "CURRENT_STATUS": "NOT_FOUND_IN_COMPLETED_SOURCE",
+      "GAP_ID": "G001",
+      "PRODUCTIVE_IMPACT": "NONE",
+      "PROVENANCE": [
+        "integration search"
+      ],
+      "SUBJECT": "Remembered 42/42 package placement metric",
+      "TYPE": "INTEGRATION_DISCOVERED_GAP",
+      "WHY": "No PACKAGES_PLACED=42 field located"
+    },
+    {
+      "AUTHORITY_IMPACT": "NONE",
+      "BLOCKS_INTEGRATION_FIXPOINT": false,
+      "CURRENT_STATUS": "NOT_FOUND; source has CROSS_PACKAGE_EDGE_COUNT=1779 at Round3",
+      "GAP_ID": "G002",
+      "PRODUCTIVE_IMPACT": "NONE",
+      "PROVENANCE": [
+        "R3_05"
+      ],
+      "SUBJECT": "Remembered 1937 cross-package edges",
+      "TYPE": "INTEGRATION_DISCOVERED_GAP",
+      "WHY": "Count mismatch vs memory"
+    },
+    {
+      "AUTHORITY_IMPACT": "NONE",
+      "BLOCKS_INTEGRATION_FIXPOINT": false,
+      "CURRENT_STATUS": "UNKNOWN_CURRENTNESS for individual sites; GHV_AUTHORITY=NONE CURRENT-supported",
+      "GAP_ID": "G003",
+      "PRODUCTIVE_IMPACT": "NONE",
+      "PROVENANCE": [
+        "GHV79"
+      ],
+      "SUBJECT": "GHV79 site-level CURRENT reproof of each getattr placement",
+      "TYPE": "UNKNOWN_CURRENTNESS",
+      "WHY": "Placement inventory observed at R4_SHA; no per-site CURRENT reproof artifact"
+    },
+    {
+      "AUTHORITY_IMPACT": "NONE",
+      "BLOCKS_INTEGRATION_FIXPOINT": false,
+      "CURRENT_STATUS": "CLOSED_FOR_CURRENT_FUNCTIONAL_PATH_THROUGH_PRE_EXTERNAL",
+      "GAP_ID": "G004",
+      "PRODUCTIVE_IMPACT": "NONE",
+      "PROVENANCE": [
+        "NE_04_supersession"
+      ],
+      "SUBJECT": "Round4 CONFIG_FIELDS_UNEXPLAINED residual",
+      "TYPE": "HISTORICAL_UNKNOWN_NOW_RESOLVED",
+      "WHY": "NE supersession"
+    }
+  ],
+  "GENUINE_CURRENT_UNKNOWNS": [
+    {
+      "AUTHORITY_IMPACT": "NONE",
+      "BLOCKS_INTEGRATION_FIXPOINT": false,
+      "CURRENT_STATUS": "UNKNOWN_CURRENTNESS for individual sites; GHV_AUTHORITY=NONE CURRENT-supported",
+      "GAP_ID": "G003",
+      "PRODUCTIVE_IMPACT": "NONE",
+      "PROVENANCE": [
+        "GHV79"
+      ],
+      "SUBJECT": "GHV79 site-level CURRENT reproof of each getattr placement",
+      "TYPE": "UNKNOWN_CURRENTNESS",
+      "WHY": "Placement inventory observed at R4_SHA; no per-site CURRENT reproof artifact"
+    }
+  ]
+}
