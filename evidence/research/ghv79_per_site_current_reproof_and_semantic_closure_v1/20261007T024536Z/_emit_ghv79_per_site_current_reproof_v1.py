@@ -280,7 +280,12 @@ def classify_plane(path: str) -> dict[str, Any]:
             "PRODUCTIVE_REACHABILITY": "GOVERNANCE_GATE",
             "CURRENT_LAYER_OR_PLANE": "GOVERNANCE",
         }
-    if "full_core_live_path" in low or "single_selected_future" in low or "cap23" in low or "cap24" in low:
+    if (
+        "full_core_live_path" in low
+        or "single_selected_future" in low
+        or "cap23" in low
+        or "cap24" in low
+    ):
         return {
             "PLANE": "PRODUCTIVE",
             "SITE_CLASS": "PROVEN_CURRENT_PRODUCTIVE",
@@ -302,11 +307,16 @@ def classify_plane(path: str) -> dict[str, Any]:
     }
 
 
-def map_to_current_node(path: str, hist_placement: str, nodes_by_name: dict[str, dict]) -> dict[str, Any]:
+def map_to_current_node(
+    path: str, hist_placement: str, nodes_by_name: dict[str, dict]
+) -> dict[str, Any]:
     low = path.lower()
     # Prefer explicit CURRENT productive spine nodes from integrated registry names.
     mapping_rules: list[tuple[str, str]] = [
-        (r"governed_futures_universe|eea_universe|universe_inventory", "CAP21_GOVERNED_FUTURES_UNIVERSE"),
+        (
+            r"governed_futures_universe|eea_universe|universe_inventory",
+            "CAP21_GOVERNED_FUTURES_UNIVERSE",
+        ),
         (r"economic_md_input", "ECONOMIC_MD_INPUT"),
         (r"peak_trade_ranking_feature|b05_feature", "B05_FEATURE_PRODUCTION"),
         (r"cap22|ranking_matrix|rank_order", "CAP22_FULL_RANK_ORDER"),
@@ -396,7 +406,12 @@ def resolve_targets(
     recv = matched["RECEIVER"]
     sel = matched["SELECTOR"]
     lit = matched.get("SELECTOR_LITERAL")
-    chain: list[str] = [f"SITE:{matched['FILE']}:{matched['LINE']}", f"KIND:{kind}", f"RECV:{recv}", f"SEL:{sel}"]
+    chain: list[str] = [
+        f"SITE:{matched['FILE']}:{matched['LINE']}",
+        f"KIND:{kind}",
+        f"RECV:{recv}",
+        f"SEL:{sel}",
+    ]
 
     if kind == "importlib":
         if lit:
@@ -448,7 +463,12 @@ def resolve_targets(
             # also tuple/list registries of modules
             for m in re.finditer(r"['\"]((?:src\.)?[a-zA-Z0-9_\.]+)['\"]", file_text):
                 val = m.group(1)
-                if val.count(".") >= 2 and ("ops." in val or "governance." in val or "trading." in val or val.startswith("src.")):
+                if val.count(".") >= 2 and (
+                    "ops." in val
+                    or "governance." in val
+                    or "trading." in val
+                    or val.startswith("src.")
+                ):
                     possibles.append(f"MODULE_CANDIDATE:{val}")
         possibles = sorted(set(possibles))[:40]
         if len(possibles) == 1:
@@ -638,7 +658,9 @@ def derive_system_authority() -> dict[str, Any]:
     bind_owner = "ops.single_selected_future_runtime_binding_v1" if bind_pkg.is_dir() else None
     cap22 = REPO / "src/ops/cap22_offline_policy_candidates_and_evidence_contract_v1.py"
     cap22_text = cap22.read_text(encoding="utf-8") if cap22.is_file() else ""
-    cap22_rank_only = "VOLATILITY_RANK_ONLY" in cap22_text and "PRODUCTIVE_SELECTION_OWNER" in cap22_text
+    cap22_rank_only = (
+        "VOLATILITY_RANK_ONLY" in cap22_text and "PRODUCTIVE_SELECTION_OWNER" in cap22_text
+    )
     # Cap22 contract asserts Cap23 remains selection owner
     cap22_defers_selection = "CAP23_REMAINS_PRODUCTIVE_SELECTION_OWNER" in (
         (REPO / "src/ops/cap22_economic_md_dual_input_contract_v1.py").read_text(encoding="utf-8")
@@ -650,7 +672,8 @@ def derive_system_authority() -> dict[str, Any]:
     post_hits = []
     for p in [
         constants,
-        REPO / "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+        REPO
+        / "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
     ]:
         if not p.is_file():
             continue
@@ -669,7 +692,8 @@ def derive_system_authority() -> dict[str, Any]:
             "cap22_offline_has_VOLATILITY_RANK_ONLY": "VOLATILITY_RANK_ONLY" in cap22_text,
             "cap22_dual_input_defers_to_cap23": cap22_defers_selection,
         },
-        "CAP23_REMAINS_SOLE_SELECTION_OWNER": sel_owner == "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1",
+        "CAP23_REMAINS_SOLE_SELECTION_OWNER": sel_owner
+        == "CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1",
         "CAP23_OWNER_FROM_CURRENT_CONSTANTS": sel_owner,
         "CAP24_REMAINS_BIND_ONLY": bind_owner == "ops.single_selected_future_runtime_binding_v1",
         "CAP24_OWNER_FROM_CURRENT": bind_owner,
@@ -720,7 +744,9 @@ def main() -> int:
 
     inv = _read_json(GHV79_DIR / "61_ghv79_site_inventory_v1.json")
     seeds: list[dict[str, Any]] = inv["INVENTORY"]
-    hist_regs = {r["SITE_ID"]: r for r in _read_jsonl(GHV79_DIR / "62_ghv79_placement_registry_v1.jsonl")}
+    hist_regs = {
+        r["SITE_ID"]: r for r in _read_jsonl(GHV79_DIR / "62_ghv79_placement_registry_v1.jsonl")
+    }
     assert len(seeds) == 171
 
     seed_files = sorted({s["FILE"] for s in seeds})
@@ -747,7 +773,9 @@ def main() -> int:
         current_by_file[f] = extract_dispatch_sites(f, text)
 
     # Detect new equivalent sites in seed files not in seed inventory
-    seed_keys = {(s["FILE"], s["DISPATCH_KIND"], s["LINE"], s["RECEIVER"], s["SELECTOR"]) for s in seeds}
+    seed_keys = {
+        (s["FILE"], s["DISPATCH_KIND"], s["LINE"], s["RECEIVER"], s["SELECTOR"]) for s in seeds
+    }
     seed_sig = {(s["FILE"], s["DISPATCH_KIND"], s["RECEIVER"], s["SELECTOR"]) for s in seeds}
     new_equiv: list[dict[str, Any]] = []
     for f, sites in current_by_file.items():
@@ -757,7 +785,7 @@ def main() -> int:
             if key not in seed_keys and sig not in seed_sig:
                 new_equiv.append(
                     {
-                        "SITE_ID": f"GHV79-NEW-{len(new_equiv)+1:03d}",
+                        "SITE_ID": f"GHV79-NEW-{len(new_equiv) + 1:03d}",
                         "FILE": s["FILE"],
                         "LINE": s["LINE"],
                         "DISPATCH_KIND": s["DISPATCH_KIND"],
@@ -804,11 +832,21 @@ def main() -> int:
             site_class = "HISTORICAL_REMOVED"
         elif survival == "REPLACED":
             site_class = "HISTORICAL_REPLACED"
-        if resolution["TARGET_RESOLUTION_STATUS"] == "EXPLICITLY_UNKNOWN" and survival not in {"REMOVED", "REPLACED"}:
+        if resolution["TARGET_RESOLUTION_STATUS"] == "EXPLICITLY_UNKNOWN" and survival not in {
+            "REMOVED",
+            "REPLACED",
+        }:
             # Only mark UNKNOWN_CURRENT_TARGET when productive-affecting and unresolved singleton import
-            if matched and matched["DISPATCH_KIND"] == "importlib" and resolution["UNRESOLVED_TARGET_SET"]:
+            if (
+                matched
+                and matched["DISPATCH_KIND"] == "importlib"
+                and resolution["UNRESOLVED_TARGET_SET"]
+            ):
                 # still pattern-resolve unless unresolved is MODULE_FILE
-                if any(u.startswith("MODULE_FILE_UNPROVEN") for u in resolution["UNRESOLVED_TARGET_SET"]):
+                if any(
+                    u.startswith("MODULE_FILE_UNPROVEN")
+                    for u in resolution["UNRESOLVED_TARGET_SET"]
+                ):
                     site_class = "UNKNOWN_CURRENT_TARGET"
                 elif "DYNAMIC_MODULE_PATH_NOT_SINGLETON" in resolution["UNRESOLVED_TARGET_SET"]:
                     # re-run as pattern (already handled in resolve for empty possibles)
@@ -824,9 +862,25 @@ def main() -> int:
         fb, eb = fallback_error_behavior(matched)
 
         if survival == "MOVED" and matched:
-            moved.append({"SITE_ID": sid, "FROM_LINE": seed["LINE"], "TO_LINE": matched["LINE"], "FILE": f, "PROVENANCE": prov})
+            moved.append(
+                {
+                    "SITE_ID": sid,
+                    "FROM_LINE": seed["LINE"],
+                    "TO_LINE": matched["LINE"],
+                    "FILE": f,
+                    "PROVENANCE": prov,
+                }
+            )
         if survival == "REPLACED":
-            replaced.append({"SITE_ID": sid, "FILE": f, "LINE": seed["LINE"], "PROVENANCE": prov, "MATCHED": matched})
+            replaced.append(
+                {
+                    "SITE_ID": sid,
+                    "FILE": f,
+                    "LINE": seed["LINE"],
+                    "PROVENANCE": prov,
+                    "MATCHED": matched,
+                }
+            )
         if survival == "REMOVED":
             removed.append({"SITE_ID": sid, "FILE": f, "LINE": seed["LINE"], "PROVENANCE": prov})
 
@@ -840,7 +894,9 @@ def main() -> int:
         dossier = {
             "IDENTITY": {
                 "SITE_ID": sid,
-                "CURRENT_FILE": None if survival == "REMOVED" else (matched["FILE"] if matched else f),
+                "CURRENT_FILE": None
+                if survival == "REMOVED"
+                else (matched["FILE"] if matched else f),
                 "CURRENT_LINE_OR_AST_LOCATOR": None if matched is None else matched["LINE"],
                 "CURRENT_SYMBOL": None if matched is None else matched["SYMBOL"],
                 "CURRENT_AST_FINGERPRINT": None if matched is None else matched["AST_FINGERPRINT"],
@@ -849,11 +905,17 @@ def main() -> int:
                 "HISTORICAL_SYMBOL": seed["SYMBOL"],
             },
             "DISPATCH": {
-                "DISPATCH_KIND": seed["DISPATCH_KIND"] if matched is None else matched["DISPATCH_KIND"],
+                "DISPATCH_KIND": seed["DISPATCH_KIND"]
+                if matched is None
+                else matched["DISPATCH_KIND"],
                 "RECEIVER_EXPRESSION": None if matched is None else matched["RECEIVER"],
                 "SELECTOR_EXPRESSION": None if matched is None else matched["SELECTOR"],
-                "IMPORT_MODULE_EXPRESSION": None if matched is None else matched.get("IMPORT_MODULE_EXPRESSION"),
-                "GETATTR_EXPRESSION": None if matched is None else matched.get("GETATTR_EXPRESSION"),
+                "IMPORT_MODULE_EXPRESSION": None
+                if matched is None
+                else matched.get("IMPORT_MODULE_EXPRESSION"),
+                "GETATTR_EXPRESSION": None
+                if matched is None
+                else matched.get("GETATTR_EXPRESSION"),
                 "FALLBACK_BEHAVIOR": fb,
                 "ERROR_BEHAVIOR": eb,
             },
@@ -863,9 +925,13 @@ def main() -> int:
                 "CALLEE_ROLE": resolution["PROVEN_TARGET_SET"][:3],
                 "INPUT_SEMANTICS": hist.get("INPUT_OBJECT"),
                 "OUTPUT_SEMANTICS": hist.get("OUTPUT_OBJECT"),
-                "STATE_READS": ["receiver_object_fields"] if seed["DISPATCH_KIND"] == "getattr" else [],
+                "STATE_READS": ["receiver_object_fields"]
+                if seed["DISPATCH_KIND"] == "getattr"
+                else [],
                 "STATE_WRITES": [],
-                "CONFIG_READS": ["module_path_registry"] if seed["DISPATCH_KIND"] == "importlib" else [],
+                "CONFIG_READS": ["module_path_registry"]
+                if seed["DISPATCH_KIND"] == "importlib"
+                else [],
                 "SIDE_EFFECT_CLASS": "READ_ONLY_DISPATCH",
                 "EXTERNAL_EFFECT_REACHABILITY": "NONE",
             },
@@ -901,7 +967,8 @@ def main() -> int:
             "GHV_COMPARISON": {
                 "GHV_EXPECTED_PLACEMENT": hist_placement,
                 "GHV_RELATION_HISTORICAL": hist.get("GHV_RELATION"),
-                "CURRENT_PROVEN_PLACEMENT": node_map.get("CURRENT_NODE_NAME") or plane["CURRENT_LAYER_OR_PLANE"],
+                "CURRENT_PROVEN_PLACEMENT": node_map.get("CURRENT_NODE_NAME")
+                or plane["CURRENT_LAYER_OR_PLANE"],
                 "PLACEMENT_RELATION": rel,
             },
             "GRAPH_BUCKET": bucket,
@@ -922,14 +989,25 @@ def main() -> int:
     # Detect merged seeds
     for mk, sids in match_index.items():
         if len(sids) > 1:
-            merged.append({"CURRENT_KEY": {"FILE": mk[0], "LINE": mk[1], "KIND": mk[2], "RECV": mk[3]}, "SITE_IDS": sorted(sids)})
+            merged.append(
+                {
+                    "CURRENT_KEY": {"FILE": mk[0], "LINE": mk[1], "KIND": mk[2], "RECV": mk[3]},
+                    "SITE_IDS": sorted(sids),
+                }
+            )
 
     # Split: one seed, multiple near current sites with same receiver — rare; detect if seed line maps and extra same-sig exists unused
     used_current = set()
     for d in site_dossiers:
         ident = d["IDENTITY"]
         if ident["CURRENT_LINE_OR_AST_LOCATOR"] is not None:
-            used_current.add((ident["CURRENT_FILE"], ident["CURRENT_LINE_OR_AST_LOCATOR"], d["DISPATCH"]["DISPATCH_KIND"]))
+            used_current.add(
+                (
+                    ident["CURRENT_FILE"],
+                    ident["CURRENT_LINE_OR_AST_LOCATOR"],
+                    d["DISPATCH"]["DISPATCH_KIND"],
+                )
+            )
     for f, sites in current_by_file.items():
         for s in sites:
             key = (s["FILE"], s["LINE"], s["DISPATCH_KIND"])
@@ -937,8 +1015,12 @@ def main() -> int:
                 # already counted as new_equiv possibly
                 pass
 
-    surviving_files = sorted({d["IDENTITY"]["CURRENT_FILE"] for d in site_dossiers if d["IDENTITY"]["CURRENT_FILE"]})
-    surviving_sites = [d for d in site_dossiers if d["TEMPORAL"]["SURVIVAL_CLASS"] in {"SURVIVING", "MOVED"}]
+    surviving_files = sorted(
+        {d["IDENTITY"]["CURRENT_FILE"] for d in site_dossiers if d["IDENTITY"]["CURRENT_FILE"]}
+    )
+    surviving_sites = [
+        d for d in site_dossiers if d["TEMPORAL"]["SURVIVAL_CLASS"] in {"SURVIVING", "MOVED"}
+    ]
 
     # Adjudicate new equivalent sites (compact)
     new_equiv_dossiers: list[dict[str, Any]] = []
@@ -949,7 +1031,9 @@ def main() -> int:
         matched = {
             **ne,
             "SYMBOL": f"{ne['DISPATCH_KIND']}@{ne['LINE']}",
-            "AST_FINGERPRINT": _sha256_text(f"{ne['DISPATCH_KIND']}|{ne['RECEIVER']}|{ne['SELECTOR']}")[:16],
+            "AST_FINGERPRINT": _sha256_text(
+                f"{ne['DISPATCH_KIND']}|{ne['RECEIVER']}|{ne['SELECTOR']}"
+            )[:16],
             "HAS_DEFAULT": False,
             "GETATTR_EXPRESSION": "",
             "IMPORT_MODULE_EXPRESSION": "",
@@ -1022,7 +1106,8 @@ def main() -> int:
             "GHV_COMPARISON": {
                 "GHV_EXPECTED_PLACEMENT": None,
                 "GHV_RELATION_HISTORICAL": None,
-                "CURRENT_PROVEN_PLACEMENT": node_map.get("CURRENT_NODE_NAME") or plane["CURRENT_LAYER_OR_PLANE"],
+                "CURRENT_PROVEN_PLACEMENT": node_map.get("CURRENT_NODE_NAME")
+                or plane["CURRENT_LAYER_OR_PLANE"],
                 "PLACEMENT_RELATION": rel,
             },
             "GRAPH_BUCKET": bucket,
@@ -1105,16 +1190,21 @@ def main() -> int:
     conflicts = [d for d in all_adjudicated if d["GRAPH_BUCKET"] == "TRUE_CURRENT_GRAPH_CONFLICT"]
 
     every_seed_accounted = len(site_dossiers) == 171 and all(
-        d["TEMPORAL"]["SURVIVAL_CLASS"] in {"SURVIVING", "MOVED", "REPLACED", "REMOVED"} for d in site_dossiers
+        d["TEMPORAL"]["SURVIVAL_CLASS"] in {"SURVIVING", "MOVED", "REPLACED", "REMOVED"}
+        for d in site_dossiers
     )
-    every_current_adjudicated = all(d["ADJUDICATION"]["SITE_CLASS"] in SITE_CLASS_ALLOWED for d in all_adjudicated)
+    every_current_adjudicated = all(
+        d["ADJUDICATION"]["SITE_CLASS"] in SITE_CLASS_ALLOWED for d in all_adjudicated
+    )
     every_target_resolved_or_explicit = all(
         d["RESOLUTION"].get("TARGET_RESOLUTION_STATUS")
         in {"RESOLVED", "RESOLVED_AS_PATTERN", "EXPLICITLY_UNKNOWN", "EXPLICITLY_UNKNOWN_ABSENT"}
         for d in all_adjudicated
     )
     every_temporal = all(d["TEMPORAL"].get("CURRENT_STATUS") for d in all_adjudicated)
-    every_placed = all(d["GHV_COMPARISON"]["PLACEMENT_RELATION"] in PLACEMENT_ALLOWED for d in all_adjudicated)
+    every_placed = all(
+        d["GHV_COMPARISON"]["PLACEMENT_RELATION"] in PLACEMENT_ALLOWED for d in all_adjudicated
+    )
     every_auth = all(d["AUTHORITY"].get("GHV_AUTHORITY") == "NONE" for d in all_adjudicated)
     every_gap_explicit = True  # gaps/conflicts lists are the register
 
@@ -1134,7 +1224,9 @@ def main() -> int:
     )
 
     # Consistency
-    dup_ids = [k for k, v in Counter(d["IDENTITY"]["SITE_ID"] for d in all_adjudicated).items() if v > 1]
+    dup_ids = [
+        k for k, v in Counter(d["IDENTITY"]["SITE_ID"] for d in all_adjudicated).items() if v > 1
+    ]
     consistency = {
         "seed_site_count": 171,
         "accounted_seed_count": len(site_dossiers),
@@ -1148,8 +1240,12 @@ def main() -> int:
         "unknown_totals": unknown_after,
         "duplicate_SITE_ID": len(dup_ids),
         "unaccounted_seed_site": 171 - len(site_dossiers),
-        "unclassified_current_site": sum(1 for d in all_adjudicated if d["ADJUDICATION"]["SITE_CLASS"] not in SITE_CLASS_ALLOWED),
-        "temporally_unclassified_site": sum(1 for d in all_adjudicated if not d["TEMPORAL"].get("CURRENT_STATUS")),
+        "unclassified_current_site": sum(
+            1 for d in all_adjudicated if d["ADJUDICATION"]["SITE_CLASS"] not in SITE_CLASS_ALLOWED
+        ),
+        "temporally_unclassified_site": sum(
+            1 for d in all_adjudicated if not d["TEMPORAL"].get("CURRENT_STATUS")
+        ),
         "sums_ok": (
             len(site_dossiers) == 171
             and len(dup_ids) == 0
@@ -1168,7 +1264,9 @@ def main() -> int:
             {
                 "REMEDIATION_ID": f"GHV79-REM-{i:03d}",
                 "SITE_IDS": [d["IDENTITY"]["SITE_ID"]],
-                "CURRENT_FILES": [d["IDENTITY"].get("CURRENT_FILE") or d["IDENTITY"].get("HISTORICAL_FILE")],
+                "CURRENT_FILES": [
+                    d["IDENTITY"].get("CURRENT_FILE") or d["IDENTITY"].get("HISTORICAL_FILE")
+                ],
                 "EXACT_PROBLEM": d["GRAPH_BUCKET"],
                 "CURRENT_BEHAVIOR": d["RESOLUTION"],
                 "EXPECTED_SEMANTIC_CONTRACT": "Align CURRENT graph with proven CURRENT semantics without GHV authority",
@@ -1186,7 +1284,13 @@ def main() -> int:
     sev = Counter()
     for d in gaps + conflicts:
         sev["S1_MODEL_COMPLETENESS"] += 1
-    for k in ["S0_INFORMATIONAL", "S1_MODEL_COMPLETENESS", "S2_FUNCTIONAL_SEMANTICS", "S3_AUTHORITY_BOUNDARY", "S4_EXTERNAL_EFFECT_SAFETY"]:
+    for k in [
+        "S0_INFORMATIONAL",
+        "S1_MODEL_COMPLETENESS",
+        "S2_FUNCTIONAL_SEMANTICS",
+        "S3_AUTHORITY_BOUNDARY",
+        "S4_EXTERNAL_EFFECT_SAFETY",
+    ]:
         sev.setdefault(k, 0)
 
     # -------- emit artifacts --------
@@ -1224,7 +1328,9 @@ def main() -> int:
             "HISTORICAL_SEED_SITES": len(seeds),
             "FILES": seed_files,
             "SITES": sorted(seeds, key=lambda s: s["SITE_ID"]),
-            "DISPATCH_KIND_COUNTS": dict(sorted(Counter(s["DISPATCH_KIND"] for s in seeds).items())),
+            "DISPATCH_KIND_COUNTS": dict(
+                sorted(Counter(s["DISPATCH_KIND"] for s in seeds).items())
+            ),
             "SOURCE": "61_ghv79_site_inventory_v1.json",
             "HISTORICAL_SHA": HISTORICAL_R4_SHA,
             "NOTE": "Seed population only; not CURRENT confirmation",
@@ -1259,7 +1365,8 @@ def main() -> int:
             {
                 "SITE_ID": d["IDENTITY"]["SITE_ID"],
                 "FILE": d["IDENTITY"].get("CURRENT_FILE") or d["IDENTITY"].get("HISTORICAL_FILE"),
-                "LINE": d["IDENTITY"].get("CURRENT_LINE_OR_AST_LOCATOR") or d["IDENTITY"].get("HISTORICAL_LINE"),
+                "LINE": d["IDENTITY"].get("CURRENT_LINE_OR_AST_LOCATOR")
+                or d["IDENTITY"].get("HISTORICAL_LINE"),
                 "DISPATCH_KIND": d["DISPATCH"]["DISPATCH_KIND"],
                 "SITE_CLASS": d["ADJUDICATION"]["SITE_CLASS"],
                 "SURVIVAL": d["TEMPORAL"]["SURVIVAL_CLASS"],
@@ -1289,7 +1396,9 @@ def main() -> int:
             f"| {row['SITE_ID']} | {row['SURVIVAL']} | {row['SITE_CLASS']} | {row['PLACEMENT_RELATION']} | "
             f"{row['GRAPH_BUCKET']} | `{row['FILE']}:{row['LINE']}` | {row['CURRENT_NODE'] or '—'} |"
         )
-    (HERE / "06_site_reproof_human_table_v1.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (HERE / "06_site_reproof_human_table_v1.md").write_text(
+        "\n".join(lines) + "\n", encoding="utf-8"
+    )
 
     chains = [
         {
@@ -1302,7 +1411,9 @@ def main() -> int:
         }
         for d in sorted(all_adjudicated, key=lambda x: x["IDENTITY"]["SITE_ID"])
     ]
-    _dump_json(HERE / "07_target_resolution_chains_v1.json", {"COUNT": len(chains), "CHAINS": chains})
+    _dump_json(
+        HERE / "07_target_resolution_chains_v1.json", {"COUNT": len(chains), "CHAINS": chains}
+    )
 
     _dump_json(
         HERE / "08_current_semantic_placement_v1.json",
@@ -1314,7 +1425,9 @@ def main() -> int:
                     "CURRENT_PROVEN_PLACEMENT": d["GHV_COMPARISON"]["CURRENT_PROVEN_PLACEMENT"],
                     "CURRENT_NODE_NAME": d["CURRENT_SYSTEM_PLACEMENT"].get("CURRENT_NODE_NAME"),
                     "LAYER_OR_PLANE": d["CURRENT_SYSTEM_PLACEMENT"].get("CURRENT_LAYER_OR_PLANE"),
-                    "PRODUCTIVE_REACHABILITY": d["CURRENT_SYSTEM_PLACEMENT"].get("PRODUCTIVE_REACHABILITY"),
+                    "PRODUCTIVE_REACHABILITY": d["CURRENT_SYSTEM_PLACEMENT"].get(
+                        "PRODUCTIVE_REACHABILITY"
+                    ),
                     "GRAPH_BUCKET": d["GRAPH_BUCKET"],
                 }
                 for d in sorted(all_adjudicated, key=lambda x: x["IDENTITY"]["SITE_ID"])
@@ -1350,7 +1463,9 @@ def main() -> int:
             "CLOSURE_NODE_NAMES": sorted(closure_nodes),
             "CLOSURE_EDGE_COUNT": len(closure_edges),
             "EDGES": sorted(closure_edges, key=lambda e: json.dumps(e, sort_keys=True)),
-            "TARGET_OWNER_FAN_IN": {k: sorted(v) for k, v in sorted(target_owners.items()) if len(v) > 1},
+            "TARGET_OWNER_FAN_IN": {
+                k: sorted(v) for k, v in sorted(target_owners.items()) if len(v) > 1
+            },
             "CYCLES_DETECTED": 0,
             "HIDDEN_BACKFLOW_DETECTED": False,
             "AUTHORITY_INVERSION_DETECTED": False,
@@ -1358,16 +1473,19 @@ def main() -> int:
             "BINDING_LEAKAGE_DETECTED": False,
             "DECISION_LEAKAGE_DETECTED": False,
             "POST_LEAKAGE_DETECTED": False,
-            **{k: system_auth[k] for k in [
-                "CAP22_REMAINS_RANK_ONLY",
-                "CAP23_REMAINS_SOLE_SELECTION_OWNER",
-                "CAP24_REMAINS_BIND_ONLY",
-                "GV_PRODUCTIVE_AUTHORITY_BACKFLOW",
-                "GVEF_PRODUCTIVE_AUTHORITY_BACKFLOW",
-                "GHV_PRODUCTIVE_AUTHORITY_BACKFLOW",
-                "POST_AUTHORIZED",
-                "POST_AUTHORITY_PROVEN",
-            ]},
+            **{
+                k: system_auth[k]
+                for k in [
+                    "CAP22_REMAINS_RANK_ONLY",
+                    "CAP23_REMAINS_SOLE_SELECTION_OWNER",
+                    "CAP24_REMAINS_BIND_ONLY",
+                    "GV_PRODUCTIVE_AUTHORITY_BACKFLOW",
+                    "GVEF_PRODUCTIVE_AUTHORITY_BACKFLOW",
+                    "GHV_PRODUCTIVE_AUTHORITY_BACKFLOW",
+                    "POST_AUTHORIZED",
+                    "POST_AUTHORITY_PROVEN",
+                ]
+            },
         },
     )
 
@@ -1448,7 +1566,9 @@ def main() -> int:
         "",
     ]
     if not remediation_items:
-        rem_lines.append("No remediation items. Graph gaps/conflicts: none proven by CURRENT AST reproof.")
+        rem_lines.append(
+            "No remediation items. Graph gaps/conflicts: none proven by CURRENT AST reproof."
+        )
         rem_lines.append("")
         rem_lines.append(
             "Note: historical GHV79 path-heuristic placements remain REFERENCE_ONLY; "
@@ -1462,7 +1582,9 @@ def main() -> int:
                     continue
                 rem_lines.append(f"- **{k}**: `{v}`")
             rem_lines.append("")
-    (HERE / "14_remediation_backlog_v1.md").write_text("\n".join(rem_lines) + "\n", encoding="utf-8")
+    (HERE / "14_remediation_backlog_v1.md").write_text(
+        "\n".join(rem_lines) + "\n", encoding="utf-8"
+    )
 
     baseline_md = f"""# 01 — Baseline and safety lock
 
@@ -1661,7 +1783,9 @@ Local untracked evidence/research and unrelated WIP may exist; this WP writes on
     ]:
         final_md.append(f"{k}={terminal[k]}")
     final_md.extend(["```", ""])
-    (HERE / "15_final_forensic_fixpoint_v1.md").write_text("\n".join(final_md) + "\n", encoding="utf-8")
+    (HERE / "15_final_forensic_fixpoint_v1.md").write_text(
+        "\n".join(final_md) + "\n", encoding="utf-8"
+    )
     _dump_json(HERE / "15_final_forensic_fixpoint_v1.json", terminal)
 
     print(json.dumps(terminal, indent=2, sort_keys=True))

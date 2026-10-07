@@ -10,7 +10,7 @@
 - BASELINE_VALIDATION=`PASS`
 
 ## Integrated fixpoint input (immutable)
-- PATH=`evidence/research/current_proven_system_evidence_integration_and_transitive_closure_dossier_v1/20261007T021703Z`
+- PATH=`evidence&#47;research&#47;current_proven_system_evidence_integration_and_transitive_closure_dossier_v1&#47;20261007T021703Z`
 - INTEGRATED_EVIDENCE_DOSSIER_FIXPOINT=`True`
 - TEMPORAL_CLASSIFICATION_FIXPOINT=`True`
 - PROVEN_CLOSURE_FIXPOINT=`True`
@@ -36,7 +36,7 @@
 
 ## Untracked inventory (count=174)
 Local untracked evidence/research and unrelated WIP may exist; this WP writes only under:
-`evidence/research/ghv79_per_site_current_reproof_and_semantic_closure_v1/20261007T024536Z/`
+`evidence&#47;research&#47;ghv79_per_site_current_reproof_and_semantic_closure_v1&#47;20261007T024536Z&#47;`
 
 ## GHV lock
 - GHV_AUTHORITY=NONE
