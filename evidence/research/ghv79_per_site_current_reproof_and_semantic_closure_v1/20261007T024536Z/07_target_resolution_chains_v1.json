@@ -1,0 +1,3275 @@
+{
+  "CHAINS": [
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:descriptor"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:descriptor"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/governance/intent_compatibility_firewall_v1.py:283",
+        "KIND:getattr",
+        "RECV:descriptor",
+        "SEL:field.name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-001",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:edge"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:edge"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/governance/intent_compatibility_firewall_v1.py:292",
+        "KIND:getattr",
+        "RECV:edge",
+        "SEL:field.name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-002",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:assessment"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:assessment"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/governance/intent_compatibility_firewall_v1.py:1053",
+        "KIND:getattr",
+        "RECV:assessment",
+        "SEL:field.name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-003",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:descriptor"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:descriptor"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/governance/intent_compatibility_firewall_v1.py:308",
+        "KIND:getattr",
+        "RECV:descriptor",
+        "SEL:field.name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-004",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:edge"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:edge"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/governance/intent_compatibility_firewall_v1.py:322",
+        "KIND:getattr",
+        "RECV:edge",
+        "SEL:field.name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-005",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:assessment"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:assessment"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/governance/intent_compatibility_firewall_v1.py:1070",
+        "KIND:getattr",
+        "RECV:assessment",
+        "SEL:field.name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-006",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:input_data"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:input_data"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/governance/promotion_loop/promotion_economic_gate_v1.py:452",
+        "KIND:getattr",
+        "RECV:input_data",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-007",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:input_data"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:input_data"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/governance/promotion_loop/promotion_economic_gate_v1.py:552",
+        "KIND:getattr",
+        "RECV:input_data",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-008",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:input_data"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:input_data"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/governance/promotion_loop/promotion_economic_gate_v1.py:612",
+        "KIND:getattr",
+        "RECV:input_data",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-009",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/governance/v32_current_mv2_dp_concept_alignment_v1.py:54",
+        "KIND:importlib",
+        "RECV:importlib",
+        "SEL:module_path",
+        "DYNAMIC_MODULE_PATH_EXPRESSION",
+        "NO_STATIC_MODULE_LITERAL_FOUND",
+        "PROVEN_AS_DYNAMIC_REGISTRY_LOAD_PATTERN"
+      ],
+      "SITE_ID": "GHV79-010",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/governance/v32_current_mv2_dp_concept_alignment_v1.py:55",
+        "KIND:getattr",
+        "RECV:mod",
+        "SEL:attr",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-011",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD",
+        "MODULE_CANDIDATE:src.ops.full_core_live_path_composition_root_v1.",
+        "MODULE_CANDIDATE:src.ops.full_core_live_path_composition_root_v1.current_productive_enter_live_29p_join_v1",
+        "MODULE_CANDIDATE:src.ops.full_core_live_path_composition_root_v1.current_productive_mv2_capital_context_rebind_v1",
+        "MODULE_CANDIDATE:src.ops.governed_productive_account_equity_authority_producer_v1.",
+        "MODULE_CANDIDATE:src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_29p_risk_capital_model_v1",
+        "MODULE_CANDIDATE:src.ops.governed_productive_instrument_metadata_authority_producer_v1.",
+        "MODULE_CANDIDATE:src.ops.governed_productive_instrument_metadata_authority_producer_v1.current_productive_okx_instruments_row_producer_v1",
+        "MODULE_CANDIDATE:src.ops.governed_productive_reference_price_authority_producer_v1.",
+        "MODULE_CANDIDATE:src.ops.governed_productive_reference_price_authority_producer_v1.current_productive_mv2_mark_reference_price_producer_v1"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/b05_full_core_governed_authority_chain_closure_v1/registry_and_witness_v1.py:115",
+        "KIND:importlib",
+        "RECV:importlib",
+        "SEL:module_path",
+        "DYNAMIC_MODULE_PATH_EXPRESSION",
+        "MULTI_CANDIDATE_COUNT=9",
+        "PROVEN_AS_DYNAMIC_REGISTRY_LOAD_PATTERN_WITH_CANDIDATE_SET"
+      ],
+      "SITE_ID": "GHV79-012",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/b05_full_core_governed_authority_chain_closure_v1/registry_and_witness_v1.py:116",
+        "KIND:getattr",
+        "RECV:mod",
+        "SEL:attr",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-013",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py:338",
+        "KIND:getattr",
+        "RECV:snapshot",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-014",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py:394",
+        "KIND:getattr",
+        "RECV:integration_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-015",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.capability_proofs"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.capability_proofs"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py:228",
+        "KIND:getattr",
+        "RECV:integration_input.capability_proofs",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-016",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0.py:340",
+        "KIND:getattr",
+        "RECV:snapshot",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-017",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:chain"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:chain"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0.py:544",
+        "KIND:getattr",
+        "RECV:chain",
+        "SEL:slot_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-018",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:bridge_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:bridge_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0.py:585",
+        "KIND:getattr",
+        "RECV:bridge_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-019",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_capital_slot_ratchet_release_lifecycle_integration_contract_v0.py:672",
+        "KIND:getattr",
+        "RECV:snapshot",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-020",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_capital_slot_ratchet_release_lifecycle_integration_contract_v0.py:1039",
+        "KIND:getattr",
+        "RECV:integration_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-021",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_cross_slice_proof_coherence_integration_contract_v0.py:334",
+        "KIND:getattr",
+        "RECV:snapshot",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-022",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_cross_slice_proof_coherence_integration_contract_v0.py:681",
+        "KIND:getattr",
+        "RECV:integration_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-023",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:link"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:link"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0.py:278",
+        "KIND:getattr",
+        "RECV:link",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-024",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0.py:336",
+        "KIND:getattr",
+        "RECV:proof",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-025",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0.py:435",
+        "KIND:getattr",
+        "RECV:snapshot",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-026",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0.py:478",
+        "KIND:getattr",
+        "RECV:proof",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-027",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0.py:628",
+        "KIND:getattr",
+        "RECV:integration_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-028",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_operator_review_admission_presentation_lifecycle_integration_contract_v0.py:352",
+        "KIND:getattr",
+        "RECV:snapshot",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-029",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:chain"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:chain"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_operator_review_admission_presentation_lifecycle_integration_contract_v0.py:582",
+        "KIND:getattr",
+        "RECV:chain",
+        "SEL:slot_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-030",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_operator_review_admission_presentation_lifecycle_integration_contract_v0.py:620",
+        "KIND:getattr",
+        "RECV:integration_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-031",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:binding"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:binding"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0.py:348",
+        "KIND:getattr",
+        "RECV:binding",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-032",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof_chain"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof_chain"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0.py:515",
+        "KIND:getattr",
+        "RECV:proof_chain",
+        "SEL:slot_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-033",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_operator_review_handoff_boundary_contract_v0.py:256",
+        "KIND:getattr",
+        "RECV:snapshot",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-034",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:boundary_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:boundary_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_operator_review_handoff_boundary_contract_v0.py:518",
+        "KIND:getattr",
+        "RECV:boundary_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-035",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0.py:402",
+        "KIND:getattr",
+        "RECV:snapshot",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-036",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0.py:445",
+        "KIND:getattr",
+        "RECV:proof",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-037",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0.py:564",
+        "KIND:getattr",
+        "RECV:integration_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-038",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py:867",
+        "KIND:getattr",
+        "RECV:snapshot",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-039",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py:968",
+        "KIND:getattr",
+        "RECV:integration_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-040",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py:428",
+        "KIND:getattr",
+        "RECV:snapshot",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-041",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:chain"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:chain"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py:843",
+        "KIND:getattr",
+        "RECV:chain",
+        "SEL:slot_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-042",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:pe32_chain"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:pe32_chain"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py:844",
+        "KIND:getattr",
+        "RECV:pe32_chain",
+        "SEL:slot_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-043",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:chain"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:chain"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py:918",
+        "KIND:getattr",
+        "RECV:chain",
+        "SEL:slot_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-044",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py:1020",
+        "KIND:getattr",
+        "RECV:integration_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-045",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py:798",
+        "KIND:getattr",
+        "RECV:proof",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-046",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:review_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:review_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_preflight_operator_review_proof_package_contract_v0.py:458",
+        "KIND:getattr",
+        "RECV:review_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-047",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:review_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:review_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0.py:296",
+        "KIND:getattr",
+        "RECV:review_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-048",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:policy"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:policy"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0.py:337",
+        "KIND:getattr",
+        "RECV:policy",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-049",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:decision_record"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:decision_record"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0.py:465",
+        "KIND:getattr",
+        "RECV:decision_record",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-050",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:review_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:review_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0.py:525",
+        "KIND:getattr",
+        "RECV:review_input.contract_versions",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-051",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:caps"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:caps"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_preflight_packet_builder_contract_v0.py:680",
+        "KIND:getattr",
+        "RECV:caps",
+        "SEL:cap_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-052",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:risk"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:risk"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_preflight_packet_builder_contract_v0.py:699",
+        "KIND:getattr",
+        "RECV:risk",
+        "SEL:meta_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-053",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:risk"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:risk"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py:351",
+        "KIND:getattr",
+        "RECV:risk",
+        "SEL:meta_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-054",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:caps"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:caps"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py:358",
+        "KIND:getattr",
+        "RECV:caps",
+        "SEL:cap_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-055",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:capture_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:capture_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_preflight_source_state_capture_contract_v0.py:307",
+        "KIND:getattr",
+        "RECV:capture_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-056",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:policy"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:policy"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_preflight_source_state_capture_contract_v0.py:355",
+        "KIND:getattr",
+        "RECV:policy",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-057",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:capture_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:capture_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_preflight_source_state_capture_contract_v0.py:415",
+        "KIND:getattr",
+        "RECV:capture_input.contract_versions",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-058",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_private_readonly_lifecycle_integration_contract_v0.py:416",
+        "KIND:getattr",
+        "RECV:snapshot",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-059",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_private_readonly_lifecycle_integration_contract_v0.py:614",
+        "KIND:getattr",
+        "RECV:integration_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-060",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_readiness_review_admission_presentation_lifecycle_bridge_contract_v0.py:342",
+        "KIND:getattr",
+        "RECV:snapshot",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-061",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:chain"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:chain"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_readiness_review_admission_presentation_lifecycle_bridge_contract_v0.py:563",
+        "KIND:getattr",
+        "RECV:chain",
+        "SEL:slot_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-062",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:bridge_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:bridge_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_readiness_review_admission_presentation_lifecycle_bridge_contract_v0.py:599",
+        "KIND:getattr",
+        "RECV:bridge_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-063",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py:512",
+        "KIND:getattr",
+        "RECV:snapshot",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-064",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py:871",
+        "KIND:getattr",
+        "RECV:integration_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-065",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py:583",
+        "KIND:getattr",
+        "RECV:snapshot",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-066",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py:912",
+        "KIND:getattr",
+        "RECV:integration_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-067",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py:645",
+        "KIND:getattr",
+        "RECV:snapshot",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-068",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py:1459",
+        "KIND:getattr",
+        "RECV:integration_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-069",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_validate_only_lifecycle_integration_contract_v0.py:474",
+        "KIND:getattr",
+        "RECV:snapshot",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-070",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_validate_only_lifecycle_integration_contract_v0.py:867",
+        "KIND:getattr",
+        "RECV:integration_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-071",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:snapshot"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_zero_order_lifecycle_integration_contract_v0.py:378",
+        "KIND:getattr",
+        "RECV:snapshot",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-072",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:integration_input.contract_versions"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/bounded_futures_testnet_zero_order_lifecycle_integration_contract_v0.py:535",
+        "KIND:getattr",
+        "RECV:integration_input.contract_versions",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-073",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/authority_envelope_v1.py:101",
+        "KIND:getattr",
+        "RECV:self",
+        "SEL:name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-074",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD",
+        "MODULE_CANDIDATE:src.ops.companion_shadow_live_fraction_to_units_input_binding_v1.conversion_algebra_v1",
+        "MODULE_CANDIDATE:src.ops.companion_shadow_live_fraction_to_units_input_binding_v1.conversion_algebra_v1.",
+        "MODULE_CANDIDATE:src.ops.companion_shadow_live_fraction_to_units_input_binding_v1.read_binding_v1",
+        "MODULE_CANDIDATE:src.ops.companion_shadow_live_fraction_to_units_input_binding_v1.read_binding_v1.",
+        "MODULE_CANDIDATE:src.ops.governed_productive_account_equity_authority_producer_v1.",
+        "MODULE_CANDIDATE:src.ops.governed_productive_instrument_metadata_authority_producer_v1.",
+        "MODULE_CANDIDATE:src.ops.governed_productive_reference_price_authority_producer_v1."
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/registry_and_witness_v1.py:89",
+        "KIND:importlib",
+        "RECV:importlib",
+        "SEL:module_path",
+        "DYNAMIC_MODULE_PATH_EXPRESSION",
+        "MULTI_CANDIDATE_COUNT=7",
+        "PROVEN_AS_DYNAMIC_REGISTRY_LOAD_PATTERN_WITH_CANDIDATE_SET"
+      ],
+      "SITE_ID": "GHV79-075",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/companion_shadow_live_fraction_to_units_input_binding_v1/registry_and_witness_v1.py:90",
+        "KIND:getattr",
+        "RECV:mod",
+        "SEL:attr",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-076",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [],
+      "PROVEN_TARGET_SET": [],
+      "RESOLUTION_CHAIN": [
+        "SEED",
+        "ABSENT"
+      ],
+      "SITE_ID": "GHV79-077",
+      "TARGET_RESOLUTION_STATUS": "EXPLICITLY_UNKNOWN_ABSENT",
+      "UNRESOLVED_TARGET_SET": [
+        "SITE_ABSENT_AT_CURRENT"
+      ]
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/derive_scope_event_distances_v1/result_v1.py:34",
+        "KIND:getattr",
+        "RECV:self",
+        "SEL:name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-078",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:panel"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:panel"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/double_play_archive_sibling_exporter_v1/exporter_v1.py:114",
+        "KIND:getattr",
+        "RECV:panel",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-079",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:chain"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:chain"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/durable_completion_validation/validators/completion_chain.py:48",
+        "KIND:getattr",
+        "RECV:chain",
+        "SEL:chain_field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-080",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:chain"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:chain"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/durable_completion_validation/validators/completion_chain.py:59",
+        "KIND:getattr",
+        "RECV:chain",
+        "SEL:chain_field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-081",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:binding"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:binding"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/durable_completion_validation/validators/completion_chain.py:60",
+        "KIND:getattr",
+        "RECV:binding",
+        "SEL:binding_field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-082",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:pe33_proof"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:pe33_proof"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/durable_completion_validation/validators/cross_slice_coherence.py:53",
+        "KIND:getattr",
+        "RECV:pe33_proof",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-083",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:validation_input"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:validation_input"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/durable_completion_validation/validators/event_stream.py:148",
+        "KIND:getattr",
+        "RECV:validation_input",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-084",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:validation_input"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:validation_input"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/durable_completion_validation/validators/event_stream.py:743",
+        "KIND:getattr",
+        "RECV:validation_input",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-085",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/durable_completion_validation/validators/event_stream.py:332",
+        "KIND:getattr",
+        "RECV:proof",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-086",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/durable_completion_validation/validators/operator_closure.py:105",
+        "KIND:getattr",
+        "RECV:proof",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-087",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:proof"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/durable_completion_validation/validators/traceability.py:84",
+        "KIND:getattr",
+        "RECV:proof",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-088",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [],
+      "PROVEN_TARGET_SET": [],
+      "RESOLUTION_CHAIN": [
+        "SEED",
+        "ABSENT"
+      ],
+      "SITE_ID": "GHV79-089",
+      "TARGET_RESOLUTION_STATUS": "EXPLICITLY_UNKNOWN_ABSENT",
+      "UNRESOLVED_TARGET_SET": [
+        "SITE_ABSENT_AT_CURRENT"
+      ]
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:inner"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:inner"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/session_integration_v1.py:76",
+        "KIND:getattr",
+        "RECV:inner",
+        "SEL:attribute",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-090",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self._delegate"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self._delegate"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/full_core_live_path_composition_root_v1/productive_natural_market_data_capture_sink_v1.py:169",
+        "KIND:getattr",
+        "RECV:self._delegate",
+        "SEL:name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-091",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/governed_p01_reduction_directive_v1.py:128",
+        "KIND:getattr",
+        "RECV:self",
+        "SEL:name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-092",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:directive"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:directive"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/governed_p01_reduction_directive_v1.py:139",
+        "KIND:getattr",
+        "RECV:directive",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-093",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:directive"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:directive"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/governed_p01_reduction_directive_v1.py:149",
+        "KIND:getattr",
+        "RECV:directive",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-094",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:directive"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:directive"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/governed_p01_reduction_directive_v1.py:143",
+        "KIND:getattr",
+        "RECV:directive",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-095",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:adjudication"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:adjudication"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/normalization_inclusion_adjudication_v1.py:775",
+        "KIND:getattr",
+        "RECV:adjudication",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-096",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_applicability_class_contract_v1.py:352",
+        "KIND:getattr",
+        "RECV:self",
+        "SEL:name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-097",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_applicability_class_contract_v1.py:399",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-098",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_applicability_class_contract_v1.py:394",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-099",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_applicability_class_contract_v1.py:539",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-100",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_identity_contract_v1.py:395",
+        "KIND:getattr",
+        "RECV:self",
+        "SEL:name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-101",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_identity_contract_v1.py:438",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-102",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_identity_contract_v1.py:433",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-103",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_identity_contract_v1.py:637",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-104",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py:397",
+        "KIND:getattr",
+        "RECV:self",
+        "SEL:name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-105",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py:480",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-106",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py:627",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:result_field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-107",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py:636",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:forbidden_field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-108",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py:473",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-109",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_application_predicate_input_domain_identity_contract_v1.py:730",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-110",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_exact_member_identity_contract_v1.py:378",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-111",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_exact_member_identity_contract_v1.py:266",
+        "KIND:getattr",
+        "RECV:self",
+        "SEL:name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-112",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_exact_member_identity_contract_v1.py:301",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-113",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_exact_member_identity_contract_v1.py:296",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-114",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_exact_member_identity_contract_v1.py:418",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-115",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py:477",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-116",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py:570",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-117",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py:411",
+        "KIND:getattr",
+        "RECV:self",
+        "SEL:name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-118",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py:483",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-119",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py:549",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-120",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_haircut_reserve_depletion_semantics_contract_v1.py:774",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-121",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_member_freshness_inheritance_contract_v1.py:493",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-122",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_member_freshness_inheritance_contract_v1.py:499",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-123",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_member_freshness_inheritance_contract_v1.py:652",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-124",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py:248",
+        "KIND:getattr",
+        "RECV:self",
+        "SEL:name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-125",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py:318",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-126",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py:311",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-127",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py:455",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-128",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_reconstruction_semantic_and_algebra_closeout_contract_v1.py:464",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-129",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_value_unit_class_contract_v1.py:273",
+        "KIND:getattr",
+        "RECV:self",
+        "SEL:name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-130",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_value_unit_class_contract_v1.py:322",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-131",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_value_unit_class_contract_v1.py:317",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-132",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:contract"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/p01_value_unit_class_contract_v1.py:425",
+        "KIND:getattr",
+        "RECV:contract",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-133",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:sample"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:sample"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/sample_schema_v1.py:269",
+        "KIND:getattr",
+        "RECV:sample",
+        "SEL:_python_field_name(canonical)",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-134",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:sample"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:sample"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/sample_schema_v1.py:349",
+        "KIND:getattr",
+        "RECV:sample",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-135",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:witness"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:witness"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_account_equity_authority_producer_v1/venue_witness_observation_v1.py:492",
+        "KIND:getattr",
+        "RECV:witness",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-136",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:edge"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:edge"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_monetary_normalization_v1/contracts_v1.py:119",
+        "KIND:getattr",
+        "RECV:edge",
+        "SEL:field.name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-137",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:edge"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:edge"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/governed_productive_monetary_normalization_v1/contracts_v1.py:121",
+        "KIND:getattr",
+        "RECV:edge",
+        "SEL:field.name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-138",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:handoff"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:handoff"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/hard_facts_system_closure_v1/__init__.py:33",
+        "KIND:getattr",
+        "RECV:handoff",
+        "SEL:name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-139",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:LiveCanaryHttpClientV1"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:LiveCanaryHttpClientV1"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/gated_entry_submit_surface_v1.py:68",
+        "KIND:getattr",
+        "RECV:LiveCanaryHttpClientV1",
+        "SEL:GATED_ENTRY_SUBMIT_METHOD_NAME",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-140",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/peak_trade_economic_ranking_runtime_v1/__init__.py:29",
+        "KIND:getattr",
+        "RECV:mod",
+        "SEL:name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-141",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/peak_trade_economic_ranking_runtime_v1/__init__.py:33",
+        "KIND:getattr",
+        "RECV:mod",
+        "SEL:name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-142",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD",
+        "src/ops/phase_9_2_step_6_adverse_stale_data_session_continuation_v1/evidence_v1.py"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/phase_9_2_step_6_adverse_stale_data_session_continuation_v1/productive_executor_v1.py:86",
+        "KIND:importlib",
+        "RECV:importlib",
+        "SEL:import_path",
+        "DYNAMIC_MODULE_PATH_EXPRESSION",
+        "BOUNDED_BY_HISTORICAL_CONSUMER_HINT_NOT_USED_AS_PROOF",
+        "NO_STATIC_MODULE_LITERAL_FOUND",
+        "PROVEN_AS_DYNAMIC_REGISTRY_LOAD_PATTERN"
+      ],
+      "SITE_ID": "GHV79-143",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/phase_9_2_step_6_adverse_stale_data_session_continuation_v1/productive_executor_v1.py:87",
+        "KIND:getattr",
+        "RECV:mod",
+        "SEL:attr",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-144",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD",
+        "src/ops/phase_9_2_step_6_governed_productive_real_network_session_execution_v1/failure_injection_v1.py",
+        "src/ops/phase_9_2_step_6_governed_productive_real_network_session_execution_v1/governed_session_execution_v1.py"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/phase_9_2_step_6_governed_productive_real_network_session_execution_v1/session_executor_v1.py:28",
+        "KIND:importlib",
+        "RECV:importlib",
+        "SEL:import_path",
+        "DYNAMIC_MODULE_PATH_EXPRESSION",
+        "BOUNDED_BY_HISTORICAL_CONSUMER_HINT_NOT_USED_AS_PROOF",
+        "NO_STATIC_MODULE_LITERAL_FOUND",
+        "PROVEN_AS_DYNAMIC_REGISTRY_LOAD_PATTERN"
+      ],
+      "SITE_ID": "GHV79-145",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/phase_9_2_step_6_governed_productive_real_network_session_execution_v1/session_executor_v1.py:29",
+        "KIND:getattr",
+        "RECV:mod",
+        "SEL:attr",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-146",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD",
+        "src/ops/phase_9_2_step_6_governed_productive_real_network_session_execution_v1/session_executor_v1.py",
+        "src/ops/phase_9_2_step_6_governed_productive_real_network_session_executor_v1/failure_injection_v1.py",
+        "src/ops/phase_9_2_step_6_governed_productive_real_network_session_executor_v1/governed_session_execution_v1.py",
+        "src/ops/phase_9_2_step_6_governed_productive_real_network_session_executor_v1/governed_session_execution_v1.py",
+        "src/ops/phase_9_2_step_6_productive_real_network_execution_path_v1/failure_injection_v1.py"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/phase_9_2_step_6_governed_productive_real_network_session_executor_v1/adverse_stale_executor_v1.py:36",
+        "KIND:importlib",
+        "RECV:importlib",
+        "SEL:import_path",
+        "DYNAMIC_MODULE_PATH_EXPRESSION",
+        "BOUNDED_BY_HISTORICAL_CONSUMER_HINT_NOT_USED_AS_PROOF",
+        "NO_STATIC_MODULE_LITERAL_FOUND",
+        "PROVEN_AS_DYNAMIC_REGISTRY_LOAD_PATTERN"
+      ],
+      "SITE_ID": "GHV79-147",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/phase_9_2_step_6_governed_productive_real_network_session_executor_v1/adverse_stale_executor_v1.py:37",
+        "KIND:getattr",
+        "RECV:mod",
+        "SEL:attr",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-148",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD",
+        "src/ops/phase_9_2_step_7_governed_productive_real_tty_campaign_execution_v1/productive_path_consumer_v1.py",
+        "src/ops/phase_9_2_step_7_productive_campaign_execution_path_v1/evidence_v1.py",
+        "src/ops/phase_9_2_step_7_productive_campaign_execution_path_v1/executor_contrast_v1.py",
+        "src/ops/phase_9_2_step_7_productive_campaign_execution_path_v1/failure_injection_v1.py"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_REGISTRY_MODULE_LOAD"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/phase_9_2_step_7_productive_campaign_execution_path_v1/productive_campaign_executor_v1.py:142",
+        "KIND:importlib",
+        "RECV:importlib",
+        "SEL:import_path",
+        "DYNAMIC_MODULE_PATH_EXPRESSION",
+        "BOUNDED_BY_HISTORICAL_CONSUMER_HINT_NOT_USED_AS_PROOF",
+        "NO_STATIC_MODULE_LITERAL_FOUND",
+        "PROVEN_AS_DYNAMIC_REGISTRY_LOAD_PATTERN"
+      ],
+      "SITE_ID": "GHV79-149",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:mod"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/phase_9_2_step_7_productive_campaign_execution_path_v1/productive_campaign_executor_v1.py:143",
+        "KIND:getattr",
+        "RECV:mod",
+        "SEL:attr",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-150",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/presentation_archive_materializers_v1/bull_bear_regime_presentation_projection_materializer_v1.py:144",
+        "KIND:getattr",
+        "RECV:source",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-151",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/presentation_archive_materializers_v1/canonical_decision_presentation_projection_materializer_v1.py:127",
+        "KIND:getattr",
+        "RECV:source",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-152",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:source"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:source"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/presentation_archive_materializers_v1/canonical_decision_presentation_projection_materializer_v1.py:130",
+        "KIND:getattr",
+        "RECV:source",
+        "SEL:optional",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-153",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:panel"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:panel"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/presentation_archive_materializers_v1/double_play_presentation_projection_materializer_v1.py:128",
+        "KIND:getattr",
+        "RECV:panel",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-154",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/presentation_archive_materializers_v1/double_play_presentation_projection_materializer_v1.py:201",
+        "KIND:getattr",
+        "RECV:source",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-155",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/presentation_archive_materializers_v1/dynamic_scope_presentation_projection_materializer_v1.py:151",
+        "KIND:getattr",
+        "RECV:source",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-156",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/presentation_archive_materializers_v1/economic_summary_presentation_projection_materializer_v1.py:170",
+        "KIND:getattr",
+        "RECV:source",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-157",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/presentation_archive_materializers_v1/execution_reconciliation_presentation_projection_materializer_v1.py:151",
+        "KIND:getattr",
+        "RECV:source",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-158",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/presentation_archive_materializers_v1/risk_sizing_capital_presentation_projection_materializer_v1.py:148",
+        "KIND:getattr",
+        "RECV:source",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-159",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/presentation_archive_materializers_v1/safety_authority_presentation_projection_materializer_v1.py:148",
+        "KIND:getattr",
+        "RECV:source",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-160",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:binding"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:binding"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/productive_pure_stack_stage2_shadow_campaign_input_authority_v1/pt1m_finalized_ohlcv_producer_v1.py:32",
+        "KIND:getattr",
+        "RECV:binding",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-161",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:candle"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:candle"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/productive_pure_stack_stage2_shadow_campaign_input_authority_v1/pt1m_finalized_ohlcv_producer_v1.py:45",
+        "KIND:getattr",
+        "RECV:candle",
+        "SEL:name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-162",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:models_v1"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:models_v1"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/__init__.py:38",
+        "KIND:getattr",
+        "RECV:models_v1",
+        "SEL:name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-163",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:bar"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:bar"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/productive_pure_stack_stage2_surface_b_regime_coverage_producer_v1/producer_v1.py:44",
+        "KIND:getattr",
+        "RECV:bar",
+        "SEL:name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-164",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:cursor"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:cursor"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/runtime_health_recovery_and_failure_injection_closure_v1/recovery_v1.py:177",
+        "KIND:getattr",
+        "RECV:cursor",
+        "SEL:field_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-165",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:source"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/ops/safety_authority_archive_sibling_exporter_v1/replay_commit_source_v1.py:40",
+        "KIND:getattr",
+        "RECV:source",
+        "SEL:key",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-166",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [],
+      "PROVEN_TARGET_SET": [],
+      "RESOLUTION_CHAIN": [
+        "SEED",
+        "ABSENT"
+      ],
+      "SITE_ID": "GHV79-167",
+      "TARGET_RESOLUTION_STATUS": "EXPLICITLY_UNKNOWN_ABSENT",
+      "UNRESOLVED_TARGET_SET": [
+        "SITE_ABSENT_AT_CURRENT"
+      ]
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:exchange"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:exchange"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/orders/__init__.py:74",
+        "KIND:getattr",
+        "RECV:exchange",
+        "SEL:name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-168",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/trading/master_v2/canonical_trading_decision_evidence_v1.py:89",
+        "KIND:getattr",
+        "RECV:self",
+        "SEL:digest_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-169",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_FIELD_READ_ON:self"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/trading/master_v2/canonical_volatility_default_quarantine_v1.py:196",
+        "KIND:getattr",
+        "RECV:self",
+        "SEL:digest_name",
+        "DYNAMIC_FIELD_NAME_REFLECTION",
+        "PROVEN_AS_DYNAMIC_FIELD_READ"
+      ],
+      "SITE_ID": "GHV79-170",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    },
+    {
+      "POSSIBLE_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:inp"
+      ],
+      "PROVEN_TARGET_SET": [
+        "SEMANTIC_TARGET:DYNAMIC_GETATTR_ON:inp"
+      ],
+      "RESOLUTION_CHAIN": [
+        "SITE:src/trading/master_v2/runtime_bridge_pre_activation_gate_v0.py:96",
+        "KIND:getattr",
+        "RECV:inp",
+        "SEL:field",
+        "DYNAMIC_SELECTOR_UNCLASSIFIED",
+        "PROVEN_AS_BOUNDED_DYNAMIC_GETATTR"
+      ],
+      "SITE_ID": "GHV79-171",
+      "TARGET_RESOLUTION_STATUS": "RESOLVED_AS_PATTERN",
+      "UNRESOLVED_TARGET_SET": []
+    }
+  ],
+  "COUNT": 171
+}

@@ -1,0 +1,33 @@
+{
+  "accounted_seed_count": 171,
+  "adjudicated_site_count": 171,
+  "bucket_totals": {
+    "HISTORICAL_NOT_CURRENT": 3,
+    "IMPLEMENTATION_DETAIL_NO_GRAPH_EXPANSION": 96,
+    "PARALLEL_OR_OFFLINE_NO_PRODUCTIVE_GRAPH_EXPANSION": 72
+  },
+  "classification_totals": {
+    "HISTORICAL_REMOVED": 3,
+    "PROVEN_CURRENT_DORMANT": 1,
+    "PROVEN_CURRENT_GOVERNANCE_ONLY": 8,
+    "PROVEN_CURRENT_OFFLINE": 4,
+    "PROVEN_CURRENT_PARALLEL_NONAUTH": 60,
+    "PROVEN_CURRENT_PRODUCTIVE": 95
+  },
+  "conflict_totals": 0,
+  "current_site_count": 168,
+  "duplicate_SITE_ID": 0,
+  "gap_totals": 0,
+  "placement_totals": {
+    "GHV_EXPECTATION_NOT_CURRENT": 4,
+    "IMPLEMENTATION_DETAIL": 103,
+    "OFFLINE_ONLY": 4,
+    "PARALLEL_NONAUTH": 60
+  },
+  "seed_site_count": 171,
+  "sums_ok": true,
+  "temporally_unclassified_site": 0,
+  "unaccounted_seed_site": 0,
+  "unclassified_current_site": 0,
+  "unknown_totals": 0
+}
