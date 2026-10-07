@@ -1,0 +1,802 @@
+{
+  "COUNT": 14,
+  "LAYERS": [
+    {
+      "AUTHORITY": "NONE",
+      "BIND_ROLE": false,
+      "CONFIG": "venue=okx_eea",
+      "CONFIG_OWNER": "discovery_v1",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DORMANT_COMPONENTS": [],
+      "DOWNSTREAM_EDGES": [
+        "L01"
+      ],
+      "FEATURE_ROLE": false,
+      "FILTER_ROLE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "ISOLATED_AUTHORITY_NONE",
+      "GVEF_RELATION": "NONE",
+      "GV_RELATION": "NO_GV_RELATION",
+      "INPUT": "okx_eea_payload",
+      "KNOWN_CONSTRAINTS": [],
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LATERAL_EDGES": [],
+      "LAYER": "L00",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "EEA_UNIVERSE_ACQUISITION_INGRESS",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OFFLINE_COMPONENTS": [],
+      "OPTIMIZATION_RELATION": null,
+      "OUTPUT": "validated_raw_instruments",
+      "OWNER": "discovery_v1",
+      "POPULATION": "validated_raw_instruments",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "PROVEN_BY_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "PURPOSE": "discover_okx_eea_instruments_v1",
+      "RANK_ROLE": false,
+      "REMOVED_BY": null,
+      "SCORE_ROLE": false,
+      "SELECT_ROLE": false,
+      "STATE": "ephemeral",
+      "STATE_OWNER": "discovery_v1",
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TEST_ONLY_COMPONENTS": [],
+      "UPSTREAM_EDGES": [
+        "NONE_EXTERNAL"
+      ]
+    },
+    {
+      "AUTHORITY": "ELIGIBILITY_ONLY",
+      "BIND_ROLE": false,
+      "CONFIG": "governed_futures_universe_producer_v1.toml",
+      "CONFIG_OWNER": "eligibility_v1",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DORMANT_COMPONENTS": [],
+      "DOWNSTREAM_EDGES": [
+        "L02"
+      ],
+      "FEATURE_ROLE": false,
+      "FILTER_ROLE": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "ISOLATED_AUTHORITY_NONE",
+      "GVEF_RELATION": "CAPABLE",
+      "GV_RELATION": "GV_CAPABLE_ONLY",
+      "INPUT": "raw",
+      "KNOWN_CONSTRAINTS": [],
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LATERAL_EDGES": [],
+      "LAYER": "L01",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "CAP21_STRUCTURAL_FILTERING",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OFFLINE_COMPONENTS": [],
+      "OPTIMIZATION_RELATION": null,
+      "OUTPUT": "structurally_eligible",
+      "OWNER": "eligibility_v1",
+      "POPULATION": "structurally_eligible",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "PROVEN_BY_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "PURPOSE": "futures_only+btc_exclusion+DQ",
+      "RANK_ROLE": false,
+      "REMOVED_BY": null,
+      "SCORE_ROLE": false,
+      "SELECT_ROLE": false,
+      "STATE": "classification",
+      "STATE_OWNER": "eligibility_v1",
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TEST_ONLY_COMPONENTS": [],
+      "UPSTREAM_EDGES": [
+        "L00"
+      ]
+    },
+    {
+      "AUTHORITY": "UNIVERSE_MEMBERSHIP",
+      "BIND_ROLE": false,
+      "CONFIG": "Cap21 toml",
+      "CONFIG_OWNER": "ops.governed_futures_universe_producer_v1",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DORMANT_COMPONENTS": [],
+      "DOWNSTREAM_EDGES": [
+        "L03"
+      ],
+      "FEATURE_ROLE": false,
+      "FILTER_ROLE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "ISOLATED_AUTHORITY_NONE",
+      "GVEF_RELATION": "CAPABLE",
+      "GV_RELATION": "GV_CAPABLE_ONLY",
+      "INPUT": "eligible",
+      "KNOWN_CONSTRAINTS": [],
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LATERAL_EDGES": [
+        "P_DDO",
+        "P_PROFILE"
+      ],
+      "LAYER": "L02",
+      "LEARNING_RELATION": "OBSERVE",
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "CAP21_GOVERNED_FUTURES_UNIVERSE",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OFFLINE_COMPONENTS": [],
+      "OPTIMIZATION_RELATION": null,
+      "OUTPUT": "governed_futures_universe_snapshot.v1",
+      "OWNER": "ops.governed_futures_universe_producer_v1",
+      "POPULATION": "governed_futures_universe_snapshot.v1",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "PROVEN_BY_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "PURPOSE": "deterministic snapshot+persist",
+      "RANK_ROLE": false,
+      "REMOVED_BY": null,
+      "SCORE_ROLE": false,
+      "SELECT_ROLE": false,
+      "STATE": "runtime_state/universe",
+      "STATE_OWNER": "ops.governed_futures_universe_producer_v1",
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TEST_ONLY_COMPONENTS": [],
+      "UPSTREAM_EDGES": [
+        "L01"
+      ]
+    },
+    {
+      "AUTHORITY": "MD_INPUT_ONLY",
+      "BIND_ROLE": false,
+      "CONFIG": "economic_md",
+      "CONFIG_OWNER": "ops.economic_md_input_producer_v1",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DORMANT_COMPONENTS": [],
+      "DOWNSTREAM_EDGES": [
+        "L04"
+      ],
+      "FEATURE_ROLE": true,
+      "FILTER_ROLE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "ISOLATED_AUTHORITY_NONE",
+      "GVEF_RELATION": "CAPABLE",
+      "GV_RELATION": "GV_CAPABLE_ONLY",
+      "INPUT": "Cap21 IDs via universe_gate",
+      "KNOWN_CONSTRAINTS": [],
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LATERAL_EDGES": [
+        "P_PROFILE"
+      ],
+      "LAYER": "L03",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "ECONOMIC_MD_INPUT",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OFFLINE_COMPONENTS": [],
+      "OPTIMIZATION_RELATION": null,
+      "OUTPUT": "economic_md_snapshot",
+      "OWNER": "ops.economic_md_input_producer_v1",
+      "POPULATION": "economic_md_snapshot",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "PROVEN_BY_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "PURPOSE": "gate subset+MD",
+      "RANK_ROLE": false,
+      "REMOVED_BY": null,
+      "SCORE_ROLE": false,
+      "SELECT_ROLE": false,
+      "STATE": "MD persistence",
+      "STATE_OWNER": "ops.economic_md_input_producer_v1",
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TEST_ONLY_COMPONENTS": [],
+      "UPSTREAM_EDGES": [
+        "L02"
+      ]
+    },
+    {
+      "AUTHORITY": "NONE",
+      "BIND_ROLE": false,
+      "CONFIG": "B05 constants AUTHORITY=NONE",
+      "CONFIG_OWNER": "ops.peak_trade_ranking_feature_production_v1",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DORMANT_COMPONENTS": [],
+      "DOWNSTREAM_EDGES": [
+        "L05"
+      ],
+      "FEATURE_ROLE": true,
+      "FILTER_ROLE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "ISOLATED_AUTHORITY_NONE",
+      "GVEF_RELATION": "CAPABLE",
+      "GV_RELATION": "GV_CAPABLE_ONLY",
+      "INPUT": "MD marks",
+      "KNOWN_CONSTRAINTS": [],
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LATERAL_EDGES": [
+        "P_PROFILE"
+      ],
+      "LAYER": "L04",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "B05_FEATURE_PRODUCTION",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OFFLINE_COMPONENTS": [],
+      "OPTIMIZATION_RELATION": null,
+      "OUTPUT": "feature_production_snapshot",
+      "OWNER": "ops.peak_trade_ranking_feature_production_v1",
+      "POPULATION": "feature_production_snapshot",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "PROVEN_BY_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "PURPOSE": "61 PT1M\u2192raw features; forbid rank/selection fields",
+      "RANK_ROLE": false,
+      "REMOVED_BY": null,
+      "SCORE_ROLE": false,
+      "SELECT_ROLE": false,
+      "STATE": "feature digest",
+      "STATE_OWNER": "ops.peak_trade_ranking_feature_production_v1",
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TEST_ONLY_COMPONENTS": [],
+      "UPSTREAM_EDGES": [
+        "L03"
+      ]
+    },
+    {
+      "AUTHORITY": "RANKING_CONTEXT_MEMBERSHIP",
+      "BIND_ROLE": false,
+      "CONFIG": "ranking matrix",
+      "CONFIG_OWNER": "ops.peak_trade_economic_ranking_runtime_v1",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DORMANT_COMPONENTS": [],
+      "DOWNSTREAM_EDGES": [
+        "L06"
+      ],
+      "FEATURE_ROLE": false,
+      "FILTER_ROLE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "ISOLATED_AUTHORITY_NONE",
+      "GVEF_RELATION": "RU_OBSERVATION",
+      "GV_RELATION": "INDIRECT_GV",
+      "INPUT": "Cap21\u2229complete features",
+      "KNOWN_CONSTRAINTS": [],
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LATERAL_EDGES": [],
+      "LAYER": "L05",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "S_STAR_ECONOMIC_SET",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OFFLINE_COMPONENTS": [],
+      "OPTIMIZATION_RELATION": null,
+      "OUTPUT": "S_STAR",
+      "OWNER": "ops.peak_trade_economic_ranking_runtime_v1",
+      "POPULATION": "S_STAR",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "PROVEN_BY_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "PURPOSE": "exclude incomplete fail-closed",
+      "RANK_ROLE": false,
+      "REMOVED_BY": null,
+      "SCORE_ROLE": false,
+      "SELECT_ROLE": false,
+      "STATE": "S_STAR_N0|N1|N_GE_2",
+      "STATE_OWNER": "ops.peak_trade_economic_ranking_runtime_v1",
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TEST_ONLY_COMPONENTS": [],
+      "UPSTREAM_EDGES": [
+        "L04"
+      ]
+    },
+    {
+      "AUTHORITY": "SCORE_ONLY",
+      "BIND_ROLE": false,
+      "CONFIG": "PEAK_TRADE_RANKING_MATRIX_POLICY_V1",
+      "CONFIG_OWNER": "score_construction_v1",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DORMANT_COMPONENTS": [],
+      "DOWNSTREAM_EDGES": [
+        "L07"
+      ],
+      "FEATURE_ROLE": false,
+      "FILTER_ROLE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "ISOLATED_AUTHORITY_NONE",
+      "GVEF_RELATION": "CAPABLE",
+      "GV_RELATION": "GV_CAPABLE_ONLY",
+      "INPUT": "S_STAR",
+      "KNOWN_CONSTRAINTS": [],
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LATERAL_EDGES": [],
+      "LAYER": "L06",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "B03_ECONOMIC_SCORING",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OFFLINE_COMPONENTS": [],
+      "OPTIMIZATION_RELATION": null,
+      "OUTPUT": "scored_S_STAR",
+      "OWNER": "score_construction_v1",
+      "POPULATION": "scored_S_STAR",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "PROVEN_BY_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "PURPOSE": "equal-weight midrank composite",
+      "RANK_ROLE": false,
+      "REMOVED_BY": null,
+      "SCORE_ROLE": true,
+      "SELECT_ROLE": false,
+      "STATE": "scores",
+      "STATE_OWNER": "score_construction_v1",
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TEST_ONLY_COMPONENTS": [],
+      "UPSTREAM_EDGES": [
+        "L05"
+      ]
+    },
+    {
+      "AUTHORITY": "RANKING_CONTEXT_ONLY",
+      "BIND_ROLE": false,
+      "CONFIG": "Cap22 toml",
+      "CONFIG_OWNER": "ops.productive_futures_ranking_producer_v1",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DORMANT_COMPONENTS": [],
+      "DOWNSTREAM_EDGES": [
+        "L08"
+      ],
+      "FEATURE_ROLE": false,
+      "FILTER_ROLE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "ISOLATED_AUTHORITY_NONE",
+      "GVEF_RELATION": "RU_OBSERVATION",
+      "GV_RELATION": "DIRECT_GV",
+      "INPUT": "scored",
+      "KNOWN_CONSTRAINTS": [
+        "RU_NOT_SELECTION"
+      ],
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LATERAL_EDGES": [
+        "P_DDO",
+        "P_GVEF_RU"
+      ],
+      "LAYER": "L07",
+      "LEARNING_RELATION": "OBSERVE",
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "CAP22_FULL_RANK_ORDER",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OFFLINE_COMPONENTS": [],
+      "OPTIMIZATION_RELATION": null,
+      "OUTPUT": "ordered ranking",
+      "OWNER": "ops.productive_futures_ranking_producer_v1",
+      "POPULATION": "ordered ranking",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "PROVEN_BY_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "PURPOSE": "score DESC, venue_native_id ASC, canonical ASC + persist",
+      "RANK_ROLE": true,
+      "REMOVED_BY": null,
+      "SCORE_ROLE": false,
+      "SELECT_ROLE": false,
+      "STATE": "runtime_state/ranking",
+      "STATE_OWNER": "ops.productive_futures_ranking_producer_v1",
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TEST_ONLY_COMPONENTS": [],
+      "UPSTREAM_EDGES": [
+        "L06"
+      ]
+    },
+    {
+      "AUTHORITY": "RANKING_PROJECTION",
+      "BIND_ROLE": false,
+      "CONFIG": "TOP20_CANDIDATE_CONTEXT_LIMIT=20",
+      "CONFIG_OWNER": "ops.productive_futures_ranking_producer_v1",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DORMANT_COMPONENTS": [],
+      "DOWNSTREAM_EDGES": [
+        "L09_OR_L10"
+      ],
+      "FEATURE_ROLE": false,
+      "FILTER_ROLE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "ISOLATED_AUTHORITY_NONE",
+      "GVEF_RELATION": "RU_OBSERVATION",
+      "GV_RELATION": "INDIRECT_GV",
+      "INPUT": "full order",
+      "KNOWN_CONSTRAINTS": [],
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LATERAL_EDGES": [
+        "P_TOP20_RESIDENCY"
+      ],
+      "LAYER": "L08",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "TOP20_CANDIDATE_CONTEXT",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OFFLINE_COMPONENTS": [],
+      "OPTIMIZATION_RELATION": null,
+      "OUTPUT": "top20 (N<=20)",
+      "OWNER": "ops.productive_futures_ranking_producer_v1",
+      "POPULATION": "top20 (N<=20)",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "PROVEN_BY_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "PURPOSE": "cardinality projection",
+      "RANK_ROLE": false,
+      "REMOVED_BY": null,
+      "SCORE_ROLE": false,
+      "SELECT_ROLE": false,
+      "STATE": "in Cap22 snapshot",
+      "STATE_OWNER": "ops.productive_futures_ranking_producer_v1",
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TEST_ONLY_COMPONENTS": [],
+      "UPSTREAM_EDGES": [
+        "L07"
+      ]
+    },
+    {
+      "AUTHORITY": "EVALUATION_CONTINUITY_ONLY",
+      "BIND_ROLE": false,
+      "CONFIG": "enabled=false",
+      "CONFIG_OWNER": "ops.top20_opportunity_evaluation_residency_v1",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DORMANT_COMPONENTS": [
+        "Top20 residency"
+      ],
+      "DOWNSTREAM_EDGES": [
+        "L10"
+      ],
+      "FEATURE_ROLE": false,
+      "FILTER_ROLE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "ISOLATED_AUTHORITY_NONE",
+      "GVEF_RELATION": "CAPABLE",
+      "GV_RELATION": "GV_CAPABLE_ONLY",
+      "INPUT": "top20",
+      "KNOWN_CONSTRAINTS": [],
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LATERAL_EDGES": [
+        "P_CAP23_RESIDENCY_GATE"
+      ],
+      "LAYER": "L09",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "TOP20_EVALUATION_RESIDENCY",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OFFLINE_COMPONENTS": [],
+      "OPTIMIZATION_RELATION": null,
+      "OUTPUT": "residency residents",
+      "OWNER": "ops.top20_opportunity_evaluation_residency_v1",
+      "POPULATION": "residency residents",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "PROVEN_BY_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "PURPOSE": "admission/lifecycle; RANKING/SELECTION authority false",
+      "RANK_ROLE": false,
+      "REMOVED_BY": null,
+      "SCORE_ROLE": false,
+      "SELECT_ROLE": false,
+      "STATE": "residency_state_v1.json",
+      "STATE_OWNER": "ops.top20_opportunity_evaluation_residency_v1",
+      "STATUS": "PROVEN_CONDITIONALLY_REACHABLE",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TEST_ONLY_COMPONENTS": [],
+      "UPSTREAM_EDGES": [
+        "L08"
+      ]
+    },
+    {
+      "AUTHORITY": "SELECTION_PREFILTER",
+      "BIND_ROLE": false,
+      "CONFIG": "Cap23 toml",
+      "CONFIG_OWNER": "ops.single_selected_future_policy_v1.policy_v1",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DORMANT_COMPONENTS": [],
+      "DOWNSTREAM_EDGES": [
+        "L11"
+      ],
+      "FEATURE_ROLE": false,
+      "FILTER_ROLE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "ISOLATED_AUTHORITY_NONE",
+      "GVEF_RELATION": "CAPABLE",
+      "GV_RELATION": "GV_CAPABLE_ONLY",
+      "INPUT": "Cap22 rank order",
+      "KNOWN_CONSTRAINTS": [],
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LATERAL_EDGES": [
+        "P_CAP23_RESIDENCY_GATE"
+      ],
+      "LAYER": "L10",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "CAP23_SELECTION_ELIGIBILITY",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OFFLINE_COMPONENTS": [],
+      "OPTIMIZATION_RELATION": null,
+      "OUTPUT": "selection_eligible",
+      "OWNER": "ops.single_selected_future_policy_v1.policy_v1",
+      "POPULATION": "selection_eligible",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "PROVEN_BY_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "PURPOSE": "eligibility; no rescore/rerank",
+      "RANK_ROLE": false,
+      "REMOVED_BY": null,
+      "SCORE_ROLE": false,
+      "SELECT_ROLE": true,
+      "STATE": "eligibility codes",
+      "STATE_OWNER": "ops.single_selected_future_policy_v1.policy_v1",
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TEST_ONLY_COMPONENTS": [],
+      "UPSTREAM_EDGES": [
+        "L08|L09"
+      ]
+    },
+    {
+      "AUTHORITY": "SELECTION_OVERLAY_ON_UPSTREAM_RANK",
+      "BIND_ROLE": false,
+      "CONFIG": "hysteresis=1,min_holding=3600",
+      "CONFIG_OWNER": "selection_v1",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DORMANT_COMPONENTS": [],
+      "DOWNSTREAM_EDGES": [
+        "L12"
+      ],
+      "FEATURE_ROLE": false,
+      "FILTER_ROLE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "ISOLATED_AUTHORITY_NONE",
+      "GVEF_RELATION": "CAPABLE",
+      "GV_RELATION": "GV_CAPABLE_ONLY",
+      "INPUT": "eligible+previous",
+      "KNOWN_CONSTRAINTS": [],
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LATERAL_EDGES": [],
+      "LAYER": "L11",
+      "LEARNING_RELATION": null,
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "CAP23_ANTI_CHURN_OVERLAY",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OFFLINE_COMPONENTS": [],
+      "OPTIMIZATION_RELATION": null,
+      "OUTPUT": "anti_churn_choice",
+      "OWNER": "selection_v1",
+      "POPULATION": "anti_churn_choice",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "PROVEN_BY_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "PURPOSE": "hysteresis+min_holding+replacement_pending",
+      "RANK_ROLE": false,
+      "REMOVED_BY": null,
+      "SCORE_ROLE": false,
+      "SELECT_ROLE": true,
+      "STATE": "SELECTION_STATES",
+      "STATE_OWNER": "selection_v1",
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TEST_ONLY_COMPONENTS": [],
+      "UPSTREAM_EDGES": [
+        "L10"
+      ]
+    },
+    {
+      "AUTHORITY": "SOLE_PRODUCTIVE_SELECTION",
+      "BIND_ROLE": false,
+      "CONFIG": "selected_future_count=1",
+      "CONFIG_OWNER": "ops.single_selected_future_policy_v1",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DORMANT_COMPONENTS": [],
+      "DOWNSTREAM_EDGES": [
+        "L13"
+      ],
+      "FEATURE_ROLE": false,
+      "FILTER_ROLE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "ISOLATED_AUTHORITY_NONE",
+      "GVEF_RELATION": "CAPABLE",
+      "GV_RELATION": "GV_CAPABLE_ONLY",
+      "INPUT": "anti_churn_choice",
+      "KNOWN_CONSTRAINTS": [],
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LATERAL_EDGES": [
+        "P_DDO",
+        "P_GVEF_RU_BOUNDARY"
+      ],
+      "LAYER": "L12",
+      "LEARNING_RELATION": "OBSERVE",
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "CAP23_SINGLE_SELECTED_FUTURE",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OFFLINE_COMPONENTS": [],
+      "OPTIMIZATION_RELATION": null,
+      "OUTPUT": "SingleSelectedFutureSelectionV1 N=1",
+      "OWNER": "ops.single_selected_future_policy_v1",
+      "POPULATION": "SingleSelectedFutureSelectionV1 N=1",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "PROVEN_BY_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "PURPOSE": "deterministic single selection+persist",
+      "RANK_ROLE": false,
+      "REMOVED_BY": null,
+      "SCORE_ROLE": false,
+      "SELECT_ROLE": true,
+      "STATE": "selection JSON",
+      "STATE_OWNER": "ops.single_selected_future_policy_v1",
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TEST_ONLY_COMPONENTS": [],
+      "UPSTREAM_EDGES": [
+        "L11"
+      ]
+    },
+    {
+      "AUTHORITY": "VALIDATE_AND_BIND_ONLY",
+      "BIND_ROLE": true,
+      "CONFIG": "Cap24 toml override=false",
+      "CONFIG_OWNER": "ops.single_selected_future_runtime_binding_v1",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "DORMANT_COMPONENTS": [],
+      "DOWNSTREAM_EDGES": [
+        "TERMINAL_TO_FULL_CORE"
+      ],
+      "FEATURE_ROLE": false,
+      "FILTER_ROLE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "GHV_RELATION": "ISOLATED_AUTHORITY_NONE",
+      "GVEF_RELATION": "CAPABLE",
+      "GV_RELATION": "GV_CAPABLE_ONLY",
+      "INPUT": "SingleSelectedFutureSelectionV1",
+      "KNOWN_CONSTRAINTS": [],
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LATERAL_EDGES": [
+        "P_DDO",
+        "P_GVEF_PTP_LATERAL"
+      ],
+      "LAYER": "L13",
+      "LEARNING_RELATION": "OBSERVE",
+      "META_RELATION": null,
+      "MI_RELATION": null,
+      "NAME": "CAP24_RUNTIME_BINDING",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OFFLINE_COMPONENTS": [],
+      "OPTIMIZATION_RELATION": null,
+      "OUTPUT": "BoundInstrumentV1",
+      "OWNER": "ops.single_selected_future_runtime_binding_v1",
+      "POPULATION": "BoundInstrumentV1",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "PROVEN_BY_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "PROVEN_BY_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "PURPOSE": "validate+bind; no reselection",
+      "RANK_ROLE": false,
+      "REMOVED_BY": null,
+      "SCORE_ROLE": false,
+      "SELECT_ROLE": false,
+      "STATE": "binding result",
+      "STATE_OWNER": "ops.single_selected_future_runtime_binding_v1",
+      "STATUS": "PROVEN_CURRENT",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TEST_ONLY_COMPONENTS": [],
+      "UPSTREAM_EDGES": [
+        "L12"
+      ]
+    }
+  ],
+  "TEMPORAL_VIEW": "CURRENT_ONLY"
+}

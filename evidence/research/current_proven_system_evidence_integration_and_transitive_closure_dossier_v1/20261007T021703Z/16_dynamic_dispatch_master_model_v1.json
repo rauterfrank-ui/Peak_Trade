@@ -1,0 +1,345 @@
+{
+  "DYNAMIC_DISPATCH_UNKNOWN": 0,
+  "GVEF_DYNAMIC_DISPATCH_UNKNOWN": 0,
+  "IU_DYNAMIC_DISPATCH_UNKNOWN": 0,
+  "SITES": [
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "REMOVED_BY": null,
+      "RESOLUTION": "PRODUCTIVE_TARGET_PROVEN",
+      "SITE": "ranking_v1 lazy import economic_rank_v1",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "REMOVED_BY": null,
+      "RESOLUTION": "CONDITIONAL_TARGET_PROVEN",
+      "SITE": "Cap22 optional top20 residency orchestration",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "REMOVED_BY": null,
+      "RESOLUTION": "DORMANT",
+      "SITE": "Cap23 residency gate",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "REMOVED_BY": null,
+      "RESOLUTION": "OFFLINE_TARGET_PROVEN",
+      "SITE": "GVEF evaluator fanout",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "REMOVED_BY": null,
+      "RESOLUTION": "OFFLINE_TARGET_PROVEN",
+      "SITE": "VectorCorpusRegistry",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "MECHANISM": "getattr(digests, domain.value, None)",
+      "NOTE": "bounded enum domain keys; missing \u2192 None",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "REMOVED_BY": null,
+      "SITE": "src/evaluation/golden_vectors/digest/protected_semantic_digest_layer_v1.py:getattr",
+      "SUPERSEDED_BY": null,
+      "TARGET": "ProtectedSemanticDigestsV1 domain attribute",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TERMINATION": "PRODUCTIVE_TARGET_PROVEN"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "MECHANISM": "typing.Protocol dependency injection",
+      "NOTE": "no string plugin registry found in GVEF package",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "REMOVED_BY": null,
+      "SITE": "src/evaluation/golden_vectors/runner/protocols.py:PreConstraintGateV1",
+      "SUPERSEDED_BY": null,
+      "TARGET": "implementation supplied via GvefRunnerDependenciesV1.PreConstraintGateV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TERMINATION": "CONDITIONAL_TARGET_PROVEN"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "MECHANISM": "typing.Protocol dependency injection",
+      "NOTE": "no string plugin registry found in GVEF package",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "REMOVED_BY": null,
+      "SITE": "src/evaluation/golden_vectors/runner/protocols.py:PostConstraintGateV1",
+      "SUPERSEDED_BY": null,
+      "TARGET": "implementation supplied via GvefRunnerDependenciesV1.PostConstraintGateV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TERMINATION": "CONDITIONAL_TARGET_PROVEN"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "MECHANISM": "typing.Protocol dependency injection",
+      "NOTE": "no string plugin registry found in GVEF package",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "REMOVED_BY": null,
+      "SITE": "src/evaluation/golden_vectors/runner/protocols.py:ReplayAdapterV1",
+      "SUPERSEDED_BY": null,
+      "TARGET": "implementation supplied via GvefRunnerDependenciesV1.ReplayAdapterV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TERMINATION": "CONDITIONAL_TARGET_PROVEN"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "MECHANISM": "typing.Protocol dependency injection",
+      "NOTE": "no string plugin registry found in GVEF package",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "REMOVED_BY": null,
+      "SITE": "src/evaluation/golden_vectors/runner/protocols.py:DomainEvaluatorV1",
+      "SUPERSEDED_BY": null,
+      "TARGET": "implementation supplied via GvefRunnerDependenciesV1.DomainEvaluatorV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TERMINATION": "CONDITIONAL_TARGET_PROVEN"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "MECHANISM": "typing.Protocol dependency injection",
+      "NOTE": "no string plugin registry found in GVEF package",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "REMOVED_BY": null,
+      "SITE": "src/evaluation/golden_vectors/runner/protocols.py:ComparatorV1",
+      "SUPERSEDED_BY": null,
+      "TARGET": "implementation supplied via GvefRunnerDependenciesV1.ComparatorV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TERMINATION": "CONDITIONAL_TARGET_PROVEN"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "MECHANISM": "typing.Protocol dependency injection",
+      "NOTE": "no string plugin registry found in GVEF package",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "REMOVED_BY": null,
+      "SITE": "src/evaluation/golden_vectors/runner/protocols.py:DeltaManifestBuilderV1",
+      "SUPERSEDED_BY": null,
+      "TARGET": "implementation supplied via GvefRunnerDependenciesV1.DeltaManifestBuilderV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TERMINATION": "CONDITIONAL_TARGET_PROVEN"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "MECHANISM": "typing.Protocol dependency injection",
+      "NOTE": "no string plugin registry found in GVEF package",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "REMOVED_BY": null,
+      "SITE": "src/evaluation/golden_vectors/runner/protocols.py:EvidenceBundleBuilderV1",
+      "SUPERSEDED_BY": null,
+      "TARGET": "implementation supplied via GvefRunnerDependenciesV1.EvidenceBundleBuilderV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TERMINATION": "CONDITIONAL_TARGET_PROVEN"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "MECHANISM": "typing.Protocol dependency injection",
+      "NOTE": "no string plugin registry found in GVEF package",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "REMOVED_BY": null,
+      "SITE": "src/evaluation/golden_vectors/runner/protocols.py:EvidenceRegistryV1",
+      "SUPERSEDED_BY": null,
+      "TARGET": "implementation supplied via GvefRunnerDependenciesV1.EvidenceRegistryV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TERMINATION": "CONDITIONAL_TARGET_PROVEN"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "MECHANISM": "typing.Protocol dependency injection",
+      "NOTE": "no string plugin registry found in GVEF package",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "REMOVED_BY": null,
+      "SITE": "src/evaluation/golden_vectors/runner/protocols.py:CorpusIntegrityGateV1",
+      "SUPERSEDED_BY": null,
+      "TARGET": "implementation supplied via GvefRunnerDependenciesV1.CorpusIntegrityGateV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TERMINATION": "CONDITIONAL_TARGET_PROVEN"
+    },
+    {
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "MECHANISM": "typing.Protocol dependency injection",
+      "NOTE": "no string plugin registry found in GVEF package",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PROVENANCE": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "REMOVED_BY": null,
+      "SITE": "src/evaluation/golden_vectors/runner/protocols.py:PromotionEvidenceAdapterProtocolV1",
+      "SUPERSEDED_BY": null,
+      "TARGET": "implementation supplied via GvefRunnerDependenciesV1.PromotionEvidenceAdapterProtocolV1",
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TERMINATION": "CONDITIONAL_TARGET_PROVEN"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FILE": "src/evaluation/golden_vectors",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "POSSIBLE_TARGETS": [
+        "DomainEvaluatorId enum"
+      ],
+      "PROVENANCE": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "PROVEN_TARGETS": [
+        "schema validation only"
+      ],
+      "REMOVED_BY": null,
+      "SELECTOR": "domain_evaluator_id",
+      "SITE_ID": "GVEF.NO_EVALUATOR_FACTORY",
+      "STATUS": "PROVEN_ABSENCE_OF_FACTORY",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "UNRESOLVED_TARGETS": []
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "FILE": "VectorManifest.population_selector.selector_id",
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "POSSIBLE_TARGETS": [],
+      "PROVENANCE": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "PROVEN_TARGETS": [],
+      "REMOVED_BY": null,
+      "SELECTOR": "mechanism_*",
+      "SITE_ID": "GVEF.SELECTOR_ID_DORMANT",
+      "STATUS": "PROVEN_NO_RUNTIME_CONSUMER",
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "UNRESOLVED_TARGETS": []
+    }
+  ],
+  "TEMPORAL_VIEW": "CURRENT_ONLY_FOR_GVEF_IU; GHV79_HISTORICAL_SEPARATE"
+}

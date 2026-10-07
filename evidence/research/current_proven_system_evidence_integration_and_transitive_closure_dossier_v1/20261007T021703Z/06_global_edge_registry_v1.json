@@ -1,0 +1,1850 @@
+{
+  "COUNT": 61,
+  "EDGES": [
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "L00",
+      "GLOBAL_EDGE_ID": "E.L00_L01",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "raw instruments",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "L01",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "L01",
+      "GLOBAL_EDGE_ID": "E.L01_L02",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "eligible set",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "L02",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "L02",
+      "GLOBAL_EDGE_ID": "E.L02_L03",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "Cap21 IDs",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "L03",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "L03",
+      "GLOBAL_EDGE_ID": "E.L03_L04",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "MD marks",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "L04",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "L04",
+      "GLOBAL_EDGE_ID": "E.L04_L05",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "features",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "L05",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "L05",
+      "GLOBAL_EDGE_ID": "E.L05_L06",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "S_STAR",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "L06",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "L06",
+      "GLOBAL_EDGE_ID": "E.L06_L07",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "scores\u2192order",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "L07",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "L07",
+      "GLOBAL_EDGE_ID": "E.L07_L08",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "top20",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "L08",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "L08",
+      "GLOBAL_EDGE_ID": "E.L08_L09",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "top20 admit",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "L09",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "L08",
+      "GLOBAL_EDGE_ID": "E.L08_L10",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "rank order",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "L10",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "L09",
+      "GLOBAL_EDGE_ID": "E.L09_L10",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "residency ref",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "L10",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "L10",
+      "GLOBAL_EDGE_ID": "E.L10_L11",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "eligible",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "L11",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "L11",
+      "GLOBAL_EDGE_ID": "E.L11_L12",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "constrained choice",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "L12",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "L12",
+      "GLOBAL_EDGE_ID": "E.L12_L13",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "SingleSelectedFutureSelectionV1",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "L13",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "L13",
+      "GLOBAL_EDGE_ID": "E.L13_OUT",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "BoundInstrumentV1",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "OUTSIDE",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "PARALLEL",
+      "GLOBAL_EDGE_ID": "E.LAT_DDO",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "reason codes",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "PARALLEL",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "L07",
+      "GLOBAL_EDGE_ID": "E.LAT_RU",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "RU evidence",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "PARALLEL",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "PARALLEL",
+      "GLOBAL_EDGE_ID": "E.LAT_OU",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "OU evidence",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "PARALLEL",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "PARALLEL",
+      "GLOBAL_EDGE_ID": "E.LAT_SL",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "SL evidence",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "PARALLEL",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "PARALLEL",
+      "GLOBAL_EDGE_ID": "E.LAT_MI",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "MI evidence",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "PARALLEL",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "L02",
+      "GLOBAL_EDGE_ID": "E.LAT_PROFILE",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "profile",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/13_iu_cross_layer_edges_v1.jsonl"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "PARALLEL",
+      "TRANSFORMATION": null
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L00",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L00->L01",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "population",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L01",
+      "TRANSFORMATION": "handoff"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L01",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L01->L02",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "population",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L02",
+      "TRANSFORMATION": "handoff"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L02",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L02->L03",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "population",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L03",
+      "TRANSFORMATION": "handoff"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L03",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L03->L04",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "population",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L04",
+      "TRANSFORMATION": "handoff"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L04",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L04->L05",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "population",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L05",
+      "TRANSFORMATION": "handoff"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L05",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L05->L06",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "population",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L06",
+      "TRANSFORMATION": "handoff"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L06",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L06->L07",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "population",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L07",
+      "TRANSFORMATION": "handoff"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L07",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L07->L08",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "population",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L08",
+      "TRANSFORMATION": "handoff"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L08",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L08->L09_OR_L10",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "population",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L09_OR_L10",
+      "TRANSFORMATION": "handoff"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "COMPATIBLE_TRANSFORMATIVE",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L08",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L08->L09",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "population",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L09",
+      "TRANSFORMATION": "admission/lifecycle; RANKING/SELECTION authority false"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L09",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L09->L10",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "population",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L10",
+      "TRANSFORMATION": "handoff"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "COMPATIBLE_TRANSFORMATIVE",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L08|L09",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L08|L09->L10",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "population",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L10",
+      "TRANSFORMATION": "eligibility; no rescore/rerank"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L10",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L10->L11",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "population",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L11",
+      "TRANSFORMATION": "handoff"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L11",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L11->L12",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "population",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L12",
+      "TRANSFORMATION": "handoff"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L12",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L12->L13",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "population",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L13",
+      "TRANSFORMATION": "handoff"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L13",
+      "GLOBAL_EDGE_ID": "IU.SEQ.L13->TERMINAL_TO_FULL_CORE",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "population",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.TERMINAL_TO_FULL_CORE",
+      "TRANSFORMATION": "handoff"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "COMPATIBLE_TRANSFORMATIVE",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L02",
+      "GLOBAL_EDGE_ID": "IU.BR.L02->L03_econ_md",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "branch",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L03",
+      "TRANSFORMATION": "L03_econ_md"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "COMPATIBLE_TRANSFORMATIVE",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L02",
+      "GLOBAL_EDGE_ID": "IU.BR.L02->L07_universe_validate",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "branch",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L07",
+      "TRANSFORMATION": "L07_universe_validate"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "COMPATIBLE_TRANSFORMATIVE",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L08",
+      "GLOBAL_EDGE_ID": "IU.BR.L08->L09_conditional",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "branch",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L09",
+      "TRANSFORMATION": "L09_conditional"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "COMPATIBLE_TRANSFORMATIVE",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L08",
+      "GLOBAL_EDGE_ID": "IU.BR.L08->L10_direct",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "branch",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/intelligent_universe_golden_vector_nodewise_excavation_v1/20261007T014200Z/03_iu_layer_model_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L10",
+      "TRANSFORMATION": "L10_direct"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "GVEF.CORPUS.MANIFEST",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.CORPUS.MANIFEST->GVEF.CORPUS.REGISTRY",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "corpus_manifest",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "GVEF.CORPUS.REGISTRY",
+      "TRANSFORMATION": "LOAD_VALIDATE"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "GOVERNED_BOUNDARY",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "GVEF.CORPUS.REGISTRY",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.CORPUS.REGISTRY->GVEF.CORPUS.GATE",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "CorpusRegistryEntry",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "GVEF.CORPUS.GATE",
+      "TRANSFORMATION": "INTEGRITY_BIND"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "GVEF.CORPUS.GATE",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.CORPUS.GATE->GVEF.RUN.CONTEXT",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "corpus_identity",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "GVEF.RUN.CONTEXT",
+      "TRANSFORMATION": "BIND"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "TEST_ONLY",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "GVEF.RUN.CONTEXT",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.RUN.CONTEXT->GVEF.RUN.DEPS",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "context",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "GVEF.RUN.DEPS",
+      "TRANSFORMATION": "DI_COMPOSE"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "GVEF.RUN.DEPS",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.RUN.DEPS->GVEF.RUN.GENERIC",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "deps",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "GVEF.RUN.GENERIC",
+      "TRANSFORMATION": "EXECUTE"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "OBSERVATION_EVIDENCE",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "GVEF.RUN.GENERIC",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.RUN.GENERIC->GVEF.EVAL.RU",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "replay",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "GVEF.EVAL.RU",
+      "TRANSFORMATION": "EVALUATE"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "OBSERVATION_EVIDENCE",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "GVEF.RUN.GENERIC",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.RUN.GENERIC->GVEF.DIGEST.COMPARATOR",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "results",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "GVEF.DIGEST.COMPARATOR",
+      "TRANSFORMATION": "COMPARE"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "GOVERNED_BOUNDARY",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "GVEF.RUN.GENERIC",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.RUN.GENERIC->GVEF.CONSTRAINTS",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "run",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "GVEF.CONSTRAINTS",
+      "TRANSFORMATION": "PRE_POST_GATE"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "OBSERVATION_EVIDENCE",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "GVEF.RUN.GENERIC",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.RUN.GENERIC->GVEF.EVIDENCE.REGISTRY",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "EvidenceBundle",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "GVEF.EVIDENCE.REGISTRY",
+      "TRANSFORMATION": "REGISTER"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "GOVERNED_BOUNDARY",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "GVEF.EVIDENCE.REGISTRY",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.EVIDENCE.REGISTRY->GVEF.PROMOTION.ADAPTER",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "bundle",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "GVEF.PROMOTION.ADAPTER",
+      "TRANSFORMATION": "ENVELOPE"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "GVEF.GV.RU",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.GV.RU->GVEF.CORPUS.MANIFEST",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "vector_id",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "GVEF.CORPUS.MANIFEST",
+      "TRANSFORMATION": "MEMBERSHIP"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "GVEF.GV.PTP",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.GV.PTP->GVEF.CORPUS.MANIFEST",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "vector_id",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "GVEF.CORPUS.MANIFEST",
+      "TRANSFORMATION": "MEMBERSHIP"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "OBSERVATION_EVIDENCE",
+      "EXTERNAL_CLOSURE_EDGE": false,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "GVEF.EVAL.RU",
+      "GLOBAL_EDGE_ID": "GVEF.E.GVEF.EVAL.RU->IU.L07",
+      "INITIAL_CORE_EDGE": true,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "ranking_universe observation",
+      "PRODUCTIVE_REACHABILITY": "OFFLINE_TEST",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "evidence/research/current_gvef_golden_vector_nodewise_semantic_excavation_v1/20261007T012700Z/07_gvef_fabric_reconstruction_v1.json"
+      ],
+      "SOURCE_RUNS": [
+        "GVEF_GV_NODEWISE_20261007T012700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L07",
+      "TRANSFORMATION": "OBSERVE"
+    },
+    {
+      "AUTHORITY_EFFECT": "PRODUCTIVE_BOUNDED",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "GOVERNED_BOUNDARY",
+      "EXTERNAL_CLOSURE_EDGE": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L12",
+      "GLOBAL_EDGE_ID": "PROD.E.IU.L12->IU.L13",
+      "INITIAL_CORE_EDGE": false,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "selected_future",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "docs/ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "NE_CANONICAL_CLOSURE_20261007T010700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+        "6ed52d01ac181e629b2839271f83b52fc7ffe61f"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "IU.L13",
+      "TRANSFORMATION": "BIND_HANDOFF"
+    },
+    {
+      "AUTHORITY_EFFECT": "PRODUCTIVE_BOUNDED",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "IU.L13",
+      "GLOBAL_EDGE_ID": "PROD.E.IU.L13->PROD.FULL_CORE",
+      "INITIAL_CORE_EDGE": false,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "Bound_instrument",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "docs/ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "NE_CANONICAL_CLOSURE_20261007T010700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+        "6ed52d01ac181e629b2839271f83b52fc7ffe61f"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "PROD.FULL_CORE",
+      "TRANSFORMATION": "JOIN"
+    },
+    {
+      "AUTHORITY_EFFECT": "PRODUCTIVE_BOUNDED",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "PROD.FULL_CORE",
+      "GLOBAL_EDGE_ID": "PROD.E.PROD.FULL_CORE->PROD.MV2_DP",
+      "INITIAL_CORE_EDGE": false,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "decision_inputs",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "docs/ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "NE_CANONICAL_CLOSURE_20261007T010700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+        "6ed52d01ac181e629b2839271f83b52fc7ffe61f"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "PROD.MV2_DP",
+      "TRANSFORMATION": "DECIDE"
+    },
+    {
+      "AUTHORITY_EFFECT": "PRODUCTIVE_BOUNDED",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": true,
+      "FIRST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "FROM": "PROD.MV2_DP",
+      "GLOBAL_EDGE_ID": "PROD.E.PROD.MV2_DP->PROD.CONFIRMATION",
+      "INITIAL_CORE_EDGE": false,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "PAYLOAD": "side/confirm",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "docs/ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md"
+      ],
+      "SOURCE_RUNS": [
+        "IU_GV_NODEWISE_20261007T014200Z",
+        "NE_CANONICAL_CLOSURE_20261007T010700Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+        "6ed52d01ac181e629b2839271f83b52fc7ffe61f"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "PROD.CONFIRMATION",
+      "TRANSFORMATION": "CONFIRM"
+    },
+    {
+      "AUTHORITY_EFFECT": "PRODUCTIVE_BOUNDED",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "EXACT_HANDOFF",
+      "EXTERNAL_CLOSURE_EDGE": true,
+      "FIRST_PROVEN_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+      "FROM": "PROD.CONFIRMATION",
+      "GLOBAL_EDGE_ID": "PROD.E.PROD.CONFIRMATION->PROD.NATURAL_ENTER",
+      "INITIAL_CORE_EDGE": false,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+      "PAYLOAD": "enter_disposition",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "docs/ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md"
+      ],
+      "SOURCE_RUNS": [
+        "NE_CANONICAL_CLOSURE_20261007T010700Z",
+        "K1_WITNESS_20261007T004808Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+        "6ed52d01ac181e629b2839271f83b52fc7ffe61f"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "PROD.NATURAL_ENTER",
+      "TRANSFORMATION": "NATURAL_ENTER"
+    },
+    {
+      "AUTHORITY_EFFECT": "PRODUCTIVE_BOUNDED",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "GOVERNED_BOUNDARY",
+      "EXTERNAL_CLOSURE_EDGE": true,
+      "FIRST_PROVEN_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+      "FROM": "PROD.NATURAL_ENTER",
+      "GLOBAL_EDGE_ID": "PROD.E.PROD.NATURAL_ENTER->PROD.PRE_EXTERNAL",
+      "INITIAL_CORE_EDGE": false,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+      "PAYLOAD": "same_causal_enter",
+      "PRODUCTIVE_REACHABILITY": "PRODUCTIVE",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "docs/ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md"
+      ],
+      "SOURCE_RUNS": [
+        "NE_CANONICAL_CLOSURE_20261007T010700Z",
+        "K1_WITNESS_20261007T004808Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+        "6ed52d01ac181e629b2839271f83b52fc7ffe61f"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "PROD.PRE_EXTERNAL",
+      "TRANSFORMATION": "PRE_EXTERNAL"
+    },
+    {
+      "AUTHORITY_EFFECT": "NONE",
+      "CURRENT_EXISTENCE_PROVEN": true,
+      "CURRENT_REPROOF_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_SEMANTICS_PROVEN": true,
+      "EDGE_CLASS": "GOVERNED_BOUNDARY",
+      "EXTERNAL_CLOSURE_EDGE": true,
+      "FIRST_PROVEN_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+      "FROM": "PROD.PRE_EXTERNAL",
+      "GLOBAL_EDGE_ID": "PROD.E.PROD.PRE_EXTERNAL->PROD.POST_BOUNDARY",
+      "INITIAL_CORE_EDGE": false,
+      "LAST_PROVEN_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "OBSERVED_AT_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+      "PAYLOAD": "HARD_STOP",
+      "PRODUCTIVE_REACHABILITY": "NOT_AUTHORIZED",
+      "REMOVED_BY": null,
+      "SOURCE_ARTIFACTS": [
+        "docs/ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md"
+      ],
+      "SOURCE_RUNS": [
+        "NE_CANONICAL_CLOSURE_20261007T010700Z",
+        "K1_WITNESS_20261007T004808Z"
+      ],
+      "SOURCE_SHAS": [
+        "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+        "6ed52d01ac181e629b2839271f83b52fc7ffe61f"
+      ],
+      "SUPERSEDED_BY": null,
+      "TEMPORAL_STATUS": "PROVEN_CURRENT",
+      "TO": "PROD.POST_BOUNDARY",
+      "TRANSFORMATION": "NO_POST"
+    }
+  ],
+  "TEMPORAL_NOTE": "Each edge carries TEMPORAL_STATUS"
+}

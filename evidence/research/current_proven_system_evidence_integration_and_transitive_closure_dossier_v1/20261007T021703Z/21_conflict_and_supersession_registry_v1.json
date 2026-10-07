@@ -1,0 +1,46 @@
+{
+  "CONFLICTS": [
+    {
+      "ADJUDICATION_REASON": "Additive supersession; residual CONFIG_FIELDS_UNEXPLAINED not CURRENT functional-path blocker",
+      "AUTHORITY_ORDER": [
+        "NE_CANONICAL_CLOSURE",
+        "TRACKED_NE_DOC",
+        "R4_SEALED_HISTORICAL"
+      ],
+      "CLAIM_A": {
+        "CROSS_PACKAGE_RECONCILIATION_FIXPOINT": false,
+        "EXCAVATION_FIXPOINT": false,
+        "SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f"
+      },
+      "CLAIM_B": {
+        "SCOPE": "CURRENT_FUNCTIONAL_PATH_THROUGH_PRE_EXTERNAL_ONLY",
+        "SUPERSEDING_CURRENT_VALUE": true
+      },
+      "CONFLICT_ID": "C001_ROUND4_EXCAVATION_FIXPOINT_VS_NE_CLOSURE",
+      "CURRENT_ADJUDICATION": "HISTORICAL_SUPERSEDED_FOR_FUNCTIONAL_PATH_SCOPE",
+      "SCOPE_NOTE": "Not a contradiction of Round4 broad inventory; scope mismatch resolved",
+      "SOURCE_A": "evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/20261006T234616Z_hard_wall_120s_v1/WHOLE_SYSTEM_SEMANTIC_EDGE_CLOSURE_ROUND_4_V1/14_final_metrics_and_fixpoints_v1.json",
+      "SOURCE_B": "evidence/research/current_natural_enter_pre_external_canonical_closure_v1/20261007T010700Z/04_round4_fixpoint_supersession_v1.json",
+      "STATUS": "RECONCILED",
+      "SUBJECT": "Round4 EXCAVATION_FIXPOINT / CROSS_PACKAGE_RECONCILIATION_FIXPOINT interpretation for CURRENT functional path"
+    },
+    {
+      "ADJUDICATION_REASON": "Remembered counts not found as exact fields; use source metrics instead",
+      "AUTHORITY_ORDER": [
+        "SOURCE_ARTIFACTS",
+        "PROMPT_MEMORY"
+      ],
+      "CLAIM_A": "42/42 packages placed; 1937 cross-package edges",
+      "CLAIM_B": {
+        "CROSS_PACKAGE_EDGE_COUNT": 1779,
+        "PACKAGE_OWNERSHIP_FIXPOINT": true
+      },
+      "CONFLICT_ID": "C002_REMEMBERED_42_1937_NOT_IN_SOURCE",
+      "CURRENT_ADJUDICATION": "INTEGRATION_DISCOVERED_GAP_NOT_SOURCE_CONFLICT",
+      "SOURCE_A": "WORK_PACKAGE_PROMPT_MEMORY",
+      "SOURCE_B": "evidence/research/current_productive_ghv_input_readiness_and_convergence_v1/20261006T234616Z_hard_wall_120s_v1/WHOLE_SYSTEM_SEMANTIC_EXCAVATION_ROUND_3_V1/05_cross_probe_reconciliation_round3_v1.json",
+      "STATUS": "RECONCILED_AS_GAP",
+      "SUBJECT": "Remembered whole-system metrics 42/42 packages and 1937 edges"
+    }
+  ]
+}

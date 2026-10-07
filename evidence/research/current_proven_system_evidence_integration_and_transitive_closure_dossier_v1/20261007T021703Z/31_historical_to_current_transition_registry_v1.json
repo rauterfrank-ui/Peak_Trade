@@ -1,0 +1,58 @@
+{
+  "TRANSITIONS": [
+    {
+      "CHANGE_TYPE": "REPLACED",
+      "CURRENT_SEMANTICS": "functional path proven through PRE_EXTERNAL",
+      "CURRENT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_STATUS": "SUPERSEDED_FOR_FUNCTIONAL_PATH",
+      "HISTORICAL_SEMANTICS": "open blockers for CURRENT functional path",
+      "HISTORICAL_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+      "HISTORICAL_STATUS": "EXCAVATION_FIXPOINT=false",
+      "OBJECT": "Round4 EXCAVATION_FIXPOINT interpretation",
+      "OBJECT_TYPE": "CONCLUSION",
+      "PROVENANCE": [
+        "NE/04",
+        "R4/14a"
+      ],
+      "REMOVED_BY": null,
+      "RESOLUTION_SOURCE": "NE_CANONICAL_CLOSURE",
+      "SUPERSEDED_BY": "NE/04_round4_fixpoint_supersession_v1.json"
+    },
+    {
+      "CHANGE_TYPE": "REPROVEN",
+      "CURRENT_SEMANTICS": "same claims in tracked CURRENT doc",
+      "CURRENT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_STATUS": "PROVEN_CURRENT_VIA_CANONICAL_CLOSURE",
+      "HISTORICAL_SEMANTICS": "NATURAL_ENTER_AND_PRE_EXTERNAL_PROVEN",
+      "HISTORICAL_SHA": "6ed52d01ac181e629b2839271f83b52fc7ffe61f",
+      "HISTORICAL_STATUS": "WITNESS_PROVEN",
+      "OBJECT": "Natural Enter \u2192 PRE_EXTERNAL runtime",
+      "OBJECT_TYPE": "PRODUCTIVE_PATH",
+      "PROVENANCE": [
+        "NE_DOC",
+        "K1"
+      ],
+      "REMOVED_BY": null,
+      "RESOLUTION_SOURCE": "CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md",
+      "SUPERSEDED_BY": null
+    },
+    {
+      "CHANGE_TYPE": "UNCHANGED",
+      "CURRENT_SEMANTICS": "unchanged",
+      "CURRENT_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "CURRENT_STATUS": "PROVEN_CURRENT",
+      "HISTORICAL_SEMANTICS": "excavated at CURRENT",
+      "HISTORICAL_SHA": "0316e9e20dd589e4b3b6e7d21941e3e217868eaf",
+      "HISTORICAL_STATUS": "N/A_SAME_SHA",
+      "OBJECT": "IU/GVEF surfaces",
+      "OBJECT_TYPE": "FABRIC",
+      "PROVENANCE": [
+        "IU/17",
+        "GVEF/12"
+      ],
+      "REMOVED_BY": null,
+      "RESOLUTION_SOURCE": "IU+GVEF fixpoints",
+      "SUPERSEDED_BY": null
+    }
+  ]
+}
