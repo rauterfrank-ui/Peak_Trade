@@ -13,7 +13,7 @@
   "blockers": [],
   "capability_id": "INTEGRATED_OFFLINE_REPLAY_AND_CORRECTNESS_HEAD_BOUND_V1",
   "crs_provenance": "wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.simulated_economics_crs_boundary_binding_v1.build_simulated_economics_crs_boundary_state_file_v1",
-  "implementation_surface_digest_sha256": "e77d92121c3e5249d6a8a93f9d9723c8438831401442226299685c64b974a2d8",
+  "implementation_surface_digest_sha256": "6029d60b1d95afd13f461894cfa2c1bb2ada93e9a123d530cc640000729fcc3c",
   "input_class": "CONTROLLED_FIXTURE_LIFECYCLE",
   "lifecycle_fixture": "adverse_exit_fixture_v1",
   "notes": [
@@ -24,8 +24,8 @@
   ],
   "ok": true,
   "package_marker": "INTEGRATED_OFFLINE_REPLAY_AND_CORRECTNESS_HEAD_BOUND_V1=true",
-  "proven_source_sha": "1572fdf03b580e4eaa72c6828f2de1e40309b1cc",
-  "repository_head_sha": "1572fdf03b580e4eaa72c6828f2de1e40309b1cc",
+  "proven_source_sha": "3c1b075eea9d7d97ca5ddd0eaea88a72d0967553",
+  "repository_head_sha": "3c1b075eea9d7d97ca5ddd0eaea88a72d0967553",
   "schema_id": "ops.integrated_offline_replay_and_correctness_head_bound_v1",
   "schema_version": "v1"
 }
