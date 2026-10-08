@@ -32,6 +32,7 @@ from scripts.ops.productive_historical_replay_adapter_v1 import (
     build_strategy_agreement_signal_binding_v1,
     derive_first_blocking_node_v1,
     precompute_economic_research_g17_typed_estimates_v1,
+    restore_productive_bindings_after_coerce_v1,
     update_binding_report_from_replay_v1,
 )
 from src.backtest.cost_config_v0 import (
@@ -397,13 +398,16 @@ def _run_productive_context_preflight_v1(
             trading_epoch=i,
             observation_acceptance_result=obs.result,
         )
-        coerced_built = _coerce_replay_input_enums_for_integrated_replay_v1(built)
         wired, epoch_report = _wire_historical_productive_replay_input_v1(
             repo_root=repo_root,
-            replay_input=coerced_built,
+            replay_input=built,
             context=context,
             agreement_binding=agreement_binding,
             trading_epoch=i,
+        )
+        replay_input = restore_productive_bindings_after_coerce_v1(
+            _coerce_replay_input_enums_for_integrated_replay_v1(wired),
+            wired=wired,
         )
         if epoch_report.f1_m9_blocker and not f1_m9_blocker:
             f1_m9_blocker = epoch_report.f1_m9_blocker
@@ -422,7 +426,7 @@ def _run_productive_context_preflight_v1(
                 "binding_report": report.to_dict(),
             }
 
-        current_result = invoke_current_authoritative_replay_v1(replay_input=wired)
+        current_result = invoke_current_authoritative_replay_v1(replay_input=replay_input)
         if not current_result.replay_pass:
             return {
                 "productive_context_preflight_pass": False,
@@ -910,15 +914,17 @@ def run_historical_qualification_v1(
             trading_epoch=i,
             observation_acceptance_result=obs.result,
         )
-        coerced_built = _coerce_replay_input_enums_for_integrated_replay_v1(built)
         wired, _epoch_binding = _wire_historical_productive_replay_input_v1(
             repo_root=root,
-            replay_input=coerced_built,
+            replay_input=built,
             context=context,
             agreement_binding=agreement_binding,
             trading_epoch=i,
         )
-        replay_input = wired
+        replay_input = restore_productive_bindings_after_coerce_v1(
+            _coerce_replay_input_enums_for_integrated_replay_v1(wired),
+            wired=wired,
+        )
         current_result = invoke_current_authoritative_replay_v1(replay_input=replay_input)
         offline_result = invoke_offline_replay_v1(replay_input=replay_input)
         if not current_result.replay_pass or not offline_result.replay_pass:

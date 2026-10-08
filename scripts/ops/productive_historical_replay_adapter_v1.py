@@ -104,6 +104,40 @@ def apply_g17_typed_volatility_to_context_v1(
     )
 
 
+def restore_productive_bindings_after_coerce_v1(
+    coerced: IntegratedOfflineReplayInputV1,
+    *,
+    wired: IntegratedOfflineReplayInputV1,
+) -> IntegratedOfflineReplayInputV1:
+    """`_coerce_replay_input_enums_for_integrated_replay_v1` rebuilds input and drops productive carriers."""
+    merged_context = coerced.canonical_market_context
+    wired_typed = getattr(wired.canonical_market_context, "canonical_volatility_estimate", None)
+    if wired_typed is not None:
+        merged_context = bind_typed_canonical_volatility_estimate_into_market_context_v1(
+            merged_context,
+            wired_typed,
+        )
+    fresh_eligibility = evaluate_typed_volatility_binding_eligibility_v1(merged_context)
+    return replace(
+        coerced,
+        canonical_market_context=merged_context,
+        current_instrument_capital_risk_sizing_boundary_state_file=(
+            wired.current_instrument_capital_risk_sizing_boundary_state_file
+        ),
+        require_productive_typed_volatility_presence_gate=(
+            wired.require_productive_typed_volatility_presence_gate
+        ),
+        productive_typed_volatility_binding_eligibility=fresh_eligibility,
+        governed_authorized_productive_parameter_seam_record=(
+            wired.governed_authorized_productive_parameter_seam_record
+        ),
+        strategy_suitability_agreement_material=wired.strategy_suitability_agreement_material,
+        scope_prerequisites=wired.scope_prerequisites,
+        regime_id=wired.regime_id,
+        regime_status=wired.regime_status,
+    )
+
+
 @dataclass
 class ProductiveContextBindingReportV1:
     g17_binding_complete: bool = False
