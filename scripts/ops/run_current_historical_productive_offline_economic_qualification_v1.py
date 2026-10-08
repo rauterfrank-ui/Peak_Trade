@@ -397,9 +397,10 @@ def _run_productive_context_preflight_v1(
             trading_epoch=i,
             observation_acceptance_result=obs.result,
         )
+        coerced_built = _coerce_replay_input_enums_for_integrated_replay_v1(built)
         wired, epoch_report = _wire_historical_productive_replay_input_v1(
             repo_root=repo_root,
-            replay_input=built,
+            replay_input=coerced_built,
             context=context,
             agreement_binding=agreement_binding,
             trading_epoch=i,
@@ -421,8 +422,7 @@ def _run_productive_context_preflight_v1(
                 "binding_report": report.to_dict(),
             }
 
-        replay_input = _coerce_replay_input_enums_for_integrated_replay_v1(wired)
-        current_result = invoke_current_authoritative_replay_v1(replay_input=replay_input)
+        current_result = invoke_current_authoritative_replay_v1(replay_input=wired)
         if not current_result.replay_pass:
             return {
                 "productive_context_preflight_pass": False,
@@ -910,14 +910,15 @@ def run_historical_qualification_v1(
             trading_epoch=i,
             observation_acceptance_result=obs.result,
         )
+        coerced_built = _coerce_replay_input_enums_for_integrated_replay_v1(built)
         wired, _epoch_binding = _wire_historical_productive_replay_input_v1(
             repo_root=root,
-            replay_input=built,
+            replay_input=coerced_built,
             context=context,
             agreement_binding=agreement_binding,
             trading_epoch=i,
         )
-        replay_input = _coerce_replay_input_enums_for_integrated_replay_v1(wired)
+        replay_input = wired
         current_result = invoke_current_authoritative_replay_v1(replay_input=replay_input)
         offline_result = invoke_offline_replay_v1(replay_input=replay_input)
         if not current_result.replay_pass or not offline_result.replay_pass:
@@ -1080,7 +1081,13 @@ def run_historical_qualification_v1(
     if trade_count == 0 and state.fill_count > 0:
         trade_count = max(1, state.fill_count // 2)
 
-    productive_context_complete = binding_report.productive_context_complete
+    productive_context_complete = bool(
+        binding_report.crs_boundary_bound
+        and binding_report.g17_binding_complete
+        and binding_report.suitability_binding_complete
+        and binding_report.cap61_binding_complete
+        and binding_report.confirmation_binding_complete
+    )
     productive_decision_equivalence_verified = bool(de_verify.equivalence_verified)
     stats_dict = stats.to_dict()
     top_blocking = stats.blocking_reason_counts.most_common(3)
