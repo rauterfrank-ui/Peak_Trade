@@ -31,9 +31,11 @@ from src.ops.integrated_offline_economic_evidence_v1.constants_v1 import (
 from src.ops.integrated_offline_economic_evidence_v1.integrated_verifier_v1 import (
     verify_integrated_offline_economic_evidence_v1,
 )
+from tests.ops.b2_offline_economic_fixture_v1 import write_minimal_productive_b2_fixtures
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 EXPECTED_SHA = "a" * 40
+_B2_FIXTURES = write_minimal_productive_b2_fixtures(REPO_ROOT)
 
 
 def _d(text: str) -> str:
@@ -77,16 +79,16 @@ def _minimal_productive_index(*, cap23_enabled: bool = False) -> dict[str, Any]:
                 "venue_native_id": "ETH-USD_UM_XPERP-310404",
                 "market_type": "linear_perpetual",
                 "contract_type": "um_xperp",
-                "instrument_mapping_digest_sha256": _d("map"),
+                "instrument_mapping_digest_sha256": _B2_FIXTURES["mapping_digest"],
             },
             "universe_identity_v1": residency,
             "market_data_lineage_v1": {
                 "md_lineage_class": "admissible_versioned_futures_offline",
-                "dataset_content_digest_sha256": _d("dataset"),
+                "dataset_content_digest_sha256": _B2_FIXTURES["dataset_digest"],
                 "bridge_contract_id": MD_BRIDGE_CONTRACT_ID,
                 "equivalence_attestation_ref": {
-                    "artifact_relpath": "attestation/md_bridge_attestation_v1.json",
-                    "artifact_digest_sha256": _d("attest"),
+                    "artifact_relpath": _B2_FIXTURES["md_relpath"],
+                    "artifact_digest_sha256": _B2_FIXTURES["md_digest"],
                 },
             },
             "productive_gate_binding_v1": {
@@ -95,8 +97,8 @@ def _minimal_productive_index(*, cap23_enabled: bool = False) -> dict[str, Any]:
                 "confirmation_progression_binding_mode": "MUST_REPLAY",
             },
             "decision_equivalence_ref": {
-                "artifact_relpath": "decision_equivalence/CURRENT_OFFLINE_DECISION_EQUIVALENCE_V1.json",
-                "artifact_digest_sha256": _d("de"),
+                "artifact_relpath": _B2_FIXTURES["de_relpath"],
+                "artifact_digest_sha256": _B2_FIXTURES["de_digest"],
                 "equivalence_class": DECISION_EQUIVALENCE_CLASS_PRODUCTIVE,
             },
             "economic_execution_model_identity_v1": {
@@ -121,6 +123,7 @@ def test_productive_identity_minimal_pass() -> None:
     doc = _minimal_productive_index()
     result = verify_canonical_identity_binding_v1(
         index_document=doc,
+        repo_root=REPO_ROOT,
         expected_proven_source_sha=EXPECTED_SHA,
         expected_canonical_decision_config_digest_sha256=_d("decision_cfg"),
         expected_component_versions_digest_sha256=_d("components"),

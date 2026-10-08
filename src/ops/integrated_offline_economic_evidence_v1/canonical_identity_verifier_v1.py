@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Mapping
 
 from src.ops.integrated_offline_economic_evidence_v1.constants_v1 import (
@@ -26,6 +27,17 @@ from src.ops.integrated_offline_economic_evidence_v1.constants_v1 import (
     RESIDENCY_APPLICABILITY_NOT_ENABLED,
     SIMULATED_ECONOMICS_BRIDGE_OWNER,
 )
+from src.ops.integrated_offline_economic_evidence_v1.current_offline_decision_equivalence_v1 import (
+    DecisionEquivalenceVerificationContextV1,
+    verify_current_offline_decision_equivalence_v1,
+)
+from src.ops.integrated_offline_economic_evidence_v1.current_offline_md_bridge_v1 import (
+    verify_current_offline_md_bridge_v1,
+)
+from src.ops.integrated_offline_economic_evidence_v1.domain_contracts_v1 import (
+    safe_resolve_under_repo,
+    sha256_file,
+)
 from src.ops.single_selected_future_policy_v1.constants_v1 import (
     CAP23_RESIDENCY_ELIGIBILITY_GATE_ENABLED,
 )
@@ -38,6 +50,8 @@ _SHA64 = re.compile(r"^[0-9a-fA-F]{64}$")
 class CanonicalIdentityVerificationResultV1:
     verified: bool
     productive_identity_verified: bool
+    md_bridge_content_verified: bool = False
+    decision_equivalence_content_verified: bool = False
     blockers: list[str] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
 
@@ -45,6 +59,8 @@ class CanonicalIdentityVerificationResultV1:
         return {
             "verified": self.verified,
             "productive_identity_verified": self.productive_identity_verified,
+            "md_bridge_content_verified": self.md_bridge_content_verified,
+            "decision_equivalence_content_verified": self.decision_equivalence_content_verified,
             "blockers": list(self.blockers),
             "notes": list(self.notes),
             "verifier_id": CANONICAL_IDENTITY_VERIFIER_ID,
@@ -78,9 +94,34 @@ def resolve_cap23_residency_gate_enabled_for_identity_v1(
     return bool(CAP23_RESIDENCY_ELIGIBILITY_GATE_ENABLED)
 
 
+def _verify_referenced_artifact_digest(
+    *,
+    repo_root: Path,
+    ref: Mapping[str, Any],
+    prefix: str,
+) -> tuple[str | None, list[str]]:
+    relpath = str(ref.get("artifact_relpath") or "")
+    expected_digest = str(ref.get("artifact_digest_sha256") or "")
+    blockers: list[str] = []
+    if not relpath:
+        return None, [f"{prefix}:ARTIFACT_RELPATH_MISSING"]
+    target = safe_resolve_under_repo(repo_root=repo_root, relpath=relpath)
+    if target is None:
+        return None, [f"{prefix}:ARTIFACT_RELPATH_FORBIDDEN"]
+    if not target.is_file():
+        return None, [f"{prefix}:ARTIFACT_MISSING"]
+    actual = sha256_file(target)
+    if not _SHA64.match(expected_digest):
+        blockers.append(f"{prefix}:ARTIFACT_DIGEST_INVALID")
+    elif actual.lower() != expected_digest.lower():
+        blockers.append(f"{prefix}:ARTIFACT_DIGEST_MISMATCH")
+    return relpath, blockers
+
+
 def verify_canonical_identity_binding_v1(
     *,
     index_document: Mapping[str, Any],
+    repo_root: Path | None = None,
     expected_proven_source_sha: str | None = None,
     expected_canonical_decision_config_digest_sha256: str | None = None,
     expected_component_versions_digest_sha256: str | None = None,
@@ -364,11 +405,67 @@ def verify_canonical_identity_binding_v1(
         if policy.get(forbidden_threshold) is not None:
             blockers.append(f"FORBIDDEN_POLICY_THRESHOLD_EMBEDDED:{forbidden_threshold}")
 
+    md_bridge_content_verified = False
+    decision_equivalence_content_verified = False
+    structural_blockers = sorted(set(blockers))
+
+    if (
+        repo_root is not None
+        and scope == EVIDENCE_SCOPE_PRODUCTIVE_CURRENT
+        and not structural_blockers
+    ):
+        root = repo_root.resolve()
+        md_relpath, md_ref_blockers = _verify_referenced_artifact_digest(
+            repo_root=root,
+            ref=md.get("equivalence_attestation_ref")
+            if isinstance(md.get("equivalence_attestation_ref"), Mapping)
+            else {},
+            prefix="MD:ATTESTATION",
+        )
+        blockers.extend(md_ref_blockers)
+        md_result = verify_current_offline_md_bridge_v1(
+            repo_root=root,
+            artifact_relpath=md_relpath,
+            expected_dataset_content_digest_sha256=str(
+                md.get("dataset_content_digest_sha256") or ""
+            ),
+            expected_instrument_mapping_digest_sha256=str(
+                instrument.get("instrument_mapping_digest_sha256") or ""
+            ),
+        )
+        md_bridge_content_verified = md_result.bridge_verified
+        if not md_result.bridge_verified:
+            blockers.extend(f"MD_BRIDGE:{b}" for b in md_result.blockers)
+
+        de_relpath, de_ref_blockers = _verify_referenced_artifact_digest(
+            repo_root=root,
+            ref=de_ref,
+            prefix="DECISION_EQUIVALENCE",
+        )
+        blockers.extend(de_ref_blockers)
+        de_context = DecisionEquivalenceVerificationContextV1(
+            identity_binding_verified=True,
+            md_bridge_verified=md_bridge_content_verified,
+            declared_equivalence_class=eq_class,
+        )
+        de_result = verify_current_offline_decision_equivalence_v1(
+            repo_root=root,
+            artifact_relpath=de_relpath,
+            context=de_context,
+        )
+        decision_equivalence_content_verified = de_result.equivalence_verified
+        if not de_result.equivalence_verified:
+            blockers.extend(f"DECISION_EQUIVALENCE:{b}" for b in de_result.blockers)
+    elif repo_root is not None and scope == EVIDENCE_SCOPE_PRODUCTIVE_CURRENT:
+        notes.append("B2_CONTENT_VERIFICATION_SKIPPED_DUE_TO_STRUCTURAL_BLOCKERS")
+
     unique = sorted(set(blockers))
     verified = not unique
     return CanonicalIdentityVerificationResultV1(
         verified=verified,
         productive_identity_verified=verified,
+        md_bridge_content_verified=md_bridge_content_verified,
+        decision_equivalence_content_verified=decision_equivalence_content_verified,
         blockers=unique,
         notes=notes,
     )

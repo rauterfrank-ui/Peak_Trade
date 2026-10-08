@@ -46,8 +46,64 @@ CRS_BINDING_RESEARCH_FIXTURE = "RESEARCH_FIXTURE"
 RESIDENCY_APPLICABILITY_NOT_ENABLED = "NOT_ENABLED_FOR_EVIDENCE_SCOPE"
 
 MD_BRIDGE_CONTRACT_ID = "CURRENT_OFFLINE_MD_BRIDGE_V1"
-DECISION_EQUIVALENCE_CLASS_PRODUCTIVE = "PRODUCTIVE_CURRENT"
+MD_BRIDGE_SCHEMA_ID = "ops.current_offline_md_bridge.v1"
+MD_BRIDGE_SCHEMA_VERSION = "v1"
+MD_BRIDGE_ARTIFACT = "CURRENT_OFFLINE_MD_BRIDGE_V1.json"
+MD_BRIDGE_VERIFIER_ID = "ops.current_offline_md_bridge_verifier.v1"
+
+DECISION_EQUIVALENCE_SCHEMA_ID = "ops.current_offline_decision_equivalence.v1"
+DECISION_EQUIVALENCE_SCHEMA_VERSION = "v1"
+DECISION_EQUIVALENCE_ARTIFACT = "CURRENT_OFFLINE_DECISION_EQUIVALENCE_V1.json"
+DECISION_EQUIVALENCE_VERIFIER_ID = "ops.current_offline_decision_equivalence_verifier.v1"
+
+COMPARISON_CLASS_CONTRACT_TEST_MECHANICS = "CONTRACT_TEST_MECHANICS"
+COMPARISON_CLASS_CONTROLLED_FIXTURE = "CONTROLLED_FIXTURE"
+COMPARISON_CLASS_PRODUCTIVE_CURRENT = "PRODUCTIVE_CURRENT"
+SUPPORTED_COMPARISON_CLASSES: tuple[str, ...] = (
+    COMPARISON_CLASS_CONTRACT_TEST_MECHANICS,
+    COMPARISON_CLASS_CONTROLLED_FIXTURE,
+    COMPARISON_CLASS_PRODUCTIVE_CURRENT,
+)
+
+FIELD_COMPARISON_EXACT = "EXACT"
+FIELD_COMPARISON_DIGEST_EQUIVALENT = "DIGEST_EQUIVALENT"
+FIELD_COMPARISON_SEMANTICALLY_EQUIVALENT = "SEMANTICALLY_EQUIVALENT"
+FIELD_COMPARISON_NOT_APPLICABLE = "NOT_APPLICABLE"
+
+DECISION_EQUIVALENCE_CLASS_PRODUCTIVE = COMPARISON_CLASS_PRODUCTIVE_CURRENT
 DECISION_EQUIVALENCE_CLASS_FIXTURE = "FIXTURE_MECHANICS_ONLY"
+
+OFFLINE_DATASET_OWNER = "backtest.admissible_versioned_futures_dataset_v1"
+
+MD_BRIDGE_SEMANTIC_BINDING_KEYS: tuple[str, ...] = (
+    "canonical_instrument_id",
+    "venue",
+    "venue_native_id",
+    "market_type",
+    "contract_type",
+    "timeframe",
+    "bar_construction_policy",
+    "timestamp_semantics",
+    "price_basis",
+    "volume_semantics",
+    "spread_l1_assumptions",
+    "funding_input_semantics",
+    "missing_data_policy",
+    "warmup_policy",
+    "normalization_policy",
+)
+
+DECISION_INPUT_FINGERPRINT_KEYS: tuple[str, ...] = (
+    "canonical_instrument_id",
+    "decision_config_digest_sha256",
+    "strategy_registry_snapshot_digest_sha256",
+    "market_data_bridge_attestation_digest_sha256",
+    "productive_gate_bindings_digest_sha256",
+    "component_version_digest_sha256",
+    "policy_version_digest_sha256",
+    "capital_context_digest_sha256",
+    "host_confirmation_binding_digest_sha256",
+)
 
 FORBIDDEN_STEP29M_STRATEGY_ONLY_MARKERS: tuple[str, ...] = (
     "backtest.economic_viability_evidence_v1",

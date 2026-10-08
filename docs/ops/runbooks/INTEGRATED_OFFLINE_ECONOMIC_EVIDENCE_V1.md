@@ -16,7 +16,7 @@ Reference verification compares `implementation_surface_digest_sha256` and
 implementation surface digest and this capability config digest). Missing
 expected binding values fail closed.
 
-## Schema v1.1 (B1 identity)
+## Schema v1.1 (B1 identity + B2 bridge/equivalence content)
 
 `schema_version=v1.1` adds `canonical_identity_binding_v1` and
 `evidence_scope_class`. Productive scope `PRODUCTIVE_CURRENT` requires
@@ -24,6 +24,24 @@ expected binding values fail closed.
 contract-test mechanics remain nonproductive. Canonical execution model class:
 `SIMULATED_ECONOMICS_BRIDGE`. Residency: when Cap 2.3 gate disabled, declare
 `residency_applicability=NOT_ENABLED_FOR_EVIDENCE_SCOPE`.
+
+## B2 (CURRENT_OFFLINE_MD_BRIDGE_V1 + CURRENT_OFFLINE_DECISION_EQUIVALENCE_V1)
+
+Increment B2 adds fail-closed verifiers for:
+
+- `CURRENT_OFFLINE_MD_BRIDGE_V1.json` — semantic compatibility between CURRENT
+  market-data semantics and `backtest.admissible_versioned_futures_dataset_v1`
+  (no byte-identity claims).
+- `CURRENT_OFFLINE_DECISION_EQUIVALENCE_V1.json` — row-wise decision parity with
+  deterministic decision-input fingerprint recompute.
+
+For `PRODUCTIVE_CURRENT`, `verify_canonical_identity_binding_v1` with `repo_root`
+loads referenced attestation artifacts, verifies digests, and requires MD bridge +
+decision-equivalence verifier PASS. This does **not** complete offline economic
+evidence, enable discovery, or emit economic validity.
+
+Comparison classes: `CONTRACT_TEST_MECHANICS`, `CONTROLLED_FIXTURE`,
+`PRODUCTIVE_CURRENT` (no caller-side escalation).
 
 ## Artifacts
 

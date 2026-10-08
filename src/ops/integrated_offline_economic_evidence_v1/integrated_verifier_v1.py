@@ -116,6 +116,7 @@ def verify_integrated_offline_economic_evidence_v1(
     if doc.get("evidence_scope_class") == EVIDENCE_SCOPE_PRODUCTIVE_CURRENT:
         identity = verify_canonical_identity_binding_v1(
             index_document=doc,
+            repo_root=root,
             expected_proven_source_sha=expected_proven_source_sha,
             cap23_residency_gate_enabled=cap23_residency_gate_enabled,
         )
