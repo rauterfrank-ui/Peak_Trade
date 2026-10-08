@@ -10,12 +10,17 @@ from src.ops.integrated_offline_economic_evidence_v1.binding_v1 import (
     VerificationBindingContextV1,
     resolve_verification_binding_context_v1,
 )
+from src.ops.integrated_offline_economic_evidence_v1.canonical_identity_verifier_v1 import (
+    verify_canonical_identity_binding_v1,
+)
 from src.ops.integrated_offline_economic_evidence_v1.constants_v1 import (
     AUTHORITY_EFFECT_NONE,
+    EVIDENCE_SCOPE_PRODUCTIVE_CURRENT,
     INTEGRATED_ARTIFACT,
     INTEGRATED_SCHEMA_ID,
     INTEGRATED_SCHEMA_VERSION,
     INTEGRATED_VERIFIER_ID,
+    SUPPORTED_INTEGRATED_SCHEMA_VERSIONS,
 )
 from src.ops.integrated_offline_economic_evidence_v1.domain_contracts_v1 import (
     load_json_object,
@@ -40,6 +45,7 @@ class IntegratedOfflineEconomicEvidenceVerificationResultV1:
     stress_verified: bool = False
     bindings_verified: bool = False
     forbidden_classes_absent: bool = False
+    canonical_identity_verified: bool = False
     blockers: list[str] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
     authority_effect: str = AUTHORITY_EFFECT_NONE
@@ -56,6 +62,8 @@ def verify_integrated_offline_economic_evidence_v1(
     binding_context: VerificationBindingContextV1 | None = None,
     expected_implementation_surface_digest_sha256: str | None = None,
     expected_config_digest_sha256: str | None = None,
+    expected_proven_source_sha: str | None = None,
+    cap23_residency_gate_enabled: bool | None = None,
 ) -> IntegratedOfflineEconomicEvidenceVerificationResultV1:
     """Fail-closed verification of index + domain references."""
     root = repo_root.resolve()
@@ -76,7 +84,8 @@ def verify_integrated_offline_economic_evidence_v1(
     if doc:
         if doc.get("schema_id") != INTEGRATED_SCHEMA_ID:
             blockers.append("INDEX_SCHEMA_ID_MISMATCH")
-        if doc.get("schema_version") != INTEGRATED_SCHEMA_VERSION:
+        schema_version = str(doc.get("schema_version") or "")
+        if schema_version not in SUPPORTED_INTEGRATED_SCHEMA_VERSIONS:
             blockers.append("INDEX_SCHEMA_VERSION_MISMATCH")
         if doc.get("authority_effect") != AUTHORITY_EFFECT_NONE:
             blockers.append("INDEX_AUTHORITY_EFFECT_NOT_NONE")
@@ -102,6 +111,17 @@ def verify_integrated_offline_economic_evidence_v1(
     )
     forbidden_classes_absent = not forbidden_blockers
     blockers.extend(forbidden_blockers)
+
+    canonical_identity_verified = True
+    if doc.get("evidence_scope_class") == EVIDENCE_SCOPE_PRODUCTIVE_CURRENT:
+        identity = verify_canonical_identity_binding_v1(
+            index_document=doc,
+            expected_proven_source_sha=expected_proven_source_sha,
+            cap23_residency_gate_enabled=cap23_residency_gate_enabled,
+        )
+        canonical_identity_verified = identity.productive_identity_verified
+        if not identity.verified:
+            blockers.extend(f"IDENTITY:{b}" for b in identity.blockers)
 
     bindings_verified = True
     for ref_key in (
@@ -177,6 +197,7 @@ def verify_integrated_offline_economic_evidence_v1(
         and stress.verified
         and bindings_verified
         and forbidden_classes_absent
+        and canonical_identity_verified
     )
 
     return IntegratedOfflineEconomicEvidenceVerificationResultV1(
@@ -187,6 +208,7 @@ def verify_integrated_offline_economic_evidence_v1(
         stress_verified=stress.verified,
         bindings_verified=bindings_verified and not unique,
         forbidden_classes_absent=forbidden_classes_absent,
+        canonical_identity_verified=canonical_identity_verified,
         blockers=unique,
         notes=notes,
     )

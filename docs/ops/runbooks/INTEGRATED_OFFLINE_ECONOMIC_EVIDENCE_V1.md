@@ -16,6 +16,15 @@ Reference verification compares `implementation_surface_digest_sha256` and
 implementation surface digest and this capability config digest). Missing
 expected binding values fail closed.
 
+## Schema v1.1 (B1 identity)
+
+`schema_version=v1.1` adds `canonical_identity_binding_v1` and
+`evidence_scope_class`. Productive scope `PRODUCTIVE_CURRENT` requires
+`verify_canonical_identity_binding_v1` (fail-closed). Legacy `schema_version=v1`
+contract-test mechanics remain nonproductive. Canonical execution model class:
+`SIMULATED_ECONOMICS_BRIDGE`. Residency: when Cap 2.3 gate disabled, declare
+`residency_applicability=NOT_ENABLED_FOR_EVIDENCE_SCOPE`.
+
 ## Artifacts
 
 - Top-level index: `INTEGRATED_OFFLINE_ECONOMIC_EVIDENCE_V1.json`
