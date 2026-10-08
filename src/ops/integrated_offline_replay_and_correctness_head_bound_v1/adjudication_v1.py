@@ -96,8 +96,8 @@ def evaluate_integrated_paper_shadow_shadow_readiness_head_bound_v1(
         simulated_portfolio_fill_fee_slippage_pnl_model_defined=True,
         evidence_directory_manifest_schema_config_digests_verifier_defined=True,
         session_preregistration_and_operator_go_contract_present=True,
-        integrated_paper_shadow_evidence_complete=bundle.INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE,
-        offline_economic_evidence_complete=bundle.INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE,
+        integrated_paper_shadow_evidence_complete=bundle.productive_wallclock_observation_verified,
+        offline_economic_evidence_complete=False,
         integrated_economic_evidence_bundle_verified=bundle.INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED,
         economic_validity_offline_gate_pass=False,
     )

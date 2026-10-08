@@ -7,7 +7,7 @@ import json
 from dataclasses import asdict, dataclass, field
 from decimal import Decimal
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 from src.ops.integrated_offline_replay_and_correctness_head_bound_v1.constants_v1 import (
     AUTHORITY_EFFECT_NONE,
@@ -40,8 +40,15 @@ from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_br
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.full_economic_reconstruction_verifier_v1 import (
     verify_full_economic_reconstruction_v1,
 )
+from src.ops.integrated_offline_replay_and_correctness_head_bound_v1.productive_wallclock_observation_reference_v1 import (
+    REFERENCE_ARTIFACT,
+    build_productive_wallclock_observation_reference_document_v1,
+    verify_productive_wallclock_observation_reference_v1,
+)
 
 BUNDLE_SCHEMA_ID = "ops.integrated_paper_shadow_economic_evidence_bundle_head_bound_v1"
+BUNDLE_SCHEMA_VERSION_V1 = "v1"
+BUNDLE_SCHEMA_VERSION_V1_1 = "v1.1"
 BUNDLE_ARTIFACT = "INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE_BUNDLE.json"
 BUNDLE_MANIFEST = "evidence_manifest.sha256"
 
@@ -61,11 +68,65 @@ class EconomicEvidenceBundleResultV1:
     schema_id: str
     INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE: bool
     INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED: bool
+    productive_wallclock_observation_verified: bool = False
     blockers: list[str] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
+
+
+def _bundle_requires_productive_wallclock_reference_v1(doc: Mapping[str, Any]) -> bool:
+    version = str(doc.get("schema_version") or BUNDLE_SCHEMA_VERSION_V1)
+    if version == BUNDLE_SCHEMA_VERSION_V1_1:
+        return True
+    return doc.get("productive_wallclock_binding_present") is True
+
+
+def _verify_head_bound_bundle_core_v1(
+    *,
+    bundle_root: Path,
+    repo_root: Path,
+    correctness_evidence_root: Path,
+    doc: Mapping[str, Any],
+) -> tuple[list[str], bool]:
+    """Legacy head-bound predicates shared by v1 and v1.1."""
+    blockers: list[str] = []
+    if doc.get("INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE") is not True:
+        blockers.append("INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE_NOT_TRUE")
+    correctness = verify_integrated_offline_replay_and_correctness_head_bound_evidence_v1(
+        evidence_root=correctness_evidence_root,
+        repo_root=repo_root,
+        require_current_head=True,
+    )
+    if not correctness.verified:
+        blockers.extend(f"CORRECTNESS:{b}" for b in correctness.blockers)
+    proof = correctness.proof or {}
+    bundle_proven = str(doc.get("proven_source_sha") or doc.get("repository_head_sha") or "")
+    proof_proven = str(proof.get("proven_source_sha") or proof.get("repository_head_sha") or "")
+    if bundle_proven and proof_proven and bundle_proven != proof_proven:
+        blockers.append("BUNDLE_PROVEN_SOURCE_MISMATCH")
+    bundle_digest = str(doc.get("implementation_surface_digest_sha256") or "")
+    proof_digest = str(proof.get("implementation_surface_digest_sha256") or "")
+    if bundle_digest and proof_digest and bundle_digest != proof_digest:
+        blockers.append("BUNDLE_IMPLEMENTATION_DIGEST_MISMATCH")
+    obs_verify = verify_integrated_paper_shadow_observation_evidence_bundle_v1(
+        evidence_root=Path(bundle_root) / "observation_offline_cycle",
+        require_cycle_pass=True,
+    )
+    if not obs_verify.verified:
+        blockers.extend(f"OBSERVATION:{b}" for b in obs_verify.blockers)
+    recon_path = (
+        Path(bundle_root) / "controlled_wallclock_bridge/full_economic_reconstruction_verifier.json"
+    )
+    if recon_path.is_file():
+        recon = json.loads(recon_path.read_text(encoding="utf-8"))
+        if recon.get("ok") is not True:
+            blockers.append("BRIDGE_RECONSTRUCTION_NOT_OK")
+    else:
+        blockers.append("BRIDGE_RECONSTRUCTION_MISSING")
+    core_ok = not blockers
+    return blockers, core_ok
 
 
 def _sha256_file(path: Path) -> str:
@@ -214,9 +275,67 @@ def produce_integrated_paper_shadow_economic_evidence_bundle_head_bound_v1(
             "INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE"
         ],
         INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED=verified,
+        productive_wallclock_observation_verified=False,
         blockers=sorted(set(blockers)),
         notes=notes,
     )
+
+
+def produce_integrated_paper_shadow_economic_evidence_bundle_with_productive_wallclock_reference_v1(
+    *,
+    repo_root: Path,
+    bundle_root: Path,
+    correctness_evidence_root: Path,
+    productive_wallclock_evidence_root: Path,
+) -> EconomicEvidenceBundleResultV1:
+    """Composite v1.1 producer: legacy head-bound sub-bundle + read-only wallclock reference."""
+    root = repo_root.resolve()
+    wallclock_root = Path(productive_wallclock_evidence_root).resolve()
+    try:
+        wallclock_rel = str(wallclock_root.relative_to(root))
+    except ValueError as exc:
+        raise ValueError("productive_wallclock_evidence_outside_repo") from exc
+
+    base = produce_integrated_paper_shadow_economic_evidence_bundle_head_bound_v1(
+        repo_root=root,
+        bundle_root=bundle_root,
+        correctness_evidence_root=correctness_evidence_root,
+    )
+    blockers = list(base.blockers)
+    if not base.verified:
+        return EconomicEvidenceBundleResultV1(
+            verified=False,
+            schema_id=BUNDLE_SCHEMA_ID,
+            INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE=base.INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE,
+            INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED=False,
+            productive_wallclock_observation_verified=False,
+            blockers=sorted(set(blockers)),
+            notes=["COMPOSITE_V1_1", "HEAD_BOUND_SUB_BUNDLE_FAILED"],
+        )
+
+    ref_doc = build_productive_wallclock_observation_reference_document_v1(
+        repo_root=root,
+        evidence_relpath=wallclock_rel.replace("\\", "/"),
+    )
+    ref_path = Path(bundle_root) / REFERENCE_ARTIFACT
+    ref_path.write_text(json.dumps(ref_doc, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+
+    bundle_path = Path(bundle_root) / BUNDLE_ARTIFACT
+    bundle_doc = json.loads(bundle_path.read_text(encoding="utf-8"))
+    bundle_doc["schema_version"] = BUNDLE_SCHEMA_VERSION_V1_1
+    bundle_doc["productive_wallclock_binding_present"] = True
+    bundle_doc["productive_wallclock_observation_reference_artifact"] = REFERENCE_ARTIFACT
+    bundle_doc["productive_wallclock_evidence_relpath"] = ref_doc["evidence_relpath"]
+    bundle_path.write_text(
+        json.dumps(bundle_doc, sort_keys=True, indent=2) + "\n", encoding="utf-8"
+    )
+
+    verified = verify_integrated_paper_shadow_economic_evidence_bundle_head_bound_v1(
+        bundle_root=bundle_root,
+        repo_root=root,
+        correctness_evidence_root=correctness_evidence_root,
+    )
+    return verified
 
 
 def verify_integrated_paper_shadow_economic_evidence_bundle_head_bound_v1(
@@ -225,7 +344,6 @@ def verify_integrated_paper_shadow_economic_evidence_bundle_head_bound_v1(
     repo_root: Path,
     correctness_evidence_root: Path,
 ) -> EconomicEvidenceBundleResultV1:
-    blockers: list[str] = []
     bundle_path = Path(bundle_root) / BUNDLE_ARTIFACT
     if not bundle_path.is_file():
         return EconomicEvidenceBundleResultV1(
@@ -233,43 +351,37 @@ def verify_integrated_paper_shadow_economic_evidence_bundle_head_bound_v1(
             schema_id=BUNDLE_SCHEMA_ID,
             INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE=False,
             INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED=False,
+            productive_wallclock_observation_verified=False,
             blockers=["BUNDLE_ARTIFACT_MISSING"],
         )
     doc = json.loads(bundle_path.read_text(encoding="utf-8"))
-    if doc.get("INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE") is not True:
-        blockers.append("INTEGRATED_PAPER_SHADOW_ECONOMIC_EVIDENCE_NOT_TRUE")
-    correctness = verify_integrated_offline_replay_and_correctness_head_bound_evidence_v1(
-        evidence_root=correctness_evidence_root,
+    blockers, core_ok = _verify_head_bound_bundle_core_v1(
+        bundle_root=Path(bundle_root),
         repo_root=repo_root,
-        require_current_head=True,
+        correctness_evidence_root=correctness_evidence_root,
+        doc=doc,
     )
-    if not correctness.verified:
-        blockers.extend(f"CORRECTNESS:{b}" for b in correctness.blockers)
-    proof = correctness.proof or {}
-    bundle_proven = str(doc.get("proven_source_sha") or doc.get("repository_head_sha") or "")
-    proof_proven = str(proof.get("proven_source_sha") or proof.get("repository_head_sha") or "")
-    if bundle_proven and proof_proven and bundle_proven != proof_proven:
-        blockers.append("BUNDLE_PROVEN_SOURCE_MISMATCH")
-    bundle_digest = str(doc.get("implementation_surface_digest_sha256") or "")
-    proof_digest = str(proof.get("implementation_surface_digest_sha256") or "")
-    if bundle_digest and proof_digest and bundle_digest != proof_digest:
-        blockers.append("BUNDLE_IMPLEMENTATION_DIGEST_MISMATCH")
-    obs_verify = verify_integrated_paper_shadow_observation_evidence_bundle_v1(
-        evidence_root=Path(bundle_root) / "observation_offline_cycle",
-        require_cycle_pass=True,
-    )
-    if not obs_verify.verified:
-        blockers.extend(f"OBSERVATION:{b}" for b in obs_verify.blockers)
-    recon_path = (
-        Path(bundle_root) / "controlled_wallclock_bridge/full_economic_reconstruction_verifier.json"
-    )
-    if recon_path.is_file():
-        recon = json.loads(recon_path.read_text(encoding="utf-8"))
-        if recon.get("ok") is not True:
-            blockers.append("BRIDGE_RECONSTRUCTION_NOT_OK")
+    productive_verified = False
+    requires_productive = _bundle_requires_productive_wallclock_reference_v1(doc)
+    if requires_productive:
+        ref_path = Path(bundle_root) / REFERENCE_ARTIFACT
+        if not ref_path.is_file():
+            blockers.append("PRODUCTIVE_WALLCLOCK_REFERENCE_MISSING")
+        else:
+            ref_result = verify_productive_wallclock_observation_reference_v1(
+                repo_root=repo_root,
+                reference_path=ref_path,
+            )
+            if not ref_result.verified:
+                blockers.extend(f"PRODUCTIVE_WALLCLOCK:{b}" for b in ref_result.blockers)
+            else:
+                productive_verified = True
+    if requires_productive:
+        verified = core_ok and productive_verified
     else:
-        blockers.append("BRIDGE_RECONSTRUCTION_MISSING")
-    verified = not blockers
+        verified = core_ok
+        productive_verified = False
+
     return EconomicEvidenceBundleResultV1(
         verified=verified,
         schema_id=BUNDLE_SCHEMA_ID,
@@ -278,6 +390,7 @@ def verify_integrated_paper_shadow_economic_evidence_bundle_head_bound_v1(
         )
         is True,
         INTEGRATED_ECONOMIC_EVIDENCE_BUNDLE_VERIFIED=verified,
+        productive_wallclock_observation_verified=productive_verified,
         blockers=sorted(set(blockers)),
         notes=["VERIFY_ONLY"],
     )
