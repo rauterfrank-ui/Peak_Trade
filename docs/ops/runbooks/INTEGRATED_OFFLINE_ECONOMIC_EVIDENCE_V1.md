@@ -43,6 +43,15 @@ evidence, enable discovery, or emit economic validity.
 Comparison classes: `CONTRACT_TEST_MECHANICS`, `CONTROLLED_FIXTURE`,
 `PRODUCTIVE_CURRENT` (no caller-side escalation).
 
+## Productive completion (E2E proof chain)
+
+`productive_offline_economic_completion_v1` produces a governed
+`PRODUCTIVE_CURRENT` bundle: MD bridge, decision equivalence (replay delegate
+vs offline replay), simulated economics metrics, WF/MC/stress domains, and
+integrated index v1.1. `integrated_offline_economic_validity_adjudication_v1`
+derives `ECONOMIC_VALIDITY_PASS` from verified evidence only (AUTHORITY=NONE).
+Zero-trade outcomes may yield technical proof complete with economic policy FAIL.
+
 ## Artifacts
 
 - Top-level index: `INTEGRATED_OFFLINE_ECONOMIC_EVIDENCE_V1.json`

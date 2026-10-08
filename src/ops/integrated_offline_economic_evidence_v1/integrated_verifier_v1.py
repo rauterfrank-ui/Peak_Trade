@@ -46,6 +46,7 @@ class IntegratedOfflineEconomicEvidenceVerificationResultV1:
     bindings_verified: bool = False
     forbidden_classes_absent: bool = False
     canonical_identity_verified: bool = False
+    offline_economic_evidence_complete: bool = False
     blockers: list[str] = field(default_factory=list)
     notes: list[str] = field(default_factory=list)
     authority_effect: str = AUTHORITY_EFFECT_NONE
@@ -200,9 +201,13 @@ def verify_integrated_offline_economic_evidence_v1(
         and forbidden_classes_absent
         and canonical_identity_verified
     )
+    offline_complete = (
+        verified and doc.get("evidence_scope_class") == EVIDENCE_SCOPE_PRODUCTIVE_CURRENT
+    )
 
     return IntegratedOfflineEconomicEvidenceVerificationResultV1(
         verified=verified,
+        offline_economic_evidence_complete=offline_complete,
         economic_metrics_verified=metrics.verified,
         walk_forward_verified=wf.verified,
         monte_carlo_verified=mc.verified,

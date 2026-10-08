@@ -10,7 +10,7 @@ from src.ops.integrated_offline_economic_evidence_v1.binding_v1 import (
     resolve_verification_binding_context_v1,
 )
 from src.ops.integrated_offline_economic_evidence_v1.constants_v1 import (
-    ALLOWED_CONTRACT_TEST_PRODUCER_PREFIX,
+    ALLOWED_PRODUCTIVE_PRODUCER_PREFIXES,
     ECONOMIC_METRICS_DOMAIN_SCHEMA_ID,
     ECONOMIC_METRICS_VERIFIER_ID,
     MONTE_CARLO_DOMAIN_SCHEMA_ID,
@@ -32,9 +32,9 @@ from src.ops.integrated_offline_economic_evidence_v1.forbidden_substitution_v1 i
 
 def _require_producer_allowed(producer_id: str, prefix: str) -> list[str]:
     producer = str(producer_id or "")
-    if not producer.startswith(ALLOWED_CONTRACT_TEST_PRODUCER_PREFIX):
-        return [f"{prefix}PRODUCTIVE_PRODUCER_NOT_AUTHORIZED_IN_INCREMENT_A"]
-    return []
+    if any(producer.startswith(p) for p in ALLOWED_PRODUCTIVE_PRODUCER_PREFIXES):
+        return []
+    return [f"{prefix}PRODUCER_NOT_AUTHORIZED"]
 
 
 def _common_domain_verify(
@@ -120,6 +120,8 @@ def _common_domain_verify(
 
 def _increment_b_deferred(doc: Mapping[str, Any], prefix: str, label: str) -> list[str]:
     if doc.get("contract_test_increment_a_mechanics_only") is True:
+        return []
+    if doc.get("productive_offline_economic_semantics_v1") is True:
         return []
     return [f"{prefix}PRODUCTIVE_{label}_SEMANTICS_DEFERRED_TO_INCREMENT_B"]
 

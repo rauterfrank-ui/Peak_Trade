@@ -159,3 +159,26 @@ FORBIDDEN_EVIDENCE_CLASS_MARKERS: tuple[str, ...] = (
 )
 
 ALLOWED_CONTRACT_TEST_PRODUCER_PREFIX = "ops.integrated_offline_economic_evidence_v1.contract_test."
+PRODUCTIVE_COMPLETION_PRODUCER_PREFIX = (
+    "ops.integrated_offline_economic_evidence_v1.productive_completion_v1."
+)
+ALLOWED_PRODUCTIVE_PRODUCER_PREFIXES: tuple[str, ...] = (
+    ALLOWED_CONTRACT_TEST_PRODUCER_PREFIX,
+    PRODUCTIVE_COMPLETION_PRODUCER_PREFIX,
+)
+
+EXECUTION_MODEL_BINDING_FIELDS: tuple[str, ...] = (
+    "fill_model_id",
+    "fee_model_id",
+    "slippage_model_id",
+    "spread_model_id",
+    "funding_model_id",
+    "latency_assumption_id",
+    "partial_fill_assumption_id",
+    "stop_semantics_id",
+    "mark_settlement_semantics_id",
+)
+
+INTEGRATED_OFFLINE_ECONOMIC_VALIDITY_ADJUDICATION_ID = (
+    "ops.integrated_offline_economic_validity_adjudication_v1"
+)
