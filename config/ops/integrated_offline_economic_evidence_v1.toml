@@ -1,0 +1,16 @@
+# Integrated offline economic evidence v1 — contract/discovery config (Increment A).
+# Non-activating. authority_effect=NONE.
+#
+# canonical_evidence_relpath intentionally unset until Increment B productive evidence.
+# Synthetic contract tests may set this in tmp config only; default discovery fail-closed.
+
+schema_version = "integrated_offline_economic_evidence.v1"
+producer_family = "ops.integrated_offline_economic_evidence_v1"
+authority_effect = "NONE"
+
+# canonical_evidence_relpath = ""
+
+orders_authorized = false
+testnet_authorized = false
+live_authorized = false
+broker_writes_performed = false
