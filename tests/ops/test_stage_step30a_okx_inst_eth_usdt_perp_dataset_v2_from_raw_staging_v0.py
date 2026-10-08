@@ -8,6 +8,8 @@ from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
 import importlib.util
 import json
 import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 import pandas as pd
@@ -56,6 +58,18 @@ def test_missing_historical_l1_reason_constant() -> None:
 def test_holdout_constants_match_step29m_frozen() -> None:
     mod = _load_mod()
     mod.verify_holdout_constants_match_step29m_v1()
+
+
+def test_stage_script_cli_importable_via_subprocess() -> None:
+    proc = subprocess.run(
+        [sys.executable, str(STAGING_SCRIPT), "--help"],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert proc.returncode == 0
+    assert "STEP30A" in proc.stdout or "confirm-go" in proc.stdout
 
 
 def test_resolve_verified_raw_staging_root_v1() -> None:

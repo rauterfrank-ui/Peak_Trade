@@ -7,9 +7,6 @@ No network, no economic evaluation, no runtime effect.
 """
 
 from __future__ import annotations
-from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
-    located_runtime_evidence_20260520,
-)
 
 import argparse
 import json
@@ -25,11 +22,16 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
+
 from scripts.ops import (
     ingest_okx_futures_public_market_data_canonical_dataset_staging_v1 as okx_ingest,
 )
 from scripts.ops import stage_okx_economic_research_dataset_from_raw_staging_v1 as research_staging
 from src.backtest import admissible_versioned_futures_dataset_v1 as ds
+from src.trading.master_v2 import canonical_volatility_estimate_materializer_v1 as vol_materializer
 
 CONFIRM_GO = "GO_BOUNDED_STEP30A_DATASET_V2_CONTRACT_REMEDIATION_PRE_PR_AND_PR_V0"
 
@@ -243,6 +245,9 @@ def run_step30a_dataset_v2_promotion_v0(
             "integrity_report": integrity.__dict__,
             "manifest_verify_rc": 1,
         }
+
+    materialization = vol_materializer.materialize_volatility_estimate_on_bars_v1(bars)
+    bars = materialization.bars
 
     holdout_reasons = verify_holdout_separation_v1(bars)
     if holdout_reasons:
