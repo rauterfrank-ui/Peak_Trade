@@ -22,6 +22,13 @@ from src.ops.integrated_offline_economic_evidence_v1.binding_v1 import (
     config_digest_sha256_v1,
     resolve_verification_binding_context_v1,
 )
+from src.ops.integrated_offline_economic_evidence_v1.current_integrated_offline_economic_policy_v1 import (
+    load_current_integrated_offline_economic_policy_v1,
+)
+from src.ops.integrated_offline_economic_evidence_v1.economic_metrics_accounting_v1 import (
+    merge_qualification_metrics_into_doc_v1,
+    net_pnl_from_portfolio_state_v1,
+)
 from src.ops.integrated_offline_economic_evidence_v1.constants_v1 import (
     AUTHORITY_EFFECT_NONE,
     COMPARISON_CLASS_PRODUCTIVE_CURRENT,
@@ -367,35 +374,34 @@ def produce_productive_offline_economic_completion_bundle_v1(
         mark_price=Decimal(str(replay_input.current_price)),
     )
     state = portfolio.state
-    trade_count = 1 if state.fill_count > 0 else 0
-    metrics_doc = {
-        "schema_id": ECONOMIC_METRICS_DOMAIN_SCHEMA_ID,
-        "schema_version": "v1",
-        "authority_effect": AUTHORITY_EFFECT_NONE,
-        "productive_offline_economic_semantics_v1": True,
-        "fee_model_binding_digest_sha256": _sha256_text("fee-model-v1"),
-        "slippage_model_binding_digest_sha256": _sha256_text("slippage-model-v1"),
-        "execution_model_binding_digest_sha256": exec_digest,
-        "trade_count": trade_count,
-        "fill_count": state.fill_count,
-        "gross_pnl": str(state.realized_pnl + state.unrealized_pnl),
-        "net_pnl": str(
-            state.realized_pnl
-            + state.unrealized_pnl
-            - state.cumulative_fees
-            - state.cumulative_slippage
-        ),
-        "fees": str(state.cumulative_fees),
-        "slippage_cost": str(state.cumulative_slippage),
-        "funding": str(state.cumulative_funding),
-        "expectancy": "0" if trade_count == 0 else str(state.realized_pnl / trade_count),
-        "max_drawdown": str(state.max_drawdown),
-        "exposure": "0",
-        "turnover": str(state.turnover_notional),
-        "provenance_source_sha": proven,
-        "dataset_content_digest_sha256": dataset_digest,
-        "decision_equivalence_digest_sha256": de_digest,
-    }
+    current_policy = load_current_integrated_offline_economic_policy_v1(repo_root=root)
+    metrics_doc = merge_qualification_metrics_into_doc_v1(
+        portfolio=portfolio,
+        metrics_doc={
+            "schema_id": ECONOMIC_METRICS_DOMAIN_SCHEMA_ID,
+            "schema_version": "v1",
+            "authority_effect": AUTHORITY_EFFECT_NONE,
+            "productive_offline_economic_semantics_v1": True,
+            "fee_model_binding_digest_sha256": _sha256_text("fee-model-v1"),
+            "slippage_model_binding_digest_sha256": _sha256_text("slippage-model-v1"),
+            "execution_model_binding_digest_sha256": exec_digest,
+            "gross_pnl": str(state.realized_pnl + state.unrealized_pnl),
+            "net_pnl": net_pnl_from_portfolio_state_v1(portfolio),
+            "fees": str(state.cumulative_fees),
+            "slippage_cost": str(state.cumulative_slippage),
+            "funding": str(state.cumulative_funding),
+            "max_drawdown": str(state.max_drawdown),
+            "turnover": str(state.turnover_notional),
+            "provenance_source_sha": proven,
+            "dataset_content_digest_sha256": dataset_digest,
+            "decision_equivalence_digest_sha256": de_digest,
+            "minimum_trade_count_policy": current_policy.minimum_trade_count,
+            "current_integrated_offline_economic_policy_digest_sha256": (
+                current_policy.policy_digest_sha256()
+            ),
+        },
+    )
+    trade_count = int(metrics_doc["trade_count"])
     metrics_rel = f"{evidence_relpath}/economic_metrics_domain_v1.json"
     metrics_digest = _write_json(root / metrics_rel, metrics_doc)
 
@@ -538,11 +544,7 @@ def produce_productive_offline_economic_completion_bundle_v1(
                 "crs_binding_mode": CRS_BINDING_PRODUCTIVE_BOUNDARY,
                 "capital_context_digest_sha256": capital_digest,
             },
-            "economic_policy_reference_v1": {
-                "policy_id": "integrated_offline_economic_policy_v1",
-                "policy_version": "v1",
-                "policy_digest_sha256": _sha256_text("policy-v1"),
-            },
+            "economic_policy_reference_v1": current_policy.economic_policy_reference_v1(),
         },
     }
     _write_json(evidence_root / INTEGRATED_ARTIFACT, index_doc)

@@ -143,6 +143,42 @@ class SimulatedPortfolioEconomicsModelV1:
         self._losses = 0
         self._gross_profit = _ZERO
         self._gross_loss = _ZERO
+        self._entry_count = 0
+        self._completed_trade_count = 0
+        self._winning_completed_trades = 0
+        self._losing_completed_trades = 0
+        self._lifecycle_open = False
+        self._lifecycle_leg_pnl = _ZERO
+        self._lifecycle_fees = _ZERO
+        self._lifecycle_slippage = _ZERO
+
+    @property
+    def entry_count(self) -> int:
+        return self._entry_count
+
+    @property
+    def completed_trade_count(self) -> int:
+        return self._completed_trade_count
+
+    @property
+    def winning_completed_trades(self) -> int:
+        return self._winning_completed_trades
+
+    @property
+    def losing_completed_trades(self) -> int:
+        return self._losing_completed_trades
+
+    @property
+    def realized_leg_count(self) -> int:
+        return self._wins + self._losses
+
+    @property
+    def win_leg_count(self) -> int:
+        return self._wins
+
+    @property
+    def loss_leg_count(self) -> int:
+        return self._losses
 
     @property
     def model_id(self) -> str:
@@ -195,7 +231,7 @@ class SimulatedPortfolioEconomicsModelV1:
             slippage_cost=slippage_cost,
             notional=notional,
         )
-        self._apply_fill(fill)
+        self._apply_fill(fill, fee=fee, slippage_cost=slippage_cost, notional=notional)
         self.state.intended_action_count += 1
         self.state.fill_count += 1
         self.state.cumulative_fees += fee
@@ -251,7 +287,103 @@ class SimulatedPortfolioEconomicsModelV1:
             "orders_submitted": False,
         }
 
-    def _apply_fill(self, fill: SimulatedFillV1) -> None:
+    def _has_exposure(self) -> bool:
+        return any(p.quantity != 0 for p in self.state.positions.values())
+
+    def _open_lifecycle(self) -> None:
+        if self._lifecycle_open:
+            return
+        self._lifecycle_open = True
+        self._lifecycle_leg_pnl = _ZERO
+        self._lifecycle_fees = _ZERO
+        self._lifecycle_slippage = _ZERO
+        self._entry_count += 1
+
+    def _complete_lifecycle(self) -> None:
+        if not self._lifecycle_open:
+            return
+        economic = self._lifecycle_leg_pnl - self._lifecycle_fees - self._lifecycle_slippage
+        self._completed_trade_count += 1
+        if economic >= 0:
+            self._winning_completed_trades += 1
+        else:
+            self._losing_completed_trades += 1
+        self._lifecycle_open = False
+        self._lifecycle_leg_pnl = _ZERO
+        self._lifecycle_fees = _ZERO
+        self._lifecycle_slippage = _ZERO
+
+    def _reconcile_lifecycle_after_fill(self, *, was_flat: bool, fill: SimulatedFillV1) -> None:
+        is_flat = not self._has_exposure()
+        if was_flat and not is_flat:
+            self._open_lifecycle()
+            self._lifecycle_fees += fill.fee
+            self._lifecycle_slippage += fill.slippage_cost
+        elif not was_flat and is_flat:
+            self._lifecycle_fees += fill.fee
+            self._lifecycle_slippage += fill.slippage_cost
+            self._complete_lifecycle()
+        elif self._lifecycle_open:
+            self._lifecycle_fees += fill.fee
+            self._lifecycle_slippage += fill.slippage_cost
+
+    def _split_fill_for_reversal_v1(
+        self, fill: SimulatedFillV1, *, old_qty: Decimal
+    ) -> tuple[SimulatedFillV1, SimulatedFillV1] | None:
+        signed_qty = fill.quantity if fill.side == "BUY" else -fill.quantity
+        if old_qty == 0 or signed_qty == 0:
+            return None
+        if (old_qty > 0) == (signed_qty > 0):
+            return None
+        close_abs = old_qty.copy_abs()
+        if fill.quantity <= close_abs:
+            return None
+        open_qty = fill.quantity - close_abs
+        ratio_close = close_abs / fill.quantity
+        ratio_open = open_qty / fill.quantity
+        close_fill = SimulatedFillV1(
+            instrument_id=fill.instrument_id,
+            side=fill.side,
+            quantity=close_abs,
+            mark_price=fill.mark_price,
+            fill_price=fill.fill_price,
+            fee=fill.fee * ratio_close,
+            slippage_cost=fill.slippage_cost * ratio_close,
+            notional=fill.notional * ratio_close,
+        )
+        open_fill = SimulatedFillV1(
+            instrument_id=fill.instrument_id,
+            side=fill.side,
+            quantity=open_qty,
+            mark_price=fill.mark_price,
+            fill_price=fill.fill_price,
+            fee=fill.fee * ratio_open,
+            slippage_cost=fill.slippage_cost * ratio_open,
+            notional=fill.notional * ratio_open,
+        )
+        return close_fill, open_fill
+
+    def _apply_fill(
+        self,
+        fill: SimulatedFillV1,
+        *,
+        fee: Decimal | None = None,
+        slippage_cost: Decimal | None = None,
+        notional: Decimal | None = None,
+    ) -> None:
+        pos = self.state.positions.get(fill.instrument_id) or SimulatedPositionV1(
+            instrument_id=fill.instrument_id
+        )
+        split = self._split_fill_for_reversal_v1(fill, old_qty=pos.quantity)
+        if split is not None:
+            close_fill, open_fill = split
+            self._apply_fill_once(close_fill)
+            self._apply_fill_once(open_fill)
+            return
+        self._apply_fill_once(fill)
+
+    def _apply_fill_once(self, fill: SimulatedFillV1) -> None:
+        was_flat = not self._has_exposure()
         pos = self.state.positions.get(fill.instrument_id) or SimulatedPositionV1(
             instrument_id=fill.instrument_id
         )
@@ -262,14 +394,12 @@ class SimulatedPortfolioEconomicsModelV1:
             or (pos.quantity > 0 and signed_qty > 0)
             or (pos.quantity < 0 and signed_qty < 0)
         ):
-            # Increasing / opening
             total_cost = (
                 pos.avg_entry_price * pos.quantity.copy_abs() + fill.fill_price * fill.quantity
             )
             pos.avg_entry_price = total_cost / new_qty.copy_abs() if new_qty != 0 else _ZERO
             pos.quantity = new_qty
         else:
-            # Reducing / closing
             closed = min(pos.quantity.copy_abs(), fill.quantity)
             pnl = (
                 (fill.fill_price - pos.avg_entry_price) * closed
@@ -284,6 +414,8 @@ class SimulatedPortfolioEconomicsModelV1:
             else:
                 self._losses += 1
                 self._gross_loss += pnl.copy_abs()
+            if self._lifecycle_open:
+                self._lifecycle_leg_pnl += pnl
             pos.quantity = new_qty
             if pos.quantity == 0:
                 pos.avg_entry_price = _ZERO
@@ -293,6 +425,7 @@ class SimulatedPortfolioEconomicsModelV1:
         else:
             self.state.cash += fill.notional
         self.state.positions[fill.instrument_id] = pos
+        self._reconcile_lifecycle_after_fill(was_flat=was_flat, fill=fill)
 
     def _apply_funding(self, *, instrument_id: str, mark_price: Decimal) -> None:
         pos = self.state.positions.get(instrument_id)

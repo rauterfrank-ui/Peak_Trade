@@ -6,6 +6,13 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from src.ops.integrated_offline_economic_evidence_v1.constants_v1 import (
+    EVIDENCE_SCOPE_PRODUCTIVE_CURRENT,
+)
+from src.ops.integrated_offline_economic_evidence_v1.current_integrated_offline_economic_policy_v1 import (
+    TRADE_COUNT_SEMANTIC_COMPLETED_POSITION_ROUND_TRIP,
+    resolve_productive_current_minimum_trade_count_v1,
+)
 from src.ops.integrated_offline_economic_evidence_v1.integrated_verifier_v1 import (
     IntegratedOfflineEconomicEvidenceVerificationResultV1,
     verify_integrated_offline_economic_evidence_v1,
@@ -60,7 +67,7 @@ def evaluate_integrated_offline_economic_validity_v1(
     evidence_root: Path,
     expected_proven_source_sha: str | None = None,
     verification: IntegratedOfflineEconomicEvidenceVerificationResultV1 | None = None,
-    min_trades_for_policy_pass: int = 1,
+    min_trades_for_policy_pass: int | None = None,
 ) -> IntegratedOfflineEconomicValidityAdjudicationResultV1:
     """Derive economic validity from verified evidence only; never grants execution authority."""
     root = repo_root.resolve()
@@ -99,6 +106,31 @@ def evaluate_integrated_offline_economic_validity_v1(
 
     index_path = evidence_root / INTEGRATED_ARTIFACT
     index_doc = json.loads(index_path.read_text(encoding="utf-8"))
+    scope = str(index_doc.get("evidence_scope_class") or "")
+    if scope == EVIDENCE_SCOPE_PRODUCTIVE_CURRENT:
+        resolved_min, policy_blockers = resolve_productive_current_minimum_trade_count_v1(
+            repo_root=root,
+            index_doc=index_doc,
+        )
+        if policy_blockers:
+            blockers.extend(policy_blockers)
+            return IntegratedOfflineEconomicValidityAdjudicationResultV1(
+                economic_validity_evaluated=False,
+                economic_validity_pass=False,
+                offline_economic_evidence_complete=result.offline_economic_evidence_complete,
+                walk_forward_verified=wf_ok,
+                monte_carlo_verified=mc_ok,
+                stress_verified=stress_ok,
+                walk_forward_monte_carlo_stress_requirements_met=False,
+                walk_forward_policy_pass=False,
+                monte_carlo_policy_pass=False,
+                stress_policy_pass=False,
+                blockers=sorted(set(blockers)),
+            )
+        min_trades = resolved_min if resolved_min is not None else 50
+    else:
+        min_trades = min_trades_for_policy_pass if min_trades_for_policy_pass is not None else 1
+
     metrics_ref = index_doc.get("economic_metrics_domain_ref") or {}
     metrics_path = root / str(metrics_ref.get("artifact_relpath") or "")
     metrics_doc = (
@@ -106,15 +138,18 @@ def evaluate_integrated_offline_economic_validity_v1(
     )
     trade_count = int(metrics_doc.get("trade_count") or 0)
     net_pnl = str(metrics_doc.get("net_pnl") or "0")
+    metrics_semantic = str(metrics_doc.get("trade_count_semantic") or "")
+    if metrics_semantic and metrics_semantic != TRADE_COUNT_SEMANTIC_COMPLETED_POSITION_ROUND_TRIP:
+        failure_reasons.append("ECONOMIC_METRICS_TRADE_COUNT_SEMANTIC_MISMATCH")
 
     wf_policy_pass = bool(metrics_doc.get("walk_forward_pass", True)) if wf_ok else False
     mc_policy_pass = mc_ok
     stress_policy_pass = stress_ok
 
-    if trade_count < min_trades_for_policy_pass:
+    if trade_count < min_trades:
         failure_reasons.append("ECONOMIC_ZERO_OR_INSUFFICIENT_TRADES")
     try:
-        if trade_count >= min_trades_for_policy_pass and float(net_pnl) <= 0:
+        if trade_count >= min_trades and float(net_pnl) <= 0:
             failure_reasons.append("ECONOMIC_NON_POSITIVE_NET_PNL")
     except ValueError:
         failure_reasons.append("ECONOMIC_NET_PNL_UNPARSEABLE")

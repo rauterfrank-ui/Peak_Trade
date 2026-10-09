@@ -52,6 +52,39 @@ integrated index v1.1. `integrated_offline_economic_validity_adjudication_v1`
 derives `ECONOMIC_VALIDITY_PASS` from verified evidence only (AUTHORITY=NONE).
 Zero-trade outcomes may yield technical proof complete with economic policy FAIL.
 
+## CURRENT sample-count policy (authoritative for PRODUCTIVE_CURRENT)
+
+Owner: `ops.current_integrated_offline_economic_policy_v1`
+
+Config: `config/ops/current_integrated_offline_economic_policy_v1.toml`
+
+Integrated evidence binds `canonical_identity_binding_v1.economic_policy_reference_v1`
+with a deterministic `policy_digest_sha256` (not a stub digest).
+
+| Term | Meaning |
+|------|---------|
+| **TRADE** (qualifying) | One completed economic position round trip: FLAT → NONZERO EXPOSURE → FLAT |
+| **ENTRY** | Exposure transition flat → nonzero; does **not** increment `trade_count` |
+| **FILL** | Simulated execution event; does **not** increment `trade_count` |
+| **PARTIAL REDUCTION** | Nonzero → smaller nonzero; stays within one open lifecycle |
+| **REALIZED LEG** | PnL recognized on a reducing fill; tracked as `realized_leg_count` |
+| **COMPLETED ROUND TRIP** | Lifecycle closed at flat; increments authoritative `trade_count` |
+
+`minimum_trade_count = 50` means **50 completed economic round trips** for CURRENT
+integrated offline qualification.
+
+Reversal fills that cross through flat in one simulated action are treated as
+close-then-open (complete lifecycle, then new lifecycle).
+
+Metrics domain fields (non-exhaustive): `trade_count` (= completed round trips),
+`completed_trade_count`, `entry_count`, `fill_count`, `realized_leg_count`,
+`win_leg_count`, `loss_leg_count`, `winning_completed_trades`,
+`losing_completed_trades`, `trade_count_semantic`.
+
+STEP29M `economic_validity_policy_v1` / `config [validation] min_trades` are
+**provenance reference only** for the numeric threshold 50 — not authority over
+CURRENT semantics or adjudication binding.
+
 ## Artifacts
 
 - Top-level index: `INTEGRATED_OFFLINE_ECONOMIC_EVIDENCE_V1.json`
@@ -60,6 +93,7 @@ Zero-trade outcomes may yield technical proof complete with economic policy FAIL
 ## Config
 
 - `config/ops/integrated_offline_economic_evidence_v1.toml`
+- `config/ops/current_integrated_offline_economic_policy_v1.toml`
 - `canonical_evidence_relpath` defaults unset (discovery fail-closed)
 
 This config file is **not** currently listed in
