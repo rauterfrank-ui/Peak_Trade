@@ -57,6 +57,9 @@ from src.ops.integrated_offline_economic_evidence_v1.integrated_offline_economic
 from src.ops.integrated_offline_economic_evidence_v1.integrated_verifier_v1 import (
     verify_integrated_offline_economic_evidence_v1,
 )
+from src.ops.integrated_offline_economic_evidence_v1.replay_simulated_economics_bridge_v1 import (
+    apply_replay_result_to_simulated_portfolio_v1,
+)
 from src.ops.integrated_offline_economic_evidence_v1.productive_offline_economic_completion_v1 import (
     _decision_row_from_replay,
     _execution_model_binding_digest,
@@ -949,36 +952,18 @@ def run_historical_qualification_v1(
         update_binding_report_from_replay_v1(binding_report, result=current_result)
 
         mark_dec = Decimal(str(context.mark_price))
-        order_intent_increment = 0
-        if current_result.evidence.execution_eligible:
-            side_raw = str(current_result.evidence.selected_side or "").lower()
-            side = "BUY" if side_raw == "long" else "SELL" if side_raw == "short" else "HOLD"
-            if side in {"BUY", "SELL"}:
-                order_intent_increment = 1
-                portfolio.apply_intended_action(
-                    instrument_id=REPLAY_INSTRUMENT_ID,
-                    side=side,
-                    quantity=Decimal("1"),
-                    mark_price=mark_dec,
-                )
-            else:
-                portfolio.apply_intended_action(
-                    instrument_id=REPLAY_INSTRUMENT_ID,
-                    side="HOLD",
-                    quantity=Decimal("0"),
-                    mark_price=mark_dec,
-                )
-        else:
-            portfolio.apply_intended_action(
-                instrument_id=REPLAY_INSTRUMENT_ID,
-                side="HOLD",
-                quantity=Decimal("0"),
-                mark_price=mark_dec,
-            )
+        admission = apply_replay_result_to_simulated_portfolio_v1(
+            portfolio,
+            result=current_result,
+            instrument_id=REPLAY_INSTRUMENT_ID,
+            mark_price=mark_dec,
+        )
+        order_intent_increment = 1 if admission.admitted else 0
 
         stats.record_replay(
             result=current_result,
             order_intent_increment=order_intent_increment,
+            simulated_economic_admitted=admission.admitted,
         )
         blocking_observability_path.parent.mkdir(parents=True, exist_ok=True)
         with blocking_observability_path.open("a", encoding="utf-8") as obs_out:

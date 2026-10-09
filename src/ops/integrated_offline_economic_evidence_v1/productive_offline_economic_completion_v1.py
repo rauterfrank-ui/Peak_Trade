@@ -66,6 +66,9 @@ from src.ops.integrated_offline_economic_evidence_v1.decision_input_fingerprint_
     compute_decision_input_fingerprint_digest_sha256_v1,
     compute_productive_gate_bindings_digest_sha256_v1,
 )
+from src.ops.integrated_offline_economic_evidence_v1.replay_simulated_economics_bridge_v1 import (
+    apply_replay_result_to_simulated_portfolio_v1,
+)
 from src.ops.integrated_offline_economic_evidence_v1.productive_replay_baseline_v1 import (
     BASELINE_CONFIG_DIGEST,
     BASELINE_IMPL_BINDING_DIGEST,
@@ -357,22 +360,12 @@ def produce_productive_offline_economic_completion_bundle_v1(
     de_digest = _write_json(de_path, de_doc)
 
     portfolio = SimulatedPortfolioEconomicsModelV1(params=PortfolioEconomicsModelParamsV1())
-    side_raw = str(current_result.evidence.selected_side or "").lower()
-    side = "BUY" if side_raw == "long" else "SELL" if side_raw == "short" else "HOLD"
-    if current_result.evidence.execution_eligible and side in {"BUY", "SELL"}:
-        portfolio.apply_intended_action(
-            instrument_id=replay_input.instrument_id,
-            side=side,
-            quantity=Decimal("1"),
-            mark_price=Decimal(str(replay_input.current_price)),
-        )
-    else:
-        portfolio.apply_intended_action(
-            instrument_id=replay_input.instrument_id,
-            side="HOLD",
-            quantity=Decimal("0"),
-            mark_price=Decimal(str(replay_input.current_price)),
-        )
+    apply_replay_result_to_simulated_portfolio_v1(
+        portfolio,
+        result=current_result,
+        instrument_id=replay_input.instrument_id,
+        mark_price=Decimal(str(replay_input.current_price)),
+    )
     state = portfolio.state
     trade_count = 1 if state.fill_count > 0 else 0
     metrics_doc = {

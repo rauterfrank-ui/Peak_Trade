@@ -367,6 +367,7 @@ class DecisionEpochStatsV1:
     hold_count: int = 0
     execution_eligible_count: int = 0
     order_intent_count: int = 0
+    simulated_economic_action_admitted_count: int = 0
     safety_reject_count: int = 0
     canonical_order_intent_present_count: int = 0
     blocking_reason_counts: Counter[str] = field(default_factory=Counter)
@@ -377,6 +378,7 @@ class DecisionEpochStatsV1:
         *,
         result: IntegratedOfflineReplayResultV1,
         order_intent_increment: int = 0,
+        simulated_economic_admitted: bool = False,
     ) -> None:
         outcome = str(result.evidence.decision_outcome or "")
         try:
@@ -406,6 +408,8 @@ class DecisionEpochStatsV1:
             self.execution_eligible_count += 1
         if order_intent_increment:
             self.order_intent_count += order_intent_increment
+        if simulated_economic_admitted:
+            self.simulated_economic_action_admitted_count += 1
         if any("SAFETY" in str(c) for c in (result.evidence.reason_codes or ())):
             self.safety_reject_count += 1
         if result.intermediate is not None and result.intermediate.canonical_order_intent:
@@ -435,6 +439,9 @@ class DecisionEpochStatsV1:
             "hold_count": self.hold_count,
             "execution_eligible_count": self.execution_eligible_count,
             "order_intent_count": self.order_intent_count,
+            "simulated_economic_action_admitted_count": (
+                self.simulated_economic_action_admitted_count
+            ),
             "safety_reject_count": self.safety_reject_count,
             "canonical_order_intent_present_count": self.canonical_order_intent_present_count,
         }
