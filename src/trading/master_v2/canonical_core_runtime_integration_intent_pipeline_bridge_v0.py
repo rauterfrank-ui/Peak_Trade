@@ -140,6 +140,7 @@ class CanonicalCoreRuntimeCapitalContextV0:
     daily_loss_remaining_budget: Decimal
     current_reconciled_exposure: Decimal
     instrument: InstrumentQuantityConstraintsV1
+    reconciled_open_position_quantity: Decimal = Decimal("0")
     maximum_positions: int = 1
     current_open_positions_count: int = 0
     current_open_side: Optional[str] = None
@@ -279,6 +280,7 @@ def build_capital_risk_sizing_input_from_decision_v0(
         total_capital_limit=capital_context.total_capital_limit,
         daily_loss_remaining_budget=capital_context.daily_loss_remaining_budget,
         current_reconciled_exposure=capital_context.current_reconciled_exposure,
+        reconciled_open_position_quantity=capital_context.reconciled_open_position_quantity,
         maximum_positions=capital_context.maximum_positions,
         current_open_positions_count=capital_context.current_open_positions_count,
         current_open_side=capital_context.current_open_side,

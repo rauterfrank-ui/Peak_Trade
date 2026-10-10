@@ -65,6 +65,11 @@ from src.ops.integrated_offline_economic_evidence_v1.economic_metrics_accounting
     merge_qualification_metrics_into_doc_v1,
     net_pnl_from_portfolio_state_v1,
 )
+from src.ops.integrated_offline_economic_evidence_v1.productive_offline_replay_portfolio_truth_wiring_v1 import (
+    apply_pending_portfolio_observation_to_sequence_state_v1,
+    attach_pending_portfolio_observation_to_replay_input_v1,
+    capture_portfolio_observation_after_epoch_v1,
+)
 from src.ops.integrated_offline_economic_evidence_v1.replay_simulated_economics_bridge_v1 import (
     apply_replay_result_to_simulated_portfolio_v1,
 )
@@ -885,6 +890,7 @@ def run_historical_qualification_v1(
 
     sequence_state = build_initial_mv2_integrated_replay_bar_sequence_state_v1(trading_epoch=0)
     portfolio = SimulatedPortfolioEconomicsModelV1(params=PortfolioEconomicsModelParamsV1())
+    pending_portfolio_observation = None
 
     rows: list[dict[str, Any]] = []
     per_trade_returns: list[float] = []
@@ -954,6 +960,10 @@ def run_historical_qualification_v1(
             stats.observations_accepted += 1
 
         stats.decision_epochs += 1
+        sequence_state = apply_pending_portfolio_observation_to_sequence_state_v1(
+            sequence_state,
+            pending_portfolio_observation,
+        )
         built = _build_replay_input_from_bar(
             template=template,
             context=context,
@@ -971,6 +981,10 @@ def run_historical_qualification_v1(
         replay_input = restore_productive_bindings_after_coerce_v1(
             _coerce_replay_input_enums_for_integrated_replay_v1(wired),
             wired=wired,
+        )
+        replay_input = attach_pending_portfolio_observation_to_replay_input_v1(
+            replay_input,
+            pending_portfolio_observation,
         )
         current_result = invoke_current_authoritative_replay_v1(replay_input=replay_input)
         offline_result = invoke_offline_replay_v1(replay_input=replay_input)
@@ -1001,6 +1015,12 @@ def run_historical_qualification_v1(
             result=current_result,
             instrument_id=REPLAY_INSTRUMENT_ID,
             mark_price=mark_dec,
+        )
+        pending_portfolio_observation = capture_portfolio_observation_after_epoch_v1(
+            portfolio=portfolio,
+            instrument_id=REPLAY_INSTRUMENT_ID,
+            mark_price=mark_dec,
+            trading_epoch=i,
         )
         order_intent_increment = 1 if admission.admitted else 0
 
