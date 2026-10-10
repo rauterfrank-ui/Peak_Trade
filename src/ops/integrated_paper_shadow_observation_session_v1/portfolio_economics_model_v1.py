@@ -9,6 +9,11 @@ from dataclasses import asdict, dataclass, field
 from decimal import Decimal
 from typing import Any, Mapping, Optional
 
+from src.ops.integrated_paper_shadow_observation_session_v1.simulated_economics_round_trip_ledger_v1 import (
+    SimulatedEconomicsObservabilityContextV1,
+    SimulatedRoundTripLedgerCollectorV1,
+)
+
 PORTFOLIO_ECONOMICS_MODEL_ID = "ops.integrated_paper_shadow_observation_portfolio_economics_v1"
 PORTFOLIO_ECONOMICS_MODEL_VERSION = "v1"
 PORTFOLIO_ECONOMICS_SCHEMA_ID = PORTFOLIO_ECONOMICS_MODEL_ID
@@ -128,8 +133,14 @@ class EconomicMetricsSnapshotV1:
 class SimulatedPortfolioEconomicsModelV1:
     """Canonical producer for simulated fill/fee/slippage/PnL/funding."""
 
-    def __init__(self, params: PortfolioEconomicsModelParamsV1 | None = None) -> None:
+    def __init__(
+        self,
+        params: PortfolioEconomicsModelParamsV1 | None = None,
+        *,
+        round_trip_ledger: SimulatedRoundTripLedgerCollectorV1 | None = None,
+    ) -> None:
         self.params = params or PortfolioEconomicsModelParamsV1()
+        self.round_trip_ledger = round_trip_ledger
         if self.params.max_leverage <= 0:
             raise PortfolioEconomicsModelError("MAX_LEVERAGE_MUST_BE_POSITIVE")
         if self.params.initial_equity <= 0:
@@ -151,6 +162,9 @@ class SimulatedPortfolioEconomicsModelV1:
         self._lifecycle_leg_pnl = _ZERO
         self._lifecycle_fees = _ZERO
         self._lifecycle_slippage = _ZERO
+        self._lifecycle_funding = _ZERO
+        self._last_observability_context: SimulatedEconomicsObservabilityContextV1 | None = None
+        self._last_mark_price: Decimal = _ZERO
 
     @property
     def entry_count(self) -> int:
@@ -198,8 +212,11 @@ class SimulatedPortfolioEconomicsModelV1:
         side: str,
         quantity: Decimal,
         mark_price: Decimal,
+        observability_context: SimulatedEconomicsObservabilityContextV1 | None = None,
     ) -> Optional[SimulatedFillV1]:
         """Apply a simulated intended action. Never emits broker writes."""
+        self._last_observability_context = observability_context
+        self._last_mark_price = mark_price
         side_u = str(side or "").strip().upper()
         if side_u in {"", "HOLD", "NONE", "FLAT"}:
             self.state.intended_action_count += 1
@@ -297,12 +314,22 @@ class SimulatedPortfolioEconomicsModelV1:
         self._lifecycle_leg_pnl = _ZERO
         self._lifecycle_fees = _ZERO
         self._lifecycle_slippage = _ZERO
+        self._lifecycle_funding = _ZERO
         self._entry_count += 1
 
-    def _complete_lifecycle(self) -> None:
+    def _complete_lifecycle(self, *, exit_price: Decimal | None = None) -> None:
         if not self._lifecycle_open:
             return
         economic = self._lifecycle_leg_pnl - self._lifecycle_fees - self._lifecycle_slippage
+        if self.round_trip_ledger is not None:
+            self.round_trip_ledger.on_lifecycle_complete(
+                context=self._last_observability_context,
+                exit_price=exit_price if exit_price is not None else self._last_mark_price,
+                lifecycle_leg_pnl=self._lifecycle_leg_pnl,
+                lifecycle_fees=self._lifecycle_fees,
+                lifecycle_slippage=self._lifecycle_slippage,
+                lifecycle_funding=self._lifecycle_funding,
+            )
         self._completed_trade_count += 1
         if economic >= 0:
             self._winning_completed_trades += 1
@@ -312,6 +339,17 @@ class SimulatedPortfolioEconomicsModelV1:
         self._lifecycle_leg_pnl = _ZERO
         self._lifecycle_fees = _ZERO
         self._lifecycle_slippage = _ZERO
+        self._lifecycle_funding = _ZERO
+
+    def open_lifecycle_economics_v1(self) -> dict[str, str] | None:
+        if not self._lifecycle_open:
+            return None
+        return {
+            "gross_realized_pnl": str(self._lifecycle_leg_pnl),
+            "fees": str(self._lifecycle_fees),
+            "slippage": str(self._lifecycle_slippage),
+            "funding": str(self._lifecycle_funding),
+        }
 
     def _reconcile_lifecycle_after_fill(self, *, was_flat: bool, fill: SimulatedFillV1) -> None:
         is_flat = not self._has_exposure()
@@ -319,13 +357,38 @@ class SimulatedPortfolioEconomicsModelV1:
             self._open_lifecycle()
             self._lifecycle_fees += fill.fee
             self._lifecycle_slippage += fill.slippage_cost
+            if self.round_trip_ledger is not None:
+                pos = self.state.positions.get(fill.instrument_id)
+                abs_q = pos.quantity.copy_abs() if pos else fill.quantity
+                direction = "LONG" if pos and pos.quantity > 0 else "SHORT"
+                self.round_trip_ledger.on_lifecycle_open(
+                    context=self._last_observability_context,
+                    entry_price=fill.fill_price,
+                    abs_quantity=abs_q,
+                    direction=direction,
+                )
+                self.round_trip_ledger.on_lifecycle_fill(
+                    abs_quantity=abs_q,
+                    lifecycle_leg_pnl_delta=_ZERO,
+                    lifecycle_fees_delta=fill.fee,
+                    lifecycle_slippage_delta=fill.slippage_cost,
+                )
         elif not was_flat and is_flat:
             self._lifecycle_fees += fill.fee
             self._lifecycle_slippage += fill.slippage_cost
-            self._complete_lifecycle()
+            self._complete_lifecycle(exit_price=fill.fill_price)
         elif self._lifecycle_open:
             self._lifecycle_fees += fill.fee
             self._lifecycle_slippage += fill.slippage_cost
+            if self.round_trip_ledger is not None:
+                pos = self.state.positions.get(fill.instrument_id)
+                abs_q = pos.quantity.copy_abs() if pos and pos.quantity != 0 else _ZERO
+                self.round_trip_ledger.on_lifecycle_fill(
+                    abs_quantity=abs_q,
+                    lifecycle_leg_pnl_delta=_ZERO,
+                    lifecycle_fees_delta=fill.fee,
+                    lifecycle_slippage_delta=fill.slippage_cost,
+                )
 
     def _split_fill_for_reversal_v1(
         self, fill: SimulatedFillV1, *, old_qty: Decimal
@@ -416,6 +479,15 @@ class SimulatedPortfolioEconomicsModelV1:
                 self._gross_loss += pnl.copy_abs()
             if self._lifecycle_open:
                 self._lifecycle_leg_pnl += pnl
+                if self.round_trip_ledger is not None:
+                    pos_after = new_qty
+                    abs_q = pos_after.copy_abs() if pos_after != 0 else _ZERO
+                    self.round_trip_ledger.on_lifecycle_fill(
+                        abs_quantity=abs_q,
+                        lifecycle_leg_pnl_delta=pnl,
+                        lifecycle_fees_delta=_ZERO,
+                        lifecycle_slippage_delta=_ZERO,
+                    )
             pos.quantity = new_qty
             if pos.quantity == 0:
                 pos.avg_entry_price = _ZERO
@@ -437,6 +509,10 @@ class SimulatedPortfolioEconomicsModelV1:
         signed = funding if pos.quantity > 0 else -funding
         self.state.cumulative_funding += signed
         self.state.cash -= signed
+        if self._lifecycle_open:
+            self._lifecycle_funding += signed
+            if self.round_trip_ledger is not None:
+                self.round_trip_ledger.on_lifecycle_funding(funding_delta=signed)
 
     def _mark_to_market(self, *, instrument_id: str, mark_price: Decimal) -> None:
         pos = self.state.positions.get(instrument_id)

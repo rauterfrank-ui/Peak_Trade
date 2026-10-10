@@ -15,6 +15,9 @@ from src.ops.integrated_paper_shadow_observation_session_v1.portfolio_economics_
     SimulatedFillV1,
     SimulatedPortfolioEconomicsModelV1,
 )
+from src.ops.integrated_paper_shadow_observation_session_v1.simulated_economics_round_trip_ledger_v1 import (
+    SimulatedEconomicsObservabilityContextV1,
+)
 from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.intended_action_mapper_v1 import (
     IntendedAnalyticalActionV1,
     map_replay_result_to_intended_analytical_action_v1,
@@ -71,6 +74,7 @@ def apply_replay_result_to_simulated_portfolio_v1(
     result: IntegratedOfflineReplayResultV1,
     instrument_id: str,
     mark_price: Decimal,
+    observability_context: SimulatedEconomicsObservabilityContextV1 | None = None,
 ) -> ReplaySimulatedEconomicsAdmissionV1:
     """Map replay → analytical action → portfolio; preserve offline non-authority."""
     if result.evidence.execution_eligible:
@@ -94,6 +98,7 @@ def apply_replay_result_to_simulated_portfolio_v1(
             side=side,
             quantity=qty,
             mark_price=mark_price,
+            observability_context=observability_context,
         )
     else:
         portfolio.apply_intended_action(
@@ -101,6 +106,7 @@ def apply_replay_result_to_simulated_portfolio_v1(
             side="HOLD",
             quantity=Decimal("0"),
             mark_price=mark_price,
+            observability_context=observability_context,
         )
 
     admitted = side in {"BUY", "SELL"} and qty > 0 and fill is not None
