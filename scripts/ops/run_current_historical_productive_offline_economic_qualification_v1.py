@@ -147,7 +147,17 @@ from trading.master_v2.single_lane_confirmation_activation_v1 import (
     initial_directional_confirmation_side_state_carrier_v1,
 )
 
-GOVERNED_DATASET_REL = "datasets/admissible_futures/inst-eth-usdt-perp/v2"
+DEFAULT_GOVERNED_DATASET_VERSION = "v2"
+GOVERNED_DATASET_REL_TEMPLATE = "datasets/admissible_futures/inst-eth-usdt-perp/{dataset_version}"
+
+
+def _governed_dataset_relpath(dataset_version: str) -> str:
+    version = str(dataset_version or "").strip()
+    if not version or "/" in version or ".." in version:
+        raise SystemExit(f"ERR:governed_dataset_version_invalid:{dataset_version!r}")
+    return GOVERNED_DATASET_REL_TEMPLATE.format(dataset_version=version)
+
+
 HISTORICAL_PRODUCER_PREFIX = f"{PRODUCTIVE_COMPLETION_PRODUCER_PREFIX}historical"
 PREFLIGHT_MAX_DECISION_EPOCHS = 5_000
 PREFLIGHT_MIN_DECISION_EPOCHS_FOR_EARLY_PASS = 1_000
@@ -174,16 +184,20 @@ def _research_execution_cost_from_binding(
     )
 
 
-def _load_v2_dataset(archive_root: Path) -> tuple[pd.DataFrame, dict[str, Any], Path]:
+def _load_governed_dataset(
+    archive_root: Path,
+    *,
+    dataset_version: str,
+) -> tuple[pd.DataFrame, dict[str, Any], Path]:
     dataset_root = join_runtime_evidence_relpath(
         archive_root,
-        GOVERNED_DATASET_REL,
+        _governed_dataset_relpath(dataset_version),
         error_code="historical_dataset_relpath_invalid",
     )
     manifest_path = dataset_root / "dataset_manifest.json"
     bars_path = dataset_root / "bars.parquet"
     if not manifest_path.is_file() or not bars_path.is_file():
-        raise SystemExit(f"ERR:dataset_v2_missing:{dataset_root}")
+        raise SystemExit(f"ERR:governed_dataset_missing:{dataset_root}")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     bars = pd.read_parquet(bars_path)
     if "timestamp" in bars.columns:
@@ -712,13 +726,17 @@ def run_historical_qualification_v1(
     archive_root: Path,
     evidence_relpath: str,
     frozen_manifest_digest: str,
+    dataset_version: str = DEFAULT_GOVERNED_DATASET_VERSION,
+    expected_dataset_content_digest_sha256: str = "",
 ) -> dict[str, Any]:
     root = repo_root.resolve()
     archive_root = archive_root.resolve()
     os.environ[ENV_ARCHIVE_ROOT] = str(archive_root)
     resolve_archive_root(explicit=archive_root, require_for_write=False)
 
-    bars, manifest, dataset_root = _load_v2_dataset(archive_root)
+    bars, manifest, dataset_root = _load_governed_dataset(
+        archive_root, dataset_version=dataset_version
+    )
     resolution = _verify_dataset_resolution_v1(
         archive_root=archive_root,
         manifest=manifest,
@@ -732,6 +750,22 @@ def run_historical_qualification_v1(
         }
 
     dataset_digest = str(resolution["dataset_digest"])
+    manifest_version = str(manifest.get("dataset_version") or dataset_version)
+    if manifest_version != dataset_version:
+        return {
+            "terminal_class": "TECHNICAL_BLOCKER",
+            "first_failure_node": "HISTORICAL_DATASET_VERSION_BINDING_V1",
+            "expected_dataset_version": dataset_version,
+            "manifest_dataset_version": manifest_version,
+        }
+    expected_digest = str(expected_dataset_content_digest_sha256 or "").strip()
+    if expected_digest and expected_digest != dataset_digest:
+        return {
+            "terminal_class": "TECHNICAL_BLOCKER",
+            "first_failure_node": "HISTORICAL_DATASET_DIGEST_BINDING_V1",
+            "expected_dataset_content_digest_sha256": expected_digest,
+            "actual_dataset_content_digest_sha256": dataset_digest,
+        }
     mapping_digest = _sha256_text(
         json.dumps(
             {
@@ -773,7 +807,7 @@ def run_historical_qualification_v1(
         "verifier_id": MD_BRIDGE_VERIFIER_ID,
         "bridge_contract_id": MD_BRIDGE_CONTRACT_ID,
         "offline_dataset_owner": OFFLINE_DATASET_OWNER,
-        "dataset_version": "v2",
+        "dataset_version": dataset_version,
         "dataset_content_digest_sha256": dataset_digest,
         "instrument_mapping_digest_sha256": mapping_digest,
         "current_offline_md_semantics_v1": _shared_md_semantics(),
@@ -1184,12 +1218,24 @@ def main() -> int:
     parser.add_argument("--archive-root", type=Path, required=True)
     parser.add_argument("--evidence-relpath", required=True)
     parser.add_argument("--frozen-manifest-digest", required=True)
+    parser.add_argument(
+        "--dataset-version",
+        default=DEFAULT_GOVERNED_DATASET_VERSION,
+        help="Governed admissible dataset version under inst-eth-usdt-perp (default v2).",
+    )
+    parser.add_argument(
+        "--expected-dataset-content-digest-sha256",
+        default="",
+        help="Optional fail-closed binding to exact dataset content digest.",
+    )
     ns = parser.parse_args()
     result = run_historical_qualification_v1(
         repo_root=_REPO_ROOT,
         archive_root=ns.archive_root.expanduser().resolve(),
         evidence_relpath=ns.evidence_relpath,
         frozen_manifest_digest=ns.frozen_manifest_digest,
+        dataset_version=str(ns.dataset_version),
+        expected_dataset_content_digest_sha256=str(ns.expected_dataset_content_digest_sha256),
     )
     print(json.dumps(result, indent=2, sort_keys=True, default=str))
     if result.get("terminal_class") == "TECHNICAL_BLOCKER":

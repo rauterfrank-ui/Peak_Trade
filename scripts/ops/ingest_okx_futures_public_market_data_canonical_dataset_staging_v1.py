@@ -910,7 +910,7 @@ def run_ingestion(
         start_utc=start_utc,
         end_utc=end_utc,
     )
-    schema_complete = all_required_series_available(matrix)
+    schema_complete = all_required_series_available(matrix, dataset_profile="economic_research_v1")
     verdict = classify_verdict(schema_complete=schema_complete, integrity_pass=True)
 
     return _finalize_reports(
