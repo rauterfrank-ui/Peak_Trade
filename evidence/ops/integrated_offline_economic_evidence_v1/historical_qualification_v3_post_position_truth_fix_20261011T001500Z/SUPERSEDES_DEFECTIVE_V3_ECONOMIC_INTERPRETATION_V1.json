@@ -1,0 +1,7 @@
+{
+  "authority_effect": "NONE",
+  "position_truth_remediation_commit": "4b668c88dbf4e79af0a627216713aba759b70369",
+  "remediation_commit_sha256": "4b668c88dbf4e79af0a627216713aba759b70369",
+  "superseded_evidence_relpath": "evidence/ops/integrated_offline_economic_evidence_v1/historical_qualification_v3_funding_archive_20261010T124700Z",
+  "supersession_reason": "PROVEN_REPLAY_STATE_DEFECT_STALE_MV2_CRS_POSITION_TRUTH"
+}

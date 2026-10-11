@@ -137,6 +137,12 @@ from src.ops.integrated_paper_shadow_observation_session_v1.portfolio_economics_
     PortfolioEconomicsModelParamsV1,
     SimulatedPortfolioEconomicsModelV1,
 )
+from src.ops.integrated_paper_shadow_observation_session_v1.simulated_economics_round_trip_ledger_v1 import (
+    ROUND_TRIP_LEDGER_SCHEMA_ID,
+    SimulatedRoundTripLedgerCollectorV1,
+    ledger_document_from_collector_v1,
+    reconcile_ledger_against_portfolio_v1,
+)
 from src.research.longer_chronological_pit_acquisition_v1 import ENV_ARCHIVE_ROOT
 from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
     join_runtime_evidence_relpath,
@@ -802,6 +808,19 @@ def run_historical_qualification_v1(
 
     evidence_root = root / evidence_relpath
     evidence_root.mkdir(parents=True, exist_ok=True)
+    _write_json(
+        evidence_root / "SUPERSEDES_DEFECTIVE_V3_ECONOMIC_INTERPRETATION_V1.json",
+        {
+            "superseded_evidence_relpath": (
+                "evidence/ops/integrated_offline_economic_evidence_v1/"
+                "historical_qualification_v3_funding_archive_20261010T124700Z"
+            ),
+            "supersession_reason": "PROVEN_REPLAY_STATE_DEFECT_STALE_MV2_CRS_POSITION_TRUTH",
+            "remediation_commit_sha256": proven,
+            "position_truth_remediation_commit": "4b668c88dbf4e79af0a627216713aba759b70369",
+            "authority_effect": AUTHORITY_EFFECT_NONE,
+        },
+    )
 
     window_start = str(bars.index.min())
     window_end = str(bars.index.max())
@@ -889,8 +908,13 @@ def run_historical_qualification_v1(
     )
 
     sequence_state = build_initial_mv2_integrated_replay_bar_sequence_state_v1(trading_epoch=0)
-    portfolio = SimulatedPortfolioEconomicsModelV1(params=PortfolioEconomicsModelParamsV1())
+    round_trip_ledger = SimulatedRoundTripLedgerCollectorV1()
+    portfolio = SimulatedPortfolioEconomicsModelV1(
+        params=PortfolioEconomicsModelParamsV1(),
+        round_trip_ledger=round_trip_ledger,
+    )
     pending_portfolio_observation = None
+    false_repeated_new_entry_count = 0
 
     rows: list[dict[str, Any]] = []
     per_trade_returns: list[float] = []
@@ -960,6 +984,10 @@ def run_historical_qualification_v1(
             stats.observations_accepted += 1
 
         stats.decision_epochs += 1
+        pos_before = portfolio.state.positions.get(REPLAY_INSTRUMENT_ID)
+        portfolio_qty_before = (
+            Decimal(str(pos_before.quantity)) if pos_before is not None else Decimal("0")
+        )
         sequence_state = apply_pending_portfolio_observation_to_sequence_state_v1(
             sequence_state,
             pending_portfolio_observation,
@@ -1023,6 +1051,13 @@ def run_historical_qualification_v1(
             trading_epoch=i,
         )
         order_intent_increment = 1 if admission.admitted else 0
+        decision_outcome = str(current_result.evidence.decision_outcome or "")
+        if (
+            admission.admitted
+            and decision_outcome in {"enter_long", "enter_short"}
+            and portfolio_qty_before != 0
+        ):
+            false_repeated_new_entry_count += 1
 
         stats.record_replay(
             result=current_result,
@@ -1169,6 +1204,67 @@ def run_historical_qualification_v1(
     binding_report_path.write_text(
         json.dumps(binding_report.to_dict(), indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
+    )
+
+    unintended_exposure_amplification_count = 0
+    ledger_rows_audit: list[dict[str, Any]] = []
+    for row in round_trip_ledger.rows:
+        initial_q = Decimal(str(row.get("initial_quantity") or "0"))
+        max_q = Decimal(str(row.get("max_abs_quantity") or "0"))
+        amplified = max_q > initial_q + Decimal("0.0001")
+        if amplified:
+            unintended_exposure_amplification_count += 1
+        ledger_rows_audit.append(
+            {
+                "round_trip_id": row.get("round_trip_id"),
+                "direction": row.get("direction"),
+                "initial_quantity": str(initial_q),
+                "max_abs_quantity": str(max_q),
+                "fill_count": row.get("fill_count"),
+                "reduction_count": row.get("reduction_count"),
+                "net_pnl": row.get("net_pnl"),
+                "exposure_amplification_observed": amplified,
+            }
+        )
+    open_eco = portfolio.open_lifecycle_economics_v1()
+    ledger_reconcile_ok, ledger_blockers = reconcile_ledger_against_portfolio_v1(
+        collector=round_trip_ledger,
+        portfolio_completed_trade_count=portfolio.completed_trade_count,
+        portfolio_realized_pnl=portfolio.state.realized_pnl,
+        portfolio_cumulative_fees=portfolio.state.cumulative_fees,
+        portfolio_cumulative_slippage=portfolio.state.cumulative_slippage,
+        portfolio_cumulative_funding=portfolio.state.cumulative_funding,
+        portfolio_has_open_exposure=any(
+            p.quantity != 0 for p in portfolio.state.positions.values()
+        ),
+        open_lifecycle_fees=Decimal(open_eco["fees"]) if open_eco else Decimal("0"),
+        open_lifecycle_slippage=Decimal(open_eco["slippage"]) if open_eco else Decimal("0"),
+        open_lifecycle_funding=Decimal(open_eco["funding"]) if open_eco else Decimal("0"),
+        open_lifecycle_gross=Decimal(open_eco["gross_realized_pnl"]) if open_eco else Decimal("0"),
+    )
+    ledger_doc = ledger_document_from_collector_v1(
+        round_trip_ledger,
+        bindings={
+            "schema_id": ROUND_TRIP_LEDGER_SCHEMA_ID,
+            "qualification_run": evidence_relpath,
+            "position_truth_remediation_commit": "4b668c88dbf4e79af0a627216713aba759b70369",
+        },
+        open_position_economics=open_eco,
+    )
+    _write_json(
+        evidence_root / "CURRENT_SIMULATED_ECONOMIC_ROUND_TRIP_LEDGER_V1.json",
+        ledger_doc,
+    )
+    _write_json(
+        evidence_root / "POSITION_STATE_TRUTH_REQUALIFICATION_AUDIT_V1.json",
+        {
+            "false_repeated_new_entry_count": false_repeated_new_entry_count,
+            "unintended_exposure_amplification_count": unintended_exposure_amplification_count,
+            "position_state_reconciliation_pass": ledger_reconcile_ok,
+            "reconciliation_blockers": list(ledger_blockers),
+            "round_trip_ledger_rows": ledger_rows_audit,
+            "position_truth_wiring_enabled": True,
+        },
     )
 
     report_path = (

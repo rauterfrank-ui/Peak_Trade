@@ -1,0 +1,35 @@
+{
+  "authority_effect": "NONE",
+  "binding_class": "LOCAL_DURABLE_BULK_ARTIFACTS_EXCLUDED_FROM_GIT_OBJECT_LIMIT",
+  "bulk_artifacts": [
+    {
+      "artifact_relpath": "evidence/ops/integrated_offline_economic_evidence_v1/historical_qualification_v3_post_position_truth_fix_20261011T001500Z/CURRENT_OFFLINE_DECISION_EQUIVALENCE_V1.json",
+      "comparison_rows": 1989540,
+      "content_digest_sha256": "5d239f8da5ccd63b37588ff9e202ca192b9ab1adcdab7ff36408319a72ddea66",
+      "git_commit_included": false,
+      "size_bytes": 4295118195
+    },
+    {
+      "artifact_relpath": "evidence/ops/integrated_offline_economic_evidence_v1/historical_qualification_v3_post_position_truth_fix_20261011T001500Z/historical_qualification_blocking_observability_v1.jsonl",
+      "content_digest_sha256": "060e715abcc8a12bdf5d025a304381a733bac87855939598feaf11fccd09f7d5",
+      "git_commit_included": false,
+      "line_count": 1989540,
+      "size_bytes": 292217150
+    }
+  ],
+  "canonical_qualification_complete_at_relpath": true,
+  "partial_runs_excluded_from_ratification": [
+    "evidence/ops/integrated_offline_economic_evidence_v1/historical_qualification_v3_post_position_truth_fix_20261010T220000Z",
+    "evidence/ops/integrated_offline_economic_evidence_v1/historical_qualification_v3_post_position_truth_fix_20261011T001000Z"
+  ],
+  "provenance_chain": [
+    "DEFECTIVE_V3",
+    "POSITION_STATE_DEFECT_PROVEN",
+    "REMEDIATION_4b668c88dbf4e79af0a627216713aba759b70369",
+    "FULL_REQUALIFICATION",
+    "CORRECTED_V3"
+  ],
+  "schema_id": "ops.integrated_offline_economic_evidence_bulk_artifact_local_bindings.v1",
+  "schema_version": "v1",
+  "verification_note": "Full canonical_identity verify requires bulk artifacts present locally at bound relpaths with matching digests."
+}
