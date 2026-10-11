@@ -100,9 +100,9 @@
     "tests/ops/test_stage_step30a_okx_inst_eth_usdt_perp_dataset_v2_from_raw_staging_v0.py"
   ],
   "changed_paths_sha256": "b15e8503ef6fe8c22c2c9fdf34e1f9db3c2edd8dc43a10744d93753ac636da96",
-  "selector_used_as_map_impact_authority": false,
-  "verdict": "NO_MAP_IMPACT",
-  "reason": "PR #7085 offline position-truth + integrated offline economic evidence; CSIA/Atlas bookkeeping; no CSIA source change; no protected trading semantic mutation; AUTHORITY=NONE; POST_AUTHORIZED=false.",
+  "selector_used_as_law_impact_authority": false,
+  "verdict": "NO_LAW_IMPACT",
+  "reason": "PR #7085 offline position-truth + integrated offline economic evidence; Law-map candidate registration and Atlas bookkeeping only; no Law structured source change; no protected trading semantic mutation; AUTHORITY=NONE; POST_AUTHORIZED=false.",
   "evidence_refs": [
     "tests/ops/test_productive_offline_simulated_portfolio_position_truth_v1.py",
     "evidence/ops/integrated_offline_economic_evidence_v1/historical_qualification_v3_post_position_truth_fix_20261011T001500Z/POSITION_STATE_TRUTH_REQUALIFICATION_AUDIT_V1.json"

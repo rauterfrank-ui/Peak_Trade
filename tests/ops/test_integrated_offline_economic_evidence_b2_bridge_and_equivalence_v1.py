@@ -118,11 +118,13 @@ def test_b2_wired_productive_identity_content_verified() -> None:
             "CANONICAL_INSTRUMENT_MISMATCH",
         ),
         (
-            lambda d: d["current_offline_md_semantics_v1"].update(
-                {"display_symbol": "ETH", "canonical_instrument_id": "ETH-A"}
-            )
-            or d["offline_dataset_semantics_v1"].update(
-                {"display_symbol": "ETH", "canonical_instrument_id": "ETH-B"}
+            lambda d: (
+                d["current_offline_md_semantics_v1"].update(
+                    {"display_symbol": "ETH", "canonical_instrument_id": "ETH-A"}
+                )
+                or d["offline_dataset_semantics_v1"].update(
+                    {"display_symbol": "ETH", "canonical_instrument_id": "ETH-B"}
+                )
             ),
             "SAME_DISPLAY_SYMBOL",
         ),
