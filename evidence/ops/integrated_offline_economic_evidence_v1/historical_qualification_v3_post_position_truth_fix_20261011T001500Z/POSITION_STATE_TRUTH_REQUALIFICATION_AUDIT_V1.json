@@ -1,0 +1,19 @@
+{
+  "false_repeated_new_entry_count": 0,
+  "position_state_reconciliation_pass": true,
+  "position_truth_wiring_enabled": true,
+  "reconciliation_blockers": [],
+  "round_trip_ledger_rows": [
+    {
+      "direction": "LONG",
+      "exposure_amplification_observed": false,
+      "fill_count": 2,
+      "initial_quantity": "4.07",
+      "max_abs_quantity": "4.07",
+      "net_pnl": "69.598971352526",
+      "reduction_count": 0,
+      "round_trip_id": 1
+    }
+  ],
+  "unintended_exposure_amplification_count": 0
+}

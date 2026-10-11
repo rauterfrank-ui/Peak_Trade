@@ -349,6 +349,8 @@ class IntegratedOfflineReplayInputV1:
     regime_bull_bear_switch_evidence_path: Optional[str] = None
     # CURRENT instrument dynamic boundary state file (CRS/COI); non-authorizing wiring only.
     current_instrument_capital_risk_sizing_boundary_state_file: Optional[Any] = None
+    # Productive offline only: prior-epoch simulated portfolio fill observation (no look-ahead).
+    productive_offline_simulated_portfolio_position_observation_v1: Optional[Any] = None
     # EXPLICIT_INJECTION preserves fixture DI. REGISTRY_DERIVED enforces catalog identity.
     strategy_identity_enforcement: str = "EXPLICIT_INJECTION"
     registry_snapshot_digest: str = ""
@@ -2127,6 +2129,16 @@ def run_integrated_offline_trading_logic_replay_v1(
             state_file=_boundary_sf,
             dynamic_price_context=dynamic_price,
         )
+        _portfolio_obs = inp.productive_offline_simulated_portfolio_position_observation_v1
+        if _portfolio_obs is not None:
+            from src.ops.integrated_offline_economic_evidence_v1.productive_offline_simulated_portfolio_position_truth_v1 import (
+                overlay_portfolio_observation_on_capital_context_v0,
+            )
+
+            capital_context = overlay_portfolio_observation_on_capital_context_v0(
+                capital_context,
+                _portfolio_obs,
+            )
     else:
         capital_context = None
     sizing_binding = _crs_binding.bind_capital_risk_sizing_offline_replay_evidence_v0(

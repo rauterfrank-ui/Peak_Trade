@@ -7,9 +7,6 @@ No network, no economic evaluation, no runtime effect.
 """
 
 from __future__ import annotations
-from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
-    located_runtime_evidence_20260520,
-)
 
 import argparse
 import json
@@ -25,11 +22,16 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+from src.research.longer_chronological_pit_acquisition_v1.archive_root import (
+    located_runtime_evidence_20260520,
+)
+
 from scripts.ops import (
     ingest_okx_futures_public_market_data_canonical_dataset_staging_v1 as okx_ingest,
 )
 from scripts.ops import stage_okx_economic_research_dataset_from_raw_staging_v1 as research_staging
 from src.backtest import admissible_versioned_futures_dataset_v1 as ds
+from src.trading.master_v2 import canonical_volatility_estimate_materializer_v1 as vol_materializer
 
 CONFIRM_GO = "GO_BOUNDED_STEP30A_DATASET_V2_CONTRACT_REMEDIATION_PRE_PR_AND_PR_V0"
 
@@ -223,9 +225,16 @@ def run_step30a_dataset_v2_promotion_v0(
     target_dataset_root: Path = DEFAULT_TARGET_DATASET_ROOT,
     durable_evidence_root: Path = DEFAULT_DURABLE_EVIDENCE_ROOT,
     dataset_parent: Path = DEFAULT_DATASET_PARENT,
+    dataset_version: str = STEP30A_DATASET_VERSION,
 ) -> Mapping[str, Any]:
     if confirm_go != CONFIRM_GO:
         raise Step30aDatasetPromotionError("confirm_go_mismatch")
+    if dataset_version != dataset_version.strip() or not dataset_version:
+        raise Step30aDatasetPromotionError("dataset_version_invalid")
+    if str(target_dataset_root.name) != dataset_version:
+        raise Step30aDatasetPromotionError(
+            f"target_dataset_root_version_mismatch:expected={dataset_version}:path={target_dataset_root.name}"
+        )
 
     verify_holdout_constants_match_step29m_v1()
     resolved_raw = raw_staging_root or resolve_verified_raw_staging_root_v1(dataset_parent)
@@ -243,6 +252,9 @@ def run_step30a_dataset_v2_promotion_v0(
             "integrity_report": integrity.__dict__,
             "manifest_verify_rc": 1,
         }
+
+    materialization = vol_materializer.materialize_volatility_estimate_on_bars_v1(bars)
+    bars = materialization.bars
 
     holdout_reasons = verify_holdout_separation_v1(bars)
     if holdout_reasons:
@@ -274,13 +286,13 @@ def run_step30a_dataset_v2_promotion_v0(
                 "ingestion_timestamp_utc"
             ]
         ),
-        generation_method="step30a_okx_economic_research_dataset_v2_staging_v0",
+        generation_method=f"step30a_okx_economic_research_dataset_{dataset_version}_staging_v0",
         provenance_ref=str(resolved_raw / "reports" / "PROVENANCE.json"),
     )
     idx = bars.sort_index().index
     descriptor = ds.VersionedFuturesDatasetDescriptorV1(
-        dataset_id=f"{okx_ingest.CANONICAL_INSTRUMENT_ID}_{STEP30A_DATASET_VERSION}",
-        dataset_version=STEP30A_DATASET_VERSION,
+        dataset_id=f"{okx_ingest.CANONICAL_INSTRUMENT_ID}_{dataset_version}",
+        dataset_version=dataset_version,
         dataset_schema_version=STEP30A_DATASET_SCHEMA_VERSION,
         dataset_digest=digests["normalized_dataset_digest"],
         instrument_id=okx_ingest.CANONICAL_INSTRUMENT_ID,
@@ -385,7 +397,7 @@ def run_step30a_dataset_v2_promotion_v0(
     staging_config = {
         "confirm_go": CONFIRM_GO,
         "dataset_profile": ds.DatasetProfileV1.ECONOMIC_RESEARCH_V1.value,
-        "dataset_version": STEP30A_DATASET_VERSION,
+        "dataset_version": dataset_version,
         "dataset_schema_version": STEP30A_DATASET_SCHEMA_VERSION,
         "l1_observation_status": ds.L1ObservationStatusV1.EXECUTION_MODEL_BOUND_NOT_OBSERVED.value,
         "missing_historical_l1_reason": MISSING_HISTORICAL_L1_REASON,
@@ -412,7 +424,7 @@ def run_step30a_dataset_v2_promotion_v0(
     manifest_without_digest: dict[str, Any] = {
         "manifest_version": research_staging.MANIFEST_VERSION,
         "dataset_profile": ds.DatasetProfileV1.ECONOMIC_RESEARCH_V1.value,
-        "dataset_version": STEP30A_DATASET_VERSION,
+        "dataset_version": dataset_version,
         "dataset_schema_version": STEP30A_DATASET_SCHEMA_VERSION,
         "contract_version": ds.ADMISSIBLE_VERSIONED_FUTURES_DATASET_VERSION,
         "instrument_id": okx_ingest.CANONICAL_INSTRUMENT_ID,
@@ -528,7 +540,7 @@ def run_step30a_dataset_v2_promotion_v0(
         "manifest_digest": manifest_digest,
         "development_partition_digest": digests["development_partition_digest"],
         "frozen_holdout_digest": digests["frozen_holdout_digest"],
-        "dataset_version": STEP30A_DATASET_VERSION,
+        "dataset_version": dataset_version,
         "dataset_schema_version": STEP30A_DATASET_SCHEMA_VERSION,
         "row_count": len(bars),
         "raw_response_count": len(raw_response_digests),
@@ -648,6 +660,11 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument("--target-dataset-root", type=Path, default=DEFAULT_TARGET_DATASET_ROOT)
     parser.add_argument("--durable-evidence-root", type=Path, default=DEFAULT_DURABLE_EVIDENCE_ROOT)
     parser.add_argument("--dataset-parent", type=Path, default=DEFAULT_DATASET_PARENT)
+    parser.add_argument(
+        "--dataset-version",
+        default=STEP30A_DATASET_VERSION,
+        help="Explicit admissible dataset version directory name (e.g. v2, v3).",
+    )
     ns = parser.parse_args(argv)
     run_step30a_dataset_v2_promotion_v0(
         confirm_go=ns.confirm_go,
@@ -655,6 +672,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         target_dataset_root=ns.target_dataset_root,
         durable_evidence_root=ns.durable_evidence_root,
         dataset_parent=ns.dataset_parent,
+        dataset_version=str(ns.dataset_version),
     )
     return 0
 

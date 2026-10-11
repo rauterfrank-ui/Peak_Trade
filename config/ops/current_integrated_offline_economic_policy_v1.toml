@@ -1,0 +1,23 @@
+# Authoritative CURRENT integrated-offline economic sample-count policy (AUTHORITY=NONE).
+# STEP29M / config [validation] min_trades=50 is provenance reference only — not CURRENT authority.
+
+schema_version = "current_integrated_offline_economic_policy.v1"
+policy_id = "ops.current_integrated_offline_economic_policy_v1"
+policy_version = "v1"
+authority_effect = "NONE"
+
+[sample_count]
+minimum_trade_count = 50
+trade_count_semantic = "COMPLETED_POSITION_ROUND_TRIP"
+trade_start_state = "FLAT"
+trade_active_state = "NONZERO_EXPOSURE"
+trade_completion_state = "FLAT"
+partial_reduce_counts_as_trade = false
+entry_counts_as_trade = false
+fill_counts_as_trade = false
+closed_leg_counts_as_trade = false
+
+[provenance]
+minimum_trade_count_value = "50"
+minimum_trade_count_source_class = "STEP29M_PROVENANCE_REFERENCE_ONLY"
+minimum_trade_count_source_note = "Threshold lineage from economic_validity_policy_v1 / validation min_trades; CURRENT semantics are independently governed here."
