@@ -864,3 +864,10 @@ changes:
   epistemic_status: NAVIGATION_ONLY
   evidence: docs/ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md
   notes: 'CURRENT Natural Enter→PRE_EXTERNAL canonical closure on origin/main@6ed52d01; binds K1 GET-only witness 20261007T004808Z_witness_v1 (cycle 10 same-causal); NATURAL_ENTER_TO_PRE_EXTERNAL_PROVEN=true; POST unauthorized; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7085_integrated_offline_position_truth_lineage_v1
+  from: 922167f1044c85e75280e65429962fe25509466e
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_productive_offline_simulated_portfolio_position_truth_v1.py
+  notes: 'PR #7085: integrate integrated offline economic evidence lineage + simulated portfolio position-truth feedback (MV2 sequence/CRS overlay) + audit evidence; offline/analytical only; no Double Play/Dynamic Scope/GGE/strategy/entry-exit/sizing-formula/risk-limit semantic change; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

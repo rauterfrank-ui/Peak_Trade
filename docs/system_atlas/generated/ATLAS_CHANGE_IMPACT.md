@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=3
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_ENTITY_COUNT=4
+ATLAS_CHANGED_RELATION_COUNT=1
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_current_natural_enter_pre_external_canonical_closure_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7085_integrated_offline_position_truth_lineage_v1`.
 
 ## Workflow
 
@@ -40,15 +40,16 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `NAVIGATION_INDEX:current_whole_system_functional_causal_model_v1` |
-| `NAVIGATION_INDEX:map_of_truth` |
-| `RUNBOOK:canonical_master_runbook` |
+| `CAPABILITY:integrated_offline_economic_evidence_v1` |
+| `CAPABILITY:integrated_offline_replay_correctness_head_bound_v1` |
+| `RUNTIME_COMPONENT:mv2_integrated_replay` |
+| `RUNTIME_COMPONENT:ddo_capture_v0` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:r_ddo_capture_observes_integrated_replay` |
 
 ## NEW_RELATIONS
 
@@ -94,8 +95,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- CURRENT Natural Enter → PRE_EXTERNAL canonical closure on origin/main@6ed52d01: evidence/governance adjudication only; K1 GET-only witness bound; no trading/config/POST authority mutation; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
-- introduced_by=CHANGE:pr_current_natural_enter_pre_external_canonical_closure_v1
-- modified_by=CHANGE:pr_current_natural_enter_pre_external_canonical_closure_v1
+- PR #7085 integrated offline economic evidence + offline simulated portfolio position-truth feedback wiring; Atlas catalog/relations bookkeeping only; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+- introduced_by=CHANGE:pr_7085_integrated_offline_position_truth_lineage_v1
+- modified_by=CHANGE:pr_7085_integrated_offline_position_truth_lineage_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

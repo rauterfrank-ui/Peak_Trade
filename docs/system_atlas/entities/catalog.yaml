@@ -24,13 +24,13 @@ entities:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   notes: Futures-only trading engine. Master V2 / Double Play target system. DDO durable evidence storage owner is evidence-domain storage only and is not trading authority. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE.
 - id: SUBSYSTEM:master_v2
-  # atlas_entity_review: PR #7064 Golden Geometry Engine V1 + SAFE CORRECTION; D_gge=volatility_estimate×mark_price; reference semantic equivalence; unauthorized CLASS C removed; navigation only; TRADING_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #7085 adjacent offline replay position-truth CRS overlay wiring only; TRADING_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
   kind: SUBSYSTEM
   name: Master V2
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: STILL_CURRENT_AND_CANONICALLY_SUPPORTED
-  modified_by: CHANGE:pr_7064_golden_geometry_engine_v1
+  modified_by: CHANGE:pr_7085_integrated_offline_position_truth_lineage_v1
   authority_sources:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   evidence_sources:
@@ -1792,13 +1792,13 @@ entities:
     is proven with bound assumptions; process-crash durability is partial; host-crash and power-loss remain unproven; durability_proven=True is not manufacturable; a separate storage durability architecture is required before host-crash can be claimed. PEAK_TRADE_DDO_A1_MUTATION_CRITICAL_CONTROL_STATE_STORAGE_OWNER_CONTRACT_V1 is bound as an isolated mutation-critical control-state storage owner with CUSTOM_FILE_WAL_JOURNAL_V1. It is not the DDO observation ledger owner, not trading/execution/supervisor/promotion authority, and not a productive host binding. Host-crash and power-loss remain unproven. DDO_OFFLINE_EXISTING_OWNER_VALIDATION_EVIDENCE_INGEST_AND_PROMOTION_ELIGIBILITY_DRY_RUN_V1 is bound as typed existing-owner artifact ingest plus pack aggregation and promotion-eligibility dry-run. DDO does not execute Walk-Forward, Monte Carlo, Stress, Fault, or Safety Replay engines and does not activate promotion, deployment, or rollback. DDO_SEMANTIC_REPLAY_PARITY_V1 is bound as offline typed
     producer-output reconstruction replay from immutable Double-Play observation evidence. Classifier/token replay remains distinct. Producer-function replay is NOT_REPLAYABLE in C because C is output-semantic parity and does not invoke the producer. Producer input was absent at the time of the C persist and is now available via DDO_DOUBLE_PLAY_PRODUCER_INPUT_EVIDENCE_CAPTURE_V1. Function-replay owner policy is persisted separately and is not implementation. Atlas catalog presence is navigation only and is not activation. Atlas is not trading authority.'
 - id: RUNTIME_COMPONENT:ddo_capture_v0
-  # atlas_entity_review: PR #7064 adjacent integrated-replay/GGE wiring; DDO capture remains observation-only; TRADING_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #7085 adjacent offline replay position-truth wiring; DDO capture remains observation-only; TRADING_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: DDO capture adapter v0
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7064_golden_geometry_engine_v1
+  modified_by: CHANGE:pr_7085_integrated_offline_position_truth_lineage_v1
   source_paths:
   - src/learning/deterministic_decision_outcome_v0/capture_v0.py
   - src/learning/deterministic_decision_outcome_v0/double_play_observation_projection_v1.py
@@ -1955,7 +1955,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7069_historical_pre_completion_ps_t_run_evidence_retirement_v1
+  modified_by: CHANGE:pr_7085_integrated_offline_position_truth_lineage_v1
   source_paths:
   - config/ops/integrated_offline_replay_and_correctness_head_bound_v1.toml
   - scripts/ops/run_integrated_offline_replay_correctness_and_paper_shadow_readiness_head_bound_v1.py
@@ -1966,11 +1966,35 @@ entities:
   - src/ops/integrated_offline_replay_and_correctness_head_bound_v1/discovery_v1.py
   - src/ops/integrated_offline_replay_and_correctness_head_bound_v1/economic_evidence_bundle_v1.py
   - src/ops/integrated_offline_replay_and_correctness_head_bound_v1/proof_v1.py
+  - src/ops/integrated_offline_replay_and_correctness_head_bound_v1/productive_wallclock_observation_reference_v1.py
   - src/ops/integrated_offline_replay_and_correctness_head_bound_v1/verifier_v1.py
   - src/ops/integrated_paper_shadow_observation_session_v1/readiness_producer_v1.py
   evidence_sources:
   - tests/ops/test_integrated_offline_replay_and_correctness_head_bound_v1.py
   notes: 'Offline HEAD-bound integrated replay/correctness proof and Paper-Shadow economic evidence bundle for shadow readiness; reuses wallclock bridge and Cap 7.1 fixtures; readiness_producer consumes verified evidence only; AUTHORITY=NONE; POST_COUNT=0.'
+  # atlas_entity_review: PR #7085 extends head-bound bundle + wallclock reference wiring; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
+- id: CAPABILITY:integrated_offline_economic_evidence_v1
+  # atlas_entity_review: PR #7085 integrated offline economic evidence + position-truth feedback; offline/analytical only; no Double Play/Scope/GGE/strategy semantic change; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
+  kind: CAPABILITY
+  name: Integrated offline economic evidence and position-truth replay
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: CHANGE:pr_7085_integrated_offline_position_truth_lineage_v1
+  source_paths:
+  - config/ops/current_integrated_offline_economic_policy_v1.toml
+  - config/ops/integrated_offline_economic_evidence_v1.toml
+  - docs/ops/runbooks/INTEGRATED_OFFLINE_ECONOMIC_EVIDENCE_V1.md
+  - scripts/ops/run_current_historical_productive_offline_economic_qualification_v1.py
+  - scripts/ops/run_ghv_current_ledger_economic_differential_walk_bounded_v1.py
+  - src/ops/integrated_offline_economic_evidence_v1/
+  - src/ops/integrated_paper_shadow_observation_session_v1/portfolio_economics_model_v1.py
+  - src/ops/integrated_paper_shadow_observation_session_v1/simulated_economics_round_trip_ledger_v1.py
+  evidence_sources:
+  - tests/ops/test_productive_offline_simulated_portfolio_position_truth_v1.py
+  - tests/ops/test_integrated_offline_economic_evidence_v1.py
+  - evidence/ops/integrated_offline_economic_evidence_v1/historical_qualification_v3_post_position_truth_fix_20261011T001500Z/POSITION_STATE_TRUTH_REQUALIFICATION_AUDIT_V1.json
+  notes: 'Offline productive replay economics, simulated portfolio position-truth feedback into MV2 sequence/CRS overlay, round-trip ledger observability, and V3 post-fix audit evidence. Wiring/feedback only; protected decision semantics unchanged; execution_eligible remains false; AUTHORITY=NONE; POST_COUNT=0.'
 - id: HOST:wallclock_decision_economics_cycle
   kind: HOST
   name: Wallclock decision-to-simulated-economics cycle
@@ -3315,13 +3339,13 @@ entities:
   - config/governance/double_play_old_effective_host_contract_v1_decision_v1.json
   notes: Navigation-only Atlas entity for PR
 - id: RUNTIME_COMPONENT:mv2_integrated_replay
-  # atlas_entity_review: PR #7064 GGE wiring in integrated offline replay; replay safety/authority unchanged; TRADING_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #7085 offline simulated portfolio position-truth CRS overlay wiring only; TRADING_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Integrated offline trading-logic replay
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7064_golden_geometry_engine_v1
+  modified_by: CHANGE:pr_7085_integrated_offline_position_truth_lineage_v1
   module_role: offline_replay
   source_paths:
   - src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py
