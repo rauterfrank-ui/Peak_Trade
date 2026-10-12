@@ -1,0 +1,21 @@
+{
+  "authority_effect": "NONE",
+  "base_sha": "693a48ceb7b8f503d7294c54bfc7f5faaab1ecfe",
+  "changed_paths": [
+    "docs/ops/specs/CURRENT_PRODUCTIVE_CONTINUOUS_OBSERVATION_BUDGET_V1.md",
+    "docs/ops/specs/CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/pre_external_convergence_runtime_duration_transparency_v1.py",
+    "tests/ops/full_core_live_path_composition_root_v1/test_pre_external_convergence_runtime_duration_transparency_v1.py",
+    "tests/ops/test_full_core_current_productive_governed_continuous_cycle_orchestrator_v1.py"
+  ],
+  "evidence_refs": [
+    "docs/ops/specs/CURRENT_PRODUCTIVE_CONTINUOUS_OBSERVATION_BUDGET_V1.md"
+  ],
+  "reason": "CURRENT_BOUNDED_RUNTIME_BUDGET_TRANSPARENCY_V1: additive PRE_EXTERNAL report duration fields + docs; S6 max_run_duration enforcement unchanged; no Law structured source change; AUTHORITY=NONE.",
+  "selector_used_as_law_impact_authority": false,
+  "verdict": "NO_LAW_IMPACT",
+  "work_package": "CURRENT_BOUNDED_RUNTIME_BUDGET_TRANSPARENCY_V1"
+}

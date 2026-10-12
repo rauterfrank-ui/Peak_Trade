@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
@@ -300,8 +301,8 @@ def _main() -> int:
         type=float,
         default=PRODUCTIVE_DEFAULT_MAX_RUN_DURATION_SECONDS,
         help=(
-            "Bounded wall-clock run duration in seconds "
-            f"(default {PRODUCTIVE_DEFAULT_MAX_RUN_DURATION_SECONDS})"
+            "Bounded S6 observation sequencer duration in seconds (monotonic; not full "
+            f"launcher wall time; default {PRODUCTIVE_DEFAULT_MAX_RUN_DURATION_SECONDS})"
         ),
     )
     args = parser.parse_args()
@@ -366,6 +367,8 @@ def _main() -> int:
     productivity_root = Path(args.productivity_root)
     for p in (evidence_root, lane_state_root, productivity_root):
         p.mkdir(parents=True, exist_ok=True)
+
+    launcher_monotonic_origin = time.monotonic()
 
     backend = GitCurrentProductive29PRuntimeIntegrityBackendV1(repo_root=REPO_ROOT)
     baseline_sha = backend.resolve_origin_main_sha_v1()
@@ -534,6 +537,7 @@ def _main() -> int:
                 repository_sha=origin_sha,
             )
 
+            preflight_monotonic_end = time.monotonic()
             try:
                 result = run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
                     authorization=auth,
@@ -584,6 +588,7 @@ def _main() -> int:
                 }
                 print(json.dumps(out, sort_keys=True))
                 return 2
+            post_sequencer_monotonic_end = time.monotonic()
     except GovernedLiveC1GetOnlyFreshPretradeTransportBindError as exc:
         out = {
             "status": "FAIL",
@@ -725,6 +730,19 @@ def _main() -> int:
         "PENDING_OUTCOME_CREATION_REASON": pending_session.pending_creation_reason,
         "PENDING_OUTCOME_ID": pending_session.pending_outcome_id or "",
     }
+    from src.ops.full_core_live_path_composition_root_v1.pre_external_convergence_runtime_duration_transparency_v1 import (
+        build_pre_external_convergence_runtime_duration_transparency_v1,
+        merge_duration_transparency_into_report_v1,
+    )
+
+    duration_fields = build_pre_external_convergence_runtime_duration_transparency_v1(
+        launcher_monotonic_origin=launcher_monotonic_origin,
+        preflight_monotonic_end=preflight_monotonic_end,
+        sequencer_elapsed_monotonic_seconds=float(orch.sequencer_elapsed_monotonic_seconds),
+        post_sequencer_monotonic_end=post_sequencer_monotonic_end,
+        report_monotonic_end=time.monotonic(),
+    )
+    report = merge_duration_transparency_into_report_v1(report, duration_fields)
     (evidence_root / "PRE_EXTERNAL_CONVERGENCE_REPORT.json").write_text(
         json.dumps(report, sort_keys=True, indent=2) + "\n",
         encoding="utf-8",
