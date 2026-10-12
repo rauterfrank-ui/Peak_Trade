@@ -906,3 +906,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_current_live_canary_capital_guard_final_reproof_v1.py
   notes: 'PR #7091: §11.13.5 fail-closed capital guard + atomic Owner-GO one-shot; live_canary_allowed=false; caps UNRATIFIED; no productive PRE_EXTERNAL/Cap24/GGE semantic change; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7092_full_core_pre_post_capital_guard_join_v1
+  from: 38d607a43aa38683cb21158aa96703866fb0a2ac
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_full_core_capital_guard_offline_reproof_integration_v1.py
+  notes: 'PR #7092: Full-Core PRE_EXTERNAL capital guard join (default DISABLED); productive binding + OFFLINE_STUB veto proofs LONG/SHORT; no POST; caps UNRATIFIED; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

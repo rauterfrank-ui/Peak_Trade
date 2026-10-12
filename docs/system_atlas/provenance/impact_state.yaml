@@ -1,17 +1,18 @@
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CHANGE:pr_7091_live_canary_capital_guard_v1
-modified_by: CHANGE:pr_7091_live_canary_capital_guard_v1
+introduced_by: CHANGE:pr_7092_full_core_pre_post_capital_guard_join_v1
+modified_by: CHANGE:pr_7092_full_core_pre_post_capital_guard_join_v1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #7091 Live Canary capital guard + atomic one-shot (fail-closed, caps UNRATIFIED,
-  live_canary_allowed=false); Full-Core import-only consumer touch reviewed; no productive
-  PRE_EXTERNAL semantic change; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+  PR #7092 Full-Core PRE_EXTERNAL capital guard join (default DISABLED, OFFLINE_STUB proofs);
+  productive handoff binding + orchestrator hook; caps UNRATIFIED; no POST; no MV2/GGE semantic
+  change; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
 changed_entities:
+  - CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
   - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  - RUNTIME_COMPONENT:full_core_pre_post_capital_guard_join_v1
   - RUNTIME_COMPONENT:section_11_13_5_live_canary_capital_guard_v1
-  - CAPABILITY:cap_11_13_5_live_canary
 changed_relations: []
 changed_closures: []
 changed_wiring: []

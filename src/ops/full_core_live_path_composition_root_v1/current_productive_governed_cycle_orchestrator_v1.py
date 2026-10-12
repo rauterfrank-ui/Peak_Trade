@@ -960,6 +960,84 @@ def run_current_productive_governed_cycle_v1(
                 "decision_result": decision_result,
             },
         )
+        capital_guard_join_extra: dict[str, str] = {}
+        if disposition == DISPOSITION_PRE_EXTERNAL_EFFECT:
+            from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_binding_v1 import (
+                active_full_core_capital_guard_handoff_context_v1,
+                try_build_binding_from_governed_cycle_pre_external_v1,
+            )
+            from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_join_v1 import (
+                maybe_record_full_core_capital_guard_join_at_pre_external_v1,
+                resolve_full_core_capital_guard_join_mode_v1,
+            )
+
+            binding = None
+            handoff_ctx = active_full_core_capital_guard_handoff_context_v1()
+            envelope_identity_for_cycle = (
+                f"envelope_id={envelope_id};digest={envelope_digest}" if envelope_id else ""
+            )
+            if handoff_ctx is not None and isinstance(final_order_envelope, FinalOrderEnvelopeV1):
+                partial_cycle = CurrentProductiveGovernedCycleResultV1(
+                    disposition=disposition,
+                    reason_code=reason_code,
+                    terminal_class=terminal_class,
+                    cycle_go_status_after="",
+                    get_consumed=True,
+                    eg_consumed=True,
+                    occupancy_consumed=True,
+                    t2_consumed=True,
+                    get_consume_count=1,
+                    eg_dispatch_count=eg_dispatch_count,
+                    occupancy_disposition=occupancy_disposition,
+                    t2_consume_count=t2_consume_count,
+                    runtime_cycle_count=runtime_cycle_count,
+                    c1_used=c1_used,
+                    occupancy_used=occupancy_used,
+                    decision_result=decision_result,
+                    decision_execution_eligible=eligible,
+                    master_v2_decision=master_v2_decision,
+                    venue_plan_status=venue_plan_status,
+                    envelope_created=bool(envelope_id),
+                    envelope_identity=envelope_identity_for_cycle,
+                    permit_created=False,
+                    post_count=0,
+                    external_effect_count=0,
+                    cursor_floor_before=cursor_floor_before,
+                    cursor_floor_after=cursor_floor_before,
+                    cursor_persisted=False,
+                    first_genuine_blocker=first_blocker,
+                    blocker_class=blocker_class,
+                    next_required_owner_decision=next_owner,
+                    lock_released=_token(True),
+                    ledger_state=STATE_COMPLETED,
+                    transitions=tuple(transitions),
+                    final_order_envelope=final_order_envelope,
+                )
+                binding = try_build_binding_from_governed_cycle_pre_external_v1(
+                    cycle=partial_cycle,
+                    bound_instrument=handoff_ctx.bound_instrument,
+                    canonical_decision_id=handoff_ctx.canonical_decision_id,
+                    account_identity=handoff_ctx.account_identity,
+                    environment=handoff_ctx.environment,
+                    origin_main_sha=handoff_ctx.origin_main_sha,
+                    instrument_metadata=handoff_ctx.instrument_metadata,
+                )
+            join_mode = resolve_full_core_capital_guard_join_mode_v1()
+            capital_guard_join_extra = maybe_record_full_core_capital_guard_join_at_pre_external_v1(
+                binding=binding,
+                envelope=final_order_envelope
+                if isinstance(final_order_envelope, FinalOrderEnvelopeV1)
+                else None,
+                join_mode=join_mode,
+                account_evidence_scope=handoff_ctx.account_identity if handoff_ctx else None,
+                authoritative_environment=handoff_ctx.environment if handoff_ctx else None,
+                authoritative_venue_plan_digest=(
+                    binding.venue_plan_digest if binding is not None else None
+                ),
+                pretrade_reference_mark_px=(
+                    handoff_ctx.reference_mark_px if handoff_ctx is not None else None
+                ),
+            )
         return _result(
             disposition=disposition,
             reason_code=reason_code,
@@ -994,6 +1072,7 @@ def run_current_productive_governed_cycle_v1(
             transitions=tuple(transitions + [STATE_IDLE]),
             cursor_floor_before=cursor_floor_before,
             cursor_floor_after=cursor_floor_before,
+            extra_fields=capital_guard_join_extra or None,
         )
     finally:
         lock.release()

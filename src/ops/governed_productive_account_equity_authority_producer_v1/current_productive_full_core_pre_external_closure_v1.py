@@ -730,6 +730,24 @@ def execute_current_productive_full_core_pre_external_closure_v1(
             resolved_g17_producers = {"LANE_1": g17_join.producer}
         invoke_kwargs["g17_typed_vol_producers"] = resolved_g17_producers
 
+        if (
+            "canonical_price_provenance" not in invoke_kwargs
+            and "canonical_price_provenance_by_lane" not in invoke_kwargs
+        ):
+            from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+                build_provenance_from_governed_synthetic_close_mark_and_index_v1,
+            )
+
+            mark_px = float(invoke_kwargs.get("mark_px") or 0.0)
+            index_px = float(invoke_kwargs.get("index_px") or mark_px)
+            invoke_kwargs["canonical_price_provenance"] = (
+                build_provenance_from_governed_synthetic_close_mark_and_index_v1(
+                    venue_native_id=str(bound_instrument.venue_native_id or ""),
+                    mark_px=mark_px,
+                    index_px=index_px,
+                )
+            )
+
         results = invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             pairs,
             live_29p_injected=live_29p_injected,
@@ -865,6 +883,71 @@ def execute_current_productive_full_core_pre_external_closure_v1(
             "REAL_VENUE_POST_ALLOWED": FALSE_TOKEN,
             "POST_ALLOWED": FALSE_TOKEN,
         }
+        capital_guard_binding_digest = ""
+        capital_guard_observe_status = "NOT_REACHED"
+        if (
+            terminal == DISPOSITION_PRE_EXTERNAL_EFFECT
+            and fresh_envelope is not None
+            and isinstance(fresh_envelope, FinalOrderEnvelopeV1)
+        ):
+            from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_binding_v1 import (
+                build_full_core_capital_guard_join_binding_v1,
+                extract_instrument_contract_metadata_v1,
+            )
+            from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_join_v1 import (
+                FullCoreCapitalGuardJoinMode,
+                run_full_core_pre_post_capital_guard_join_v1,
+            )
+
+            try:
+                instruments_payload = None
+                if live_29p_injected is not None:
+                    instruments_payload = getattr(live_29p_injected, "instruments_payload", None)
+                meta = extract_instrument_contract_metadata_v1(
+                    instruments_payload if isinstance(instruments_payload, Mapping) else None,
+                    instrument_id=str(fresh_envelope.instrument_id),
+                )
+                guard_binding = build_full_core_capital_guard_join_binding_v1(
+                    canonical_decision_id=common_epoch_id,
+                    bound_instrument=bound_instrument,
+                    envelope=fresh_envelope,
+                    master_v2_decision=master_v2_decision,
+                    account_identity=str(handoff.bound_uid),
+                    environment="PRODUCTIVE_READ_ONLY",
+                    origin_main_sha=base_sha,
+                    instrument_metadata=meta,
+                    pre_external_reached=True,
+                    terminal_disposition=terminal,
+                )
+                observe = run_full_core_pre_post_capital_guard_join_v1(
+                    binding=guard_binding,
+                    envelope=fresh_envelope,
+                    join_mode=FullCoreCapitalGuardJoinMode.OBSERVE_ONLY,
+                    account_evidence_scope=str(handoff.bound_uid),
+                    authoritative_environment="PRODUCTIVE_READ_ONLY",
+                    authoritative_venue_plan_digest=guard_binding.venue_plan_digest,
+                )
+                capital_guard_binding_digest = str(observe.binding_digest or "")
+                capital_guard_observe_status = (
+                    "PASS" if observe.guard_allowed and not observe.guard_blocked else "BLOCK"
+                )
+                claims["FULL_CORE_CAPITAL_GUARD_OBSERVE"] = observe.to_dict()
+            except Exception as exc:
+                capital_guard_observe_status = f"FAIL:{exc.__class__.__name__}"
+
+        claims["FULL_CORE_CAPITAL_GUARD_BINDING_DIGEST"] = capital_guard_binding_digest
+        claims["FULL_CORE_CAPITAL_GUARD_OBSERVE_STATUS"] = capital_guard_observe_status
+        cycle_extra = getattr(cycle, "extra", None) or {}
+        for join_claim_key in (
+            "FULL_CORE_CAPITAL_GUARD_JOIN_MODE",
+            "FULL_CORE_CAPITAL_GUARD_BLOCKED",
+            "FULL_CORE_CAPITAL_GUARD_POST_COUNT",
+            "FULL_CORE_CAPITAL_GUARD_BINDING_DIGEST",
+            "FULL_CORE_CAPITAL_GUARD_REASONS",
+        ):
+            if join_claim_key in cycle_extra:
+                claims[join_claim_key] = str(cycle_extra[join_claim_key])
+
         _assert_no_secrets(claims)
         _persist_json(path=store / "claims.json", payload=claims)
         if fresh_envelope is not None:

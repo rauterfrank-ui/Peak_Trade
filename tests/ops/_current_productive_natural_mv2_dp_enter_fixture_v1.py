@@ -774,6 +774,90 @@ def prepare_layered_long_armed_seed_for_pre_external_invoke_v1(
     return arm_cycle, enter_closes, enter_mark, enter_event_ts, invoke_g17
 
 
+def prepare_layered_short_armed_seed_for_pre_external_invoke_v1(
+    *,
+    bound: BoundInstrumentV1,
+    g17_typed_vol_producer: object,
+    lane_state_root: Path,
+) -> tuple[Any, tuple[float, ...], float, float, object]:
+    """Stop after layered SHORT arm; leave store ready for one governed ENTER_SHORT cycle."""
+    enter_ts = governed_productive_c1_event_ts_unix_v1()
+    path = strong_downtrend_closes_v1()
+    aligned_g17 = governed_c1_aligned_g17_dk_producer_v1(
+        bound=bound,
+        anchor_event_ts_unix=enter_ts,
+        evidence_store_root=Path(lane_state_root) / "g17-seed-short",
+        mark_closes=path,
+    )
+    g17_for_cycles = aligned_g17
+    from tests.ops.test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1 import (
+        _cycle,
+    )
+
+    origin = _cycle(
+        cycle_id="preext-short-origin",
+        bound_instrument=bound,
+        g17_typed_vol_producer=g17_for_cycles,
+        mark_px=float(path[0]),
+        event_ts_unix=enter_ts - 120.0,
+        closes=path,
+    )
+    downscope_candidate = _cycle(
+        cycle_id="preext-short-downscope-candidate",
+        bound_instrument=bound,
+        g17_typed_vol_producer=g17_for_cycles,
+        incoming_cursor=origin.outgoing_cursor,
+        mark_px=float(path[-1]),
+        event_ts_unix=enter_ts - 60.0,
+        closes=path,
+    )
+    arm_closes = natural_enter_short_arm_closes_v1(path)
+    arm_mark = float(arm_closes[-1])
+    arm_ts = enter_ts
+
+    pair = _lane_pair_v1(lane_state_root=lane_state_root, bound=bound)
+    store_root = Path(pair[0].lane_state_root)
+    persist_current_productive_sidestate_confirmation_cursor_v1(
+        downscope_candidate.outgoing_cursor,
+        store_root=store_root,
+    )
+    ensure_productive_layered_core_episode_store_v1(
+        store_root=store_root,
+        bound_instrument=bound,
+        mark_price_m_t=arm_mark,
+        finalized_closes=arm_closes,
+        last_finalized_event_ts_unix=arm_ts,
+        outgoing_cursor=downscope_candidate.outgoing_cursor,
+    )
+    arm_cycle = _compose_layered_lane_cycle_v1(
+        pair=pair,
+        g17_typed_vol_producer=g17_for_cycles,
+        closes=arm_closes,
+        mark_px=arm_mark,
+        event_ts_unix=arm_ts,
+        cycle_id_prefix="preext-short-arm",
+    )
+    assert arm_cycle.outgoing_cursor is not None
+    assert arm_cycle.outgoing_cursor.side_state in {
+        SideState.SHORT_ARMED,
+        SideState.SHORT_ARMED_NEUTRAL_START,
+        SideState.SHORT_ARMED_SWITCH_TERMINAL,
+    }
+    assert str(arm_cycle.decision_outcome) != "enter_short"
+
+    enter_closes = tuple(list(arm_closes) + [arm_mark - NATURAL_ENTER_MARK_INCREMENT_V1])
+    enter_mark = float(enter_closes[-1])
+    enter_event_ts = arm_ts + NATURAL_ENTER_SHORT_AFTER_ARM_TS_DELTA_V1
+    invoke_g17 = governed_c1_aligned_g17_dk_producer_v1(
+        bound=bound,
+        anchor_event_ts_unix=enter_event_ts,
+        evidence_store_root=Path(lane_state_root) / "g17-invoke-short",
+        mark_closes=enter_closes,
+    )
+    _ = g17_typed_vol_producer
+    return arm_cycle, enter_closes, enter_mark, enter_event_ts, invoke_g17
+
+
 def run_natural_enter_long_sequence_for_governed_pre_external_v1(
     *,
     bound: BoundInstrumentV1,
