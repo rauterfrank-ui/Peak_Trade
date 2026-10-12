@@ -1,3 +1,12 @@
+---
+docs_token: DOCS_TOKEN_CURRENT_LIVE_CANARY_CAPITAL_GUARD_V1
+status: active
+scope: §11.13.5 fail-closed capital guard and atomic one-shot (no live POST activation)
+capability: CURRENT_LIVE_CANARY_CAPITAL_GUARD_V1
+architecture_spec: PEAK_TRADE_MASTER_RUNBOOK
+last_updated: 2026-10-12
+---
+
 # CURRENT_LIVE_CANARY_CAPITAL_GUARD_V1
 
 Independent fail-closed capital guard for §11.13.5 Live Canary Minimum Exposure.
@@ -18,10 +27,10 @@ All monetary fields use typed `currency` (USDC) and Decimal comparisons in code.
 
 ## IMR authority
 
-- **Authoritative (guard):** public `GET /api/v5/public/position-tiers` tier row covering qty=1, via `extract_qty_one_mmr_from_public_position_tiers_payload_v1` (`imr` field).
-- **Not authoritative:** `public/instruments` `imr` (forbidden for guard).
+- **Authoritative (guard):** public `GET &#47;api&#47;v5&#47;public&#47;position-tiers` tier row covering qty=1, via `extract_qty_one_mmr_from_public_position_tiers_payload_v1` (`imr` field).
+- **Not authoritative:** `public&#47;instruments` `imr` (forbidden for guard).
 - **Margin:** authenticated balance `details[ccy=USDC].availEq` (existing available-margin consumer path).
-- **Leverage:** authenticated `GET /api/v5/account/leverage-info` (existing leverage observation).
+- **Leverage:** authenticated `GET &#47;api&#47;v5&#47;account&#47;leverage-info` (existing leverage observation).
 
 ## Durable one-shot (atomic cross-process)
 
