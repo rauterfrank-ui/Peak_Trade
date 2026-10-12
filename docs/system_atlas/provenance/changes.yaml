@@ -871,3 +871,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_productive_offline_simulated_portfolio_position_truth_v1.py
   notes: 'PR #7085: integrate integrated offline economic evidence lineage + simulated portfolio position-truth feedback (MV2 sequence/CRS overlay) + audit evidence; offline/analytical only; no Double Play/Dynamic Scope/GGE/strategy/entry-exit/sizing-formula/risk-limit semantic change; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7087_owner_go_baseline_pin_at_main_v1
+  from: dd4c23da1f3f519413fe8c9f04ddd0050ff3f026
+  to: 8da476238040545d2c1e5c1bf2e950d4388dba68
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json
+  notes: 'PR #7087: Owner-GO baseline re-pin dd4c23->8da476 after reviewed master_v2 position-truth offline replay binding; clears immutable-surface lineage drift gate for bounded GET-only PRE_EXTERNAL; governance/test/map adjudication/Atlas only; POST/credential/permit flags unchanged; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

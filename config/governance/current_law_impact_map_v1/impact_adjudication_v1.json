@@ -1,21 +1,22 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "6101441571ccb25565ebea1c6ccf139752bbd4e9",
+  "base_sha": "8da476238040545d2c1e5c1bf2e950d4388dba68",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
+    "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "evidence/ops/current_productive_roadmap_fixpoint_after_position_truth_v1/CURRENT_MAIN_AUTHORITY_FIXPOINT_AFTER_PR7085_V1.json",
-    "evidence/ops/integrated_offline_economic_evidence_v1/current_offline_position_state_truth_remediation_v1/POST_FIX_BOUNDED_REPROOF_V1.json",
-    "evidence/ops/integrated_offline_economic_evidence_v1/ghv_current_ledger_economic_differential_walk_bounded_v1/GHV_POST_MERGE_BOUNDED_WALK_BINDING_V1.json"
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py"
   ],
-  "changed_paths_sha256": "f5a6325bcd923e1c84d988eed5593d73a3bd762f12dddda1c29e425d8f0be4ec",
+  "changed_paths_sha256": "46664f668521a9b458ae7a0fcf5834e7e6ade0b50c2847bfd9797b12102d7ece",
   "evidence_refs": [
-    "evidence/ops/current_productive_roadmap_fixpoint_after_position_truth_v1/CURRENT_MAIN_AUTHORITY_FIXPOINT_AFTER_PR7085_V1.json"
+    "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json"
   ],
-  "head_sha": "00a60351288f9c96a397b485077a68a41cc940e4",
-  "reason": "PR #7086 evidence-only CURRENT main authority fixpoint after PR7085; no Law structured source change; AUTHORITY=NONE.",
+  "head_sha": "PENDING_PR_HEAD",
+  "reason": "PR #7087 Owner-GO baseline re-pin at main; no Law structured source change; diff-bound NO_LAW_IMPACT; AUTHORITY=NONE.",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT"
 }
