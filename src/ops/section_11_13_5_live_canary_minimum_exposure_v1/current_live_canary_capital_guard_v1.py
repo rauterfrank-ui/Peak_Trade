@@ -464,6 +464,8 @@ def evaluate_canary_capital_guard_entry_v1(
     expected_config_digest: str | None = None,
     observed_leverage: str | None = None,
     durable_entry_state: str | None = None,
+    required_owner_go: str | None = None,
+    enforce_canary_operative_contract_quantity: bool = True,
 ) -> CanaryCapitalGuardEvaluationV1:
     reasons: list[str] = []
     plan_digest = compute_canary_plan_digest_v1(plan_payload=plan.to_dict())
@@ -484,9 +486,10 @@ def evaluate_canary_capital_guard_entry_v1(
         reasons.append(f"DURABLE_ENTRY_SLOT_UNAVAILABLE:{durable_entry_state}")
 
     go = str(owner_go or "").strip()
+    expected_go = str(required_owner_go or OWNER_GO_EXECUTE).strip()
     if not go:
         reasons.append("OWNER_PERMIT_MISSING")
-    elif go != OWNER_GO_EXECUTE:
+    elif go != expected_go:
         reasons.append(f"OWNER_GO_MISMATCH:{go}")
 
     if session is not None:
@@ -529,9 +532,10 @@ def evaluate_canary_capital_guard_entry_v1(
     if max_pos is not None and exposure_evidence.open_position_count > int(max_pos):
         reasons.append("MAX_OPEN_POSITIONS_EXCEEDED")
 
-    operative = canary_venue_contract_count_v1()
-    if guard_config.scale_in_forbidden and str(plan.quantity) != operative:
-        reasons.append("SCALE_IN_FORBIDDEN")
+    if enforce_canary_operative_contract_quantity:
+        operative = canary_venue_contract_count_v1()
+        if guard_config.scale_in_forbidden and str(plan.quantity) != operative:
+            reasons.append("SCALE_IN_FORBIDDEN")
 
     # Instrument metadata validation (fail-closed).
     try:

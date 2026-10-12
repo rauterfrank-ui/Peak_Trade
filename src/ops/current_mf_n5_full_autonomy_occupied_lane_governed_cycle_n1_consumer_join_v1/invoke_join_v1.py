@@ -810,28 +810,61 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             portfolio_budget_owner=portfolio_budget_owner,
             common_epoch_decision_epoch=common_epoch_decision_epoch,
         )
-        cycle_result = run_current_productive_governed_cycle_v1(
-            authorization=CurrentProductiveGovernedCycleAuthorizationV1(
-                cycle_owner_go=RUNTIME_OWNER_GO,
-                get_owner_go=GET_OWNER_GO,
-                eg_owner_go=EG_OWNER_GO,
-                occupancy_owner_go=OCCUPANCY_OWNER_GO,
-                t2_owner_go=T2_RUNTIME_OWNER_GO,
-                native_id=native_id,
-                bar="1m",
-                expected_cursor_floor=expected_floor,
-            ),
-            origin_main_sha=origin_main_sha,
-            cursor_store_root=Path(cursor_store_root),
-            lock_root=Path(lock_root),
-            evidence_root=Path(evidence_root),
-            candles_payload=lane_candles,
-            occupancy_payloads=occupancy,
-            execute_network=False,
-            perform_get=False,
-            eg_cycle_dispatch=non_v5_eg_dispatch_v1,
-            t2_cycle_dispatch=t2_dispatch,
+        from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_binding_v1 import (
+            FullCoreCapitalGuardHandoffContextV1,
+            bind_full_core_capital_guard_handoff_context_v1,
+            extract_instrument_contract_metadata_v1,
+            reset_full_core_capital_guard_handoff_context_v1,
         )
+
+        handoff_meta = None
+        if live_29p_injected is not None and live_29p_injected.instruments_payload is not None:
+            try:
+                handoff_meta = extract_instrument_contract_metadata_v1(
+                    live_29p_injected.instruments_payload,
+                    instrument_id=str(bound.venue_native_id or native_id),
+                )
+            except Exception:
+                handoff_meta = None
+        handoff_token = bind_full_core_capital_guard_handoff_context_v1(
+            FullCoreCapitalGuardHandoffContextV1(
+                bound_instrument=bound,
+                canonical_decision_id=str(common_epoch_decision_epoch or ""),
+                account_identity=str(
+                    getattr(live_29p_injected, "expected_account_identity", "")
+                    or "REUSED_BINDING_ACCOUNT_SCOPE"
+                ),
+                environment="PRODUCTIVE_READ_ONLY",
+                origin_main_sha=str(origin_main_sha),
+                instrument_metadata=handoff_meta,
+                reference_mark_px=str(lane_s7.get("mark_px") or ""),
+            )
+        )
+        try:
+            cycle_result = run_current_productive_governed_cycle_v1(
+                authorization=CurrentProductiveGovernedCycleAuthorizationV1(
+                    cycle_owner_go=RUNTIME_OWNER_GO,
+                    get_owner_go=GET_OWNER_GO,
+                    eg_owner_go=EG_OWNER_GO,
+                    occupancy_owner_go=OCCUPANCY_OWNER_GO,
+                    t2_owner_go=T2_RUNTIME_OWNER_GO,
+                    native_id=native_id,
+                    bar="1m",
+                    expected_cursor_floor=expected_floor,
+                ),
+                origin_main_sha=origin_main_sha,
+                cursor_store_root=Path(cursor_store_root),
+                lock_root=Path(lock_root),
+                evidence_root=Path(evidence_root),
+                candles_payload=lane_candles,
+                occupancy_payloads=occupancy,
+                execute_network=False,
+                perform_get=False,
+                eg_cycle_dispatch=non_v5_eg_dispatch_v1,
+                t2_cycle_dispatch=t2_dispatch,
+            )
+        finally:
+            reset_full_core_capital_guard_handoff_context_v1(handoff_token)
         s7_invocation = getattr(t2_dispatch, "last_invocation", None)
         if cycle_result.disposition in {DISPOSITION_PRE_EXTERNAL_EFFECT, DISPOSITION_HOLD}:
             if s7_invocation is None:

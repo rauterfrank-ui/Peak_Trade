@@ -7,6 +7,7 @@ WP-1 handoff and governed-cycle orchestration. PRE_EXTERNAL requires canonical M
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
@@ -360,3 +361,8 @@ def test_wp2_deterministic_pre_external_effect_full_compose_transport_bound(
     assert result.reference_price_status == "GOVERNED_MV2_MARK"
     assert result.venue_plan_status == "PASS"
     assert result.final_order_envelope_status == "PASS"
+    claims_path = Path(result.store_root) / "claims.json"
+    if claims_path.is_file():
+        claims = json.loads(claims_path.read_text(encoding="utf-8"))
+        assert claims.get("FULL_CORE_CAPITAL_GUARD_OBSERVE_STATUS") == "PASS"
+        assert claims.get("FULL_CORE_CAPITAL_GUARD_BINDING_DIGEST")
