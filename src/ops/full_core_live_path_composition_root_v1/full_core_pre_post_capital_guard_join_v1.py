@@ -168,7 +168,10 @@ def resolve_full_core_capital_guard_join_mode_v1(
             return FullCoreCapitalGuardJoinMode.DISABLED
         return explicit_mode
     if explicit_mode is not None:
-        return FullCoreCapitalGuardJoinMode(str(explicit_mode).strip().upper())
+        parsed = FullCoreCapitalGuardJoinMode(str(explicit_mode).strip().upper())
+        if parsed is FullCoreCapitalGuardJoinMode.LIVE_POST:
+            return FullCoreCapitalGuardJoinMode.DISABLED
+        return parsed
     raw = str(os.environ.get(JOIN_ENV_VAR) or FullCoreCapitalGuardJoinMode.DISABLED.value).strip()
     try:
         mode = FullCoreCapitalGuardJoinMode(raw.upper())

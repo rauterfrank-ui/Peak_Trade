@@ -826,7 +826,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
                 )
             except Exception:
                 handoff_meta = None
-        handoff_token = bind_full_core_capital_guard_handoff_context_v1(
+        handoff_ctx_reset = bind_full_core_capital_guard_handoff_context_v1(
             FullCoreCapitalGuardHandoffContextV1(
                 bound_instrument=bound,
                 canonical_decision_id=str(common_epoch_decision_epoch or ""),
@@ -864,7 +864,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
                 t2_cycle_dispatch=t2_dispatch,
             )
         finally:
-            reset_full_core_capital_guard_handoff_context_v1(handoff_token)
+            reset_full_core_capital_guard_handoff_context_v1(handoff_ctx_reset)
         s7_invocation = getattr(t2_dispatch, "last_invocation", None)
         if cycle_result.disposition in {DISPOSITION_PRE_EXTERNAL_EFFECT, DISPOSITION_HOLD}:
             if s7_invocation is None:

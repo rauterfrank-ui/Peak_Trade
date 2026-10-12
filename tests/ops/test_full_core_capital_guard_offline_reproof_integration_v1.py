@@ -222,7 +222,7 @@ def test_handoff_contextvar_cleanup_after_invoke(tmp_path: Path) -> None:
 
     assert active_full_core_capital_guard_handoff_context_v1() is None
     bound = _bound()
-    token = bind_full_core_capital_guard_handoff_context_v1(
+    handoff_ctx_reset = bind_full_core_capital_guard_handoff_context_v1(
         FullCoreCapitalGuardHandoffContextV1(
             bound_instrument=bound,
             canonical_decision_id="dec-isolation",
@@ -235,5 +235,5 @@ def test_handoff_contextvar_cleanup_after_invoke(tmp_path: Path) -> None:
     try:
         assert active_full_core_capital_guard_handoff_context_v1() is not None
     finally:
-        reset_full_core_capital_guard_handoff_context_v1(token)
+        reset_full_core_capital_guard_handoff_context_v1(handoff_ctx_reset)
     assert active_full_core_capital_guard_handoff_context_v1() is None

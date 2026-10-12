@@ -185,6 +185,64 @@ def test_default_join_mode_disabled() -> None:
     assert res.post_count == 0
 
 
+@pytest.mark.parametrize(
+    "explicit",
+    [
+        FullCoreCapitalGuardJoinMode.LIVE_POST,
+        "LIVE_POST",
+        "live_post",
+    ],
+)
+def test_live_post_explicit_mode_always_resolves_disabled(explicit: object) -> None:
+    assert (
+        resolve_full_core_capital_guard_join_mode_v1(explicit_mode=explicit)
+        is FullCoreCapitalGuardJoinMode.DISABLED
+    )
+
+
+def test_live_post_join_mode_never_executes_guard_or_reservation(tmp_path: Path) -> None:
+    env = _envelope()
+    state_dir = tmp_path / "atomic-live-post-block"
+    state_dir.mkdir()
+    for explicit in (FullCoreCapitalGuardJoinMode.LIVE_POST, "LIVE_POST"):
+        res = _run_join(
+            binding=_binding(env),
+            envelope=env,
+            join_mode=explicit,
+            atomic_state_dir=state_dir,
+        )
+        assert res.join_mode == FullCoreCapitalGuardJoinMode.DISABLED.value
+        assert res.guard_allowed is None
+        assert res.guard_blocked is False
+        assert res.post_count == 0
+        assert res.reservation_created is False
+        assert list(state_dir.glob("*.state.json")) == []
+
+
+def test_live_post_env_var_resolves_disabled(monkeypatch: pytest.MonkeyPatch) -> None:
+    from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_join_v1 import (
+        JOIN_ENV_VAR,
+    )
+
+    monkeypatch.setenv(JOIN_ENV_VAR, "LIVE_POST")
+    assert (
+        resolve_full_core_capital_guard_join_mode_v1(explicit_mode=None)
+        is FullCoreCapitalGuardJoinMode.DISABLED
+    )
+
+
+def test_guard_pass_does_not_imply_post_authority(tmp_path: Path) -> None:
+    """OFFLINE_STUB may allow guard evaluation; POST_COUNT remains zero."""
+    env = _envelope()
+    res = _run_join(
+        binding=_binding(env),
+        envelope=env,
+        atomic_state_dir=tmp_path / "atomic-pass-no-post",
+    )
+    assert res.guard_allowed is True
+    assert res.post_count == 0
+
+
 def test_natural_enter_long_allow_stub() -> None:
     env = _envelope(side="buy")
     res = _run_join(binding=_binding(env, direction="ENTER_LONG"), envelope=env)
