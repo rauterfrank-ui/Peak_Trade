@@ -1098,6 +1098,7 @@ entities:
   notes: 'S8_HARNESS_BIND_OCCUPIED_LANE_GOVERNED_CYCLE_ROOTS_WITHOUT_INVOKE harness-only path bind: reuse S3 lane_state_root as cursor_store_root and address distinct lock_root plus evidence_root under that same root. Does not invoke the governed cycle, write disk, or mutate S7 compose. N=1 global cursor path is rejected. Cap61 remains state_root=None and persist=False inside the existing cycle. NEW_STATE_OWNER_CREATED=false. CAP61_STATE_ROOT_BOUND=false. HOST_JOIN=false. MF_PRODUCTIVE_JOIN=false. MAY_INVOKE_GOVERNED_CYCLE=false. RUNTIME_AUTHORITY_EFFECT=NONE. No cursor schema change. P5_10_PRODUCTIVE_ACTIVATION_AND_BINDING_V1: when bind enabled, uses productive_layered_core_bind_cycle_kwargs_v1 (scope carrier + store gate) into cycle. Not ranking, selection, trading-authority, runtime-activation, or execution authority. MAX_POSITIONS_EFFECTIVE remains 1. MULTI_FUTURE_RUNTIME_AUTHORIZED=false. EXECUTION_CONCURRENCY_AUTHORIZED=false. PREPARED_BOUND_CARDINALITY remains 0..5. PRODUCTIVE_RUNTIME_CARDINALITY
     remains 1_UNJOINED. CROSS_UNIVERSE_* remain false. Shared mutable state remains false. Atlas is not runtime authority. ATLAS_AUTHORITY=NONE.'
 - id: CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
+  # atlas_entity_review: PR #7092 Full-Core PRE_EXTERNAL capital guard handoff ContextVar bind/reset in invoke_join_v1; default join DISABLED; no POST; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7059 RC-IMP-01 T2 dispatch binds observation venue_event_time as accepted C1; RC-ORD-01 passes EG incoming_cursor into S7 compose; MATERIALLY_CHANGED wiring only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7035 downstream LIVE-29P join consumes Layer-C stop binding via enter_live_29p_join; no MV2/DP semantic change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7014 optional default-off GHV PRE_EXTERNAL runtime flight recorder wiring at LIVE-29P join; observation-only; AUTHORITY=NONE.
@@ -1106,7 +1107,7 @@ entities:
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
-  modified_by: CHANGE:pr_7059_natural_enter_rc_imp_ord_convergence_v1
+  modified_by: CHANGE:pr_7092_full_core_pre_post_capital_guard_join_v1
   authority_sources:
   - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md
   - docs/ops/specs/CURRENT_MF_N5_FULL_AUTONOMY_OCCUPIED_LANE_GOVERNED_CYCLE_N1_CONSUMER_JOIN_CONTRACT_V1.md
@@ -1463,6 +1464,26 @@ entities:
   evidence_sources:
   - tests/ops/test_current_live_canary_capital_guard_final_reproof_v1.py
   notes: Fail-closed capital guard + cross-process one-shot; no live POST activation; AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
+- id: RUNTIME_COMPONENT:full_core_pre_post_capital_guard_join_v1
+  kind: RUNTIME_COMPONENT
+  name: Full-Core PRE_EXTERNAL capital guard join v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+  modified_by: CHANGE:pr_7092_full_core_pre_post_capital_guard_join_v1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/full_core_capital_guard_atomic_one_shot_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/full_core_capital_guard_reconciliation_stub_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_binding_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_join_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/ghv_full_core_capital_guard_observability_v1.py
+  - config/ops/current_full_core_capital_guard_v1.json
+  evidence_sources:
+  - docs/ops/specs/CURRENT_FULL_CORE_PRE_POST_CAPITAL_GUARD_JOIN_V1.md
+  - tests/ops/test_full_core_pre_post_capital_guard_join_v1.py
+  - tests/ops/test_full_core_capital_guard_offline_reproof_integration_v1.py
+  notes: Independent fail-closed guard at PRE_EXTERNAL; default join DISABLED; OFFLINE_STUB proofs only; caps UNRATIFIED; no POST; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
 - id: UNIVERSE:governed_futures_universe
   kind: UNIVERSE
   name: Governed Futures Universe snapshot
@@ -5003,6 +5024,7 @@ entities:
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
   # atlas_entity_review: PR #7069 pre-completion P/S/T run evidence retirement; reference/fixture rebind only; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  # atlas_entity_review: PR #7092 PRE_EXTERNAL capital guard binding/join hook in orchestrator + closure OBSERVE_ONLY; canonical_price_provenance synthetic-close injection; default join DISABLED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7091 §11.13.5 canary capital guard consumer wiring in submit_transport only; existing serialize import unchanged; no Full-Core trading/MV2/PRE_EXTERNAL semantic change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7081 GHV-referenced intelligence superstructure integration; default-off GHV intelligence-lineage append after scope trace; offline orchestrator separate; no trading/MV2/DDO authority change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7080 governed-cycle T2 unexpected-exception diagnostic evidence capture; fail-closed T2_CYCLE_EXCEPTION disposition unchanged; AUTHORITY=NONE; POST_COUNT=0.
@@ -5019,7 +5041,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7091_live_canary_capital_guard_v1
+  modified_by: CHANGE:pr_7092_full_core_pre_post_capital_guard_join_v1
   source_paths:
   - src/ops/capability_11_long_running_testnet_proven_prep_eval_v1/verifier_v1.py
   - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_net_mode_posside_first_party_census_v1.py
