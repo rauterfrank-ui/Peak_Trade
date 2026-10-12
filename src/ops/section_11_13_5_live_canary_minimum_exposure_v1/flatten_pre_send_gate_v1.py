@@ -10,6 +10,7 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass, field
+from decimal import Decimal
 from typing import Any, Callable, Mapping
 
 from src.ops.pre_submit_open_position_cap_v1 import (
@@ -52,6 +53,15 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.flatten_submit_tran
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.mutation_limited_to_proven_position_v1 import (
     evaluate_mutation_limited_to_proven_position_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.current_live_canary_capital_guard_v1 import (
+    CanaryCapitalGuardError,
+    evaluate_canary_capital_guard_flatten_v1,
+    refuse_canary_capital_guard_flatten_unless_pass_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.pre_submit_state_v1 import (
+    classify_target_position_state_v1,
+    TARGET_POSITION_NONZERO_PROVEN,
 )
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.no_additional_owner_decision_required_v1 import (
     NAMED_REMAINING_HIGHER_AUTHORITY_BOUNDARIES,
@@ -458,6 +468,26 @@ def evaluate_flatten_pre_send_gate_v1(
             decisions.append(_decision("FLATTEN_QTY", False, "FLATTEN_QTY_MISMATCH"))
         else:
             decisions.append(_decision("FLATTEN_QTY", True))
+        try:
+            classified = classify_target_position_state_v1(
+                positions_payload=gate.positions_payload,
+                instrument_id=target or DEFAULT_INSTRUMENT_ID,
+            )
+            signed = (
+                Decimal(classified.signed_pos)
+                if classified.state == TARGET_POSITION_NONZERO_PROVEN and classified.signed_pos
+                else Decimal("0")
+            )
+            flatten_guard = evaluate_canary_capital_guard_flatten_v1(
+                plan=plan,
+                signed_pos=signed,
+                reduce_only_confirmed=plan.reduce_only is True,
+            )
+            refuse_canary_capital_guard_flatten_unless_pass_v1(flatten_guard)
+            decisions.append(_decision("CAPITAL_GUARD_FLATTEN", True))
+        except CanaryCapitalGuardError as exc:
+            reasons.append(f"CAPITAL_GUARD_FLATTEN:{exc}")
+            decisions.append(_decision("CAPITAL_GUARD_FLATTEN", False, str(exc)))
 
     price_decision = evaluate_canary_flatten_limit_price_contract_v1(gate.price_input)
     if price_decision.permit is None:

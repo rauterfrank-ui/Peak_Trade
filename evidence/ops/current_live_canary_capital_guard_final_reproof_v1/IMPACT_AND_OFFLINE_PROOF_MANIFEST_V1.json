@@ -1,0 +1,9 @@
+{
+  "work_package": "CURRENT_LIVE_CANARY_CAPITAL_GUARD_FINAL_REPROOF_AND_PR_V1",
+  "origin_main_sha": "f87032845fd21c0deb6aee0bddb553be9a43691f",
+  "offline_test_command": "./scripts/pt -m pytest tests/ops/test_current_live_canary_capital_guard_final_reproof_v1.py tests/ops/test_current_live_canary_atomic_one_shot_v1.py tests/ops/test_current_live_canary_capital_guard_v1.py tests/ops/test_current_live_canary_capital_guard_hardening_v1.py -q",
+  "offline_test_count": 61,
+  "live_post_authorized": false,
+  "owner_caps_ratified": false,
+  "ghv_authority": "NONE"
+}

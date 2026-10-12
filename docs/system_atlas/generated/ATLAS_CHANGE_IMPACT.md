@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=1
-ATLAS_CHANGED_RELATION_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=3
+ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7090_ghv_current_l10_observability_and_gge_scale_reproof_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7091_live_canary_capital_guard_v1`.
 
 ## Workflow
 
@@ -40,13 +40,15 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:productive_golden_happy_vector_forensic_observability_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `RUNTIME_COMPONENT:section_11_13_5_live_canary_capital_guard_v1` |
+| `CAPABILITY:cap_11_13_5_live_canary` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:r_full_core_cycle_observes_elementary_direction` |
+| _(none)_ |
 
 ## NEW_RELATIONS
 
@@ -92,8 +94,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7090 GHV read-only L10 seal observability on scope decision trace + GGE scale reproof tests; default-off forensic append only; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
-- introduced_by=CHANGE:pr_7090_ghv_current_l10_observability_and_gge_scale_reproof_v1
-- modified_by=CHANGE:pr_7090_ghv_current_l10_observability_and_gge_scale_reproof_v1
+- PR #7091 Live Canary capital guard + atomic one-shot (fail-closed, caps UNRATIFIED, live_canary_allowed=false); Full-Core import-only consumer touch reviewed; no productive PRE_EXTERNAL semantic change; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+- introduced_by=CHANGE:pr_7091_live_canary_capital_guard_v1
+- modified_by=CHANGE:pr_7091_live_canary_capital_guard_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

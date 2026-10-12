@@ -1,29 +1,41 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "54e31eb87dadb15f53f1e3b1e6f074771b68a653",
+  "base_sha": "f87032845fd21c0deb6aee0bddb553be9a43691f",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "config/governance/technical_canonical_wiring_authorization_v1.json",
+    "config/ops/current_live_canary_capital_guard_v1.json",
+    "docs/ops/specs/CURRENT_LIVE_CANARY_CAPITAL_GUARD_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "docs/system_atlas/relations/runtime.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/productive_golden_happy_vector_forensic_observability_v1.py",
-    "tests/ops/test_golden_happy_scope_decision_trace_l10_observability_v1.py",
-    "tests/trading/master_v2/test_gge_dynamic_scope_scale_integrity_reproof_v1.py"
+    "evidence/ops/current_live_canary_atomic_one_shot_and_crash_recovery_v1/IMPACT_AND_OFFLINE_PROOF_MANIFEST_V1.json",
+    "evidence/ops/current_live_canary_capital_guard_final_reproof_v1/IMPACT_AND_OFFLINE_PROOF_MANIFEST_V1.json",
+    "evidence/ops/current_live_canary_capital_guard_implementation_v1/IMPACT_AND_OFFLINE_PROOF_MANIFEST_V1.json",
+    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/canary_atomic_recovery_adjudicate_v1.py",
+    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/canary_capital_guard_atomic_one_shot_v1.py",
+    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/canary_capital_guard_durable_ledger_v1.py",
+    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/current_live_canary_capital_guard_v1.py",
+    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/flatten_pre_send_gate_v1.py",
+    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/ghv_canary_capital_guard_observability_v1.py",
+    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py",
+    "tests/ops/test_current_live_canary_atomic_one_shot_v1.py",
+    "tests/ops/test_current_live_canary_capital_guard_final_reproof_v1.py",
+    "tests/ops/test_current_live_canary_capital_guard_hardening_v1.py",
+    "tests/ops/test_current_live_canary_capital_guard_v1.py"
   ],
-  "changed_paths_sha256": "74cfc68872829d7fc7df5cc5db1b36fd2cd11a79791aea79efcd31a3bb9fd117",
+  "changed_paths_sha256": "40ba641d19e49639a8a763361bcfc091e121a92d486e4c4675d1e4137bc26833",
   "evidence_refs": [
-    "tests/ops/test_golden_happy_scope_decision_trace_l10_observability_v1.py",
-    "tests/trading/master_v2/test_gge_dynamic_scope_scale_integrity_reproof_v1.py"
+    "tests/ops/test_current_live_canary_capital_guard_final_reproof_v1.py"
   ],
-  "head_sha": "PENDING_CHANGE",
-  "reason": "PR #7090 GHV forensic observability + GGE scale reproof tests only; diff-bound NO_LAW_IMPACT; no law map structured source change; AUTHORITY=NONE.",
+  "head_sha": "1e3e1e3e00016de2d020e54ced468652543f799b",
+  "reason": "PR #7091 Live Canary capital guard; diff-bound NO_LAW_IMPACT; AUTHORITY=NONE.",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT"
 }
