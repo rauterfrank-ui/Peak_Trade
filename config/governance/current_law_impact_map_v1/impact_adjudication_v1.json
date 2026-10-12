@@ -1,9 +1,10 @@
 {
   "authority_effect": "NONE",
   "base_sha": "38d607a43aa38683cb21158aa96703866fb0a2ac",
-  "head_sha": "3f6e3e70549d217aaf2c21a2aed5f862391ace30",
+  "head_sha": "3b9de38931a256bd4fa1e4978e44d64ee09a23c0",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/ops/current_full_core_capital_guard_v1.json",
@@ -32,9 +33,10 @@
     "tests/ops/test_full_core_pre_post_capital_guard_binding_v1.py",
     "tests/ops/test_full_core_pre_post_capital_guard_join_v1.py"
   ],
-  "changed_paths_sha256": "3cc781453f79bb1947d5f617aa10707ccdddff36d63644efb8112f963a904de1",
+  "changed_paths_sha256": "0412fdc59680e85da3bf5d7476dc85d062b3ef281ba2cdf01ec0daa1ef317178",
   "covered_candidate_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/ops/current_full_core_capital_guard_v1.json",
     "docs/ops/specs/CURRENT_FULL_CORE_PRE_POST_CAPITAL_GUARD_JOIN_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
@@ -62,9 +64,10 @@
     "tests/ops/test_full_core_pre_post_capital_guard_join_v1.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_full_core_capital_guard_offline_reproof_integration_v1.py"
+    "tests/ops/test_full_core_capital_guard_offline_reproof_integration_v1.py",
+    "tests/ops/test_full_core_pre_post_capital_guard_join_v1.py"
   ],
-  "reason": "PR #7092 Full-Core capital guard join; diff-bound NO_LAW_IMPACT; AUTHORITY=NONE.",
+  "reason": "PR #7092 Full-Core capital guard join + LIVE_POST fail-closed; diff-bound NO_LAW_IMPACT; AUTHORITY=NONE.",
   "verdict": "NO_LAW_IMPACT",
   "selector_used_as_law_impact_authority": false
 }
