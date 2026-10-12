@@ -32,6 +32,8 @@ def register_observed_surface_v1(
         "discovery_reason": discovery_reason,
         "canary_authority": CANARY_AUTHORITY,
     }
+
+
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.current_live_canary_capital_guard_v1 import (
     CanaryCapitalGuardEvaluationV1,
     CONTRACT_ID,
