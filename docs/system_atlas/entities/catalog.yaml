@@ -3973,6 +3973,7 @@ entities:
   - tests/ops/test_productive_natural_market_data_capture_sink_v1.py
   notes: Append-only evidence wrapper around FullCoreProductiveReadOnlyGetTransportV1; 1:1 delegate GET passthrough; default disabled at product entry; CORRELATION_STATUS=PARTIAL; no poll-bundle claim; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:productive_golden_happy_vector_forensic_observability_v1
+  # atlas_entity_review: PR #7090 adds read-only L10 seal fields to golden_happy_scope_decision_trace.v1; no replay recompute; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7081 sibling ghv_intelligence_lineage_forensic_observability_v1 append hook; GHV session observability semantics unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7059 adjacent runtime_cycle file touched; GHV observability reads unchanged; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7037 GHV reproof lane CRS propagation fix; observability module unchanged; AUTHORITY=NONE; POST_COUNT=0.
@@ -3981,7 +3982,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: PR_7001_GHV_SCOPE_DECISION_TRACE_OBSERVABILITY_V1
+  modified_by: CHANGE:pr_7090_ghv_current_l10_observability_and_gge_scale_reproof_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/productive_golden_happy_vector_forensic_observability_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py
@@ -3989,7 +3990,9 @@ entities:
   - docs/ops/specs/CURRENT_PRODUCTIVE_GOLDEN_HAPPY_VECTOR_FORENSIC_OBSERVABILITY_V1.md
   - tests/ops/test_productive_golden_happy_vector_forensic_observability_v1.py
   - tests/ops/test_golden_happy_scope_decision_trace_observability_v1.py
-  notes: Default-off session-bound append-only directional signal_strength/threshold JSONL, golden_happy_scope_decision_trace_v1.jsonl (G17→Scope causal refs), plus single entry-state JSON snapshot; reads productive replay intermediate and cursor carrier; no signal/scope recompute; no trading/threshold/budget/GET semantic change; CORRELATION_STATUS=PARTIAL; AUTHORITY=NONE; POST_COUNT=0.
+  - tests/ops/test_golden_happy_scope_decision_trace_l10_observability_v1.py
+  - tests/trading/master_v2/test_gge_dynamic_scope_scale_integrity_reproof_v1.py
+  notes: Default-off session-bound append-only directional signal_strength/threshold JSONL, golden_happy_scope_decision_trace_v1.jsonl (G17→Scope causal refs + optional read-only LayeredCoreAuthoritySeal L10 fields), plus single entry-state JSON snapshot; reads productive replay intermediate and cursor carrier; no signal/scope/L10 recompute; no trading/threshold/budget/GET semantic change; CORRELATION_STATUS=PARTIAL; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:ghv_intelligence_lineage_forensic_observability_v1
   # atlas_entity_review: PR #7081 refs-only GHV intelligence lineage JSONL; session-gated; capture_failure_changes_decision=false; GHV_AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7081 schema v2 completeness slots + pre_external refs; append-only; no trading consumption; AUTHORITY=NONE; POST_COUNT=0.

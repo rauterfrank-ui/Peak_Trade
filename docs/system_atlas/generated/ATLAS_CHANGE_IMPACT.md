@@ -16,14 +16,14 @@ This view is topology change-coupling, not canonical authority.
 ```text
 ATLAS_IMPACT=UPDATED
 ATLAS_CHANGED_ENTITY_COUNT=1
-ATLAS_CHANGED_RELATION_COUNT=0
+ATLAS_CHANGED_RELATION_COUNT=1
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7087_owner_go_baseline_pin_at_main_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7090_ghv_current_l10_observability_and_gge_scale_reproof_v1`.
 
 ## Workflow
 
@@ -40,13 +40,13 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1` |
+| `RUNTIME_COMPONENT:productive_golden_happy_vector_forensic_observability_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| _(none)_ |
+| `REL:r_full_core_cycle_observes_elementary_direction` |
 
 ## NEW_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7087 Owner-GO baseline lineage alignment at origin/main@8da47623; governance and Atlas provenance only; bounded GET-only PRE_EXTERNAL authorization scopes unchanged; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
-- introduced_by=CHANGE:pr_7087_owner_go_baseline_pin_at_main_v1
-- modified_by=CHANGE:pr_7087_owner_go_baseline_pin_at_main_v1
+- PR #7090 GHV read-only L10 seal observability on scope decision trace + GGE scale reproof tests; default-off forensic append only; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+- introduced_by=CHANGE:pr_7090_ghv_current_l10_observability_and_gge_scale_reproof_v1
+- modified_by=CHANGE:pr_7090_ghv_current_l10_observability_and_gge_scale_reproof_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
