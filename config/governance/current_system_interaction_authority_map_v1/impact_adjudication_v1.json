@@ -44,7 +44,7 @@
     "tests/ops/test_current_live_canary_capital_guard_v1.py",
     "tests/ops/test_current_live_canary_capital_guard_final_reproof_v1.py"
   ],
-  "head_sha": "PENDING_CHANGE",
+  "head_sha": "fb051e0712aef61bfabbe0480db5b5eade21aeb0",
   "reason": "PR #7091 \u00a711.13.5 Live Canary capital guard + atomic one-shot (fail-closed, no cap ratification, no live POST). Bounded to canary module surfaces; no CSIA source_v1 structured map change; AUTHORITY=NONE.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
