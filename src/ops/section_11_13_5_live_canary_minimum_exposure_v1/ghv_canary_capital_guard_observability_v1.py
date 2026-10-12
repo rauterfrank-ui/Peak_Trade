@@ -4,10 +4,34 @@ from __future__ import annotations
 
 from typing import Any, Mapping, Sequence
 
-from src.ops.full_core_live_path_composition_root_v1.ghv_system_wide_canary_surface_discovery_v1 import (
-    CANARY_AUTHORITY,
-    register_observed_surface_v1,
-)
+CANARY_AUTHORITY = "NONE"
+
+
+def register_observed_surface_v1(
+    *,
+    producer_symbol: str,
+    consumer_symbol: str,
+    causal_relation: str,
+    execution_domain: str,
+    stage: str = "",
+    discovery_reason: str,
+    module: str = "",
+    file: str = "",
+    **_kwargs: Any,
+) -> dict[str, Any]:
+    """Local read-only GHV surface row (AUTHORITY=NONE; no Full-Core session coupling)."""
+    return {
+        "surface_id": f"OBS:{producer_symbol}->{consumer_symbol}@{stage or 'unknown'}",
+        "module": module or "unknown",
+        "symbol": producer_symbol,
+        "file": file or "unknown",
+        "consumer_symbol": consumer_symbol,
+        "stage_if_known": stage,
+        "execution_domain": execution_domain,
+        "causal_relation": causal_relation,
+        "discovery_reason": discovery_reason,
+        "canary_authority": CANARY_AUTHORITY,
+    }
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.current_live_canary_capital_guard_v1 import (
     CanaryCapitalGuardEvaluationV1,
     CONTRACT_ID,
