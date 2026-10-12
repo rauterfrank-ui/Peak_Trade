@@ -49,6 +49,14 @@ from trading.master_v2.directional_assessment_v1 import (
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     IntegratedOfflineReplayResultV1,
 )
+from trading.master_v2.layered_core_authority_seal_v1 import (
+    SEAL_OWNER as LAYERED_CORE_AUTHORITY_SEAL_OWNER,
+    LayeredCoreAuthoritySealV1,
+)
+
+L10_OBSERVABILITY_STATUS_PRESENT = "PRESENT"
+L10_OBSERVABILITY_STATUS_UNAVAILABLE = "UNAVAILABLE"
+L10_OBSERVABILITY_PROVENANCE = LAYERED_CORE_AUTHORITY_SEAL_OWNER
 
 OWNER = (
     "full_core_live_path_composition_root_v1."
@@ -492,6 +500,44 @@ def _scope_confirmation_dict_v1(state: object | None) -> dict[str, Any] | None:
     }
 
 
+def _layered_core_l10_observability_fields_v1(
+    *,
+    seal: LayeredCoreAuthoritySealV1 | None,
+    instrument_id: str,
+) -> dict[str, Any]:
+    """Read-only L10 switch fields from authoritative seal; no recompute or defaults."""
+    base: dict[str, Any] = {
+        "l10_observability_provenance": L10_OBSERVABILITY_PROVENANCE,
+        "l10_observability_status": L10_OBSERVABILITY_STATUS_UNAVAILABLE,
+        "l10_seal_instrument_id": None,
+        "l10_seal_id": None,
+        "cm_t": None,
+        "d_t": None,
+        "switch_condition_met": None,
+        "regime_pre": None,
+        "regime_post": None,
+    }
+    if seal is None:
+        return base
+    if str(seal.instrument_id or "").strip() != str(instrument_id or "").strip():
+        return {
+            **base,
+            "l10_observability_status": "UNAVAILABLE_INSTRUMENT_MISMATCH",
+            "l10_seal_instrument_id": str(seal.instrument_id),
+        }
+    return {
+        "l10_observability_provenance": L10_OBSERVABILITY_PROVENANCE,
+        "l10_observability_status": L10_OBSERVABILITY_STATUS_PRESENT,
+        "l10_seal_instrument_id": str(seal.instrument_id),
+        "l10_seal_id": str(seal.seal_id),
+        "cm_t": float(seal.cm_t),
+        "d_t": float(seal.d_t),
+        "switch_condition_met": bool(seal.switch_condition_met),
+        "regime_pre": str(seal.regime_pre),
+        "regime_post": str(seal.regime_post),
+    }
+
+
 def _runtime_scope_state_dict_v1(state: object | None) -> dict[str, Any] | None:
     if state is None:
         return None
@@ -532,6 +578,7 @@ def build_scope_decision_trace_record_v1(
     side_state_before: str,
     scope_direction: str,
     replay: IntegratedOfflineReplayResultV1,
+    layered_core_authority_seal: LayeredCoreAuthoritySealV1 | None = None,
 ) -> dict[str, Any] | None:
     """Serialize already-computed productive cycle values (observe-only)."""
     if replay.intermediate is None:
@@ -624,6 +671,10 @@ def build_scope_decision_trace_record_v1(
         "pre_external_reached": False,
         "capture_source": "productive_master_v2_cycle_v1",
         "owner": OWNER,
+        **_layered_core_l10_observability_fields_v1(
+            seal=layered_core_authority_seal,
+            instrument_id=instrument_id,
+        ),
     }
 
 
@@ -650,6 +701,7 @@ def append_scope_decision_trace_from_productive_cycle_v1(
     side_state_before: str,
     scope_direction: str,
     replay: IntegratedOfflineReplayResultV1,
+    layered_core_authority_seal: LayeredCoreAuthoritySealV1 | None = None,
 ) -> dict[str, Any] | None:
     session = active_forensic_observability_session_v1()
     if session is None:
@@ -689,6 +741,7 @@ def append_scope_decision_trace_from_productive_cycle_v1(
         side_state_before=side_state_before,
         scope_direction=scope_direction,
         replay=replay,
+        layered_core_authority_seal=layered_core_authority_seal,
     )
     if record is None:
         return None

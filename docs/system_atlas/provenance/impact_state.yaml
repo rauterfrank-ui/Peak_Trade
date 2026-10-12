@@ -1,16 +1,17 @@
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CHANGE:pr_7087_owner_go_baseline_pin_at_main_v1
-modified_by: CHANGE:pr_7087_owner_go_baseline_pin_at_main_v1
+introduced_by: CHANGE:pr_7090_ghv_current_l10_observability_and_gge_scale_reproof_v1
+modified_by: CHANGE:pr_7090_ghv_current_l10_observability_and_gge_scale_reproof_v1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #7087 Owner-GO baseline lineage alignment at origin/main@8da47623; governance and Atlas
-  provenance only; bounded GET-only PRE_EXTERNAL authorization scopes unchanged;
-  RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+  PR #7090 GHV read-only L10 seal observability on scope decision trace + GGE scale reproof
+  tests; default-off forensic append only; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE;
+  POST_COUNT=0; ATLAS_AUTHORITY=NONE.
 changed_entities:
-  - RUNTIME_COMPONENT:current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1
-changed_relations: []
+  - RUNTIME_COMPONENT:productive_golden_happy_vector_forensic_observability_v1
+changed_relations:
+  - REL:r_full_core_cycle_observes_elementary_direction
 changed_closures: []
 changed_wiring: []
 changed_venue: []
