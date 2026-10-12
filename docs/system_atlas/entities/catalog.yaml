@@ -3897,12 +3897,13 @@ entities:
   # atlas_entity_review: PR #7073 wires cross-session Natural-Enter pending outcome create/resolve on PRE_EXTERNAL and observation poll; harness/persistence only; no trading/threshold/PRE_EXTERNAL disposition change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7078 PRE_EXTERNAL report get_count read-only delegation on pending-outcome observation wrapper; reporting observability only; no poll/trading/threshold change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7080 PRE_EXTERNAL DPO reporting correlation prefers canonical lane trading_epoch over s5_cycle_index; reporting only; no trading/threshold change; AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #7087 Owner-GO baseline re-pin dd4c23->8da476 after reviewed master_v2 offline position-truth replay binding; governance/test/map adjudication only; POST/credential flags unchanged; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: CURRENT productive persistent Natural-ENTER policy-governed live Fresh-C1 continuous run v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7080_session004_t2_diagnostic_evidence_closure_v1
+  modified_by: CHANGE:pr_7087_owner_go_baseline_pin_at_main_v1
   source_paths:
   - scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py
   - scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py
