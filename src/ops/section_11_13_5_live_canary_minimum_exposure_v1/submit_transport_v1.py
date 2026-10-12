@@ -21,6 +21,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     BLOCKS_NEW_ENTRY,
     CANARY_SUBMIT_TRANSPORT_IMPLEMENTED,
     CANARY_SUBMIT_TRANSPORT_SCOPE,
+    DEFAULT_INST_FAMILY,
     DEFAULT_INST_TYPE,
     DEFAULT_INSTRUMENT_ID,
     DEFAULT_ORDER_TYPE,
@@ -35,6 +36,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.constants_v1 import
     OWNER_GO_EXECUTE,
     REQUIRED_CREDENTIAL_CLASS,
     REQUIRED_SECRETREF_URI,
+    REUSED_BINDING_ACCOUNT_SCOPE,
     REUSED_BINDING_REST_HOST,
     SUBMIT_UNLOCKED,
     UNRESOLVED_ECONOMIC_DIVERGENCE_BLOCKS_NEW_ENTRY,
@@ -105,6 +107,47 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.venue_contract_coun
     LiveCanaryVenueContractCountError,
     assert_identity_sz_after_contract_sizing_v1,
 )
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.canary_capital_guard_atomic_one_shot_v1 import (
+    CanaryAtomicOneShotError,
+    STATE_HALTED_UNRESOLVED,
+    atomic_mark_submit_boundary_v1,
+    default_atomic_state_dir_v1,
+    durable_entry_state_for_guard_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.canary_capital_guard_durable_ledger_v1 import (
+    CanaryCapitalGuardDurableLedgerError,
+    build_canary_authorization_binding_v1,
+    compute_canary_owner_scope_key_v1,
+    default_ledger_path_v1,
+    record_durable_entry_reservation_v1,
+    record_durable_entry_submitted_v1,
+    record_durable_unknown_submit_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.cover_usdc_current_public_tier_mmr_productive_evidence_v1 import (
+    POSITION_TIERS_QUERY_PATH,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.current_live_canary_capital_guard_v1 import (
+    CanaryCapitalGuardError,
+    CanaryCapitalGuardConfigV1,
+    CanaryCapitalGuardExposureEvidenceV1,
+    CanaryCapitalGuardMarginEvidenceV1,
+    CanaryCapitalGuardSessionV1,
+    IMR_SOURCE_PUBLIC_POSITION_TIERS_QTY_ONE,
+    active_canary_capital_guard_session_v1,
+    bind_imr_from_public_position_tiers_payload_v1,
+    build_default_guard_session_v1,
+    compute_canary_plan_digest_v1,
+    evaluate_canary_capital_guard_entry_v1,
+    extract_avail_eq_usdc_from_balance_payload_v1,
+    extract_leverage_from_leverage_payload_v1,
+    load_canary_capital_guard_config_v1,
+    record_canary_capital_guard_entry_attempt_v1,
+    refuse_canary_capital_guard_entry_unless_pass_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.ghv_canary_capital_guard_observability_v1 import (
+    build_canary_capital_guard_ghv_bundle_v1,
+    record_canary_atomic_one_shot_ghv_stage_v1,
+)
 
 
 def _fail_closed_credential_unavailable_v1(*_a, **_k):
@@ -113,6 +156,117 @@ def _fail_closed_credential_unavailable_v1(*_a, **_k):
 
 class LiveCanarySubmitTransportError(RuntimeError):
     """Fail-closed canary submit-transport violation."""
+
+
+def _evaluate_and_refuse_entry_capital_guard_v1(
+    *,
+    plan: Any,
+    position_tiers_payload: Mapping[str, Any],
+    leverage_payload: Mapping[str, Any],
+    available_margin_payload: Mapping[str, Any],
+    pre_state: Mapping[str, Any],
+    owner_go: str | None,
+    account_scope: str,
+    instrument_id: str,
+    origin_main_sha: str,
+    pretrade_decision_id: str,
+    capital_guard_config: CanaryCapitalGuardConfigV1,
+    capital_guard_session: CanaryCapitalGuardSessionV1 | None,
+    durable_ledger_path: Any | None = None,
+    atomic_state_dir: Any | None = None,
+    authorization_binding: Any | None = None,
+) -> tuple[Any, dict[str, Any], CanaryCapitalGuardSessionV1 | None]:
+    guard_config = capital_guard_config
+    session = capital_guard_session or active_canary_capital_guard_session_v1()
+    if session is None:
+        session = build_default_guard_session_v1(
+            session_id=f"canary-guard-{uuid4().hex[:16]}",
+            account_scope=account_scope,
+            instrument_id=instrument_id,
+            owner_go=str(owner_go or ""),
+            guard_config=guard_config,
+        )
+    ledger_path = durable_ledger_path or default_ledger_path_v1()
+    state_dir = atomic_state_dir or default_atomic_state_dir_v1()
+    scope_key = compute_canary_owner_scope_key_v1(
+        owner_go=str(owner_go or ""),
+        origin_main_sha=origin_main_sha,
+        account_scope=account_scope,
+    )
+    plan_digest_pre = compute_canary_plan_digest_v1(plan_payload=plan.to_dict())
+    binding = authorization_binding
+    if binding is None:
+        binding = build_canary_authorization_binding_v1(
+            owner_go=str(owner_go or ""),
+            origin_main_sha=origin_main_sha,
+            account_scope=account_scope,
+            environment="LIVE",
+            instrument_id=instrument_id,
+            plan_digest=plan_digest_pre,
+            guard_config_digest=guard_config.config_digest,
+            session_id=session.session_id if session else "",
+            clordid=str(getattr(plan, "clordid", "") or ""),
+        )
+    try:
+        durable_state = durable_entry_state_for_guard_v1(
+            state_dir=state_dir, consumption_key=scope_key
+        )
+    except CanaryAtomicOneShotError:
+        durable_state = STATE_HALTED_UNRESOLVED
+    try:
+        imr_rate = bind_imr_from_public_position_tiers_payload_v1(
+            position_tiers_payload=position_tiers_payload,
+            expected_inst_family=DEFAULT_INST_FAMILY,
+        )
+    except Exception:
+        imr_rate = None
+    margin = CanaryCapitalGuardMarginEvidenceV1(
+        avail_eq_usdc=extract_avail_eq_usdc_from_balance_payload_v1(available_margin_payload),
+        imr_rate=imr_rate,
+        imr_source_class=IMR_SOURCE_PUBLIC_POSITION_TIERS_QTY_ONE if imr_rate else None,
+        pretrade_decision_id=pretrade_decision_id,
+        expected_pretrade_decision_id=pretrade_decision_id,
+    )
+    exposure = CanaryCapitalGuardExposureEvidenceV1(
+        open_order_count=int(pre_state.get("open_order_count") or 0),
+        open_position_count=int(pre_state.get("open_position_count") or 0),
+        unknown_submit_active=bool(pre_state.get("unknown_submit_active")),
+        recovery_state_clear=bool(pre_state.get("recovery_state_clear")),
+        transport_retry_count=0,
+    )
+    observed_leverage = extract_leverage_from_leverage_payload_v1(
+        leverage_payload=leverage_payload,
+        instrument_id=instrument_id,
+    )
+    evaluation = evaluate_canary_capital_guard_entry_v1(
+        plan=plan,
+        guard_config=guard_config,
+        margin_evidence=margin,
+        exposure_evidence=exposure,
+        owner_go=owner_go,
+        account_scope=account_scope,
+        session=session,
+        observed_leverage=observed_leverage,
+        expected_config_digest=guard_config.config_digest,
+        durable_entry_state=durable_state,
+    )
+    ghv_bundle = build_canary_capital_guard_ghv_bundle_v1(
+        session_id=session.session_id,
+        guard_config=guard_config.to_dict(),
+        guard_input={
+            "margin_evidence": margin.to_dict(),
+            "exposure_evidence": exposure.to_dict(),
+            "observed_leverage": observed_leverage,
+        },
+        evaluation=evaluation,
+    )
+    try:
+        refuse_canary_capital_guard_entry_unless_pass_v1(evaluation)
+    except CanaryCapitalGuardError as exc:
+        raise LiveCanarySubmitTransportError(
+            f"CAPITAL_GUARD_FAIL_CLOSED_BEFORE_POST:{exc}"
+        ) from exc
+    return evaluation, ghv_bundle, session
 
 
 def _assert_standing_safety() -> None:
@@ -271,6 +425,11 @@ def run_canary_submit_transport_v1(
     vault_backend: Any | None = None,
     credential_handle: _fail_closed_credential_unavailable_v1 | None = None,
     observe_order_plan_only: bool = False,
+    capital_guard_config: CanaryCapitalGuardConfigV1 | None = None,
+    capital_guard_session: CanaryCapitalGuardSessionV1 | None = None,
+    allow_offline_guard_config_override: bool = False,
+    durable_ledger_path: Any | None = None,
+    atomic_state_dir: Any | None = None,
 ) -> dict[str, Any]:
     """Gated canary execute path. Standing LIVE_AUTHORIZED remains false.
 
@@ -285,6 +444,9 @@ def run_canary_submit_transport_v1(
         raise LiveCanarySubmitTransportError("OWNER_GO_MISMATCH_FOR_TRANSPORT")
     if owner_go_consumed:
         raise LiveCanarySubmitTransportError("OWNER_GO_CONSUMED")
+    if capital_guard_config is not None and not allow_offline_guard_config_override:
+        raise LiveCanarySubmitTransportError("GUARD_CONFIG_OVERRIDE_FORBIDDEN")
+    resolved_guard_config = capital_guard_config or load_canary_capital_guard_config_v1()
 
     _pre_sizing_gates(
         cfg=cfg,
@@ -352,6 +514,21 @@ def run_canary_submit_transport_v1(
             instruments = parse_json_object_v1(inst_response.body_bytes)
         except LiveCanaryHttpError as exc:
             raise LiveCanarySubmitTransportError(f"MAX_SIZE_FRESH_GET_BODY:{exc}") from exc
+        try:
+            tiers_response = client.get(
+                endpoint=POSITION_TIERS_QUERY_PATH,
+                headers={"User-Agent": USER_AGENT_CANARY},
+            )
+        except LiveCanaryHttpError as exc:
+            raise LiveCanarySubmitTransportError(f"POSITION_TIERS_GET_FAILED:{exc}") from exc
+        if int(tiers_response.status_code) != 200:
+            raise LiveCanarySubmitTransportError(
+                f"POSITION_TIERS_GET_HTTP:{tiers_response.status_code}"
+            )
+        try:
+            position_tiers_payload = parse_json_object_v1(tiers_response.body_bytes)
+        except LiveCanaryHttpError as exc:
+            raise LiveCanarySubmitTransportError(f"POSITION_TIERS_GET_BODY:{exc}") from exc
         ticker = _signed_get(client=client, handle=handle, endpoint=tick_ep)
         side = str(cfg.payload.get("side") or "BUY")
         td_mode = str(cfg.payload.get("td_mode") or "cross")
@@ -580,6 +757,38 @@ def run_canary_submit_transport_v1(
                 f"ACCOUNT_WIDE_OPEN_POSITION_CAP:{exc.reason_code}"
             ) from exc
 
+        account_scope = str(cfg.payload.get("account_scope") or REUSED_BINDING_ACCOUNT_SCOPE)
+        guard_evaluation, ghv_guard_bundle, guard_session = (
+            _evaluate_and_refuse_entry_capital_guard_v1(
+                plan=plan,
+                position_tiers_payload=position_tiers_payload,
+                leverage_payload=leverage_payload,
+                available_margin_payload=available_margin_payload,
+                pre_state=pre_state,
+                owner_go=owner_go,
+                account_scope=account_scope,
+                instrument_id=instrument_id,
+                origin_main_sha=origin_main_sha,
+                pretrade_decision_id=pretrade_decision_id,
+                capital_guard_config=resolved_guard_config,
+                capital_guard_session=capital_guard_session,
+                durable_ledger_path=durable_ledger_path,
+                atomic_state_dir=atomic_state_dir,
+            )
+        )
+
+        auth_binding = build_canary_authorization_binding_v1(
+            owner_go=str(owner_go or ""),
+            origin_main_sha=origin_main_sha,
+            account_scope=account_scope,
+            environment=str(cfg.payload.get("environment") or "LIVE"),
+            instrument_id=instrument_id,
+            plan_digest=guard_evaluation.plan_digest,
+            guard_config_digest=resolved_guard_config.config_digest,
+            session_id=guard_session.session_id if guard_session else "",
+            clordid=str(plan.clordid),
+        )
+
         submit_gate = evaluate_canary_submit_gates_v1(
             owner_go=owner_go,
             owner_go_consumed=owner_go_consumed,
@@ -633,6 +842,8 @@ def run_canary_submit_transport_v1(
                 "ORDER_PLAN_PRODUCED_AFTER_GATES": True,
                 "plan": plan.to_dict(),
                 "submit_gate": submit_gate.to_dict(),
+                "capital_guard": guard_evaluation.to_dict(),
+                "ghv_canary_capital_guard": ghv_guard_bundle,
                 "pre_submit_state": dict(pre_state),
                 "counters": client.counters.to_dict(),
                 "OWNER_GO_CONSUMED": False,
@@ -641,6 +852,44 @@ def run_canary_submit_transport_v1(
                 "CANARY_SUBMIT_TRANSPORT_SCOPE": CANARY_SUBMIT_TRANSPORT_SCOPE,
                 "RETRY_SAFE_NOW": False,
             }
+
+        ledger_path = durable_ledger_path or default_ledger_path_v1()
+        state_dir = atomic_state_dir or default_atomic_state_dir_v1()
+        scope_key = auth_binding.consumption_key()
+        ghv_atomic_stages: list[dict[str, Any]] = []
+        try:
+            record_durable_entry_reservation_v1(
+                ledger_path=ledger_path,
+                scope_key=scope_key,
+                plan_digest=guard_evaluation.plan_digest,
+                session_id=guard_session.session_id if guard_session else "",
+                guard_config_digest=resolved_guard_config.config_digest,
+                owner_go=str(owner_go or ""),
+                origin_main_sha=origin_main_sha,
+                account_scope=account_scope,
+                environment=str(cfg.payload.get("environment") or "LIVE"),
+                instrument_id=instrument_id,
+                clordid=str(plan.clordid),
+                atomic_state_dir=state_dir,
+            )
+            ghv_atomic_stages.append(
+                record_canary_atomic_one_shot_ghv_stage_v1(
+                    session_id=guard_session.session_id if guard_session else "",
+                    consumption_key=scope_key,
+                    binding_digest=auth_binding.binding_digest(),
+                    stage="ATOMIC_RESERVATION",
+                    payload={"result": "RESERVED_PRE_POST"},
+                )
+            )
+        except CanaryCapitalGuardDurableLedgerError as exc:
+            raise LiveCanarySubmitTransportError(
+                f"CAPITAL_GUARD_DURABLE_RESERVE_FAIL_CLOSED:{exc}"
+            ) from exc
+        if guard_session is not None:
+            guard_session = record_canary_capital_guard_entry_attempt_v1(
+                session=guard_session,
+                plan_digest=guard_evaluation.plan_digest,
+            )
 
         body_text = serialize_canonical_okx_post_body_v1(plan.venue_native_payload)
         venue_native_request = extract_canary_venue_native_request_evidence_v1(body_text=body_text)
@@ -657,7 +906,33 @@ def run_canary_submit_transport_v1(
             permit_id=uuid4().hex,
         )
         try:
+            atomic_mark_submit_boundary_v1(state_dir=state_dir, binding=auth_binding)
+            ghv_atomic_stages.append(
+                record_canary_atomic_one_shot_ghv_stage_v1(
+                    session_id=guard_session.session_id if guard_session else "",
+                    consumption_key=scope_key,
+                    binding_digest=auth_binding.binding_digest(),
+                    stage="SUBMIT_BOUNDARY",
+                    payload={"state": "SUBMIT_MAY_HAVE_OCCURRED"},
+                )
+            )
             response = client.post_entry_order(permit=permit, body_text=body_text, headers=headers)
+            record_durable_entry_submitted_v1(
+                ledger_path=ledger_path,
+                scope_key=scope_key,
+                plan_digest=guard_evaluation.plan_digest,
+                binding=auth_binding,
+                atomic_state_dir=state_dir,
+            )
+            ghv_atomic_stages.append(
+                record_canary_atomic_one_shot_ghv_stage_v1(
+                    session_id=guard_session.session_id if guard_session else "",
+                    consumption_key=scope_key,
+                    binding_digest=auth_binding.binding_digest(),
+                    stage="ACK_OR_UNKNOWN",
+                    payload={"classification": "SUBMITTED_ACKNOWLEDGED"},
+                )
+            )
         except LiveCanaryHttpError as exc:
             headers.clear()
             if "UNKNOWN_SUBMIT" in str(exc) or "DUPLICATE" in str(exc):
@@ -679,6 +954,25 @@ def run_canary_submit_transport_v1(
                     pending_orders_payload=pending_after,
                     history_payload=history_after,
                     clordid=plan.clordid,
+                )
+                try:
+                    record_durable_unknown_submit_v1(
+                        ledger_path=ledger_path,
+                        scope_key=scope_key,
+                        plan_digest=guard_evaluation.plan_digest,
+                        binding=auth_binding,
+                        atomic_state_dir=state_dir,
+                    )
+                except CanaryCapitalGuardDurableLedgerError:
+                    pass
+                ghv_atomic_stages.append(
+                    record_canary_atomic_one_shot_ghv_stage_v1(
+                        session_id=guard_session.session_id if guard_session else "",
+                        consumption_key=scope_key,
+                        binding_digest=auth_binding.binding_digest(),
+                        stage="ACK_OR_UNKNOWN",
+                        payload={"classification": "UNKNOWN_SUBMIT"},
+                    )
                 )
                 return {
                     "ok": False,
@@ -729,7 +1023,7 @@ def run_canary_submit_transport_v1(
             redirect_status=response.redirect_status,
             redirect_location=response.redirect_location,
         )
-        return _entry_submit_returned_payload_v1(
+        payload = _entry_submit_returned_payload_v1(
             response=response,
             plan=plan,
             submit_gate=submit_gate,
@@ -738,6 +1032,16 @@ def run_canary_submit_transport_v1(
             http_evidence=http_evidence,
             venue_native_request=venue_native_request,
         )
+        if ghv_atomic_stages:
+            payload["ghv_canary_atomic_one_shot"] = {
+                "stages": ghv_atomic_stages,
+                "authorization_permanently_consumed": True,
+            }
+        if "ghv_canary_capital_guard" in payload or ghv_guard_bundle:
+            merged = dict(ghv_guard_bundle)
+            merged["ghv_canary_atomic_one_shot_stages"] = ghv_atomic_stages
+            payload["ghv_canary_capital_guard"] = merged
+        return payload
     finally:
         if created_handle and handle is not None:
             _fail_closed_credential_unavailable_v1(handle)

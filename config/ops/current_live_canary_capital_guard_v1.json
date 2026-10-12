@@ -1,0 +1,20 @@
+{
+  "schema_version": "current_live_canary_capital_guard.v1",
+  "contract_id": "CURRENT_LIVE_CANARY_CAPITAL_GUARD_V1",
+  "live_canary_allowed": false,
+  "owner_caps_ratified": false,
+  "currency": "USDC",
+  "max_single_order_notional": null,
+  "max_incremental_initial_margin": null,
+  "max_aggregate_exposure": null,
+  "max_leverage": null,
+  "max_open_positions": null,
+  "max_submitted_orders": null,
+  "max_session_capital_commitment": null,
+  "scale_in_forbidden": true,
+  "automatic_retry_forbidden": true,
+  "fee_buffer_usdc": null,
+  "max_new_orders": 1,
+  "max_new_positions": 1,
+  "spec_doc": "docs/ops/specs/CURRENT_LIVE_CANARY_CAPITAL_GUARD_V1.md"
+}

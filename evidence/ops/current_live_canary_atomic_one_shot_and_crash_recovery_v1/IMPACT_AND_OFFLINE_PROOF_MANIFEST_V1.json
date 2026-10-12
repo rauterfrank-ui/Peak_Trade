@@ -1,0 +1,21 @@
+{
+  "work_package": "CURRENT_LIVE_CANARY_ATOMIC_ONE_SHOT_AND_CRASH_RECOVERY_V1",
+  "origin_main_sha": "f87032845fd21c0deb6aee0bddb553be9a43691f",
+  "authority_effect": "NONE",
+  "live_post_authorized": false,
+  "owner_caps_ratified": false,
+  "files_touched": [
+    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/canary_capital_guard_atomic_one_shot_v1.py",
+    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/canary_atomic_recovery_adjudicate_v1.py",
+    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/canary_capital_guard_durable_ledger_v1.py",
+    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/submit_transport_v1.py",
+    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/ghv_canary_capital_guard_observability_v1.py",
+    "tests/ops/test_current_live_canary_atomic_one_shot_v1.py",
+    "tests/ops/test_current_live_canary_capital_guard_hardening_v1.py",
+    "docs/ops/specs/CURRENT_LIVE_CANARY_CAPITAL_GUARD_V1.md"
+  ],
+  "offline_test_command": "./scripts/pt -m pytest tests/ops/test_current_live_canary_atomic_one_shot_v1.py tests/ops/test_current_live_canary_capital_guard_v1.py tests/ops/test_current_live_canary_capital_guard_hardening_v1.py -q",
+  "offline_test_result": "45 passed",
+  "multiprocess_proven": true,
+  "ghv_authority": "NONE"
+}
