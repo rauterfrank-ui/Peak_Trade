@@ -2,6 +2,8 @@
   "authority_effect": "NONE",
   "base_sha": "f87032845fd21c0deb6aee0bddb553be9a43691f",
   "changed_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/ops/current_live_canary_capital_guard_v1.json",
@@ -28,8 +30,10 @@
     "tests/ops/test_current_live_canary_capital_guard_hardening_v1.py",
     "tests/ops/test_current_live_canary_capital_guard_v1.py"
   ],
-  "changed_paths_sha256": "c6a17171914ec93624680cebcd6fe28c030007268291a5be76bf39a8ca5416cc",
+  "changed_paths_sha256": "40ba641d19e49639a8a763361bcfc091e121a92d486e4c4675d1e4137bc26833",
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/ops/current_live_canary_capital_guard_v1.json",
     "docs/ops/specs/CURRENT_LIVE_CANARY_CAPITAL_GUARD_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
@@ -55,11 +59,10 @@
     "tests/ops/test_current_live_canary_capital_guard_v1.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_current_live_canary_capital_guard_final_reproof_v1.py",
-    "tests/ops/test_current_live_canary_capital_guard_v1.py"
+    "tests/ops/test_current_live_canary_capital_guard_final_reproof_v1.py"
   ],
-  "head_sha": "6c9688642a376401d6cef45f266a0a6d1b63d144",
-  "reason": "PR #7091 \u00a711.13.5 Live Canary capital guard + atomic one-shot + Atlas provenance (UPDATED); fail-closed; caps UNRATIFIED; no CSIA source_v1 change; AUTHORITY=NONE.",
+  "head_sha": "PENDING",
+  "reason": "PR #7091 canary capital guard + governance/Atlas; NO_MAP_IMPACT; AUTHORITY=NONE.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

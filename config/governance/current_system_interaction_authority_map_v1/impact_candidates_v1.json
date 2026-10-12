@@ -13,6 +13,8 @@
     "config/governance/companion_c2_fraction_to_units_runtime_completion_v1_decision_v1.json",
     "config/governance/companion_fraction_to_units_contract_v1.json",
     "config/governance/current_law_impact_map_v1/",
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json",
     "config/governance/current_system_census_graph_v1/",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
