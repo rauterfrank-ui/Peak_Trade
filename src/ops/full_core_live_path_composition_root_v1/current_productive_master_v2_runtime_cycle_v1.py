@@ -1117,6 +1117,7 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         side_state_before=str(side_state.value),
         scope_direction=str(scope_direction_from_side_state_v1(side_state).value),
         replay=replay,
+        layered_core_authority_seal=bind_carry.seal if bind_carry.bind_active else None,
     )
     from src.ops.full_core_live_path_composition_root_v1.ghv_intelligence_lineage_forensic_observability_v1 import (
         append_intelligence_lineage_observability_from_productive_cycle_v1,
