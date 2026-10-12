@@ -121,6 +121,32 @@ def _parse_optional_decimal(raw: Any) -> Decimal | None:
     return _dec(text, field="cap")
 
 
+def _parse_required_non_negative_int(raw: Any, *, field: str) -> int:
+    """Parse required int cap; preserves explicit zero; fail-closed on missing/invalid."""
+    if raw is None:
+        raise CanaryCapitalGuardError(f"MISSING_INT_CAP:{field}")
+    if isinstance(raw, bool):
+        raise CanaryCapitalGuardError(f"INVALID_INT_CAP:{field}")
+    if isinstance(raw, int):
+        value = raw
+    elif isinstance(raw, str):
+        text = raw.strip()
+        if not text:
+            raise CanaryCapitalGuardError(f"MISSING_INT_CAP:{field}")
+        try:
+            value = int(text, 10)
+        except ValueError as exc:
+            raise CanaryCapitalGuardError(f"INVALID_INT_CAP:{field}") from exc
+    else:
+        try:
+            value = int(raw)
+        except (TypeError, ValueError) as exc:
+            raise CanaryCapitalGuardError(f"INVALID_INT_CAP:{field}") from exc
+    if value < 0:
+        raise CanaryCapitalGuardError(f"NEGATIVE_INT_CAP:{field}")
+    return value
+
+
 def load_canary_capital_guard_config_v1(
     *,
     repo_root: Path | None = None,
@@ -174,8 +200,12 @@ def parse_canary_capital_guard_config_v1(
         scale_in_forbidden=bool(payload.get("scale_in_forbidden", True)),
         automatic_retry_forbidden=bool(payload.get("automatic_retry_forbidden", True)),
         fee_buffer_usdc=_parse_optional_decimal(payload.get("fee_buffer_usdc")),
-        max_new_orders=int(payload.get("max_new_orders") or 1),
-        max_new_positions=int(payload.get("max_new_positions") or 1),
+        max_new_orders=_parse_required_non_negative_int(
+            payload.get("max_new_orders"), field="max_new_orders"
+        ),
+        max_new_positions=_parse_required_non_negative_int(
+            payload.get("max_new_positions"), field="max_new_positions"
+        ),
         config_digest=str(config_digest or "").strip().lower(),
     )
 
@@ -470,10 +500,18 @@ def evaluate_canary_capital_guard_entry_v1(
             reasons.append("SESSION_GUARD_CONFIG_DIGEST_MISMATCH")
         if session.unknown_submit_locked:
             reasons.append("UNKNOWN_SUBMIT_SESSION_LOCKED")
-        if session.entry_submit_count >= guard_config.max_new_orders:
-            reasons.append("MAX_NEW_ORDERS_EXCEEDED")
         if plan_digest in session.consumed_plan_digests:
             reasons.append("DUPLICATE_PLAN_DIGEST")
+
+    if guard_config.max_new_orders == 0:
+        reasons.append("ENTRY_BLOCKED:MAX_NEW_ORDERS_ZERO")
+    elif session is not None and session.entry_submit_count >= guard_config.max_new_orders:
+        reasons.append("MAX_NEW_ORDERS_EXCEEDED")
+
+    if guard_config.max_new_positions == 0:
+        reasons.append("ENTRY_BLOCKED:MAX_NEW_POSITIONS_ZERO")
+    elif exposure_evidence.open_position_count >= guard_config.max_new_positions:
+        reasons.append("MAX_NEW_POSITIONS_EXCEEDED")
 
     if guard_config.automatic_retry_forbidden and exposure_evidence.transport_retry_count > 0:
         reasons.append("AUTOMATIC_RETRY_FORBIDDEN")

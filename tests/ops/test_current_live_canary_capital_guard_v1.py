@@ -25,6 +25,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.current_live_canary
     evaluate_canary_capital_guard_flatten_v1,
     load_canary_capital_guard_config_v1,
     offline_proof_guard_config_v1,
+    parse_canary_capital_guard_config_v1,
     record_canary_capital_guard_entry_attempt_v1,
     refuse_canary_capital_guard_entry_unless_pass_v1,
     refuse_canary_capital_guard_flatten_unless_pass_v1,
@@ -360,6 +361,91 @@ def test_ghv_stages_recorded() -> None:
     )
     stages = {row["stage"] for row in bundle["ghv_canary_capital_guard_stages"]}
     assert STAGE_CANARY_CAPITAL_GUARD_DECISION in stages
+
+
+def _minimal_guard_config_payload(**overrides: object) -> dict:
+    base = {
+        "schema_version": "current_live_canary_capital_guard.v1",
+        "live_canary_allowed": False,
+        "owner_caps_ratified": False,
+        "currency": "USDC",
+        "max_new_orders": 1,
+        "max_new_positions": 1,
+    }
+    base.update(overrides)
+    return base
+
+
+def test_max_new_orders_zero_entry_blocked() -> None:
+    cfg = replace(_ratified_offline_config(), max_new_orders=0)
+    ev = evaluate_canary_capital_guard_entry_v1(
+        plan=_sample_plan(max_notional="50"),
+        guard_config=cfg,
+        margin_evidence=_clean_margin(avail_eq_usdc="1000"),
+        exposure_evidence=_clean_exposure(),
+        owner_go=OWNER_GO_EXECUTE,
+        account_scope=REUSED_BINDING_ACCOUNT_SCOPE,
+        session=_session(cfg),
+        observed_leverage="5",
+    )
+    assert "ENTRY_BLOCKED:MAX_NEW_ORDERS_ZERO" in ev.reasons
+    assert ev.guard_allowed is False
+
+
+def test_max_new_positions_zero_entry_blocked() -> None:
+    cfg = replace(_ratified_offline_config(), max_new_positions=0)
+    ev = evaluate_canary_capital_guard_entry_v1(
+        plan=_sample_plan(max_notional="50"),
+        guard_config=cfg,
+        margin_evidence=_clean_margin(avail_eq_usdc="1000"),
+        exposure_evidence=_clean_exposure(),
+        owner_go=OWNER_GO_EXECUTE,
+        account_scope=REUSED_BINDING_ACCOUNT_SCOPE,
+        session=_session(cfg),
+        observed_leverage="5",
+    )
+    assert "ENTRY_BLOCKED:MAX_NEW_POSITIONS_ZERO" in ev.reasons
+    assert ev.guard_allowed is False
+
+
+def test_parse_missing_max_new_orders_cap_blocks() -> None:
+    payload = _minimal_guard_config_payload()
+    del payload["max_new_orders"]
+    with pytest.raises(CanaryCapitalGuardError, match="MISSING_INT_CAP:max_new_orders"):
+        parse_canary_capital_guard_config_v1(payload, config_digest="test")
+
+
+def test_parse_invalid_max_new_orders_cap_blocks() -> None:
+    payload = _minimal_guard_config_payload(max_new_orders=-1)
+    with pytest.raises(CanaryCapitalGuardError, match="NEGATIVE_INT_CAP:max_new_orders"):
+        parse_canary_capital_guard_config_v1(payload, config_digest="test")
+    payload2 = _minimal_guard_config_payload(max_new_orders="not-an-int")
+    with pytest.raises(CanaryCapitalGuardError, match="INVALID_INT_CAP:max_new_orders"):
+        parse_canary_capital_guard_config_v1(payload2, config_digest="test")
+
+
+def test_parse_explicit_zero_preserved_not_coerced_to_one() -> None:
+    payload = _minimal_guard_config_payload(max_new_orders=0, max_new_positions=0)
+    cfg = parse_canary_capital_guard_config_v1(payload, config_digest="test")
+    assert cfg.max_new_orders == 0
+    assert cfg.max_new_positions == 0
+
+
+def test_positive_ratified_int_caps_evaluated_normally() -> None:
+    cfg = replace(_ratified_offline_config(), max_new_orders=2, max_new_positions=2)
+    ev = evaluate_canary_capital_guard_entry_v1(
+        plan=_sample_plan(max_notional="50"),
+        guard_config=cfg,
+        margin_evidence=_clean_margin(avail_eq_usdc="1000"),
+        exposure_evidence=_clean_exposure(),
+        owner_go=OWNER_GO_EXECUTE,
+        account_scope=REUSED_BINDING_ACCOUNT_SCOPE,
+        session=_session(cfg),
+        observed_leverage="5",
+    )
+    assert ev.guard_allowed is True
+    assert "ENTRY_BLOCKED:MAX_NEW_ORDERS_ZERO" not in ev.reasons
+    assert "ENTRY_BLOCKED:MAX_NEW_POSITIONS_ZERO" not in ev.reasons
 
 
 def test_submit_transport_wires_capital_guard_before_post() -> None:
