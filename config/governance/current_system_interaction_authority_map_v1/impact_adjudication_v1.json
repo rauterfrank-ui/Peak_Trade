@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "38d607a43aa38683cb21158aa96703866fb0a2ac",
-  "head_sha": "c277d732eb4cf89317db40236b7acd9ef807aa2e",
+  "head_sha": "3f6e3e70549d217aaf2c21a2aed5f862391ace30",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
@@ -34,6 +34,7 @@
   ],
   "changed_paths_sha256": "3cc781453f79bb1947d5f617aa10707ccdddff36d63644efb8112f963a904de1",
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/ops/current_full_core_capital_guard_v1.json",
     "docs/ops/specs/CURRENT_FULL_CORE_PRE_POST_CAPITAL_GUARD_JOIN_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
