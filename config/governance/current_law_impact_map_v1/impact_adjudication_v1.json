@@ -15,7 +15,7 @@
   "evidence_refs": [
     "config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json"
   ],
-  "head_sha": "PENDING_PR_HEAD",
+  "head_sha": "3fbd41fcb60c0bc819aa735beef41a39841a2705",
   "reason": "PR #7087 Owner-GO baseline re-pin at main; no Law structured source change; diff-bound NO_LAW_IMPACT; AUTHORITY=NONE.",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT"
