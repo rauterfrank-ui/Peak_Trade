@@ -34,7 +34,7 @@
   "evidence_refs": [
     "tests/ops/test_current_live_canary_capital_guard_final_reproof_v1.py"
   ],
-  "head_sha": "6bce96b79a77820d47d5d70d142b934597231f32",
+  "head_sha": "1e3e1e3e00016de2d020e54ced468652543f799b",
   "reason": "PR #7091 Live Canary capital guard; diff-bound NO_LAW_IMPACT; AUTHORITY=NONE.",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT"
