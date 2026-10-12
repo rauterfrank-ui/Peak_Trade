@@ -24,6 +24,6 @@
   ],
   "head_sha": "PENDING_CHANGE",
   "reason": "PR #7090 GHV forensic observability + GGE scale reproof tests only; diff-bound NO_LAW_IMPACT; no law map structured source change; AUTHORITY=NONE.",
-  "selector_used_as_map_impact_authority": false,
+  "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT"
 }
