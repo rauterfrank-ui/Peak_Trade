@@ -883,5 +883,5 @@ changes:
   to: PENDING_CHANGE
   type: RUNTIME_WIRING
   epistemic_status: FORENSIC_RAW
-  evidence: config/governance/current_bounded_runtime_budget_transparency_v1_impact_adjudication_v1.json
+  evidence: docs/ops/specs/CURRENT_PRODUCTIVE_CONTINUOUS_OBSERVATION_BUDGET_V1.md
   notes: 'CURRENT_BOUNDED_RUNTIME_BUDGET_TRANSPARENCY_V1: additive PRE_EXTERNAL report monotonic duration fields + budget spec docs; S6 max_run_duration enforcement unchanged; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
