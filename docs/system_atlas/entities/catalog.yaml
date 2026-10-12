@@ -4205,6 +4205,21 @@ entities:
   - tests/ops/test_ghv_pre_external_whole_cycle_causal_observability_v1.py
   - tests/ops/test_ghv_system_wide_canary_surface_discovery_v1.py
   notes: Append-only observation capture at composition-root predicate seams; whole-cycle state graph and provenance; capture failures do not change decisions; RECORDER_AUTHORITY=NONE; POST_COUNT=0.
+- id: RUNTIME_COMPONENT:ghv_current_bounded_natural_evidence_forensic_adapter_v1
+  # atlas_entity_review: PR #7089 additive GHV forensic adapter; consumes canonical PRE_EXTERNAL evidence only; GHV_AUTHORITY=NONE; no trading/POST semantic change; POST_COUNT=0.
+  kind: RUNTIME_COMPONENT
+  name: GHV current bounded Natural Evidence forensic adapter v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_NONCANONICAL
+  modified_by: CHANGE:ghv_current_bounded_natural_evidence_integration_v1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/ghv_current_bounded_natural_evidence_forensic_adapter_v1.py
+  - scripts/ops/run_ghv_current_bounded_natural_evidence_integration_v1.py
+  evidence_sources:
+  - docs/ops/specs/GHV_CURRENT_BOUNDED_NATURAL_EVIDENCE_INTEGRATION_V1.md
+  - tests/ops/test_ghv_current_bounded_natural_evidence_integration_v1.py
+  notes: Offline-first combined CURRENT+GHV report builder; optional bounded PRE_EXTERNAL launcher orchestration with explicit Owner-GO ack; reuses ghv_pre_external_whole_cycle causal materialization; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:ghv_pre_external_whole_cycle_causal_observability_v1
   # atlas_entity_review: PR7017 adds dynamic market/selection evidence contract artifact persistence; AUTHORITY=NONE.
   kind: RUNTIME_COMPONENT

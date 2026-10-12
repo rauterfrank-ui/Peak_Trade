@@ -885,3 +885,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: docs/ops/specs/CURRENT_PRODUCTIVE_CONTINUOUS_OBSERVATION_BUDGET_V1.md
   notes: 'CURRENT_BOUNDED_RUNTIME_BUDGET_TRANSPARENCY_V1: additive PRE_EXTERNAL report monotonic duration fields + budget spec docs; S6 max_run_duration enforcement unchanged; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:ghv_current_bounded_natural_evidence_integration_v1
+  from: 82edee5d68843d61946eb4bd93c1d15d30fe8dac
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_ghv_current_bounded_natural_evidence_integration_v1.py
+  notes: 'GHV_CURRENT_BOUNDED_NATURAL_EVIDENCE_INTEGRATION_V1: offline-first GHV forensic adapter + combined report over canonical PRE_EXTERNAL evidence; optional bounded CURRENT launcher orchestration; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
