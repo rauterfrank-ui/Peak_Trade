@@ -58,7 +58,7 @@
     "tests/ops/test_current_live_canary_capital_guard_final_reproof_v1.py",
     "tests/ops/test_current_live_canary_capital_guard_v1.py"
   ],
-  "head_sha": "b7a0a512020862058975684f2c9e58aa8323af9a",
+  "head_sha": "6c9688642a376401d6cef45f266a0a6d1b63d144",
   "reason": "PR #7091 \u00a711.13.5 Live Canary capital guard + atomic one-shot + Atlas provenance (UPDATED); fail-closed; caps UNRATIFIED; no CSIA source_v1 change; AUTHORITY=NONE.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
