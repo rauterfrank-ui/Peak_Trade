@@ -235,6 +235,7 @@ class CurrentProductiveGovernedContinuousCycleRunResultV1:
     next_required_owner_decision: str
     lock_released: str
     ledger_state: str
+    sequencer_elapsed_monotonic_seconds: float = 0.0
     extra: dict[str, str] = field(default_factory=dict)
 
 
@@ -656,6 +657,7 @@ def run_current_productive_governed_continuous_cycle_run_v1(
             first_genuine_blocker=first_blocker,
             next_required_owner_decision=next_owner,
             ledger_state=ledger_state,
+            sequencer_elapsed_monotonic_seconds=_elapsed(),
         )
 
     try:
@@ -946,6 +948,7 @@ def _result(
     first_genuine_blocker: str,
     next_required_owner_decision: str,
     ledger_state: str,
+    sequencer_elapsed_monotonic_seconds: float = 0.0,
 ) -> CurrentProductiveGovernedContinuousCycleRunResultV1:
     consumed = "CONSUMED_THIS_RUN_ONLY" if s5_invoke_count > 0 else "DEFINED_NOT_CONSUMED"
     return CurrentProductiveGovernedContinuousCycleRunResultV1(
@@ -968,6 +971,7 @@ def _result(
         next_required_owner_decision=next_required_owner_decision,
         lock_released=_token(True),
         ledger_state=ledger_state,
+        sequencer_elapsed_monotonic_seconds=float(sequencer_elapsed_monotonic_seconds),
         extra={
             "STEP_29Q_STATUS": STEP_29Q_PLAN_ONLY,
             "DIRECT_V5": DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT,

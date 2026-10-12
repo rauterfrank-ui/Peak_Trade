@@ -587,6 +587,8 @@ def test_max_duration_and_stall_bounds_stop(tmp_path: Path) -> None:
     )
     assert duration.disposition == DISPOSITION_MAX_DURATION
     assert duration.s5_invoke_count == 0
+    assert duration.sequencer_elapsed_monotonic_seconds >= 3.0
+    assert duration.sequencer_elapsed_monotonic_seconds <= 3.0 + 1e-6
     stall = _run(
         tmp_path,
         evidence_root=tmp_path / "stall",

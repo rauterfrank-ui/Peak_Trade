@@ -3,7 +3,7 @@ docs_token: DOCS_TOKEN_CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERN
 status: active
 scope: Policy-governed persistent Natural-ENTER continuous run with public readonly Fresh-C1 GET
 workpackage_id: CURRENT_PRODUCTIVE_PERSISTENT_NATURAL_ENTER_POLICY_GOVERNED_LIVE_C1_CONTINUOUS_RUN_V1
-last_updated: 2026-10-06
+last_updated: 2026-10-12
 ---
 
 # Policy-governed persistent Natural-ENTER live Fresh-C1 continuous run V1
@@ -39,6 +39,11 @@ or `CONTINUOUS_RUN_AUTHORIZED=true` module pin.
 
 `scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py`
 
+Bounded observation flags (`--max-cycles`, `--max-run-duration-seconds`) apply to the
+**S6 sequencer only**; see
+`docs/ops/specs/CURRENT_PRODUCTIVE_CONTINUOUS_OBSERVATION_BUDGET_V1.md` for
+`TOTAL_WALLCLOCK_SECONDS` vs `SEQUENCER_ELAPSED_SECONDS` report fields.
+
 Run-scoped evidence under `runtime&#47;current_productive&#47;` (untracked). Cold-lane bootstrap
 uses Cap24-bound `native_id` for the first public Fresh-C1 GET before sidestate cursor
 persist; S6 then waits for strictly newer finalized 1m bars. Auth-free scope injects
@@ -47,5 +52,6 @@ flat occupancy payloads (no credential positions GET).
 ## Verification
 
 - `tests/ops/test_current_productive_persistent_natural_enter_policy_governed_live_c1_v1.py`
+- `tests/ops/full_core_live_path_composition_root_v1/test_pre_external_convergence_runtime_duration_transparency_v1.py`
 - `src/ops/full_core_live_path_composition_root_v1/current_productive_bounded_continuous_run_owner_go_wiring_v1.py`
 - `src/ops/full_core_live_path_composition_root_v1/current_productive_s6_live_fresh_c1_continuous_observation_source_v1.py`

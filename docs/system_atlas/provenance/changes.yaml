@@ -878,3 +878,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: config/governance/current_productive_bounded_continuous_run_and_fresh_c1_get_owner_go_v1_decision.json
   notes: 'PR #7087: Owner-GO baseline re-pin dd4c23->8da476 after reviewed master_v2 position-truth offline replay binding; clears immutable-surface lineage drift gate for bounded GET-only PRE_EXTERNAL; governance/test/map adjudication/Atlas only; POST/credential/permit flags unchanged; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:current_bounded_runtime_budget_transparency_v1
+  from: 693a48ceb7b8f503d7294c54bfc7f5faaab1ecfe
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: docs/ops/specs/CURRENT_PRODUCTIVE_CONTINUOUS_OBSERVATION_BUDGET_V1.md
+  notes: 'CURRENT_BOUNDED_RUNTIME_BUDGET_TRANSPARENCY_V1: additive PRE_EXTERNAL report monotonic duration fields + budget spec docs; S6 max_run_duration enforcement unchanged; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
