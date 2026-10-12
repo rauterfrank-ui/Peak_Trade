@@ -6,6 +6,13 @@
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/ops/current_live_canary_capital_guard_v1.json",
     "docs/ops/specs/CURRENT_LIVE_CANARY_CAPITAL_GUARD_V1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "evidence/ops/current_live_canary_atomic_one_shot_and_crash_recovery_v1/IMPACT_AND_OFFLINE_PROOF_MANIFEST_V1.json",
     "evidence/ops/current_live_canary_capital_guard_final_reproof_v1/IMPACT_AND_OFFLINE_PROOF_MANIFEST_V1.json",
     "evidence/ops/current_live_canary_capital_guard_implementation_v1/IMPACT_AND_OFFLINE_PROOF_MANIFEST_V1.json",
@@ -21,10 +28,17 @@
     "tests/ops/test_current_live_canary_capital_guard_hardening_v1.py",
     "tests/ops/test_current_live_canary_capital_guard_v1.py"
   ],
-  "changed_paths_sha256": "f1edafe2fe8fe26e12babf5fb762970dbfa16840cfc3be8149dd65da2d94b086",
+  "changed_paths_sha256": "c6a17171914ec93624680cebcd6fe28c030007268291a5be76bf39a8ca5416cc",
   "covered_candidate_paths": [
     "config/ops/current_live_canary_capital_guard_v1.json",
     "docs/ops/specs/CURRENT_LIVE_CANARY_CAPITAL_GUARD_V1.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
     "evidence/ops/current_live_canary_atomic_one_shot_and_crash_recovery_v1/IMPACT_AND_OFFLINE_PROOF_MANIFEST_V1.json",
     "evidence/ops/current_live_canary_capital_guard_final_reproof_v1/IMPACT_AND_OFFLINE_PROOF_MANIFEST_V1.json",
     "evidence/ops/current_live_canary_capital_guard_implementation_v1/IMPACT_AND_OFFLINE_PROOF_MANIFEST_V1.json",
@@ -41,11 +55,11 @@
     "tests/ops/test_current_live_canary_capital_guard_v1.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_current_live_canary_capital_guard_v1.py",
-    "tests/ops/test_current_live_canary_capital_guard_final_reproof_v1.py"
+    "tests/ops/test_current_live_canary_capital_guard_final_reproof_v1.py",
+    "tests/ops/test_current_live_canary_capital_guard_v1.py"
   ],
-  "head_sha": "fb051e0712aef61bfabbe0480db5b5eade21aeb0",
-  "reason": "PR #7091 \u00a711.13.5 Live Canary capital guard + atomic one-shot (fail-closed, no cap ratification, no live POST). Bounded to canary module surfaces; no CSIA source_v1 structured map change; AUTHORITY=NONE.",
+  "head_sha": "b7a0a512020862058975684f2c9e58aa8323af9a",
+  "reason": "PR #7091 \u00a711.13.5 Live Canary capital guard + atomic one-shot + Atlas provenance (UPDATED); fail-closed; caps UNRATIFIED; no CSIA source_v1 change; AUTHORITY=NONE.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
