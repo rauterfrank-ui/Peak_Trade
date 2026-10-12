@@ -1,10 +1,11 @@
 {
   "authority_effect": "NONE",
   "base_sha": "38d607a43aa38683cb21158aa96703866fb0a2ac",
-  "head_sha": "198ca0f3e00b2339ecd9bd6080167647d4dc55ff",
+  "head_sha": "1aa94219eea27dca40a7f77aaa5c5a36afb8bf75",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/ops/current_full_core_capital_guard_v1.json",
     "docs/ops/specs/CURRENT_FULL_CORE_PRE_POST_CAPITAL_GUARD_JOIN_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
@@ -31,8 +32,10 @@
     "tests/ops/test_full_core_pre_post_capital_guard_binding_v1.py",
     "tests/ops/test_full_core_pre_post_capital_guard_join_v1.py"
   ],
-  "changed_paths_sha256": "032fd619471be997afc0080e7d9f7699fc33509783435a2dee6ddf1110fe9c79",
+  "changed_paths_sha256": "3cc781453f79bb1947d5f617aa10707ccdddff36d63644efb8112f963a904de1",
   "covered_candidate_paths": [
+    "config/ops/current_full_core_capital_guard_v1.json",
+    "docs/ops/specs/CURRENT_FULL_CORE_PRE_POST_CAPITAL_GUARD_JOIN_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
@@ -40,6 +43,7 @@
     "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
+    "evidence/ops/ghv_current_full_core_binding_and_pre_external_convergence_v1/GHV_CURRENT_FULL_CORE_BINDING_FORENSIC_REPORT_V1.json",
     "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
