@@ -25,6 +25,7 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconcil
     LocalSubmitOutcome,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_post_response_to_ack_mapper_v1 import (
+    FullCorePostSubmitJoinResultV1,
     join_full_core_post_result_to_lifecycle_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
@@ -252,6 +253,68 @@ def test_provider_xor_fail_closed() -> None:
             **_join_kwargs(),
         )
     assert "EXACTLY_ONE_RECONCILIATION_PROVIDER_REQUIRED" in str(exc.value)
+
+
+def _unknown_join_not_submitted() -> FullCorePostSubmitJoinResultV1:
+    """UNKNOWN lifecycle row with no POST attempt → NOT_SUBMITTED local outcome."""
+    base = _join_from_post(None, err="socket.timeout")
+    return FullCorePostSubmitJoinResultV1(
+        post_attempted=False,
+        typed_outcome="UNKNOWN",
+        lifecycle_state=base.lifecycle_state,
+        recon_class=base.recon_class,
+        restart_blocked=base.restart_blocked,
+        fill_observed=base.fill_observed,
+        resubmit_allowed=False,
+        blind_retry_forbidden=True,
+        exchange_query_before_retry_required=base.exchange_query_before_retry_required,
+        unknown_requires_exchange_query=base.unknown_requires_exchange_query,
+        venue_order_id="",
+        client_order_id=SENT,
+        reason=base.reason,
+        http_status=0,
+        ack_is_not_fill=base.ack_is_not_fill,
+        http_success_is_not_ack=base.http_success_is_not_ack,
+        mapper_owner=base.mapper_owner,
+        lifecycle_owner=base.lifecycle_owner,
+        section_11_14_promoted=base.section_11_14_promoted,
+        real_post_count=0,
+    )
+
+
+def test_ghv_reverse_join_rejects_unknown_not_submitted_terminal_without_evidence() -> None:
+    post_join = _unknown_join_not_submitted()
+    assert (
+        local_submit_outcome_from_post_submit_join_v1(post_join) is LocalSubmitOutcome.NOT_SUBMITTED
+    )
+    forged = FullCoreExchangeReconciliationDecisionV1(
+        outcome=OUTCOME_CONFIRMED_FILLED,
+        reasons=(),
+        exposure_retained=True,
+        reconciliation_complete=True,
+        recommended_atomic_state="TERMINAL_RECONCILED",
+        execution_authority_effect="NONE",
+        order_state="filled",
+        cumulative_filled_qty="10",
+        remaining_qty="0",
+        venue_ord_id=None,
+    )
+    assert (
+        verify_ghv_reverse_join_v1(
+            join=post_join,
+            local_submit_outcome=LocalSubmitOutcome.NOT_SUBMITTED,
+            decision=forged,
+        )
+        is False
+    )
+    assert (
+        verify_ghv_forward_join_v1(
+            join=post_join,
+            local_submit_outcome=LocalSubmitOutcome.NOT_SUBMITTED,
+            decision=forged,
+        )
+        is False
+    )
 
 
 def test_ghv_join_rejects_unknown_terminal_without_fsm_exchange_evidence() -> None:

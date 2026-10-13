@@ -196,10 +196,8 @@ def verify_ghv_forward_join_v1(
         and local_submit_outcome is not LocalSubmitOutcome.TRANSPORT_ACK
     ):
         return False
-    if decision.recommended_atomic_state == "TERMINAL_RECONCILED":
-        if join.typed_outcome == UNKNOWN and decision.outcome in _TERMINAL_CONFIRMED_OUTCOMES:
-            if not reconciliation_fsm_identity_bound_exchange_evidence_v1(decision):
-                return False
+    if join.typed_outcome == UNKNOWN and decision.outcome in _TERMINAL_CONFIRMED_OUTCOMES:
+        return reconciliation_fsm_identity_bound_exchange_evidence_v1(decision)
     return True
 
 
@@ -212,10 +210,7 @@ def verify_ghv_reverse_join_v1(
     """Reverse: reconciliation must not silently collapse UNKNOWN submit into proven terminal."""
 
     if join.typed_outcome == UNKNOWN:
-        if decision.outcome in _TERMINAL_CONFIRMED_OUTCOMES and local_submit_outcome in {
-            LocalSubmitOutcome.TRANSPORT_TIMEOUT,
-            LocalSubmitOutcome.TRANSPORT_UNKNOWN,
-        }:
+        if decision.outcome in _TERMINAL_CONFIRMED_OUTCOMES:
             return reconciliation_fsm_identity_bound_exchange_evidence_v1(decision)
         if decision.outcome == OUTCOME_HALTED_UNRESOLVED:
             return True
