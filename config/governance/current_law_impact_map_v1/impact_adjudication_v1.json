@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "3a3f43a46bc6a2a95d4d106adcd212baac8cf2c4",
-  "head_sha": "25277f692b85863bfd678104f89a0280d7c01d7a",
+  "head_sha": "ead0740532e96ab585519db86ce98776e4d0ad54",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -42,7 +42,7 @@
   "evidence_refs": [
     "tests/ops/test_full_core_exchange_reconciliation_v1.py"
   ],
-  "reason": "GHV Full-Core offline exchange reconciliation; diff-bound NO_LAW_IMPACT; no live POST/private GET; AUTHORITY=NONE.",
+  "reason": "Order-row conflict remediation; diff-bound NO_LAW_IMPACT; AUTHORITY=NONE.",
   "verdict": "NO_LAW_IMPACT",
   "selector_used_as_law_impact_authority": false
 }
