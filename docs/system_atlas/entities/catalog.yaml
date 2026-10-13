@@ -1542,6 +1542,20 @@ entities:
   - docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md
   - tests/ops/test_full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py
   notes: Explicit offline Cycle Host to lifecycle orchestration join; default DISABLED; ContextVar invocation only; no import-time GET/POST; ATLAS_AUTHORITY=NONE.
+- id: RUNTIME_COMPONENT:full_core_post_completed_hook_evidence_v1
+  kind: RUNTIME_COMPONENT
+  name: Full-Core post-COMPLETED hook evidence durability v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+  modified_by: CHANGE:pr_ghv_post_completed_evidence_durability_v1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/full_core_post_completed_hook_evidence_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py
+  evidence_sources:
+  - docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md
+  - tests/ops/test_full_core_post_completed_hook_evidence_durability_v1.py
+  notes: Durable ledger supplement + closure claims for post-COMPLETED lifecycle hook; COMPLETED≠reconciliation success; crash-window PENDING fail-closed; observational only; no POST/GET; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:ghv_current_okx_productive_read_only_reconciliation_get_validation_v1
   kind: RUNTIME_COMPONENT
   name: GHV OKX productive read-only reconciliation GET validation v1

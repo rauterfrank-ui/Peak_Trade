@@ -90,6 +90,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:full_core_exchange_reconciliation_integration_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:full_core_exchange_reconciliation_integration_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:full_core_orchestrated_post_submit_lifecycle_reconciliation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:full_core_orchestrated_post_submit_lifecycle_reconciliation_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:full_core_post_completed_hook_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:full_core_post_completed_hook_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:full_core_post_submit_exchange_reconciliation_lifecycle_join_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:full_core_post_submit_exchange_reconciliation_lifecycle_join_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:full_core_pre_post_capital_guard_join_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:full_core_pre_post_capital_guard_join_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:gfu_eligibility | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:gfu_eligibility | STATUS=OPEN (not proven) |  |

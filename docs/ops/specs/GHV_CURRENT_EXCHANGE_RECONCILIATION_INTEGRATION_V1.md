@@ -46,3 +46,13 @@ OKX adapter records `identity_conflicts` on the snapshot when relevant contradic
 venue identity is observed (same `clOrdId`, mismatched `instId`/`ordId`). Adjudication
 fail-closes before terminal reconciliation; contradictory evidence must not be silently
 dropped.
+
+## Post-COMPLETED hook evidence (Cycle Host)
+
+S5 `COMPLETED` ledger state means the governed cycle reached `PRE_EXTERNAL_EFFECT` or a
+valid non-trade terminal — **not** post-submit reconciliation success. Optional lifecycle
+wiring observations are persisted via append-style supplement on
+`governed_cycle_orchestrator_ledger_v1.json` (`POST_COMPLETED_HOOK_EVIDENCE_V1`).
+`POST_SUBMIT_RECONCILIATION_SUCCEEDED=false` is always recorded when the supplement is
+written. Atomic One-Shot durable state remains authoritative for submission attempts;
+lifecycle fields are observational only and do not authorize POST.

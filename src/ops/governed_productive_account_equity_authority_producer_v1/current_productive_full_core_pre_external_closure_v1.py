@@ -938,15 +938,11 @@ def execute_current_productive_full_core_pre_external_closure_v1(
         claims["FULL_CORE_CAPITAL_GUARD_BINDING_DIGEST"] = capital_guard_binding_digest
         claims["FULL_CORE_CAPITAL_GUARD_OBSERVE_STATUS"] = capital_guard_observe_status
         cycle_extra = getattr(cycle, "extra", None) or {}
-        for join_claim_key in (
-            "FULL_CORE_CAPITAL_GUARD_JOIN_MODE",
-            "FULL_CORE_CAPITAL_GUARD_BLOCKED",
-            "FULL_CORE_CAPITAL_GUARD_POST_COUNT",
-            "FULL_CORE_CAPITAL_GUARD_BINDING_DIGEST",
-            "FULL_CORE_CAPITAL_GUARD_REASONS",
-        ):
-            if join_claim_key in cycle_extra:
-                claims[join_claim_key] = str(cycle_extra[join_claim_key])
+        from src.ops.full_core_live_path_composition_root_v1.full_core_post_completed_hook_evidence_v1 import (
+            merge_allowlisted_post_completed_hook_claims_v1,
+        )
+
+        merge_allowlisted_post_completed_hook_claims_v1(claims, cycle_extra)
 
         _assert_no_secrets(claims)
         _persist_json(path=store / "claims.json", payload=claims)
