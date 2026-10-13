@@ -15,6 +15,7 @@ from typing import Any, Mapping, Sequence
 
 CONTRACT_ID = "FULL_CORE_EXCHANGE_RECONCILIATION_V1"
 RECONCILIATION_PROVIDER_OFFLINE_STUB = "OFFLINE_STUB"
+RECONCILIATION_PROVIDER_OKX_EEA_READ_ONLY_GET = "OKX_EEA_READ_ONLY_GET_V1"
 RECONCILIATION_PROVIDER_PRODUCTION = "PRODUCTION_DISABLED"
 
 OUTCOME_CONFIRMED_OPEN = "CONFIRMED_OPEN"
@@ -182,6 +183,7 @@ class FullCoreExchangeReconciliationSnapshotV1:
     snapshot_freshness_proven: bool
     transport_failures: tuple[str, ...]
     api_errors: tuple[str, ...]
+    identity_conflicts: tuple[str, ...] = ()
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -194,6 +196,7 @@ class FullCoreExchangeReconciliationSnapshotV1:
             "snapshot_freshness_proven": self.snapshot_freshness_proven,
             "transport_failures": list(self.transport_failures),
             "api_errors": list(self.api_errors),
+            "identity_conflicts": list(self.identity_conflicts),
             "contract_id": CONTRACT_ID,
         }
 
@@ -376,6 +379,20 @@ def adjudicate_full_core_exchange_reconciliation_v1(
     if identity.identity_digest() != snapshot.identity_digest:
         return _halt("IDENTITY_DIGEST_MISMATCH")
 
+    if snapshot.identity_conflicts:
+        conflicts = snapshot.identity_conflicts
+        if any("CONFLICTING_ORDID" in token for token in conflicts):
+            return _halt(REASON_CONFLICTING_ORDID)
+        if any("CLORDID_IDENTITY_MISMATCH" in token for token in conflicts):
+            return _halt(REASON_WRONG_CLORDID)
+        if any("INSTRUMENT_IDENTITY_MISMATCH" in token for token in conflicts):
+            return _halt(REASON_INSTRUMENT_MISMATCH)
+        if any("ACCOUNT_IDENTITY_MISMATCH" in token for token in conflicts):
+            return _halt(REASON_ACCOUNT_MISMATCH)
+        if any("ENVIRONMENT_IDENTITY_MISMATCH" in token for token in conflicts):
+            return _halt(REASON_ENV_MISMATCH)
+        return _halt(REASON_INSTRUMENT_MISMATCH)
+
     if snapshot.api_errors:
         if any("rate" in e.lower() for e in snapshot.api_errors):
             return _halt(REASON_RATE_LIMIT)
@@ -551,6 +568,7 @@ __all__ = [
     "OUTCOME_CONFIRMED_REJECTED",
     "OUTCOME_HALTED_UNRESOLVED",
     "RECONCILIATION_PROVIDER_OFFLINE_STUB",
+    "RECONCILIATION_PROVIDER_OKX_EEA_READ_ONLY_GET",
     "RECONCILIATION_PROVIDER_PRODUCTION",
     "REASON_CONFLICTING_ORDER_STATE",
     "adjudicate_full_core_exchange_reconciliation_v1",

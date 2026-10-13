@@ -16,15 +16,25 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_capital_guard_ato
     atomic_mark_terminal_reconciled_v1,
     load_full_core_atomic_authorization_state_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    FullCoreFreshPretradeGetTransportV1,
+)
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_offline_provider_v1 import (
     OfflineExchangeFixtureV1,
     fetch_offline_reconciliation_snapshot_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_okx_read_only_provider_v1 import (
+    SIMULATION_OKX_TRANSPORT_INJECTED,
+    OkxReadOnlyReconciliationQueryOptionsV1,
+    fetch_okx_read_only_reconciliation_snapshot_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
     OUTCOME_HALTED_UNRESOLVED,
     RECONCILIATION_PROVIDER_OFFLINE_STUB,
+    RECONCILIATION_PROVIDER_OKX_EEA_READ_ONLY_GET,
     FullCoreExchangeReconciliationDecisionV1,
     FullCoreExchangeReconciliationIdentityV1,
+    FullCoreExchangeReconciliationSnapshotV1,
     LocalSubmitOutcome,
     adjudicate_full_core_exchange_reconciliation_v1,
 )
@@ -133,17 +143,18 @@ def _apply_atomic_recommendation_v1(
     return rec
 
 
-def run_full_core_offline_exchange_reconciliation_v1(
+def _run_full_core_exchange_reconciliation_pipeline_v1(
     *,
     identity: FullCoreExchangeReconciliationIdentityV1,
     binding: FullCoreAuthorizationBindingV1,
-    fixture: OfflineExchangeFixtureV1,
+    snapshot: FullCoreExchangeReconciliationSnapshotV1,
     local_submit_outcome: LocalSubmitOutcome,
+    provider_label: str,
+    simulation_mode: str,
     state_dir: Path | None = None,
     apply_durable_state: bool = False,
     proven_never_submitted: bool = False,
 ) -> FullCoreOfflineReconciliationRunResultV1:
-    """Offline reconciliation cycle: snapshot → adjudicate → optional durable update → GHV."""
     stages: list[dict[str, Any]] = []
     digest = identity.identity_digest()
     session = binding.session_id
@@ -156,12 +167,12 @@ def run_full_core_offline_exchange_reconciliation_v1(
             payload={
                 "local_submit_outcome": local_submit_outcome.value,
                 "post_count": POST_COUNT,
-                "simulation_mode": "OFFLINE_SIMULATED",
+                "simulation_mode": simulation_mode,
             },
+            simulation_mode=simulation_mode,
         )
     )
 
-    snapshot = fetch_offline_reconciliation_snapshot_v1(identity=identity, fixture=fixture)
     snap_dict = snapshot.to_dict()
     stages.append(
         record_full_core_exchange_reconciliation_ghv_stage_v1(
@@ -169,6 +180,7 @@ def run_full_core_offline_exchange_reconciliation_v1(
             session_id=session,
             identity_digest=digest,
             payload=snap_dict,
+            simulation_mode=simulation_mode,
         )
     )
 
@@ -184,6 +196,7 @@ def run_full_core_offline_exchange_reconciliation_v1(
             session_id=session,
             identity_digest=digest,
             payload=decision.to_dict(),
+            simulation_mode=simulation_mode,
         )
     )
 
@@ -201,6 +214,7 @@ def run_full_core_offline_exchange_reconciliation_v1(
                 session_id=session,
                 identity_digest=digest,
                 payload={"atomic_state_after": atomic_after},
+                simulation_mode=simulation_mode,
             )
         )
 
@@ -215,7 +229,64 @@ def run_full_core_offline_exchange_reconciliation_v1(
         ghv_bundle=ghv,
         atomic_state_after=atomic_after,
         post_count=POST_COUNT,
-        provider=RECONCILIATION_PROVIDER_OFFLINE_STUB,
+        provider=provider_label,
+    )
+
+
+def run_full_core_offline_exchange_reconciliation_v1(
+    *,
+    identity: FullCoreExchangeReconciliationIdentityV1,
+    binding: FullCoreAuthorizationBindingV1,
+    fixture: OfflineExchangeFixtureV1,
+    local_submit_outcome: LocalSubmitOutcome,
+    state_dir: Path | None = None,
+    apply_durable_state: bool = False,
+    proven_never_submitted: bool = False,
+) -> FullCoreOfflineReconciliationRunResultV1:
+    """Offline reconciliation cycle: snapshot → adjudicate → optional durable update → GHV."""
+    snapshot = fetch_offline_reconciliation_snapshot_v1(identity=identity, fixture=fixture)
+    return _run_full_core_exchange_reconciliation_pipeline_v1(
+        identity=identity,
+        binding=binding,
+        snapshot=snapshot,
+        local_submit_outcome=local_submit_outcome,
+        provider_label=RECONCILIATION_PROVIDER_OFFLINE_STUB,
+        simulation_mode="OFFLINE_SIMULATED",
+        state_dir=state_dir,
+        apply_durable_state=apply_durable_state,
+        proven_never_submitted=proven_never_submitted,
+    )
+
+
+def run_full_core_okx_injected_exchange_reconciliation_v1(
+    *,
+    identity: FullCoreExchangeReconciliationIdentityV1,
+    binding: FullCoreAuthorizationBindingV1,
+    read_only_get_transport: FullCoreFreshPretradeGetTransportV1,
+    pretrade_decision_id: str,
+    local_submit_outcome: LocalSubmitOutcome,
+    query_options: OkxReadOnlyReconciliationQueryOptionsV1 | None = None,
+    state_dir: Path | None = None,
+    apply_durable_state: bool = False,
+    proven_never_submitted: bool = False,
+) -> FullCoreOfflineReconciliationRunResultV1:
+    """OKX adapter path: injected read-only GET transport only (no production wiring)."""
+    snapshot = fetch_okx_read_only_reconciliation_snapshot_v1(
+        identity=identity,
+        read_only_get_transport=read_only_get_transport,
+        pretrade_decision_id=pretrade_decision_id,
+        options=query_options,
+    )
+    return _run_full_core_exchange_reconciliation_pipeline_v1(
+        identity=identity,
+        binding=binding,
+        snapshot=snapshot,
+        local_submit_outcome=local_submit_outcome,
+        provider_label=RECONCILIATION_PROVIDER_OKX_EEA_READ_ONLY_GET,
+        simulation_mode=SIMULATION_OKX_TRANSPORT_INJECTED,
+        state_dir=state_dir,
+        apply_durable_state=apply_durable_state,
+        proven_never_submitted=proven_never_submitted,
     )
 
 
@@ -228,4 +299,5 @@ __all__ = [
     "FullCoreOfflineReconciliationRunResultV1",
     "identity_from_full_core_binding_v1",
     "run_full_core_offline_exchange_reconciliation_v1",
+    "run_full_core_okx_injected_exchange_reconciliation_v1",
 ]

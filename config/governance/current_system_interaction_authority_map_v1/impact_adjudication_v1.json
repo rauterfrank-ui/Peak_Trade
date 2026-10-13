@@ -1,48 +1,43 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "3a3f43a46bc6a2a95d4d106adcd212baac8cf2c4",
-  "head_sha": "94475eb8c7725146dd1be1477d6afbc47f84418e",
+  "base_sha": "cccd5bbd3f7eb7e89722b8b8133740325ec03674",
+  "head_sha": "353ed13e12437943d77436c1887909caa1bb642a",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_integration_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_offline_provider_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/ghv_full_core_exchange_reconciliation_observability_v1.py",
-    "tests/ops/test_full_core_exchange_reconciliation_v1.py"
+    "tests/ops/test_full_core_exchange_reconciliation_okx_read_only_provider_v1.py"
   ],
-  "changed_paths_sha256": "a52749428fcc1f3c5f40a9bc3190edcce95c5d6f1b64b56fbe37b77943c4bdfc",
+  "changed_paths_sha256": "8fd294fe1a621e4e1b21b2fbe39d3080f47ad5c6ebfb32805a619b2a40e8177b",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_integration_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_offline_provider_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_okx_read_only_provider_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/ghv_full_core_exchange_reconciliation_observability_v1.py",
-    "tests/ops/test_full_core_exchange_reconciliation_v1.py"
+    "tests/ops/test_full_core_exchange_reconciliation_okx_read_only_provider_v1.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_full_core_exchange_reconciliation_v1.py"
+    "tests/ops/test_full_core_exchange_reconciliation_v1.py",
+    "tests/ops/test_full_core_exchange_reconciliation_okx_read_only_provider_v1.py"
   ],
-  "reason": "Order-row conflict remediation on GHV exchange reconciliation; NO_MAP_IMPACT; AUTHORITY=NONE.",
+  "reason": "OKX offline reconciliation adapter + identity_conflicts hardening; NO_MAP_IMPACT; AUTHORITY=NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }

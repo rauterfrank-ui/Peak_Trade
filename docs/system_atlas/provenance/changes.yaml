@@ -920,3 +920,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_full_core_exchange_reconciliation_v1.py
   notes: 'GHV Full-Core offline exchange reconciliation after submit boundary; 40-scenario matrix; OFFLINE_STUB only; PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED; no private GET; no POST; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:ghv_okx_offline_reconciliation_provider_v1
+  from: cccd5bbd3f7eb7e89722b8b8133740325ec03674
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_full_core_exchange_reconciliation_okx_read_only_provider_v1.py
+  notes: 'OKX read-only reconciliation snapshot adapter (injected transport only); identity_conflicts hardening; 62-scenario offline reproof; no productive lifecycle join; PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED; no private GET; no POST; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

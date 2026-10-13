@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- GHV Full-Core offline exchange reconciliation integration (OFFLINE_STUB, 40-scenario proofs); no productive OKX provider wiring; no private GET; no POST; not wired into productive orchestrator; GHV_AUTHORITY=NONE; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+- GHV Full-Core exchange reconciliation (OFFLINE_STUB + OKX injected adapter, 62-scenario proofs); identity_conflicts fail-closed; no productive OKX network wiring; no private GET; no POST; not wired into productive orchestrator; GHV_AUTHORITY=NONE; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
 - introduced_by=CHANGE:ghv_current_exchange_reconciliation_integration_v1
-- modified_by=CHANGE:ghv_current_exchange_reconciliation_integration_v1
+- modified_by=CHANGE:ghv_okx_offline_reconciliation_provider_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
