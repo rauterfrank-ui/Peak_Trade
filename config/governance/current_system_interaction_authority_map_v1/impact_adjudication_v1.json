@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "3a3f43a46bc6a2a95d4d106adcd212baac8cf2c4",
-  "head_sha": "301df33c93c740fdfb7483575fe220ea2b8edb43",
+  "head_sha": "86a3cdba32a98e040f34c8e44a23eb17b477b4ef",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
