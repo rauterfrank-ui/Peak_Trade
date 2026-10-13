@@ -454,8 +454,7 @@ def test_review_baseline_sha_is_manifest_not_runtime_origin() -> None:
         (REPO_ROOT / PHASE7_ADVERSARIAL_REVIEW_MANIFEST_RELPATH).read_text(encoding="utf-8")
     )
     assert (
-        str(manifest["review_baseline_origin_main_sha"]).lower()
-        == REVIEW_BASELINE_ORIGIN_MAIN_SHA
+        str(manifest["review_baseline_origin_main_sha"]).lower() == REVIEW_BASELINE_ORIGIN_MAIN_SHA
     )
 
 
