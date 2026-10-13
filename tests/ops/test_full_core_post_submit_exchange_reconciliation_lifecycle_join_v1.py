@@ -367,6 +367,25 @@ def test_okx_read_only_productive_forensic_profile_labels() -> None:
     assert stages[0]["simulation_mode"] == "PRODUCTIVE_VENUE_READ_ONLY_GET"
 
 
+def test_ghv_forward_join_not_submitted_without_post_attempt() -> None:
+    post_join = _join_from_post(None)
+    post_join = join_full_core_post_result_to_lifecycle_v1(
+        result=None,
+        sent_clordid=SENT,
+        submit_count=0,
+    )
+    res = run_full_core_post_submit_lifecycle_reconciliation_join_v1(
+        post_submit_join=post_join,
+        binding=_binding(),
+        offline_fixture=OfflineExchangeFixtureV1(),
+        proven_never_submitted=True,
+        **_join_kwargs(),
+    )
+    assert res.local_submit_outcome.value == "NOT_SUBMITTED"
+    assert res.ghv_forward_join == "PASS"
+    assert res.ghv_reverse_join == "PASS"
+
+
 def test_local_submit_outcome_mapping_table() -> None:
     ack = _join_from_post(_ack_post_result())
     assert local_submit_outcome_from_post_submit_join_v1(ack) is LocalSubmitOutcome.TRANSPORT_ACK

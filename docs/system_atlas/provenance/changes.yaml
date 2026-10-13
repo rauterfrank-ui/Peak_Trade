@@ -934,3 +934,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py
   notes: 'PR #7095: Full-Core post-submit lifecycle join + orchestrated offline/injected/scoped read-only modes; bounded GET validation tooling; explicit Owner-GO gates; no import-time network; no POST; PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED by default; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_governed_lifecycle_wiring_v1
+  from: 49f30d6a807df984eece19c21ada43391ff8e255
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py
+  notes: 'Governed Cycle Host to post-submit lifecycle orchestration wiring; default DISABLED; ContextVar-gated offline invocation; NOT_SUBMITTED GHV forward join; no productive GET/POST; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
