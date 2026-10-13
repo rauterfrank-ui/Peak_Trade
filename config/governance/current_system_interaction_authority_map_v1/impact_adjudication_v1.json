@@ -1,10 +1,12 @@
 {
   "authority_effect": "NONE",
   "base_sha": "cccd5bbd3f7eb7e89722b8b8133740325ec03674",
-  "head_sha": "565cc79a5a1f7e5d8675eba21d7b9f1940cdd91d",
+  "head_sha": "f93afb782a571e3e4e41261aac23f29dcfa1d16f",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
     "docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/entities/catalog.yaml",
@@ -17,10 +19,11 @@
     "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py",
     "tests/ops/test_full_core_exchange_reconciliation_okx_read_only_provider_v1.py"
   ],
-  "changed_paths_sha256": "8fd294fe1a621e4e1b21b2fbe39d3080f47ad5c6ebfb32805a619b2a40e8177b",
+  "changed_paths_sha256": "cf5fcb2ae2bfee44b43cbed6a59f34dd0ebf899e8359b3971da93cb37453d073",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
+    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
     "docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/system_atlas/entities/catalog.yaml",
@@ -37,7 +40,7 @@
     "tests/ops/test_full_core_exchange_reconciliation_v1.py",
     "tests/ops/test_full_core_exchange_reconciliation_okx_read_only_provider_v1.py"
   ],
-  "reason": "OKX offline reconciliation adapter + identity_conflicts hardening; NO_MAP_IMPACT; AUTHORITY=NONE.",
+  "reason": "OKX offline reconciliation adapter + identity_conflicts hardening; offline-only wiring; NO interaction-authority semantic change; AUTHORITY=NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }
