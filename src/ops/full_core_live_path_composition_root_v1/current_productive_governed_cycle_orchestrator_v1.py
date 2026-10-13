@@ -428,6 +428,19 @@ def run_current_productive_governed_cycle_v1(
     Path(lock_root).mkdir(parents=True, exist_ok=True)
     ledger = _load_ledger(Path(evidence_root))
     digest = _binding_digest(authorization)
+    from src.ops.full_core_live_path_composition_root_v1.full_core_post_completed_hook_evidence_v1 import (
+        observe_full_core_s5_recovery_entry_v1,
+    )
+
+    _s5_recovery_observation_extra = observe_full_core_s5_recovery_entry_v1(
+        ledger=ledger,
+        authorization_binding_digest=digest,
+    ).to_extra_fields_v1()
+
+    def _cycle_result(**kwargs: object) -> CurrentProductiveGovernedCycleResultV1:
+        kwargs["s5_recovery_observation_extra"] = _s5_recovery_observation_extra
+        return _result(**kwargs)  # type: ignore[arg-type]
+
     prior_state = str(ledger.get("state") or STATE_IDLE)
     if prior_state == STATE_IN_PROGRESS:
         raise CurrentProductiveGovernedCycleOrchestratorError(REASON_PARTIAL_NOT_RESUMABLE)
@@ -514,7 +527,7 @@ def run_current_productive_governed_cycle_v1(
             terminal_class = "FRESHNESS_FAILURE"
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _result(
+            return _cycle_result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class=terminal_class,
@@ -543,7 +556,7 @@ def run_current_productive_governed_cycle_v1(
             first_blocker = "BOUND_C1_IDENTITY_MISMATCH"
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _result(
+            return _cycle_result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class="C1_MISMATCH",
@@ -567,7 +580,7 @@ def run_current_productive_governed_cycle_v1(
             first_blocker = "CURSOR_FLOOR_BINDING_MISMATCH"
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _result(
+            return _cycle_result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class="CURSOR_BINDING_FAILURE",
@@ -588,7 +601,7 @@ def run_current_productive_governed_cycle_v1(
             terminal_class = "FRESHNESS_FAILURE"
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _result(
+            return _cycle_result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class=terminal_class,
@@ -610,7 +623,7 @@ def run_current_productive_governed_cycle_v1(
             first_blocker = "T2_GATE_NOT_SATISFIED"
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _result(
+            return _cycle_result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class="T2_GATE_FAILURE",
@@ -650,7 +663,7 @@ def run_current_productive_governed_cycle_v1(
             first_blocker = exc.reason_code
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _result(
+            return _cycle_result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class="EG_FAILURE",
@@ -670,7 +683,7 @@ def run_current_productive_governed_cycle_v1(
             first_blocker = f"EG_DISPATCH_COUNT_NOT_1:{eg_result.reason_code}"
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _result(
+            return _cycle_result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class="EG_FAILURE",
@@ -692,7 +705,7 @@ def run_current_productive_governed_cycle_v1(
             first_blocker = "K1_CREDENTIAL_MATERIAL_LOADED_FORBIDDEN"
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _result(
+            return _cycle_result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class="K1_BIND_FAILURE",
@@ -728,7 +741,7 @@ def run_current_productive_governed_cycle_v1(
             reason_code = first_blocker
             occupancy_consumed = False
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _result(
+            return _cycle_result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class="OCCUPANCY_FAILURE",
@@ -774,7 +787,7 @@ def run_current_productive_governed_cycle_v1(
             terminal_class = "OCCUPANCY_FAILURE"
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _result(
+            return _cycle_result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class=terminal_class,
@@ -807,7 +820,7 @@ def run_current_productive_governed_cycle_v1(
         except CurrentProductiveGovernedCycleOrchestratorError as exc:
             first_blocker = exc.reason_code
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": first_blocker})
-            return _result(
+            return _cycle_result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=first_blocker,
                 terminal_class="T2_FAILURE",
@@ -835,7 +848,7 @@ def run_current_productive_governed_cycle_v1(
                 if detail:
                     ledger_extra["t2_join_detail"] = detail[:512]
                 _write_ledger(state=STATE_FAILED_STOP, extra=ledger_extra)
-                return _result(
+                return _cycle_result(
                     disposition=DISPOSITION_FAIL_CLOSED,
                     reason_code=first_blocker,
                     terminal_class="T2_FAILURE",
@@ -869,7 +882,7 @@ def run_current_productive_governed_cycle_v1(
                 **t2_exception_evidence,
             }
             _write_ledger(state=STATE_FAILED_STOP, extra=ledger_extra)
-            return _result(
+            return _cycle_result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=first_blocker,
                 terminal_class="T2_FAILURE",
@@ -908,7 +921,7 @@ def run_current_productive_governed_cycle_v1(
             first_blocker = "EXTERNAL_EFFECT_OR_POST_LEAK"
             reason_code = first_blocker
             _write_ledger(state=STATE_FAILED_STOP, extra={"reason_code": reason_code})
-            return _result(
+            return _cycle_result(
                 disposition=DISPOSITION_FAIL_CLOSED,
                 reason_code=reason_code,
                 terminal_class="T2_FAILURE",
@@ -1126,7 +1139,7 @@ def run_current_productive_governed_cycle_v1(
                     persistence_status=CYCLE_LEDGER_SUPPLEMENT_PERSISTENCE_FAIL_CLOSED,
                     persistence_error=type(exc).__name__,
                 )
-        return _result(
+        return _cycle_result(
             disposition=disposition,
             reason_code=reason_code,
             terminal_class=terminal_class,
@@ -1215,12 +1228,15 @@ def _result(
     cursor_floor_before: float | None = None,
     cursor_floor_after: float | None = None,
     extra_fields: Mapping[str, str] | None = None,
+    s5_recovery_observation_extra: Mapping[str, str] | None = None,
 ) -> CurrentProductiveGovernedCycleResultV1:
     merged_extra = {
         "STEP_29Q_STATUS": STEP_29Q_PLAN_ONLY,
         "DIRECT_V5": DIRECT_V5_AS_CURRENT_PRODUCTIVE_ENTRYPOINT,
         "REMAINDER_IS_CONSUME_LICENSE": FALSE_TOKEN,
     }
+    if s5_recovery_observation_extra:
+        merged_extra.update({str(k): str(v) for k, v in s5_recovery_observation_extra.items()})
     if extra_fields:
         merged_extra.update({str(k): str(v) for k, v in extra_fields.items()})
     return CurrentProductiveGovernedCycleResultV1(

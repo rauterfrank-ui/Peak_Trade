@@ -948,3 +948,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_full_core_post_completed_hook_evidence_durability_v1.py
   notes: 'Post-COMPLETED hook evidence durability (ledger supplement + closure claims); AUD-P1-001/P1-002/AMB-001 remediation; COMPLETED≠reconciliation success; crash-window OBSERVATION_INCOMPLETE; supplement persist fail-closed; no productive GET/POST; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7098_s5_recovery_entry_binding_v1
+  from: d1fe193cdf911e1ae35992c1764c8e492dbf84ef
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_full_core_s5_recovery_observation_v1.py
+  notes: 'PR #7098: S5 entry read-only recovery observation per governed cycle invocation; fail-closed cycle vs atomic scope identity; consumption key at PRE_EXTERNAL join; no module publish state; no POST/GET/network; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

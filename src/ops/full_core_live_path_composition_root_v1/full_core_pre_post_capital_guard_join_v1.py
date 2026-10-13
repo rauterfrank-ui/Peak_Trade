@@ -38,6 +38,9 @@ from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 imp
     FinalOrderEnvelopeV1,
     assert_envelope_unmodified_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.full_core_post_completed_hook_evidence_v1 import (
+    FULL_CORE_ATOMIC_CONSUMPTION_KEY,
+)
 from src.ops.full_core_live_path_composition_root_v1.full_core_capital_guard_atomic_one_shot_v1 import (
     FullCoreAuthorizationBindingV1,
     FullCoreAtomicOneShotError,
@@ -602,6 +605,8 @@ def maybe_record_full_core_capital_guard_join_at_pre_external_v1(
         fields["FULL_CORE_CAPITAL_GUARD_BINDING_DIGEST"] = result.binding_digest
     if result.reasons:
         fields["FULL_CORE_CAPITAL_GUARD_REASONS"] = ",".join(result.reasons)
+    auth_binding = _authorization_binding_v1(binding, session_id="full-core-capital-guard-join")
+    fields[FULL_CORE_ATOMIC_CONSUMPTION_KEY] = auth_binding.consumption_key()
     return fields
 
 
