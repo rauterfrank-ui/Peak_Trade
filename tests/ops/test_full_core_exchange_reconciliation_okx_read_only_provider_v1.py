@@ -45,6 +45,7 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconcil
     LocalSubmitOutcome,
     REASON_CONFLICTING_ORDID,
     REASON_CONFLICTING_ORDER_STATE,
+    REASON_API_ERROR,
     REASON_FRESHNESS_UNPROVEN,
     REASON_INCOMPLETE_PAGINATION,
     REASON_INSTRUMENT_MISMATCH,
@@ -175,6 +176,70 @@ class FixtureBackedOkxReadOnlyTransport:
             )
 
         return _result(payload if isinstance(payload, dict) else _ok_payload(), fresh=fresh)
+
+
+class _ExactOrderNotFoundOverlayTransport:
+    """Returns OKX business order-not-found on exact lookup only (Bugbot #7094 repro)."""
+
+    def __init__(self, inner: FixtureBackedOkxReadOnlyTransport) -> None:
+        self._inner = inner
+
+    def get(
+        self,
+        *,
+        endpoint: str,
+        auth_required: bool,
+        pretrade_decision_id: str,
+        get_cache_policy: str = GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+    ) -> FreshPretradeGetTransportResultV1:
+        parsed = urlparse(endpoint if "://" in endpoint else f"https://eea.okx.com{endpoint}")
+        if parsed.path == READ_ONLY_EXACT_ORDER_LOOKUP_PATH:
+            return _result(
+                {"code": "51603", "msg": "Order does not exist", "data": []},
+                fresh=True,
+            )
+        return self._inner.get(
+            endpoint=endpoint,
+            auth_required=auth_required,
+            pretrade_decision_id=pretrade_decision_id,
+            get_cache_policy=get_cache_policy,
+        )
+
+
+class _HistoryTransportFailureOverlayTransport:
+    """Simulates history GET transport failure while other surfaces succeed."""
+
+    def __init__(self, inner: FixtureBackedOkxReadOnlyTransport) -> None:
+        self._inner = inner
+
+    def get(
+        self,
+        *,
+        endpoint: str,
+        auth_required: bool,
+        pretrade_decision_id: str,
+        get_cache_policy: str = GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+    ) -> FreshPretradeGetTransportResultV1:
+        parsed = urlparse(endpoint if "://" in endpoint else f"https://eea.okx.com{endpoint}")
+        if parsed.path == ENDPOINT_ORDERS_HISTORY:
+            return FreshPretradeGetTransportResultV1(
+                get_performed=False,
+                method="GET",
+                endpoint=endpoint,
+                http_status=0,
+                payload=None,
+                auth_header_sent=True,
+                transport_class=TRANSPORT_CLASS_INJECTED_TEST_DOUBLE,
+                venue_live_contact=False,
+                historical_reuse=False,
+                error_class="TIMEOUT",
+            )
+        return self._inner.get(
+            endpoint=endpoint,
+            auth_required=auth_required,
+            pretrade_decision_id=pretrade_decision_id,
+            get_cache_policy=get_cache_policy,
+        )
 
 
 @pytest.fixture
@@ -360,6 +425,98 @@ def test_wrong_inst_id_row_records_conflict_not_silent() -> None:
     )
     assert dec.outcome == OUTCOME_HALTED_UNRESOLVED
     assert REASON_INSTRUMENT_MISMATCH in dec.reasons
+
+
+class TestBugbot7094FindingsAdjudication:
+    def test_exact_lookup_order_not_found_does_not_mask_pending_evidence(self) -> None:
+        ident = _identity()
+        fixture = OfflineExchangeFixtureV1(pending_orders={"data": [_order_row(state="live")]})
+        inner = FixtureBackedOkxReadOnlyTransport(fixture)
+        transport = _ExactOrderNotFoundOverlayTransport(inner)
+        snap = fetch_okx_read_only_reconciliation_snapshot_v1(
+            identity=ident,
+            read_only_get_transport=transport,
+            pretrade_decision_id="pretrade-exact-miss-pending-hit",
+        )
+        assert not any("EXCHANGE_API_ERROR:exact-order-lookup" in e for e in snap.api_errors)
+        assert snap.snapshot_freshness_proven is True
+        dec = adjudicate_full_core_exchange_reconciliation_v1(
+            identity=ident,
+            snapshot=snap,
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        assert dec.outcome == OUTCOME_CONFIRMED_OPEN
+
+    def test_exact_lookup_order_not_found_empty_surfaces_order_not_found_not_proof(self) -> None:
+        ident = _identity()
+        fixture = OfflineExchangeFixtureV1()
+        transport = _ExactOrderNotFoundOverlayTransport(FixtureBackedOkxReadOnlyTransport(fixture))
+        snap = fetch_okx_read_only_reconciliation_snapshot_v1(
+            identity=ident,
+            read_only_get_transport=transport,
+            pretrade_decision_id="pretrade-exact-miss-empty",
+        )
+        assert not snap.api_errors
+        dec = adjudicate_full_core_exchange_reconciliation_v1(
+            identity=ident,
+            snapshot=snap,
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        assert dec.outcome == OUTCOME_HALTED_UNRESOLVED
+        assert REASON_ORDER_NOT_FOUND_NOT_PROOF in dec.reasons
+
+    def test_exact_lookup_real_api_error_still_fail_closed(self) -> None:
+        ident = _identity()
+
+        class _ExactApiErrorTransport:
+            def get(
+                self,
+                *,
+                endpoint: str,
+                auth_required: bool,
+                pretrade_decision_id: str,
+                get_cache_policy: str = GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+            ) -> FreshPretradeGetTransportResultV1:
+                del auth_required, pretrade_decision_id, get_cache_policy
+                parsed = urlparse(
+                    endpoint if "://" in endpoint else f"https://eea.okx.com{endpoint}"
+                )
+                if parsed.path == READ_ONLY_EXACT_ORDER_LOOKUP_PATH:
+                    return _result({"code": "50000", "msg": "Internal error", "data": []})
+                return _result(_ok_payload([]))
+
+        snap = fetch_okx_read_only_reconciliation_snapshot_v1(
+            identity=ident,
+            read_only_get_transport=_ExactApiErrorTransport(),
+            pretrade_decision_id="pretrade-exact-api-fail",
+        )
+        assert any("EXCHANGE_API_ERROR:exact-order-lookup" in e for e in snap.api_errors)
+        dec = adjudicate_full_core_exchange_reconciliation_v1(
+            identity=ident,
+            snapshot=snap,
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        assert REASON_API_ERROR in dec.reasons
+
+    def test_history_failure_clears_snapshot_freshness_proven(self) -> None:
+        ident = _identity()
+        fixture = OfflineExchangeFixtureV1(pending_orders={"data": [_order_row(state="live")]})
+        transport = _HistoryTransportFailureOverlayTransport(
+            FixtureBackedOkxReadOnlyTransport(fixture)
+        )
+        snap = fetch_okx_read_only_reconciliation_snapshot_v1(
+            identity=ident,
+            read_only_get_transport=transport,
+            pretrade_decision_id="pretrade-history-fail-freshness",
+        )
+        assert snap.history_unavailable is True
+        assert snap.snapshot_freshness_proven is False
+        dec = adjudicate_full_core_exchange_reconciliation_v1(
+            identity=ident,
+            snapshot=snap,
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        assert REASON_FRESHNESS_UNPROVEN in dec.reasons or REASON_API_ERROR in dec.reasons
 
 
 class TestIdentityHardeningRegression:

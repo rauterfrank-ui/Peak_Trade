@@ -41,6 +41,9 @@ DEFAULT_HISTORY_LIMIT = 100
 DEFAULT_FILLS_LIMIT = 100
 
 _OKX_RATE_LIMIT_CODES = frozenset({"50011", "50061"})
+# OKX GET /api/v5/trade/order negative hit (order not on book); not a transport/API fault.
+_OKX_EXACT_ORDER_NOT_FOUND_CODES = frozenset({"51603"})
+_EXACT_ORDER_LOOKUP_SURFACE = "exact-order-lookup"
 
 
 class OkxReadOnlyReconciliationProviderError(RuntimeError):
@@ -69,7 +72,27 @@ def _api_code(payload: Any) -> str:
     return str(payload.get("code") or "")
 
 
-def _freshness_proven_from_get_v1(result: FreshPretradeGetTransportResultV1) -> bool:
+def _okx_exact_order_not_found_v1(result: FreshPretradeGetTransportResultV1) -> bool:
+    """Business-level miss on point lookup; must not become EXCHANGE_API_ERROR."""
+    if str(result.error_class or "").strip():
+        return False
+    if int(result.http_status) != 200:
+        return False
+    code = _api_code(result.payload)
+    if code in _OKX_EXACT_ORDER_NOT_FOUND_CODES:
+        return True
+    if code and code != "0" and isinstance(result.payload, Mapping):
+        msg = str(result.payload.get("msg") or "").lower()
+        if "does not exist" in msg or "order not exist" in msg:
+            return True
+    return False
+
+
+def _freshness_proven_from_get_v1(
+    result: FreshPretradeGetTransportResultV1,
+    *,
+    surface: str = "",
+) -> bool:
     if not result.get_performed:
         return False
     if result.historical_reuse:
@@ -80,6 +103,8 @@ def _freshness_proven_from_get_v1(result: FreshPretradeGetTransportResultV1) -> 
         return False
     code = _api_code(result.payload)
     if code and code != "0":
+        if surface == _EXACT_ORDER_LOOKUP_SURFACE and _okx_exact_order_not_found_v1(result):
+            return True
         return False
     return True
 
@@ -99,6 +124,8 @@ def _collect_api_error_v1(result: FreshPretradeGetTransportResultV1, *, surface:
         return f"EXCHANGE_RATE_LIMIT:{surface}"
     code = _api_code(result.payload)
     if code and code != "0":
+        if surface == _EXACT_ORDER_LOOKUP_SURFACE and _okx_exact_order_not_found_v1(result):
+            return None
         msg = ""
         if isinstance(result.payload, Mapping):
             msg = str(result.payload.get("msg") or "")
@@ -245,7 +272,7 @@ def fetch_okx_read_only_reconciliation_snapshot_v1(
         query_scope: str,
         rows: list[dict[str, Any]],
     ) -> None:
-        fresh = _freshness_proven_from_get_v1(result)
+        fresh = _freshness_proven_from_get_v1(result, surface=source)
         snapshot_freshness_flags.append(fresh)
         status = _response_status_from_get_v1(result)
         err = _collect_api_error_v1(result, surface=source)
@@ -278,7 +305,7 @@ def fetch_okx_read_only_reconciliation_snapshot_v1(
         result: FreshPretradeGetTransportResultV1,
         rows: list[dict[str, Any]],
     ) -> None:
-        fresh = _freshness_proven_from_get_v1(result)
+        fresh = _freshness_proven_from_get_v1(result, surface="fills")
         snapshot_freshness_flags.append(fresh)
         status = _response_status_from_get_v1(result)
         err = _collect_api_error_v1(result, surface="fills")
@@ -334,6 +361,7 @@ def fetch_okx_read_only_reconciliation_snapshot_v1(
     if hist_err:
         history_unavailable = True
         api_errors.append(hist_err)
+        snapshot_freshness_flags.append(False)
     else:
         _ingest_order_rows(
             result=history_res,
@@ -357,7 +385,7 @@ def fetch_okx_read_only_reconciliation_snapshot_v1(
         ENDPOINT_ACCOUNT_POSITIONS,
         {"instType": itype, "instId": inst},
     )
-    pos_fresh = _freshness_proven_from_get_v1(pos_res)
+    pos_fresh = _freshness_proven_from_get_v1(pos_res, surface="positions")
     snapshot_freshness_flags.append(pos_fresh)
     pos_err = _collect_api_error_v1(pos_res, surface="positions")
     if pos_err:
