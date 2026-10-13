@@ -87,6 +87,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:dynamic_market_selection_evidence_contract_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:dynamic_market_selection_evidence_contract_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:elementary_direction_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:elementary_direction_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:external_data_archive_locator_consumers | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:external_data_archive_locator_consumers | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:full_core_exchange_reconciliation_integration_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:full_core_exchange_reconciliation_integration_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:full_core_pre_post_capital_guard_join_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:full_core_pre_post_capital_guard_join_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:gfu_eligibility | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:gfu_eligibility | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_current_bounded_natural_evidence_forensic_adapter_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_current_bounded_natural_evidence_forensic_adapter_v1 | STATUS=OPEN (not proven) |  |

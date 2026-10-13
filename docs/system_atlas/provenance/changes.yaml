@@ -913,3 +913,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_full_core_capital_guard_offline_reproof_integration_v1.py
   notes: 'PR #7092: Full-Core PRE_EXTERNAL capital guard join (default DISABLED); productive binding + OFFLINE_STUB veto proofs LONG/SHORT; no POST; caps UNRATIFIED; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:ghv_current_exchange_reconciliation_integration_v1
+  from: 3a3f43a46bc6a2a95d4d106adcd212baac8cf2c4
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_full_core_exchange_reconciliation_v1.py
+  notes: 'GHV Full-Core offline exchange reconciliation after submit boundary; 40-scenario matrix; OFFLINE_STUB only; PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED; no private GET; no POST; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

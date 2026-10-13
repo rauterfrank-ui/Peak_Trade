@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=4
+ATLAS_CHANGED_ENTITY_COUNT=2
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7092_full_core_pre_post_capital_guard_join_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:ghv_current_exchange_reconciliation_integration_v1`.
 
 ## Workflow
 
@@ -40,10 +40,8 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1` |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `RUNTIME_COMPONENT:full_core_exchange_reconciliation_integration_v1` |
 | `RUNTIME_COMPONENT:full_core_pre_post_capital_guard_join_v1` |
-| `RUNTIME_COMPONENT:section_11_13_5_live_canary_capital_guard_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -95,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7092 Full-Core PRE_EXTERNAL capital guard join (default DISABLED, OFFLINE_STUB proofs); productive handoff binding + orchestrator hook; caps UNRATIFIED; no POST; no MV2/GGE semantic change; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
-- introduced_by=CHANGE:pr_7092_full_core_pre_post_capital_guard_join_v1
-- modified_by=CHANGE:pr_7092_full_core_pre_post_capital_guard_join_v1
+- GHV Full-Core offline exchange reconciliation integration (OFFLINE_STUB, 40-scenario proofs); no productive OKX provider wiring; no private GET; no POST; not wired into productive orchestrator; GHV_AUTHORITY=NONE; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+- introduced_by=CHANGE:ghv_current_exchange_reconciliation_integration_v1
+- modified_by=CHANGE:ghv_current_exchange_reconciliation_integration_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

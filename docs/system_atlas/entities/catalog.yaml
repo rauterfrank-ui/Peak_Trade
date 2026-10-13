@@ -1484,6 +1484,22 @@ entities:
   - tests/ops/test_full_core_pre_post_capital_guard_join_v1.py
   - tests/ops/test_full_core_capital_guard_offline_reproof_integration_v1.py
   notes: Independent fail-closed guard at PRE_EXTERNAL; default join DISABLED; OFFLINE_STUB proofs only; caps UNRATIFIED; no POST; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
+- id: RUNTIME_COMPONENT:full_core_exchange_reconciliation_integration_v1
+  kind: RUNTIME_COMPONENT
+  name: Full-Core exchange reconciliation integration v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+  modified_by: CHANGE:ghv_current_exchange_reconciliation_integration_v1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_offline_provider_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_integration_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/ghv_full_core_exchange_reconciliation_observability_v1.py
+  evidence_sources:
+  - docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md
+  - tests/ops/test_full_core_exchange_reconciliation_v1.py
+  notes: Offline-only post-submit reconciliation; OFFLINE_STUB provider; PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED; no private GET; no POST; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
 - id: UNIVERSE:governed_futures_universe
   kind: UNIVERSE
   name: Governed Futures Universe snapshot
