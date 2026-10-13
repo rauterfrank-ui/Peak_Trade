@@ -952,13 +952,20 @@ def run_current_productive_governed_cycle_v1(
                 "HOLD/non-executable is a valid terminal trading outcome. Do not force ENTER. "
                 f"Remainder {REMAINDER_OWNER_GO} is not a consume license. POST unauthorized."
             )
+        completed_ledger_extra: dict[str, str] = {
+            "reason_code": reason_code,
+            "terminal_class": terminal_class,
+            "decision_result": decision_result,
+        }
+        if disposition == DISPOSITION_PRE_EXTERNAL_EFFECT:
+            from src.ops.full_core_live_path_composition_root_v1.full_core_post_completed_hook_evidence_v1 import (
+                pre_external_completed_ledger_pending_marker_v1,
+            )
+
+            completed_ledger_extra.update(pre_external_completed_ledger_pending_marker_v1())
         _write_ledger(
             state=STATE_COMPLETED,
-            extra={
-                "reason_code": reason_code,
-                "terminal_class": terminal_class,
-                "decision_result": decision_result,
-            },
+            extra=completed_ledger_extra,
         )
         capital_guard_join_extra: dict[str, str] = {}
         if disposition == DISPOSITION_PRE_EXTERNAL_EFFECT:
@@ -1084,11 +1091,41 @@ def run_current_productive_governed_cycle_v1(
                 cycle=partial_for_lifecycle,
                 handoff=handoff_ctx,
             )
-            if lifecycle_wiring_extra:
-                capital_guard_join_extra = {
-                    **(capital_guard_join_extra or {}),
-                    **lifecycle_wiring_extra,
-                }
+            from src.ops.full_core_live_path_composition_root_v1.full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1 import (
+                lifecycle_wiring_disabled_in_context_v1,
+                lifecycle_wiring_invocation_is_bound_v1,
+            )
+            from src.ops.full_core_live_path_composition_root_v1.full_core_post_completed_hook_evidence_v1 import (
+                CYCLE_LEDGER_SUPPLEMENT_PERSISTENCE_FAIL_CLOSED,
+                CYCLE_LEDGER_SUPPLEMENT_PERSISTENCE_PASS,
+                build_post_completed_hook_ledger_supplement_v1,
+                merge_supplement_persistence_outcome_v1,
+            )
+
+            hook_supplement = build_post_completed_hook_ledger_supplement_v1(
+                lifecycle_hook_fields=lifecycle_wiring_extra or {},
+                invocation_bound=lifecycle_wiring_invocation_is_bound_v1(),
+                wiring_explicitly_disabled=lifecycle_wiring_disabled_in_context_v1(),
+                capital_guard_fields=capital_guard_join_extra or {},
+            )
+            ledger_extra = {
+                "reason_code": reason_code,
+                "terminal_class": terminal_class,
+                "decision_result": decision_result,
+                **hook_supplement,
+            }
+            try:
+                _write_ledger(state=STATE_COMPLETED, extra=ledger_extra)
+                capital_guard_join_extra = merge_supplement_persistence_outcome_v1(
+                    hook_supplement,
+                    persistence_status=CYCLE_LEDGER_SUPPLEMENT_PERSISTENCE_PASS,
+                )
+            except OSError as exc:
+                capital_guard_join_extra = merge_supplement_persistence_outcome_v1(
+                    hook_supplement,
+                    persistence_status=CYCLE_LEDGER_SUPPLEMENT_PERSISTENCE_FAIL_CLOSED,
+                    persistence_error=type(exc).__name__,
+                )
         return _result(
             disposition=disposition,
             reason_code=reason_code,

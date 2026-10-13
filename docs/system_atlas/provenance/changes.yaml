@@ -941,3 +941,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py
   notes: 'Governed Cycle Host to post-submit lifecycle orchestration wiring; default DISABLED; ContextVar-gated offline invocation; NOT_SUBMITTED GHV forward join; no productive GET/POST; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_ghv_post_completed_evidence_durability_v1
+  from: 7f5e1ce5535130544313de8c86a114b3c4b8d23a
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_full_core_post_completed_hook_evidence_durability_v1.py
+  notes: 'Post-COMPLETED hook evidence durability (ledger supplement + closure claims); AUD-P1-001/P1-002/AMB-001 remediation; COMPLETED≠reconciliation success; crash-window OBSERVATION_INCOMPLETE; supplement persist fail-closed; no productive GET/POST; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

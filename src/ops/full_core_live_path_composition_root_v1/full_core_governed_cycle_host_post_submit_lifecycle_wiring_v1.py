@@ -519,6 +519,19 @@ def _fail_closed_lifecycle_wiring_fields_for_exception_v1(exc: BaseException) ->
     return fields
 
 
+def lifecycle_wiring_invocation_is_bound_v1() -> bool:
+    return _wiring_invocation.get() is not None
+
+
+def lifecycle_wiring_disabled_in_context_v1() -> bool:
+    invocation = _wiring_invocation.get()
+    if invocation is None:
+        return False
+    return resolve_cycle_lifecycle_wiring_mode_v1(explicit_mode=invocation.mode) is (
+        CycleLifecycleWiringMode.DISABLED
+    )
+
+
 def maybe_record_full_core_governed_cycle_lifecycle_wiring_v1(
     *,
     cycle: CurrentProductiveGovernedCycleResultV1,
@@ -580,6 +593,8 @@ __all__ = [
     "WORK_PACKAGE_ID",
     "WIRING_ENV_VAR",
     "bind_full_core_cycle_lifecycle_wiring_invocation_v1",
+    "lifecycle_wiring_disabled_in_context_v1",
+    "lifecycle_wiring_invocation_is_bound_v1",
     "maybe_record_full_core_governed_cycle_lifecycle_wiring_v1",
     "reset_full_core_cycle_lifecycle_wiring_invocation_v1",
     "resolve_cycle_lifecycle_wiring_mode_v1",

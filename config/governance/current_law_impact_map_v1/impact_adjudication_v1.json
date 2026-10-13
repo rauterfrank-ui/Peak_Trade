@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "49f30d6a807df984eece19c21ada43391ff8e255",
-  "head_sha": "c4a533cd0ba0c28a939ecb267f36b584e705efc6",
+  "base_sha": "7f5e1ce5535130544313de8c86a114b3c4b8d23a",
+  "head_sha": "c6ab54bbe1fbc1171466252cd6d0bf3af591215e",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
@@ -13,13 +13,13 @@
     "docs/system_atlas/provenance/changes.yaml",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
-    "tests/ops/test_full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
-    "tests/ops/test_full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/full_core_post_completed_hook_evidence_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
+    "tests/ops/test_full_core_post_completed_hook_evidence_durability_v1.py"
   ],
-  "changed_paths_sha256": "79e8a50f56b0d7ec6b3ab78523b57225909fdd38d90837092a97f5b2c289e998",
+  "changed_paths_sha256": "231342f4e51c460af553915a661f2f508547a3007866f604ce765dabf2fd1794",
   "covered_candidate_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
@@ -28,17 +28,17 @@
     "docs/system_atlas/provenance/changes.yaml",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
-    "tests/ops/test_full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
-    "tests/ops/test_full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/full_core_post_completed_hook_evidence_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
+    "tests/ops/test_full_core_post_completed_hook_evidence_durability_v1.py"
   ],
   "evidence_refs": [
+    "tests/ops/test_full_core_post_completed_hook_evidence_durability_v1.py",
     "tests/ops/test_full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
-    "tests/ops/test_full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
-    "tests/ops/test_full_core_orchestrated_post_submit_lifecycle_reconciliation_v1.py",
+    "tests/ops/test_full_core_current_productive_pre_external_closure_v1.py",
     "tests/ops/test_full_core_exchange_reconciliation_v1.py"
   ],
-  "reason": "Governed Cycle Host to post-submit lifecycle wiring (offline, ContextVar-gated); NOT_SUBMITTED GHV forward join; no productive GET/POST; AUTHORITY=NONE.",
+  "reason": "Post-COMPLETED hook evidence durability; COMPLETED\u2260reconciliation success; closure claims preservation; no law surface change; AUTHORITY=NONE.",
   "verdict": "NO_LAW_IMPACT",
   "selector_used_as_law_impact_authority": false,
   "selector_used_as_map_impact_authority": false
