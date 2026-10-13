@@ -7625,6 +7625,39 @@ No execute. No merge of this persist without a separate
 
 CURRENT DDO persist ordering marker only. Not K2. Not credential restore. Not live wire. RUNTIME_AUTHORIZATION_EFFECT=NONE.
 
+### 11.2.1.DW.GHV OKX offline reconciliation provider persist (additive; offline only)
+
+Additive persist for the Full-Core OKX EEA read-only reconciliation snapshot
+adapter bound to injected `FullCoreFreshPretradeGetTransportV1` only. Does not
+rewrite §11.2.1.DW post-submit lifecycle join standing fields. Does not authorize
+productive private GET, venue POST, lifecycle orchestrator wiring, or capital
+release from unresolved evidence.
+
+``` text
+THIS_SLICE=11.2.1.DW.GHV_OKX_OFFLINE_RECONCILIATION_PROVIDER_V1
+CONTRACT_VERSION=v1
+CURRENT_PHASE=11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+CURRENT_CANONICAL_SECTION=11.2.1.DW
+AUTHORITY_CLASS=R1_OFFLINE_DOCS_CONTRACTS_TESTS
+PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED
+OKX_EEA_READ_ONLY_ADAPTER=INJECTED_TRANSPORT_ONLY
+IDENTITY_CONFLICTS_FAIL_CLOSED=true
+OFFLINE_STUB_REMAINS=true
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_VENUE_POST_ALLOWED=false
+POST_ALLOWED=false
+POST_COUNT=0
+PRIVATE_GET_COUNT=0
+PRODUCTIVE_LIFECYCLE_JOIN=false
+GHV_AUTHORITY=NONE
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+AUTHORITY_EFFECT=NONE
+SPEC_OWNER=docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md
+PACKAGE_OWNER=src/ops/full_core_live_path_composition_root_v1/
+```
+
+Hard stop. No merge without separate `OWNER_MERGE_GO`.
+
 ------------------------------------------------------------------------
 
 ## Closing Principle

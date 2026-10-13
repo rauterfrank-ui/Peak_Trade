@@ -19,7 +19,12 @@ Before: any productive private GET or live POST.
 
 ## Provider
 
-`RECONCILIATION_PROVIDER=OFFLINE_STUB` only. Production provider interface exists but `PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED`.
+`RECONCILIATION_PROVIDER=OFFLINE_STUB` for fixture-only runs.
+
+`RECONCILIATION_PROVIDER=OKX_EEA_READ_ONLY_GET_V1` via
+`full_core_exchange_reconciliation_okx_read_only_provider_v1.py` uses injected
+`FullCoreFreshPretradeGetTransportV1` only (tests and offline reproof). No new HTTP
+client. `PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED` until scoped Owner-GO.
 
 ## Owners
 
@@ -31,3 +36,8 @@ Before: any productive private GET or live POST.
 ## Invariants
 
 `UNKNOWN_REMAINS_UNKNOWN`, no automatic resubmit, no automatic flatten, `POST_COUNT=0`, reconciliation does not reauthorize Owner-GO.
+
+OKX adapter records `identity_conflicts` on the snapshot when relevant contradictory
+venue identity is observed (same `clOrdId`, mismatched `instId`/`ordId`). Adjudication
+fail-closes before terminal reconciliation; contradictory evidence must not be silently
+dropped.

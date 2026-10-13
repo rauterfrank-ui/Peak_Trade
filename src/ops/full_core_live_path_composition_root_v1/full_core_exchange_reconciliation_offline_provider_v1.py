@@ -162,6 +162,7 @@ def build_offline_exchange_reconciliation_snapshot_v1(
         snapshot_freshness_proven=fixture.snapshot_freshness_proven,
         transport_failures=tuple(fixture.transport_failures),
         api_errors=tuple(fixture.api_errors),
+        identity_conflicts=(),
     )
 
 
