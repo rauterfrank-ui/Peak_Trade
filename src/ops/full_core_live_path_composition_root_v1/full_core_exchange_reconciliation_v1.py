@@ -31,6 +31,7 @@ REASON_ENV_MISMATCH = "ENVIRONMENT_MISMATCH"
 REASON_INSTRUMENT_MISMATCH = "INSTRUMENT_IDENTITY_MISMATCH"
 REASON_WRONG_CLORDID = "WRONG_CLORDID"
 REASON_CONFLICTING_ORDID = "CONFLICTING_ORDID"
+REASON_CONFLICTING_ORDER_STATE = "CONFLICTING_ORDER_STATE"
 REASON_ORDER_NOT_FOUND_NOT_PROOF = "ORDER_NOT_FOUND_NOT_PROOF_OF_NO_SUBMIT"
 REASON_TRANSPORT_UNKNOWN = "TRANSPORT_UNKNOWN_NO_AUTHORITATIVE_EVIDENCE"
 REASON_INCOMPLETE_PAGINATION = "INCOMPLETE_PAGINATION"
@@ -261,16 +262,63 @@ def _verify_evidence_identity(
     return None
 
 
+_TERMINAL_ORDER_STATES = frozenset({"filled", "canceled", "cancelled", "rejected", "reject"})
+_OPENISH_ORDER_STATES = frozenset({"live", "open", "partially_filled", "partially-filled"})
+
+
+def _normalize_order_state(row: Mapping[str, Any]) -> str:
+    return str(row.get("state") or "").lower().strip()
+
+
+def _order_row_signature(row: Mapping[str, Any]) -> tuple[str, str, str, str, str]:
+    return (
+        _normalize_order_state(row),
+        str(row.get("ordId") or ""),
+        str(row.get("sz") or ""),
+        str(row.get("accFillSz") or row.get("fillSz") or ""),
+        str(row.get("sCode") or "0"),
+    )
+
+
+def _conflicting_order_rows_v1(order_rows: Sequence[Mapping[str, Any]]) -> str | None:
+    """Fail closed when multiple order-state rows disagree."""
+    if len(order_rows) <= 1:
+        return None
+    ord_ids = {str(r.get("ordId") or "") for r in order_rows if str(r.get("ordId") or "")}
+    if len(ord_ids) > 1:
+        return REASON_CONFLICTING_ORDID
+    signatures = {_order_row_signature(r) for r in order_rows}
+    if len(signatures) <= 1:
+        return None
+    states = {_normalize_order_state(r) for r in order_rows if _normalize_order_state(r)}
+    terminal = {s for s in states if s in _TERMINAL_ORDER_STATES}
+    openish = {s for s in states if s in _OPENISH_ORDER_STATES}
+    if terminal and openish:
+        return REASON_CONFLICTING_ORDER_STATE
+    if len(states) > 1:
+        return REASON_CONFLICTING_ORDER_STATE
+    return REASON_ORDER_FILL_CONTRADICTION
+
+
+def _select_authoritative_order_row_v1(
+    order_rows: Sequence[Mapping[str, Any]],
+) -> tuple[dict[str, Any] | None, str | None]:
+    if not order_rows:
+        return None, None
+    err = _conflicting_order_rows_v1(order_rows)
+    if err:
+        return None, err
+    chosen = min(order_rows, key=lambda r: _order_row_signature(r))
+    return dict(chosen), None
+
+
 def _collect_order_rows(
     snapshot: FullCoreExchangeReconciliationSnapshotV1,
     clordid: str,
 ) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for item in snapshot.evidence_items:
-        if item.layer not in {
-            EvidenceLayer.EXCHANGE_ORDER_STATE,
-            EvidenceLayer.EXCHANGE_FILL_STATE,
-        }:
+        if item.layer is not EvidenceLayer.EXCHANGE_ORDER_STATE:
             continue
         payload = item.payload
         if str(payload.get("clOrdId") or "") == clordid:
@@ -378,7 +426,15 @@ def adjudicate_full_core_exchange_reconciliation_v1(
             )
         return _halt(REASON_ORDER_NOT_FOUND_NOT_PROOF)
 
-    primary = orders[0] if orders else fills[0]
+    if orders:
+        primary_order, order_conflict = _select_authoritative_order_row_v1(orders)
+        if order_conflict:
+            return _halt(order_conflict)
+        assert primary_order is not None
+        primary = primary_order
+    else:
+        primary = dict(fills[0])
+
     state = str(primary.get("state") or "").lower()
     ord_id = str(primary.get("ordId") or "") or None
     order_sz = _dec(str(primary.get("sz") or identity.final_quantity))
@@ -496,5 +552,6 @@ __all__ = [
     "OUTCOME_HALTED_UNRESOLVED",
     "RECONCILIATION_PROVIDER_OFFLINE_STUB",
     "RECONCILIATION_PROVIDER_PRODUCTION",
+    "REASON_CONFLICTING_ORDER_STATE",
     "adjudicate_full_core_exchange_reconciliation_v1",
 ]

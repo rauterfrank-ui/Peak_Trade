@@ -45,6 +45,7 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconcil
     FullCoreExchangeReconciliationSnapshotV1,
     LocalSubmitOutcome,
     REASON_CONFLICTING_ORDID,
+    REASON_CONFLICTING_ORDER_STATE,
     REASON_DUPLICATE_FILL_CONFLICT,
     REASON_ENV_MISMATCH,
     REASON_FILL_EXCEEDS_ORDER,
@@ -789,6 +790,83 @@ def _reserve_in_child(state_dir: str, key: str) -> None:
     binding = _binding()
     full_core_atomic_reserve_owner_go_authorization_v1(state_dir=Path(state_dir), binding=binding)
     assert binding.consumption_key() == key
+
+
+def test_order_conflict_live_pending_and_filled_history_halt() -> None:
+    ident = _identity()
+    fixture = OfflineExchangeFixtureV1(
+        pending_orders={"data": [_order_row(state="live", acc="0")]},
+        order_history={"data": [_order_row(state="filled", acc="10")]},
+    )
+    res = run_full_core_offline_exchange_reconciliation_v1(
+        identity=ident,
+        binding=_binding(),
+        fixture=fixture,
+        local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+    )
+    assert res.decision.outcome == OUTCOME_HALTED_UNRESOLVED
+    assert REASON_CONFLICTING_ORDER_STATE in res.decision.reasons
+
+
+def test_order_conflict_live_and_canceled_halt() -> None:
+    ident = _identity()
+    fixture = OfflineExchangeFixtureV1(
+        pending_orders={"data": [_order_row(state="live")]},
+        order_history={"data": [_order_row(state="canceled", acc="0")]},
+    )
+    res = run_full_core_offline_exchange_reconciliation_v1(
+        identity=ident,
+        binding=_binding(),
+        fixture=fixture,
+        local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+    )
+    assert res.decision.outcome == OUTCOME_HALTED_UNRESOLVED
+    assert REASON_CONFLICTING_ORDER_STATE in res.decision.reasons
+
+
+def test_order_conflict_first_row_order_independent_of_fixture_bucket_order() -> None:
+    """Regression: outcome must not depend on evidence item ordering (not orders[0])."""
+    ident = _identity()
+    fixture = OfflineExchangeFixtureV1(
+        pending_orders={"data": [_order_row(state="live", acc="0")]},
+        order_history={"data": [_order_row(state="filled", acc="10")]},
+    )
+    snap = build_offline_exchange_reconciliation_snapshot_v1(identity=ident, fixture=fixture)
+    reversed_items = tuple(reversed(snap.evidence_items))
+    tampered = FullCoreExchangeReconciliationSnapshotV1(
+        provider=snap.provider,
+        simulation_mode=snap.simulation_mode,
+        identity_digest=snap.identity_digest,
+        evidence_items=reversed_items,
+        incomplete_pagination=False,
+        history_unavailable=False,
+        snapshot_freshness_proven=True,
+        transport_failures=(),
+        api_errors=(),
+    )
+    dec = adjudicate_full_core_exchange_reconciliation_v1(
+        identity=ident,
+        snapshot=tampered,
+        local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+    )
+    assert dec.outcome == OUTCOME_HALTED_UNRESOLVED
+    assert REASON_CONFLICTING_ORDER_STATE in dec.reasons
+
+
+def test_duplicate_identical_order_rows_remain_open() -> None:
+    ident = _identity()
+    row = _order_row(state="live")
+    fixture = OfflineExchangeFixtureV1(
+        pending_orders={"data": [row]},
+        order_history={"data": [dict(row)]},
+    )
+    res = run_full_core_offline_exchange_reconciliation_v1(
+        identity=ident,
+        binding=_binding(),
+        fixture=fixture,
+        local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+    )
+    assert res.decision.outcome == OUTCOME_CONFIRMED_OPEN
 
 
 def test_34_concurrent_reservation_fail_closed(tmp_path: Path) -> None:
