@@ -21,6 +21,6 @@
   "forbidden_runtime_generated_evidence_paths": [
     "runtime/ghv_current_okx_phase7_runner_self_review_v1.json"
   ],
-  "reviewed_contract_paths_sha256": "17ccec4acf13c6df87ec0b4c8aa5d349b39e4fe8536088c93a5015e1c828aab4",
-  "review_evidence_sha256": "6db8a5b628e352ae392719bf218d7f0983d65946cfbd7e410e7ed225d77488db"
+  "reviewed_contract_paths_sha256": "21b1e4b22a0795e3142ed233351fb4d4290a17f7726b5e896bd1226ccbaea719",
+  "review_evidence_sha256": "d986bcac4be226aa19bb17d1873249a5a9ce3951d1096037f80084b4cdabceea"
 }

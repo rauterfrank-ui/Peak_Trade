@@ -68,6 +68,7 @@ DISPOSITION_SESSION_WALLCLOCK_EXCEEDED = "SESSION_WALLCLOCK_EXCEEDED"
 # macOS Keychain acquisition has no interruptible wall-clock bound in CURRENT; deadline
 # gates entry and all HTTP; an in-flight Keychain call may block past the deadline.
 HARD_TIMEOUT_GUARANTEE_SCOPE = "PHASE8_GATES_AND_HTTP_ONLY"
+EXACT_LITERAL_MATCH_REQUIRED = True
 
 
 class GhvOkxProductiveReadOnlyValidationError(RuntimeError):
@@ -135,34 +136,46 @@ class ProductiveOkxReadOnlyValidationSessionDeadlineV1:
         }
 
 
+def _phase8_owner_go_missing_v1(value: str | None) -> bool:
+    return value is None or value == ""
+
+
+def _phase8_owner_go_exact_match_v1(value: str | None, expected: str) -> bool:
+    return value == expected
+
+
 def evaluate_phase8_pre_network_owner_authorization_v1(
     auth: Phase8CliOwnerAuthorizationV1,
 ) -> Phase8OwnerAuthorizationDecisionV1:
     """Phase-7 gate inputs must be explicitly supplied (no CLI GRANTED defaults)."""
 
     missing: list[str] = []
-    if auth.work_package_owner_go is None or not str(auth.work_package_owner_go).strip():
+    if _phase8_owner_go_missing_v1(auth.work_package_owner_go):
         missing.append("work_package_owner_go")
-    if auth.private_get_go is None or not str(auth.private_get_go).strip():
+    if _phase8_owner_go_missing_v1(auth.private_get_go):
         missing.append("private_get_go")
-    if auth.offline_implementation_go is None or not str(auth.offline_implementation_go).strip():
+    if _phase8_owner_go_missing_v1(auth.offline_implementation_go):
         missing.append("offline_implementation_go")
     if missing:
         return Phase8OwnerAuthorizationDecisionV1(
             disposition=DISPOSITION_STOP_BEFORE_NETWORK,
             detail=f"OWNER_GO_REQUIRED:{','.join(missing)}",
         )
-    if str(auth.work_package_owner_go).strip() != ACCEPTED_WORK_PACKAGE_OWNER_GO:
+    if not _phase8_owner_go_exact_match_v1(
+        auth.work_package_owner_go, ACCEPTED_WORK_PACKAGE_OWNER_GO
+    ):
         return Phase8OwnerAuthorizationDecisionV1(
             disposition=DISPOSITION_STOP_BEFORE_NETWORK,
             detail="WORK_PACKAGE_OWNER_GO_DENIED",
         )
-    if str(auth.private_get_go).strip() != ACCEPTED_PRIVATE_GET_GO:
+    if not _phase8_owner_go_exact_match_v1(auth.private_get_go, ACCEPTED_PRIVATE_GET_GO):
         return Phase8OwnerAuthorizationDecisionV1(
             disposition=DISPOSITION_STOP_BEFORE_NETWORK,
             detail="PRIVATE_GET_GO_DENIED",
         )
-    if str(auth.offline_implementation_go).strip() != ACCEPTED_OFFLINE_IMPLEMENTATION_GO:
+    if not _phase8_owner_go_exact_match_v1(
+        auth.offline_implementation_go, ACCEPTED_OFFLINE_IMPLEMENTATION_GO
+    ):
         return Phase8OwnerAuthorizationDecisionV1(
             disposition=DISPOSITION_STOP_BEFORE_NETWORK,
             detail="OFFLINE_IMPLEMENTATION_GO_DENIED",
@@ -184,12 +197,12 @@ def evaluate_phase8_k1_network_owner_authorization_v1(
             disposition=DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK,
             detail=pre.detail,
         )
-    if auth.k1_session_owner_go is None or not str(auth.k1_session_owner_go).strip():
+    if _phase8_owner_go_missing_v1(auth.k1_session_owner_go):
         return Phase8OwnerAuthorizationDecisionV1(
             disposition=DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK,
             detail="K1_SESSION_OWNER_GO_REQUIRED",
         )
-    if str(auth.k1_session_owner_go).strip() != K1_SESSION_OWNER_GO:
+    if not _phase8_owner_go_exact_match_v1(auth.k1_session_owner_go, K1_SESSION_OWNER_GO):
         return Phase8OwnerAuthorizationDecisionV1(
             disposition=DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK,
             detail="K1_SESSION_OWNER_GO_DENIED",

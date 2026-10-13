@@ -143,6 +143,10 @@ def _main() -> int:
     report["K1_NETWORK_OWNER_AUTHORIZATION"] = network_auth.to_dict()
     if network_auth.disposition != "OWNER_AUTHORIZATION_OK":
         report["DISPOSITION"] = DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK
+        report["NETWORK_REQUEST_COUNT"] = 0
+        report["PRIVATE_GET_COUNT"] = 0
+        report["KEYCHAIN_ACCESS_COUNT"] = 0
+        report["POST_COUNT"] = 0
         print(json.dumps(report, sort_keys=True))
         return 2
 

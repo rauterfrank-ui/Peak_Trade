@@ -70,6 +70,7 @@ Reviewed contracts (minimum):
 | --- | --- | --- |
 | A1 | Runner `--skip-network` must not import K1 before early return | PASS (lazy import after gate) |
 | A1b | No permissive GRANTED CLI defaults on Owner-GO flags | PASS (explicit tokens required) |
+| A1e | K1 Owner-GO exact literal match (no strip) through preflight and K1 seam | PASS (PR #7100 Bugbot regression) |
 | A1c | Phase-8 monotonic session wall-clock budget | PASS (derived 240s; not Session-SSOT) |
 | A1d | Transport deadline pass-through and timeout clamp | PASS (`productive_read_only_get_transport_v1.py`) |
 | A2 | Hardcoded reproof/review booleans | REMEDIATED (evidence adjudicator) |
@@ -91,7 +92,7 @@ Reviewed contracts (minimum):
 
 ## Open defects
 
-None for Phase-7/Phase-8 boundary after Owner-GO hardening, session deadline, transport scope closure, and targeted regression tests.
+None for Phase-7/Phase-8 boundary after Owner-GO hardening, K1 exact-match alignment, session deadline, transport scope closure, and targeted regression tests.
 
 ## Verdict
 

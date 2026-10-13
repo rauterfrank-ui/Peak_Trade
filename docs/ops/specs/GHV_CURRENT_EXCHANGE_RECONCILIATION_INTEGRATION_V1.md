@@ -72,6 +72,7 @@ Phase 7 is evidence-bound before Phase 8 (K1 + scoped read-only GET):
 ## Phase-8 authorization and session boundary
 
 - CLI Owner-GO flags have **no GRANTED defaults**. Missing, partial, or invalid tokens fail closed before K1/HTTP.
+- Owner-GO literals use **exact byte-for-byte match** (`EXACT_LITERAL_MATCH_REQUIRED=true`): no `strip()` or other normalization. Whitespace-padded tokens are denied at preflight and never reach K1/HTTP.
 - Network path requires explicit `--k1-session-owner-go` matching `K1_SESSION_OWNER_GO`.
 - **Derived session ceiling (not a historical Session-SSOT constant):**  
   `VALIDATION_SESSION_MONOTONIC_WALLCLOCK_SECONDS = MAX_VALIDATION_GET_REQUESTS × (CONNECT_TIMEOUT_SECONDS + VALIDATION_TIMEOUT_SECONDS)`  

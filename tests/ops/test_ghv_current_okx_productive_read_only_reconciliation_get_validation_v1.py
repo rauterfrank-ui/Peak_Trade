@@ -24,6 +24,7 @@ from src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_phase7_read
     PHASE7_ADVERSARIAL_REVIEW_MANIFEST_RELPATH,
     PHASE7_OFFLINE_REPROOF_TEST_OWNERS_V1,
     Phase7ReadinessAdjudicationError,
+    Phase7ReadinessAdjudicationV1,
     adjudicate_ghv_current_okx_phase7_readiness_v1,
     adjudicate_phase7_adversarial_contract_review_v1,
     compute_reviewed_contract_paths_sha256_v1,
@@ -583,6 +584,118 @@ def test_explicit_valid_owner_authorization_ok() -> None:
     assert decision.disposition == "OWNER_AUTHORIZATION_OK"
 
 
+@pytest.mark.parametrize(
+    ("k1_token", "expected_detail"),
+    [
+        (f" {K1_SESSION_OWNER_GO}", "K1_SESSION_OWNER_GO_DENIED"),
+        (f"{K1_SESSION_OWNER_GO} ", "K1_SESSION_OWNER_GO_DENIED"),
+        ("OWNER_GO_DENIED_LITERAL", "K1_SESSION_OWNER_GO_DENIED"),
+    ],
+)
+def test_k1_owner_go_exact_literal_no_strip(k1_token: str, expected_detail: str) -> None:
+    auth = Phase8CliOwnerAuthorizationV1(
+        work_package_owner_go=ACCEPTED_WORK_PACKAGE_OWNER_GO,
+        private_get_go=ACCEPTED_PRIVATE_GET_GO,
+        offline_implementation_go=ACCEPTED_OFFLINE_IMPLEMENTATION_GO,
+        k1_session_owner_go=k1_token,
+    )
+    decision = evaluate_phase8_k1_network_owner_authorization_v1(auth)
+    assert decision.disposition == DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK
+    assert decision.detail == expected_detail
+
+
+def test_k1_missing_owner_go_required_detail() -> None:
+    auth = Phase8CliOwnerAuthorizationV1(
+        work_package_owner_go=ACCEPTED_WORK_PACKAGE_OWNER_GO,
+        private_get_go=ACCEPTED_PRIVATE_GET_GO,
+        offline_implementation_go=ACCEPTED_OFFLINE_IMPLEMENTATION_GO,
+        k1_session_owner_go=None,
+    )
+    decision = evaluate_phase8_k1_network_owner_authorization_v1(auth)
+    assert decision.disposition == DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK
+    assert decision.detail == "K1_SESSION_OWNER_GO_REQUIRED"
+
+
+def test_k1_whitespace_padded_runner_never_opens_keychain(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    module = _load_runner_module_v1()
+    k1_open = MagicMock()
+    backend_resolve = MagicMock()
+    argv = _network_runner_argv_v1()
+    argv[-1] = f" {K1_SESSION_OWNER_GO}"
+    with (
+        _phase7_pass_patches(),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.resolve_macos_security_framework_k1_lookup_backend_v1",
+            backend_resolve,
+        ),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.open_current_productive_k1_opaque_signing_handle_session_v1",
+            k1_open,
+        ),
+        patch.object(sys, "argv", argv),
+    ):
+        exit_code = module._main()
+    assert exit_code == 2
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["DISPOSITION"] == DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK
+    assert payload["K1_NETWORK_OWNER_AUTHORIZATION"]["detail"] == "K1_SESSION_OWNER_GO_DENIED"
+    assert payload["KEYCHAIN_ACCESS_COUNT"] == 0
+    assert payload["PRIVATE_GET_COUNT"] == 0
+    assert payload["POST_COUNT"] == 0
+    backend_resolve.assert_not_called()
+    k1_open.assert_not_called()
+
+
+def test_k1_exact_literal_runner_reaches_keychain_session_mock(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    module = _load_runner_module_v1()
+    k1_entered: list[int] = []
+
+    @contextmanager
+    def _k1_session(*_args, **_kwargs) -> Iterator[MagicMock]:
+        k1_entered.append(1)
+        yield MagicMock(signing_handle=MagicMock())
+
+    transport = MagicMock()
+    transport.transport_class = "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1"
+    session_result = MagicMock(
+        disposition="VALIDATION_PASS",
+        get_request_count=2,
+        to_dict=lambda: {"disposition": "VALIDATION_PASS", "get_request_count": 2},
+    )
+
+    with (
+        _phase7_pass_patches(),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.resolve_macos_security_framework_k1_lookup_backend_v1",
+            return_value=MagicMock(),
+        ),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.open_current_productive_k1_opaque_signing_handle_session_v1",
+            _k1_session,
+        ),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1.FullCoreProductiveReadOnlyGetTransportV1",
+            return_value=transport,
+        ),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.run_bounded_productive_okx_read_only_validation_session_v1",
+            return_value=session_result,
+        ),
+        patch.object(sys, "argv", _network_runner_argv_v1()),
+    ):
+        exit_code = module._main()
+    assert exit_code == 0
+    assert len(k1_entered) == 1
+    raw = capsys.readouterr().out
+    payload = json.loads(raw)
+    assert payload["DISPOSITION"] == "VALIDATION_PASS"
+    assert '"apikey":' not in raw.lower()
+
+
 def test_session_deadline_exceeded_before_use() -> None:
     deadline = ProductiveOkxReadOnlyValidationSessionDeadlineV1(
         started_at_monotonic=0.0,
@@ -749,10 +862,7 @@ def test_runner_network_without_k1_go_stop_before_keychain(
         ACCEPTED_OFFLINE_IMPLEMENTATION_GO,
     ]
     with (
-        patch(
-            "src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_phase7_readiness_adjudication_v1.execute_phase7_offline_reproof_pytest_v1",
-            return_value=("PASS", "PYTEST_MOCK_OK"),
-        ),
+        _phase7_pass_patches(),
         patch.object(sys, "argv", argv),
     ):
         spec.loader.exec_module(module)
@@ -803,10 +913,22 @@ def _network_runner_argv_v1() -> list[str]:
     ]
 
 
+def _phase7_pass_readiness_v1() -> Phase7ReadinessAdjudicationV1:
+    return Phase7ReadinessAdjudicationV1(
+        offline_reproof="PASS",
+        adversarial_review="PASS",
+        offline_reproof_detail="PYTEST_MOCK_OK",
+        adversarial_review_detail="PYTEST_MOCK_OK",
+        origin_main_sha=_declared_origin_main_sha_v1(),
+        git_head_sha=_declared_origin_main_sha_v1(),
+        offline_reproof_test_owners=PHASE7_OFFLINE_REPROOF_TEST_OWNERS_V1,
+    )
+
+
 def _phase7_pass_patches():
     return patch(
-        "src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_phase7_readiness_adjudication_v1.execute_phase7_offline_reproof_pytest_v1",
-        return_value=("PASS", "PYTEST_MOCK_OK"),
+        "src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_phase7_readiness_adjudication_v1.adjudicate_ghv_current_okx_phase7_readiness_v1",
+        return_value=_phase7_pass_readiness_v1(),
     )
 
 
