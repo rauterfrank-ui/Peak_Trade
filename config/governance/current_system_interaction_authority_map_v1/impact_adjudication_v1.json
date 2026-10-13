@@ -1,44 +1,32 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "7f5e1ce5535130544313de8c86a114b3c4b8d23a",
-  "head_sha": "c6ab54bbe1fbc1171466252cd6d0bf3af591215e",
+  "base_sha": "d1fe193cdf911e1ae35992c1764c8e492dbf84ef",
+  "head_sha": "8b1d9b5f373ae113a7d8f42215c3462aa5f91bee",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/full_core_post_completed_hook_evidence_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
-    "tests/ops/test_full_core_post_completed_hook_evidence_durability_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_join_v1.py",
+    "tests/ops/test_full_core_s5_recovery_observation_v1.py"
   ],
-  "changed_paths_sha256": "231342f4e51c460af553915a661f2f508547a3007866f604ce765dabf2fd1794",
+  "changed_paths_sha256": "f6fde826ec772febbe92f71903ec2ea9f3e76c3b20abf02a84cb79bb152d6517",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/COVERAGE_REPORT.md",
-    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
-    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/full_core_post_completed_hook_evidence_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
-    "tests/ops/test_full_core_post_completed_hook_evidence_durability_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_join_v1.py",
+    "tests/ops/test_full_core_s5_recovery_observation_v1.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_full_core_post_completed_hook_evidence_durability_v1.py",
-    "tests/ops/test_full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
-    "tests/ops/test_full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
-    "tests/ops/test_full_core_exchange_reconciliation_v1.py"
+    "tests/ops/test_full_core_s5_recovery_observation_v1.py",
+    "tests/ops/test_full_core_post_completed_hook_evidence_durability_v1.py"
   ],
-  "reason": "Post-COMPLETED hook evidence durability (ledger supplement + closure claims); observational lifecycle only; crash-window fail-closed; no productive GET/POST; AUTHORITY=NONE.",
+  "reason": "PR #7098 S5 recovery entry binding; observational read-only; no external-effect authority; AUTHORITY=NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }

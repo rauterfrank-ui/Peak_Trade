@@ -1470,7 +1470,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-  modified_by: CHANGE:pr_7092_full_core_pre_post_capital_guard_join_v1
+  modified_by: CHANGE:pr_7098_s5_recovery_entry_binding_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py
   - src/ops/full_core_live_path_composition_root_v1/full_core_capital_guard_atomic_one_shot_v1.py
@@ -1529,12 +1529,13 @@ entities:
   - tests/ops/test_full_core_orchestrated_post_submit_lifecycle_reconciliation_v1.py
   notes: Governed orchestration entry (offline/injected/scoped read-only); Owner-GO gates; no cycle auto-start; no POST; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1
+  # atlas_entity_review: PR #7098 S5 recovery observation entry binding on orchestrator result extras only; lifecycle wiring semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Full-Core governed Cycle Host post-submit lifecycle wiring v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-  modified_by: CHANGE:pr_governed_lifecycle_wiring_v1
+  modified_by: CHANGE:pr_7098_s5_recovery_entry_binding_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py
@@ -1543,19 +1544,21 @@ entities:
   - tests/ops/test_full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py
   notes: Explicit offline Cycle Host to lifecycle orchestration join; default DISABLED; ContextVar invocation only; no import-time GET/POST; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_post_completed_hook_evidence_v1
+  # atlas_entity_review: PR #7098 read-only S5 recovery observation contract; no hook durability semantics change; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Full-Core post-COMPLETED hook evidence durability v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-  modified_by: CHANGE:pr_ghv_post_completed_evidence_durability_v1
+  modified_by: CHANGE:pr_7098_s5_recovery_entry_binding_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/full_core_post_completed_hook_evidence_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py
   evidence_sources:
   - docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md
   - tests/ops/test_full_core_post_completed_hook_evidence_durability_v1.py
-  notes: Durable ledger supplement + closure claims for post-COMPLETED lifecycle hook; COMPLETED≠reconciliation success; crash-window PENDING fail-closed; observational only; no POST/GET; ATLAS_AUTHORITY=NONE.
+  - tests/ops/test_full_core_s5_recovery_observation_v1.py
+  notes: Durable ledger supplement + closure claims for post-COMPLETED lifecycle hook; S5 entry recovery observation read-only; COMPLETED≠reconciliation success; crash-window PENDING fail-closed; observational only; no POST/GET; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:ghv_current_okx_productive_read_only_reconciliation_get_validation_v1
   kind: RUNTIME_COMPONENT
   name: GHV OKX productive read-only reconciliation GET validation v1
@@ -5109,6 +5112,7 @@ entities:
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
   # atlas_entity_review: PR #7069 pre-completion P/S/T run evidence retirement; reference/fixture rebind only; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  # atlas_entity_review: PR #7098 per-invocation S5 recovery observation on governed cycle result extras; no trading/POST/PRE_EXTERNAL authority change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7092 PRE_EXTERNAL capital guard binding/join hook in orchestrator + closure OBSERVE_ONLY; canonical_price_provenance synthetic-close injection; default join DISABLED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7091 §11.13.5 canary capital guard consumer wiring in submit_transport only; existing serialize import unchanged; no Full-Core trading/MV2/PRE_EXTERNAL semantic change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7081 GHV-referenced intelligence superstructure integration; default-off GHV intelligence-lineage append after scope trace; offline orchestrator separate; no trading/MV2/DDO authority change; AUTHORITY=NONE; POST_COUNT=0.
@@ -5126,7 +5130,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7092_full_core_pre_post_capital_guard_join_v1
+  modified_by: CHANGE:pr_7098_s5_recovery_entry_binding_v1
   source_paths:
   - src/ops/capability_11_long_running_testnet_proven_prep_eval_v1/verifier_v1.py
   - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_net_mode_posside_first_party_census_v1.py
