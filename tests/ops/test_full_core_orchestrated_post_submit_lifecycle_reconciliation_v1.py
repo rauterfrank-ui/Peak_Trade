@@ -168,6 +168,42 @@ def test_owner_go_denied_without_private_get() -> None:
         )
 
 
+def test_productive_mode_records_scoped_forensic_profile() -> None:
+    post_join = join_full_core_post_result_to_lifecycle_v1(
+        result=_ack_post_result(), sent_clordid=CL
+    )
+    row = _order_row(state="live")
+    row["ordId"] = "ord-join-1"
+    fixture = OfflineExchangeFixtureV1(pending_orders={"data": [row]})
+
+    class _Transport:
+        transport_class = "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1"
+
+        def __init__(self) -> None:
+            from tests.ops.test_full_core_exchange_reconciliation_okx_read_only_provider_v1 import (
+                FixtureBackedOkxReadOnlyTransport,
+            )
+
+            self._inner = FixtureBackedOkxReadOnlyTransport(fixture)
+
+        def get(self, **kwargs: object) -> object:
+            return self._inner.get(**kwargs)
+
+    req = _orchestration_request(
+        mode=LifecycleReconciliationOrchestrationMode.PRODUCTIVE_OKX_SCOPED_READ_ONLY,
+        read_only_get_transport=_Transport(),  # type: ignore[arg-type]
+        offline_fixture=None,
+    )
+    res = orchestrate_post_submit_lifecycle_reconciliation_v1(
+        post_submit_join=post_join,
+        binding=_binding(),
+        request=req,
+    )
+    assert res.provider_mode == "PRODUCTIVE_OKX_SCOPED_READ_ONLY"
+    join_stage = res.reconciliation.ghv_bundle["ghv_full_core_exchange_reconciliation_stages"][0]
+    assert join_stage["simulation_mode"] == "PRODUCTIVE_VENUE_READ_ONLY_GET"
+
+
 def test_productive_mode_rejects_durable_apply() -> None:
     post_join = join_full_core_post_result_to_lifecycle_v1(
         result=_ack_post_result(), sent_clordid=CL

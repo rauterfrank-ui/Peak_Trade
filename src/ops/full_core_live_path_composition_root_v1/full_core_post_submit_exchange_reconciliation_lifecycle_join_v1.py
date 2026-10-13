@@ -16,6 +16,16 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
 
+OkxReadOnlyForensicProfileV1 = Literal["INJECTED", "PRODUCTIVE_SCOPED"]
+
+_OKX_READ_ONLY_FORENSIC_PROFILES: dict[OkxReadOnlyForensicProfileV1, tuple[str, str]] = {
+    "INJECTED": ("OKX_INJECTED_READ_ONLY", "OKX_TRANSPORT_INJECTED"),
+    "PRODUCTIVE_SCOPED": (
+        "PRODUCTIVE_OKX_SCOPED_READ_ONLY",
+        "PRODUCTIVE_VENUE_READ_ONLY_GET",
+    ),
+}
+
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     POST_SUBMIT_RECON,
     UNKNOWN_OUTCOME_RECON,
@@ -131,6 +141,26 @@ def local_submit_outcome_from_post_submit_join_v1(
     return LocalSubmitOutcome.TRANSPORT_UNKNOWN
 
 
+def reconciliation_fsm_identity_bound_exchange_evidence_v1(
+    decision: FullCoreExchangeReconciliationDecisionV1,
+) -> bool:
+    """True when the reconciliation FSM already bound a confirmed outcome to exchange proof."""
+
+    if decision.outcome not in _TERMINAL_CONFIRMED_OUTCOMES:
+        return False
+    if str(decision.venue_ord_id or "").strip():
+        return True
+    if decision.outcome in {
+        OUTCOME_CONFIRMED_FILLED,
+        OUTCOME_CONFIRMED_OPEN,
+        OUTCOME_CONFIRMED_PARTIALLY_FILLED,
+    }:
+        return False
+    return decision.reconciliation_complete is True and bool(
+        str(decision.order_state or "").strip()
+    )
+
+
 def _assert_post_submit_join_admits_reconciliation_v1(join: FullCorePostSubmitJoinResultV1) -> None:
     if join.resubmit_allowed is True:
         raise FullCorePostSubmitLifecycleReconciliationJoinError("AUTOMATIC_RESUBMIT_FORBIDDEN")
@@ -168,7 +198,8 @@ def verify_ghv_forward_join_v1(
         return False
     if decision.recommended_atomic_state == "TERMINAL_RECONCILED":
         if join.typed_outcome == UNKNOWN and decision.outcome in _TERMINAL_CONFIRMED_OUTCOMES:
-            return False
+            if not reconciliation_fsm_identity_bound_exchange_evidence_v1(decision):
+                return False
     return True
 
 
@@ -185,13 +216,11 @@ def verify_ghv_reverse_join_v1(
             LocalSubmitOutcome.TRANSPORT_TIMEOUT,
             LocalSubmitOutcome.TRANSPORT_UNKNOWN,
         }:
-            return False
+            return reconciliation_fsm_identity_bound_exchange_evidence_v1(decision)
         if decision.outcome == OUTCOME_HALTED_UNRESOLVED:
             return True
         if decision.recommended_atomic_state in {"RECONCILIATION_PENDING", "HALTED_UNRESOLVED"}:
             return True
-        if decision.outcome in _TERMINAL_CONFIRMED_OUTCOMES:
-            return False
     if join.typed_outcome == REJECTED and decision.outcome == OUTCOME_CONFIRMED_FILLED:
         return False
     return True
@@ -213,6 +242,7 @@ def run_full_core_post_submit_lifecycle_reconciliation_join_v1(
     state_dir: Path | None = None,
     apply_durable_state: bool = False,
     proven_never_submitted: bool = False,
+    okx_read_only_forensic_profile: OkxReadOnlyForensicProfileV1 = "INJECTED",
 ) -> FullCorePostSubmitLifecycleReconciliationJoinResultV1:
     """Run exchange reconciliation immediately after a post-submit lifecycle join."""
 
@@ -264,8 +294,9 @@ def run_full_core_post_submit_lifecycle_reconciliation_join_v1(
             apply_durable_state=apply_durable_state,
             proven_never_submitted=proven_never_submitted,
         )
-        provider_mode = "OKX_INJECTED_READ_ONLY"
-        simulation_mode = "OKX_TRANSPORT_INJECTED"
+        provider_mode, simulation_mode = _OKX_READ_ONLY_FORENSIC_PROFILES[
+            okx_read_only_forensic_profile
+        ]
 
     join_stage = record_full_core_exchange_reconciliation_ghv_stage_v1(
         stage=STAGE_POST_SUBMIT_LIFECYCLE_JOIN,
@@ -323,6 +354,8 @@ __all__ = [
     "FullCorePostSubmitLifecycleReconciliationJoinError",
     "FullCorePostSubmitLifecycleReconciliationJoinResultV1",
     "local_submit_outcome_from_post_submit_join_v1",
+    "OkxReadOnlyForensicProfileV1",
+    "reconciliation_fsm_identity_bound_exchange_evidence_v1",
     "run_full_core_post_submit_lifecycle_reconciliation_join_v1",
     "verify_ghv_forward_join_v1",
     "verify_ghv_reverse_join_v1",

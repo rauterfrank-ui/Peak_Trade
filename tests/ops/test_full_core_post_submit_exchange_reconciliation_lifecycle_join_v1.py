@@ -27,6 +27,9 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconcil
 from src.ops.full_core_live_path_composition_root_v1.full_core_post_response_to_ack_mapper_v1 import (
     join_full_core_post_result_to_lifecycle_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_v1 import (
+    FullCoreExchangeReconciliationDecisionV1,
+)
 from src.ops.full_core_live_path_composition_root_v1.full_core_post_submit_exchange_reconciliation_lifecycle_join_v1 import (
     NETWORK_REQUEST_COUNT,
     POST_COUNT,
@@ -35,7 +38,10 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_post_submit_excha
     REAL_ORDER_COUNT,
     FullCorePostSubmitLifecycleReconciliationJoinError,
     local_submit_outcome_from_post_submit_join_v1,
+    reconciliation_fsm_identity_bound_exchange_evidence_v1,
     run_full_core_post_submit_lifecycle_reconciliation_join_v1,
+    verify_ghv_forward_join_v1,
+    verify_ghv_reverse_join_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_productive_http_post_transport_v1 import (
     FullCoreTradeOrderPostResultV1,
@@ -130,6 +136,22 @@ def test_ack_open_order_offline_forward_reverse_join() -> None:
         for s in res.reconciliation.ghv_bundle["ghv_full_core_exchange_reconciliation_stages"]
     ]
     assert stages[0] == STAGE_POST_SUBMIT_LIFECYCLE_JOIN
+
+
+def test_unknown_timeout_recovery_with_exchange_evidence_passes_ghv_joins() -> None:
+    post_join = _join_from_post(None, err="socket.timeout")
+    fixture = OfflineExchangeFixtureV1(pending_orders={"data": [_order_row_join(state="live")]})
+    res = run_full_core_post_submit_lifecycle_reconciliation_join_v1(
+        post_submit_join=post_join,
+        binding=_binding(),
+        offline_fixture=fixture,
+        **_join_kwargs(),
+    )
+    assert res.local_submit_outcome is LocalSubmitOutcome.TRANSPORT_TIMEOUT
+    assert res.reconciliation.decision.outcome == OUTCOME_CONFIRMED_OPEN
+    assert res.reconciliation.decision.venue_ord_id == ORD
+    assert res.ghv_forward_join == "PASS"
+    assert res.ghv_reverse_join == "PASS"
 
 
 def test_unknown_timeout_halts_without_terminal_promotion() -> None:
@@ -230,6 +252,56 @@ def test_provider_xor_fail_closed() -> None:
             **_join_kwargs(),
         )
     assert "EXACTLY_ONE_RECONCILIATION_PROVIDER_REQUIRED" in str(exc.value)
+
+
+def test_ghv_join_rejects_unknown_terminal_without_fsm_exchange_evidence() -> None:
+    post_join = _join_from_post(None, err="socket.timeout")
+    forged = FullCoreExchangeReconciliationDecisionV1(
+        outcome=OUTCOME_CONFIRMED_FILLED,
+        reasons=(),
+        exposure_retained=True,
+        reconciliation_complete=True,
+        recommended_atomic_state="TERMINAL_RECONCILED",
+        execution_authority_effect="NONE",
+        order_state="filled",
+        cumulative_filled_qty="10",
+        remaining_qty="0",
+        venue_ord_id=None,
+    )
+    assert reconciliation_fsm_identity_bound_exchange_evidence_v1(forged) is False
+    assert (
+        verify_ghv_reverse_join_v1(
+            join=post_join,
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_TIMEOUT,
+            decision=forged,
+        )
+        is False
+    )
+    assert (
+        verify_ghv_forward_join_v1(
+            join=post_join,
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_TIMEOUT,
+            decision=forged,
+        )
+        is False
+    )
+
+
+def test_okx_read_only_productive_forensic_profile_labels() -> None:
+    post_join = _join_from_post(_ack_post_result())
+    fixture = OfflineExchangeFixtureV1(pending_orders={"data": [_order_row_join(state="live")]})
+    transport = FixtureBackedOkxReadOnlyTransport(fixture)
+    res = run_full_core_post_submit_lifecycle_reconciliation_join_v1(
+        post_submit_join=post_join,
+        binding=_binding(),
+        read_only_get_transport=transport,
+        pretrade_decision_id="pretrade-profile",
+        okx_read_only_forensic_profile="PRODUCTIVE_SCOPED",
+        **_join_kwargs(),
+    )
+    assert res.provider_mode == "PRODUCTIVE_OKX_SCOPED_READ_ONLY"
+    stages = res.reconciliation.ghv_bundle["ghv_full_core_exchange_reconciliation_stages"]
+    assert stages[0]["simulation_mode"] == "PRODUCTIVE_VENUE_READ_ONLY_GET"
 
 
 def test_local_submit_outcome_mapping_table() -> None:

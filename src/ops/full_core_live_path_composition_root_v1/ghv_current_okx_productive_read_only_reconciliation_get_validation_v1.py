@@ -122,6 +122,15 @@ class ProductiveOkxReadOnlyValidationSessionResultV1:
         return "ProductiveOkxReadOnlyValidationSessionResultV1(redacted)"
 
 
+def build_bounded_read_only_get_endpoint_v1(path: str, query: dict[str, str]) -> str:
+    """Build GET path for K1 signing (no trailing ``?`` when query is empty)."""
+
+    encoded = urlencode(query)
+    if not encoded:
+        return path
+    return f"{path}?{encoded}"
+
+
 def _assert_endpoint_on_allowlist_v1(path: str) -> None:
     base = str(path or "").split("?", 1)[0]
     if base not in RECONCILIATION_READ_ONLY_GET_ALLOWLIST:
@@ -231,7 +240,7 @@ def run_bounded_productive_okx_read_only_validation_session_v1(
         _assert_endpoint_on_allowlist_v1(path)
         if transport.request_count >= MAX_VALIDATION_GET_REQUESTS:
             raise GhvOkxProductiveReadOnlyValidationError("MAX_VALIDATION_GET_BUDGET_EXCEEDED")
-        endpoint = f"{path}?{urlencode(query)}"
+        endpoint = build_bounded_read_only_get_endpoint_v1(path, query)
         result = transport.get(
             endpoint=endpoint,
             auth_required=True,
@@ -290,6 +299,7 @@ __all__ = [
     "ProductiveOkxReadOnlyValidationSessionResultV1",
     "READ_ONLY_METHOD_ENFORCEMENT",
     "WORK_PACKAGE_ID",
+    "build_bounded_read_only_get_endpoint_v1",
     "evaluate_productive_get_safety_gates_v1",
     "run_bounded_productive_okx_read_only_validation_session_v1",
 ]

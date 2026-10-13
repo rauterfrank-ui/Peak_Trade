@@ -194,6 +194,7 @@ def orchestrate_post_submit_lifecycle_reconciliation_v1(
             state_dir=request.state_dir,
             apply_durable_state=request.apply_durable_atomic_state,
             proven_never_submitted=request.proven_never_submitted,
+            okx_read_only_forensic_profile="INJECTED",
         )
 
     if request.mode is LifecycleReconciliationOrchestrationMode.PRODUCTIVE_OKX_SCOPED_READ_ONLY:
@@ -225,6 +226,7 @@ def orchestrate_post_submit_lifecycle_reconciliation_v1(
             state_dir=None,
             apply_durable_state=False,
             proven_never_submitted=request.proven_never_submitted,
+            okx_read_only_forensic_profile="PRODUCTIVE_SCOPED",
         )
 
     raise FullCoreOrchestratedLifecycleReconciliationError("UNKNOWN_ORCHESTRATION_MODE")
