@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_ENTITY_COUNT=5
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -41,6 +41,9 @@ Do not manually patch generated Markdown.
 | id |
 | --- |
 | `RUNTIME_COMPONENT:full_core_exchange_reconciliation_integration_v1` |
+| `RUNTIME_COMPONENT:full_core_orchestrated_post_submit_lifecycle_reconciliation_v1` |
+| `RUNTIME_COMPONENT:full_core_post_submit_exchange_reconciliation_lifecycle_join_v1` |
+| `RUNTIME_COMPONENT:ghv_current_okx_productive_read_only_reconciliation_get_validation_v1` |
 | `RUNTIME_COMPONENT:full_core_pre_post_capital_guard_join_v1` |
 
 ## CHANGED_RELATIONS
@@ -93,8 +96,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- GHV Full-Core exchange reconciliation (OFFLINE_STUB + OKX injected adapter, 62-scenario proofs); identity_conflicts fail-closed; no productive OKX network wiring; no private GET; no POST; not wired into productive orchestrator; GHV_AUTHORITY=NONE; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+- PR #7095: post-submit lifecycle join to exchange reconciliation + orchestration entry; scoped productive read-only validation tooling (explicit session only); offline/injected proofs; no cycle auto-polling; PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED by default; GHV_AUTHORITY=NONE; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
 - introduced_by=CHANGE:ghv_current_exchange_reconciliation_integration_v1
-- modified_by=CHANGE:ghv_okx_offline_reconciliation_provider_v1
+- modified_by=CHANGE:pr_7095_full_core_lifecycle_okx_readonly_join_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
