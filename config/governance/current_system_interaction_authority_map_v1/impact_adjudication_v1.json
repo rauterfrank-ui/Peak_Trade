@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "cccd5bbd3f7eb7e89722b8b8133740325ec03674",
-  "head_sha": "f93afb782a571e3e4e41261aac23f29dcfa1d16f",
+  "head_sha": "693622e4c07386d8ae3a0145401e0942c95528bc",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/source_v1.json",
@@ -40,7 +40,7 @@
     "tests/ops/test_full_core_exchange_reconciliation_v1.py",
     "tests/ops/test_full_core_exchange_reconciliation_okx_read_only_provider_v1.py"
   ],
-  "reason": "OKX offline reconciliation adapter + identity_conflicts hardening; offline-only wiring; NO interaction-authority semantic change; AUTHORITY=NONE.",
+  "reason": "OKX offline reconciliation adapter + Bugbot #7094 exact-lookup/freshness fixes; offline-only; NO interaction-authority semantic change; AUTHORITY=NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }
