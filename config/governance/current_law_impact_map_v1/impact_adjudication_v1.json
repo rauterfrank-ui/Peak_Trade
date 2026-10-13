@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "b48094917d2575e806610cb2d9569bf75929ebc9",
-  "head_sha": "9005852635cd64ad29882f95efa166f93e18aa76",
+  "head_sha": "cb3cf64adf6c8d48c1d5bcd1206745fdb7fc8df9",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -50,7 +50,7 @@
     "tests/ops/test_full_core_orchestrated_post_submit_lifecycle_reconciliation_v1.py",
     "tests/ops/test_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py"
   ],
-  "reason": "PR #7095 lifecycle join + OKX read-only integration; Bugbot remediation (GHV UNKNOWN recovery, K1 GET path, productive forensic labels); AUTHORITY=NONE.",
+  "reason": "PR #7095 lifecycle join; Bugbot remediation including UNKNOWN reverse-join FSM evidence hardening (NOT_SUBMITTED path); AUTHORITY=NONE.",
   "verdict": "NO_LAW_IMPACT",
   "selector_used_as_law_impact_authority": false,
   "selector_used_as_map_impact_authority": false
