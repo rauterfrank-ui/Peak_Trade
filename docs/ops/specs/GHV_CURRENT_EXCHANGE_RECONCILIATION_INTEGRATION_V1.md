@@ -56,3 +56,15 @@ wiring observations are persisted via append-style supplement on
 `POST_SUBMIT_RECONCILIATION_SUCCEEDED=false` is always recorded when the supplement is
 written. Atomic One-Shot durable state remains authoritative for submission attempts;
 lifecycle fields are observational only and do not authorize POST.
+
+## Phase-7 readiness (productive GET activation)
+
+Phase 7 is evidence-bound before Phase 8 (K1 + scoped read-only GET):
+
+- Offline reproof: frozen pytest owners (Full-Core recon chain + orchestration + validation tests) via `scripts/pt`, with `HEAD == origin/main == declared SHA`.
+- Adversarial review: static manifest `config/governance/ghv_current_okx_productive_get_activation_readiness_v1/phase7_adversarial_contract_review_v1.json` plus `docs/ops/evidence/GHV_CURRENT_OKX_PHASE7_ADVERSARIAL_CONTRACT_REVIEW_V1.md` (not runner-generated).
+- Review baseline: `review_baseline_origin_main_sha` must be a git ancestor of current `origin/main` (squash-merge successor allowed). Ancestor alone is insufficient — contract bytes, review scope, open defects, and provenance anchors must still match.
+- Manifest integrity: substantive manifest fields are bound via `MANIFEST_PROVENANCE_BODY_SHA256` in the review document (trust anchor). Cross-linked digests (`review_evidence_sha256`, `reviewed_contract_paths_sha256`) are verified independently. The manifest entry in `reviewed_contract_paths_sha256` uses the provenance-body digest (not raw file bytes) to avoid self-referential hash cycles.
+- No hardcoded `offline_reproof_pass` / `adversarial_review_pass` booleans.
+
+`--skip-network` remains network-free (no K1, no HTTP). Phase-7 PASS is not productive GET authorization.
