@@ -1038,6 +1038,57 @@ def run_current_productive_governed_cycle_v1(
                     handoff_ctx.reference_mark_px if handoff_ctx is not None else None
                 ),
             )
+            from src.ops.full_core_live_path_composition_root_v1.full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1 import (
+                maybe_record_full_core_governed_cycle_lifecycle_wiring_v1,
+            )
+
+            partial_for_lifecycle = CurrentProductiveGovernedCycleResultV1(
+                disposition=disposition,
+                reason_code=reason_code,
+                terminal_class=terminal_class,
+                cycle_go_status_after="",
+                get_consumed=True,
+                eg_consumed=True,
+                occupancy_consumed=True,
+                t2_consumed=True,
+                get_consume_count=1,
+                eg_dispatch_count=eg_dispatch_count,
+                occupancy_disposition=occupancy_disposition,
+                t2_consume_count=t2_consume_count,
+                runtime_cycle_count=runtime_cycle_count,
+                c1_used=c1_used,
+                occupancy_used=occupancy_used,
+                decision_result=decision_result,
+                decision_execution_eligible=eligible,
+                master_v2_decision=master_v2_decision,
+                venue_plan_status=venue_plan_status,
+                envelope_created=bool(envelope_id),
+                envelope_identity=envelope_identity_for_cycle,
+                permit_created=False,
+                post_count=0,
+                external_effect_count=0,
+                cursor_floor_before=cursor_floor_before,
+                cursor_floor_after=cursor_floor_before,
+                cursor_persisted=False,
+                first_genuine_blocker=first_blocker,
+                blocker_class=blocker_class,
+                next_required_owner_decision=next_owner,
+                lock_released=_token(True),
+                ledger_state=STATE_COMPLETED,
+                transitions=tuple(transitions),
+                final_order_envelope=final_order_envelope
+                if isinstance(final_order_envelope, FinalOrderEnvelopeV1)
+                else None,
+            )
+            lifecycle_wiring_extra = maybe_record_full_core_governed_cycle_lifecycle_wiring_v1(
+                cycle=partial_for_lifecycle,
+                handoff=handoff_ctx,
+            )
+            if lifecycle_wiring_extra:
+                capital_guard_join_extra = {
+                    **(capital_guard_join_extra or {}),
+                    **lifecycle_wiring_extra,
+                }
         return _result(
             disposition=disposition,
             reason_code=reason_code,

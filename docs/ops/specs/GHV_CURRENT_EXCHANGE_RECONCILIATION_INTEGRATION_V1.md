@@ -34,6 +34,7 @@ client. `PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED` until scoped Owner-GO.
 - Post-submit lifecycle join: `full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py`
   (Cap 11.1 / §11.2.1.DW → `LocalSubmitOutcome` → reconciliation pipeline → atomic recovery)
 - Orchestration entry: `full_core_orchestrated_post_submit_lifecycle_reconciliation_v1.py`
+- Governed Cycle Host wiring (offline-only, ContextVar-gated): `full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py`
 - Productive GET validation (explicit session): `ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py`
 - GHV stages: `ghv_full_core_exchange_reconciliation_observability_v1.py`
 

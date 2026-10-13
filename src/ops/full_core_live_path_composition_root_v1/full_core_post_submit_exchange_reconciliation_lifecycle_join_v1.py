@@ -190,7 +190,11 @@ def verify_ghv_forward_join_v1(
         LocalSubmitOutcome.TRANSPORT_TIMEOUT,
         LocalSubmitOutcome.TRANSPORT_UNKNOWN,
     }:
-        return False
+        if not (
+            join.post_attempted is not True
+            and local_submit_outcome is LocalSubmitOutcome.NOT_SUBMITTED
+        ):
+            return False
     if (
         join.typed_outcome == ACKNOWLEDGED
         and local_submit_outcome is not LocalSubmitOutcome.TRANSPORT_ACK
