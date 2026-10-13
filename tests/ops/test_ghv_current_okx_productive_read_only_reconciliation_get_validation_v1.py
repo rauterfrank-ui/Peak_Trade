@@ -39,8 +39,10 @@ from src.ops.full_core_live_path_composition_root_v1.checkout_independent_creden
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-EXPECTED_ORIGIN_MAIN = "adfa1efdec0e1ef1d288866ae444cb795c1d3e19"
+REVIEW_BASELINE_ORIGIN_MAIN_SHA = "adfa1efdec0e1ef1d288866ae444cb795c1d3e19"
 SQUASH_SUCCESSOR_SHA = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+SHA_A_AFTER_REVIEW = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+SHA_B_AFTER_SQUASH = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
 
 
 @contextmanager
@@ -90,9 +92,15 @@ def _head_sha() -> str:
     return str(proc.stdout or "").strip().lower()
 
 
+def _declared_origin_main_sha_v1() -> str:
+    """Runtime declared SHA must track live origin/main, not a frozen review baseline."""
+
+    return _origin_main()
+
+
 def _exact_baseline_checkout_v1() -> bool:
     origin = _origin_main()
-    return origin == EXPECTED_ORIGIN_MAIN and _head_sha() == origin
+    return _head_sha() == origin
 
 
 def _gate_request(origin_sha: str) -> PostSubmitLifecycleReconciliationOrchestrationRequestV1:
@@ -166,7 +174,7 @@ def test_adversarial_review_fails_on_stale_contract_hash(tmp_path: Path) -> None
     with _patch_review_baseline_is_ancestor():
         status, detail = adjudicate_phase7_adversarial_contract_review_v1(
             repo_root=tmp_path,
-            declared_origin_main_sha=EXPECTED_ORIGIN_MAIN,
+            declared_origin_main_sha=_declared_origin_main_sha_v1(),
         )
     assert status == "FAIL"
     assert "STALE" in detail or "TAMPERED" in detail
@@ -209,7 +217,7 @@ def test_open_defects_fail_adversarial_review(tmp_path: Path) -> None:
     with _patch_review_baseline_is_ancestor():
         status, detail = adjudicate_phase7_adversarial_contract_review_v1(
             repo_root=tmp_path,
-            declared_origin_main_sha=EXPECTED_ORIGIN_MAIN,
+            declared_origin_main_sha=_declared_origin_main_sha_v1(),
         )
     assert status == "FAIL"
     assert detail == "OPEN_DEFECTS_PRESENT"
@@ -294,7 +302,7 @@ def test_review_baseline_not_ancestor_fails_closed(tmp_path: Path) -> None:
     ):
         status, detail = adjudicate_phase7_adversarial_contract_review_v1(
             repo_root=tmp_path,
-            declared_origin_main_sha=EXPECTED_ORIGIN_MAIN,
+            declared_origin_main_sha=_declared_origin_main_sha_v1(),
         )
     assert status == "FAIL"
     assert detail == "REVIEW_BASELINE_NOT_ANCESTOR_OF_CURRENT_ORIGIN_MAIN"
@@ -307,7 +315,7 @@ def test_contract_byte_change_fails_closed(tmp_path: Path) -> None:
     with _patch_review_baseline_is_ancestor():
         status, detail = adjudicate_phase7_adversarial_contract_review_v1(
             repo_root=tmp_path,
-            declared_origin_main_sha=EXPECTED_ORIGIN_MAIN,
+            declared_origin_main_sha=_declared_origin_main_sha_v1(),
         )
     assert status == "FAIL"
     assert detail == "REVIEWED_CONTRACT_STALE_OR_TAMPERED"
@@ -322,7 +330,7 @@ def test_manifest_metadata_tamper_fails_provenance_anchor(tmp_path: Path) -> Non
     with _patch_review_baseline_is_ancestor():
         status, detail = adjudicate_phase7_adversarial_contract_review_v1(
             repo_root=tmp_path,
-            declared_origin_main_sha=EXPECTED_ORIGIN_MAIN,
+            declared_origin_main_sha=_declared_origin_main_sha_v1(),
         )
     assert status == "FAIL"
     assert detail in {
@@ -338,7 +346,7 @@ def test_review_document_change_fails_closed(tmp_path: Path) -> None:
     with _patch_review_baseline_is_ancestor():
         status, detail = adjudicate_phase7_adversarial_contract_review_v1(
             repo_root=tmp_path,
-            declared_origin_main_sha=EXPECTED_ORIGIN_MAIN,
+            declared_origin_main_sha=_declared_origin_main_sha_v1(),
         )
     assert status == "FAIL"
     assert detail == "REVIEW_EVIDENCE_STALE_OR_TAMPERED"
@@ -357,7 +365,7 @@ def test_review_scope_incomplete_fails_closed(tmp_path: Path) -> None:
     with _patch_review_baseline_is_ancestor():
         status, detail = adjudicate_phase7_adversarial_contract_review_v1(
             repo_root=tmp_path,
-            declared_origin_main_sha=EXPECTED_ORIGIN_MAIN,
+            declared_origin_main_sha=_declared_origin_main_sha_v1(),
         )
     assert status == "FAIL"
     assert detail == "REVIEW_SCOPE_INCOMPLETE"
@@ -383,22 +391,72 @@ def test_missing_provenance_anchor_in_review_doc_fails_closed(tmp_path: Path) ->
     with _patch_review_baseline_is_ancestor():
         status, detail = adjudicate_phase7_adversarial_contract_review_v1(
             repo_root=tmp_path,
-            declared_origin_main_sha=EXPECTED_ORIGIN_MAIN,
+            declared_origin_main_sha=_declared_origin_main_sha_v1(),
         )
     assert status == "FAIL"
     assert detail == "MANIFEST_PROVENANCE_ANCHOR_MISSING_IN_REVIEW_DOC"
 
 
 def test_head_drift_fails_runtime_baseline_verify() -> None:
-    with patch(
-        "src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_phase7_readiness_adjudication_v1.resolve_git_head_sha_v1",
-        return_value="d" * 40,
+    declared = _declared_origin_main_sha_v1()
+    drift_head = "dddddddddddddddddddddddddddddddddddddddd"
+    assert drift_head != declared
+    with (
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_phase7_readiness_adjudication_v1.resolve_git_origin_main_sha_v1",
+            return_value=declared,
+        ),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_phase7_readiness_adjudication_v1.resolve_git_head_sha_v1",
+            return_value=drift_head,
+        ),
     ):
         with pytest.raises(Phase7ReadinessAdjudicationError, match="HEAD_NOT_AT_DECLARED"):
             verify_current_baseline_checkout_v1(
                 repo_root=REPO_ROOT,
-                declared_origin_main_sha=EXPECTED_ORIGIN_MAIN,
+                declared_origin_main_sha=declared,
             )
+
+
+def test_origin_main_advances_a_to_b_head_drift_is_not_origin_drift() -> None:
+    """After squash, declared must track successor B; HEAD drift must not masquerade as origin drift."""
+
+    drift_head = "cccccccccccccccccccccccccccccccccccccccc"
+    with (
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_phase7_readiness_adjudication_v1.resolve_git_origin_main_sha_v1",
+            return_value=SHA_B_AFTER_SQUASH,
+        ),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_phase7_readiness_adjudication_v1.resolve_git_head_sha_v1",
+            return_value=drift_head,
+        ),
+    ):
+        with pytest.raises(Phase7ReadinessAdjudicationError, match="HEAD_NOT_AT_DECLARED"):
+            verify_current_baseline_checkout_v1(
+                repo_root=REPO_ROOT,
+                declared_origin_main_sha=SHA_B_AFTER_SQUASH,
+            )
+
+    with patch(
+        "src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_phase7_readiness_adjudication_v1.resolve_git_origin_main_sha_v1",
+        return_value=SHA_B_AFTER_SQUASH,
+    ):
+        with pytest.raises(Phase7ReadinessAdjudicationError, match="ORIGIN_MAIN_SHA_DRIFT"):
+            verify_current_baseline_checkout_v1(
+                repo_root=REPO_ROOT,
+                declared_origin_main_sha=SHA_A_AFTER_REVIEW,
+            )
+
+
+def test_review_baseline_sha_is_manifest_not_runtime_origin() -> None:
+    manifest = json.loads(
+        (REPO_ROOT / PHASE7_ADVERSARIAL_REVIEW_MANIFEST_RELPATH).read_text(encoding="utf-8")
+    )
+    assert (
+        str(manifest["review_baseline_origin_main_sha"]).lower()
+        == REVIEW_BASELINE_ORIGIN_MAIN_SHA
+    )
 
 
 @pytest.mark.skipif(
@@ -417,7 +475,7 @@ def test_runner_skip_network_disposition(capsys: pytest.CaptureFixture[str]) -> 
         "run_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py",
         "--skip-network",
         "--origin-main-sha",
-        EXPECTED_ORIGIN_MAIN,
+        _declared_origin_main_sha_v1(),
     ]
     with (
         patch(
