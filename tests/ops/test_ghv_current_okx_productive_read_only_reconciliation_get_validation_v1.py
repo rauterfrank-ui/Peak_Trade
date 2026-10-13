@@ -79,6 +79,22 @@ def _origin_main() -> str:
     return str(proc.stdout or "").strip().lower()
 
 
+def _head_sha() -> str:
+    proc = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return str(proc.stdout or "").strip().lower()
+
+
+def _exact_baseline_checkout_v1() -> bool:
+    origin = _origin_main()
+    return origin == EXPECTED_ORIGIN_MAIN and _head_sha() == origin
+
+
 def _gate_request(origin_sha: str) -> PostSubmitLifecycleReconciliationOrchestrationRequestV1:
     return PostSubmitLifecycleReconciliationOrchestrationRequestV1(
         mode=LifecycleReconciliationOrchestrationMode.PRODUCTIVE_OKX_SCOPED_READ_ONLY,
@@ -214,8 +230,8 @@ def test_evaluate_gates_stop_before_network_when_reproof_fails() -> None:
 
 
 @pytest.mark.skipif(
-    _origin_main() != EXPECTED_ORIGIN_MAIN,
-    reason="CURRENT baseline SHA required for live manifest bind",
+    not _exact_baseline_checkout_v1(),
+    reason="HEAD == origin/main == expected SHA required for live manifest bind",
 )
 def test_manifest_contract_hash_matches_repo() -> None:
     manifest = json.loads(
@@ -227,8 +243,8 @@ def test_manifest_contract_hash_matches_repo() -> None:
 
 
 @pytest.mark.skipif(
-    _origin_main() != EXPECTED_ORIGIN_MAIN,
-    reason="CURRENT baseline SHA required",
+    not _exact_baseline_checkout_v1(),
+    reason="HEAD == origin/main == expected SHA required",
 )
 def test_phase7_integration_with_mocked_pytest_pass() -> None:
     origin = _origin_main()
@@ -386,8 +402,8 @@ def test_head_drift_fails_runtime_baseline_verify() -> None:
 
 
 @pytest.mark.skipif(
-    _origin_main() != EXPECTED_ORIGIN_MAIN,
-    reason="CURRENT baseline SHA required for runner integration",
+    not _exact_baseline_checkout_v1(),
+    reason="HEAD == origin/main == expected SHA required for runner integration",
 )
 def test_runner_skip_network_disposition(capsys: pytest.CaptureFixture[str]) -> None:
     runner_path = (

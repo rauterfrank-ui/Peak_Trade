@@ -20,7 +20,7 @@ ghv_authority: NONE
   digests `review_evidence_sha256` and `reviewed_contract_paths_sha256`). The manifest
   cross-links back via `review_evidence_sha256`; contract bytes bind via `reviewed_contract_paths_sha256`.
 - **Not claimed:** PKI/signing; manifest fields alone do not prove integrity.
-- **Runtime:** `HEAD == origin/main == declared SHA` remains mandatory; review baseline must
+- **Runtime:** `HEAD == origin&#47;main == declared SHA` remains mandatory; review baseline must
   be a git ancestor of current `origin/main` (squash-merge successor allowed when contract bytes
   and provenance anchors still match).
 
