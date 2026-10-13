@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "49f30d6a807df984eece19c21ada43391ff8e255",
-  "head_sha": "34188b6e708147d66340b50a9fa42baa6666b1b9",
+  "head_sha": "c4a533cd0ba0c28a939ecb267f36b584e705efc6",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
@@ -19,6 +19,7 @@
   ],
   "changed_paths_sha256": "79e8a50f56b0d7ec6b3ab78523b57225909fdd38d90837092a97f5b2c289e998",
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
