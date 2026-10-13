@@ -1,10 +1,12 @@
 {
   "authority_effect": "NONE",
   "base_sha": "3a3f43a46bc6a2a95d4d106adcd212baac8cf2c4",
-  "head_sha": "86a3cdba32a98e040f34c8e44a23eb17b477b4ef",
+  "head_sha": "199f76e278e6f3c5798318083bdd3b16253b0c1b",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
@@ -19,10 +21,11 @@
     "src/ops/full_core_live_path_composition_root_v1/ghv_full_core_exchange_reconciliation_observability_v1.py",
     "tests/ops/test_full_core_exchange_reconciliation_v1.py"
   ],
-  "changed_paths_sha256": "a0860b8077092402d3d0b57e215780d0a9478834e01aab02d04acc9fce1aba5d",
+  "changed_paths_sha256": "a52749428fcc1f3c5f40a9bc3190edcce95c5d6f1b64b56fbe37b77943c4bdfc",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
+    "docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/generated/COVERAGE_REPORT.md",
