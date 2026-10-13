@@ -9,6 +9,7 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Mapping
 from urllib.parse import urlencode
 
@@ -159,11 +160,14 @@ def _demo_from_config_payload(payload: Any) -> bool:
 
 def evaluate_productive_get_safety_gates_v1(
     *,
-    offline_reproof_pass: bool,
-    adversarial_review_pass: bool,
     orchestration_request: PostSubmitLifecycleReconciliationOrchestrationRequestV1,
+    repo_root: Path,
 ) -> ProductiveGetSafetyGateReportV1:
-    """Phase 7 gates. Does not perform network I/O."""
+    """Phase 7 gates. Evidence-bound; does not perform venue network I/O."""
+
+    from src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_phase7_readiness_adjudication_v1 import (
+        adjudicate_ghv_current_okx_phase7_readiness_v1,
+    )
 
     if (
         EXTERNAL_EFFECT_AUTHORIZED is True
@@ -172,8 +176,12 @@ def evaluate_productive_get_safety_gates_v1(
     ):
         raise GhvOkxProductiveReadOnlyValidationError("STANDING_POST_PINS_MUST_REMAIN_FALSE")
 
-    offline = "PASS" if offline_reproof_pass else "FAIL"
-    adv = "PASS" if adversarial_review_pass else "FAIL"
+    readiness = adjudicate_ghv_current_okx_phase7_readiness_v1(
+        repo_root=Path(repo_root),
+        declared_origin_main_sha=str(orchestration_request.origin_main_sha),
+    )
+    offline = readiness.offline_reproof
+    adv = readiness.adversarial_review
     auth_id = "PENDING"
     env = "PENDING"
     demo = "DISABLED" if DEMO_MODE_DISABLED else "FAIL"

@@ -58,6 +58,9 @@ def _main() -> int:
         evaluate_productive_get_safety_gates_v1,
         run_bounded_productive_okx_read_only_validation_session_v1,
     )
+    from src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_phase7_readiness_adjudication_v1 import (
+        WORK_PACKAGE_ID as PHASE7_WORK_PACKAGE_ID,
+    )
 
     origin_sha = str(args.origin_main_sha or "").strip() or _origin_main_sha()
     gate_request = PostSubmitLifecycleReconciliationOrchestrationRequestV1(
@@ -74,15 +77,15 @@ def _main() -> int:
         pretrade_decision_id=str(args.pretrade_decision_id),
     )
     gates = evaluate_productive_get_safety_gates_v1(
-        offline_reproof_pass=True,
-        adversarial_review_pass=True,
         orchestration_request=gate_request,
+        repo_root=REPO_ROOT,
     )
     report: dict[str, object] = {
-        "WORK_PACKAGE": "GHV_CURRENT_OKX_PRODUCTIVE_GET_ACTIVATION_READINESS_V1",
+        "WORK_PACKAGE": PHASE7_WORK_PACKAGE_ID,
         "ORIGIN_MAIN_SHA": origin_sha,
         "PHASE_7_SAFETY_GATES": gates.to_dict(),
         "GET_ENDPOINT_ALLOWLIST": sorted(RECONCILIATION_READ_ONLY_GET_ALLOWLIST),
+        "PHASE_7_EVIDENCE_BOUND": True,
     }
     if gates.overall != "PASS":
         report["DISPOSITION"] = "STOP_BEFORE_NETWORK"

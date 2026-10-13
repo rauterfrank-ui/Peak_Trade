@@ -955,3 +955,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_full_core_s5_recovery_observation_v1.py
   notes: 'PR #7098: S5 entry read-only recovery observation per governed cycle invocation; fail-closed cycle vs atomic scope identity; consumption key at PRE_EXTERNAL join; no module publish state; no POST/GET/network; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7099_phase7_evidence_binding_v1
+  from: adfa1efdec0e1ef1d288866ae444cb795c1d3e19
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py
+  notes: 'PR #7099: Phase-7 evidence-bound gates (offline reproof + adversarial manifest/review); post-squash review baseline ancestor semantics; no hardcoded PASS booleans; --skip-network before K1; PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
