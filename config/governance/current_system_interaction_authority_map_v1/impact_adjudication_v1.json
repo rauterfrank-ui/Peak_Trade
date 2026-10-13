@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "b48094917d2575e806610cb2d9569bf75929ebc9",
-  "head_sha": "0c1fce5be2cb9da091f52ebab8b1455deae735b3",
+  "head_sha": "20b39adac1938b733eed3bf83704de4e6940d000",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -21,9 +21,10 @@
     "src/ops/full_core_live_path_composition_root_v1/ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/ghv_full_core_exchange_reconciliation_observability_v1.py",
     "tests/ops/test_full_core_orchestrated_post_submit_lifecycle_reconciliation_v1.py",
-    "tests/ops/test_full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py"
+    "tests/ops/test_full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
+    "tests/ops/test_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py"
   ],
-  "changed_paths_sha256": "c5feb588c714d9bbe032cfb234bfa474f03acfe1efeb4e2fc28fa2409a0e5ec4",
+  "changed_paths_sha256": "d2f0621edfb6b297a571f7f1ca97d5fe2bdb52d83098a98094d4c37b91115b7b",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -41,14 +42,16 @@
     "src/ops/full_core_live_path_composition_root_v1/ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/ghv_full_core_exchange_reconciliation_observability_v1.py",
     "tests/ops/test_full_core_orchestrated_post_submit_lifecycle_reconciliation_v1.py",
-    "tests/ops/test_full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py"
+    "tests/ops/test_full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
+    "tests/ops/test_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py"
   ],
   "evidence_refs": [
     "tests/ops/test_full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
     "tests/ops/test_full_core_orchestrated_post_submit_lifecycle_reconciliation_v1.py",
-    "tests/ops/test_full_core_exchange_reconciliation_v1.py"
+    "tests/ops/test_full_core_exchange_reconciliation_v1.py",
+    "tests/ops/test_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py"
   ],
-  "reason": "PR #7095 Full-Core post-submit lifecycle join + orchestrated OKX read-only integration; offline proofs; NO interaction-authority semantic change; AUTHORITY=NONE.",
+  "reason": "PR #7095 lifecycle join + OKX read-only integration; Bugbot remediation (GHV UNKNOWN recovery, K1 GET path, productive forensic labels); AUTHORITY=NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }
