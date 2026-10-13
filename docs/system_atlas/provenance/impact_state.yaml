@@ -1,18 +1,16 @@
 schema_version: system_atlas.v1
-pending_change: false
-introduced_by: CHANGE:pr_7092_full_core_pre_post_capital_guard_join_v1
-modified_by: CHANGE:pr_7092_full_core_pre_post_capital_guard_join_v1
+pending_change: true
+introduced_by: CHANGE:ghv_current_exchange_reconciliation_integration_v1
+modified_by: CHANGE:ghv_current_exchange_reconciliation_integration_v1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #7092 Full-Core PRE_EXTERNAL capital guard join (default DISABLED, OFFLINE_STUB proofs);
-  productive handoff binding + orchestrator hook; caps UNRATIFIED; no POST; no MV2/GGE semantic
-  change; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+  GHV Full-Core offline exchange reconciliation integration (OFFLINE_STUB, 40-scenario proofs);
+  no productive OKX provider wiring; no private GET; no POST; not wired into productive
+  orchestrator; GHV_AUTHORITY=NONE; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
 changed_entities:
-  - CONTRACT:current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1
-  - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  - RUNTIME_COMPONENT:full_core_exchange_reconciliation_integration_v1
   - RUNTIME_COMPONENT:full_core_pre_post_capital_guard_join_v1
-  - RUNTIME_COMPONENT:section_11_13_5_live_canary_capital_guard_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []
