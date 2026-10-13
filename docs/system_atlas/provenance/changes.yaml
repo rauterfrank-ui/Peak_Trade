@@ -927,3 +927,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_full_core_exchange_reconciliation_okx_read_only_provider_v1.py
   notes: 'OKX read-only reconciliation snapshot adapter (injected transport only); identity_conflicts hardening; 62-scenario offline reproof; no productive lifecycle join; PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED; no private GET; no POST; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7095_full_core_lifecycle_okx_readonly_join_v1
+  from: b48094917d2575e806610cb2d9569bf75929ebc9
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py
+  notes: 'PR #7095: Full-Core post-submit lifecycle join + orchestrated offline/injected/scoped read-only modes; bounded GET validation tooling; explicit Owner-GO gates; no import-time network; no POST; PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED by default; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

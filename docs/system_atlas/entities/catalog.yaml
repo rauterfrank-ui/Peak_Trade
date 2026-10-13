@@ -1490,7 +1490,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-  modified_by: CHANGE:ghv_okx_offline_reconciliation_provider_v1
+  modified_by: CHANGE:pr_7095_full_core_lifecycle_okx_readonly_join_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py
   - src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_offline_provider_v1.py
@@ -1501,7 +1501,46 @@ entities:
   - docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md
   - tests/ops/test_full_core_exchange_reconciliation_v1.py
   - tests/ops/test_full_core_exchange_reconciliation_okx_read_only_provider_v1.py
-  notes: Offline post-submit reconciliation; OFFLINE_STUB + OKX_EEA_READ_ONLY_GET_V1 injected transport adapter; identity_conflicts fail-closed; PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED; no productive private GET; no POST; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
+  notes: Offline post-submit reconciliation pipeline; consumed by lifecycle join/orchestrator; OFFLINE_STUB + OKX injected adapter; PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED by default; no import-time network; no POST; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
+- id: RUNTIME_COMPONENT:full_core_post_submit_exchange_reconciliation_lifecycle_join_v1
+  kind: RUNTIME_COMPONENT
+  name: Full-Core post-submit lifecycle reconciliation join v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+  modified_by: CHANGE:pr_7095_full_core_lifecycle_okx_readonly_join_v1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py
+  evidence_sources:
+  - docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md
+  - tests/ops/test_full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py
+  notes: Cap 11.1 post-submit join to LocalSubmitOutcome to reconciliation FSM to optional atomic recovery; explicit invocation; no POST; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
+- id: RUNTIME_COMPONENT:full_core_orchestrated_post_submit_lifecycle_reconciliation_v1
+  kind: RUNTIME_COMPONENT
+  name: Full-Core orchestrated post-submit lifecycle reconciliation v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+  modified_by: CHANGE:pr_7095_full_core_lifecycle_okx_readonly_join_v1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/full_core_orchestrated_post_submit_lifecycle_reconciliation_v1.py
+  evidence_sources:
+  - docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md
+  - tests/ops/test_full_core_orchestrated_post_submit_lifecycle_reconciliation_v1.py
+  notes: Governed orchestration entry (offline/injected/scoped read-only); Owner-GO gates; no cycle auto-start; no POST; ATLAS_AUTHORITY=NONE.
+- id: RUNTIME_COMPONENT:ghv_current_okx_productive_read_only_reconciliation_get_validation_v1
+  kind: RUNTIME_COMPONENT
+  name: GHV OKX productive read-only reconciliation GET validation v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+  modified_by: CHANGE:pr_7095_full_core_lifecycle_okx_readonly_join_v1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py
+  - scripts/ops/run_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py
+  evidence_sources:
+  - docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md
+  notes: Bounded GET validation session tooling; explicit Owner-GO; no import-time network; not order reconciliation; ATLAS_AUTHORITY=NONE.
 - id: UNIVERSE:governed_futures_universe
   kind: UNIVERSE
   name: Governed Futures Universe snapshot
