@@ -476,7 +476,7 @@
       "law_id": "RUNBOOK-VENUE-PLAN-TDMODE-AUTHORITY-V1",
       "canonical_source": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
       "canonical_anchor": "CURRENT Venue-Plan tdMode and Order-Environment Authority",
-      "source_sha256": "d93111c81bafd10be81affac27c85ced1e175f21b4e0d5a85e6fe13111fc4d69",
+      "source_sha256": "2ad803f84a4a0125b5eaa7ef5495ce7d908ab3c5933bebdc7f2b3044530f6773",
       "source_authority_class": "RUNBOOK",
       "index_status": "INDEXED",
       "law_reference_authority": "NONE",
@@ -1831,7 +1831,7 @@
       "adjudication": "UNKNOWN_CURRENT",
       "producer_ref": "sobj_mv2_runtime_cycle_host",
       "consumer_ref": "sobj_mv2_layer_l5_nullline",
-      "statement": "M_t/mark_px at composition-root vs L5 nullline initialization_mark \u2014 identity OPEN (maps to unk_mt_l5_nullline_identity).",
+      "statement": "M_t/mark_px at composition-root vs L5 nullline initialization_mark — identity OPEN (maps to unk_mt_l5_nullline_identity).",
       "expected_canonical_source": "UNKNOWN",
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
@@ -1942,7 +1942,7 @@
     "bootstrap_exhaustive": false,
     "census_method": "UCS_FROZEN_WORKSET_EVIDENCE_BINDING_V1",
     "unclassified_sample_cap": 120,
-    "notes": "Navigation-only UCS pass; dispositions in ucs_frozen_workset_v1.json. PR #7070 simple owner run evidence retention: representation-only law-map adjudication for owner-home P/S/T durable copy + navigation index; no normative law change; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0. PR #7073 Natural-Enter cross-session pending outcome harness: representation-only law-map adjudication for lane_state persistence and PRE_EXTERNAL launcher wiring; no normative law change; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0. PR #7077 monetary normalization implementation: representation-only law-map adjudication for productive USDT\u2192USDC normalization wiring; no normative law change; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.",
+    "notes": "Navigation-only UCS pass; dispositions in ucs_frozen_workset_v1.json. PR #7070 simple owner run evidence retention: representation-only law-map adjudication for owner-home P/S/T durable copy + navigation index; no normative law change; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0. PR #7073 Natural-Enter cross-session pending outcome harness: representation-only law-map adjudication for lane_state persistence and PRE_EXTERNAL launcher wiring; no normative law change; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0. PR #7077 monetary normalization implementation: representation-only law-map adjudication for productive USDT→USDC normalization wiring; no normative law change; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.",
     "frozen_workset_sha256": "1faa5ad603886a2d77f4c11465cb989a9b7ddd0d3aae758378287a6739a5b8c3",
     "frozen_workset_count": 78
   }
