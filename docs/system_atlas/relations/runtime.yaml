@@ -678,6 +678,7 @@ relations:
     owned and does not change this CALLS edge. S2C DataSafetyGate.check conjunct does
     not change this CALLS edge. DataSafetyGate=CONJUNCT_NOT_OWNER. evaluate_execution_admission_v1
     remains the sole admission owner. Atlas is not trading authority. ATLAS_AUTHORITY=NONE.
+    # atlas_entity_review: PR #7100 transport session deadline only; CALLS edge unchanged; AUTHORITY=NONE; POST_COUNT=0.
     # atlas_entity_review: PR #7079 CALLS edge unchanged; additional required GET item is internal to fresh-pretrade gate; AUTHORITY=NONE; POST_COUNT=0.
 - id: REL:r_full_core_path_calls_live_account_bound
   source: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
