@@ -17,8 +17,17 @@ from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 imp
     build_final_order_envelope_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_capital_guard_atomic_one_shot_v1 import (
+    FullCoreAtomicOneShotError,
     STATE_HALTED_UNRESOLVED,
     load_full_core_atomic_authorization_state_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_binding_v1 import (
+    bind_full_core_capital_guard_handoff_context_v1,
+    reset_full_core_capital_guard_handoff_context_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_join_v1 import (
+    ATOMIC_STATE_DIR_ENV_VAR,
+    JOIN_ENV_VAR,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_offline_provider_v1 import (
     OfflineExchangeFixtureV1,
@@ -499,6 +508,163 @@ class TestContextVarSafety:
             assert parent.get("FULL_CORE_CYCLE_LIFECYCLE_WIRING") == "INVOKED"
         finally:
             reset_full_core_cycle_lifecycle_wiring_invocation_v1(tokens)
+
+
+class TestLifecycleHookExceptionBoundary:
+    """Cycle Host must survive lifecycle failures after COMPLETED ledger write."""
+
+    def test_orchestrator_exception_fail_closed_not_invoked(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        sha = _origin_main()
+        req = _wiring_request(
+            sha=sha,
+            submit_kind=CycleSubmitInjectionKind.NOT_ATTEMPTED,
+            state_dir=tmp_path,
+        )
+        tokens = bind_full_core_cycle_lifecycle_wiring_invocation_v1(request=req)
+
+        def _boom(**_kwargs: object) -> None:
+            raise RuntimeError("ORCH_INJECTED_FAILURE")
+
+        monkeypatch.setattr(
+            "src.ops.full_core_live_path_composition_root_v1."
+            "full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1."
+            "orchestrate_post_submit_lifecycle_reconciliation_v1",
+            _boom,
+        )
+        try:
+            fields = maybe_record_full_core_governed_cycle_lifecycle_wiring_v1(
+                cycle=_cycle(envelope=_envelope()),
+                handoff=_handoff(sha=sha),
+            )
+        finally:
+            reset_full_core_cycle_lifecycle_wiring_invocation_v1(tokens)
+        assert fields["FULL_CORE_CYCLE_LIFECYCLE_WIRING"] == "FAIL_CLOSED"
+        assert fields.get("FULL_CORE_CYCLE_LIFECYCLE_WIRING_UNEXPECTED") == "true"
+        assert fields.get("FULL_CORE_CYCLE_LIFECYCLE_WIRING_EXCEPTION_TYPE") == "RuntimeError"
+        assert "ORCH_INJECTED_FAILURE" in str(
+            fields.get("FULL_CORE_CYCLE_LIFECYCLE_WIRING_EXCEPTION_MESSAGE") or ""
+        )
+        assert "FULL_CORE_CYCLE_LIFECYCLE_GHV_FORWARD" not in fields
+        assert "FULL_CORE_CYCLE_LIFECYCLE_RECON_OUTCOME" not in fields
+
+    def test_atomic_mark_exception_fail_closed(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        sha = _origin_main()
+        req = _wiring_request(
+            sha=sha,
+            submit_kind=CycleSubmitInjectionKind.UNKNOWN_TIMEOUT,
+            state_dir=tmp_path,
+            apply_durable=True,
+        )
+        tokens = bind_full_core_cycle_lifecycle_wiring_invocation_v1(request=req)
+
+        def _atomic_fail(**_kwargs: object) -> None:
+            raise FullCoreAtomicOneShotError("ATOMIC_PERSIST_INJECTED_FAILURE")
+
+        monkeypatch.setattr(
+            "src.ops.full_core_live_path_composition_root_v1."
+            "full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1."
+            "full_core_atomic_mark_submit_boundary_v1",
+            _atomic_fail,
+        )
+        try:
+            fields = maybe_record_full_core_governed_cycle_lifecycle_wiring_v1(
+                cycle=_cycle(envelope=_envelope()),
+                handoff=_handoff(sha=sha),
+            )
+        finally:
+            reset_full_core_cycle_lifecycle_wiring_invocation_v1(tokens)
+        assert fields["FULL_CORE_CYCLE_LIFECYCLE_WIRING"] == "FAIL_CLOSED"
+        assert fields.get("FULL_CORE_CYCLE_LIFECYCLE_WIRING_EXCEPTION_TYPE") == (
+            "FullCoreAtomicOneShotError"
+        )
+
+    def test_unexpected_join_exception_fail_closed(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        sha = _origin_main()
+        req = _wiring_request(
+            sha=sha,
+            submit_kind=CycleSubmitInjectionKind.NOT_ATTEMPTED,
+            state_dir=tmp_path,
+        )
+        tokens = bind_full_core_cycle_lifecycle_wiring_invocation_v1(request=req)
+
+        def _join_fail(**_kwargs: object) -> None:
+            raise ValueError("JOIN_INJECTED_FAILURE")
+
+        monkeypatch.setattr(
+            "src.ops.full_core_live_path_composition_root_v1."
+            "full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1."
+            "orchestrate_post_submit_lifecycle_reconciliation_v1",
+            _join_fail,
+        )
+        try:
+            fields = maybe_record_full_core_governed_cycle_lifecycle_wiring_v1(
+                cycle=_cycle(envelope=_envelope()),
+                handoff=_handoff(sha=sha),
+            )
+        finally:
+            reset_full_core_cycle_lifecycle_wiring_invocation_v1(tokens)
+        assert fields["FULL_CORE_CYCLE_LIFECYCLE_WIRING"] == "FAIL_CLOSED"
+        assert "JOIN_INJECTED_FAILURE" in str(
+            fields.get("FULL_CORE_CYCLE_LIFECYCLE_WIRING_EXCEPTION_MESSAGE") or ""
+        )
+
+    def test_cycle_host_returns_pre_external_after_lifecycle_crash(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        from src.ops.full_core_live_path_composition_root_v1 import (
+            full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1 as wiring_mod,
+        )
+        from tests.ops.test_full_core_current_productive_governed_cycle_orchestrator_v1 import (
+            _run,
+            _t2_enter,
+        )
+
+        sha = _origin_main()
+        atomic_dir = tmp_path / "atomic-cycle-host"
+        atomic_dir.mkdir()
+        monkeypatch.setenv(JOIN_ENV_VAR, "OFFLINE_STUB")
+        monkeypatch.setenv(ATOMIC_STATE_DIR_ENV_VAR, str(atomic_dir))
+        handoff_reset = bind_full_core_capital_guard_handoff_context_v1(_handoff(sha=sha))
+        wiring_req = _wiring_request(
+            sha=sha,
+            submit_kind=CycleSubmitInjectionKind.NOT_ATTEMPTED,
+            state_dir=atomic_dir,
+        )
+        wiring_reset = bind_full_core_cycle_lifecycle_wiring_invocation_v1(request=wiring_req)
+
+        def _run_crash(**_kwargs: object) -> None:
+            raise RuntimeError("CYCLE_HOST_LIFECYCLE_RUN_CRASH")
+
+        monkeypatch.setattr(
+            wiring_mod,
+            "run_full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1",
+            _run_crash,
+        )
+        try:
+            result = _run(tmp_path, t2_cycle_dispatch=_t2_enter)
+        finally:
+            reset_full_core_cycle_lifecycle_wiring_invocation_v1(wiring_reset)
+            reset_full_core_capital_guard_handoff_context_v1(handoff_reset)
+        assert result.disposition == DISPOSITION_PRE_EXTERNAL_EFFECT
+        assert result.ledger_state == "COMPLETED"
+        assert result.post_count == 0
+        assert result.extra.get("FULL_CORE_CYCLE_LIFECYCLE_WIRING") == "FAIL_CLOSED"
+        assert "FULL_CORE_CYCLE_LIFECYCLE_GHV_FORWARD" not in result.extra
+        assert "FULL_CORE_CYCLE_LIFECYCLE_RECON_OUTCOME" not in result.extra
+        ledger = (tmp_path / "evidence" / "governed_cycle_orchestrator_ledger_v1.json").read_text(
+            encoding="utf-8"
+        )
+        assert "COMPLETED" in ledger
+        assert result.extra.get("FULL_CORE_CYCLE_LIFECYCLE_WIRING_UNEXPECTED") == "true"
+        assert "CYCLE_HOST_LIFECYCLE_RUN_CRASH" in str(
+            result.extra.get("FULL_CORE_CYCLE_LIFECYCLE_WIRING_EXCEPTION_MESSAGE") or ""
+        )
 
 
 class TestAdversarialContractReview:

@@ -503,6 +503,22 @@ def run_full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1(
     )
 
 
+def _fail_closed_lifecycle_wiring_fields_for_exception_v1(exc: BaseException) -> dict[str, str]:
+    """Record lifecycle wiring failure without implying post-submit reconciliation success."""
+
+    message = str(exc).strip()
+    if len(message) > 500:
+        message = message[:497] + "..."
+    fields: dict[str, str] = {
+        "FULL_CORE_CYCLE_LIFECYCLE_WIRING": "FAIL_CLOSED",
+        "FULL_CORE_CYCLE_LIFECYCLE_WIRING_UNEXPECTED": "true",
+        "FULL_CORE_CYCLE_LIFECYCLE_WIRING_EXCEPTION_TYPE": type(exc).__name__,
+    }
+    if message:
+        fields["FULL_CORE_CYCLE_LIFECYCLE_WIRING_EXCEPTION_MESSAGE"] = message
+    return fields
+
+
 def maybe_record_full_core_governed_cycle_lifecycle_wiring_v1(
     *,
     cycle: CurrentProductiveGovernedCycleResultV1,
@@ -532,6 +548,8 @@ def maybe_record_full_core_governed_cycle_lifecycle_wiring_v1(
             "FULL_CORE_CYCLE_LIFECYCLE_WIRING": "FAIL_CLOSED",
             "FULL_CORE_CYCLE_LIFECYCLE_WIRING_REASON": str(exc),
         }
+    except Exception as exc:
+        return _fail_closed_lifecycle_wiring_fields_for_exception_v1(exc)
     fields = {
         "FULL_CORE_CYCLE_LIFECYCLE_WIRING": "INVOKED",
         "FULL_CORE_CYCLE_LIFECYCLE_WIRING_MODE": result.wiring_mode,
