@@ -76,6 +76,6 @@ Phase 7 is evidence-bound before Phase 8 (K1 + scoped read-only GET):
 - **Derived session ceiling (not a historical Session-SSOT constant):**  
   `VALIDATION_SESSION_MONOTONIC_WALLCLOCK_SECONDS = MAX_VALIDATION_GET_REQUESTS × (CONNECT_TIMEOUT_SECONDS + VALIDATION_TIMEOUT_SECONDS)`  
   At CURRENT constants: **8 × (10 + 20) = 240 seconds** worst-case charged-GET budget.
-- Phase-8 validation performs **two** GET probes (`account/config`, `orders-pending`). The request **upper bound** remains **8** (`MAX_VALIDATION_GET_REQUESTS`).
+- Phase-8 validation performs **two** GET probes (`account&#47;config`, `orders-pending`). The request **upper bound** remains **8** (`MAX_VALIDATION_GET_REQUESTS`).
 - `HARD_TIMEOUT_GUARANTEE_SCOPE=PHASE8_GATES_AND_HTTP_ONLY`: monotonic deadline gates entry and HTTP; connect/read clamp to remaining budget; **no retry** per GET.
 - **Residual limit:** in-flight macOS Keychain acquisition is **not** reliably interruptible; no full hard-deadline guarantee; **no** guaranteed cleanup if a native Keychain call blocks indefinitely. Normal K1 context-manager exit retains existing wipe semantics.
