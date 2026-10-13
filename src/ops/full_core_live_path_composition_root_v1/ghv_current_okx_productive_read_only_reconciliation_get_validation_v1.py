@@ -8,6 +8,7 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 
 from __future__ import annotations
 
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
@@ -24,6 +25,10 @@ from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_
     METHOD_GET,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_orchestrated_post_submit_lifecycle_reconciliation_v1 import (
+    ACCEPTED_OFFLINE_IMPLEMENTATION_GO,
+    ACCEPTED_PRIVATE_GET_GO,
+    ACCEPTED_WORK_PACKAGE_OWNER_GO,
+    K1_SESSION_OWNER_GO,
     RECONCILIATION_READ_ONLY_GET_ALLOWLIST,
     WORK_PACKAGE_ID,
     FullCoreOrchestratedLifecycleReconciliationError,
@@ -35,6 +40,7 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconcil
 )
 from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
     AUTHORIZED_HOST,
+    CONNECT_TIMEOUT_SECONDS,
     FullCoreProductiveReadOnlyGetTransportV1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_unknown_post_attempt_read_only_reconciliation_v1 import (
@@ -50,9 +56,148 @@ LIVE_POST_DISABLED = True
 ORDER_SUBMISSION_DISABLED = True
 AUTO_RESUBMIT = False
 
+# Monotonic session ceiling derived only from existing GET budgets (no extra slack).
+VALIDATION_SESSION_MONOTONIC_WALLCLOCK_SECONDS = float(
+    MAX_VALIDATION_GET_REQUESTS * (CONNECT_TIMEOUT_SECONDS + VALIDATION_TIMEOUT_SECONDS)
+)
+
+DISPOSITION_STOP_BEFORE_NETWORK = "STOP_BEFORE_NETWORK"
+DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK = "STOP_BEFORE_KEYCHAIN_AND_NETWORK"
+DISPOSITION_SESSION_WALLCLOCK_EXCEEDED = "SESSION_WALLCLOCK_EXCEEDED"
+
+# macOS Keychain acquisition has no interruptible wall-clock bound in CURRENT; deadline
+# gates entry and all HTTP; an in-flight Keychain call may block past the deadline.
+HARD_TIMEOUT_GUARANTEE_SCOPE = "PHASE8_GATES_AND_HTTP_ONLY"
+
 
 class GhvOkxProductiveReadOnlyValidationError(RuntimeError):
     """Fail-closed productive read-only validation violation."""
+
+
+@dataclass(frozen=True)
+class Phase8CliOwnerAuthorizationV1:
+    """Explicit CLI Owner-GO tokens. None means operator did not authorize."""
+
+    work_package_owner_go: str | None
+    private_get_go: str | None
+    offline_implementation_go: str | None
+    k1_session_owner_go: str | None
+
+
+@dataclass(frozen=True)
+class Phase8OwnerAuthorizationDecisionV1:
+    disposition: str
+    detail: str
+
+    def to_dict(self) -> dict[str, str]:
+        return {"disposition": self.disposition, "detail": self.detail}
+
+
+@dataclass(frozen=True)
+class ProductiveOkxReadOnlyValidationSessionDeadlineV1:
+    """Monotonic wall-clock budget for one Phase-8 validation session."""
+
+    started_at_monotonic: float
+    budget_seconds: float
+
+    @classmethod
+    def start(cls, *, budget_seconds: float) -> ProductiveOkxReadOnlyValidationSessionDeadlineV1:
+        if budget_seconds <= 0:
+            raise GhvOkxProductiveReadOnlyValidationError("SESSION_BUDGET_NON_POSITIVE")
+        return cls(started_at_monotonic=time.monotonic(), budget_seconds=float(budget_seconds))
+
+    def elapsed_seconds(self) -> float:
+        return max(0.0, time.monotonic() - self.started_at_monotonic)
+
+    def remaining_seconds(self) -> float:
+        return self.budget_seconds - self.elapsed_seconds()
+
+    def assert_within_budget_v1(self) -> None:
+        if self.remaining_seconds() <= 0:
+            raise GhvOkxProductiveReadOnlyValidationError("SESSION_WALLCLOCK_EXCEEDED")
+
+    def bounded_connect_timeout_seconds_v1(self, *, default_connect_seconds: float) -> float:
+        self.assert_within_budget_v1()
+        remaining = self.remaining_seconds()
+        return min(float(default_connect_seconds), remaining)
+
+    def bounded_read_timeout_seconds_v1(self, *, default_read_seconds: float) -> float:
+        self.assert_within_budget_v1()
+        remaining = self.remaining_seconds()
+        return min(float(default_read_seconds), remaining)
+
+    def to_evidence_dict_v1(self) -> dict[str, float | str]:
+        return {
+            "budget_seconds": self.budget_seconds,
+            "elapsed_seconds": round(self.elapsed_seconds(), 6),
+            "remaining_seconds": round(max(0.0, self.remaining_seconds()), 6),
+            "hard_timeout_guarantee_scope": HARD_TIMEOUT_GUARANTEE_SCOPE,
+        }
+
+
+def evaluate_phase8_pre_network_owner_authorization_v1(
+    auth: Phase8CliOwnerAuthorizationV1,
+) -> Phase8OwnerAuthorizationDecisionV1:
+    """Phase-7 gate inputs must be explicitly supplied (no CLI GRANTED defaults)."""
+
+    missing: list[str] = []
+    if auth.work_package_owner_go is None or not str(auth.work_package_owner_go).strip():
+        missing.append("work_package_owner_go")
+    if auth.private_get_go is None or not str(auth.private_get_go).strip():
+        missing.append("private_get_go")
+    if auth.offline_implementation_go is None or not str(auth.offline_implementation_go).strip():
+        missing.append("offline_implementation_go")
+    if missing:
+        return Phase8OwnerAuthorizationDecisionV1(
+            disposition=DISPOSITION_STOP_BEFORE_NETWORK,
+            detail=f"OWNER_GO_REQUIRED:{','.join(missing)}",
+        )
+    if str(auth.work_package_owner_go).strip() != ACCEPTED_WORK_PACKAGE_OWNER_GO:
+        return Phase8OwnerAuthorizationDecisionV1(
+            disposition=DISPOSITION_STOP_BEFORE_NETWORK,
+            detail="WORK_PACKAGE_OWNER_GO_DENIED",
+        )
+    if str(auth.private_get_go).strip() != ACCEPTED_PRIVATE_GET_GO:
+        return Phase8OwnerAuthorizationDecisionV1(
+            disposition=DISPOSITION_STOP_BEFORE_NETWORK,
+            detail="PRIVATE_GET_GO_DENIED",
+        )
+    if str(auth.offline_implementation_go).strip() != ACCEPTED_OFFLINE_IMPLEMENTATION_GO:
+        return Phase8OwnerAuthorizationDecisionV1(
+            disposition=DISPOSITION_STOP_BEFORE_NETWORK,
+            detail="OFFLINE_IMPLEMENTATION_GO_DENIED",
+        )
+    return Phase8OwnerAuthorizationDecisionV1(
+        disposition="OWNER_AUTHORIZATION_OK",
+        detail="PHASE7_OWNER_GOS_EXPLICIT",
+    )
+
+
+def evaluate_phase8_k1_network_owner_authorization_v1(
+    auth: Phase8CliOwnerAuthorizationV1,
+) -> Phase8OwnerAuthorizationDecisionV1:
+    """K1 + HTTP path requires explicit K1 session Owner-GO (no implicit GRANTED)."""
+
+    pre = evaluate_phase8_pre_network_owner_authorization_v1(auth)
+    if pre.disposition != "OWNER_AUTHORIZATION_OK":
+        return Phase8OwnerAuthorizationDecisionV1(
+            disposition=DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK,
+            detail=pre.detail,
+        )
+    if auth.k1_session_owner_go is None or not str(auth.k1_session_owner_go).strip():
+        return Phase8OwnerAuthorizationDecisionV1(
+            disposition=DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK,
+            detail="K1_SESSION_OWNER_GO_REQUIRED",
+        )
+    if str(auth.k1_session_owner_go).strip() != K1_SESSION_OWNER_GO:
+        return Phase8OwnerAuthorizationDecisionV1(
+            disposition=DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK,
+            detail="K1_SESSION_OWNER_GO_DENIED",
+        )
+    return Phase8OwnerAuthorizationDecisionV1(
+        disposition="OWNER_AUTHORIZATION_OK",
+        detail="K1_AND_NETWORK_OWNER_GOS_EXPLICIT",
+    )
 
 
 @dataclass(frozen=True)
@@ -233,6 +378,7 @@ def run_bounded_productive_okx_read_only_validation_session_v1(
     pretrade_decision_id: str,
     instrument_id: str,
     inst_type: str = "SWAP",
+    session_deadline: ProductiveOkxReadOnlyValidationSessionDeadlineV1 | None = None,
 ) -> ProductiveOkxReadOnlyValidationSessionResultV1:
     """Phase 8: bounded GET session (auth + structure probes only)."""
 
@@ -241,10 +387,14 @@ def run_bounded_productive_okx_read_only_validation_session_v1(
     inst = str(instrument_id or "").strip()
     if not inst:
         raise GhvOkxProductiveReadOnlyValidationError("INSTRUMENT_ID_REQUIRED")
+    if session_deadline is not None:
+        session_deadline.assert_within_budget_v1()
 
     surfaces: list[str] = []
 
     def _get(path: str, query: dict[str, str]) -> Any:
+        if session_deadline is not None:
+            session_deadline.assert_within_budget_v1()
         _assert_endpoint_on_allowlist_v1(path)
         if transport.request_count >= MAX_VALIDATION_GET_REQUESTS:
             raise GhvOkxProductiveReadOnlyValidationError("MAX_VALIDATION_GET_BUDGET_EXCEEDED")
@@ -254,6 +404,7 @@ def run_bounded_productive_okx_read_only_validation_session_v1(
             auth_required=True,
             pretrade_decision_id=pretrade_decision_id,
             get_cache_policy=GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+            session_deadline=session_deadline,
         )
         if str(result.method or "").upper() != METHOD_GET:
             raise GhvOkxProductiveReadOnlyValidationError("NON_GET_METHOD_FORBIDDEN")
@@ -300,14 +451,24 @@ __all__ = [
     "AUTO_RESUBMIT",
     "CONTRACT_ID",
     "DEMO_MODE_DISABLED",
+    "DISPOSITION_SESSION_WALLCLOCK_EXCEEDED",
+    "DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK",
+    "DISPOSITION_STOP_BEFORE_NETWORK",
+    "HARD_TIMEOUT_GUARANTEE_SCOPE",
     "LIVE_POST_DISABLED",
     "MAX_VALIDATION_GET_REQUESTS",
     "ORDER_SUBMISSION_DISABLED",
+    "Phase8CliOwnerAuthorizationV1",
+    "Phase8OwnerAuthorizationDecisionV1",
     "ProductiveGetSafetyGateReportV1",
+    "ProductiveOkxReadOnlyValidationSessionDeadlineV1",
     "ProductiveOkxReadOnlyValidationSessionResultV1",
     "READ_ONLY_METHOD_ENFORCEMENT",
+    "VALIDATION_SESSION_MONOTONIC_WALLCLOCK_SECONDS",
     "WORK_PACKAGE_ID",
     "build_bounded_read_only_get_endpoint_v1",
+    "evaluate_phase8_k1_network_owner_authorization_v1",
+    "evaluate_phase8_pre_network_owner_authorization_v1",
     "evaluate_productive_get_safety_gates_v1",
     "run_bounded_productive_okx_read_only_validation_session_v1",
 ]

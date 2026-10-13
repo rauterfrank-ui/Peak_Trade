@@ -47,6 +47,7 @@ PHASE7_REQUIRED_REVIEW_CONTRACT_PATHS_V1: frozenset[str] = frozenset(
         "src/ops/full_core_live_path_composition_root_v1/full_core_orchestrated_post_submit_lifecycle_reconciliation_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/ghv_current_okx_phase7_readiness_adjudication_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py",
+        "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py",
     }
 )
 
