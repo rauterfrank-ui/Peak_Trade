@@ -1,23 +1,26 @@
 schema_version: system_atlas.v1
 pending_change: true
-introduced_by: CHANGE:pr_7099_phase7_evidence_binding_v1
-modified_by: CHANGE:pr_7099_phase7_evidence_binding_v1
+introduced_by: CHANGE:pr_7100_okx_phase8_auth_session_boundary_v1
+modified_by: CHANGE:pr_7100_okx_phase8_auth_session_boundary_v1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #7099: Phase-7 evidence-bound productive OKX GET validation gates (offline reproof +
-  adversarial manifest/review); post-squash review baseline ancestor semantics; spec cross-references
-  only for Full-Core reconciliation entities; no productive provider wiring; GHV_AUTHORITY=NONE;
+  PR #7100: Phase-8 OKX productive read-only GET authorization and session boundary remediation
+  (explicit Owner-GO CLI, derived 240s session deadline on transport); spec/evidence cross-references
+  only for Full-Core reconciliation entities; no productive provider wiring expansion; GHV_AUTHORITY=NONE;
   AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
 changed_entities:
+  - GATE:full_core_fresh_pretrade_runtime_get_v1
   - RUNTIME_COMPONENT:full_core_exchange_reconciliation_integration_v1
   - RUNTIME_COMPONENT:full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1
+  - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
   - RUNTIME_COMPONENT:full_core_orchestrated_post_submit_lifecycle_reconciliation_v1
   - RUNTIME_COMPONENT:full_core_post_completed_hook_evidence_v1
   - RUNTIME_COMPONENT:full_core_post_submit_exchange_reconciliation_lifecycle_join_v1
   - RUNTIME_COMPONENT:ghv_current_okx_phase7_readiness_adjudication_v1
   - RUNTIME_COMPONENT:ghv_current_okx_productive_read_only_reconciliation_get_validation_v1
-changed_relations: []
+changed_relations:
+  - REL:r_full_core_path_calls_fresh_pretrade_runtime_get
 changed_closures: []
 changed_wiring: []
 changed_venue: []

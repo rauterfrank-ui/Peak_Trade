@@ -1485,12 +1485,13 @@ entities:
   - tests/ops/test_full_core_capital_guard_offline_reproof_integration_v1.py
   notes: Independent fail-closed guard at PRE_EXTERNAL; default join DISABLED; OFFLINE_STUB proofs only; caps UNRATIFIED; no POST; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_exchange_reconciliation_integration_v1
+  # atlas_entity_review: PR #7100 spec cross-reference Phase-8 authorization/session boundary only; reconciliation integration semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Full-Core exchange reconciliation integration v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-  modified_by: CHANGE:pr_7099_phase7_evidence_binding_v1
+  modified_by: CHANGE:pr_7100_okx_phase8_auth_session_boundary_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py
   - src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_offline_provider_v1.py
@@ -1503,12 +1504,13 @@ entities:
   - tests/ops/test_full_core_exchange_reconciliation_okx_read_only_provider_v1.py
   notes: Offline post-submit reconciliation pipeline; consumed by lifecycle join/orchestrator; OFFLINE_STUB + OKX injected adapter; PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED by default; no import-time network; no POST; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_post_submit_exchange_reconciliation_lifecycle_join_v1
+  # atlas_entity_review: PR #7100 spec cross-reference Phase-8 authorization/session boundary only; join semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Full-Core post-submit lifecycle reconciliation join v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-  modified_by: CHANGE:pr_7099_phase7_evidence_binding_v1
+  modified_by: CHANGE:pr_7100_okx_phase8_auth_session_boundary_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py
   evidence_sources:
@@ -1516,12 +1518,13 @@ entities:
   - tests/ops/test_full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py
   notes: Cap 11.1 post-submit join to LocalSubmitOutcome to reconciliation FSM to optional atomic recovery; explicit invocation; no POST; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_orchestrated_post_submit_lifecycle_reconciliation_v1
+  # atlas_entity_review: PR #7100 spec cross-reference Phase-8 authorization/session boundary only; orchestration semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Full-Core orchestrated post-submit lifecycle reconciliation v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-  modified_by: CHANGE:pr_7099_phase7_evidence_binding_v1
+  modified_by: CHANGE:pr_7100_okx_phase8_auth_session_boundary_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/full_core_orchestrated_post_submit_lifecycle_reconciliation_v1.py
   evidence_sources:
@@ -1529,13 +1532,14 @@ entities:
   - tests/ops/test_full_core_orchestrated_post_submit_lifecycle_reconciliation_v1.py
   notes: Governed orchestration entry (offline/injected/scoped read-only); Owner-GO gates; no cycle auto-start; no POST; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1
+  # atlas_entity_review: PR #7100 spec cross-reference Phase-8 authorization/session boundary only; wiring semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7099 spec cross-reference Phase-7 evidence gates only; wiring semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Full-Core governed Cycle Host post-submit lifecycle wiring v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-  modified_by: CHANGE:pr_7099_phase7_evidence_binding_v1
+  modified_by: CHANGE:pr_7100_okx_phase8_auth_session_boundary_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py
@@ -1544,13 +1548,14 @@ entities:
   - tests/ops/test_full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py
   notes: Explicit offline Cycle Host to lifecycle orchestration join; default DISABLED; ContextVar invocation only; no import-time GET/POST; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_post_completed_hook_evidence_v1
+  # atlas_entity_review: PR #7100 spec cross-reference Phase-8 authorization/session boundary only; hook durability unchanged; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7099 spec cross-reference Phase-7 evidence gates only; hook durability unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Full-Core post-COMPLETED hook evidence durability v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-  modified_by: CHANGE:pr_7099_phase7_evidence_binding_v1
+  modified_by: CHANGE:pr_7100_okx_phase8_auth_session_boundary_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/full_core_post_completed_hook_evidence_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py
@@ -1565,22 +1570,23 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-  modified_by: CHANGE:pr_7099_phase7_evidence_binding_v1
+  modified_by: CHANGE:pr_7100_okx_phase8_auth_session_boundary_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py
   - src/ops/full_core_live_path_composition_root_v1/ghv_current_okx_phase7_readiness_adjudication_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py
   - scripts/ops/run_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py
   evidence_sources:
   - docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md
   - tests/ops/test_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py
-  notes: Phase-7 evidence-bound GET validation gates; bounded session tooling; explicit Owner-GO; no import-time network; ATLAS_AUTHORITY=NONE.
+  notes: Phase-7/8 evidence-bound GET validation; explicit Owner-GO CLI (no GRANTED defaults); derived session deadline on transport; no import-time network; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:ghv_current_okx_phase7_readiness_adjudication_v1
   kind: RUNTIME_COMPONENT
   name: GHV OKX Phase-7 readiness adjudication v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-  modified_by: CHANGE:pr_7099_phase7_evidence_binding_v1
+  modified_by: CHANGE:pr_7100_okx_phase8_auth_session_boundary_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/ghv_current_okx_phase7_readiness_adjudication_v1.py
   evidence_sources:
@@ -5128,6 +5134,7 @@ entities:
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
   # atlas_entity_review: PR #7069 pre-completion P/S/T run evidence retirement; reference/fixture rebind only; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  # atlas_entity_review: PR #7100 Phase-8 OKX validation Owner-GO + session deadline on productive read-only GET transport; fail-closed CLI; no POST/Live admission change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7098 per-invocation S5 recovery observation on governed cycle result extras; no trading/POST/PRE_EXTERNAL authority change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7092 PRE_EXTERNAL capital guard binding/join hook in orchestrator + closure OBSERVE_ONLY; canonical_price_provenance synthetic-close injection; default join DISABLED; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7091 §11.13.5 canary capital guard consumer wiring in submit_transport only; existing serialize import unchanged; no Full-Core trading/MV2/PRE_EXTERNAL semantic change; AUTHORITY=NONE; POST_COUNT=0.
@@ -5146,7 +5153,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7098_s5_recovery_entry_binding_v1
+  modified_by: CHANGE:pr_7100_okx_phase8_auth_session_boundary_v1
   source_paths:
   - src/ops/capability_11_long_running_testnet_proven_prep_eval_v1/verifier_v1.py
   - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_net_mode_posside_first_party_census_v1.py
@@ -5864,12 +5871,13 @@ entities:
   - docs/ops/specs/FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM_V1.md
   notes: Joins FullCoreLivePathInputV1.owner_go into Full-Core admission as typed permit evidence. Exact token match only. Does not arm Live. Does not GET. Does not admit. Does not override FILEGATE. Does not consume the token. Canary OWNER_GO_EXECUTE is mismatch. 11.2.1.Q does not consume OWNER_ONE_SHOT as Live arming. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #7079 indirect topology touch via fresh-pretrade GET composition only; no permit semantics change; AUTHORITY=NONE; POST_COUNT=0.
 - id: GATE:full_core_fresh_pretrade_runtime_get_v1
+  # atlas_entity_review: PR #7100 session deadline clamping on productive read-only GET transport only; gate/admission semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: GATE
   name: Full-core fresh pretrade runtime GET seam v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7079_conversion_pair_monetary_metadata_closure_v1
+  modified_by: CHANGE:pr_7100_okx_phase8_auth_session_boundary_v1
   fail_closed: true
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py

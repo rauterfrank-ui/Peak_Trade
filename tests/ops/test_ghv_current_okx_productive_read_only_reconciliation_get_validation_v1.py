@@ -9,7 +9,7 @@ import sys
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -24,15 +24,39 @@ from src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_phase7_read
     PHASE7_ADVERSARIAL_REVIEW_MANIFEST_RELPATH,
     PHASE7_OFFLINE_REPROOF_TEST_OWNERS_V1,
     Phase7ReadinessAdjudicationError,
+    Phase7ReadinessAdjudicationV1,
     adjudicate_ghv_current_okx_phase7_readiness_v1,
     adjudicate_phase7_adversarial_contract_review_v1,
     compute_reviewed_contract_paths_sha256_v1,
     execute_phase7_offline_reproof_pytest_v1,
     verify_current_baseline_checkout_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.full_core_orchestrated_post_submit_lifecycle_reconciliation_v1 import (
+    ACCEPTED_OFFLINE_IMPLEMENTATION_GO,
+    ACCEPTED_PRIVATE_GET_GO,
+    ACCEPTED_WORK_PACKAGE_OWNER_GO,
+    K1_SESSION_OWNER_GO,
+)
 from src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_productive_read_only_reconciliation_get_validation_v1 import (
+    DISPOSITION_SESSION_WALLCLOCK_EXCEEDED,
+    DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK,
+    DISPOSITION_STOP_BEFORE_NETWORK,
+    GhvOkxProductiveReadOnlyValidationError,
+    MAX_VALIDATION_GET_REQUESTS,
+    Phase8CliOwnerAuthorizationV1,
+    ProductiveOkxReadOnlyValidationSessionDeadlineV1,
+    VALIDATION_SESSION_MONOTONIC_WALLCLOCK_SECONDS,
     build_bounded_read_only_get_endpoint_v1,
+    evaluate_phase8_k1_network_owner_authorization_v1,
+    evaluate_phase8_pre_network_owner_authorization_v1,
     evaluate_productive_get_safety_gates_v1,
+    run_bounded_productive_okx_read_only_validation_session_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    FreshPretradeGetTransportResultV1,
+    GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+    METHOD_GET,
+    TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
 )
 from src.ops.full_core_live_path_composition_root_v1.checkout_independent_credential_okx_venue_auth_headers_v1 import (
     _sign_request_path_from_url,
@@ -103,12 +127,21 @@ def _exact_baseline_checkout_v1() -> bool:
     return _head_sha() == origin
 
 
+def _explicit_cli_auth() -> Phase8CliOwnerAuthorizationV1:
+    return Phase8CliOwnerAuthorizationV1(
+        work_package_owner_go=ACCEPTED_WORK_PACKAGE_OWNER_GO,
+        private_get_go=ACCEPTED_PRIVATE_GET_GO,
+        offline_implementation_go=ACCEPTED_OFFLINE_IMPLEMENTATION_GO,
+        k1_session_owner_go=K1_SESSION_OWNER_GO,
+    )
+
+
 def _gate_request(origin_sha: str) -> PostSubmitLifecycleReconciliationOrchestrationRequestV1:
     return PostSubmitLifecycleReconciliationOrchestrationRequestV1(
         mode=LifecycleReconciliationOrchestrationMode.PRODUCTIVE_OKX_SCOPED_READ_ONLY,
-        work_package_owner_go="GRANTED",
-        private_get_go="GRANTED_SCOPED_READ_ONLY",
-        offline_implementation_go="GRANTED",
+        work_package_owner_go=ACCEPTED_WORK_PACKAGE_OWNER_GO,
+        private_get_go=ACCEPTED_PRIVATE_GET_GO,
+        offline_implementation_go=ACCEPTED_OFFLINE_IMPLEMENTATION_GO,
         origin_main_sha=origin_sha,
         decision_outcome="VALIDATION_ONLY",
         venue_plan_identity="validation-vp",
@@ -475,6 +508,12 @@ def test_runner_skip_network_disposition(capsys: pytest.CaptureFixture[str]) -> 
         "--skip-network",
         "--origin-main-sha",
         _declared_origin_main_sha_v1(),
+        "--work-package-owner-go",
+        ACCEPTED_WORK_PACKAGE_OWNER_GO,
+        "--private-get-go",
+        ACCEPTED_PRIVATE_GET_GO,
+        "--offline-implementation-go",
+        ACCEPTED_OFFLINE_IMPLEMENTATION_GO,
     ]
     with (
         patch(
@@ -489,3 +528,619 @@ def test_runner_skip_network_disposition(capsys: pytest.CaptureFixture[str]) -> 
     payload = json.loads(capsys.readouterr().out)
     assert payload["DISPOSITION"] == "PHASE_7_PASS_NETWORK_SKIPPED"
     assert payload["PHASE_7_SAFETY_GATES"]["overall"] == "PASS"
+    assert payload["KEYCHAIN_ACCESS_COUNT"] == 0
+    assert payload["PRIVATE_GET_COUNT"] == 0
+
+
+def test_no_owner_go_params_stop_before_network() -> None:
+    decision = evaluate_phase8_pre_network_owner_authorization_v1(
+        Phase8CliOwnerAuthorizationV1(None, None, None, None)
+    )
+    assert decision.disposition == DISPOSITION_STOP_BEFORE_NETWORK
+    assert "OWNER_GO_REQUIRED" in decision.detail
+
+
+def test_missing_private_get_go_stop_before_network() -> None:
+    auth = Phase8CliOwnerAuthorizationV1(
+        work_package_owner_go=ACCEPTED_WORK_PACKAGE_OWNER_GO,
+        private_get_go=None,
+        offline_implementation_go=ACCEPTED_OFFLINE_IMPLEMENTATION_GO,
+        k1_session_owner_go=None,
+    )
+    decision = evaluate_phase8_pre_network_owner_authorization_v1(auth)
+    assert decision.disposition == DISPOSITION_STOP_BEFORE_NETWORK
+
+
+def test_missing_k1_go_stop_before_keychain() -> None:
+    auth = Phase8CliOwnerAuthorizationV1(
+        work_package_owner_go=ACCEPTED_WORK_PACKAGE_OWNER_GO,
+        private_get_go=ACCEPTED_PRIVATE_GET_GO,
+        offline_implementation_go=ACCEPTED_OFFLINE_IMPLEMENTATION_GO,
+        k1_session_owner_go=None,
+    )
+    decision = evaluate_phase8_k1_network_owner_authorization_v1(auth)
+    assert decision.disposition == DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK
+
+
+def test_invalid_owner_token_fail_closed() -> None:
+    auth = Phase8CliOwnerAuthorizationV1(
+        work_package_owner_go="DENIED",
+        private_get_go=ACCEPTED_PRIVATE_GET_GO,
+        offline_implementation_go=ACCEPTED_OFFLINE_IMPLEMENTATION_GO,
+        k1_session_owner_go=K1_SESSION_OWNER_GO,
+    )
+    assert (
+        evaluate_phase8_pre_network_owner_authorization_v1(auth).disposition
+        == DISPOSITION_STOP_BEFORE_NETWORK
+    )
+    assert (
+        evaluate_phase8_k1_network_owner_authorization_v1(auth).disposition
+        == DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK
+    )
+
+
+def test_explicit_valid_owner_authorization_ok() -> None:
+    decision = evaluate_phase8_k1_network_owner_authorization_v1(_explicit_cli_auth())
+    assert decision.disposition == "OWNER_AUTHORIZATION_OK"
+
+
+@pytest.mark.parametrize(
+    ("k1_token", "expected_detail"),
+    [
+        (f" {K1_SESSION_OWNER_GO}", "K1_SESSION_OWNER_GO_DENIED"),
+        (f"{K1_SESSION_OWNER_GO} ", "K1_SESSION_OWNER_GO_DENIED"),
+        ("OWNER_GO_DENIED_LITERAL", "K1_SESSION_OWNER_GO_DENIED"),
+    ],
+)
+def test_k1_owner_go_exact_literal_no_strip(k1_token: str, expected_detail: str) -> None:
+    auth = Phase8CliOwnerAuthorizationV1(
+        work_package_owner_go=ACCEPTED_WORK_PACKAGE_OWNER_GO,
+        private_get_go=ACCEPTED_PRIVATE_GET_GO,
+        offline_implementation_go=ACCEPTED_OFFLINE_IMPLEMENTATION_GO,
+        k1_session_owner_go=k1_token,
+    )
+    decision = evaluate_phase8_k1_network_owner_authorization_v1(auth)
+    assert decision.disposition == DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK
+    assert decision.detail == expected_detail
+
+
+def test_k1_missing_owner_go_required_detail() -> None:
+    auth = Phase8CliOwnerAuthorizationV1(
+        work_package_owner_go=ACCEPTED_WORK_PACKAGE_OWNER_GO,
+        private_get_go=ACCEPTED_PRIVATE_GET_GO,
+        offline_implementation_go=ACCEPTED_OFFLINE_IMPLEMENTATION_GO,
+        k1_session_owner_go=None,
+    )
+    decision = evaluate_phase8_k1_network_owner_authorization_v1(auth)
+    assert decision.disposition == DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK
+    assert decision.detail == "K1_SESSION_OWNER_GO_REQUIRED"
+
+
+def test_k1_whitespace_padded_runner_never_opens_keychain(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    module = _load_runner_module_v1()
+    k1_open = MagicMock()
+    backend_resolve = MagicMock()
+    argv = _network_runner_argv_v1()
+    argv[-1] = f" {K1_SESSION_OWNER_GO}"
+    with (
+        _phase7_pass_patches(),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.resolve_macos_security_framework_k1_lookup_backend_v1",
+            backend_resolve,
+        ),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.open_current_productive_k1_opaque_signing_handle_session_v1",
+            k1_open,
+        ),
+        patch.object(sys, "argv", argv),
+    ):
+        exit_code = module._main()
+    assert exit_code == 2
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["DISPOSITION"] == DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK
+    assert payload["K1_NETWORK_OWNER_AUTHORIZATION"]["detail"] == "K1_SESSION_OWNER_GO_DENIED"
+    assert payload["KEYCHAIN_ACCESS_COUNT"] == 0
+    assert payload["PRIVATE_GET_COUNT"] == 0
+    assert payload["POST_COUNT"] == 0
+    backend_resolve.assert_not_called()
+    k1_open.assert_not_called()
+
+
+def test_k1_exact_literal_runner_reaches_keychain_session_mock(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    module = _load_runner_module_v1()
+    k1_entered: list[int] = []
+
+    @contextmanager
+    def _k1_session(*_args, **_kwargs) -> Iterator[MagicMock]:
+        k1_entered.append(1)
+        yield MagicMock(signing_handle=MagicMock())
+
+    transport = MagicMock()
+    transport.transport_class = "FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1"
+    session_result = MagicMock(
+        disposition="VALIDATION_PASS",
+        get_request_count=2,
+        to_dict=lambda: {"disposition": "VALIDATION_PASS", "get_request_count": 2},
+    )
+
+    with (
+        _phase7_pass_patches(),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.resolve_macos_security_framework_k1_lookup_backend_v1",
+            return_value=MagicMock(),
+        ),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.open_current_productive_k1_opaque_signing_handle_session_v1",
+            _k1_session,
+        ),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1.FullCoreProductiveReadOnlyGetTransportV1",
+            return_value=transport,
+        ),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.run_bounded_productive_okx_read_only_validation_session_v1",
+            return_value=session_result,
+        ),
+        patch.object(sys, "argv", _network_runner_argv_v1()),
+    ):
+        exit_code = module._main()
+    assert exit_code == 0
+    assert len(k1_entered) == 1
+    raw = capsys.readouterr().out
+    payload = json.loads(raw)
+    assert payload["DISPOSITION"] == "VALIDATION_PASS"
+    assert '"apikey":' not in raw.lower()
+
+
+def test_session_deadline_exceeded_before_use() -> None:
+    deadline = ProductiveOkxReadOnlyValidationSessionDeadlineV1(
+        started_at_monotonic=0.0,
+        budget_seconds=0.001,
+    )
+    with patch(
+        "src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.time.monotonic",
+        return_value=10.0,
+    ):
+        with pytest.raises(GhvOkxProductiveReadOnlyValidationError, match="SESSION_WALLCLOCK"):
+            deadline.assert_within_budget_v1()
+
+
+class _MockProductiveGetTransport:
+    transport_class = TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET
+
+    def __init__(self) -> None:
+        self.calls = 0
+        self.request_count = 0
+        self.methods_used: list[str] = []
+
+    def get(self, **kwargs: object) -> FreshPretradeGetTransportResultV1:
+        self.calls += 1
+        self.request_count += 1
+        self.methods_used.append(METHOD_GET)
+        deadline = kwargs.get("session_deadline")
+        if deadline is not None:
+            deadline.assert_within_budget_v1()
+        return FreshPretradeGetTransportResultV1(
+            get_performed=True,
+            method=METHOD_GET,
+            endpoint=str(kwargs.get("endpoint") or ""),
+            http_status=200,
+            payload={"code": "0", "data": [{}]},
+            auth_header_sent=True,
+            transport_class=TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+            venue_live_contact=True,
+            historical_reuse=False,
+            error_class="",
+            body_sha256="abc",
+            data_safety_source_kind="REAL",
+        )
+
+
+def test_two_gets_within_budget_unchanged_with_deadline() -> None:
+    transport = _MockProductiveGetTransport()
+    deadline = ProductiveOkxReadOnlyValidationSessionDeadlineV1.start(
+        budget_seconds=VALIDATION_SESSION_MONOTONIC_WALLCLOCK_SECONDS
+    )
+    with patch(
+        "src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_productive_read_only_reconciliation_get_validation_v1._demo_from_config_payload",
+        return_value=False,
+    ):
+        result = run_bounded_productive_okx_read_only_validation_session_v1(
+            transport=transport,
+            pretrade_decision_id="test",
+            instrument_id="BTC-USDT-SWAP",
+            session_deadline=deadline,
+        )
+    assert result.get_request_count == 2
+    assert transport.calls == 2
+    assert result.disposition == "VALIDATION_PASS"
+
+
+def test_deadline_before_get_blocks_http() -> None:
+    transport = _MockProductiveGetTransport()
+    deadline = ProductiveOkxReadOnlyValidationSessionDeadlineV1(
+        started_at_monotonic=0.0,
+        budget_seconds=1.0,
+    )
+    with patch(
+        "src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.time.monotonic",
+        return_value=5.0,
+    ):
+        with pytest.raises(GhvOkxProductiveReadOnlyValidationError, match="SESSION_WALLCLOCK"):
+            run_bounded_productive_okx_read_only_validation_session_v1(
+                transport=transport,
+                pretrade_decision_id="test",
+                instrument_id="BTC-USDT-SWAP",
+                session_deadline=deadline,
+            )
+    assert transport.calls == 0
+
+
+def test_request_budget_exceeded_fail_closed() -> None:
+    transport = _MockProductiveGetTransport()
+    transport.request_count = MAX_VALIDATION_GET_REQUESTS
+    with pytest.raises(GhvOkxProductiveReadOnlyValidationError, match="MAX_VALIDATION_GET_BUDGET"):
+        run_bounded_productive_okx_read_only_validation_session_v1(
+            transport=transport,
+            pretrade_decision_id="test",
+            instrument_id="BTC-USDT-SWAP",
+        )
+
+
+def test_demo_mode_detected_fail_closed() -> None:
+    transport = _MockProductiveGetTransport()
+
+    def _get(**kwargs: object) -> FreshPretradeGetTransportResultV1:
+        transport.request_count += 1
+        return FreshPretradeGetTransportResultV1(
+            get_performed=True,
+            method=METHOD_GET,
+            endpoint=str(kwargs.get("endpoint") or ""),
+            http_status=200,
+            payload={"code": "0", "data": [{"simulatedTrading": True}]},
+            auth_header_sent=True,
+            transport_class=TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+            venue_live_contact=True,
+            historical_reuse=False,
+            error_class="",
+            body_sha256="abc",
+            data_safety_source_kind="REAL",
+        )
+
+    transport.get = _get  # type: ignore[method-assign]
+    with pytest.raises(GhvOkxProductiveReadOnlyValidationError, match="DEMO_MODE_DETECTED"):
+        run_bounded_productive_okx_read_only_validation_session_v1(
+            transport=transport,
+            pretrade_decision_id="test",
+            instrument_id="BTC-USDT-SWAP",
+        )
+
+
+def test_runner_no_owner_go_stop_before_network(capsys: pytest.CaptureFixture[str]) -> None:
+    runner_path = (
+        REPO_ROOT
+        / "scripts/ops/run_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py"
+    )
+    spec = importlib.util.spec_from_file_location("ghv_okx_runner_no_go_v1", runner_path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    with patch.object(
+        sys,
+        "argv",
+        ["run_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py"],
+    ):
+        spec.loader.exec_module(module)
+        exit_code = module._main()
+    assert exit_code == 2
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["DISPOSITION"] == DISPOSITION_STOP_BEFORE_NETWORK
+
+
+def test_runner_network_without_k1_go_stop_before_keychain(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    runner_path = (
+        REPO_ROOT
+        / "scripts/ops/run_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py"
+    )
+    spec = importlib.util.spec_from_file_location("ghv_okx_runner_no_k1_v1", runner_path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    argv = [
+        "run_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py",
+        "--origin-main-sha",
+        _declared_origin_main_sha_v1(),
+        "--work-package-owner-go",
+        ACCEPTED_WORK_PACKAGE_OWNER_GO,
+        "--private-get-go",
+        ACCEPTED_PRIVATE_GET_GO,
+        "--offline-implementation-go",
+        ACCEPTED_OFFLINE_IMPLEMENTATION_GO,
+    ]
+    with (
+        _phase7_pass_patches(),
+        patch.object(sys, "argv", argv),
+    ):
+        spec.loader.exec_module(module)
+        exit_code = module._main()
+    assert exit_code == 2
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["DISPOSITION"] == DISPOSITION_STOP_BEFORE_KEYCHAIN_AND_NETWORK
+
+
+def test_validation_session_wallclock_derived_from_existing_budgets() -> None:
+    from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
+        CONNECT_TIMEOUT_SECONDS,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_productive_read_only_reconciliation_get_validation_v1 import (
+        VALIDATION_TIMEOUT_SECONDS,
+    )
+
+    assert VALIDATION_SESSION_MONOTONIC_WALLCLOCK_SECONDS == MAX_VALIDATION_GET_REQUESTS * (
+        CONNECT_TIMEOUT_SECONDS + VALIDATION_TIMEOUT_SECONDS
+    )
+
+
+def _load_runner_module_v1():
+    runner_path = (
+        REPO_ROOT
+        / "scripts/ops/run_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py"
+    )
+    spec = importlib.util.spec_from_file_location("ghv_okx_runner_closure_v1", runner_path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _network_runner_argv_v1() -> list[str]:
+    return [
+        "run_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py",
+        "--origin-main-sha",
+        _declared_origin_main_sha_v1(),
+        "--work-package-owner-go",
+        ACCEPTED_WORK_PACKAGE_OWNER_GO,
+        "--private-get-go",
+        ACCEPTED_PRIVATE_GET_GO,
+        "--offline-implementation-go",
+        ACCEPTED_OFFLINE_IMPLEMENTATION_GO,
+        "--k1-session-owner-go",
+        K1_SESSION_OWNER_GO,
+    ]
+
+
+def _phase7_pass_readiness_v1() -> Phase7ReadinessAdjudicationV1:
+    return Phase7ReadinessAdjudicationV1(
+        offline_reproof="PASS",
+        adversarial_review="PASS",
+        offline_reproof_detail="PYTEST_MOCK_OK",
+        adversarial_review_detail="PYTEST_MOCK_OK",
+        origin_main_sha=_declared_origin_main_sha_v1(),
+        git_head_sha=_declared_origin_main_sha_v1(),
+        offline_reproof_test_owners=PHASE7_OFFLINE_REPROOF_TEST_OWNERS_V1,
+    )
+
+
+def _phase7_pass_patches():
+    return patch(
+        "src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_phase7_readiness_adjudication_v1.adjudicate_ghv_current_okx_phase7_readiness_v1",
+        return_value=_phase7_pass_readiness_v1(),
+    )
+
+
+def test_h_http_timeout_during_get_single_attempt_no_retry() -> None:
+    from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
+        FullCoreProductiveReadOnlyGetTransportV1,
+    )
+
+    handle = MagicMock()
+    transport = FullCoreProductiveReadOnlyGetTransportV1(handle=handle, max_request_count=8)
+    open_calls = {"n": 0}
+
+    def _fake_open(*_args, **_kwargs):
+        open_calls["n"] += 1
+        raise TimeoutError
+
+    with (
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1.build_k1_okx_venue_auth_headers_v1",
+            return_value={"Accept": "application/json", "User-Agent": "test"},
+        ),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1.build_opener",
+        ) as build_opener_mock,
+    ):
+        opener = MagicMock()
+        opener.open.side_effect = _fake_open
+        build_opener_mock.return_value.open = opener.open
+        build_opener_mock.return_value = opener
+        result = transport.get(
+            endpoint=ENDPOINT_ACCOUNT_CONFIG,
+            auth_required=True,
+            pretrade_decision_id="test-h",
+            get_cache_policy=GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+        )
+    assert open_calls["n"] == 1
+    assert transport.request_count == 1
+    assert result.error_class == "TIMEOUT"
+    assert result.get_performed is False
+
+
+def test_f_deadline_before_k1_keychain_and_http_zero(capsys: pytest.CaptureFixture[str]) -> None:
+    module = _load_runner_module_v1()
+    k1_open = MagicMock()
+    transport_ctor = MagicMock()
+
+    def _always_expired(_self) -> float:
+        return -1.0
+
+    with (
+        _phase7_pass_patches(),
+        patch.object(
+            ProductiveOkxReadOnlyValidationSessionDeadlineV1,
+            "remaining_seconds",
+            _always_expired,
+        ),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.open_current_productive_k1_opaque_signing_handle_session_v1",
+            k1_open,
+        ),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1.FullCoreProductiveReadOnlyGetTransportV1",
+            transport_ctor,
+        ),
+        patch.object(sys, "argv", _network_runner_argv_v1()),
+    ):
+        exit_code = module._main()
+    assert exit_code == 4
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["DISPOSITION"] == DISPOSITION_SESSION_WALLCLOCK_EXCEEDED
+    k1_open.assert_not_called()
+    transport_ctor.assert_not_called()
+
+
+def test_i_slow_k1_expires_before_productive_get(capsys: pytest.CaptureFixture[str]) -> None:
+    module = _load_runner_module_v1()
+    k1_entered: list[int] = []
+    bounded_calls: list[int] = []
+
+    @contextmanager
+    def _slow_k1_session(*_args, **_kwargs) -> Iterator[MagicMock]:
+        k1_entered.append(1)
+        yield MagicMock(signing_handle=MagicMock())
+
+    def _remaining_after_k1_enter(_self) -> float:
+        if k1_entered:
+            return -1.0
+        return 100.0
+
+    def _spy_bounded(*_args, **_kwargs):
+        bounded_calls.append(1)
+        raise AssertionError("productive GET session must not run")
+
+    with (
+        _phase7_pass_patches(),
+        patch.object(
+            ProductiveOkxReadOnlyValidationSessionDeadlineV1,
+            "remaining_seconds",
+            _remaining_after_k1_enter,
+        ),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.resolve_macos_security_framework_k1_lookup_backend_v1",
+            return_value=MagicMock(),
+        ),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.open_current_productive_k1_opaque_signing_handle_session_v1",
+            _slow_k1_session,
+        ),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.run_bounded_productive_okx_read_only_validation_session_v1",
+            _spy_bounded,
+        ),
+        patch.object(sys, "argv", _network_runner_argv_v1()),
+    ):
+        exit_code = module._main()
+    assert exit_code == 4
+    assert len(k1_entered) == 1
+    assert bounded_calls == []
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["DISPOSITION"] == DISPOSITION_SESSION_WALLCLOCK_EXCEEDED
+    assert "SESSION_DEADLINE" in payload
+
+
+def test_o_timeout_evidence_complete_without_secrets(capsys: pytest.CaptureFixture[str]) -> None:
+    module = _load_runner_module_v1()
+
+    def _always_expired(_self) -> float:
+        return -1.0
+
+    with (
+        _phase7_pass_patches(),
+        patch.object(
+            ProductiveOkxReadOnlyValidationSessionDeadlineV1,
+            "remaining_seconds",
+            _always_expired,
+        ),
+        patch.object(sys, "argv", _network_runner_argv_v1()),
+    ):
+        module._main()
+    raw = capsys.readouterr().out
+    payload = json.loads(raw)
+    deadline = payload["SESSION_DEADLINE"]
+    assert isinstance(deadline, dict)
+    for key in (
+        "budget_seconds",
+        "elapsed_seconds",
+        "remaining_seconds",
+        "hard_timeout_guarantee_scope",
+    ):
+        assert key in deadline
+    lowered = raw.lower()
+    for forbidden in (
+        '"apikey":',
+        '"secretkey":',
+        '"passphrase":',
+        "ok-access-passphrase",
+        "ok-access-sign",
+        "ok-access-key",
+    ):
+        assert forbidden not in lowered
+
+
+def test_n_single_session_attempt_no_auto_restart(capsys: pytest.CaptureFixture[str]) -> None:
+    module = _load_runner_module_v1()
+    bounded_calls: list[int] = []
+
+    @contextmanager
+    def _instant_k1(*_args, **_kwargs) -> Iterator[MagicMock]:
+        yield MagicMock(signing_handle=MagicMock())
+
+    def _bounded_once(*_args, **_kwargs):
+        bounded_calls.append(1)
+        from src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_productive_read_only_reconciliation_get_validation_v1 import (
+            ProductiveOkxReadOnlyValidationSessionResultV1,
+        )
+
+        return ProductiveOkxReadOnlyValidationSessionResultV1(
+            disposition="VALIDATION_PASS",
+            get_request_count=2,
+            authorized_host="eea.okx.com",
+            account_config_http_status=200,
+            account_config_api_code="0",
+            orders_pending_http_status=200,
+            orders_pending_api_code="0",
+            environment_label="PRODUCTION_EEA_OKX",
+            demo_mode_detected=False,
+            provider_compatible=True,
+            transport_class="FULL_CORE_PRODUCTIVE_READ_ONLY_GET_V1",
+            methods_used=("GET", "GET"),
+            surfaces_summary=(),
+        )
+
+    with (
+        _phase7_pass_patches(),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1.resolve_macos_security_framework_k1_lookup_backend_v1",
+            return_value=MagicMock(),
+        ),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1.open_current_productive_k1_opaque_signing_handle_session_v1",
+            _instant_k1,
+        ),
+        patch(
+            "src.ops.full_core_live_path_composition_root_v1.ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.run_bounded_productive_okx_read_only_validation_session_v1",
+            _bounded_once,
+        ),
+        patch.object(sys, "argv", _network_runner_argv_v1()),
+    ):
+        exit_code = module._main()
+    assert exit_code == 0
+    assert len(bounded_calls) == 1
+    assert "while True" not in Path(
+        REPO_ROOT
+        / "scripts/ops/run_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py"
+    ).read_text(encoding="utf-8")

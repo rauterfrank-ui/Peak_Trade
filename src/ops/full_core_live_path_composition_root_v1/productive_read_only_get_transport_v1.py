@@ -2,6 +2,10 @@
 
 GET only. No POST. Does not construct LiveExecutionPort. Does not import
 canary instrument authority. Auth headers use the K1 venue-auth contract.
+
+Phase-8 session deadline: optional ``session_deadline`` clamps connect/read
+timeouts to remaining monotonic budget. Single attempt per ``get`` call (no
+retry). ``HARD_TIMEOUT_GUARANTEE`` for HTTP only — not Keychain in-flight.
 """
 
 from __future__ import annotations
@@ -75,8 +79,11 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         auth_required: bool,
         pretrade_decision_id: str,
         get_cache_policy: str = GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
+        session_deadline: Any | None = None,
     ) -> FreshPretradeGetTransportResultV1:
         del pretrade_decision_id
+        if session_deadline is not None:
+            session_deadline.assert_within_budget_v1()
         cacheable = get_cache_policy == GET_CACHE_POLICY_CACHEABLE_SNAPSHOT
         if get_cache_policy not in (
             GET_CACHE_POLICY_CACHEABLE_SNAPSHOT,
@@ -107,6 +114,15 @@ class FullCoreProductiveReadOnlyGetTransportV1:
             )
             headers["User-Agent"] = USER_AGENT
             auth_sent = True
+        read_timeout = self.timeout_seconds
+        connect_timeout = CONNECT_TIMEOUT_SECONDS
+        if session_deadline is not None:
+            read_timeout = session_deadline.bounded_read_timeout_seconds_v1(
+                default_read_seconds=self.timeout_seconds
+            )
+            connect_timeout = session_deadline.bounded_connect_timeout_seconds_v1(
+                default_connect_seconds=CONNECT_TIMEOUT_SECONDS
+            )
         req = Request(url, method=METHOD_GET, headers=headers)
         opener = build_opener(ProxyHandler({}))
         body = b""
@@ -114,8 +130,8 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         error_class = ""
         payload: Any = None
         try:
-            socket.setdefaulttimeout(CONNECT_TIMEOUT_SECONDS)
-            with opener.open(req, timeout=self.timeout_seconds) as resp:  # noqa: S310
+            socket.setdefaulttimeout(connect_timeout)
+            with opener.open(req, timeout=read_timeout) as resp:  # noqa: S310
                 status = int(getattr(resp, "status", 200))
                 body = bytes(resp.read() or b"")
                 loc_host = str(urlparse(str(getattr(resp, "url", url) or url)).hostname or "")

@@ -962,3 +962,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py
   notes: 'PR #7099: Phase-7 evidence-bound gates (offline reproof + adversarial manifest/review); post-squash review baseline ancestor semantics; no hardcoded PASS booleans; --skip-network before K1; PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7100_okx_phase8_auth_session_boundary_v1
+  from: d39ff98a92a3f6a6c3878f6fc7bcfac06df9fac3
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py
+  notes: 'PR #7100: Phase-8 authorization/session boundary (no GRANTED CLI defaults; explicit Owner-GO flags; derived session deadline on productive read-only GET transport); offline tests H/I/F/O/N; adversarial manifest closure; no POST/network expansion; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

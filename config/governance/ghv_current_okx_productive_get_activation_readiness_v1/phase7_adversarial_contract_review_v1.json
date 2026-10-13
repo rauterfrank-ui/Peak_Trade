@@ -14,12 +14,13 @@
     "scripts/ops/run_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/full_core_orchestrated_post_submit_lifecycle_reconciliation_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/ghv_current_okx_phase7_readiness_adjudication_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/productive_read_only_get_transport_v1.py"
   ],
   "review_evidence_relpath": "docs/ops/evidence/GHV_CURRENT_OKX_PHASE7_ADVERSARIAL_CONTRACT_REVIEW_V1.md",
   "forbidden_runtime_generated_evidence_paths": [
     "runtime/ghv_current_okx_phase7_runner_self_review_v1.json"
   ],
-  "reviewed_contract_paths_sha256": "179e419ea7be1826812d419fb1bfb659941021cd67348f9da20f6ae0b6a122af",
-  "review_evidence_sha256": "711573274c901d12ff1d926aa661c6c8a3965541cc1b519699ef0df7de8845d9"
+  "reviewed_contract_paths_sha256": "21b1e4b22a0795e3142ed233351fb4d4290a17f7726b5e896bd1226ccbaea719",
+  "review_evidence_sha256": "d986bcac4be226aa19bb17d1873249a5a9ce3951d1096037f80084b4cdabceea"
 }
