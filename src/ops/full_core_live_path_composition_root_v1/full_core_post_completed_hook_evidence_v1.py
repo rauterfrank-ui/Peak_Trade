@@ -179,7 +179,7 @@ def observe_full_core_s5_recovery_entry_v1(
         evidence_status = "FAIL_CLOSED"
     elif not consumption_key:
         atomic_observation = ATOMIC_OBSERVATION_NOT_BOUND_FAIL_CLOSED
-        if ledger_state == "COMPLETED" and FULL_CORE_ATOMIC_CONSUMPTION_KEY not in string_claims:
+        if ledger_state == "COMPLETED":
             evidence_status = "FAIL_CLOSED"
     elif not guard_digest:
         atomic_observation = ATOMIC_OBSERVATION_CYCLE_IDENTITY_INCOMPLETE
@@ -195,6 +195,9 @@ def observe_full_core_s5_recovery_entry_v1(
             full_core_durable_entry_state_for_guard_v1,
             load_full_core_atomic_authorization_state_v1,
         )
+        from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.canary_capital_guard_atomic_one_shot_v1 import (
+            CanaryAtomicOneShotError,
+        )
 
         try:
             loaded = load_full_core_atomic_authorization_state_v1(
@@ -205,9 +208,9 @@ def observe_full_core_s5_recovery_entry_v1(
                 state_dir=Path(state_dir),
                 consumption_key=consumption_key,
             )
-        except OSError as exc:
+        except (OSError, CanaryAtomicOneShotError) as exc:
             atomic_observation = ATOMIC_OBSERVATION_LOAD_ERROR
-            atomic_durable_state = type(exc).__name__
+            atomic_durable_state = str(exc)
             cycle_identity_status = CYCLE_IDENTITY_INCOMPLETE
             evidence_status = "FAIL_CLOSED"
         else:

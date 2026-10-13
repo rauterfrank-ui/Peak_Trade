@@ -31,6 +31,7 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_post_completed_ho
     ATOMIC_OBSERVATION_BOUND,
     ATOMIC_OBSERVATION_CONFLICTING_EVIDENCE,
     ATOMIC_OBSERVATION_CYCLE_IDENTITY_INCOMPLETE,
+    ATOMIC_OBSERVATION_LOAD_ERROR,
     ATOMIC_OBSERVATION_NOT_BOUND_FAIL_CLOSED,
     CYCLE_IDENTITY_INCOMPLETE,
     FULL_CORE_ATOMIC_CONSUMPTION_KEY,
@@ -39,6 +40,9 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_post_completed_ho
     RECONCILIATION_SUCCESS_NOT_CLAIMED,
     observe_full_core_s5_recovery_entry_v1,
     pre_external_completed_ledger_pending_marker_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.canary_capital_guard_atomic_one_shot_v1 import (
+    STATE_SCHEMA_VERSION,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_join_v1 import (
     ATOMIC_STATE_DIR_ENV_VAR,
@@ -209,6 +213,7 @@ def test_scenario_2_crash_after_initial_completed(tmp_path: Path) -> None:
     )
     assert obs.post_submit_reconciliation_classification == RECONCILIATION_OBSERVATION_INCOMPLETE
     assert obs.atomic_observation == ATOMIC_OBSERVATION_NOT_BOUND_FAIL_CLOSED
+    assert obs.recovery_evidence_status == "FAIL_CLOSED"
     cold = _observe_subprocess(
         evidence_root=evidence,
         env={},
@@ -484,3 +489,206 @@ def test_adversarial_corrupt_ledger_failed_stop(tmp_path: Path) -> None:
         authorization_binding_digest=_binding_digest(_auth()),
     )
     assert obs.ledger_state == "FAILED_STOP"
+
+
+def _atomic_state_path(atomic_dir: Path, consumption_key: str) -> Path:
+    return atomic_dir / f"{consumption_key.lower()}.state.json"
+
+
+def _completed_ledger_with_atomic_identity(
+    *,
+    digest: str,
+    consumption_key: str,
+    guard_digest: str,
+) -> dict[str, str]:
+    return {
+        "state": "COMPLETED",
+        "binding_digest": digest,
+        "terminal_class": "PRE_EXTERNAL_EFFECT",
+        FULL_CORE_ATOMIC_CONSUMPTION_KEY: consumption_key,
+        "FULL_CORE_CAPITAL_GUARD_BINDING_DIGEST": guard_digest,
+        POST_SUBMIT_RECONCILIATION_SUCCEEDED: "false",
+    }
+
+
+def _assert_load_error_fail_closed(obs: object) -> None:
+    from src.ops.full_core_live_path_composition_root_v1.full_core_post_completed_hook_evidence_v1 import (
+        FullCoreS5RecoveryObservationV1,
+    )
+
+    assert isinstance(obs, FullCoreS5RecoveryObservationV1)
+    assert obs.atomic_observation == ATOMIC_OBSERVATION_LOAD_ERROR
+    assert obs.recovery_evidence_status == "FAIL_CLOSED"
+    assert obs.cycle_identity_status == CYCLE_IDENTITY_INCOMPLETE
+
+
+@pytest.mark.parametrize(
+    "consumption_key_claim",
+    [
+        pytest.param(None, id="missing"),
+        pytest.param("", id="empty"),
+        pytest.param("   ", id="whitespace"),
+    ],
+)
+def test_bugbot_f2_completed_unusable_consumption_key_fail_closed(
+    consumption_key_claim: str | None,
+) -> None:
+    digest = _binding_digest(_auth())
+    ledger: dict[str, object] = {
+        "state": "COMPLETED",
+        "binding_digest": digest,
+        "terminal_class": "PRE_EXTERNAL_EFFECT",
+    }
+    if consumption_key_claim is not None:
+        ledger[FULL_CORE_ATOMIC_CONSUMPTION_KEY] = consumption_key_claim
+    obs = observe_full_core_s5_recovery_entry_v1(
+        ledger=ledger,
+        authorization_binding_digest=digest,
+    )
+    assert obs.atomic_observation == ATOMIC_OBSERVATION_NOT_BOUND_FAIL_CLOSED
+    assert obs.recovery_evidence_status == "FAIL_CLOSED"
+
+
+def test_bugbot_f1_corrupt_atomic_json_load_error(tmp_path: Path) -> None:
+    digest = _binding_digest(_auth())
+    binding = _minimal_binding()
+    key = binding.consumption_key()
+    atomic_dir = tmp_path / "atomic-corrupt"
+    atomic_dir.mkdir()
+    _atomic_state_path(atomic_dir, key).write_text("{ corrupt", encoding="utf-8")
+    ledger = _completed_ledger_with_atomic_identity(
+        digest=digest,
+        consumption_key=key,
+        guard_digest=binding.binding_digest(),
+    )
+    _assert_load_error_fail_closed(
+        observe_full_core_s5_recovery_entry_v1(
+            ledger=ledger,
+            authorization_binding_digest=digest,
+            atomic_state_dir=atomic_dir,
+        )
+    )
+
+
+def test_bugbot_f1_atomic_schema_mismatch_load_error(tmp_path: Path) -> None:
+    digest = _binding_digest(_auth())
+    binding = _minimal_binding()
+    key = binding.consumption_key()
+    atomic_dir = tmp_path / "atomic-schema"
+    atomic_dir.mkdir()
+    _atomic_state_path(atomic_dir, key).write_text(
+        json.dumps({"schema_version": "wrong.schema.v0", "binding": {}}),
+        encoding="utf-8",
+    )
+    ledger = _completed_ledger_with_atomic_identity(
+        digest=digest,
+        consumption_key=key,
+        guard_digest=binding.binding_digest(),
+    )
+    obs = observe_full_core_s5_recovery_entry_v1(
+        ledger=ledger,
+        authorization_binding_digest=digest,
+        atomic_state_dir=atomic_dir,
+    )
+    _assert_load_error_fail_closed(obs)
+    assert "LEDGER_SCHEMA_MISMATCH" in obs.atomic_durable_state
+
+
+def test_bugbot_f1_atomic_binding_missing_load_error(tmp_path: Path) -> None:
+    digest = _binding_digest(_auth())
+    binding = _minimal_binding()
+    key = binding.consumption_key()
+    atomic_dir = tmp_path / "atomic-binding"
+    atomic_dir.mkdir()
+    _atomic_state_path(atomic_dir, key).write_text(
+        json.dumps({"schema_version": STATE_SCHEMA_VERSION, "consumption_key": key}),
+        encoding="utf-8",
+    )
+    ledger = _completed_ledger_with_atomic_identity(
+        digest=digest,
+        consumption_key=key,
+        guard_digest=binding.binding_digest(),
+    )
+    obs = observe_full_core_s5_recovery_entry_v1(
+        ledger=ledger,
+        authorization_binding_digest=digest,
+        atomic_state_dir=atomic_dir,
+    )
+    _assert_load_error_fail_closed(obs)
+    assert obs.atomic_durable_state == "LEDGER_BINDING_MISSING"
+
+
+def test_bugbot_f1_atomic_oserror_load_error(tmp_path: Path) -> None:
+    digest = _binding_digest(_auth())
+    binding = _minimal_binding()
+    key = binding.consumption_key()
+    atomic_dir = tmp_path / "atomic-os"
+    atomic_dir.mkdir()
+    ledger = _completed_ledger_with_atomic_identity(
+        digest=digest,
+        consumption_key=key,
+        guard_digest=binding.binding_digest(),
+    )
+    with patch(
+        "src.ops.full_core_live_path_composition_root_v1.full_core_capital_guard_atomic_one_shot_v1.load_full_core_atomic_authorization_state_v1",
+        side_effect=OSError("INJECTED_ATOMIC_READ_FAILURE"),
+    ):
+        obs = observe_full_core_s5_recovery_entry_v1(
+            ledger=ledger,
+            authorization_binding_digest=digest,
+            atomic_state_dir=atomic_dir,
+        )
+    _assert_load_error_fail_closed(obs)
+    assert "INJECTED_ATOMIC_READ_FAILURE" in obs.atomic_durable_state
+
+
+def test_bugbot_f1_valid_atomic_state_unchanged(tmp_path: Path) -> None:
+    digest = _binding_digest(_auth())
+    binding = _minimal_binding()
+    atomic_dir = tmp_path / "atomic-valid"
+    atomic_dir.mkdir()
+    full_core_atomic_reserve_owner_go_authorization_v1(state_dir=atomic_dir, binding=binding)
+    before = _sha256_dir(atomic_dir)
+    ledger = _completed_ledger_with_atomic_identity(
+        digest=digest,
+        consumption_key=binding.consumption_key(),
+        guard_digest=binding.binding_digest(),
+    )
+    obs = observe_full_core_s5_recovery_entry_v1(
+        ledger=ledger,
+        authorization_binding_digest=digest,
+        atomic_state_dir=atomic_dir,
+    )
+    assert obs.atomic_observation == ATOMIC_OBSERVATION_BOUND
+    assert obs.recovery_evidence_status == "PASS"
+    assert _sha256_dir(atomic_dir) == before
+
+
+def test_bugbot_f1_replay_gate_unchanged_after_corrupt_atomic(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    atomic_dir = tmp_path / "atomic-replay-corrupt"
+    atomic_dir.mkdir()
+    monkeypatch.setenv(JOIN_ENV_VAR, "OFFLINE_STUB")
+    monkeypatch.setenv(ATOMIC_STATE_DIR_ENV_VAR, str(atomic_dir))
+    sha = _origin_main()
+    handoff = _handoff(sha=sha)
+    handoff_reset = bind_full_core_capital_guard_handoff_context_v1(handoff)
+    try:
+        first = _run(tmp_path, t2_cycle_dispatch=_t2_enter)
+        assert first.post_count == 0
+        ledger = _load_ledger(tmp_path / "evidence")
+        key = str(ledger[FULL_CORE_ATOMIC_CONSUMPTION_KEY])
+        _atomic_state_path(atomic_dir, key).write_text("{ corrupt", encoding="utf-8")
+        with pytest.raises(CurrentProductiveGovernedCycleOrchestratorError, match=REASON_REPLAY):
+            _run(tmp_path, t2_cycle_dispatch=_t2_enter)
+    finally:
+        reset_full_core_capital_guard_handoff_context_v1(handoff_reset)
+
+
+def test_bugbot_regression_post_count_zero(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv(JOIN_ENV_VAR, "OFFLINE_STUB")
+    monkeypatch.setenv(ATOMIC_STATE_DIR_ENV_VAR, str(tmp_path / "atomic-post-zero"))
+    result = _run(tmp_path, t2_cycle_dispatch=_t2_enter)
+    assert result.post_count == 0
+    assert result.extra.get("FULL_CORE_S5_RECOVERY_OBSERVATION_V1") == "V1"
