@@ -5437,6 +5437,10 @@ entities:
   - src/ops/full_core_live_path_composition_root_v1/current_productive_dw_exchange_reconciliation_wiring_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py
   - src/ops/full_core_live_path_composition_root_v1/full_core_post_response_to_ack_mapper_v1.py
+  - docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md#11.2.1.DW.FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN
+  - src/ops/full_core_live_path_composition_root_v1/current_full_system_offline_e2e_integration_proof_v1.py
+  - docs/ops/specs/CURRENT_FULL_SYSTEM_OFFLINE_E2E_INTEGRATION_PROOF_V1.md
+  - tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py
   - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_execution_admission_remainder_v1.py
   - src/ops/current_productive_eea_universe_inventory_acquisition_v1/__init__.py
   - src/ops/current_productive_eea_universe_inventory_acquisition_v1/acquire_v1.py
