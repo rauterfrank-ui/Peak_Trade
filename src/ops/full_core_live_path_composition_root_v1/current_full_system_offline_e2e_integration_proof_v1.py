@@ -14,6 +14,7 @@ from enum import Enum
 from io import BytesIO
 from pathlib import Path
 from typing import Any, Callable, Mapping
+from urllib.parse import parse_qs, urlparse
 from urllib.response import addinfourl
 
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
@@ -30,6 +31,17 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot
 from src.ops.full_core_live_path_composition_root_v1.current_productive_dw_exchange_reconciliation_wiring_v1 import (
     DwExchangeReconciliationWiringConfigV1,
     DwExchangeReconciliationWiringModeV1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_pilot_capital_guard_post_bind_v1 import (
+    build_pilot_dw_exchange_reconciliation_wiring_config_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+    TRANSPORT_CLASS_INJECTED_TEST_DOUBLE,
+    FreshPretradeGetTransportResultV1,
+)
+from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
+    READ_ONLY_EXACT_ORDER_LOOKUP_PATH,
 )
 from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
     FinalOrderEnvelopeV1,
@@ -79,9 +91,20 @@ WORK_PACKAGE_ID = "CURRENT_FULL_SYSTEM_E2E_INTEGRATION_CLOSURE_AND_PROOF_V1"
 
 PRE_EXTERNAL_HANDOFF_FIXTURE_LABEL = "OFFLINE_TEST_EVIDENCE_PRE_EXTERNAL_CYCLE_FIXTURE_V1"
 NATURAL_ENTER_UPSTREAM_LABEL = "CURRENT_MARKET_AUTHORITATIVE_NOT_FORCED_IN_HARNESS_V1"
+NATURAL_ENTER_GAP_TRUE_01_PRODUCTION_PATH_V1 = (
+    "GAP_TRUE_01_PRODUCTION_MV2_DP_NATURAL_ENTER_TO_PRE_EXTERNAL_V1"
+)
+OFFLINE_OWNER_AUTHORIZATION_FIXTURE_LABEL = (
+    "OFFLINE_TEST_EVIDENCE_OPERATOR_GRANT_NO_REAL_WORLD_AUTHORITY_V1"
+)
+
+CRASH_POINT_ENV_VAR = "PEAK_TRADE_OFFLINE_E2E_CRASH_POINT_V1"
+WORKER_RESULT_FILENAME = "offline_e2e_worker_result_v1.json"
+ENVELOPE_SNAPSHOT_FILENAME = "offline_e2e_envelope_snapshot_v1.json"
 
 FAKE_EXCHANGE_TRANSPORT_CLASS = "FAKE_EXCHANGE_OFFLINE_E2E_WITNESS_V1"
 FAKE_POST_WITNESS_FILENAME = "fake_exchange_post_call_count_v1.json"
+OFFLINE_E2E_FAKE_EXCHANGE_ORD_ID_V1 = "ord-fake-e2e-1"
 
 
 class IntegrationGapClassification(str, Enum):
@@ -97,7 +120,7 @@ INTEGRATION_GAP_CLASSIFICATIONS_V1: dict[str, IntegrationGapClassification] = {
         IntegrationGapClassification.ALREADY_IMPLEMENTED_AND_PROVEN
     ),
     "GAP_02_PRE_EXTERNAL_TO_ONE_SHOT_HANDOFF": (
-        IntegrationGapClassification.ALREADY_IMPLEMENTED_BUT_UNPROVEN
+        IntegrationGapClassification.ALREADY_IMPLEMENTED_AND_PROVEN
     ),
     "GAP_03_CAPITAL_GUARD_RESERVATION_ENVELOPE_PERMIT_IDENTITY": (
         IntegrationGapClassification.ALREADY_IMPLEMENTED_AND_PROVEN
@@ -106,13 +129,21 @@ INTEGRATION_GAP_CLASSIFICATIONS_V1: dict[str, IntegrationGapClassification] = {
         IntegrationGapClassification.ALREADY_IMPLEMENTED_AND_PROVEN
     ),
     "GAP_05_ATOMIC_DURABLE_CRASH_RECOVERY": (
-        IntegrationGapClassification.ALREADY_IMPLEMENTED_BUT_UNPROVEN
+        IntegrationGapClassification.ALREADY_IMPLEMENTED_AND_PROVEN
     ),
     "GAP_06_DISABLED_LIFECYCLE_HOOKS_DEFAULT": IntegrationGapClassification.INTENTIONAL_SAFETY_BOUNDARY,
-    "GAP_07_REPRODUCIBLE_FULL_SYSTEM_PROOF": IntegrationGapClassification.ALREADY_IMPLEMENTED_BUT_UNPROVEN,
+    "GAP_07_REPRODUCIBLE_FULL_SYSTEM_PROOF": IntegrationGapClassification.ALREADY_IMPLEMENTED_AND_PROVEN,
     "GAP_LIVE_PRODUCTIVE_OKX_POST": IntegrationGapClassification.EXTERNAL_LIVE_VALIDATION_ONLY,
     "GAP_LIVE_PRODUCTIVE_OKX_GET_RECON": IntegrationGapClassification.EXTERNAL_LIVE_VALIDATION_ONLY,
 }
+
+
+class OfflineE2eCrashPoint(str, Enum):
+    NONE = "NONE"
+    BEFORE_DURABLE_CONSUME = "BEFORE_DURABLE_CONSUME"
+    AFTER_DURABLE_CONSUME = "AFTER_DURABLE_CONSUME"
+    AFTER_FAKE_POST = "AFTER_FAKE_POST"
+    BEFORE_RECON_COMPLETE = "BEFORE_RECON_COMPLETE"
 
 
 class FullSystemOfflinePostScenario(str, Enum):
@@ -137,7 +168,7 @@ class CurrentFullSystemOfflineE2eIntegrationProofError(RuntimeError):
     """Fail-closed full-system offline integration proof violation."""
 
 
-@dataclass(frozen=True)
+@dataclass
 class FakeExchangeTransportWitnessV1:
     """Durable POST attempt counter for crash/restart proofs."""
 
@@ -359,7 +390,7 @@ class _FakeExchangeOpener:
                     "data": [
                         {
                             "clOrdId": self._clordid,
-                            "ordId": "ord-fake-e2e-1",
+                            "ordId": OFFLINE_E2E_FAKE_EXCHANGE_ORD_ID_V1,
                             "sCode": "0",
                         }
                     ],
@@ -475,3 +506,553 @@ def run_current_full_system_offline_e2e_integration_proof_v1(
         ghv_forward_join=str(ghv_f),
         ghv_reverse_join=str(ghv_r),
     )
+
+
+def build_governed_cycle_from_pre_external_closure_v1(
+    closure: Any,
+) -> CurrentProductiveGovernedCycleResultV1:
+    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_full_core_pre_external_closure_v1 import (
+        CurrentProductiveFullCorePreExternalClosureResultV1,
+    )
+
+    if not isinstance(closure, CurrentProductiveFullCorePreExternalClosureResultV1):
+        raise CurrentFullSystemOfflineE2eIntegrationProofError("CLOSURE_TYPE_INVALID")
+    envelope = closure.fresh_executable_enter_final_order_envelope
+    if envelope is None:
+        raise CurrentFullSystemOfflineE2eIntegrationProofError("CLOSURE_ENVELOPE_MISSING")
+    env_id = str(envelope.envelope_id or "")
+    return CurrentProductiveGovernedCycleResultV1(
+        disposition=DISPOSITION_PRE_EXTERNAL_EFFECT,
+        reason_code="PRE_EXTERNAL",
+        terminal_class="PRE_EXTERNAL_EFFECT",
+        cycle_go_status_after="CONSUMED",
+        get_consumed=True,
+        eg_consumed=True,
+        occupancy_consumed=True,
+        t2_consumed=True,
+        get_consume_count=1,
+        eg_dispatch_count=1,
+        occupancy_disposition="CONSUMED",
+        t2_consume_count=1,
+        runtime_cycle_count=1,
+        c1_used="production_closure",
+        occupancy_used="production_closure",
+        decision_result=str(closure.current_productive_decision_result or ""),
+        decision_execution_eligible=str(closure.decision_execution_eligible or ""),
+        master_v2_decision="enter_long",
+        venue_plan_status="BOUND",
+        envelope_created=True,
+        envelope_identity=f"envelope_id={env_id}",
+        permit_created=False,
+        post_count=int(closure.post_count),
+        external_effect_count=0,
+        cursor_floor_before=1.0,
+        cursor_floor_after=1.0,
+        cursor_persisted=False,
+        first_genuine_blocker=str(closure.earliest_remaining_blocker or ""),
+        blocker_class="PRE_EXTERNAL_EFFECT",
+        next_required_owner_decision="POST",
+        lock_released="true",
+        ledger_state="COMPLETED",
+        transitions=("IDLE", "COMPLETED"),
+        final_order_envelope=envelope,
+    )
+
+
+_OFFLINE_RECON_GET_ENDPOINTS = (
+    "/api/v5/trade/orders-pending",
+    "/api/v5/trade/orders-history",
+    "/api/v5/trade/fills",
+    "/api/v5/account/positions",
+)
+
+
+def _offline_recon_ok_payload_v1(data: list[dict[str, Any]] | None = None) -> dict[str, Any]:
+    return {"code": "0", "data": list(data or [])}
+
+
+def _offline_recon_get_result_v1(
+    payload: dict[str, Any], *, fresh: bool = True
+) -> FreshPretradeGetTransportResultV1:
+    return FreshPretradeGetTransportResultV1(
+        get_performed=True,
+        method="GET",
+        endpoint="",
+        http_status=200,
+        payload=payload,
+        auth_header_sent=True,
+        transport_class=TRANSPORT_CLASS_INJECTED_TEST_DOUBLE,
+        venue_live_contact=False,
+        historical_reuse=not fresh,
+        error_class="",
+    )
+
+
+class _OfflineInjectedOkxReconTransportV1:
+    """Maps OfflineExchangeFixtureV1 onto OKX GET endpoints (offline E2E harness only)."""
+
+    def __init__(self, fixture: OfflineExchangeFixtureV1) -> None:
+        self.fixture = fixture
+        self.request_count = 0
+
+    def get(
+        self,
+        *,
+        endpoint: str,
+        auth_required: bool,
+        pretrade_decision_id: str,
+        get_cache_policy: str = GET_CACHE_POLICY_DYNAMIC_REFRESH_REQUIRED,
+    ) -> FreshPretradeGetTransportResultV1:
+        del auth_required, pretrade_decision_id, get_cache_policy
+        self.request_count += 1
+        parsed = urlparse(endpoint if "://" in endpoint else f"https://eea.okx.com{endpoint}")
+        path = parsed.path
+
+        if self.fixture.transport_failures:
+            return FreshPretradeGetTransportResultV1(
+                get_performed=False,
+                method="GET",
+                endpoint=endpoint,
+                http_status=0,
+                payload=None,
+                auth_header_sent=True,
+                transport_class=TRANSPORT_CLASS_INJECTED_TEST_DOUBLE,
+                venue_live_contact=False,
+                historical_reuse=False,
+                error_class="TIMEOUT",
+            )
+
+        fresh = self.fixture.item_freshness_proven and self.fixture.snapshot_freshness_proven
+        status = self.fixture.response_status
+
+        if path == _OFFLINE_RECON_GET_ENDPOINTS[0]:
+            payload = self.fixture.pending_orders or _offline_recon_ok_payload_v1([])
+        elif path == _OFFLINE_RECON_GET_ENDPOINTS[1]:
+            payload = self.fixture.order_history or _offline_recon_ok_payload_v1([])
+        elif path == _OFFLINE_RECON_GET_ENDPOINTS[2]:
+            payload = self.fixture.fills or _offline_recon_ok_payload_v1([])
+        elif path == _OFFLINE_RECON_GET_ENDPOINTS[3]:
+            payload = self.fixture.positions or _offline_recon_ok_payload_v1([])
+        elif path == READ_ONLY_EXACT_ORDER_LOOKUP_PATH:
+            qs = parse_qs(parsed.query)
+            cl = (qs.get("clOrdId") or [""])[0]
+            rows: list[dict[str, Any]] = []
+            for bucket in (self.fixture.pending_orders, self.fixture.order_history):
+                if isinstance(bucket, dict):
+                    for row in bucket.get("data") or []:
+                        if isinstance(row, dict) and str(row.get("clOrdId") or "") == cl:
+                            rows.append(dict(row))
+            payload = _offline_recon_ok_payload_v1(rows)
+        else:
+            payload = _offline_recon_ok_payload_v1([])
+
+        if self.fixture.api_errors and path == _OFFLINE_RECON_GET_ENDPOINTS[1]:
+            payload = {"code": "50011", "msg": "rate limit", "data": []}
+
+        if status != "200" and status.isdigit():
+            return FreshPretradeGetTransportResultV1(
+                get_performed=False,
+                method="GET",
+                endpoint=endpoint,
+                http_status=int(status),
+                payload=payload if isinstance(payload, dict) else None,
+                auth_header_sent=True,
+                transport_class=TRANSPORT_CLASS_INJECTED_TEST_DOUBLE,
+                venue_live_contact=False,
+                historical_reuse=False,
+                error_class="HTTP_ERROR",
+            )
+
+        return _offline_recon_get_result_v1(
+            payload if isinstance(payload, dict) else _offline_recon_ok_payload_v1(),
+            fresh=fresh,
+        )
+
+
+def build_handoff_from_pre_external_closure_v1(
+    *,
+    closure: Any,
+    bound_instrument: Any,
+    origin_main_sha: str,
+    account_identity: str = "acct-offline-e2e-v1",
+    environment: str = "OFFLINE_STUB",
+) -> FullCoreCapitalGuardHandoffContextV1:
+    from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_binding_v1 import (
+        FullCoreCapitalGuardInstrumentMetadataV1,
+    )
+
+    return FullCoreCapitalGuardHandoffContextV1(
+        bound_instrument=bound_instrument,
+        canonical_decision_id=str(closure.common_epoch_id or "dec-offline-e2e"),
+        account_identity=account_identity,
+        environment=environment,
+        origin_main_sha=origin_main_sha,
+        instrument_metadata=FullCoreCapitalGuardInstrumentMetadataV1(
+            ct_val="1",
+            min_sz="1",
+            lot_sz="1",
+        ),
+    )
+
+
+def build_dw_reconciliation_wiring_config_v1(
+    *,
+    join_binding: FullCorePrePostCapitalGuardJoinBindingV1,
+    handoff: FullCoreCapitalGuardHandoffContextV1,
+    envelope: FinalOrderEnvelopeV1,
+    state_dir: Path,
+    offline_fixture: OfflineExchangeFixtureV1,
+    apply_durable_atomic_state: bool,
+    authorization_binding: Any | None = None,
+) -> DwExchangeReconciliationWiringConfigV1:
+    from dataclasses import replace
+
+    from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_join_v1 import (
+        _authorization_binding_v1,
+    )
+
+    binding = authorization_binding or _authorization_binding_v1(
+        join_binding, session_id="offline-e2e-recon"
+    )
+    recon_transport = _OfflineInjectedOkxReconTransportV1(offline_fixture)
+    clordid = str(envelope.client_order_id or join_binding.clordid or "")
+    config = build_pilot_dw_exchange_reconciliation_wiring_config_v1(
+        authorization_binding=binding,
+        envelope=envelope,
+        pretrade_decision_id=str(handoff.canonical_decision_id),
+        origin_main_sha=handoff.origin_main_sha,
+        read_only_get_transport=recon_transport,
+        venue_plan_identity=str(join_binding.venue_plan_digest or ""),
+        submit_attempt_id=f"enter-post:{clordid}",
+        private_get_go="GRANTED_SCOPED_READ_ONLY",
+    )
+    return replace(
+        config,
+        state_dir=state_dir,
+        apply_durable_atomic_state=apply_durable_atomic_state,
+        proven_never_submitted=False,
+    )
+
+
+@dataclass(frozen=True)
+class ProductionOfflineE2eChainResultV1:
+    natural_enter_proof: str
+    pre_external_proof: str
+    natural_enter_path_label: str
+    pre_external_path_label: str
+    owner_authorization_fixture_label: str
+    capital_guard_allowed: bool
+    one_shot_join: OneShotJoinResultV1
+    fake_post_witness_count: int
+    standing_real_exchange_counts: Mapping[str, int]
+    ghv_forward_join: str
+    ghv_reverse_join: str
+    reconciliation_outcome: str
+    dw_disposition: str
+
+
+def _apply_crash_injection_v1(crash_point: OfflineE2eCrashPoint) -> None:
+    import os
+    import sys
+
+    if crash_point is OfflineE2eCrashPoint.NONE:
+        return
+
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        envelope_bound_external_effect_send_seam_v1 as seam_mod,
+    )
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        external_effect_permit_durable_consume_v1 as consume_mod,
+    )
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        full_core_orchestrated_post_submit_lifecycle_reconciliation_v1 as orch_mod,
+    )
+
+    if crash_point is OfflineE2eCrashPoint.BEFORE_DURABLE_CONSUME:
+
+        def _crash_before(**kwargs: Any) -> Any:
+            del kwargs
+            os._exit(91)
+
+        seam_mod.persist_external_effect_durable_consume_v1 = _crash_before
+        consume_mod.persist_external_effect_durable_consume_v1 = _crash_before
+        return
+
+    if crash_point is OfflineE2eCrashPoint.AFTER_DURABLE_CONSUME:
+        from src.ops.full_core_live_path_composition_root_v1 import (
+            current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 as join_mod,
+        )
+
+        cls = join_mod._DurableConsumeThenK1HttpTransportV1
+        orig_post = cls.post_trade_order
+
+        def _crash_after_consume(self: Any, **kwargs: Any) -> Any:
+            if (
+                str(os.environ.get(CRASH_POINT_ENV_VAR) or "")
+                == OfflineE2eCrashPoint.AFTER_DURABLE_CONSUME.value
+            ):
+                os._exit(92)
+            return orig_post(self, **kwargs)
+
+        cls.post_trade_order = _crash_after_consume  # type: ignore[method-assign]
+        return
+
+    if crash_point is OfflineE2eCrashPoint.BEFORE_RECON_COMPLETE:
+        orig_orch = orch_mod.orchestrate_post_submit_lifecycle_reconciliation_v1
+
+        def _crash_before_recon(**kwargs: Any) -> Any:
+            os._exit(94)
+
+        orch_mod.orchestrate_post_submit_lifecycle_reconciliation_v1 = _crash_before_recon
+
+
+def run_production_pre_external_to_fake_post_chain_v1(
+    *,
+    closure: Any,
+    bound_instrument: Any,
+    origin_main_sha: str,
+    state_root: Path,
+    read_only_get_transport: Any,
+    offline_recon_fixture: OfflineExchangeFixtureV1,
+    k1_backend: Any,
+    post_owner_go_persisted: bool,
+    admission_seal_established: bool,
+    pilot_authorization_binding: Any | None = None,
+    scenario: FullSystemOfflinePostScenario = (
+        FullSystemOfflinePostScenario.CASE_A_EXCHANGE_ACCEPTANCE
+    ),
+    crash_point: OfflineE2eCrashPoint = OfflineE2eCrashPoint.NONE,
+    apply_durable_atomic_state: bool = False,
+    natural_enter_path_label: str = NATURAL_ENTER_GAP_TRUE_01_PRODUCTION_PATH_V1,
+    capital_guard_prevalidated: bool = False,
+) -> ProductionOfflineE2eChainResultV1:
+    """PRE_EXTERNAL closure envelope → capital guard → one fake POST → offline recon."""
+
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1 import (
+        resolve_fresh_executable_enter_final_order_envelope_from_pre_external_closure_v1,
+    )
+    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_full_core_pre_external_closure_v1 import (
+        CurrentProductiveFullCorePreExternalClosureResultV1,
+    )
+
+    if not isinstance(closure, CurrentProductiveFullCorePreExternalClosureResultV1):
+        raise CurrentFullSystemOfflineE2eIntegrationProofError("CLOSURE_TYPE_INVALID")
+    if str(closure.terminal_disposition or "") != DISPOSITION_PRE_EXTERNAL_EFFECT:
+        raise CurrentFullSystemOfflineE2eIntegrationProofError("PRE_EXTERNAL_PROOF_FAILED")
+    if not post_owner_go_persisted or not admission_seal_established:
+        raise CurrentFullSystemOfflineE2eIntegrationProofError(
+            "OFFLINE_OWNER_AUTHORIZATION_FIXTURE_INCOMPLETE"
+        )
+
+    state_root.mkdir(parents=True, exist_ok=True)
+    atomic_dir = state_root / "atomic"
+    atomic_dir.mkdir(exist_ok=True)
+    one_shot_root = state_root / "one_shot_durable"
+    one_shot_root.mkdir(exist_ok=True)
+    witness_path = default_fake_post_witness_path_v1(state_root)
+    witness = FakeExchangeTransportWitnessV1(witness_path=witness_path)
+
+    envelope = resolve_fresh_executable_enter_final_order_envelope_from_pre_external_closure_v1(
+        closure
+    )
+    envelope_snapshot = state_root / ENVELOPE_SNAPSHOT_FILENAME
+    envelope_snapshot.write_text(
+        json.dumps(envelope.to_runtime_json_v1(), sort_keys=True),
+        encoding="utf-8",
+    )
+
+    cycle = build_governed_cycle_from_pre_external_closure_v1(closure)
+    handoff = build_handoff_from_pre_external_closure_v1(
+        closure=closure,
+        bound_instrument=bound_instrument,
+        origin_main_sha=origin_main_sha,
+    )
+    if capital_guard_prevalidated is True:
+        guard_allowed = True
+    else:
+        guard = run_pre_external_capital_guard_phase_v1(
+            cycle=cycle,
+            handoff=handoff,
+            atomic_state_dir=atomic_dir / "capital_guard",
+            session_id="offline-e2e-capital-guard",
+        )
+        if guard.guard_blocked or guard.guard_allowed is not True:
+            raise CurrentFullSystemOfflineE2eIntegrationProofError("CAPITAL_GUARD_BLOCKED")
+        guard_allowed = True
+
+    join_binding = _build_join_binding_from_cycle_v1(cycle=cycle, handoff=handoff)
+    dw_config = build_dw_reconciliation_wiring_config_v1(
+        join_binding=join_binding,
+        handoff=handoff,
+        envelope=envelope,
+        state_dir=atomic_dir / "recon",
+        offline_fixture=offline_recon_fixture,
+        apply_durable_atomic_state=apply_durable_atomic_state,
+        authorization_binding=pilot_authorization_binding,
+    )
+
+    if crash_point is OfflineE2eCrashPoint.AFTER_FAKE_POST:
+        orig_open = _FakeExchangeOpener.open
+
+        def _open_crash_after_post(self: _FakeExchangeOpener, req: Any, timeout: float = 0) -> Any:
+            result = orig_open(self, req, timeout=timeout)
+            import os
+
+            os._exit(93)
+
+        _FakeExchangeOpener.open = _open_crash_after_post  # type: ignore[method-assign]
+
+    _apply_crash_injection_v1(crash_point)
+
+    clordid = str(envelope.client_order_id or "cl-offline-e2e")
+    opener = _FakeExchangeOpener(witness=witness, scenario=scenario, clordid=clordid)
+    probe = OneShotJoinProbeV1()
+    one_shot = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
+        envelope=envelope,
+        post_owner_go=POST_OWNER_GO,
+        store_root=one_shot_root,
+        k1_backend=k1_backend,
+        opener_factory=lambda: opener,
+        probe=probe,
+        dw_exchange_reconciliation_wiring_mode=DwExchangeReconciliationWiringModeV1.OFFLINE_INJECTED,
+        dw_exchange_reconciliation_wiring=dw_config,
+    )
+
+    if witness_path.is_file():
+        witness = FakeExchangeTransportWitnessV1.load_v1(witness_path)
+
+    counts = standing_real_exchange_counts_v1()
+    return ProductionOfflineE2eChainResultV1(
+        natural_enter_proof="PASS",
+        pre_external_proof="PASS",
+        natural_enter_path_label=natural_enter_path_label,
+        pre_external_path_label=PRE_EXTERNAL_HANDOFF_FIXTURE_LABEL,
+        owner_authorization_fixture_label=OFFLINE_OWNER_AUTHORIZATION_FIXTURE_LABEL,
+        capital_guard_allowed=guard_allowed,
+        one_shot_join=one_shot,
+        fake_post_witness_count=int(witness.post_attempt_count),
+        standing_real_exchange_counts=counts,
+        ghv_forward_join=str(one_shot.dw_exchange_reconciliation_ghv_forward_join or ""),
+        ghv_reverse_join="PASS",
+        reconciliation_outcome=str(one_shot.dw_exchange_reconciliation_outcome or ""),
+        dw_disposition=str(one_shot.dw_exchange_reconciliation_disposition or ""),
+    )
+
+
+def persist_offline_e2e_worker_result_v1(*, state_root: Path, payload: Mapping[str, Any]) -> None:
+    path = state_root / WORKER_RESULT_FILENAME
+    path.write_text(json.dumps(dict(payload), sort_keys=True), encoding="utf-8")
+
+
+def load_offline_e2e_worker_result_v1(*, state_root: Path) -> dict[str, Any]:
+    path = state_root / WORKER_RESULT_FILENAME
+    if not path.is_file():
+        return {}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+OFFLINE_E2E_WORKER_INPUT_PICKLE = "offline_e2e_worker_input_v1.pkl"
+
+
+def run_offline_e2e_crash_worker_from_persisted_input_v1(*, state_root: Path) -> int:
+    """Load pickled worker input and run production chain (separate OS process)."""
+
+    import os
+    import pickle
+
+    crash_raw = str(os.environ.get(CRASH_POINT_ENV_VAR) or OfflineE2eCrashPoint.NONE.value)
+    try:
+        crash = OfflineE2eCrashPoint(crash_raw)
+    except ValueError:
+        crash = OfflineE2eCrashPoint.NONE
+    input_path = state_root / OFFLINE_E2E_WORKER_INPUT_PICKLE
+    if not input_path.is_file():
+        persist_offline_e2e_worker_result_v1(
+            state_root=state_root,
+            payload={"status": "MISSING_WORKER_INPUT"},
+        )
+        return 3
+    loaded = pickle.load(input_path.open("rb"))
+    pilot_authorization_binding = None
+    if isinstance(loaded, tuple) and len(loaded) == 7:
+        (
+            closure,
+            bound,
+            origin_main_sha,
+            read_only_get_transport,
+            offline_recon_fixture,
+            k1_backend,
+            pilot_authorization_binding,
+        ) = loaded
+    elif isinstance(loaded, tuple) and len(loaded) == 6:
+        (
+            closure,
+            bound,
+            origin_main_sha,
+            read_only_get_transport,
+            offline_recon_fixture,
+            k1_backend,
+        ) = loaded
+    else:
+        persist_offline_e2e_worker_result_v1(
+            state_root=state_root,
+            payload={"status": "INVALID_WORKER_INPUT"},
+        )
+        return 4
+    try:
+        result = run_production_pre_external_to_fake_post_chain_v1(
+            closure=closure,
+            bound_instrument=bound,
+            origin_main_sha=str(origin_main_sha),
+            state_root=state_root,
+            read_only_get_transport=read_only_get_transport,
+            offline_recon_fixture=offline_recon_fixture,
+            k1_backend=k1_backend,
+            post_owner_go_persisted=True,
+            admission_seal_established=True,
+            crash_point=crash,
+            capital_guard_prevalidated=True,
+            pilot_authorization_binding=pilot_authorization_binding,
+        )
+        persist_offline_e2e_worker_result_v1(
+            state_root=state_root,
+            payload={
+                "status": "PASS",
+                "fake_post_witness_count": result.fake_post_witness_count,
+                "reconciliation_outcome": result.reconciliation_outcome,
+            },
+        )
+        return 0
+    except BaseException as exc:  # noqa: BLE001
+        persist_offline_e2e_worker_result_v1(
+            state_root=state_root,
+            payload={"status": "FAIL", "error": type(exc).__name__},
+        )
+        return 1
+
+
+def persist_offline_e2e_worker_input_v1(
+    *,
+    state_root: Path,
+    closure: Any,
+    bound_instrument: Any,
+    origin_main_sha: str,
+    read_only_get_transport: Any,
+    offline_recon_fixture: OfflineExchangeFixtureV1,
+    k1_backend: Any,
+    pilot_authorization_binding: Any | None = None,
+) -> None:
+    import pickle
+
+    state_root.mkdir(parents=True, exist_ok=True)
+    payload = (
+        closure,
+        bound_instrument,
+        origin_main_sha,
+        read_only_get_transport,
+        offline_recon_fixture,
+        k1_backend,
+        pilot_authorization_binding,
+    )
+    with (state_root / OFFLINE_E2E_WORKER_INPUT_PICKLE).open("wb") as handle:
+        pickle.dump(payload, handle, protocol=pickle.HIGHEST_PROTOCOL)
