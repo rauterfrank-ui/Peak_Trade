@@ -292,6 +292,7 @@
     "scripts/ops/run_current_productive_golden_happy_vector_startability_evaluator_v1.py",
     "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
     "scripts/ops/run_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
+    "scripts/ops/run_current_productive_unknown_post_attempt_read_only_reconciliation_v1.py",
     "scripts/ops/run_ghv_b06_productive_closure_forensic_drive_v1.py",
     "scripts/ops/run_ghv_current_bounded_natural_evidence_integration_v1.py",
     "scripts/ops/run_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py",

@@ -1011,3 +1011,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_current_productive_dw_exchange_reconciliation_wiring_v1.py
   notes: 'GHV CURRENT DW wiring: offline PRODUCTIVE_READ_ONLY one-shot PASS reproof via fake transport + socket block; DISPOSITION_PASS + fail-closed negative control; POST outcome and durable apply unchanged; no productive src mutation; CSIA/Law diff-bound NO_*_IMPACT; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:ghv_current_get_only_output_contract_remediation_v1
+  from: 0277fbf1d91a2f428fc4240b19f5005cb66b3e53
+  to: PENDING_CHANGE
+  type: CONTRACT_REMEDIATION
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py
+  notes: 'GET-only UNKNOWN POST read-only reconciliation output contract: cross-surface fail-closed adjudication + structured technical GET error fields; PR #7109 Bugbot follow-up aligns technical_get_error_present with technical_get_error_classes (order-relevant blocking unchanged); offline fake-transport regressions; RUNTIME_AUTHORIZATION_EFFECT=NONE; no POST/durable apply/capital/permit authority; Double Play/GGE/Dynamic Scope unchanged; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

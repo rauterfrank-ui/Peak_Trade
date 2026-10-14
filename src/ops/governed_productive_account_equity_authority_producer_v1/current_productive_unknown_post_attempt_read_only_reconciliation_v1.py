@@ -14,6 +14,7 @@ from urllib.parse import urlencode
 
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     ENDPOINT_ACCOUNT_POSITIONS,
+    FreshPretradeGetTransportResultV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     FullCoreFreshPretradeGetTransportV1,
@@ -57,6 +58,16 @@ CONFIRMED_ACCEPTED_PARTIALLY_FILLED = "CONFIRMED_ACCEPTED_PARTIALLY_FILLED"
 CONFIRMED_ACCEPTED_WORKING = "CONFIRMED_ACCEPTED_WORKING"
 CONFIRMED_REJECTED = "CONFIRMED_REJECTED"
 
+_WORKING_STATES = frozenset({"live", "partially_filled"})
+_TERMINAL_CANCELED_STATES = frozenset({"canceled", "cancelled"})
+
+_TECHNICAL_ERROR_TRACKED_SURFACES = frozenset(
+    {"orders_pending", "orders_history", "fills", "exact_order_lookup"}
+)
+
+TRUE_TOKEN = "true"
+FALSE_TOKEN = "false"
+
 
 @dataclass(frozen=True)
 class UnknownPostAttemptReadOnlyReconciliationResultV1:
@@ -70,6 +81,14 @@ class UnknownPostAttemptReadOnlyReconciliationResultV1:
     correlated_fill_count: int
     exact_order_lookup_performed: bool
     surfaces_summary: tuple[str, ...]
+    technical_get_error_present: str
+    technical_get_error_classes: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class _TaggedOrderRow:
+    surface: str
+    row: dict[str, Any]
 
 
 def _rows(payload: Any) -> list[Mapping[str, Any]]:
@@ -93,6 +112,205 @@ def _match_cl(rows: list[Mapping[str, Any]], cl_ord_id: str) -> list[dict[str, A
     return out
 
 
+def _inst_id_consistent(row: Mapping[str, Any], *, expected_inst: str) -> bool:
+    observed = str(row.get("instId") or "").strip()
+    if not observed:
+        return True
+    return observed == expected_inst
+
+
+def _technical_get_failure(res: FreshPretradeGetTransportResultV1) -> bool:
+    if res.get_performed is not True:
+        return True
+    err = str(res.error_class or "").strip()
+    return bool(err)
+
+
+def _technical_error_class(res: FreshPretradeGetTransportResultV1) -> str:
+    err = str(res.error_class or "").strip()
+    if err:
+        return err
+    if res.get_performed is not True:
+        return "GET_NOT_PERFORMED"
+    return ""
+
+
+def _state_lower(row: Mapping[str, Any]) -> str:
+    return str(row.get("state") or "").strip().lower()
+
+
+def _s_code(row: Mapping[str, Any]) -> str:
+    return str(row.get("sCode") or "").strip()
+
+
+def _ord_id(row: Mapping[str, Any]) -> str:
+    return str(row.get("ordId") or "").strip()
+
+
+def _collect_tagged_order_rows(
+    *,
+    pending: list[Mapping[str, Any]],
+    history: list[Mapping[str, Any]],
+    exact_rows: list[Mapping[str, Any]],
+    cl: str,
+    inst: str,
+) -> list[_TaggedOrderRow]:
+    tagged: list[_TaggedOrderRow] = []
+    for surface, rows in (
+        ("orders_pending", pending),
+        ("orders_history", history),
+        ("exact_order_lookup", exact_rows),
+    ):
+        for row in _match_cl(rows, cl):
+            if not _inst_id_consistent(row, expected_inst=inst):
+                continue
+            tagged.append(_TaggedOrderRow(surface=surface, row=row))
+    return tagged
+
+
+def _ord_id_groups(tagged: list[_TaggedOrderRow]) -> dict[str, list[_TaggedOrderRow]]:
+    groups: dict[str, list[_TaggedOrderRow]] = {}
+    for item in tagged:
+        key = _ord_id(item.row) or "__MISSING_ORD_ID__"
+        groups.setdefault(key, []).append(item)
+    return groups
+
+
+def _states_for_group(items: list[_TaggedOrderRow]) -> set[str]:
+    return {_state_lower(it.row) for it in items if _state_lower(it.row)}
+
+
+def _has_live_canceled_conflict(states: set[str]) -> bool:
+    has_live = bool(states & _WORKING_STATES)
+    has_canceled = bool(states & _TERMINAL_CANCELED_STATES)
+    return has_live and has_canceled
+
+
+def _pick_primary_row(items: list[_TaggedOrderRow]) -> dict[str, Any]:
+    for preferred in ("exact_order_lookup", "orders_pending", "orders_history"):
+        for item in items:
+            if item.surface == preferred:
+                return item.row
+    return items[0].row
+
+
+def _classify_consistent_group(
+    *,
+    items: list[_TaggedOrderRow],
+    fill_matches: list[dict[str, Any]],
+) -> tuple[str, str, dict[str, Any]]:
+    """Return reconciliation_result, external_effect_confirmed, primary_row."""
+    states = _states_for_group(items)
+    if _has_live_canceled_conflict(states):
+        return STILL_UNKNOWN, FALSE_TOKEN, _pick_primary_row(items)
+
+    primary = _pick_primary_row(items)
+    state = _state_lower(primary)
+
+    if fill_matches and state in {"filled", "partially_filled"}:
+        if state == "filled":
+            return CONFIRMED_ACCEPTED_AND_FILLED, TRUE_TOKEN, primary
+        return CONFIRMED_ACCEPTED_PARTIALLY_FILLED, TRUE_TOKEN, primary
+    if state in {"live", "partially_filled"}:
+        return CONFIRMED_ACCEPTED_WORKING, TRUE_TOKEN, primary
+    if _s_code(primary) not in {"", "0"}:
+        return CONFIRMED_REJECTED, FALSE_TOKEN, primary
+    return STILL_UNKNOWN, FALSE_TOKEN, primary
+
+
+def _adjudicate_cross_surface_order_evidence_v1(
+    *,
+    tagged: list[_TaggedOrderRow],
+    fill_matches: list[dict[str, Any]],
+    technical_blocks_confirmation: bool,
+) -> tuple[str, str, str, str, str, dict[str, Any] | None]:
+    """Return order_found, venue_order_id, order_state, recon, external, primary_row."""
+
+    if not tagged:
+        if fill_matches:
+            return "unknown", "", "", STILL_UNKNOWN, FALSE_TOKEN, None
+        return FALSE_TOKEN, "", "", STILL_UNKNOWN, FALSE_TOKEN, None
+
+    groups = _ord_id_groups(tagged)
+    ord_ids = [k for k in groups if k != "__MISSING_ORD_ID__"]
+    if len(set(ord_ids)) > 1:
+        primary = _pick_primary_row(tagged)
+        return (
+            TRUE_TOKEN,
+            _ord_id(primary),
+            str(primary.get("state") or ""),
+            STILL_UNKNOWN,
+            FALSE_TOKEN,
+            primary,
+        )
+
+    if len(groups) > 1 and "__MISSING_ORD_ID__" in groups and len(ord_ids) >= 1:
+        primary = _pick_primary_row(tagged)
+        return (
+            TRUE_TOKEN,
+            _ord_id(primary),
+            str(primary.get("state") or ""),
+            STILL_UNKNOWN,
+            FALSE_TOKEN,
+            primary,
+        )
+
+    if (
+        len(groups) == 1
+        and "__MISSING_ORD_ID__" in groups
+        and len(groups["__MISSING_ORD_ID__"]) > 1
+    ):
+        states = _states_for_group(groups["__MISSING_ORD_ID__"])
+        if _has_live_canceled_conflict(states):
+            primary = _pick_primary_row(tagged)
+            return (
+                TRUE_TOKEN,
+                "",
+                str(primary.get("state") or ""),
+                STILL_UNKNOWN,
+                FALSE_TOKEN,
+                primary,
+            )
+
+    active_key = ord_ids[0] if len(ord_ids) == 1 else next(iter(groups))
+    group_items = groups[active_key]
+    states = _states_for_group(group_items)
+    if _has_live_canceled_conflict(states):
+        primary = _pick_primary_row(group_items)
+        return (
+            TRUE_TOKEN,
+            _ord_id(primary),
+            str(primary.get("state") or ""),
+            STILL_UNKNOWN,
+            FALSE_TOKEN,
+            primary,
+        )
+
+    if technical_blocks_confirmation:
+        primary = _pick_primary_row(group_items)
+        return (
+            TRUE_TOKEN,
+            _ord_id(primary),
+            str(primary.get("state") or ""),
+            STILL_UNKNOWN,
+            FALSE_TOKEN,
+            primary,
+        )
+
+    recon, external, primary = _classify_consistent_group(
+        items=group_items,
+        fill_matches=fill_matches,
+    )
+    return (
+        TRUE_TOKEN,
+        _ord_id(primary),
+        str(primary.get("state") or ""),
+        recon,
+        external,
+        primary,
+    )
+
+
 def reconcile_unknown_post_attempt_read_only_v1(
     *,
     client_order_id: str,
@@ -109,10 +327,15 @@ def reconcile_unknown_post_attempt_read_only_v1(
 
     surfaces: list[str] = []
     requests = 0
-    matched: list[dict[str, Any]] = []
     fill_matches: list[dict[str, Any]] = []
+    technical_error_classes: list[str] = []
+    technical_failed_surfaces: set[str] = set()
 
-    def _get(surface: str, path: str, query: dict[str, str]) -> list[Mapping[str, Any]]:
+    pending_rows: list[Mapping[str, Any]] = []
+    history_rows: list[Mapping[str, Any]] = []
+    exact_rows: list[Mapping[str, Any]] = []
+
+    def _get(surface: str, path: str, query: dict[str, str]) -> FreshPretradeGetTransportResultV1:
         nonlocal requests
         endpoint = f"{path}?{urlencode(query)}"
         res = read_only_get_transport.get(
@@ -122,29 +345,41 @@ def reconcile_unknown_post_attempt_read_only_v1(
         )
         requests += 1
         rows = _rows(res.payload)
-        surfaces.append(f"{surface}:http={res.http_status}:rows={len(rows)}")
-        return rows
+        err_suffix = ""
+        if _technical_get_failure(res):
+            err_cls = _technical_error_class(res)
+            if surface in _TECHNICAL_ERROR_TRACKED_SURFACES:
+                technical_failed_surfaces.add(surface)
+            if err_cls and err_cls not in technical_error_classes:
+                technical_error_classes.append(err_cls)
+            err_suffix = f":err={err_cls or 'GET_NOT_PERFORMED'}"
+        surfaces.append(f"{surface}:http={res.http_status}:rows={len(rows)}{err_suffix}")
+        if surface == "orders_pending":
+            pending_rows.extend(rows)
+        elif surface == "orders_history":
+            history_rows.extend(rows)
+        elif surface == "exact_order_lookup":
+            exact_rows.extend(rows)
+        return res
 
-    pending = _get(
+    _get(
         "orders_pending",
         ENDPOINT_ORDERS_PENDING,
         {"instType": itype, "instId": inst},
     )
-    matched.extend(_match_cl(pending, cl))
 
-    history = _get(
+    _get(
         "orders_history",
         ENDPOINT_ORDERS_HISTORY,
         {"instType": itype, "instId": inst, "limit": "100"},
     )
-    matched.extend(_match_cl(history, cl))
 
-    fills = _get(
+    fills_res = _get(
         "fills",
         ENDPOINT_TRADE_FILLS,
         {"instType": itype, "instId": inst, "limit": "100"},
     )
-    fill_matches = _match_cl(fills, cl)
+    fill_matches = _match_cl(_rows(fills_res.payload), cl)
 
     _get(
         "positions",
@@ -153,45 +388,34 @@ def reconcile_unknown_post_attempt_read_only_v1(
     )
 
     exact_lookup = False
-    exact_rows = _get(
+    _get(
         "exact_order_lookup",
         READ_ONLY_EXACT_ORDER_LOOKUP_PATH,
         {"instId": inst, "clOrdId": cl},
     )
     exact_lookup = True
-    matched.extend(_match_cl(exact_rows, cl))
 
-    _assert_no_secrets({"matched": matched, "fills": fill_matches})
+    tagged = _collect_tagged_order_rows(
+        pending=pending_rows,
+        history=history_rows,
+        exact_rows=exact_rows,
+        cl=cl,
+        inst=inst,
+    )
 
-    order_found = "false"
-    venue_order_id = ""
-    order_state = ""
-    recon = STILL_UNKNOWN
-    external = "false"
+    sorted_technical_error_classes = tuple(sorted(technical_error_classes))
+    technical_get_error_present = TRUE_TOKEN if sorted_technical_error_classes else FALSE_TOKEN
+    technical_blocks_confirmation = bool(technical_failed_surfaces)
 
-    if matched:
-        order_found = "true"
-        primary = matched[0]
-        venue_order_id = str(primary.get("ordId") or "")
-        order_state = str(primary.get("state") or "")
-        state_lower = order_state.lower()
-        if fill_matches and state_lower in {"filled", "partially_filled"}:
-            recon = (
-                CONFIRMED_ACCEPTED_AND_FILLED
-                if state_lower == "filled"
-                else CONFIRMED_ACCEPTED_PARTIALLY_FILLED
-            )
-            external = "true"
-        elif state_lower in {"live", "partially_filled"}:
-            recon = CONFIRMED_ACCEPTED_WORKING
-            external = "true"
-        elif str(primary.get("sCode") or "") not in {"", "0"}:
-            recon = CONFIRMED_REJECTED
-        else:
-            recon = STILL_UNKNOWN
-    elif fill_matches:
-        order_found = "unknown"
-        recon = STILL_UNKNOWN
+    _assert_no_secrets({"tagged": [t.row for t in tagged], "fills": fill_matches})
+
+    order_found, venue_order_id, order_state, recon, external, _primary = (
+        _adjudicate_cross_surface_order_evidence_v1(
+            tagged=tagged,
+            fill_matches=fill_matches,
+            technical_blocks_confirmation=technical_blocks_confirmation,
+        )
+    )
 
     return UnknownPostAttemptReadOnlyReconciliationResultV1(
         client_order_id=cl,
@@ -204,6 +428,8 @@ def reconcile_unknown_post_attempt_read_only_v1(
         correlated_fill_count=len(fill_matches),
         exact_order_lookup_performed=exact_lookup,
         surfaces_summary=tuple(surfaces),
+        technical_get_error_present=technical_get_error_present,
+        technical_get_error_classes=sorted_technical_error_classes,
     )
 
 

@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:ghv_current_dw_productive_read_only_one_shot_pass_test_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:ghv_current_get_only_output_contract_remediation_v1`.
 
 ## Workflow
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- GHV CURRENT DW PRODUCTIVE_READ_ONLY one-shot PASS test closure on existing default-off post-submit reconciliation wiring host; fake GET transport only; no productive source or trading semantics change; POST and durable apply remain unchanged; execution_authority_effect=NONE; GHV_AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
-- introduced_by=CHANGE:ghv_current_dw_productive_read_only_one_shot_pass_test_v1
-- modified_by=CHANGE:ghv_current_dw_productive_read_only_one_shot_pass_test_v1
+- GET-only UNKNOWN POST read-only reconciliation contract remediation: cross-surface fail-closed output adjudication and structured technical GET error observability; PR #7109 Bugbot follow-up aligns technical_get_error_present with technical_get_error_classes (order-relevant blocking unchanged); offline fake-transport tests only; no productive network; execution_authority_effect=NONE; POST and durable apply unchanged; GHV_AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+- introduced_by=CHANGE:ghv_current_get_only_output_contract_remediation_v1
+- modified_by=CHANGE:ghv_current_get_only_output_contract_remediation_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
