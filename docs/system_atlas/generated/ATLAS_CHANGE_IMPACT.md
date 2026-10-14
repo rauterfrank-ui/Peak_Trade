@@ -15,15 +15,15 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=9
-ATLAS_CHANGED_RELATION_COUNT=1
+ATLAS_CHANGED_ENTITY_COUNT=2
+ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
 ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7100_okx_phase8_auth_session_boundary_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7101_dw_exchange_reconciliation_wiring_v1`.
 
 ## Workflow
 
@@ -40,21 +40,14 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `GATE:full_core_fresh_pretrade_runtime_get_v1` |
-| `RUNTIME_COMPONENT:full_core_exchange_reconciliation_integration_v1` |
-| `RUNTIME_COMPONENT:full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1` |
+| `CONTRACT:current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1` |
 | `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
-| `RUNTIME_COMPONENT:full_core_orchestrated_post_submit_lifecycle_reconciliation_v1` |
-| `RUNTIME_COMPONENT:full_core_post_completed_hook_evidence_v1` |
-| `RUNTIME_COMPONENT:full_core_post_submit_exchange_reconciliation_lifecycle_join_v1` |
-| `RUNTIME_COMPONENT:ghv_current_okx_phase7_readiness_adjudication_v1` |
-| `RUNTIME_COMPONENT:ghv_current_okx_productive_read_only_reconciliation_get_validation_v1` |
 
 ## CHANGED_RELATIONS
 
 | id |
 | --- |
-| `REL:r_full_core_path_calls_fresh_pretrade_runtime_get` |
+| _(none)_ |
 
 ## NEW_RELATIONS
 
@@ -100,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7100: Phase-8 OKX productive read-only GET authorization and session boundary remediation (explicit Owner-GO CLI, derived 240s session deadline on transport); spec/evidence cross-references only for Full-Core reconciliation entities; no productive provider wiring expansion; GHV_AUTHORITY=NONE; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
-- introduced_by=CHANGE:pr_7100_okx_phase8_auth_session_boundary_v1
-- modified_by=CHANGE:pr_7100_okx_phase8_auth_session_boundary_v1
+- PR #7101: default-off DW exchange reconciliation wiring after one-shot POST join (DISABLED default; optional OFFLINE_INJECTED / PRODUCTIVE_READ_ONLY); send seam unchanged; fail-closed wiring fields; no productive provider activation; GHV_AUTHORITY=NONE; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+- introduced_by=CHANGE:pr_7101_dw_exchange_reconciliation_wiring_v1
+- modified_by=CHANGE:pr_7101_dw_exchange_reconciliation_wiring_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

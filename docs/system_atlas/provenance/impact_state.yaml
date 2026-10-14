@@ -1,26 +1,18 @@
 schema_version: system_atlas.v1
 pending_change: true
-introduced_by: CHANGE:pr_7100_okx_phase8_auth_session_boundary_v1
-modified_by: CHANGE:pr_7100_okx_phase8_auth_session_boundary_v1
+introduced_by: CHANGE:pr_7101_dw_exchange_reconciliation_wiring_v1
+modified_by: CHANGE:pr_7101_dw_exchange_reconciliation_wiring_v1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PR #7100: Phase-8 OKX productive read-only GET authorization and session boundary remediation
-  (explicit Owner-GO CLI, derived 240s session deadline on transport); spec/evidence cross-references
-  only for Full-Core reconciliation entities; no productive provider wiring expansion; GHV_AUTHORITY=NONE;
+  PR #7101: default-off DW exchange reconciliation wiring after one-shot POST join
+  (DISABLED default; optional OFFLINE_INJECTED / PRODUCTIVE_READ_ONLY); send seam unchanged;
+  fail-closed wiring fields; no productive provider activation; GHV_AUTHORITY=NONE;
   AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
 changed_entities:
-  - GATE:full_core_fresh_pretrade_runtime_get_v1
-  - RUNTIME_COMPONENT:full_core_exchange_reconciliation_integration_v1
-  - RUNTIME_COMPONENT:full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1
+  - CONTRACT:current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1
   - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-  - RUNTIME_COMPONENT:full_core_orchestrated_post_submit_lifecycle_reconciliation_v1
-  - RUNTIME_COMPONENT:full_core_post_completed_hook_evidence_v1
-  - RUNTIME_COMPONENT:full_core_post_submit_exchange_reconciliation_lifecycle_join_v1
-  - RUNTIME_COMPONENT:ghv_current_okx_phase7_readiness_adjudication_v1
-  - RUNTIME_COMPONENT:ghv_current_okx_productive_read_only_reconciliation_get_validation_v1
-changed_relations:
-  - REL:r_full_core_path_calls_fresh_pretrade_runtime_get
+changed_relations: []
 changed_closures: []
 changed_wiring: []
 changed_venue: []

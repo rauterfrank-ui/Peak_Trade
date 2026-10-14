@@ -969,3 +969,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_ghv_current_okx_productive_read_only_reconciliation_get_validation_v1.py
   notes: 'PR #7100: Phase-8 authorization/session boundary (no GRANTED CLI defaults; explicit Owner-GO flags; derived session deadline on productive read-only GET transport); offline tests H/I/F/O/N; adversarial manifest closure; no POST/network expansion; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7101_dw_exchange_reconciliation_wiring_v1
+  from: f2f045b7786abc862b114ce7ca1ea7e8c10a1689
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_current_productive_dw_exchange_reconciliation_wiring_v1.py
+  notes: 'PR #7101: default-off post-submit DW exchange reconciliation wiring on one-shot join; optional OFFLINE_INJECTED/PRODUCTIVE_READ_ONLY; send seam unchanged; fail-closed wiring fields; no POST/network activation by default; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
