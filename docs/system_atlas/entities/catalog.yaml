@@ -1464,14 +1464,28 @@ entities:
   evidence_sources:
   - tests/ops/test_current_live_canary_capital_guard_final_reproof_v1.py
   notes: Fail-closed capital guard + cross-process one-shot; no live POST activation; AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
+- id: RUNTIME_COMPONENT:full_core_recovery_guard_exposure_signals_v1
+  # atlas_entity_review: C1 durable atomic → recovery exposure signal producer for capital guard join; read-only ledger; fail-closed; no POST/durable apply; AUTHORITY=NONE; POST_COUNT=0.
+  kind: RUNTIME_COMPONENT
+  name: Full-Core recovery guard exposure signals v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+  modified_by: CHANGE:ghv_current_recovery_guard_c1_false_clear_remediation_v1
+  source_paths:
+  - src/ops/full_core_live_path_composition_root_v1/full_core_recovery_guard_exposure_signals_v1.py
+  - src/ops/section_11_13_5_live_canary_minimum_exposure_v1/canary_capital_guard_atomic_one_shot_v1.py
+  evidence_sources:
+  - tests/ops/test_full_core_recovery_guard_exposure_signals_v1.py
+  notes: Maps durable atomic one-shot state to unknown_submit_active/recovery_state_clear for PRE_EXTERNAL guard; binding digest fail-closed; does not mutate atomic state or authorize capital release; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_pre_post_capital_guard_join_v1
-  # atlas_entity_review: GHV pilot guarded Enter-POST admission binds pilot capital guard + mandatory NEW-RISK admission on productive POST path; PRE_EXTERNAL join/binding hooks extended; fail-closed offline proofs; no Live/Testnet activation; AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: C1 wires atomic-derived recovery signals into join exposure evidence; false-clear/false-halt remediation; pilot Enter-POST admission unchanged; no Live/Testnet activation; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Full-Core PRE_EXTERNAL capital guard join v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-  modified_by: CHANGE:ghv_current_pilot_post_guarded_enter_admission_v1
+  modified_by: CHANGE:ghv_current_recovery_guard_c1_false_clear_remediation_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py
@@ -1480,6 +1494,7 @@ entities:
   - src/ops/full_core_live_path_composition_root_v1/full_core_capital_guard_reconciliation_stub_v1.py
   - src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_binding_v1.py
   - src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_join_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/full_core_recovery_guard_exposure_signals_v1.py
   - src/ops/full_core_live_path_composition_root_v1/ghv_full_core_capital_guard_observability_v1.py
   - config/ops/current_full_core_capital_guard_v1.json
   evidence_sources:
@@ -1487,7 +1502,8 @@ entities:
   - tests/ops/test_full_core_pre_post_capital_guard_join_v1.py
   - tests/ops/test_full_core_capital_guard_offline_reproof_integration_v1.py
   - tests/ops/test_current_productive_pilot_capital_guard_post_bind_v1.py
-  notes: Independent fail-closed guard at PRE_EXTERNAL; default join DISABLED; OFFLINE_STUB proofs only; caps UNRATIFIED; no POST; GHV pilot POST-path guard bind is offline-tested only; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
+  - tests/ops/test_full_core_recovery_guard_exposure_signals_v1.py
+  notes: Independent fail-closed guard at PRE_EXTERNAL; default join DISABLED; exposure recovery signals authoritative from durable atomic state; OFFLINE_STUB proofs only; caps UNRATIFIED; no POST; GHV pilot POST-path guard bind offline-tested only; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_exchange_reconciliation_integration_v1
   # atlas_entity_review: PR #7106 position cross-check in adjudicate (netting-safe; no selected_side/pos sign); Double Play/GGE unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT

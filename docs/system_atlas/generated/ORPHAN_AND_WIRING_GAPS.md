@@ -93,6 +93,7 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:full_core_post_completed_hook_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:full_core_post_completed_hook_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:full_core_post_submit_exchange_reconciliation_lifecycle_join_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:full_core_post_submit_exchange_reconciliation_lifecycle_join_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:full_core_pre_post_capital_guard_join_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:full_core_pre_post_capital_guard_join_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:full_core_recovery_guard_exposure_signals_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:full_core_recovery_guard_exposure_signals_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:gfu_eligibility | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:gfu_eligibility | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_current_bounded_natural_evidence_forensic_adapter_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_current_bounded_natural_evidence_forensic_adapter_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:ghv_current_okx_phase7_readiness_adjudication_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:ghv_current_okx_phase7_readiness_adjudication_v1 | STATUS=OPEN (not proven) |  |
