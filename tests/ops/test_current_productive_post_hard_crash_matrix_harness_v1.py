@@ -267,8 +267,8 @@ def test_evaluate_restart_negative_control_rejects_stubbed_replay_probe(
     store = tmp_path / "store"
     spawn_hard_crash_child_v1(store_root=store, crash_point=CrashPointV1.C9)
 
-    def _stub_replay(**_kwargs: Any) -> tuple[int, bool]:
-        return (0, False)
+    def _stub_replay(**_kwargs: Any) -> tuple[int, bool, str]:
+        return (0, False, "STUB")
 
     monkeypatch.setattr(
         hard_crash_harness_v1,
@@ -286,8 +286,8 @@ def test_evaluate_restart_negative_control_rejects_fabricated_mock_post_count(
     store = tmp_path / "store"
     spawn_hard_crash_child_v1(store_root=store, crash_point=CrashPointV1.C9)
 
-    def _stub_replay(**_kwargs: Any) -> tuple[int, bool]:
-        return (1, True)
+    def _stub_replay(**_kwargs: Any) -> tuple[int, bool, str]:
+        return (1, True, "STUB")
 
     monkeypatch.setattr(
         hard_crash_harness_v1,

@@ -1,19 +1,19 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "07af38a15310206011ec2422085add60167dfbf0",
-  "head_sha": "5e3cf597b696043fd51dc0aabf3f517c3162a81f",
+  "base_sha": "cbae09a35525e3bc0e3c20162fbb35397d9fc060",
+  "head_sha": "PENDING_COMMIT",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "tests/ops/_current_productive_post_hard_crash_child_runner_v1.py",
     "tests/ops/_current_productive_post_hard_crash_harness_v1.py",
+    "tests/ops/test_current_productive_permit_send_seam_replay_isolation_v1.py",
     "tests/ops/test_current_productive_post_hard_crash_matrix_harness_v1.py"
   ],
-  "changed_paths_sha256": "523e8bca1e94b56e9efcef98edeeb372bf7d2b3925085b84981f5c75a1e035ee",
+  "changed_paths_sha256": "9d9036d98266f1bd692daf683b0482f235671fa6dd63d655009e037167b1ceab",
   "evidence_refs": [
-    "tests/ops/test_current_productive_post_hard_crash_matrix_harness_v1.py"
+    "tests/ops/test_current_productive_permit_send_seam_replay_isolation_v1.py"
   ],
-  "reason": "Offline subprocess hard-crash harness for CURRENT Enter-POST recovery boundaries; diff-bound NO_LAW_IMPACT; AUTHORITY=NONE.",
+  "reason": "Offline permit/send-seam replay isolation for consumed durable permit; diff-bound NO_LAW_IMPACT; AUTHORITY=NONE.",
   "verdict": "NO_LAW_IMPACT",
   "selector_used_as_law_impact_authority": false
 }
