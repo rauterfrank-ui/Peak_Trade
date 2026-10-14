@@ -3077,6 +3077,7 @@ entities:
   # atlas_entity_review: PR #7101 default-off DW exchange reconciliation wiring after one-shot POST join; send seam unchanged; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: GHV CURRENT DW PRODUCTIVE_READ_ONLY one-shot PASS offline reproof (fake transport, socket block, DISPOSITION_PASS); no src change; POST/durable apply unchanged; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: GET-only unknown-post read-only recon output contract remediation (cross-surface fail-closed, technical GET error fields); offline tests; RUNTIME_AUTHORIZATION_EFFECT=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #7109 Bugbot Q3 technical_get_error_present/classes observability alignment; order-relevant blocking unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: CONTRACT
   name: CURRENT productive actual venue Enter POST (one-shot) v1
   epistemic_class: CANONICAL_AUTHORITY

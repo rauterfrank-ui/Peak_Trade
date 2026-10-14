@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "0277fbf1d91a2f428fc4240b19f5005cb66b3e53",
-  "head_sha": "PENDING_GOVERNANCE_COMMIT",
+  "head_sha": "b7d1390b419e6e66cd86df8f40d11cef6b60dbb8",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -33,7 +33,7 @@
     "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
     "tests/ops/test_current_productive_post_hard_crash_matrix_harness_v1.py"
   ],
-  "reason": "GET-only UNKNOWN POST read-only reconciliation output contract remediation: cross-surface fail-closed adjudication and structured technical GET error fields; offline fake-transport regressions only; no CSIA authority-edge or interaction-map semantic change; RUNTIME_AUTHORIZATION_EFFECT=NONE; POST/durable apply unchanged; diff-bound NO_MAP_IMPACT; AUTHORITY=NONE.",
+  "reason": "GET-only UNKNOWN POST read-only reconciliation output contract remediation: cross-surface fail-closed adjudication and structured technical GET error fields; PR #7109 Bugbot follow-up aligns technical_get_error_present with technical_get_error_classes (order-relevant blocking unchanged); offline fake-transport regressions only; no CSIA authority-edge or interaction-map semantic change; RUNTIME_AUTHORIZATION_EFFECT=NONE; POST/durable apply unchanged; diff-bound NO_MAP_IMPACT; AUTHORITY=NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }

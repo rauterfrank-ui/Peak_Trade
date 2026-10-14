@@ -1017,4 +1017,4 @@ changes:
   type: CONTRACT_REMEDIATION
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py
-  notes: 'GET-only UNKNOWN POST read-only reconciliation output contract: cross-surface fail-closed adjudication + structured technical GET error fields; offline fake-transport regressions; RUNTIME_AUTHORIZATION_EFFECT=NONE; no POST/durable apply/capital/permit authority; Double Play/GGE/Dynamic Scope unchanged; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+  notes: 'GET-only UNKNOWN POST read-only reconciliation output contract: cross-surface fail-closed adjudication + structured technical GET error fields; PR #7109 Bugbot follow-up aligns technical_get_error_present with technical_get_error_classes (order-relevant blocking unchanged); offline fake-transport regressions; RUNTIME_AUTHORIZATION_EFFECT=NONE; no POST/durable apply/capital/permit authority; Double Play/GGE/Dynamic Scope unchanged; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

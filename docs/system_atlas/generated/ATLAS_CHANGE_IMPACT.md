@@ -92,7 +92,7 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- GET-only UNKNOWN POST read-only reconciliation contract remediation: cross-surface fail-closed output adjudication and structured technical GET error observability; offline fake-transport tests only; no productive network; execution_authority_effect=NONE; POST and durable apply unchanged; GHV_AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+- GET-only UNKNOWN POST read-only reconciliation contract remediation: cross-surface fail-closed output adjudication and structured technical GET error observability; PR #7109 Bugbot follow-up aligns technical_get_error_present with technical_get_error_classes (order-relevant blocking unchanged); offline fake-transport tests only; no productive network; execution_authority_effect=NONE; POST and durable apply unchanged; GHV_AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
 - introduced_by=CHANGE:ghv_current_get_only_output_contract_remediation_v1
 - modified_by=CHANGE:ghv_current_get_only_output_contract_remediation_v1
 
