@@ -11,6 +11,7 @@ import pytest
 
 from tests.ops._current_productive_post_hard_crash_harness_v1 import (
     CrashPointV1,
+    RestartEvaluationReplayProbeError,
     assert_second_new_risk_admission_blocked_v1,
     bootstrap_unknown_post_store_v1,
     evaluate_restart_after_crash_v1,
@@ -20,6 +21,7 @@ from tests.ops._current_productive_post_hard_crash_harness_v1 import (
     spawn_hard_crash_child_v1,
     write_parent_mock_exchange_acceptance_stub_v1,
 )
+import tests.ops._current_productive_post_hard_crash_harness_v1 as hard_crash_harness_v1
 from tests.ops._pilot_guard_enter_post_test_helpers_v1 import PILOT_TEST_INST
 from tests.ops.test_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
     _new_risk_envelope,
@@ -239,4 +241,58 @@ def test_restart_reuses_same_envelope_identity(tmp_path: Path) -> None:
         crash_point=CrashPointV1.C6,
         first_envelope=env,
     )
+    assert restart.replay_attempt_executed is True
     assert restart.mock_post_attempts_after_restart == 0
+    assert "REPLAY_ATTEMPT_EXECUTED" in restart.notes
+
+
+def test_c9_restart_same_envelope_replay_blocked_before_mock_transport(tmp_path: Path) -> None:
+    store = tmp_path / "store"
+    env = _new_risk_envelope()
+    spawn_hard_crash_child_v1(store_root=store, crash_point=CrashPointV1.C9)
+    restart = evaluate_restart_after_crash_v1(
+        store_root=store,
+        crash_point=CrashPointV1.C9,
+        first_envelope=env,
+    )
+    assert restart.durable_consumed is True
+    assert restart.replay_attempt_executed is True
+    assert restart.mock_post_attempts_after_restart == 0
+
+
+def test_evaluate_restart_negative_control_rejects_stubbed_replay_probe(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    store = tmp_path / "store"
+    spawn_hard_crash_child_v1(store_root=store, crash_point=CrashPointV1.C9)
+
+    def _stub_replay(**_kwargs: Any) -> tuple[int, bool]:
+        return (0, False)
+
+    monkeypatch.setattr(
+        hard_crash_harness_v1,
+        "_attempt_same_envelope_controlled_replay_v1",
+        _stub_replay,
+    )
+    with pytest.raises(RestartEvaluationReplayProbeError, match="NOT_EXECUTED"):
+        evaluate_restart_after_crash_v1(store_root=store, crash_point=CrashPointV1.C9)
+
+
+def test_evaluate_restart_negative_control_rejects_fabricated_mock_post_count(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path: Path,
+) -> None:
+    store = tmp_path / "store"
+    spawn_hard_crash_child_v1(store_root=store, crash_point=CrashPointV1.C9)
+
+    def _stub_replay(**_kwargs: Any) -> tuple[int, bool]:
+        return (1, True)
+
+    monkeypatch.setattr(
+        hard_crash_harness_v1,
+        "_attempt_same_envelope_controlled_replay_v1",
+        _stub_replay,
+    )
+    with pytest.raises(RestartEvaluationReplayProbeError, match="UNEXPECTED_MOCK_POST"):
+        evaluate_restart_after_crash_v1(store_root=store, crash_point=CrashPointV1.C9)

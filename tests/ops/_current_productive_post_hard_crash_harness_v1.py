@@ -29,6 +29,12 @@ CRASH_EXIT: dict[str, int] = {
 
 SUBPROCESS_TIMEOUT_SECONDS = 45
 
+DURABLE_CONSUME_TMP_NAME = "full_core_external_effect_permit_consume_v1.json.tmp"
+
+
+class RestartEvaluationReplayProbeError(RuntimeError):
+    """Raised when restart evaluation skips or falsifies the same-envelope replay probe."""
+
 
 class CrashPointV1(str, Enum):
     C1 = "C1"
@@ -62,7 +68,71 @@ class RestartEvaluationV1:
     second_admission_blocked: bool
     second_admission_reason: str
     mock_post_attempts_after_restart: int
+    replay_attempt_executed: bool
     notes: tuple[str, ...]
+
+
+class MockPostCountingOpenerV1:
+    """Counts urllib open attempts for offline replay probes (never reaches network)."""
+
+    def __init__(self) -> None:
+        self.mock_post_open_attempts = 0
+
+    def open(self, req: Any, timeout: float = 0) -> Any:
+        del req, timeout
+        self.mock_post_open_attempts += 1
+        raise TimeoutError("hard-crash-replay-probe-timeout")
+
+
+def _attempt_same_envelope_controlled_replay_v1(
+    *,
+    store_root: Path,
+    envelope: Any,
+) -> tuple[int, bool]:
+    """Re-drive CURRENT Enter-POST for the same envelope; return (mock_open_count, executed)."""
+    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 import (
+        EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+        OWNER_GO,
+        execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1,
+    )
+    from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
+        MockCurrentProductive29PIntegrityBackendV1,
+    )
+    from tests.ops._pilot_guard_enter_post_test_helpers_v1 import (
+        PilotGuardReadTransport,
+        mandatory_new_risk_execute_kwargs,
+    )
+    from tests.ops.test_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
+        _FakeKeychainBackend,
+        _persist_post_go,
+    )
+
+    counting_opener = MockPostCountingOpenerV1()
+    kwargs = mandatory_new_risk_execute_kwargs(store_root)
+    _persist_post_go(store_root)
+    executed = False
+    try:
+        executed = True
+        execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
+            owner_go=OWNER_GO,
+            baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+            envelope=envelope,
+            store_root=store_root,
+            evidence_root=store_root / "evidence",
+            perform_real_venue_post=True,
+            k1_backend=_FakeKeychainBackend(),
+            opener_factory=lambda: counting_opener,
+            read_only_get_transport=PilotGuardReadTransport(avail_eq="10000"),
+            execution_integrity_backend=MockCurrentProductive29PIntegrityBackendV1(
+                origin_main=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+                head=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+                drift="",
+            ),
+            **kwargs,
+        )
+    except Exception:
+        pass
+    return counting_opener.mock_post_open_attempts, executed
 
 
 def spawn_hard_crash_child_v1(
@@ -163,6 +233,7 @@ def evaluate_restart_after_crash_v1(
     store_root: Path,
     crash_point: CrashPointV1 | str,
     first_envelope: Any | None = None,
+    require_replay_probe: bool = True,
 ) -> RestartEvaluationV1:
     from src.ops.full_core_live_path_composition_root_v1.current_productive_mandatory_new_risk_enter_post_admission_v1 import (
         MandatoryNewRiskEnterPostAdmissionError,
@@ -226,6 +297,16 @@ def evaluate_restart_after_crash_v1(
         second_blocked = True
         reason = str(exc)
 
+    mock_posts, replay_executed = _attempt_same_envelope_controlled_replay_v1(
+        store_root=store_root,
+        envelope=env,
+    )
+    if require_replay_probe and not replay_executed:
+        raise RestartEvaluationReplayProbeError("SAME_ENVELOPE_REPLAY_PROBE_NOT_EXECUTED")
+    if mock_posts > 0:
+        raise RestartEvaluationReplayProbeError(f"UNEXPECTED_MOCK_POST_AFTER_RESTART:{mock_posts}")
+    notes.append("REPLAY_ATTEMPT_EXECUTED" if replay_executed else "REPLAY_ATTEMPT_SKIPPED")
+
     return RestartEvaluationV1(
         crash_point=point,
         durable_consumed=bool(durable.get("durable_consumed")),
@@ -234,7 +315,8 @@ def evaluate_restart_after_crash_v1(
         guard_state=guard_state,
         second_admission_blocked=second_blocked,
         second_admission_reason=reason,
-        mock_post_attempts_after_restart=0,
+        mock_post_attempts_after_restart=mock_posts,
+        replay_attempt_executed=replay_executed,
         notes=tuple(notes),
     )
 

@@ -204,12 +204,12 @@ def _scenario_c4(store_root: Path, envelope: Any) -> None:
 
 
 def _scenario_c6(store_root: Path, envelope: Any) -> None:
-    import src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 as consume_mod
+    from tests.ops._current_productive_post_hard_crash_harness_v1 import DURABLE_CONSUME_TMP_NAME
 
     orig_replace = Path.replace
 
     def _crash_before_replace(self: Path, target: Path) -> None:
-        if self.name.endswith(".json.tmp"):
+        if self.name == DURABLE_CONSUME_TMP_NAME:
             _crash(CRASH_EXIT["C6"])
         return orig_replace(self, target)
 
@@ -217,10 +217,7 @@ def _scenario_c6(store_root: Path, envelope: Any) -> None:
         store_root=store_root, envelope=envelope
     )
     with patch.object(Path, "replace", _crash_before_replace):
-        try:
-            _run_one_shot_join(store_root, envelope)
-        except Exception:
-            _crash(CRASH_EXIT["C6"])
+        _run_one_shot_join(store_root, envelope)
 
 
 def _scenario_c9_http200(store_root: Path, envelope: Any, extra: dict[str, Any]) -> None:
