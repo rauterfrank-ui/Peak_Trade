@@ -402,6 +402,38 @@ class _ScenarioOrderReconTransport:
                 )
             return _ok({"code": "0", "data": []})
 
+        if self.scenario == "ORDER_SURFACE_TIMEOUT_ONLY":
+            if "orders-history" in path:
+                return _fail("TIMEOUT")
+            return _ok({"code": "0", "data": []})
+
+        if self.scenario == "POSITIONS_FAIL_CONSISTENT_WORKING":
+            if "account/positions" in path:
+                return _fail("TRANSPORT_MISSING")
+            if "orders-pending" in path or path == READ_ONLY_EXACT_ORDER_LOOKUP_PATH:
+                return _ok(
+                    {
+                        "code": "0",
+                        "data": [
+                            {
+                                "clOrdId": self.cl,
+                                "instId": self.inst,
+                                "ordId": "ord-live-pos-fail",
+                                "state": "live",
+                                "sCode": "0",
+                            }
+                        ],
+                    }
+                )
+            return _ok({"code": "0", "data": []})
+
+        if self.scenario == "MULTI_SURFACE_TECHNICAL_ERRORS":
+            if "orders-history" in path:
+                return _fail("TIMEOUT")
+            if "account/positions" in path:
+                return _fail("TRANSPORT_MISSING")
+            return _ok({"code": "0", "data": []})
+
         raise AssertionError(f"UNKNOWN_SCENARIO:{self.scenario}")
 
 
@@ -462,6 +494,42 @@ def test_q2_mismatched_inst_id_not_merged() -> None:
     recon = _recon_with_scenario("MISMATCHED_INST_ID")
     assert recon.order_found == "false"
     assert recon.reconciliation_result == STILL_UNKNOWN
+
+
+def test_t1_all_gets_success_technical_error_fields_absent() -> None:
+    recon = _recon_with_scenario("EMPTY_SUCCESS")
+    assert recon.technical_get_error_present == "false"
+    assert recon.technical_get_error_classes == ()
+
+
+def test_t2_order_relevant_get_timeout_flags_error_conservative_recon() -> None:
+    recon = _recon_with_scenario("ORDER_SURFACE_TIMEOUT_ONLY")
+    assert recon.technical_get_error_present == "true"
+    assert "TIMEOUT" in recon.technical_get_error_classes
+    assert recon.reconciliation_result == STILL_UNKNOWN
+    assert recon.external_effect_confirmed == "false"
+
+
+def test_t3_positions_only_get_failure_flags_error_without_changing_order_adjudication() -> None:
+    recon = _recon_with_scenario("POSITIONS_FAIL_CONSISTENT_WORKING")
+    assert recon.technical_get_error_present == "true"
+    assert "TRANSPORT_MISSING" in recon.technical_get_error_classes
+    assert recon.reconciliation_result == CONFIRMED_ACCEPTED_WORKING
+    assert recon.external_effect_confirmed == "true"
+
+
+def test_t4_multiple_technical_errors_sorted_deterministically() -> None:
+    recon = _recon_with_scenario("MULTI_SURFACE_TECHNICAL_ERRORS")
+    assert recon.technical_get_error_present == "true"
+    assert recon.technical_get_error_classes == ("TIMEOUT", "TRANSPORT_MISSING")
+
+
+def test_t5_q2_conflict_tests_remain_pass() -> None:
+    contradictory = _recon_with_scenario("CONTRADICTORY_PENDING_LIVE_EXACT_CANCELED")
+    assert contradictory.reconciliation_result == STILL_UNKNOWN
+    assert contradictory.external_effect_confirmed == "false"
+    working = _recon_with_scenario("CONSISTENT_WORKING")
+    assert working.reconciliation_result == CONFIRMED_ACCEPTED_WORKING
 
 
 def test_cli_output_includes_structured_technical_error_fields(

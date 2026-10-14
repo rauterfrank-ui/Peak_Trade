@@ -403,8 +403,9 @@ def reconcile_unknown_post_attempt_read_only_v1(
         inst=inst,
     )
 
-    technical_get_error_present = TRUE_TOKEN if technical_failed_surfaces else FALSE_TOKEN
-    technical_blocks_confirmation = technical_get_error_present == TRUE_TOKEN
+    sorted_technical_error_classes = tuple(sorted(technical_error_classes))
+    technical_get_error_present = TRUE_TOKEN if sorted_technical_error_classes else FALSE_TOKEN
+    technical_blocks_confirmation = bool(technical_failed_surfaces)
 
     _assert_no_secrets({"tagged": [t.row for t in tagged], "fills": fill_matches})
 
@@ -428,7 +429,7 @@ def reconcile_unknown_post_attempt_read_only_v1(
         exact_order_lookup_performed=exact_lookup,
         surfaces_summary=tuple(surfaces),
         technical_get_error_present=technical_get_error_present,
-        technical_get_error_classes=tuple(sorted(technical_error_classes)),
+        technical_get_error_classes=sorted_technical_error_classes,
     )
 
 
