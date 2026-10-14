@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "f2f045b7786abc862b114ce7ca1ea7e8c10a1689",
-  "head_sha": "PENDING_PR_7101_GOVERNANCE_COMMIT",
+  "base_sha": "442d48ab1a9dd531b0a8aff8d3072611790488d2",
+  "head_sha": "PENDING_PR_7102_GOVERNANCE_COMMIT",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
@@ -10,10 +10,9 @@
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_dw_exchange_reconciliation_wiring_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
     "tests/ops/test_current_productive_dw_exchange_reconciliation_wiring_v1.py"
   ],
-  "changed_paths_sha256": "4e7e26323d48f3eba17c3c7946702c37cbd0dee61a7113f39e28c99684f71007",
+  "changed_paths_sha256": "ef12f733efd46b6ac7705975268e9f4e05daafdc245187103bcc41fdc8e2160d",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
@@ -21,13 +20,12 @@
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "src/ops/full_core_live_path_composition_root_v1/current_productive_dw_exchange_reconciliation_wiring_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
     "tests/ops/test_current_productive_dw_exchange_reconciliation_wiring_v1.py"
   ],
   "evidence_refs": [
     "tests/ops/test_current_productive_dw_exchange_reconciliation_wiring_v1.py"
   ],
-  "reason": "PR #7101 default-off DW exchange reconciliation wiring after one-shot POST join; optional OFFLINE_INJECTED/PRODUCTIVE_READ_ONLY; send seam unchanged; Atlas provenance; no map authority expansion; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #7102 SEC-001 secret-safe fail-closed reconciliation error classification on DW wiring module; static allowlisted CURRENT reason codes; adversarial regression; Atlas provenance review; send/POST/permit/resubmit unchanged; no map authority expansion; AUTHORITY=NONE; POST_COUNT=0.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }

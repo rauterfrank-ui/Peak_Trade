@@ -976,3 +976,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_current_productive_dw_exchange_reconciliation_wiring_v1.py
   notes: 'PR #7101: default-off post-submit DW exchange reconciliation wiring on one-shot join; optional OFFLINE_INJECTED/PRODUCTIVE_READ_ONLY; send seam unchanged; fail-closed wiring fields; no POST/network activation by default; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7102_sec001_secret_safe_error_classification_v1
+  from: 442d48ab1a9dd531b0a8aff8d3072611790488d2
+  to: PENDING_CHANGE
+  type: SECURITY_OBSERVABILITY
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_current_productive_dw_exchange_reconciliation_wiring_v1.py
+  notes: 'PR #7102 SEC-001: secret-safe fail-closed reconciliation error classification on DW wiring module; static allowlisted reason codes; adversarial regression; send/POST/permit/resubmit unchanged; GHV_AUTHORITY=NONE; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

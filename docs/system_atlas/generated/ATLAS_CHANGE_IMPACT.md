@@ -93,8 +93,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PR #7101: default-off DW exchange reconciliation wiring after one-shot POST join (DISABLED default; optional OFFLINE_INJECTED / PRODUCTIVE_READ_ONLY); send seam unchanged; fail-closed wiring fields; no productive provider activation; GHV_AUTHORITY=NONE; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+- PR #7102 SEC-001: secret-safe fail-closed reconciliation error classification on current_productive_dw_exchange_reconciliation_wiring_v1 only; static allowlisted CURRENT reason codes; no str(exc) in return contract; send outcome / POST / permit / resubmit semantics unchanged; default-off wiring unchanged; GHV_AUTHORITY=NONE; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
 - introduced_by=CHANGE:pr_7101_dw_exchange_reconciliation_wiring_v1
-- modified_by=CHANGE:pr_7101_dw_exchange_reconciliation_wiring_v1
+- modified_by=CHANGE:pr_7102_sec001_secret_safe_error_classification_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

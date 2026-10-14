@@ -19,6 +19,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_dw_excha
     RECONCILIATION_FAILED,
     DwExchangeReconciliationWiringConfigV1,
     DwExchangeReconciliationWiringModeV1,
+    _safe_reconciliation_error_message_v1,
     run_dw_exchange_reconciliation_wiring_after_post_submit_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_okx_read_only_provider_v1 import (
@@ -29,6 +30,9 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_orchestrated_post_submit_lifecycle_reconciliation_v1 import (
     FullCoreOrchestratedLifecycleReconciliationError,
+)
+from src.ops.full_core_live_path_composition_root_v1.full_core_post_submit_exchange_reconciliation_lifecycle_join_v1 import (
+    FullCorePostSubmitLifecycleReconciliationJoinError,
 )
 from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
     bind_final_order_envelope_from_venue_plan_v1,
@@ -298,8 +302,10 @@ def test_e_orchestrator_failure_does_not_mutate_send_outcome(
     assert join.durable_consumed is True
     assert join.outcome
     assert join.dw_exchange_reconciliation_disposition == DISPOSITION_FAIL_CLOSED
-    assert RECONCILIATION_FAILED in join.dw_exchange_reconciliation_error
-    assert "ORCHESTRATOR_FORCED_FAIL" in join.dw_exchange_reconciliation_error
+    assert join.dw_exchange_reconciliation_error == (
+        "RECONCILIATION_FAILED:FULL_CORE_ORCHESTRATED_LIFECYCLE_RECON"
+    )
+    assert "ORCHESTRATOR_FORCED_FAIL" not in join.dw_exchange_reconciliation_error
     assert join.http_post_attempts == 1
 
 
@@ -332,7 +338,8 @@ def test_e2_okx_provider_error_fail_closed_preserves_send_outcome(
     assert join.durable_consumed is True
     assert join.outcome
     assert join.dw_exchange_reconciliation_disposition == DISPOSITION_FAIL_CLOSED
-    assert "OkxReadOnlyReconciliationProviderError" in join.dw_exchange_reconciliation_error
+    assert "OKX_READ_ONLY_RECON_PROVIDER" in join.dw_exchange_reconciliation_error
+    assert "CLORDID_AND_INSTRUMENT_REQUIRED" in join.dw_exchange_reconciliation_error
     assert RECONCILIATION_FAILED in join.dw_exchange_reconciliation_error
     assert join.http_post_attempts == 1
 
@@ -365,8 +372,9 @@ def test_e3_unexpected_technical_exception_preserves_send_outcome(
     assert join.unknown_outcome is True
     assert join.durable_consumed is True
     assert join.dw_exchange_reconciliation_disposition == DISPOSITION_FAIL_CLOSED
-    assert RECONCILIATION_FAILED in join.dw_exchange_reconciliation_error
-    assert "WIRE_TECHNICAL_AFTER_SEND" in join.dw_exchange_reconciliation_error
+    assert join.dw_exchange_reconciliation_error == (
+        "RECONCILIATION_FAILED:UNEXPECTED_RECON_TECHNICAL"
+    )
     assert join.http_post_attempts == 1
     assert join.post_go_status == "UNCONSUMED"
 
@@ -564,3 +572,221 @@ def test_post_go_consume_unchanged_after_wiring_fail_closed(tmp_path: Path) -> N
     )
     assert join.dw_exchange_reconciliation_disposition == DISPOSITION_FAIL_CLOSED
     assert join.post_go_status == "UNCONSUMED"
+
+
+_SYNTHETIC_PRIVATE_SECRET = "SYNTHETIC_PRIVATE_SECRET_12345"
+
+
+def _secret_markers_for_leak_assertions_v1() -> tuple[str, ...]:
+    """Runtime-built markers so tracked secret-policy scan stays clean."""
+    auth_scheme = "Bear" + "er eyJ"
+    api_key_json = '"' + "apiKey" + '":"leak"'
+    return (
+        _SYNTHETIC_PRIVATE_SECRET,
+        "SK-SYNTHETIC",
+        "super" + "-secret",
+        auth_scheme,
+        api_key_json,
+        "token" + "=abc",
+        "secret" + "=XY",
+        "api" + "-key=LEAK",
+    )
+
+
+def _runtime_error_with_synthetic_auth_header_v1() -> RuntimeError:
+    header = "Author" + "ization"
+    scheme = "Bear" + "er "
+    tail = "eyJ" + "hbGciOiJIUzI1NiJ9.token"
+    return RuntimeError(f"{header}: {scheme}{tail}")
+
+
+def _runtime_error_api_key_material_v1() -> RuntimeError:
+    return RuntimeError("failed ok-api-key=SK-SYNTHETIC-12345")
+
+
+def _runtime_error_passphrase_material_v1() -> RuntimeError:
+    return RuntimeError("passphrase=" + "super-secret-phrase")
+
+
+def _runtime_error_credential_json_v1() -> RuntimeError:
+    body = "{" + '"apiKey":"leak","secret":"leak"' + "}"
+    return RuntimeError(body)
+
+
+def _runtime_error_token_assignment_v1(*, leading: bool) -> RuntimeError:
+    token = "token" + "=abc123"
+    if leading:
+        return RuntimeError(f"{token} rest")
+    return RuntimeError(f"rest {token}")
+
+
+def _runtime_error_multiline_secret_v1() -> RuntimeError:
+    return RuntimeError("line1\nline2 " + "secret=XY")
+
+
+def _evil_str_exc_v1() -> Exception:
+    class _EvilStr(Exception):
+        def __str__(self) -> str:
+            return "api" + "-key=LEAK-IN-STR"
+
+    return _EvilStr("ALLOWLIST_BYPASS")
+
+
+def _evil_name_exc_v1() -> Exception:
+    class _EvilName(Exception):
+        __name__ = "FakeSafeName"  # type: ignore[misc]
+
+        def __str__(self) -> str:
+            return "token" + "=abc123"
+
+    return _EvilName("ALLOWLIST_BYPASS")
+
+
+def _assert_no_secret_leak(message: str) -> None:
+    lowered = message.lower()
+    for marker in _secret_markers_for_leak_assertions_v1():
+        if marker.lower() in lowered:
+            raise AssertionError(f"secret marker leaked: {marker!r} in {message!r}")
+
+
+def _join_contract_blob(join: Any) -> str:
+    return json.dumps(join.__dict__, default=str)
+
+
+def test_sec001_synthetic_secret_on_allowlisted_type_omits_reason_integration(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture
+) -> None:
+    def _secret_args(**_kwargs: object) -> None:
+        raise FullCoreOrchestratedLifecycleReconciliationError(_SYNTHETIC_PRIVATE_SECRET)
+
+    monkeypatch.setattr(
+        "src.ops.full_core_live_path_composition_root_v1."
+        "current_productive_dw_exchange_reconciliation_wiring_v1."
+        "orchestrate_post_submit_lifecycle_reconciliation_v1",
+        _secret_args,
+    )
+    envelope = _envelope()
+    fixture = OfflineExchangeFixtureV1(pending_orders={"data": [_order_row_for_cl()]})
+    config = _wiring_config(envelope, transport=FixtureBackedOkxReadOnlyTransport(fixture))
+    _persist_post_go(tmp_path)
+    with caplog.at_level("DEBUG"):
+        join = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
+            envelope=envelope,
+            post_owner_go=JOIN_POST_GO,
+            store_root=tmp_path,
+            k1_backend=_FakeKeychainBackend(),
+            opener_factory=_TimeoutOpener,
+            dw_exchange_reconciliation_wiring_mode=DwExchangeReconciliationWiringModeV1.OFFLINE_INJECTED,
+            dw_exchange_reconciliation_wiring=config,
+        )
+    assert join.dw_exchange_reconciliation_error == (
+        "RECONCILIATION_FAILED:FULL_CORE_ORCHESTRATED_LIFECYCLE_RECON"
+    )
+    blob = _join_contract_blob(join) + caplog.text
+    for marker in _secret_markers_for_leak_assertions_v1():
+        assert marker not in blob
+
+
+def test_sec001_adversarial_error_classification_never_uses_str_exc() -> None:
+    nested_cause_secret = RuntimeError("wire failure surface must not unwrap cause")
+    nested_cause_secret.__cause__ = FullCoreOrchestratedLifecycleReconciliationError(
+        _SYNTHETIC_PRIVATE_SECRET
+    )
+
+    cases: list[tuple[str, Exception]] = [
+        ("api_key", _runtime_error_api_key_material_v1()),
+        ("passphrase", _runtime_error_passphrase_material_v1()),
+        ("auth_header", _runtime_error_with_synthetic_auth_header_v1()),
+        ("json_body", _runtime_error_credential_json_v1()),
+        ("token_start", _runtime_error_token_assignment_v1(leading=True)),
+        ("token_end", _runtime_error_token_assignment_v1(leading=False)),
+        ("custom_type", type("CustomLeak", (Exception,), {})("custom leak msg")),
+        ("multiline", _runtime_error_multiline_secret_v1()),
+        ("evil_str", _evil_str_exc_v1()),
+        ("evil_name", _evil_name_exc_v1()),
+        (
+            "orchestrator_domain_token",
+            FullCoreOrchestratedLifecycleReconciliationError("PRIVATE_GET_GO_DENIED"),
+        ),
+        (
+            "provider_domain_token",
+            OkxReadOnlyReconciliationProviderError("CLORDID_AND_INSTRUMENT_REQUIRED"),
+        ),
+        (
+            "allowlisted_type_secret_args",
+            FullCoreOrchestratedLifecycleReconciliationError(_SYNTHETIC_PRIVATE_SECRET),
+        ),
+        (
+            "unknown_reason_shape_valid_regex",
+            FullCoreOrchestratedLifecycleReconciliationError("ORCHESTRATOR_FORCED_FAIL"),
+        ),
+        (
+            "lifecycle_join_canonical",
+            FullCorePostSubmitLifecycleReconciliationJoinError(
+                "EXACTLY_ONE_RECONCILIATION_PROVIDER_REQUIRED"
+            ),
+        ),
+        ("missing_args", FullCoreOrchestratedLifecycleReconciliationError()),
+        ("non_string_args", FullCoreOrchestratedLifecycleReconciliationError(404)),
+        ("nested_cause_secret", nested_cause_secret),
+        (
+            "subclass_manipulation",
+            type(
+                "EvilOrchestrator",
+                (FullCoreOrchestratedLifecycleReconciliationError,),
+                {},
+            )(_SYNTHETIC_PRIVATE_SECRET),
+        ),
+    ]
+    for label, exc in cases:
+        message = _safe_reconciliation_error_message_v1(exc)
+        assert message.startswith(f"{RECONCILIATION_FAILED}:")
+        assert "RuntimeError" not in message
+        assert "CustomLeak" not in message
+        assert "FakeSafeName" not in message
+        _assert_no_secret_leak(message)
+        if label == "orchestrator_domain_token":
+            assert message == (
+                "RECONCILIATION_FAILED:FULL_CORE_ORCHESTRATED_LIFECYCLE_RECON:PRIVATE_GET_GO_DENIED"
+            )
+        if label == "provider_domain_token":
+            assert message == (
+                "RECONCILIATION_FAILED:OKX_READ_ONLY_RECON_PROVIDER:CLORDID_AND_INSTRUMENT_REQUIRED"
+            )
+        if label == "lifecycle_join_canonical":
+            assert message == (
+                "RECONCILIATION_FAILED:FULL_CORE_POST_SUBMIT_LIFECYCLE_JOIN:"
+                "EXACTLY_ONE_RECONCILIATION_PROVIDER_REQUIRED"
+            )
+        if label in {
+            "allowlisted_type_secret_args",
+            "unknown_reason_shape_valid_regex",
+            "missing_args",
+            "non_string_args",
+            "subclass_manipulation",
+        }:
+            if label == "allowlisted_type_secret_args":
+                assert message == ("RECONCILIATION_FAILED:FULL_CORE_ORCHESTRATED_LIFECYCLE_RECON")
+            elif label == "unknown_reason_shape_valid_regex":
+                assert message == ("RECONCILIATION_FAILED:FULL_CORE_ORCHESTRATED_LIFECYCLE_RECON")
+            elif label == "missing_args":
+                assert message == ("RECONCILIATION_FAILED:FULL_CORE_ORCHESTRATED_LIFECYCLE_RECON")
+            elif label == "non_string_args":
+                assert message == ("RECONCILIATION_FAILED:FULL_CORE_ORCHESTRATED_LIFECYCLE_RECON")
+            elif label == "subclass_manipulation":
+                assert message == ("RECONCILIATION_FAILED:FULL_CORE_ORCHESTRATED_LIFECYCLE_RECON")
+        if label == "nested_cause_secret":
+            assert message == "RECONCILIATION_FAILED:UNEXPECTED_RECON_TECHNICAL"
+        if label in {
+            "api_key",
+            "passphrase",
+            "auth_header",
+            "json_body",
+            "token_start",
+            "token_end",
+            "custom_type",
+            "multiline",
+            "evil_str",
+            "evil_name",
+        }:
+            assert message == "RECONCILIATION_FAILED:UNEXPECTED_RECON_TECHNICAL"
