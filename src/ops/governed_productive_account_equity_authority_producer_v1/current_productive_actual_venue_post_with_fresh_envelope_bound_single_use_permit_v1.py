@@ -50,6 +50,7 @@ from src.ops.full_core_live_path_composition_root_v1.external_effect_gate_v1 imp
     TRADE_ORDER_PATH,
 )
 from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+    DURABLE_STATE_SENT_INITIATED,
     finalize_external_effect_durable_consume_v1,
     load_external_effect_durable_consume_v1,
 )
@@ -85,6 +86,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_dw_excha
     DwExchangeReconciliationWiringModeV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_mandatory_new_risk_enter_post_admission_v1 import (
+    MandatoryNewRiskEnterPostAdmissionContextV1,
     MandatoryNewRiskEnterPostAdmissionError,
     ProductiveVenuePostRiskClassV1,
     RiskReducingEnvelopeProvenanceError,
@@ -313,6 +315,37 @@ def prove_pre_live_actual_venue_post_readiness_v1(
     }
 
 
+def _mark_pilot_guard_submit_boundary_when_send_evidenced_v1(
+    *,
+    pilot_bind: PilotCapitalGuardPostBindResultV1 | None,
+    mandatory_ctx: MandatoryNewRiskEnterPostAdmissionContextV1 | None,
+    probe: OneShotJoinProbeV1,
+    store_root: Path,
+    envelope: FinalOrderEnvelopeV1,
+) -> None:
+    """Align atomic guard with durable SENT_INITIATED after a possible venue submit."""
+    if pilot_bind is None or mandatory_ctx is None:
+        return
+    durable = load_external_effect_durable_consume_v1(store_root=store_root)
+    record = durable.get("record")
+    sent_initiated_same_envelope = (
+        isinstance(record, Mapping)
+        and str(record.get("durable_state") or "") == DURABLE_STATE_SENT_INITIATED
+        and str(record.get("envelope_digest") or "") == envelope.envelope_digest
+    )
+    if probe.http_post_attempts < 1 and not sent_initiated_same_envelope:
+        return
+    try:
+        full_core_atomic_mark_submit_boundary_v1(
+            state_dir=mandatory_ctx.atomic_state_dir,
+            binding=pilot_bind.authorization_binding,
+        )
+    except Exception as exc:
+        raise CurrentProductiveActualVenuePostError(
+            f"GUARD_SUBMIT_BOUNDARY_MARK_FAILED:{exc}"
+        ) from exc
+
+
 def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
     *,
     owner_go: str,
@@ -493,20 +526,14 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         join_outcome = join.outcome
         if join.http_status:
             http_status = str(join.http_status)
-        if (
-            pilot_bind is not None
-            and mandatory_ctx is not None
-            and (join.unknown_outcome is True or real_attempted)
-        ):
-            try:
-                full_core_atomic_mark_submit_boundary_v1(
-                    state_dir=mandatory_ctx.atomic_state_dir,
-                    binding=pilot_bind.authorization_binding,
-                )
-            except Exception as exc:
-                raise CurrentProductiveActualVenuePostError(
-                    f"GUARD_SUBMIT_BOUNDARY_MARK_FAILED:{exc}"
-                ) from exc
+        if join.unknown_outcome is True or real_attempted:
+            _mark_pilot_guard_submit_boundary_when_send_evidenced_v1(
+                pilot_bind=pilot_bind,
+                mandatory_ctx=mandatory_ctx,
+                probe=probe,
+                store_root=root,
+                envelope=envelope,
+            )
         if join.unknown_outcome is True:
             post_outcome = "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"
         elif real_performed:
@@ -529,6 +556,13 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
             live_exposure = real_attempted
             real_submission = real_attempted
             real_performed = False
+            _mark_pilot_guard_submit_boundary_when_send_evidenced_v1(
+                pilot_bind=pilot_bind,
+                mandatory_ctx=mandatory_ctx,
+                probe=probe,
+                store_root=root,
+                envelope=envelope,
+            )
         else:
             raise CurrentProductiveActualVenuePostError(msg) from exc
     handle = FullCoreSendCredentialHandleV1(

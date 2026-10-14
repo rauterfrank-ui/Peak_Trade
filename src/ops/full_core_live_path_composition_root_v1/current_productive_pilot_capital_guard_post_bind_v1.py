@@ -178,25 +178,38 @@ def _existing_exposure_notional_usdc_v1(
     saw_unknown = False
     for row in data:
         if not isinstance(row, Mapping):
+            saw_unknown = True
             continue
         if str(row.get("instId") or "") != native_instrument_id:
             continue
-        pos = str(row.get("pos") or "0").strip()
-        try:
-            if Decimal(pos) == 0:
-                continue
-        except InvalidOperation:
-            saw_unknown = True
-            continue
-        notional = row.get("notionalUsd") or row.get("notionalUsdForMargin")
-        if notional is None or str(notional).strip() == "":
+        raw_pos = row.get("pos")
+        if raw_pos is None or str(raw_pos).strip() == "":
             saw_unknown = True
             continue
         try:
-            total += Decimal(str(notional).strip())
+            pos_dec = Decimal(str(raw_pos).strip())
         except InvalidOperation:
             saw_unknown = True
-    if saw_unknown and total == 0:
+            continue
+        notional_raw = row.get("notionalUsd")
+        if notional_raw is None:
+            notional_raw = row.get("notionalUsdForMargin")
+        if pos_dec == 0:
+            if notional_raw is not None and str(notional_raw).strip() != "":
+                try:
+                    if Decimal(str(notional_raw).strip()) != 0:
+                        saw_unknown = True
+                except InvalidOperation:
+                    saw_unknown = True
+            continue
+        if notional_raw is None or str(notional_raw).strip() == "":
+            saw_unknown = True
+            continue
+        try:
+            total += Decimal(str(notional_raw).strip())
+        except InvalidOperation:
+            saw_unknown = True
+    if saw_unknown:
         raise PilotCapitalGuardPostBindError("EXISTING_EXPOSURE_UNKNOWN")
     return format(total, "f")
 

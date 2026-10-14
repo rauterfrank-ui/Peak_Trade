@@ -367,6 +367,49 @@ def test_reduce_only_post_exempt_from_mandatory_entry_guard(tmp_path: Path) -> N
     assert result.post_outcome == "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"
 
 
+def test_unknown_transport_marks_atomic_submit_boundary(tmp_path: Path) -> None:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_mandatory_new_risk_enter_post_admission_v1 import (
+        load_enter_post_lifecycle_correlation_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.full_core_capital_guard_atomic_one_shot_v1 import (
+        STATE_SUBMIT_MAY_HAVE_OCCURRED,
+        full_core_durable_entry_state_for_guard_v1,
+    )
+
+    envelope = _envelope()
+    kwargs = mandatory_new_risk_execute_kwargs(tmp_path)
+    atomic_dir = kwargs["pilot_atomic_state_dir"]
+    result = (
+        execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
+            owner_go=OWNER_GO,
+            baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+            envelope=envelope,
+            store_root=tmp_path,
+            evidence_root=tmp_path / "evidence",
+            perform_real_venue_post=True,
+            k1_backend=_FakeKeychainBackend(),
+            opener_factory=lambda: _TimeoutOpener(),
+            read_only_get_transport=PilotGuardReadTransport(avail_eq="10000"),
+            execution_integrity_backend=MockCurrentProductive29PIntegrityBackendV1(
+                origin_main=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+                head=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+                drift="",
+            ),
+            **kwargs,
+        )
+    )
+    assert result.post_outcome == "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"
+    correlation = load_enter_post_lifecycle_correlation_v1(store_root=tmp_path)
+    assert correlation is not None
+    guard_key = str(correlation.get("guard_consumption_key") or "")
+    assert guard_key
+    guard_state = full_core_durable_entry_state_for_guard_v1(
+        state_dir=atomic_dir,
+        consumption_key=guard_key,
+    )
+    assert guard_state == STATE_SUBMIT_MAY_HAVE_OCCURRED
+
+
 def test_second_new_risk_post_blocked_after_unknown_submit(tmp_path: Path) -> None:
     envelope = _envelope()
     kwargs = mandatory_new_risk_execute_kwargs(tmp_path)
@@ -608,6 +651,56 @@ def test_adversarial_missing_provenance_identity_blocked() -> None:
             admission_ref=EXACT_OBJECT_FLATTEN_ADMISSION_REF,
             provenance_ref=EXACT_OBJECT_FLATTEN_PROVENANCE_REF,
             creation_epoch="2026-10-14T00:00:00Z",
+        )
+
+
+def test_pilot_guard_bind_fails_closed_on_incomplete_positions_payload(
+    tmp_path: Path,
+) -> None:
+    class _IncompletePositionsTransport(PilotGuardReadTransport):
+        def get(self, *, endpoint: str, auth_required: bool, pretrade_decision_id: str):
+            path = str(endpoint).split("?", 1)[0]
+            if "positions" in path:
+                from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+                    FreshPretradeGetTransportResultV1,
+                    TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+                )
+
+                return FreshPretradeGetTransportResultV1(
+                    get_performed=True,
+                    method="GET",
+                    endpoint=endpoint,
+                    http_status=200,
+                    payload={
+                        "code": "0",
+                        "data": [{"instId": INST, "notionalUsd": "100"}],
+                    },
+                    auth_header_sent=True,
+                    transport_class=TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+                    venue_live_contact=True,
+                    historical_reuse=False,
+                    error_class="",
+                    data_safety_source_kind="REAL",
+                )
+            return super().get(
+                endpoint=endpoint,
+                auth_required=auth_required,
+                pretrade_decision_id=pretrade_decision_id,
+            )
+
+    envelope = _envelope()
+    with pytest.raises(PilotCapitalGuardPostBindError, match="EXISTING_EXPOSURE_UNKNOWN"):
+        enforce_pilot_capital_guard_before_enter_post_v1(
+            pilot_capital_guard_bind_go=OWNER_GO_CURRENT_PILOT_CAPITAL_GUARD_POST_BIND_V1,
+            envelope=envelope,
+            read_only_get_transport=_IncompletePositionsTransport(avail_eq="10000"),
+            pretrade_decision_id="pretrade-pos-unknown",
+            native_instrument_id=INST,
+            canonical_decision_id="canonical-pos-unknown",
+            account_identity=ACCOUNT_UID,
+            origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+            guard_config=ratified_pilot_guard_config_for_tests(),
+            atomic_state_dir=tmp_path / "atomic",
         )
 
 

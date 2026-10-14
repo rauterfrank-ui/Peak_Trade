@@ -25,11 +25,12 @@
     "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
     "tests/ops/test_current_productive_dw_exchange_reconciliation_wiring_v1.py",
     "tests/ops/test_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+    "tests/ops/test_current_productive_pilot_capital_guard_exposure_notional_v1.py",
     "tests/ops/test_current_productive_pilot_capital_guard_post_bind_v1.py",
     "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
     "tests/ops/test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py"
   ],
-  "changed_paths_sha256": "273eba55b296f60af9886a5561f9712008f35fb32bf13e1d08b968cb9e934d49",
+  "changed_paths_sha256": "2140acd6eb1c50466bf6ed63b01c71af486340b945c35773637a7dcc300bbe99",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -51,15 +52,17 @@
     "tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py",
     "tests/ops/test_current_productive_dw_exchange_reconciliation_wiring_v1.py",
     "tests/ops/test_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+    "tests/ops/test_current_productive_pilot_capital_guard_exposure_notional_v1.py",
     "tests/ops/test_current_productive_pilot_capital_guard_post_bind_v1.py",
     "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
     "tests/ops/test_full_core_current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py"
   ],
   "evidence_refs": [
     "tests/ops/test_current_productive_pilot_capital_guard_post_bind_v1.py",
+    "tests/ops/test_current_productive_pilot_capital_guard_exposure_notional_v1.py",
     "tests/ops/test_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py"
   ],
-  "reason": "GHV pilot guarded Enter-POST admission on productive one-shot join (mandatory NEW-RISK admission, pilot capital-guard bind, one-shot post-admission seal, reduce-only envelope provenance on send seam) with offline adversarial regression; Enter-POST runner CLI registers explicit Owner-GO flags; current_system_interaction_authority_map_v1/source_v1.json unchanged; no map authority expansion; AUTHORITY=NONE; POST_COUNT=0.",
+  "reason": "PR #7103 Bugbot remediation: UNKNOWN submit boundary marks full_core_atomic_submit_boundary when SENT_INITIATED or HTTP attempt evidenced; pilot existing exposure parsing fail-closed on incomplete OKX position rows; prior pilot guarded Enter-POST admission stack unchanged in map authority; current_system_interaction_authority_map_v1/source_v1.json unchanged; AUTHORITY=NONE; POST_COUNT=0.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }
