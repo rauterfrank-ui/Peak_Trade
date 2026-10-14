@@ -1004,3 +1004,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_full_core_recovery_guard_exposure_signals_v1.py
   notes: 'GHV CURRENT C1: derive PRE_EXTERNAL capital-guard recovery signals from durable atomic one-shot state (fail-closed on SUBMIT_MAY_HAVE_OCCURRED/HALTED_UNRESOLVED/binding digest mismatch); compose with optional venue exposure evidence; TERMINAL_RECONCILED clears recovery halt only not entry slot; Double Play/GGE/Dynamic Scope untouched; no POST/durable apply; GHV_AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:ghv_current_dw_productive_read_only_one_shot_pass_test_v1
+  from: 9862b2880444d2202e0d5461f901eea940567204
+  to: PENDING_CHANGE
+  type: TEST_EVIDENCE
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_current_productive_dw_exchange_reconciliation_wiring_v1.py
+  notes: 'GHV CURRENT DW wiring: offline PRODUCTIVE_READ_ONLY one-shot PASS reproof via fake transport + socket block; DISPOSITION_PASS + fail-closed negative control; POST outcome and durable apply unchanged; no productive src mutation; CSIA/Law diff-bound NO_*_IMPACT; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
