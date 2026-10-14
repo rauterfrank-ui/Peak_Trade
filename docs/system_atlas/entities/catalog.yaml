@@ -1489,13 +1489,13 @@ entities:
   - tests/ops/test_current_productive_pilot_capital_guard_post_bind_v1.py
   notes: Independent fail-closed guard at PRE_EXTERNAL; default join DISABLED; OFFLINE_STUB proofs only; caps UNRATIFIED; no POST; GHV pilot POST-path guard bind is offline-tested only; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_exchange_reconciliation_integration_v1
-  # atlas_entity_review: PR #7100 spec cross-reference Phase-8 authorization/session boundary only; reconciliation integration semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: PR #7106 position cross-check in adjudicate (netting-safe; no selected_side/pos sign); Double Play/GGE unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Full-Core exchange reconciliation integration v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-  modified_by: CHANGE:pr_7100_okx_phase8_auth_session_boundary_v1
+  modified_by: CHANGE:pr_7106_position_crosscheck_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py
   - src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_offline_provider_v1.py
@@ -1506,7 +1506,7 @@ entities:
   - docs/ops/specs/GHV_CURRENT_EXCHANGE_RECONCILIATION_INTEGRATION_V1.md
   - tests/ops/test_full_core_exchange_reconciliation_v1.py
   - tests/ops/test_full_core_exchange_reconciliation_okx_read_only_provider_v1.py
-  notes: Offline post-submit reconciliation pipeline; consumed by lifecycle join/orchestrator; OFFLINE_STUB + OKX injected adapter; PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED by default; no import-time network; no POST; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
+  notes: Offline post-submit reconciliation pipeline; position cross-check on conflicting rows and order-bound fills vs no-exposure only; no net-pos sign attribution; OFFLINE_STUB + OKX injected adapter; PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED by default; no POST; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_post_submit_exchange_reconciliation_lifecycle_join_v1
   # atlas_entity_review: PR #7100 spec cross-reference Phase-8 authorization/session boundary only; join semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT

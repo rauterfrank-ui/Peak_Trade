@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=4
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:ghv_current_pilot_post_guarded_enter_admission_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7106_position_crosscheck_v1`.
 
 ## Workflow
 
@@ -40,10 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1` |
-| `CONTRACT:current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1` |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
-| `RUNTIME_COMPONENT:full_core_pre_post_capital_guard_join_v1` |
+| `RUNTIME_COMPONENT:full_core_exchange_reconciliation_integration_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -95,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- GHV pilot guarded Enter-POST admission stack on productive actual-venue one-shot join: mandatory NEW-RISK enter-post admission, pilot capital-guard binding, one-shot post-admission seal before permit mint, reduce-only envelope provenance guard on send seam; offline adversarial tests; no Live/Testnet activation; standing Owner-GO pins unchanged; GHV_AUTHORITY=NONE; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
-- introduced_by=CHANGE:ghv_current_pilot_post_guarded_enter_admission_v1
-- modified_by=CHANGE:ghv_current_pilot_post_guarded_enter_admission_v1
+- PR #7106 position cross-check in full_core_exchange_reconciliation_v1 adjudicator: fail-closed on conflicting EXCHANGE_POSITION_STATE rows and order-bound fill vs terminal no-exposure; no net-pos sign attribution (netting/close/reversal safe); no Double Play/GGE/Dynamic Scope change; execution_authority_effect=NONE; GHV_AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+- introduced_by=CHANGE:pr_7106_position_crosscheck_v1
+- modified_by=CHANGE:pr_7106_position_crosscheck_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

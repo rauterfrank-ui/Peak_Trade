@@ -990,3 +990,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_current_productive_pilot_capital_guard_post_bind_v1.py
   notes: 'GHV pilot guarded Enter-POST admission: mandatory NEW-RISK enter-post admission, pilot capital-guard POST bind, one-shot post-admission seal before permit mint, reduce-only envelope provenance on send seam; offline adversarial regression; standing Owner-GO/Live pins unchanged; GHV_AUTHORITY=NONE; AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7106_position_crosscheck_v1
+  from: 8c42c64c9b205b126471338ccb2da7c37059edfa
+  to: PENDING_CHANGE
+  type: RECONCILIATION_SAFETY
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_full_core_exchange_reconciliation_v1.py
+  notes: 'PR #7106: FULL_CORE_EXCHANGE_RECONCILIATION_V1 position cross-check (conflicting position rows; order-attributed fills vs terminal no-exposure); netting-safe (no selected_side/net pos sign); Double Play/GGE/Dynamic Scope untouched; execution_authority_effect=NONE; CSIA/Atlas diff-bound NO_MAP_IMPACT; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

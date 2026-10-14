@@ -1,25 +1,30 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "cbae09a35525e3bc0e3c20162fbb35397d9fc060",
+  "base_sha": "8c42c64c9b205b126471338ccb2da7c37059edfa",
   "head_sha": "PENDING_COMMIT",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "tests/ops/_current_productive_post_hard_crash_harness_v1.py",
-    "tests/ops/test_current_productive_permit_send_seam_replay_isolation_v1.py",
-    "tests/ops/test_current_productive_post_hard_crash_matrix_harness_v1.py"
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py",
+    "tests/ops/test_full_core_exchange_reconciliation_v1.py"
   ],
-  "changed_paths_sha256": "9d9036d98266f1bd692daf683b0482f235671fa6dd63d655009e037167b1ceab",
+  "changed_paths_sha256": "625e67a02fdeb7684014eebaf33804080f8da95b7f77ae25b39dc384924ae0b7",
   "covered_candidate_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "tests/ops/_current_productive_post_hard_crash_harness_v1.py",
-    "tests/ops/test_current_productive_permit_send_seam_replay_isolation_v1.py",
-    "tests/ops/test_current_productive_post_hard_crash_matrix_harness_v1.py"
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/provenance/changes.yaml",
+    "docs/system_atlas/provenance/impact_state.yaml",
+    "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py",
+    "tests/ops/test_full_core_exchange_reconciliation_v1.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_current_productive_permit_send_seam_replay_isolation_v1.py"
+    "tests/ops/test_full_core_exchange_reconciliation_v1.py"
   ],
-  "reason": "Offline permit/send-seam replay isolation for consumed durable permit; diff-bound NO_MAP_IMPACT; AUTHORITY=NONE.",
+  "reason": "PR #7106 reconciliation position cross-check only; netting-safe; no Double Play/GGE/Dynamic Scope change; diff-bound NO_MAP_IMPACT; AUTHORITY=NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }
