@@ -16,9 +16,13 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_dw_excha
     DISPOSITION_FAIL_CLOSED,
     DISPOSITION_PASS,
     DISPOSITION_SKIPPED,
+    RECONCILIATION_FAILED,
     DwExchangeReconciliationWiringConfigV1,
     DwExchangeReconciliationWiringModeV1,
     run_dw_exchange_reconciliation_wiring_after_post_submit_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_okx_read_only_provider_v1 import (
+    OkxReadOnlyReconciliationProviderError,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
     attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1,
@@ -294,7 +298,77 @@ def test_e_orchestrator_failure_does_not_mutate_send_outcome(
     assert join.durable_consumed is True
     assert join.outcome
     assert join.dw_exchange_reconciliation_disposition == DISPOSITION_FAIL_CLOSED
+    assert RECONCILIATION_FAILED in join.dw_exchange_reconciliation_error
     assert "ORCHESTRATOR_FORCED_FAIL" in join.dw_exchange_reconciliation_error
+    assert join.http_post_attempts == 1
+
+
+def test_e2_okx_provider_error_fail_closed_preserves_send_outcome(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def _provider_fail(**_kwargs: object) -> None:
+        raise OkxReadOnlyReconciliationProviderError("CLORDID_AND_INSTRUMENT_REQUIRED")
+
+    monkeypatch.setattr(
+        "src.ops.full_core_live_path_composition_root_v1."
+        "current_productive_dw_exchange_reconciliation_wiring_v1."
+        "orchestrate_post_submit_lifecycle_reconciliation_v1",
+        _provider_fail,
+    )
+    envelope = _envelope()
+    fixture = OfflineExchangeFixtureV1(pending_orders={"data": [_order_row_for_cl()]})
+    config = _wiring_config(envelope, transport=FixtureBackedOkxReadOnlyTransport(fixture))
+    _persist_post_go(tmp_path)
+    join = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
+        envelope=envelope,
+        post_owner_go=JOIN_POST_GO,
+        store_root=tmp_path,
+        k1_backend=_FakeKeychainBackend(),
+        opener_factory=_TimeoutOpener,
+        dw_exchange_reconciliation_wiring_mode=DwExchangeReconciliationWiringModeV1.OFFLINE_INJECTED,
+        dw_exchange_reconciliation_wiring=config,
+    )
+    assert join.unknown_outcome is True
+    assert join.durable_consumed is True
+    assert join.outcome
+    assert join.dw_exchange_reconciliation_disposition == DISPOSITION_FAIL_CLOSED
+    assert "OkxReadOnlyReconciliationProviderError" in join.dw_exchange_reconciliation_error
+    assert RECONCILIATION_FAILED in join.dw_exchange_reconciliation_error
+    assert join.http_post_attempts == 1
+
+
+def test_e3_unexpected_technical_exception_preserves_send_outcome(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    def _technical(**_kwargs: object) -> None:
+        raise RuntimeError("WIRE_TECHNICAL_AFTER_SEND")
+
+    monkeypatch.setattr(
+        "src.ops.full_core_live_path_composition_root_v1."
+        "current_productive_dw_exchange_reconciliation_wiring_v1."
+        "orchestrate_post_submit_lifecycle_reconciliation_v1",
+        _technical,
+    )
+    envelope = _envelope()
+    fixture = OfflineExchangeFixtureV1(pending_orders={"data": [_order_row_for_cl()]})
+    config = _wiring_config(envelope, transport=FixtureBackedOkxReadOnlyTransport(fixture))
+    _persist_post_go(tmp_path)
+    join = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
+        envelope=envelope,
+        post_owner_go=JOIN_POST_GO,
+        store_root=tmp_path,
+        k1_backend=_FakeKeychainBackend(),
+        opener_factory=_TimeoutOpener,
+        dw_exchange_reconciliation_wiring_mode=DwExchangeReconciliationWiringModeV1.OFFLINE_INJECTED,
+        dw_exchange_reconciliation_wiring=config,
+    )
+    assert join.unknown_outcome is True
+    assert join.durable_consumed is True
+    assert join.dw_exchange_reconciliation_disposition == DISPOSITION_FAIL_CLOSED
+    assert RECONCILIATION_FAILED in join.dw_exchange_reconciliation_error
+    assert "WIRE_TECHNICAL_AFTER_SEND" in join.dw_exchange_reconciliation_error
+    assert join.http_post_attempts == 1
+    assert join.post_go_status == "UNCONSUMED"
 
 
 def test_f_productive_mode_denied_private_get_go_fail_closed(tmp_path: Path) -> None:
@@ -330,6 +404,7 @@ def test_f_productive_mode_denied_private_get_go_fail_closed(tmp_path: Path) -> 
     )
     assert join.unknown_outcome is True
     assert join.dw_exchange_reconciliation_disposition == DISPOSITION_FAIL_CLOSED
+    assert RECONCILIATION_FAILED in join.dw_exchange_reconciliation_error
     assert "PRIVATE_GET_GO_DENIED" in join.dw_exchange_reconciliation_error
 
 
@@ -401,6 +476,7 @@ def test_j_productive_mode_requires_productive_transport_class() -> None:
         post_submit_join=post_join,
     )
     assert wiring.disposition == DISPOSITION_FAIL_CLOSED
+    assert RECONCILIATION_FAILED in wiring.error
     assert "PRODUCTIVE_TRANSPORT_CLASS_REQUIRED" in wiring.error
 
 

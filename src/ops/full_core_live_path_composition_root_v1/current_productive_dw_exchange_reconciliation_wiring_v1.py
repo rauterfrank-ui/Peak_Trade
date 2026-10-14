@@ -27,6 +27,7 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconcil
     OfflineExchangeFixtureV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_okx_read_only_provider_v1 import (
+    OkxReadOnlyReconciliationProviderError,
     OkxReadOnlyReconciliationQueryOptionsV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_orchestrated_post_submit_lifecycle_reconciliation_v1 import (
@@ -48,6 +49,8 @@ WORK_PACKAGE_ID = "GHV_CURRENT_PHASE9_DW_EXCHANGE_RECONCILIATION_WIRING_V1"
 DISPOSITION_SKIPPED = "SKIPPED"
 DISPOSITION_PASS = "PASS"
 DISPOSITION_FAIL_CLOSED = "FAIL_CLOSED"
+RECONCILIATION_FAILED = "RECONCILIATION_FAILED"
+_MAX_RECON_ERROR_CHARS = 512
 
 
 class DwExchangeReconciliationWiringModeV1(str, Enum):
@@ -155,6 +158,33 @@ def _post_submit_join_admits_wiring_v1(join: FullCorePostSubmitJoinResultV1) -> 
     return recon in {POST_SUBMIT_RECON, UNKNOWN_OUTCOME_RECON}
 
 
+def _safe_reconciliation_error_message_v1(exc: BaseException) -> str:
+    name = type(exc).__name__
+    raw = str(exc or "").strip().replace("\n", " ")
+    if len(raw) > _MAX_RECON_ERROR_CHARS:
+        raw = raw[: _MAX_RECON_ERROR_CHARS - 3] + "..."
+    detail = raw or name
+    return f"{RECONCILIATION_FAILED}:{name}:{detail}"
+
+
+def _fail_closed_reconciliation_v1(
+    *,
+    mode: DwExchangeReconciliationWiringModeV1,
+    error: str,
+) -> DwExchangeReconciliationWiringResultV1:
+    return DwExchangeReconciliationWiringResultV1(
+        wiring_mode=mode.value,
+        invoked=True,
+        disposition=DISPOSITION_FAIL_CLOSED,
+        reconciliation_outcome="",
+        ghv_forward_join="",
+        ghv_reverse_join="",
+        provider_mode="",
+        error=error,
+        skip_reason="",
+    )
+
+
 def _coerce_wiring_mode_v1(
     wiring_mode: DwExchangeReconciliationWiringModeV1 | str,
 ) -> DwExchangeReconciliationWiringModeV1 | None:
@@ -253,17 +283,16 @@ def run_dw_exchange_reconciliation_wiring_after_post_submit_v1(
     except (
         FullCoreOrchestratedLifecycleReconciliationError,
         FullCorePostSubmitLifecycleReconciliationJoinError,
+        OkxReadOnlyReconciliationProviderError,
     ) as exc:
-        return DwExchangeReconciliationWiringResultV1(
-            wiring_mode=mode.value,
-            invoked=True,
-            disposition=DISPOSITION_FAIL_CLOSED,
-            reconciliation_outcome="",
-            ghv_forward_join="",
-            ghv_reverse_join="",
-            provider_mode="",
-            error=str(exc),
-            skip_reason="",
+        return _fail_closed_reconciliation_v1(
+            mode=mode,
+            error=_safe_reconciliation_error_message_v1(exc),
+        )
+    except Exception as exc:
+        return _fail_closed_reconciliation_v1(
+            mode=mode,
+            error=_safe_reconciliation_error_message_v1(exc),
         )
 
     return DwExchangeReconciliationWiringResultV1(
@@ -284,6 +313,7 @@ __all__ = [
     "DISPOSITION_FAIL_CLOSED",
     "DISPOSITION_PASS",
     "DISPOSITION_SKIPPED",
+    "RECONCILIATION_FAILED",
     "DwExchangeReconciliationWiringConfigV1",
     "DwExchangeReconciliationWiringModeV1",
     "DwExchangeReconciliationWiringResultV1",
