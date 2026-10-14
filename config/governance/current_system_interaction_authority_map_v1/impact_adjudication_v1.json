@@ -1,29 +1,39 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "9862b2880444d2202e0d5461f901eea940567204",
-  "head_sha": "PENDING_COMMIT",
+  "base_sha": "0277fbf1d91a2f428fc4240b19f5005cb66b3e53",
+  "head_sha": "PENDING_GOVERNANCE_COMMIT",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "tests/ops/test_current_productive_dw_exchange_reconciliation_wiring_v1.py"
+    "scripts/ops/run_current_productive_unknown_post_attempt_read_only_reconciliation_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_unknown_post_attempt_read_only_reconciliation_v1.py",
+    "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
+    "tests/ops/test_current_productive_post_hard_crash_matrix_harness_v1.py"
   ],
-  "changed_paths_sha256": "693ce77290271dc857a1381f0634df2f5eb6322a48ec24a1005b1886fdfe9ba9",
+  "changed_paths_sha256": "111f90643050e70a0b0e4307f507cd9b1246d2cfacd49c81fe8c7d286bf715a9",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "tests/ops/test_current_productive_dw_exchange_reconciliation_wiring_v1.py"
+    "scripts/ops/run_current_productive_unknown_post_attempt_read_only_reconciliation_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_unknown_post_attempt_read_only_reconciliation_v1.py",
+    "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
+    "tests/ops/test_current_productive_post_hard_crash_matrix_harness_v1.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_current_productive_dw_exchange_reconciliation_wiring_v1.py"
+    "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
+    "tests/ops/test_current_productive_post_hard_crash_matrix_harness_v1.py"
   ],
-  "reason": "GHV CURRENT DW wiring: test-only PRODUCTIVE_READ_ONLY one-shot PASS closure on existing default-off reconciliation host; no new authority edges, POST paths, or Double Play/GGE/Dynamic Scope change; Atlas/CSIA bookkeeping only; diff-bound NO_MAP_IMPACT; AUTHORITY=NONE.",
+  "reason": "GET-only UNKNOWN POST read-only reconciliation output contract remediation: cross-surface fail-closed adjudication and structured technical GET error fields; offline fake-transport regressions only; no CSIA authority-edge or interaction-map semantic change; RUNTIME_AUTHORIZATION_EFFECT=NONE; POST/durable apply unchanged; diff-bound NO_MAP_IMPACT; AUTHORITY=NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }

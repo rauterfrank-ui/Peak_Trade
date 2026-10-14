@@ -3071,16 +3071,18 @@ entities:
   - src/governance/governed_current_productive_k1_opaque_signing_handle_pre_post_policy_closure_v1.py
   notes: 'Owner-GO K1 ephemeral handle, request signing, PRE-POST envelope on #6898; POST admission fail-closed. Actual Enter POST is a separate Owner-GO (#6900). ATLAS_AUTHORITY=NONE.'
 - id: CONTRACT:current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1
+  # atlas_entity_review: CHANGE:ghv_current_get_only_output_contract_remediation_v1 diff-bound catalog review; GET-only recon output contract only; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: GHV pilot guarded Enter-POST admission stack (mandatory NEW-RISK admission, pilot capital-guard bind, one-shot post-admission seal, reduce-only provenance on send seam); fail-closed offline regression; standing Owner-GO/Live pins unchanged; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7102 SEC-001 secret-safe reconciliation error classification on optional DW wiring host fields only; send/POST/permit unchanged; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7101 default-off DW exchange reconciliation wiring after one-shot POST join; send seam unchanged; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: GHV CURRENT DW PRODUCTIVE_READ_ONLY one-shot PASS offline reproof (fake transport, socket block, DISPOSITION_PASS); no src change; POST/durable apply unchanged; AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: GET-only unknown-post read-only recon output contract remediation (cross-surface fail-closed, technical GET error fields); offline tests; RUNTIME_AUTHORIZATION_EFFECT=NONE; POST_COUNT=0.
   kind: CONTRACT
   name: CURRENT productive actual venue Enter POST (one-shot) v1
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
-  modified_by: CHANGE:ghv_current_dw_productive_read_only_one_shot_pass_test_v1
+  modified_by: CHANGE:ghv_current_get_only_output_contract_remediation_v1
   authority_sources:
   - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md
   source_paths:
@@ -3111,7 +3113,7 @@ entities:
   - tests/ops/test_current_productive_pilot_capital_guard_post_bind_v1.py
   - tests/ops/_pilot_guard_enter_post_test_helpers_v1.py
   - src/governance/governed_current_productive_actual_venue_post_admission_closure_v1.py
-  notes: 'Owner-GO bounded Enter POST: durable POST-GO consume, admission-bound one-shot join, K1 signing, eea.okx.com trade-order path; standing POST pins remain false; max cardinality 1. GHV pilot: mandatory NEW-RISK enter-post admission + capital-guard bind + one-shot post-admission seal + reduce-only provenance guard (offline tests). PR6901: PRE_EXTERNAL closure may resolve typed envelope via runtime-reach join before pre-live. PR6931: pre-POST freshness before GO consume; transport outcome phases; UNKNOWN read-only recon. PR7101: optional default-off post-submit DW exchange reconciliation wiring on one-shot join only. Baseline pin cf3aa15 (post-#6930 merge currency). ATLAS_AUTHORITY=NONE.'
+  notes: 'Owner-GO bounded Enter POST: durable POST-GO consume, admission-bound one-shot join, K1 signing, eea.okx.com trade-order path; standing POST pins remain false; max cardinality 1. GHV pilot: mandatory NEW-RISK enter-post admission + capital-guard bind + one-shot post-admission seal + reduce-only provenance guard (offline tests). PR6901: PRE_EXTERNAL closure may resolve typed envelope via runtime-reach join before pre-live. PR6931: pre-POST freshness before GO consume; transport outcome phases; UNKNOWN read-only recon. PR7101: optional default-off post-submit DW exchange reconciliation wiring on one-shot join only. GET-only unknown-post read-only recon output contract: cross-surface fail-closed + technical GET error fields (offline tests; RUNTIME_AUTHORIZATION_EFFECT=NONE). Baseline pin cf3aa15 (post-#6930 merge currency). ATLAS_AUTHORITY=NONE.'
 - id: CONTRACT:current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1
   # atlas_entity_review: GHV pilot guarded Enter-POST admission touches governed productive host closure only; PRE_EXTERNAL envelope handoff contract unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: CONTRACT

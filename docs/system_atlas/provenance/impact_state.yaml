@@ -1,15 +1,14 @@
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CHANGE:ghv_current_dw_productive_read_only_one_shot_pass_test_v1
-modified_by: CHANGE:ghv_current_dw_productive_read_only_one_shot_pass_test_v1
+introduced_by: CHANGE:ghv_current_get_only_output_contract_remediation_v1
+modified_by: CHANGE:ghv_current_get_only_output_contract_remediation_v1
 superseded_by: null
 last_recorded_impact: NONE_WITH_PROOF
 note: >-
-  GHV CURRENT DW PRODUCTIVE_READ_ONLY one-shot PASS test closure on existing
-  default-off post-submit reconciliation wiring host; fake GET transport only;
-  no productive source or trading semantics change; POST and durable apply
-  remain unchanged; execution_authority_effect=NONE; GHV_AUTHORITY=NONE;
-  POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+  GET-only UNKNOWN POST read-only reconciliation contract remediation: cross-surface
+  fail-closed output adjudication and structured technical GET error observability;
+  offline fake-transport tests only; no productive network; execution_authority_effect=NONE;
+  POST and durable apply unchanged; GHV_AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
 changed_entities:
   - CONTRACT:current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1
 changed_relations: []
