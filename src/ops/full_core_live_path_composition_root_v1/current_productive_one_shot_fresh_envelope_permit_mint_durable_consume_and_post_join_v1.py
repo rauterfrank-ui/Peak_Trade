@@ -32,6 +32,12 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     REAL_VENUE_POST_ALLOWED,
     current_productive_first_real_blocker_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_dw_exchange_reconciliation_wiring_v1 import (
+    DISPOSITION_SKIPPED,
+    DwExchangeReconciliationWiringConfigV1,
+    DwExchangeReconciliationWiringModeV1,
+    run_dw_exchange_reconciliation_wiring_after_post_submit_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1 import (
     OWNER_GO as K1_OPAQUE_SIGNING_OWNER_GO,
     CurrentProductiveK1OpaqueSigningHandleError,
@@ -117,6 +123,14 @@ class OneShotJoinResultV1:
     step_29q_status: str
     http_status: int = 0
     post_outcome_phase: str = ""
+    dw_exchange_reconciliation_wiring_mode: str = (
+        DwExchangeReconciliationWiringModeV1.DISABLED.value
+    )
+    dw_exchange_reconciliation_invoked: bool = False
+    dw_exchange_reconciliation_disposition: str = DISPOSITION_SKIPPED
+    dw_exchange_reconciliation_outcome: str = ""
+    dw_exchange_reconciliation_ghv_forward_join: str = ""
+    dw_exchange_reconciliation_error: str = ""
 
 
 def _assert_standing_pins_v1() -> None:
@@ -283,6 +297,10 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
     reselect: bool = False,
     sizing_recompute: bool = False,
     mv2_double_play_reevaluate: bool = False,
+    dw_exchange_reconciliation_wiring_mode: (
+        DwExchangeReconciliationWiringModeV1 | str
+    ) = DwExchangeReconciliationWiringModeV1.DISABLED,
+    dw_exchange_reconciliation_wiring: DwExchangeReconciliationWiringConfigV1 | None = None,
 ) -> OneShotJoinResultV1:
     """Mint, durable-consume, then sign and post through the existing transport.
 
@@ -355,6 +373,11 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
     if seam.post_submit_join is not None:
         join_http = int(seam.post_submit_join.http_status)
         join_phase = str(seam.post_submit_join.recon_class or "")
+    wiring = run_dw_exchange_reconciliation_wiring_after_post_submit_v1(
+        wiring_mode=dw_exchange_reconciliation_wiring_mode,
+        wiring_config=dw_exchange_reconciliation_wiring,
+        post_submit_join=seam.post_submit_join,
+    )
     return OneShotJoinResultV1(
         outcome=str(seam.outcome),
         permit_id=permit.permit_id,
@@ -368,6 +391,12 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         step_29q_status=STEP_29Q_PLAN_ONLY,
         http_status=join_http,
         post_outcome_phase=join_phase,
+        dw_exchange_reconciliation_wiring_mode=wiring.wiring_mode,
+        dw_exchange_reconciliation_invoked=wiring.invoked is True,
+        dw_exchange_reconciliation_disposition=wiring.disposition,
+        dw_exchange_reconciliation_outcome=wiring.reconciliation_outcome,
+        dw_exchange_reconciliation_ghv_forward_join=wiring.ghv_forward_join,
+        dw_exchange_reconciliation_error=wiring.error,
     )
 
 
