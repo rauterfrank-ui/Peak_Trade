@@ -50,7 +50,38 @@ DISPOSITION_SKIPPED = "SKIPPED"
 DISPOSITION_PASS = "PASS"
 DISPOSITION_FAIL_CLOSED = "FAIL_CLOSED"
 RECONCILIATION_FAILED = "RECONCILIATION_FAILED"
-_MAX_RECON_ERROR_CHARS = 512
+_UNEXPECTED_RECON_TECHNICAL = "UNEXPECTED_RECON_TECHNICAL"
+_CURRENT_RECON_SAFE_REASON_CODES_V1: frozenset[str] = frozenset(
+    {
+        "AUTOMATIC_RESUBMIT_FORBIDDEN",
+        "BLIND_RETRY_MUST_REMAIN_FORBIDDEN",
+        "CLORDID_AND_INSTRUMENT_REQUIRED",
+        "EXACTLY_ONE_RECONCILIATION_PROVIDER_REQUIRED",
+        "EXTERNAL_EFFECT_MUST_REMAIN_FALSE",
+        "INJECTED_TRANSPORT_FORBIDDEN_OFFLINE",
+        "INJECTED_TRANSPORT_REQUIRED",
+        "OFFLINE_FIXTURE_FORBIDDEN_INJECTED",
+        "OFFLINE_FIXTURE_REQUIRED",
+        "OFFLINE_IMPLEMENTATION_GO_DENIED",
+        "ORIGIN_MAIN_SHA_DRIFT",
+        "ORIGIN_MAIN_SHA_GIT_VERIFY_FAILED",
+        "ORIGIN_MAIN_SHA_REQUIRED",
+        "POST_STANDING_MUST_REMAIN_FALSE",
+        "POST_SUBMIT_JOIN_RECON_CLASS_NOT_RECONCILABLE",
+        "PRETRADE_DECISION_ID_REQUIRED",
+        "PRIVATE_GET_GO_DENIED",
+        "PRODUCTIVE_GET_MUST_NOT_APPLY_DURABLE_ATOMIC",
+        "PRODUCTIVE_TRANSPORT_CLASS_REQUIRED",
+        "PRODUCTIVE_TRANSPORT_MUST_BE_CALLER_BOUND",
+        "UNKNOWN_ORCHESTRATION_MODE",
+        "WORK_PACKAGE_OWNER_GO_DENIED",
+    }
+)
+_RECON_EXCEPTION_FAMILY_CODE: dict[type[BaseException], str] = {
+    FullCoreOrchestratedLifecycleReconciliationError: "FULL_CORE_ORCHESTRATED_LIFECYCLE_RECON",
+    FullCorePostSubmitLifecycleReconciliationJoinError: "FULL_CORE_POST_SUBMIT_LIFECYCLE_JOIN",
+    OkxReadOnlyReconciliationProviderError: "OKX_READ_ONLY_RECON_PROVIDER",
+}
 
 
 class DwExchangeReconciliationWiringModeV1(str, Enum):
@@ -158,13 +189,38 @@ def _post_submit_join_admits_wiring_v1(join: FullCorePostSubmitJoinResultV1) -> 
     return recon in {POST_SUBMIT_RECON, UNKNOWN_OUTCOME_RECON}
 
 
+def _recon_exception_family_code_v1(exc: BaseException) -> str:
+    for exc_type, code in _RECON_EXCEPTION_FAMILY_CODE.items():
+        if isinstance(exc, exc_type):
+            return code
+    return _UNEXPECTED_RECON_TECHNICAL
+
+
+def _controlled_reason_from_args_v1(exc: BaseException) -> str | None:
+    """Stable domain tokens from exc.args only for allowlisted reconciliation types.
+
+    Never uses str(exc) or exception type names from the instance surface.
+    """
+    if not any(isinstance(exc, exc_type) for exc_type in _RECON_EXCEPTION_FAMILY_CODE):
+        return None
+    args = getattr(exc, "args", ())
+    if not args:
+        return None
+    first = args[0]
+    if not isinstance(first, str):
+        return None
+    token = first.strip()
+    if token in _CURRENT_RECON_SAFE_REASON_CODES_V1:
+        return token
+    return None
+
+
 def _safe_reconciliation_error_message_v1(exc: BaseException) -> str:
-    name = type(exc).__name__
-    raw = str(exc or "").strip().replace("\n", " ")
-    if len(raw) > _MAX_RECON_ERROR_CHARS:
-        raw = raw[: _MAX_RECON_ERROR_CHARS - 3] + "..."
-    detail = raw or name
-    return f"{RECONCILIATION_FAILED}:{name}:{detail}"
+    family = _recon_exception_family_code_v1(exc)
+    reason = _controlled_reason_from_args_v1(exc)
+    if reason:
+        return f"{RECONCILIATION_FAILED}:{family}:{reason}"
+    return f"{RECONCILIATION_FAILED}:{family}"
 
 
 def _fail_closed_reconciliation_v1(
