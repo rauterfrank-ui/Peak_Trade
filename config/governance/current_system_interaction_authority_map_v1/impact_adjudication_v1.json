@@ -14,6 +14,7 @@
   ],
   "changed_paths_sha256": "625e67a02fdeb7684014eebaf33804080f8da95b7f77ae25b39dc384924ae0b7",
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
