@@ -38,6 +38,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_dw_excha
     DwExchangeReconciliationWiringModeV1,
     run_dw_exchange_reconciliation_wiring_after_post_submit_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot_post_admission_seal_v1 import (
+    OneShotPostAdmissionSealError,
+    prove_current_productive_one_shot_post_admission_seal_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1 import (
     OWNER_GO as K1_OPAQUE_SIGNING_OWNER_GO,
     CurrentProductiveK1OpaqueSigningHandleError,
@@ -326,6 +330,13 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
     try:
         assert_envelope_unmodified_v1(envelope)
     except FullCoreFinalOrderEnvelopeError as exc:
+        raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
+    try:
+        prove_current_productive_one_shot_post_admission_seal_v1(
+            envelope=envelope,
+            store_root=Path(store_root),
+        )
+    except OneShotPostAdmissionSealError as exc:
         raise CurrentProductiveOneShotFreshEnvelopeJoinError(str(exc)) from exc
     if envelope.issued_for_exact_action != ISSUED_FOR_EXACT_ACTION:
         raise CurrentProductiveOneShotFreshEnvelopeJoinError("ISSUED_FOR_EXACT_ACTION_MISMATCH")

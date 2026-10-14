@@ -1465,14 +1465,17 @@ entities:
   - tests/ops/test_current_live_canary_capital_guard_final_reproof_v1.py
   notes: Fail-closed capital guard + cross-process one-shot; no live POST activation; AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_pre_post_capital_guard_join_v1
+  # atlas_entity_review: GHV pilot guarded Enter-POST admission binds pilot capital guard + mandatory NEW-RISK admission on productive POST path; PRE_EXTERNAL join/binding hooks extended; fail-closed offline proofs; no Live/Testnet activation; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: Full-Core PRE_EXTERNAL capital guard join v1
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-  modified_by: CHANGE:pr_7098_s5_recovery_entry_binding_v1
+  modified_by: CHANGE:ghv_current_pilot_post_guarded_enter_admission_v1
   source_paths:
   - src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_pilot_capital_guard_post_bind_v1.py
   - src/ops/full_core_live_path_composition_root_v1/full_core_capital_guard_atomic_one_shot_v1.py
   - src/ops/full_core_live_path_composition_root_v1/full_core_capital_guard_reconciliation_stub_v1.py
   - src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_binding_v1.py
@@ -1483,7 +1486,8 @@ entities:
   - docs/ops/specs/CURRENT_FULL_CORE_PRE_POST_CAPITAL_GUARD_JOIN_V1.md
   - tests/ops/test_full_core_pre_post_capital_guard_join_v1.py
   - tests/ops/test_full_core_capital_guard_offline_reproof_integration_v1.py
-  notes: Independent fail-closed guard at PRE_EXTERNAL; default join DISABLED; OFFLINE_STUB proofs only; caps UNRATIFIED; no POST; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
+  - tests/ops/test_current_productive_pilot_capital_guard_post_bind_v1.py
+  notes: Independent fail-closed guard at PRE_EXTERNAL; default join DISABLED; OFFLINE_STUB proofs only; caps UNRATIFIED; no POST; GHV pilot POST-path guard bind is offline-tested only; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:full_core_exchange_reconciliation_integration_v1
   # atlas_entity_review: PR #7100 spec cross-reference Phase-8 authorization/session boundary only; reconciliation integration semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
@@ -3051,6 +3055,7 @@ entities:
   - src/governance/governed_current_productive_k1_opaque_signing_handle_pre_post_policy_closure_v1.py
   notes: 'Owner-GO K1 ephemeral handle, request signing, PRE-POST envelope on #6898; POST admission fail-closed. Actual Enter POST is a separate Owner-GO (#6900). ATLAS_AUTHORITY=NONE.'
 - id: CONTRACT:current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1
+  # atlas_entity_review: GHV pilot guarded Enter-POST admission stack (mandatory NEW-RISK admission, pilot capital-guard bind, one-shot post-admission seal, reduce-only provenance on send seam); fail-closed offline regression; standing Owner-GO/Live pins unchanged; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7102 SEC-001 secret-safe reconciliation error classification on optional DW wiring host fields only; send/POST/permit unchanged; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7101 default-off DW exchange reconciliation wiring after one-shot POST join; send seam unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: CONTRACT
@@ -3058,7 +3063,7 @@ entities:
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
-  modified_by: CHANGE:pr_7102_sec001_secret_safe_error_classification_v1
+  modified_by: CHANGE:ghv_current_pilot_post_guarded_enter_admission_v1
   authority_sources:
   - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md
   source_paths:
@@ -3069,7 +3074,11 @@ entities:
   - src/governance/governed_current_productive_actual_venue_post_admission_closure_v1.py
   - src/governance/current_productive_real_venue_post_admission_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_owner_go_durable_consume_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_post_admission_seal_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_pilot_capital_guard_post_bind_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_risk_reducing_envelope_provenance_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_dw_exchange_reconciliation_wiring_v1.py
   - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py
   - src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_unknown_post_attempt_read_only_reconciliation_v1.py
@@ -3082,9 +3091,12 @@ entities:
   - tests/ops/test_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1.py
   - tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py
   - tests/ops/test_current_productive_dw_exchange_reconciliation_wiring_v1.py
+  - tests/ops/test_current_productive_pilot_capital_guard_post_bind_v1.py
+  - tests/ops/_pilot_guard_enter_post_test_helpers_v1.py
   - src/governance/governed_current_productive_actual_venue_post_admission_closure_v1.py
-  notes: 'Owner-GO bounded Enter POST: durable POST-GO consume, admission-bound one-shot join, K1 signing, eea.okx.com trade-order path; standing POST pins remain false; max cardinality 1. PR6901: PRE_EXTERNAL closure may resolve typed envelope via runtime-reach join before pre-live. PR6931: pre-POST freshness before GO consume; transport outcome phases; UNKNOWN read-only recon. PR7101: optional default-off post-submit DW exchange reconciliation wiring on one-shot join only. Baseline pin cf3aa15 (post-#6930 merge currency). ATLAS_AUTHORITY=NONE.'
+  notes: 'Owner-GO bounded Enter POST: durable POST-GO consume, admission-bound one-shot join, K1 signing, eea.okx.com trade-order path; standing POST pins remain false; max cardinality 1. GHV pilot: mandatory NEW-RISK enter-post admission + capital-guard bind + one-shot post-admission seal + reduce-only provenance guard (offline tests). PR6901: PRE_EXTERNAL closure may resolve typed envelope via runtime-reach join before pre-live. PR6931: pre-POST freshness before GO consume; transport outcome phases; UNKNOWN read-only recon. PR7101: optional default-off post-submit DW exchange reconciliation wiring on one-shot join only. Baseline pin cf3aa15 (post-#6930 merge currency). ATLAS_AUTHORITY=NONE.'
 - id: CONTRACT:current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1
+  # atlas_entity_review: GHV pilot guarded Enter-POST admission touches governed productive host closure only; PRE_EXTERNAL envelope handoff contract unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: CONTRACT
   name: Fresh EXECUTABLE Enter envelope runtime reach to one-shot POST join v1
   epistemic_class: CANONICAL_AUTHORITY
@@ -5138,6 +5150,7 @@ entities:
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
   # atlas_entity_review: PR #7069 pre-completion P/S/T run evidence retirement; reference/fixture rebind only; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  # atlas_entity_review: GHV pilot guarded Enter-POST admission modules on one-shot join + send seam provenance; fail-closed offline regression; no Live/Testnet activation; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7102 SEC-001 secret-safe fail-closed reconciliation error classification on DW wiring module; observability-only; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7101 default-off DW exchange reconciliation wiring after one-shot POST join; optional OFFLINE_INJECTED/PRODUCTIVE_READ_ONLY modes; send seam unchanged; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7100 Phase-8 OKX validation Owner-GO + session deadline on productive read-only GET transport; fail-closed CLI; no POST/Live admission change; AUTHORITY=NONE; POST_COUNT=0.
@@ -5159,7 +5172,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7102_sec001_secret_safe_error_classification_v1
+  modified_by: CHANGE:ghv_current_pilot_post_guarded_enter_admission_v1
   source_paths:
   - src/ops/capability_11_long_running_testnet_proven_prep_eval_v1/verifier_v1.py
   - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_net_mode_posside_first_party_census_v1.py
@@ -5396,7 +5409,11 @@ entities:
   - src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_baseline_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_actual_venue_post_immediate_pre_mutation_freshness_v1.py
   - src/ops/full_core_live_path_composition_root_v1/envelope_bound_external_effect_send_seam_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_post_admission_seal_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_pilot_capital_guard_post_bind_v1.py
+  - src/ops/full_core_live_path_composition_root_v1/current_productive_risk_reducing_envelope_provenance_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_dw_exchange_reconciliation_wiring_v1.py
   - src/ops/full_core_live_path_composition_root_v1/current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1.py
   - src/ops/full_core_live_path_composition_root_v1/full_core_post_response_to_ack_mapper_v1.py

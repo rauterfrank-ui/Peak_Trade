@@ -57,6 +57,9 @@ from tests.ops.test_current_productive_one_shot_fresh_envelope_permit_mint_durab
     _TimeoutOpener,
     _persist_post_go,
 )
+from tests.ops._pilot_guard_enter_post_test_helpers_v1 import (
+    bind_authorized_exact_object_flatten_envelope_for_tests_v1,
+)
 from tests.ops.test_full_core_exchange_reconciliation_okx_read_only_provider_v1 import (
     FixtureBackedOkxReadOnlyTransport,
 )
@@ -78,32 +81,7 @@ def _origin_main() -> str:
 
 
 def _envelope() -> Any:
-    plan = VenuePlanCandidateV1(
-        instrument_id="okx_eea:linear_perpetual:0G:USDT:USDT:0g-usdt-swap",
-        side="buy",
-        quantity="1",
-        order_type="market",
-        td_mode="cross",
-        reduce_only=False,
-        clordid=CL,
-        venue_native_payload={
-            "instId": INST,
-            "ordType": "market",
-            "side": "buy",
-            "sz": "1",
-            "tdMode": "cross",
-        },
-        quantity_source="TEST_FIXTURE_NOT_LIVE_ENVELOPE",
-        side_source="TEST_FIXTURE_NOT_LIVE_ENVELOPE",
-        instrument_source="DH_CAP24_BOUND_INSTRUMENT_ID",
-        path_kind="FULL_CORE_CURRENT_PRODUCTIVE",
-    )
-    return bind_final_order_envelope_from_venue_plan_v1(
-        plan,
-        admission_ref="TEST_ADMISSION_REF",
-        provenance_ref="TEST_PROVENANCE_REF",
-        creation_epoch="2026-09-22T00:00:00Z",
-    )
+    return bind_authorized_exact_object_flatten_envelope_for_tests_v1(clordid=CL)
 
 
 def _binding_for_envelope(envelope: Any) -> FullCoreAuthorizationBindingV1:

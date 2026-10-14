@@ -39,6 +39,10 @@ from src.governance.governed_current_productive_actual_venue_post_admission_clos
 from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
     MockCurrentProductive29PIntegrityBackendV1,
 )
+from tests.ops._pilot_guard_enter_post_test_helpers_v1 import (
+    PilotGuardReadTransport,
+    mandatory_new_risk_execute_kwargs,
+)
 
 FAKE_OPAQUE = json.dumps(
     {"apiKey": "ak-test", "secretKey": "sk-test", "passphrase": "pp-test"},
@@ -178,8 +182,9 @@ def test_execute_unknown_outcome_single_attempt_no_retry(tmp_path: Path) -> None
             perform_real_venue_post=True,
             k1_backend=backend,
             opener_factory=lambda: _TimeoutOpener(),
-            read_only_get_transport=_TrustedReadTransport(),
+            read_only_get_transport=PilotGuardReadTransport(avail_eq="10000"),
             execution_integrity_backend=_clean_post_integrity(),
+            **mandatory_new_risk_execute_kwargs(tmp_path),
         )
     )
     assert result.post_outcome == "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"

@@ -62,6 +62,10 @@ from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 im
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
 )
+from tests.ops._pilot_guard_enter_post_test_helpers_v1 import (
+    bind_authorized_exact_object_flatten_envelope_for_tests_v1,
+    establish_new_risk_one_shot_admission_seal_for_tests_v1,
+)
 
 JOIN_PATH = Path(
     "src/ops/full_core_live_path_composition_root_v1/"
@@ -138,7 +142,7 @@ def _forbid_real_sockets(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(socket.socket, "connect", _boom)
 
 
-def _envelope():
+def _new_risk_envelope():
     plan = VenuePlanCandidateV1(
         instrument_id="okx_eea:linear_perpetual:0G:USDT:USDT:0g-usdt-swap",
         side="buy",
@@ -167,6 +171,12 @@ def _envelope():
     )
 
 
+def _envelope():
+    return bind_authorized_exact_object_flatten_envelope_for_tests_v1(
+        clordid="pt-fc-one-shot-join-v1",
+    )
+
+
 def _persist_post_go(store_root: Path) -> None:
     if load_durable_post_owner_go_consume_v1(store_root=store_root).get("consumed") is not True:
         persist_durable_post_owner_go_consume_v1(
@@ -182,10 +192,16 @@ def _attempt(tmp_path: Path, **kwargs: Any):
     backend = kwargs.pop("backend", _FakeKeychainBackend())
     store_root = kwargs.pop("store_root", tmp_path)
     post_owner_go = kwargs.pop("post_owner_go", POST_OWNER_GO)
+    envelope = kwargs.pop("envelope", _envelope())
+    if kwargs.pop("establish_new_risk_seal", False):
+        establish_new_risk_one_shot_admission_seal_for_tests_v1(
+            store_root=store_root,
+            envelope=envelope,
+        )
     if kwargs.pop("persist_post_go", True) and str(post_owner_go) == POST_OWNER_GO:
         _persist_post_go(store_root)
     attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
-        envelope=kwargs.pop("envelope", _envelope()),
+        envelope=envelope,
         post_owner_go=post_owner_go,
         store_root=store_root,
         k1_backend=kwargs.pop("k1_backend", backend),
@@ -279,8 +295,46 @@ def test_envelope_id_and_digest_mismatch_deny_before_mint(tmp_path: Path) -> Non
     assert remaining <= {"full_core_current_productive_actual_venue_post_owner_go_consume_v1.json"}
 
 
+def test_direct_one_shot_new_risk_without_seal_blocked(tmp_path: Path) -> None:
+    probe = OneShotJoinProbeV1()
+    _persist_post_go(tmp_path)
+    with pytest.raises(
+        CurrentProductiveOneShotFreshEnvelopeJoinError,
+        match="NEW_RISK_ADMISSION_SEAL_MISSING|RISK_REDUCING_.*PROVENANCE",
+    ):
+        attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
+            envelope=_new_risk_envelope(),
+            post_owner_go=POST_OWNER_GO,
+            store_root=tmp_path,
+            k1_backend=_FakeKeychainBackend(),
+            opener_factory=lambda: _TimeoutOpener(),
+            probe=probe,
+        )
+    assert probe.permit_minted is False
+
+
+def test_direct_one_shot_new_risk_with_persisted_seal_succeeds(tmp_path: Path) -> None:
+    envelope = _new_risk_envelope()
+    _persist_post_go(tmp_path)
+    establish_new_risk_one_shot_admission_seal_for_tests_v1(
+        store_root=tmp_path,
+        envelope=envelope,
+    )
+    probe = OneShotJoinProbeV1()
+    join = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
+        envelope=envelope,
+        post_owner_go=POST_OWNER_GO,
+        store_root=tmp_path,
+        k1_backend=_FakeKeychainBackend(),
+        opener_factory=lambda: _TimeoutOpener(),
+        probe=probe,
+    )
+    assert join.unknown_outcome is True
+    assert probe.permit_minted is True
+
+
 def test_forged_permit_constraints_deny() -> None:
-    envelope = _envelope()
+    envelope = _new_risk_envelope()
     forged = ExternalEffectPermitV1(
         permit_id="eep-forged",
         envelope_id=envelope.envelope_id,

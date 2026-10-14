@@ -70,6 +70,16 @@ def _main() -> int:
         default="none",
         help="Pre-live / POST join K1 lookup backend (macos requires canonical K1 Owner-GO scope)",
     )
+    parser.add_argument(
+        "--pilot-capital-guard-bind-go",
+        default="",
+        help="Required for NEW-RISK Enter POST (mandatory capital guard Owner-GO)",
+    )
+    parser.add_argument(
+        "--native-instrument-id",
+        default="",
+        help="Required for NEW-RISK Enter POST (venue native instId, e.g. 0G-USDT-SWAP)",
+    )
     args = parser.parse_args()
 
     from src.ops.full_core_live_path_composition_root_v1.current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1 import (
@@ -121,6 +131,33 @@ def _main() -> int:
             file=sys.stderr,
         )
         return 2
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_mandatory_new_risk_enter_post_admission_v1 import (
+        ProductiveVenuePostRiskClassV1,
+        classify_productive_venue_post_risk_class_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_pilot_capital_guard_post_bind_v1 import (
+        OWNER_GO_CURRENT_PILOT_CAPITAL_GUARD_POST_BIND_V1,
+    )
+
+    if (
+        classify_productive_venue_post_risk_class_v1(envelope)
+        is ProductiveVenuePostRiskClassV1.NEW_RISK_ENTER
+    ):
+        pilot_go = str(args.pilot_capital_guard_bind_go or "").strip()
+        native = str(args.native_instrument_id or "").strip()
+        if pilot_go != OWNER_GO_CURRENT_PILOT_CAPITAL_GUARD_POST_BIND_V1:
+            print(
+                "FAIL_CLOSED: NEW-RISK Enter POST requires --pilot-capital-guard-bind-go "
+                "OWNER_GO_CURRENT_PILOT_CAPITAL_GUARD_POST_BIND_V1",
+                file=sys.stderr,
+            )
+            return 2
+        if not native:
+            print(
+                "FAIL_CLOSED: NEW-RISK Enter POST requires --native-instrument-id",
+                file=sys.stderr,
+            )
+            return 2
     from src.ops.full_core_live_path_composition_root_v1.current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1 import (
         open_current_productive_k1_opaque_signing_handle_session_v1,
     )
@@ -146,6 +183,8 @@ def _main() -> int:
             k1_backend=k1_backend,
             opener_factory=None,
             read_only_get_transport=read_transport,
+            pilot_capital_guard_bind_go=str(args.pilot_capital_guard_bind_go or "").strip() or None,
+            pilot_native_instrument_id=str(args.native_instrument_id or "").strip() or None,
         )
     print(
         json.dumps(
