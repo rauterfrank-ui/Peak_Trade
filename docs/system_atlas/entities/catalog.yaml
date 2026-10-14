@@ -3051,13 +3051,14 @@ entities:
   - src/governance/governed_current_productive_k1_opaque_signing_handle_pre_post_policy_closure_v1.py
   notes: 'Owner-GO K1 ephemeral handle, request signing, PRE-POST envelope on #6898; POST admission fail-closed. Actual Enter POST is a separate Owner-GO (#6900). ATLAS_AUTHORITY=NONE.'
 - id: CONTRACT:current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1
+  # atlas_entity_review: PR #7102 SEC-001 secret-safe reconciliation error classification on optional DW wiring host fields only; send/POST/permit unchanged; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7101 default-off DW exchange reconciliation wiring after one-shot POST join; send seam unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: CONTRACT
   name: CURRENT productive actual venue Enter POST (one-shot) v1
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
-  modified_by: CHANGE:pr_7101_dw_exchange_reconciliation_wiring_v1
+  modified_by: CHANGE:pr_7102_sec001_secret_safe_error_classification_v1
   authority_sources:
   - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md
   source_paths:
@@ -5137,6 +5138,7 @@ entities:
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
   # atlas_entity_review: PR #7069 pre-completion P/S/T run evidence retirement; reference/fixture rebind only; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  # atlas_entity_review: PR #7102 SEC-001 secret-safe fail-closed reconciliation error classification on DW wiring module; observability-only; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7101 default-off DW exchange reconciliation wiring after one-shot POST join; optional OFFLINE_INJECTED/PRODUCTIVE_READ_ONLY modes; send seam unchanged; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7100 Phase-8 OKX validation Owner-GO + session deadline on productive read-only GET transport; fail-closed CLI; no POST/Live admission change; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7098 per-invocation S5 recovery observation on governed cycle result extras; no trading/POST/PRE_EXTERNAL authority change; AUTHORITY=NONE; POST_COUNT=0.
@@ -5157,7 +5159,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:pr_7101_dw_exchange_reconciliation_wiring_v1
+  modified_by: CHANGE:pr_7102_sec001_secret_safe_error_classification_v1
   source_paths:
   - src/ops/capability_11_long_running_testnet_proven_prep_eval_v1/verifier_v1.py
   - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_net_mode_posside_first_party_census_v1.py
