@@ -22,6 +22,12 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_dw_excha
     _safe_reconciliation_error_message_v1,
     run_dw_exchange_reconciliation_wiring_after_post_submit_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_pilot_capital_guard_post_bind_v1 import (
+    build_pilot_dw_exchange_reconciliation_wiring_config_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+)
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_okx_read_only_provider_v1 import (
     OkxReadOnlyReconciliationProviderError,
 )
@@ -133,6 +139,43 @@ def _order_row_for_cl(*, state: str = "live") -> dict[str, Any]:
     row["instId"] = INST
     row["ordId"] = "ord-wiring-1"
     return row
+
+
+class _ProductiveClassFakeTransport:
+    """Productive read-only transport_class on injected fixture transport (no network)."""
+
+    transport_class = TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET
+
+    def __init__(self, inner: FixtureBackedOkxReadOnlyTransport) -> None:
+        self._inner = inner
+
+    def get(self, **kwargs: Any) -> Any:
+        return self._inner.get(**kwargs)
+
+    @property
+    def request_count(self) -> int:
+        return self._inner.request_count
+
+
+def _productive_pilot_wiring_config(
+    envelope: Any,
+    *,
+    transport: _ProductiveClassFakeTransport,
+) -> DwExchangeReconciliationWiringConfigV1:
+    auth = replace(
+        _binding_for_envelope(envelope),
+        origin_main_sha=_origin_main(),
+    )
+    return build_pilot_dw_exchange_reconciliation_wiring_config_v1(
+        authorization_binding=auth,
+        envelope=envelope,
+        pretrade_decision_id="pretrade-productive-pass-1",
+        origin_main_sha=_origin_main(),
+        read_only_get_transport=transport,
+        venue_plan_identity="vp-wiring-1",
+        submit_attempt_id="submit-productive-pass-1",
+        private_get_go="GRANTED_SCOPED_READ_ONLY",
+    )
 
 
 class _AckOpener:
@@ -249,6 +292,95 @@ def test_d_offline_injected_ack_post_reconciles_open(tmp_path: Path) -> None:
     assert join.unknown_outcome is False
     assert join.dw_exchange_reconciliation_disposition == DISPOSITION_PASS
     assert join.dw_exchange_reconciliation_outcome == OUTCOME_CONFIRMED_OPEN
+
+
+def test_productive_read_only_one_shot_pass_with_fake_transport(tmp_path: Path) -> None:
+    envelope = _envelope()
+    fixture = OfflineExchangeFixtureV1(pending_orders={"data": [_order_row_for_cl()]})
+    inner = FixtureBackedOkxReadOnlyTransport(fixture)
+    transport = _ProductiveClassFakeTransport(inner)
+    config = _productive_pilot_wiring_config(envelope, transport=transport)
+    assert config.apply_durable_atomic_state is False
+    assert config.read_only_get_transport is transport
+    assert transport.transport_class == TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET
+
+    baseline_root = tmp_path / "baseline"
+    wired_root = tmp_path / "wired"
+    _persist_post_go(baseline_root)
+    _persist_post_go(wired_root)
+
+    baseline = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
+        envelope=envelope,
+        post_owner_go=JOIN_POST_GO,
+        store_root=baseline_root,
+        k1_backend=_FakeKeychainBackend(),
+        opener_factory=_TimeoutOpener,
+    )
+    join = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
+        envelope=envelope,
+        post_owner_go=JOIN_POST_GO,
+        store_root=wired_root,
+        k1_backend=_FakeKeychainBackend(),
+        opener_factory=_TimeoutOpener,
+        dw_exchange_reconciliation_wiring_mode=(
+            DwExchangeReconciliationWiringModeV1.PRODUCTIVE_READ_ONLY
+        ),
+        dw_exchange_reconciliation_wiring=config,
+    )
+
+    assert join.dw_exchange_reconciliation_wiring_mode == (
+        DwExchangeReconciliationWiringModeV1.PRODUCTIVE_READ_ONLY.value
+    )
+    assert join.dw_exchange_reconciliation_invoked is True
+    assert join.dw_exchange_reconciliation_disposition == DISPOSITION_PASS
+    assert join.dw_exchange_reconciliation_outcome == OUTCOME_CONFIRMED_OPEN
+    assert join.dw_exchange_reconciliation_ghv_forward_join == "PASS"
+    assert transport.request_count > 0
+    assert join.unknown_outcome == baseline.unknown_outcome
+    assert join.outcome == baseline.outcome
+    assert join.post_go_status == "UNCONSUMED"
+    assert baseline.post_go_status == "UNCONSUMED"
+    for root in (baseline_root, wired_root):
+        names = {p.name for p in root.iterdir()}
+        assert not any("atomic" in name for name in names)
+
+
+def test_productive_read_only_one_shot_negative_control_invalid_transport_class(
+    tmp_path: Path,
+) -> None:
+    envelope = _envelope()
+    fixture = OfflineExchangeFixtureV1(pending_orders={"data": [_order_row_for_cl()]})
+    inner = FixtureBackedOkxReadOnlyTransport(fixture)
+    config = _wiring_config(envelope, transport=inner)
+    baseline_root = tmp_path / "baseline"
+    fail_root = tmp_path / "fail"
+    _persist_post_go(baseline_root)
+    _persist_post_go(fail_root)
+
+    baseline = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
+        envelope=envelope,
+        post_owner_go=JOIN_POST_GO,
+        store_root=baseline_root,
+        k1_backend=_FakeKeychainBackend(),
+        opener_factory=_TimeoutOpener,
+    )
+    join = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
+        envelope=envelope,
+        post_owner_go=JOIN_POST_GO,
+        store_root=fail_root,
+        k1_backend=_FakeKeychainBackend(),
+        opener_factory=_TimeoutOpener,
+        dw_exchange_reconciliation_wiring_mode=(
+            DwExchangeReconciliationWiringModeV1.PRODUCTIVE_READ_ONLY
+        ),
+        dw_exchange_reconciliation_wiring=config,
+    )
+    assert join.dw_exchange_reconciliation_disposition == DISPOSITION_FAIL_CLOSED
+    assert "PRODUCTIVE_TRANSPORT_CLASS_REQUIRED" in join.dw_exchange_reconciliation_error
+    assert inner.request_count == 0
+    assert join.outcome == baseline.outcome
+    assert join.unknown_outcome == baseline.unknown_outcome
+    assert join.post_go_status == "UNCONSUMED"
 
 
 def test_e_orchestrator_failure_does_not_mutate_send_outcome(
