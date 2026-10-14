@@ -11,6 +11,7 @@ from decimal import Decimal
 from pathlib import Path
 
 import pytest
+import yaml
 
 from src.governance.canonical_order_intent_v1 import CanonicalOrderIntentV1
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
@@ -604,8 +605,28 @@ def test_ssot_docs_once_present() -> None:
         "DOCS_TOKEN_FULL_CORE_CURRENT_PRODUCTIVE_ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEND_SEAM_V1"
         in spec
     )
-    assert "11.2.1.DI" in atlas
-    assert "current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py" in atlas
+    catalog_doc = yaml.safe_load(atlas)
+    entities = catalog_doc.get("entities") if isinstance(catalog_doc, dict) else None
+    assert isinstance(entities, list)
+    send_seam_module = (
+        "src/ops/governed_productive_account_equity_authority_producer_v1/"
+        "current_productive_envelope_bound_single_use_external_effect_send_seam_v1.py"
+    )
+    catalog_lists_send_seam_module = False
+    for entity in entities:
+        if not isinstance(entity, dict):
+            continue
+        path_blob = "\n".join(
+            str(item)
+            for key in ("source_paths", "authority_sources", "evidence_sources")
+            for item in (entity.get(key) or [])
+        )
+        if send_seam_module in path_blob:
+            catalog_lists_send_seam_module = True
+            break
+    assert catalog_lists_send_seam_module is True
+    assert SPEC_PATH.is_file()
+    assert DI_HEADING.lstrip("#").strip() in runbook
     pack = REPO_ROOT / CANONICAL_PACK_RELPATH
     claims = json.loads((pack / "claims.json").read_text(encoding="utf-8"))
     assert claims["ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEAM"] == "true"

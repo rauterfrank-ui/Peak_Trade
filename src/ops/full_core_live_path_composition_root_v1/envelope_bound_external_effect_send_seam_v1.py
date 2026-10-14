@@ -16,7 +16,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Mapping, Optional
 
 from src.governance.canonical_order_intent_v1 import (
     CanonicalOrderIntentV1,
@@ -97,6 +97,20 @@ def _payload_from_envelope_v1(envelope: FinalOrderEnvelopeV1) -> dict[str, Any]:
     return body
 
 
+def assert_post_payload_reduce_only_matches_envelope_v1(
+    envelope: FinalOrderEnvelopeV1,
+    payload: Mapping[str, Any],
+) -> None:
+    """Fail-closed: wire reduceOnly must match authorized envelope semantics."""
+    assert_envelope_unmodified_v1(envelope)
+    wire_flag = payload.get("reduceOnly")
+    if envelope.reduce_only is True:
+        if wire_flag is not True:
+            raise FullCoreEnvelopeBoundSendSeamError("POST_PAYLOAD_REDUCE_ONLY_MISMATCH")
+    elif wire_flag is True:
+        raise FullCoreEnvelopeBoundSendSeamError("POST_PAYLOAD_REDUCE_ONLY_UNAUTHORIZED")
+
+
 def attempt_envelope_bound_external_effect_send_v1(
     *,
     envelope: FinalOrderEnvelopeV1,
@@ -156,6 +170,7 @@ def attempt_envelope_bound_external_effect_send_v1(
     except FullCoreExternalEffectDurableConsumeError as exc:
         raise FullCoreEnvelopeBoundSendSeamError(str(exc)) from exc
     payload = _payload_from_envelope_v1(envelope)
+    assert_post_payload_reduce_only_matches_envelope_v1(envelope, payload)
     one_shot = permit_authorizes_one_shot_real_post_v1(permit)
     if REAL_VENUE_POST_ALLOWED is True:
         raise FullCoreEnvelopeBoundSendSeamError("STANDING_REAL_VENUE_POST_FORBIDDEN")

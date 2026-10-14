@@ -55,6 +55,10 @@ from tests.ops.test_current_productive_actual_venue_post_with_fresh_envelope_bou
     _TimeoutOpener,
     _envelope,
 )
+from tests.ops._pilot_guard_enter_post_test_helpers_v1 import (
+    PilotGuardReadTransport,
+    mandatory_new_risk_execute_kwargs,
+)
 
 
 def _clean_post_integrity() -> MockCurrentProductive29PIntegrityBackendV1:
@@ -173,8 +177,9 @@ def test_timeout_preserves_transport_failure_without_retry(tmp_path: Path) -> No
             perform_real_venue_post=True,
             k1_backend=_FakeKeychainBackend(),
             opener_factory=lambda: _TimeoutOpener(),
-            read_only_get_transport=_TrustedReadTransport(),
+            read_only_get_transport=PilotGuardReadTransport(avail_eq="10000"),
             execution_integrity_backend=_clean_post_integrity(),
+            **mandatory_new_risk_execute_kwargs(tmp_path),
         )
     )
     assert result.post_outcome == "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"

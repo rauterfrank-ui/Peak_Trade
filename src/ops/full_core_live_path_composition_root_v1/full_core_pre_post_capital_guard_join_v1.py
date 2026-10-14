@@ -84,6 +84,7 @@ class FullCoreCapitalGuardJoinMode(str, Enum):
     OFFLINE_STUB = "OFFLINE_STUB"
     OBSERVE_ONLY = "OBSERVE_ONLY"
     LIVE_POST = "LIVE_POST"
+    PRODUCTIVE_PILOT_ENFORCE = "PRODUCTIVE_PILOT_ENFORCE"
 
 
 class FullCorePrePostCapitalGuardJoinError(RuntimeError):
@@ -182,6 +183,8 @@ def resolve_full_core_capital_guard_join_mode_v1(
         return FullCoreCapitalGuardJoinMode.DISABLED
     if mode is FullCoreCapitalGuardJoinMode.LIVE_POST:
         return FullCoreCapitalGuardJoinMode.DISABLED
+    if mode is FullCoreCapitalGuardJoinMode.PRODUCTIVE_PILOT_ENFORCE:
+        return FullCoreCapitalGuardJoinMode.DISABLED
     return mode
 
 
@@ -230,6 +233,7 @@ def run_full_core_pre_post_capital_guard_join_v1(
     authoritative_environment: str | None = None,
     authoritative_venue_plan_digest: str | None = None,
     pretrade_reference_mark_px: str | None = None,
+    pilot_enforce_owner_go: str | None = None,
 ) -> FullCorePrePostCapitalGuardJoinResultV1:
     mode = resolve_full_core_capital_guard_join_mode_v1(explicit_mode=join_mode)
     if mode is FullCoreCapitalGuardJoinMode.DISABLED:
@@ -247,6 +251,13 @@ def run_full_core_pre_post_capital_guard_join_v1(
 
     reasons: list[str] = []
     ghv_stages: list[dict[str, Any]] = []
+
+    if mode is FullCoreCapitalGuardJoinMode.PRODUCTIVE_PILOT_ENFORCE:
+        if (
+            str(pilot_enforce_owner_go or "").strip()
+            != "OWNER_GO_CURRENT_PILOT_CAPITAL_GUARD_POST_BIND_V1"
+        ):
+            reasons.append("PILOT_ENFORCE_OWNER_GO_DENIED")
 
     if binding.owner_go == CANARY_OWNER_GO_EXECUTE:
         reasons.append("CANARY_OWNER_GO_FORBIDDEN")
@@ -385,6 +396,14 @@ def run_full_core_pre_post_capital_guard_join_v1(
                 atomic_state_dir = Path(raw_atomic)
         if observed_leverage is None or not str(observed_leverage).strip():
             observed_leverage = "5"
+
+    if mode is FullCoreCapitalGuardJoinMode.PRODUCTIVE_PILOT_ENFORCE:
+        if margin_evidence is None:
+            reasons.append("PILOT_MARGIN_EVIDENCE_REQUIRED")
+        if exposure_evidence is None:
+            reasons.append("PILOT_EXPOSURE_EVIDENCE_REQUIRED")
+        if guard_config is None:
+            reasons.append("PILOT_GUARD_CONFIG_REQUIRED")
 
     cfg = guard_config or load_full_core_capital_guard_config_v1()
     if not skip_config_digest_mismatch and cfg.config_digest != binding.guard_config_digest:
@@ -561,7 +580,10 @@ def run_full_core_pre_post_capital_guard_join_v1(
             reservation_created=reservation_created,
         )
 
-    if mode is FullCoreCapitalGuardJoinMode.OFFLINE_STUB:
+    if mode in (
+        FullCoreCapitalGuardJoinMode.OFFLINE_STUB,
+        FullCoreCapitalGuardJoinMode.PRODUCTIVE_PILOT_ENFORCE,
+    ):
         try:
             refuse_full_core_capital_guard_entry_unless_pass_v1(evaluation)
         except FullCoreCapitalGuardError as exc:

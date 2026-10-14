@@ -81,6 +81,30 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_actual_v
     CurrentProductiveActualVenuePostPreMutationFreshnessError,
     prove_immediate_pre_mutation_freshness_for_actual_venue_post_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_dw_exchange_reconciliation_wiring_v1 import (
+    DwExchangeReconciliationWiringModeV1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_mandatory_new_risk_enter_post_admission_v1 import (
+    MandatoryNewRiskEnterPostAdmissionError,
+    ProductiveVenuePostRiskClassV1,
+    RiskReducingEnvelopeProvenanceError,
+    classify_productive_venue_post_risk_class_v1,
+    default_guard_atomic_state_dir_for_store_v1,
+    persist_enter_post_lifecycle_correlation_v1,
+    prove_new_risk_enter_post_store_admission_clear_v1,
+    resolve_mandatory_new_risk_enter_post_admission_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_pilot_capital_guard_post_bind_v1 import (
+    PilotCapitalGuardPostBindError,
+    PilotCapitalGuardPostBindResultV1,
+    enforce_pilot_capital_guard_before_enter_post_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.full_core_capital_guard_atomic_one_shot_v1 import (
+    full_core_atomic_mark_submit_boundary_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_full_core_capital_guard_v1 import (
+    FullCoreCapitalGuardConfigV1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_fresh_executable_enter_final_order_envelope_runtime_reach_to_one_shot_post_join_boundary_v1 import (
     resolve_fresh_executable_enter_final_order_envelope_from_pre_external_closure_v1,
 )
@@ -301,6 +325,14 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
     opener_factory: Callable[[], OpenerDirector] | None = None,
     read_only_get_transport: FullCoreFreshPretradeGetTransportV1 | None = None,
     execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
+    pilot_capital_guard_bind_go: str | None = None,
+    pilot_capital_guard_config: FullCoreCapitalGuardConfigV1 | None = None,
+    pilot_native_instrument_id: str | None = None,
+    pilot_canonical_decision_id: str | None = None,
+    pilot_account_identity: str | None = None,
+    pilot_atomic_state_dir: Path | None = None,
+    pilot_master_v2_decision: str = "enter_long",
+    pilot_dw_private_get_go: str = "GRANTED_SCOPED_READ_ONLY",
 ) -> CurrentProductiveActualVenuePostResultV1:
     if str(owner_go or "") != OWNER_GO:
         raise CurrentProductiveActualVenuePostError("OWNER_GO_MISMATCH")
@@ -316,9 +348,28 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     _assert_global_standing_pins_v1()
     assert_envelope_unmodified_v1(envelope)
+    try:
+        classify_productive_venue_post_risk_class_v1(envelope)
+    except RiskReducingEnvelopeProvenanceError as exc:
+        raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     root = Path(store_root)
     assert_post_durable_store_root_isolation_v1(store_root=root)
     root.mkdir(parents=True, exist_ok=True)
+    if (
+        classify_productive_venue_post_risk_class_v1(envelope)
+        is ProductiveVenuePostRiskClassV1.NEW_RISK_ENTER
+    ):
+        atomic_probe = pilot_atomic_state_dir or default_guard_atomic_state_dir_for_store_v1(
+            store_root=root
+        )
+        try:
+            prove_new_risk_enter_post_store_admission_clear_v1(
+                store_root=root,
+                envelope=envelope,
+                atomic_state_dir=atomic_probe,
+            )
+        except MandatoryNewRiskEnterPostAdmissionError as exc:
+            raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     pre = prove_pre_live_actual_venue_post_readiness_v1(
         owner_go=owner_go,
         baseline_origin_main_sha=baseline_origin_main_sha,
@@ -339,6 +390,63 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     if freshness.all_required_pre_post_gates_pass is not True:
         raise CurrentProductiveActualVenuePostError("PRE_MUTATION_FRESHNESS_FAIL_CLOSED")
+
+    dw_wiring_mode: DwExchangeReconciliationWiringModeV1 | str = (
+        DwExchangeReconciliationWiringModeV1.DISABLED
+    )
+    dw_wiring_config = None
+    pilot_bind: PilotCapitalGuardPostBindResultV1 | None = None
+    mandatory_ctx = None
+    try:
+        mandatory_ctx = resolve_mandatory_new_risk_enter_post_admission_v1(
+            envelope=envelope,
+            store_root=root,
+            pilot_capital_guard_bind_go=pilot_capital_guard_bind_go,
+            pilot_capital_guard_config=pilot_capital_guard_config,
+            pilot_native_instrument_id=pilot_native_instrument_id,
+            pilot_atomic_state_dir=pilot_atomic_state_dir,
+            pilot_dw_private_get_go=pilot_dw_private_get_go,
+            read_only_get_transport_present=read_only_get_transport is not None,
+        )
+    except MandatoryNewRiskEnterPostAdmissionError as exc:
+        raise CurrentProductiveActualVenuePostError(str(exc)) from exc
+    if mandatory_ctx is not None:
+        if read_only_get_transport is None:
+            raise CurrentProductiveActualVenuePostError("NEW_RISK_POST_MANDATORY_READ_TRANSPORT_REQUIRED")
+        try:
+            pilot_bind = enforce_pilot_capital_guard_before_enter_post_v1(
+                pilot_capital_guard_bind_go=mandatory_ctx.pilot_capital_guard_bind_go,
+                envelope=envelope,
+                read_only_get_transport=read_only_get_transport,
+                pretrade_decision_id=pre_mutation_id,
+                native_instrument_id=mandatory_ctx.native_instrument_id,
+                canonical_decision_id=str(pilot_canonical_decision_id or pre_mutation_id),
+                account_identity=pilot_account_identity,
+                origin_main_sha=baseline_origin_main_sha,
+                guard_config=mandatory_ctx.guard_config,
+                atomic_state_dir=mandatory_ctx.atomic_state_dir,
+                master_v2_decision=pilot_master_v2_decision,
+                pretrade_reference_mark_px=envelope.price or None,
+                private_get_go=mandatory_ctx.private_get_go,
+            )
+        except PilotCapitalGuardPostBindError as exc:
+            raise CurrentProductiveActualVenuePostError(str(exc)) from exc
+        if pilot_bind.blocked:
+            reasons = ",".join(pilot_bind.reasons) or "PILOT_CAPITAL_GUARD_BLOCKED"
+            raise CurrentProductiveActualVenuePostError(f"PILOT_CAPITAL_GUARD_BLOCKED:{reasons}")
+        if pilot_bind.join_result.reservation_created is not True:
+            raise CurrentProductiveActualVenuePostError("PILOT_ATOMIC_RESERVATION_REQUIRED")
+        persist_enter_post_lifecycle_correlation_v1(
+            store_root=root,
+            envelope=envelope,
+            authorization_binding=pilot_bind.authorization_binding,
+            pretrade_decision_id=pre_mutation_id,
+            submit_attempt_id=f"enter-post:{envelope.client_order_id}",
+            atomic_state_dir=mandatory_ctx.atomic_state_dir,
+        )
+        dw_wiring_mode = DwExchangeReconciliationWiringModeV1.PRODUCTIVE_READ_ONLY
+        dw_wiring_config = pilot_bind.dw_wiring_config
+
     persist_durable_post_owner_go_consume_v1(
         store_root=root,
         owner_go_token=OWNER_GO,
@@ -369,6 +477,8 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
             k1_backend=k1_backend,
             opener_factory=opener_factory,
             probe=probe,
+            dw_exchange_reconciliation_wiring_mode=dw_wiring_mode,
+            dw_exchange_reconciliation_wiring=dw_wiring_config,
         )
         real_attempted = probe.http_post_attempts >= 1
         real_performed = (
@@ -381,6 +491,20 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         join_outcome = join.outcome
         if join.http_status:
             http_status = str(join.http_status)
+        if (
+            pilot_bind is not None
+            and mandatory_ctx is not None
+            and (join.unknown_outcome is True or real_attempted)
+        ):
+            try:
+                full_core_atomic_mark_submit_boundary_v1(
+                    state_dir=mandatory_ctx.atomic_state_dir,
+                    binding=pilot_bind.authorization_binding,
+                )
+            except Exception as exc:
+                raise CurrentProductiveActualVenuePostError(
+                    f"GUARD_SUBMIT_BOUNDARY_MARK_FAILED:{exc}"
+                ) from exc
         if join.unknown_outcome is True:
             post_outcome = "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"
         elif real_performed:

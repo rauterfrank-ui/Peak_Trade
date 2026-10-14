@@ -117,6 +117,53 @@ def _selected_direction_from_master_v2_v1(master_v2_decision: str) -> str:
     return str(master_v2_decision or "").strip().upper() or "UNKNOWN"
 
 
+def build_full_core_enter_post_capital_guard_join_binding_v1(
+    *,
+    canonical_decision_id: str,
+    native_instrument_id: str,
+    envelope: FinalOrderEnvelopeV1,
+    master_v2_decision: str,
+    account_identity: str,
+    environment: str,
+    origin_main_sha: str,
+    execution_mode: str = "PRODUCTIVE_READ_ONLY",
+    guard_config_digest: str | None = None,
+    instrument_metadata: FullCoreCapitalGuardInstrumentMetadataV1,
+    pre_external_reached: bool = True,
+    terminal_disposition: str = DISPOSITION_PRE_EXTERNAL_EFFECT,
+) -> FullCorePrePostCapitalGuardJoinBindingV1:
+    """Binding for Enter-POST capital guard enforce (after PRE_EXTERNAL, before POST)."""
+    assert_envelope_unmodified_v1(envelope)
+    native = str(native_instrument_id or "").strip()
+    if not native:
+        raise FullCoreCapitalGuardBindingError("NATIVE_INSTRUMENT_ID_MISSING")
+    cfg_digest = guard_config_digest or load_full_core_capital_guard_config_v1().config_digest
+    return FullCorePrePostCapitalGuardJoinBindingV1(
+        canonical_decision_id=str(canonical_decision_id or "").strip(),
+        native_id=native,
+        instrument_id=str(envelope.instrument_id),
+        selected_direction=_selected_direction_from_master_v2_v1(master_v2_decision),
+        order_side=str(envelope.side),
+        final_quantity=str(envelope.quantity),
+        order_type=str(envelope.order_type),
+        order_price=str(envelope.price),
+        venue_plan_digest=compute_full_core_venue_plan_digest_from_envelope_v1(envelope),
+        envelope_digest=str(envelope.envelope_digest),
+        account_identity=str(account_identity or "").strip(),
+        environment=str(environment or "").strip(),
+        execution_mode=str(execution_mode or "").strip(),
+        owner_go=OWNER_GO_FULL_CORE_PRE_POST,
+        origin_main_sha=str(origin_main_sha or "").strip().lower(),
+        guard_config_digest=str(cfg_digest).strip().lower(),
+        clordid=str(envelope.client_order_id),
+        pre_external_reached=pre_external_reached is True,
+        terminal_disposition=str(terminal_disposition),
+        ct_val=instrument_metadata.ct_val,
+        min_sz=instrument_metadata.min_sz,
+        lot_sz=instrument_metadata.lot_sz,
+    )
+
+
 def build_full_core_capital_guard_join_binding_v1(
     *,
     canonical_decision_id: str,
@@ -240,6 +287,7 @@ __all__ = [
     "bind_full_core_capital_guard_handoff_context_v1",
     "reset_full_core_capital_guard_handoff_context_v1",
     "build_full_core_capital_guard_join_binding_v1",
+    "build_full_core_enter_post_capital_guard_join_binding_v1",
     "compute_full_core_venue_plan_digest_from_envelope_v1",
     "extract_instrument_contract_metadata_v1",
     "try_build_binding_from_governed_cycle_pre_external_v1",
