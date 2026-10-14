@@ -84,12 +84,133 @@ class MockPostCountingOpenerV1:
         raise TimeoutError("hard-crash-replay-probe-timeout")
 
 
-def _attempt_same_envelope_controlled_replay_v1(
+@dataclass(frozen=True)
+class PermitSendSeamReplayProbeResultV1:
+    mock_post_attempts: int
+    rejection_reason: str
+    owner_go_gate_reached: bool
+    durable_permit_id: str
+    durable_envelope_id: str
+
+
+def assert_permit_send_seam_replay_proof_v1(
+    result: PermitSendSeamReplayProbeResultV1,
+    *,
+    expect_durable_consumed_block: bool = True,
+) -> None:
+    if expect_durable_consumed_block:
+        if result.rejection_reason not in {"CONSUMED_PERMIT", "REPLAYED_PERMIT"}:
+            raise RestartEvaluationReplayProbeError(
+                f"SEAM_REPLAY_REJECTION_UNEXPECTED:{result.rejection_reason}"
+            )
+        if result.mock_post_attempts != 0:
+            raise RestartEvaluationReplayProbeError(
+                f"SEAM_REPLAY_MOCK_POST_NONZERO:{result.mock_post_attempts}"
+            )
+
+
+def attempt_permit_send_seam_same_envelope_replay_v1(
+    *,
+    store_root: Path,
+    envelope: Any,
+) -> PermitSendSeamReplayProbeResultV1:
+    """Invoke CURRENT envelope-bound send seam directly on a consumed durable store (offline)."""
+    from src.ops.full_core_live_path_composition_root_v1.envelope_bound_external_effect_send_seam_v1 import (
+        FullCoreEnvelopeBoundSendSeamError,
+        attempt_envelope_bound_external_effect_send_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
+        DurableKillSwitchEvidenceStatusV1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+        DURABLE_STATE_SENT_INITIATED,
+        load_external_effect_durable_consume_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_v1 import (
+        issue_external_effect_permit_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.full_core_productive_http_post_transport_v1 import (
+        FullCoreNonNetworkingTestPostTransportV1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.gated_productive_wire_transport_v1 import (
+        FullCoreSendCredentialHandleV1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 import (
+        STEP_29Q_PLAN_ONLY,
+    )
+
+    durable_before = load_external_effect_durable_consume_v1(store_root=store_root)
+    record = durable_before.get("record") if isinstance(durable_before.get("record"), dict) else {}
+    permit_id_before = str(record.get("permit_id") or "")
+    envelope_id_before = str(record.get("envelope_id") or "")
+    authority_ref = str(record.get("authority_ref") or "").strip()
+    if not authority_ref:
+        raise RestartEvaluationReplayProbeError("DURABLE_AUTHORITY_REF_MISSING")
+    durable_state_before = str(record.get("durable_state") or "")
+    if durable_before.get("durable_consumed") is not True:
+        raise RestartEvaluationReplayProbeError("DURABLE_PERMIT_NOT_CONSUMED_FOR_SEAM_PROBE")
+    if durable_state_before != DURABLE_STATE_SENT_INITIATED:
+        raise RestartEvaluationReplayProbeError(
+            f"DURABLE_STATE_UNEXPECTED:{durable_state_before or 'EMPTY'}"
+        )
+
+    transport = FullCoreNonNetworkingTestPostTransportV1()
+    permit = issue_external_effect_permit_v1(
+        envelope,
+        authority_ref=authority_ref,
+        kill_switch_blocked=False,
+        durable_kill_switch_evidence_status=DurableKillSwitchEvidenceStatusV1.TRUSTED_PRESENT.value,
+        filegate_denied=False,
+        step_29q_status=STEP_29Q_PLAN_ONLY,
+    )
+    if permit.permit_id != permit_id_before:
+        raise RestartEvaluationReplayProbeError("PERMIT_ID_DRIFT_VS_DURABLE_RECORD")
+    if str(envelope.envelope_id) != envelope_id_before:
+        raise RestartEvaluationReplayProbeError("ENVELOPE_ID_DRIFT_VS_DURABLE_RECORD")
+
+    handle = FullCoreSendCredentialHandleV1(
+        handle_id="hard-crash-permit-send-seam-replay-probe-v1",
+        bound=True,
+    )
+    rejection = ""
+    try:
+        attempt_envelope_bound_external_effect_send_v1(
+            envelope=envelope,
+            permit=permit,
+            store_root=store_root,
+            transport=transport,
+            handle=handle,
+        )
+        rejection = "UNEXPECTED_SUCCESS"
+    except FullCoreEnvelopeBoundSendSeamError as exc:
+        rejection = str(exc)
+
+    durable_after = load_external_effect_durable_consume_v1(store_root=store_root)
+    after_record = (
+        durable_after.get("record") if isinstance(durable_after.get("record"), dict) else {}
+    )
+    if durable_after.get("durable_consumed") is not True:
+        raise RestartEvaluationReplayProbeError("DURABLE_CONSUME_CLEARED_AFTER_SEAM_REPLAY")
+    if str(after_record.get("permit_id") or "") != permit_id_before:
+        raise RestartEvaluationReplayProbeError("DURABLE_PERMIT_ID_MUTATED")
+    if str(after_record.get("durable_state") or "") != DURABLE_STATE_SENT_INITIATED:
+        raise RestartEvaluationReplayProbeError("DURABLE_STATE_MUTATED")
+
+    return PermitSendSeamReplayProbeResultV1(
+        mock_post_attempts=int(transport.post_count),
+        rejection_reason=rejection,
+        owner_go_gate_reached=False,
+        durable_permit_id=permit_id_before,
+        durable_envelope_id=envelope_id_before,
+    )
+
+
+def _attempt_execute_path_same_envelope_replay_v1(
     *,
     store_root: Path,
     envelope: Any,
 ) -> tuple[int, bool]:
-    """Re-drive CURRENT Enter-POST for the same envelope; return (mock_open_count, executed)."""
+    """Re-drive full Enter-POST execute when durable consume is not yet present."""
     from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 import (
         EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
         OWNER_GO,
@@ -133,6 +254,31 @@ def _attempt_same_envelope_controlled_replay_v1(
     except Exception:
         pass
     return counting_opener.mock_post_open_attempts, executed
+
+
+def _attempt_same_envelope_controlled_replay_v1(
+    *,
+    store_root: Path,
+    envelope: Any,
+) -> tuple[int, bool, str]:
+    """Return (mock_post_count, executed, replay_channel)."""
+    from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+        load_external_effect_durable_consume_v1,
+    )
+
+    durable = load_external_effect_durable_consume_v1(store_root=store_root)
+    if durable.get("durable_consumed") is True:
+        seam = attempt_permit_send_seam_same_envelope_replay_v1(
+            store_root=store_root,
+            envelope=envelope,
+        )
+        assert_permit_send_seam_replay_proof_v1(seam)
+        return seam.mock_post_attempts, True, f"PERMIT_SEND_SEAM:{seam.rejection_reason}"
+    mock_posts, executed = _attempt_execute_path_same_envelope_replay_v1(
+        store_root=store_root,
+        envelope=envelope,
+    )
+    return mock_posts, executed, "EXECUTE_PATH"
 
 
 def spawn_hard_crash_child_v1(
@@ -297,7 +443,7 @@ def evaluate_restart_after_crash_v1(
         second_blocked = True
         reason = str(exc)
 
-    mock_posts, replay_executed = _attempt_same_envelope_controlled_replay_v1(
+    mock_posts, replay_executed, replay_channel = _attempt_same_envelope_controlled_replay_v1(
         store_root=store_root,
         envelope=env,
     )
@@ -306,6 +452,7 @@ def evaluate_restart_after_crash_v1(
     if mock_posts > 0:
         raise RestartEvaluationReplayProbeError(f"UNEXPECTED_MOCK_POST_AFTER_RESTART:{mock_posts}")
     notes.append("REPLAY_ATTEMPT_EXECUTED" if replay_executed else "REPLAY_ATTEMPT_SKIPPED")
+    notes.append(f"REPLAY_CHANNEL={replay_channel}")
 
     return RestartEvaluationV1(
         crash_point=point,
