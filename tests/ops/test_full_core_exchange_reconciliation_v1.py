@@ -53,6 +53,7 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconcil
     REASON_NEGATIVE_REMAINING,
     REASON_ORDER_FILL_CONTRADICTION,
     REASON_ORDER_NOT_FOUND_NOT_PROOF,
+    REASON_POSITION_CONTRADICTION,
     REASON_STALE_EVIDENCE,
     REASON_UNSUPPORTED_UNITS,
     REASON_WRONG_CLORDID,
@@ -878,3 +879,251 @@ def test_34_concurrent_reservation_fail_closed(tmp_path: Path) -> None:
     assert p.exitcode == 0
     with pytest.raises(Exception):
         full_core_atomic_reserve_owner_go_authorization_v1(state_dir=tmp_path, binding=binding)
+
+
+class TestPositionCrosscheckV1:
+    """Instrument-level position cross-check (no clOrdId attribution on net pos)."""
+
+    def test_case_05_rejected_with_preexisting_position_not_no_exposure_halt(self) -> None:
+        """Negative control: reject + flat order fill + unrelated net position stays rejected."""
+        ident = _identity()
+        res = run_full_core_offline_exchange_reconciliation_v1(
+            identity=ident,
+            binding=_binding(),
+            fixture=OfflineExchangeFixtureV1(
+                order_history={"data": [_order_row(state="rejected", s_code="51008", acc="0")]},
+                positions={"data": [{"instId": INST, "pos": "5", "posSide": "long"}]},
+            ),
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        assert res.decision.outcome == OUTCOME_CONFIRMED_REJECTED
+        assert res.decision.exposure_retained is False
+
+    def test_case_05_rejected_with_order_attributed_fills_halts(self) -> None:
+        ident = _identity()
+        res = run_full_core_offline_exchange_reconciliation_v1(
+            identity=ident,
+            binding=_binding(),
+            fixture=OfflineExchangeFixtureV1(
+                order_history={"data": [_order_row(state="rejected", s_code="51008", acc="0")]},
+                fills={"data": [{"clOrdId": CL, "fillSz": "2", "fillId": "f1"}]},
+                positions={"data": [{"instId": INST, "pos": "2", "posSide": "long"}]},
+            ),
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        assert res.decision.outcome == OUTCOME_HALTED_UNRESOLVED
+        assert REASON_ORDER_FILL_CONTRADICTION in res.decision.reasons
+
+    def test_case_b_buy_fill_netting_reduces_short_no_sign_halt(self) -> None:
+        """CASE_B: entry-side long fill may leave net pos negative after reducing a short."""
+        ident = _identity()
+        res = run_full_core_offline_exchange_reconciliation_v1(
+            identity=ident,
+            binding=_binding(),
+            fixture=OfflineExchangeFixtureV1(
+                order_history={"data": [_order_row(state="filled", acc="10")]},
+                positions={"data": [{"instId": INST, "pos": "-3", "posSide": "net"}]},
+            ),
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        assert res.decision.outcome == OUTCOME_CONFIRMED_FILLED
+        assert REASON_POSITION_CONTRADICTION not in res.decision.reasons
+
+    def test_case_d_full_close_flat_net_not_position_halt(self) -> None:
+        """CASE_D: pos=0 after fill is valid (close/flatten); no sign attribution."""
+        ident = _identity()
+        res = run_full_core_offline_exchange_reconciliation_v1(
+            identity=ident,
+            binding=_binding(),
+            fixture=OfflineExchangeFixtureV1(
+                order_history={"data": [_order_row(state="filled", acc="10")]},
+                positions={"data": [{"instId": INST, "pos": "0", "posSide": "net"}]},
+            ),
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        assert res.decision.outcome == OUTCOME_CONFIRMED_FILLED
+        assert REASON_POSITION_CONTRADICTION not in res.decision.reasons
+
+    def test_case_e_reversal_net_sign_after_fill_not_auto_halt(self) -> None:
+        """CASE_E: net may remain opposite entry side during partial netting/reversal."""
+        ident = _identity()
+        res = run_full_core_offline_exchange_reconciliation_v1(
+            identity=ident,
+            binding=_binding(),
+            fixture=OfflineExchangeFixtureV1(
+                order_history={"data": [_order_row(state="filled", acc="4", sz="4")]},
+                positions={"data": [{"instId": INST, "pos": "-1", "posSide": "net"}]},
+            ),
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        assert res.decision.outcome == OUTCOME_CONFIRMED_FILLED
+
+    def test_case_09_order_not_found_with_position_remains_halt(self) -> None:
+        ident = _identity()
+        res = run_full_core_offline_exchange_reconciliation_v1(
+            identity=ident,
+            binding=_binding(),
+            fixture=OfflineExchangeFixtureV1(
+                positions={"data": [{"instId": INST, "pos": "1", "posSide": "long"}]}
+            ),
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        assert res.decision.outcome == OUTCOME_HALTED_UNRESOLVED
+        assert REASON_ORDER_NOT_FOUND_NOT_PROOF in res.decision.reasons
+
+    def test_case_g_conflicting_position_rows_halt(self) -> None:
+        ident = _identity()
+        res = run_full_core_offline_exchange_reconciliation_v1(
+            identity=ident,
+            binding=_binding(),
+            fixture=OfflineExchangeFixtureV1(
+                order_history={"data": [_order_row(state="filled", acc="10")]},
+                positions={
+                    "data": [
+                        {"instId": INST, "pos": "10", "posSide": "net"},
+                        {"instId": INST, "pos": "9", "posSide": "net"},
+                    ]
+                },
+            ),
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        assert res.decision.outcome == OUTCOME_HALTED_UNRESOLVED
+        assert REASON_POSITION_CONTRADICTION in res.decision.reasons
+
+    def test_case_a_partial_fill_with_positive_net_passes(self) -> None:
+        ident = _identity()
+        res = run_full_core_offline_exchange_reconciliation_v1(
+            identity=ident,
+            binding=_binding(),
+            fixture=OfflineExchangeFixtureV1(
+                pending_orders={"data": [_order_row(state="partially_filled", acc="4")]},
+                positions={"data": [{"instId": INST, "pos": "4", "posSide": "net"}]},
+            ),
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        assert res.decision.outcome == OUTCOME_CONFIRMED_PARTIALLY_FILLED
+
+    def test_case_c_sell_fill_may_leave_positive_net_without_halt(self) -> None:
+        """CASE_C: reduce-only style outcome not modeled; flat long remainder stays valid."""
+        ident = _identity_with(selected_side="ENTER_SHORT")
+        res = run_full_core_offline_exchange_reconciliation_v1(
+            identity=ident,
+            binding=_binding(),
+            fixture=OfflineExchangeFixtureV1(
+                order_history={"data": [_order_row(state="filled", acc="3", sz="3")]},
+                positions={"data": [{"instId": INST, "pos": "7", "posSide": "net"}]},
+            ),
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        assert res.decision.outcome == OUTCOME_CONFIRMED_FILLED
+
+    def test_case_f_hedge_shaped_dual_pos_side_rows_fail_closed(self) -> None:
+        """CASE_F: long+short legs on one inst fail-closed (CURRENT reconciliation: net_mode)."""
+        ident = _identity()
+        res = run_full_core_offline_exchange_reconciliation_v1(
+            identity=ident,
+            binding=_binding(),
+            fixture=OfflineExchangeFixtureV1(
+                order_history={"data": [_order_row(state="filled", acc="10")]},
+                positions={
+                    "data": [
+                        {"instId": INST, "pos": "2", "posSide": "long"},
+                        {"instId": INST, "pos": "1", "posSide": "short"},
+                    ]
+                },
+            ),
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        assert res.decision.outcome == OUTCOME_HALTED_UNRESOLVED
+        assert REASON_POSITION_CONTRADICTION in res.decision.reasons
+
+    def test_case_h_no_position_rows_skips_crosscheck(self) -> None:
+        ident = _identity()
+        res = run_full_core_offline_exchange_reconciliation_v1(
+            identity=ident,
+            binding=_binding(),
+            fixture=OfflineExchangeFixtureV1(
+                order_history={"data": [_order_row(state="filled", acc="10")]},
+            ),
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        assert res.decision.outcome == OUTCOME_CONFIRMED_FILLED
+
+    def test_open_order_with_preexisting_position_not_contradiction(self) -> None:
+        ident = _identity()
+        res = run_full_core_offline_exchange_reconciliation_v1(
+            identity=ident,
+            binding=_binding(),
+            fixture=OfflineExchangeFixtureV1(
+                pending_orders={"data": [_order_row(state="live", acc="0")]},
+                positions={"data": [{"instId": INST, "pos": "7", "posSide": "long"}]},
+            ),
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        assert res.decision.outcome == OUTCOME_CONFIRMED_OPEN
+
+    def test_position_wrong_instrument_identity_halt(self) -> None:
+        ident = _identity()
+        snap = build_offline_exchange_reconciliation_snapshot_v1(
+            identity=ident,
+            fixture=OfflineExchangeFixtureV1(
+                order_history={"data": [_order_row(state="filled", acc="10")]},
+                positions={"data": [{"instId": INST, "pos": "10", "posSide": "long"}]},
+            ),
+        )
+        item = next(
+            i for i in snap.evidence_items if i.layer is EvidenceLayer.EXCHANGE_POSITION_STATE
+        )
+        bad = ExchangeEvidenceItemV1(
+            layer=item.layer,
+            source=item.source,
+            account=item.account,
+            environment=item.environment,
+            instrument="BTC-USDT-SWAP",
+            observed_at=item.observed_at,
+            received_at=item.received_at,
+            freshness_proven=True,
+            query_scope=item.query_scope,
+            response_status=item.response_status,
+            raw_reference=item.raw_reference,
+            canonical_identity_digest=item.canonical_identity_digest,
+            payload=item.payload,
+        )
+        tampered = FullCoreExchangeReconciliationSnapshotV1(
+            provider=snap.provider,
+            simulation_mode=snap.simulation_mode,
+            identity_digest=snap.identity_digest,
+            evidence_items=(bad,),
+            incomplete_pagination=False,
+            history_unavailable=False,
+            snapshot_freshness_proven=True,
+            transport_failures=(),
+            api_errors=(),
+        )
+        dec = adjudicate_full_core_exchange_reconciliation_v1(
+            identity=ident,
+            snapshot=tampered,
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        assert dec.outcome == OUTCOME_HALTED_UNRESOLVED
+        assert REASON_INSTRUMENT_MISMATCH in dec.reasons
+
+    def test_position_crosscheck_idempotent(self) -> None:
+        ident = _identity()
+        fixture = OfflineExchangeFixtureV1(
+            order_history={"data": [_order_row(state="filled", acc="10")]},
+            positions={"data": [{"instId": INST, "pos": "10", "posSide": "long"}]},
+        )
+        a = run_full_core_offline_exchange_reconciliation_v1(
+            identity=ident,
+            binding=_binding(),
+            fixture=fixture,
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        b = run_full_core_offline_exchange_reconciliation_v1(
+            identity=ident,
+            binding=_binding(),
+            fixture=fixture,
+            local_submit_outcome=LocalSubmitOutcome.TRANSPORT_ACK,
+        )
+        assert a.decision.outcome == b.decision.outcome == OUTCOME_CONFIRMED_FILLED
