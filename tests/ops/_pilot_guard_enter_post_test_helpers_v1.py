@@ -69,9 +69,7 @@ class PilotGuardReadTransport:
             payload = self._tiers_payload
         elif "orders-pending" in path:
             rows = (
-                [{"instId": PILOT_TEST_INST, "clOrdId": "pending-1"}]
-                if self._open_orders
-                else []
+                [{"instId": PILOT_TEST_INST, "clOrdId": "pending-1"}] if self._open_orders else []
             )
             payload = {"code": "0", "data": rows}
         elif "positions" in path:

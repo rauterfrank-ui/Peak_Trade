@@ -126,10 +126,7 @@ def _reference_mark_px_for_market_order_v1(
     native_instrument_id: str,
     pretrade_decision_id: str,
 ) -> str:
-    endpoint = (
-        f"{ENDPOINT_MARKET_INDEX_TICKERS}?"
-        f"{urlencode({'instId': native_instrument_id})}"
-    )
+    endpoint = f"{ENDPOINT_MARKET_INDEX_TICKERS}?{urlencode({'instId': native_instrument_id})}"
     payload = _require_get_v1(
         transport,
         endpoint=endpoint,
@@ -218,8 +215,7 @@ def collect_pilot_capital_guard_authoritative_evidence_v1(
         raise PilotCapitalGuardPostBindError("PRETRADE_OR_NATIVE_INSTRUMENT_REQUIRED")
 
     instruments_ep = (
-        f"{ENDPOINT_PUBLIC_INSTRUMENTS}?"
-        f"{urlencode({'instType': inst_type, 'instId': native})}"
+        f"{ENDPOINT_PUBLIC_INSTRUMENTS}?{urlencode({'instType': inst_type, 'instId': native})}"
     )
     instruments_payload = _require_get_v1(
         transport,
@@ -247,8 +243,7 @@ def collect_pilot_capital_guard_authoritative_evidence_v1(
         raise PilotCapitalGuardPostBindError("AVAIL_EQ_USDC_MISSING")
 
     leverage_ep = (
-        f"{ENDPOINT_ACCOUNT_LEVERAGE_INFO}?"
-        f"{urlencode({'instId': native, 'mgnMode': td_mode})}"
+        f"{ENDPOINT_ACCOUNT_LEVERAGE_INFO}?{urlencode({'instId': native, 'mgnMode': td_mode})}"
     )
     leverage_payload = _require_get_v1(
         transport,
@@ -278,10 +273,7 @@ def collect_pilot_capital_guard_authoritative_evidence_v1(
         expected_inst_family=inst_family,
     )
 
-    pending_ep = (
-        f"{ORDERS_PENDING_ENDPOINT}?"
-        f"{urlencode({'instType': inst_type, 'instId': native})}"
-    )
+    pending_ep = f"{ORDERS_PENDING_ENDPOINT}?{urlencode({'instType': inst_type, 'instId': native})}"
     pending_payload = _require_get_v1(
         transport,
         endpoint=pending_ep,
@@ -290,8 +282,7 @@ def collect_pilot_capital_guard_authoritative_evidence_v1(
     )
 
     positions_ep = (
-        f"{ENDPOINT_ACCOUNT_POSITIONS}?"
-        f"{urlencode({'instType': inst_type, 'instId': native})}"
+        f"{ENDPOINT_ACCOUNT_POSITIONS}?{urlencode({'instType': inst_type, 'instId': native})}"
     )
     positions_payload = _require_get_v1(
         transport,
@@ -405,7 +396,10 @@ def enforce_pilot_capital_guard_before_enter_post_v1(
     pretrade_reference_mark_px: str | None = None,
     private_get_go: str = "GRANTED_SCOPED_READ_ONLY",
 ) -> PilotCapitalGuardPostBindResultV1:
-    if str(pilot_capital_guard_bind_go or "").strip() != OWNER_GO_CURRENT_PILOT_CAPITAL_GUARD_POST_BIND_V1:
+    if (
+        str(pilot_capital_guard_bind_go or "").strip()
+        != OWNER_GO_CURRENT_PILOT_CAPITAL_GUARD_POST_BIND_V1
+    ):
         raise PilotCapitalGuardPostBindError("PILOT_CAPITAL_GUARD_BIND_GO_DENIED")
     assert_envelope_unmodified_v1(envelope)
     transport = read_only_get_transport
@@ -429,8 +423,7 @@ def enforce_pilot_capital_guard_before_enter_post_v1(
     account_scope = account_uid
 
     instruments_ep = (
-        f"{ENDPOINT_PUBLIC_INSTRUMENTS}?"
-        f"{urlencode({'instType': 'SWAP', 'instId': native})}"
+        f"{ENDPOINT_PUBLIC_INSTRUMENTS}?{urlencode({'instType': 'SWAP', 'instId': native})}"
     )
     instruments_payload = _require_get_v1(
         transport,

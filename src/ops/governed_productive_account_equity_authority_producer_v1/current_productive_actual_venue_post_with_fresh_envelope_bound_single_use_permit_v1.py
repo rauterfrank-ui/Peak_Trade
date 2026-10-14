@@ -412,7 +412,9 @@ def execute_current_productive_actual_venue_post_with_fresh_envelope_bound_singl
         raise CurrentProductiveActualVenuePostError(str(exc)) from exc
     if mandatory_ctx is not None:
         if read_only_get_transport is None:
-            raise CurrentProductiveActualVenuePostError("NEW_RISK_POST_MANDATORY_READ_TRANSPORT_REQUIRED")
+            raise CurrentProductiveActualVenuePostError(
+                "NEW_RISK_POST_MANDATORY_READ_TRANSPORT_REQUIRED"
+            )
         try:
             pilot_bind = enforce_pilot_capital_guard_before_enter_post_v1(
                 pilot_capital_guard_bind_go=mandatory_ctx.pilot_capital_guard_bind_go,

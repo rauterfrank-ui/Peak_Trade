@@ -183,8 +183,7 @@ def _main() -> int:
             k1_backend=k1_backend,
             opener_factory=None,
             read_only_get_transport=read_transport,
-            pilot_capital_guard_bind_go=str(args.pilot_capital_guard_bind_go or "").strip()
-            or None,
+            pilot_capital_guard_bind_go=str(args.pilot_capital_guard_bind_go or "").strip() or None,
             pilot_native_instrument_id=str(args.native_instrument_id or "").strip() or None,
         )
     print(

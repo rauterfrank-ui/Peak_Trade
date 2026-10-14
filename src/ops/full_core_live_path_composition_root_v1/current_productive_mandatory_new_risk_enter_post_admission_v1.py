@@ -92,9 +92,7 @@ def _assert_no_secrets(payload: Mapping[str, Any]) -> None:
             raise MandatoryNewRiskEnterPostAdmissionError(f"SECRET_TOKEN_PRESENT:{token}")
 
 
-def load_enter_post_lifecycle_correlation_v1(
-    *, store_root: Path | str
-) -> dict[str, Any] | None:
+def load_enter_post_lifecycle_correlation_v1(*, store_root: Path | str) -> dict[str, Any] | None:
     path = correlation_path_v1(store_root=store_root)
     if not path.is_file():
         return None
@@ -158,9 +156,7 @@ def prove_new_risk_enter_post_store_admission_clear_v1(
     if correlation is not None:
         prior_digest = str(correlation.get("envelope_digest") or "")
         if prior_digest and prior_digest != envelope.envelope_digest:
-            raise MandatoryNewRiskEnterPostAdmissionError(
-                "LIFECYCLE_CORRELATION_ENVELOPE_MISMATCH"
-            )
+            raise MandatoryNewRiskEnterPostAdmissionError("LIFECYCLE_CORRELATION_ENVELOPE_MISMATCH")
     atomic_dir = Path(atomic_state_dir) if atomic_state_dir is not None else None
     if atomic_dir is None and correlation is not None:
         raw = str(correlation.get("atomic_state_dir") or "").strip()

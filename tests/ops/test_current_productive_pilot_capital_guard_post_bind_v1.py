@@ -178,10 +178,7 @@ def test_pilot_enforce_mode_not_reachable_from_env_only(monkeypatch: pytest.Monk
         "PEAK_TRADE_FULL_CORE_CAPITAL_GUARD_JOIN_MODE",
         FullCoreCapitalGuardJoinMode.PRODUCTIVE_PILOT_ENFORCE.value,
     )
-    assert (
-        resolve_full_core_capital_guard_join_mode_v1()
-        is FullCoreCapitalGuardJoinMode.DISABLED
-    )
+    assert resolve_full_core_capital_guard_join_mode_v1() is FullCoreCapitalGuardJoinMode.DISABLED
 
 
 def test_pilot_go_denied_without_token() -> None:
@@ -253,7 +250,9 @@ def test_pilot_enforce_reserves_and_passes_with_ratified_caps(tmp_path: Path) ->
     )
     assert result.blocked is False
     assert result.join_result.reservation_created is True
-    assert result.join_result.join_mode == FullCoreCapitalGuardJoinMode.PRODUCTIVE_PILOT_ENFORCE.value
+    assert (
+        result.join_result.join_mode == FullCoreCapitalGuardJoinMode.PRODUCTIVE_PILOT_ENFORCE.value
+    )
     assert result.dw_wiring_config.apply_durable_atomic_state is False
     assert result.authorization_binding.clordid == envelope.client_order_id
 
@@ -287,22 +286,24 @@ def test_new_risk_post_without_pilot_go_blocked(tmp_path: Path) -> None:
 
 def test_new_risk_post_with_mandatory_binding_reaches_mock_post(tmp_path: Path) -> None:
     envelope = _envelope()
-    result = execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
-        owner_go=OWNER_GO,
-        baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
-        envelope=envelope,
-        store_root=tmp_path,
-        evidence_root=tmp_path / "evidence",
-        perform_real_venue_post=True,
-        k1_backend=_FakeKeychainBackend(),
-        opener_factory=lambda: _TimeoutOpener(),
-        read_only_get_transport=PilotGuardReadTransport(avail_eq="10000"),
-        execution_integrity_backend=MockCurrentProductive29PIntegrityBackendV1(
-            origin_main=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
-            head=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
-            drift="",
-        ),
-        **mandatory_new_risk_execute_kwargs(tmp_path),
+    result = (
+        execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
+            owner_go=OWNER_GO,
+            baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+            envelope=envelope,
+            store_root=tmp_path,
+            evidence_root=tmp_path / "evidence",
+            perform_real_venue_post=True,
+            k1_backend=_FakeKeychainBackend(),
+            opener_factory=lambda: _TimeoutOpener(),
+            read_only_get_transport=PilotGuardReadTransport(avail_eq="10000"),
+            execution_integrity_backend=MockCurrentProductive29PIntegrityBackendV1(
+                origin_main=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+                head=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+                drift="",
+            ),
+            **mandatory_new_risk_execute_kwargs(tmp_path),
+        )
     )
     assert result.post_outcome == "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"
     assert (
@@ -345,21 +346,23 @@ def test_reduce_only_post_exempt_from_mandatory_entry_guard(tmp_path: Path) -> N
         classify_productive_venue_post_risk_class_v1(envelope)
         is ProductiveVenuePostRiskClassV1.RISK_REDUCING
     )
-    result = execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
-        owner_go=OWNER_GO,
-        baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
-        envelope=envelope,
-        store_root=tmp_path,
-        evidence_root=tmp_path / "evidence",
-        perform_real_venue_post=True,
-        k1_backend=_FakeKeychainBackend(),
-        opener_factory=lambda: _TimeoutOpener(),
-        read_only_get_transport=PilotGuardReadTransport(),
-        execution_integrity_backend=MockCurrentProductive29PIntegrityBackendV1(
-            origin_main=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
-            head=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
-            drift="",
-        ),
+    result = (
+        execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
+            owner_go=OWNER_GO,
+            baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+            envelope=envelope,
+            store_root=tmp_path,
+            evidence_root=tmp_path / "evidence",
+            perform_real_venue_post=True,
+            k1_backend=_FakeKeychainBackend(),
+            opener_factory=lambda: _TimeoutOpener(),
+            read_only_get_transport=PilotGuardReadTransport(),
+            execution_integrity_backend=MockCurrentProductive29PIntegrityBackendV1(
+                origin_main=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+                head=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+                drift="",
+            ),
+        )
     )
     assert result.post_outcome == "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"
 
@@ -550,7 +553,9 @@ def test_adversarial_verified_flatten_plan_classifies_risk_reducing() -> None:
 
 def test_adversarial_post_payload_reduce_only_mismatch_blocked() -> None:
     envelope = _authorized_exact_object_flatten_envelope(clordid="pt-payload-bind-v1")
-    with pytest.raises(FullCoreEnvelopeBoundSendSeamError, match="POST_PAYLOAD_REDUCE_ONLY_MISMATCH"):
+    with pytest.raises(
+        FullCoreEnvelopeBoundSendSeamError, match="POST_PAYLOAD_REDUCE_ONLY_MISMATCH"
+    ):
         assert_post_payload_reduce_only_matches_envelope_v1(envelope, {"reduceOnly": False})
 
 
@@ -608,20 +613,22 @@ def test_adversarial_missing_provenance_identity_blocked() -> None:
 
 def test_adversarial_authorized_exit_uses_own_contract_not_entry_bypass(tmp_path: Path) -> None:
     envelope = _authorized_exact_object_flatten_envelope(clordid="pt-exit-own-contract-v1")
-    result = execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
-        owner_go=OWNER_GO,
-        baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
-        envelope=envelope,
-        store_root=tmp_path,
-        evidence_root=tmp_path / "evidence",
-        perform_real_venue_post=True,
-        k1_backend=_FakeKeychainBackend(),
-        opener_factory=lambda: _TimeoutOpener(),
-        read_only_get_transport=PilotGuardReadTransport(),
-        execution_integrity_backend=MockCurrentProductive29PIntegrityBackendV1(
-            origin_main=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
-            head=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
-            drift="",
-        ),
+    result = (
+        execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1(
+            owner_go=OWNER_GO,
+            baseline_origin_main_sha=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+            envelope=envelope,
+            store_root=tmp_path,
+            evidence_root=tmp_path / "evidence",
+            perform_real_venue_post=True,
+            k1_backend=_FakeKeychainBackend(),
+            opener_factory=lambda: _TimeoutOpener(),
+            read_only_get_transport=PilotGuardReadTransport(),
+            execution_integrity_backend=MockCurrentProductive29PIntegrityBackendV1(
+                origin_main=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+                head=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
+                drift="",
+            ),
+        )
     )
     assert result.post_outcome == "UNKNOWN_EXTERNAL_EFFECT_POSSIBLE"
