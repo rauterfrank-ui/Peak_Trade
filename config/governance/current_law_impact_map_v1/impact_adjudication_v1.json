@@ -1,22 +1,27 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "8c42c64c9b205b126471338ccb2da7c37059edfa",
+  "base_sha": "404142d3983263089fc8b8a3c6bc2ce0e5e2cddb",
   "head_sha": "PENDING_COMMIT",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
+    "docs/system_atlas/generated/COVERAGE_REPORT.md",
+    "docs/system_atlas/generated/ORPHAN_AND_WIRING_GAPS.md",
+    "docs/system_atlas/generated/SYSTEM_ATLAS.md",
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
-    "src/ops/full_core_live_path_composition_root_v1/full_core_exchange_reconciliation_v1.py",
-    "tests/ops/test_full_core_exchange_reconciliation_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/full_core_pre_post_capital_guard_join_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/full_core_recovery_guard_exposure_signals_v1.py",
+    "tests/ops/test_full_core_recovery_guard_exposure_signals_v1.py"
   ],
-  "changed_paths_sha256": "625e67a02fdeb7684014eebaf33804080f8da95b7f77ae25b39dc384924ae0b7",
+  "changed_paths_sha256": "29db0e7f70c436be93ac51f5fc434c656a74f6bb6b18322416f7074a59feaab4",
   "evidence_refs": [
-    "tests/ops/test_full_core_exchange_reconciliation_v1.py"
+    "tests/ops/test_full_core_recovery_guard_exposure_signals_v1.py",
+    "tests/ops/test_full_core_pre_post_capital_guard_join_v1.py"
   ],
-  "reason": "PR #7106 reconciliation position cross-check; diff-bound NO_LAW_IMPACT; no trading-policy change; AUTHORITY=NONE.",
+  "reason": "GHV CURRENT C1 recovery-guard wiring: atomic-state-derived exposure signals in PRE_EXTERNAL join; UNKNOWN/HALTED/submit-may-have-occurred remain fail-closed; TERMINAL_RECONCILED does not grant entry slot or POST; no CURRENT law semantic object or trading-policy change; diff-bound NO_LAW_IMPACT; AUTHORITY=NONE.",
   "verdict": "NO_LAW_IMPACT",
   "selector_used_as_law_impact_authority": false
 }

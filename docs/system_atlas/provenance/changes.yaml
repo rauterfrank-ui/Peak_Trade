@@ -997,3 +997,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_full_core_exchange_reconciliation_v1.py
   notes: 'PR #7106: FULL_CORE_EXCHANGE_RECONCILIATION_V1 position cross-check (conflicting position rows; order-attributed fills vs terminal no-exposure); netting-safe (no selected_side/net pos sign); Double Play/GGE/Dynamic Scope untouched; execution_authority_effect=NONE; CSIA/Atlas diff-bound NO_MAP_IMPACT; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:ghv_current_recovery_guard_c1_false_clear_remediation_v1
+  from: 404142d3983263089fc8b8a3c6bc2ce0e5e2cddb
+  to: PENDING_CHANGE
+  type: RECOVERY_SAFETY
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_full_core_recovery_guard_exposure_signals_v1.py
+  notes: 'GHV CURRENT C1: derive PRE_EXTERNAL capital-guard recovery signals from durable atomic one-shot state (fail-closed on SUBMIT_MAY_HAVE_OCCURRED/HALTED_UNRESOLVED/binding digest mismatch); compose with optional venue exposure evidence; TERMINAL_RECONCILED clears recovery halt only not entry slot; Double Play/GGE/Dynamic Scope untouched; no POST/durable apply; GHV_AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
