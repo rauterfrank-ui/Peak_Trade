@@ -3074,12 +3074,13 @@ entities:
   # atlas_entity_review: GHV pilot guarded Enter-POST admission stack (mandatory NEW-RISK admission, pilot capital-guard bind, one-shot post-admission seal, reduce-only provenance on send seam); fail-closed offline regression; standing Owner-GO/Live pins unchanged; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7102 SEC-001 secret-safe reconciliation error classification on optional DW wiring host fields only; send/POST/permit unchanged; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7101 default-off DW exchange reconciliation wiring after one-shot POST join; send seam unchanged; AUTHORITY=NONE; POST_COUNT=0.
+  # atlas_entity_review: GHV CURRENT DW PRODUCTIVE_READ_ONLY one-shot PASS offline reproof (fake transport, socket block, DISPOSITION_PASS); no src change; POST/durable apply unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: CONTRACT
   name: CURRENT productive actual venue Enter POST (one-shot) v1
   epistemic_class: CANONICAL_AUTHORITY
   current_canonical: true
   current_status: CURRENT_CANONICAL
-  modified_by: CHANGE:ghv_current_pilot_post_guarded_enter_admission_v1
+  modified_by: CHANGE:ghv_current_dw_productive_read_only_one_shot_pass_test_v1
   authority_sources:
   - docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1.md
   source_paths:

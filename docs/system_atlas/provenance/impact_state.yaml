@@ -1,19 +1,17 @@
 schema_version: system_atlas.v1
 pending_change: false
-introduced_by: CHANGE:ghv_current_recovery_guard_c1_false_clear_remediation_v1
-modified_by: CHANGE:ghv_current_recovery_guard_c1_false_clear_remediation_v1
+introduced_by: CHANGE:ghv_current_dw_productive_read_only_one_shot_pass_test_v1
+modified_by: CHANGE:ghv_current_dw_productive_read_only_one_shot_pass_test_v1
 superseded_by: null
-last_recorded_impact: UPDATED
+last_recorded_impact: NONE_WITH_PROOF
 note: >-
-  GHV CURRENT C1 recovery-guard false-clear remediation: atomic-state-derived
-  recovery exposure signals wired into full-core PRE_EXTERNAL capital guard join;
-  fail-closed on unknown submit and binding digest mismatch; no automatic entry
-  slot or POST authority; Double Play/GGE/Dynamic Scope unchanged;
-  execution_authority_effect=NONE; GHV_AUTHORITY=NONE; POST_COUNT=0;
-  ATLAS_AUTHORITY=NONE.
+  GHV CURRENT DW PRODUCTIVE_READ_ONLY one-shot PASS test closure on existing
+  default-off post-submit reconciliation wiring host; fake GET transport only;
+  no productive source or trading semantics change; POST and durable apply
+  remain unchanged; execution_authority_effect=NONE; GHV_AUTHORITY=NONE;
+  POST_COUNT=0; ATLAS_AUTHORITY=NONE.
 changed_entities:
-  - RUNTIME_COMPONENT:full_core_recovery_guard_exposure_signals_v1
-  - RUNTIME_COMPONENT:full_core_pre_post_capital_guard_join_v1
+  - CONTRACT:current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []
