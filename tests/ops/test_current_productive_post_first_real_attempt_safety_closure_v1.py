@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import contextlib
 import json
+import sys
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError
@@ -44,7 +46,10 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_unknown_post_attempt_read_only_reconciliation_v1 import (
+    CONFIRMED_ACCEPTED_WORKING,
+    CONFIRMED_REJECTED,
     STILL_UNKNOWN,
+    UnknownPostAttemptReadOnlyReconciliationResultV1,
     reconcile_unknown_post_attempt_read_only_v1,
 )
 from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
@@ -230,7 +235,302 @@ def test_reconciliation_empty_does_not_confirm_not_accepted() -> None:
     )
     assert recon.reconciliation_result == STILL_UNKNOWN
     assert recon.order_found == "false"
+    assert recon.technical_get_error_present == "false"
+    assert recon.technical_get_error_classes == ()
 
 
 def test_exact_order_lookup_path_allowed_on_read_transport() -> None:
     assert READ_ONLY_EXACT_ORDER_LOOKUP_PATH == "/api/v5/trade/order"
+
+
+class _ScenarioOrderReconTransport:
+    """Deterministic GET double for cross-surface reconciliation contract tests."""
+
+    def __init__(self, scenario: str, *, cl: str, inst: str) -> None:
+        self.scenario = scenario
+        self.cl = cl
+        self.inst = inst
+
+    def get(self, *, endpoint: str, auth_required: bool, pretrade_decision_id: str):
+        del auth_required, pretrade_decision_id
+        path = str(endpoint).split("?", 1)[0]
+
+        def _ok(payload: dict[str, Any]) -> FreshPretradeGetTransportResultV1:
+            return FreshPretradeGetTransportResultV1(
+                get_performed=True,
+                method="GET",
+                endpoint=endpoint,
+                http_status=200,
+                payload=payload,
+                auth_header_sent=True,
+                transport_class=TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+                venue_live_contact=True,
+                historical_reuse=False,
+                error_class="",
+                data_safety_source_kind="REAL",
+            )
+
+        def _fail(error_class: str) -> FreshPretradeGetTransportResultV1:
+            return FreshPretradeGetTransportResultV1(
+                get_performed=False,
+                method="GET",
+                endpoint=endpoint,
+                http_status=0,
+                payload=None,
+                auth_header_sent=False,
+                transport_class=TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
+                venue_live_contact=False,
+                historical_reuse=False,
+                error_class=error_class,
+                data_safety_source_kind="REAL",
+            )
+
+        if self.scenario == "CONTRADICTORY_PENDING_LIVE_EXACT_CANCELED":
+            if "orders-pending" in path:
+                return _ok(
+                    {
+                        "code": "0",
+                        "data": [
+                            {
+                                "clOrdId": self.cl,
+                                "instId": self.inst,
+                                "ordId": "ord-a",
+                                "state": "live",
+                                "sCode": "0",
+                            }
+                        ],
+                    }
+                )
+            if path == READ_ONLY_EXACT_ORDER_LOOKUP_PATH:
+                return _ok(
+                    {
+                        "code": "0",
+                        "data": [
+                            {
+                                "clOrdId": self.cl,
+                                "instId": self.inst,
+                                "ordId": "ord-b",
+                                "state": "canceled",
+                                "sCode": "51008",
+                            }
+                        ],
+                    }
+                )
+            return _ok({"code": "0", "data": []})
+
+        if self.scenario == "CONSISTENT_WORKING":
+            if "orders-pending" in path or path == READ_ONLY_EXACT_ORDER_LOOKUP_PATH:
+                return _ok(
+                    {
+                        "code": "0",
+                        "data": [
+                            {
+                                "clOrdId": self.cl,
+                                "instId": self.inst,
+                                "ordId": "ord-live-1",
+                                "state": "live",
+                                "sCode": "0",
+                            }
+                        ],
+                    }
+                )
+            return _ok({"code": "0", "data": []})
+
+        if self.scenario == "CONSISTENT_REJECTED":
+            if (
+                "orders-pending" in path
+                or "orders-history" in path
+                or path == READ_ONLY_EXACT_ORDER_LOOKUP_PATH
+            ):
+                return _ok(
+                    {
+                        "code": "0",
+                        "data": [
+                            {
+                                "clOrdId": self.cl,
+                                "instId": self.inst,
+                                "ordId": "ord-rej-1",
+                                "state": "canceled",
+                                "sCode": "51008",
+                            }
+                        ],
+                    }
+                )
+            return _ok({"code": "0", "data": []})
+
+        if self.scenario == "EMPTY_SUCCESS":
+            return _ok({"code": "0", "data": []})
+
+        if self.scenario == "ALL_TECHNICAL_ERROR":
+            return _fail("TRANSPORT_MISSING")
+
+        if self.scenario == "PARTIAL_TECHNICAL_WITH_PENDING_HIT":
+            if "orders-pending" in path:
+                return _ok(
+                    {
+                        "code": "0",
+                        "data": [
+                            {
+                                "clOrdId": self.cl,
+                                "instId": self.inst,
+                                "ordId": "ord-live-2",
+                                "state": "live",
+                                "sCode": "0",
+                            }
+                        ],
+                    }
+                )
+            if "orders-history" in path:
+                return _fail("TIMEOUT")
+            return _ok({"code": "0", "data": []})
+
+        if self.scenario == "MISMATCHED_INST_ID":
+            if "orders-pending" in path:
+                return _ok(
+                    {
+                        "code": "0",
+                        "data": [
+                            {
+                                "clOrdId": self.cl,
+                                "instId": "OTHER-USDT-SWAP",
+                                "ordId": "ord-x",
+                                "state": "live",
+                                "sCode": "0",
+                            }
+                        ],
+                    }
+                )
+            return _ok({"code": "0", "data": []})
+
+        raise AssertionError(f"UNKNOWN_SCENARIO:{self.scenario}")
+
+
+def _recon_with_scenario(scenario: str) -> UnknownPostAttemptReadOnlyReconciliationResultV1:
+    cl = "pt-scenario-clordid"
+    inst = "ADA-USDT-SWAP"
+    return reconcile_unknown_post_attempt_read_only_v1(
+        client_order_id=cl,
+        instrument_id=inst,
+        inst_type="SWAP",
+        read_only_get_transport=_ScenarioOrderReconTransport(scenario, cl=cl, inst=inst),
+        pretrade_decision_id="contract-test",
+    )
+
+
+def test_q2_contradictory_pending_and_exact_lookup_stays_unknown() -> None:
+    recon = _recon_with_scenario("CONTRADICTORY_PENDING_LIVE_EXACT_CANCELED")
+    assert recon.reconciliation_result == STILL_UNKNOWN
+    assert recon.external_effect_confirmed == "false"
+    assert recon.reconciliation_result != CONFIRMED_ACCEPTED_WORKING
+
+
+def test_q2_consistent_working_evidence_preserved() -> None:
+    recon = _recon_with_scenario("CONSISTENT_WORKING")
+    assert recon.reconciliation_result == CONFIRMED_ACCEPTED_WORKING
+    assert recon.external_effect_confirmed == "true"
+
+
+def test_q2_consistent_terminal_reject_preserved() -> None:
+    recon = _recon_with_scenario("CONSISTENT_REJECTED")
+    assert recon.reconciliation_result == CONFIRMED_REJECTED
+    assert recon.external_effect_confirmed == "false"
+
+
+def test_q3_empty_success_not_technical_error() -> None:
+    recon = _recon_with_scenario("EMPTY_SUCCESS")
+    assert recon.reconciliation_result == STILL_UNKNOWN
+    assert recon.technical_get_error_present == "false"
+    assert recon.technical_get_error_classes == ()
+
+
+def test_q3_technical_get_error_flagged() -> None:
+    recon = _recon_with_scenario("ALL_TECHNICAL_ERROR")
+    assert recon.reconciliation_result == STILL_UNKNOWN
+    assert recon.technical_get_error_present == "true"
+    assert "TRANSPORT_MISSING" in recon.technical_get_error_classes
+
+
+def test_q3_partial_technical_error_blocks_confirmation() -> None:
+    recon = _recon_with_scenario("PARTIAL_TECHNICAL_WITH_PENDING_HIT")
+    assert recon.reconciliation_result == STILL_UNKNOWN
+    assert recon.external_effect_confirmed == "false"
+    assert recon.technical_get_error_present == "true"
+    assert "TIMEOUT" in recon.technical_get_error_classes
+
+
+def test_q2_mismatched_inst_id_not_merged() -> None:
+    recon = _recon_with_scenario("MISMATCHED_INST_ID")
+    assert recon.order_found == "false"
+    assert recon.reconciliation_result == STILL_UNKNOWN
+
+
+def test_cli_output_includes_structured_technical_error_fields(
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    import scripts.ops.run_current_productive_unknown_post_attempt_read_only_reconciliation_v1 as cli_mod
+
+    sample = UnknownPostAttemptReadOnlyReconciliationResultV1(
+        client_order_id="cli-cl",
+        read_only_requests_performed=5,
+        order_found="false",
+        venue_order_id="",
+        order_state="",
+        reconciliation_result=STILL_UNKNOWN,
+        external_effect_confirmed="false",
+        correlated_fill_count=0,
+        exact_order_lookup_performed=True,
+        surfaces_summary=("orders_pending:http=0:rows=0:err=TIMEOUT",),
+        technical_get_error_present="true",
+        technical_get_error_classes=("TIMEOUT",),
+    )
+
+    class _FakeSession:
+        signing_handle = object()
+
+    @contextlib.contextmanager
+    def _fake_session(**_kwargs: Any):
+        yield _FakeSession()
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run",
+            "--client-order-id",
+            "cli-cl",
+            "--instrument-id",
+            "ADA-USDT-SWAP",
+        ],
+    )
+
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        current_productive_k1_opaque_signing_handle_from_macos_os_native_store_v1 as k1_mod,
+    )
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        current_productive_k1_runtime_binding_to_one_shot_actual_venue_post_pre_live_boundary_v1 as bind_mod,
+    )
+    from src.ops.full_core_live_path_composition_root_v1 import (
+        productive_read_only_get_transport_v1 as transport_mod,
+    )
+    from src.ops.governed_productive_account_equity_authority_producer_v1 import (
+        current_productive_unknown_post_attempt_read_only_reconciliation_v1 as recon_mod,
+    )
+
+    monkeypatch.setattr(
+        k1_mod, "open_current_productive_k1_opaque_signing_handle_session_v1", _fake_session
+    )
+    monkeypatch.setattr(
+        bind_mod, "resolve_macos_security_framework_k1_lookup_backend_v1", lambda **_k: object()
+    )
+    monkeypatch.setattr(
+        transport_mod, "FullCoreProductiveReadOnlyGetTransportV1", lambda **_k: object()
+    )
+    monkeypatch.setattr(
+        recon_mod, "reconcile_unknown_post_attempt_read_only_v1", lambda **_k: sample
+    )
+
+    assert cli_mod._main() == 0
+    payload = json.loads(capsys.readouterr().out)
+    assert payload["TECHNICAL_GET_ERROR_PRESENT"] == "true"
+    assert payload["TECHNICAL_GET_ERROR_CLASSES"] == ["TIMEOUT"]

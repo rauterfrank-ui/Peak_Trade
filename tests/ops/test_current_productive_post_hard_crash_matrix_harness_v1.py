@@ -209,7 +209,7 @@ def test_child_runner_is_test_only_entrypoint() -> None:
         ("EMPTY_ORDER_RESPONSE", STILL_UNKNOWN, "false"),
         ("BUSINESS_NEGATIVE", CONFIRMED_REJECTED, "false"),
         ("ORDER_WITHOUT_POSITION", CONFIRMED_ACCEPTED_WORKING, "true"),
-        ("CONTRADICTORY_EVIDENCE", CONFIRMED_ACCEPTED_WORKING, "true"),
+        ("CONTRADICTORY_EVIDENCE", STILL_UNKNOWN, "false"),
         ("POSITIVE_ORDER_EVIDENCE", CONFIRMED_ACCEPTED_WORKING, "true"),
     ],
 )

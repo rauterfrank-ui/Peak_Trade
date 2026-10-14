@@ -65,6 +65,8 @@ def _main() -> int:
                 "EXTERNAL_EFFECT_CONFIRMED": result.external_effect_confirmed,
                 "EXACT_ORDER_LOOKUP_PERFORMED": result.exact_order_lookup_performed,
                 "SURFACES": list(result.surfaces_summary),
+                "TECHNICAL_GET_ERROR_PRESENT": result.technical_get_error_present,
+                "TECHNICAL_GET_ERROR_CLASSES": list(result.technical_get_error_classes),
             },
             sort_keys=True,
         )
