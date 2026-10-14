@@ -51,6 +51,10 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_capital_guard_ato
     full_core_atomic_reserve_owner_go_authorization_v1,
     full_core_durable_entry_state_for_guard_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.full_core_recovery_guard_exposure_signals_v1 import (
+    compose_capital_guard_exposure_evidence_v1,
+    derive_full_core_recovery_guard_exposure_signals_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.ghv_full_core_capital_guard_observability_v1 import (
     STAGE_CURRENT_DECISION_BOUND,
     STAGE_FINAL_ENVELOPE_BOUND,
@@ -435,12 +439,16 @@ def run_full_core_pre_post_capital_guard_join_v1(
         imr_rate=None,
         imr_source_class=None,
     )
-    exposure = exposure_evidence or CanaryCapitalGuardExposureEvidenceV1(
-        open_order_count=0,
-        open_position_count=0,
-        unknown_submit_active=False,
-        recovery_state_clear=True,
-        transport_retry_count=0,
+    auth_binding = _authorization_binding_v1(binding, session_id=session_id)
+    state_dir = atomic_state_dir or default_full_core_atomic_state_dir_v1()
+    atomic_recovery_signals = derive_full_core_recovery_guard_exposure_signals_v1(
+        state_dir=state_dir,
+        consumption_key=auth_binding.consumption_key(),
+        expected_binding_digest=auth_binding.to_canary_atomic_binding_v1().binding_digest(),
+    )
+    exposure = compose_capital_guard_exposure_evidence_v1(
+        exposure_evidence=exposure_evidence,
+        atomic_signals=atomic_recovery_signals,
     )
     session = guard_session or build_default_guard_session_v1(
         session_id=session_id,
@@ -449,8 +457,6 @@ def run_full_core_pre_post_capital_guard_join_v1(
         owner_go=binding.owner_go,
         guard_config=adapt_full_core_guard_config_to_canary_v1(cfg),
     )
-    auth_binding = _authorization_binding_v1(binding, session_id=session_id)
-    state_dir = atomic_state_dir or default_full_core_atomic_state_dir_v1()
     durable_state = full_core_durable_entry_state_for_guard_v1(
         state_dir=state_dir,
         consumption_key=auth_binding.consumption_key(),
