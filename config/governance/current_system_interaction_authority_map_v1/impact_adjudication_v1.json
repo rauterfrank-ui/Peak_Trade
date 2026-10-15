@@ -10,10 +10,11 @@
     "docs/system_atlas/provenance/changes.yaml",
     "scripts/ops/run_current_full_system_offline_e2e_crash_worker_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_full_system_offline_e2e_integration_proof_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
     "tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py",
     "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py"
   ],
-  "changed_paths_sha256": "247652cf6a675ce5f4e51533059dfe0284ec9c28cad01ac3d7d964008c0c16e0",
+  "changed_paths_sha256": "833a3564a290d0de92f46055807eefdbec536dfd801c5f4fd321291c5d870438",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -22,6 +23,7 @@
     "docs/system_atlas/provenance/changes.yaml",
     "scripts/ops/run_current_full_system_offline_e2e_crash_worker_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_full_system_offline_e2e_integration_proof_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
     "tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py",
     "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py"
   ],
@@ -29,7 +31,7 @@
     "docs/ops/specs/CURRENT_FULL_SYSTEM_OFFLINE_E2E_INTEGRATION_PROOF_V1.md",
     "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py"
   ],
-  "reason": "PR #7110 offline full-system E2E integration proof harness: wires existing productive joins under fake transport and OFFLINE_INJECTED reconciliation only; RUNTIME_AUTHORIZATION_EFFECT=NONE; REAL_EXCHANGE_POST_COUNT=0; REAL_EXCHANGE_GET_COUNT=0; apply_durable_atomic_state=false on production chain; pilot capital guard skip requires enforce_pilot_capital_guard_before_enter_post_v1 authorization_binding provenance; no CSIA source_v1.json semantic edge change; diff-bound NO_MAP_IMPACT; AUTHORITY=NONE.",
+  "reason": "PR #7110 offline full-system E2E integration proof harness: wires existing productive joins under fake transport and OFFLINE_INJECTED reconciliation; production-chain GHV reverse join read from DW wiring result (observability only); RUNTIME_AUTHORIZATION_EFFECT=NONE; REAL_EXCHANGE_POST_COUNT=0; REAL_EXCHANGE_GET_COUNT=0; apply_durable_atomic_state=false; pilot capital guard skip requires enforce_pilot_capital_guard_before_enter_post_v1 provenance; no CSIA source_v1.json semantic edge change; diff-bound NO_MAP_IMPACT; AUTHORITY=NONE.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

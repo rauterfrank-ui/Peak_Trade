@@ -18,6 +18,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot
 )
 from src.ops.full_core_live_path_composition_root_v1.current_full_system_offline_e2e_integration_proof_v1 import (
     CRASH_POINT_ENV_VAR,
+    FakeExchangeTransportWitnessV1,
     OfflineE2eCrashPoint,
     default_fake_post_witness_path_v1,
     load_offline_e2e_worker_result_v1,
@@ -303,6 +304,8 @@ def test_full_production_chain_natural_enter_pre_external_fake_post_and_recon(
     assert chain.one_shot_join.http_post_attempts == 1
     assert chain.one_shot_join.durable_consumed is True
     assert chain.ghv_forward_join == "PASS"
+    assert chain.ghv_reverse_join == "PASS"
+    assert chain.ghv_reverse_join == chain.one_shot_join.dw_exchange_reconciliation_ghv_reverse_join
     assert chain.reconciliation_outcome in {
         OUTCOME_CONFIRMED_OPEN,
         OUTCOME_CONFIRMED_FILLED,
@@ -380,6 +383,17 @@ def test_negative_permit_reuse_fail_closed(tmp_path: Path) -> None:
     witness = default_fake_post_witness_path_v1(state_root)
     assert witness.is_file()
     assert int(json.loads(witness.read_text())["post_attempt_count"]) == 1
+
+
+def test_fake_exchange_transport_witness_is_mutable_and_persists_attempts(
+    tmp_path: Path,
+) -> None:
+    witness_path = tmp_path / "witness.json"
+    witness = FakeExchangeTransportWitnessV1(witness_path=witness_path)
+    witness.record_post_attempt_v1()
+    assert witness.post_attempt_count == 1
+    loaded = FakeExchangeTransportWitnessV1.load_v1(witness_path)
+    assert loaded.post_attempt_count == 1
 
 
 def _run_crash_worker_subprocess(state_root: Path, crash: OfflineE2eCrashPoint) -> int:
@@ -488,3 +502,30 @@ def test_crash_before_durable_consume_allows_single_post_after_restart(tmp_path:
     assert chain.fake_post_witness_count == 1
     worker = load_offline_e2e_worker_result_v1(state_root=state_root)
     assert worker.get("status") in {None, "PASS", ""} or worker == {}
+
+
+def test_crash_before_recon_complete_exits_94(tmp_path: Path) -> None:
+    bound, gap, origin_sha, _ = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
+    closure = gap.closure
+    state_root = tmp_path / "crash_before_recon"
+    pilot_auth = prepare_offline_owner_authorization_for_one_shot_v1(
+        state_root=state_root,
+        closure=closure,
+        origin_main_sha=origin_sha,
+        bound=bound,
+    )
+    fixture = offline_recon_fixture_for_envelope_v1(closure)
+    persist_offline_e2e_worker_input_v1(
+        state_root=state_root,
+        closure=closure,
+        bound_instrument=bound,
+        origin_main_sha=origin_sha,
+        read_only_get_transport=None,
+        offline_recon_fixture=fixture,
+        k1_backend=fake_k1_backend_v1(),
+        pilot_authorization_binding=pilot_auth,
+    )
+    rc = _run_crash_worker_subprocess(state_root, OfflineE2eCrashPoint.BEFORE_RECON_COMPLETE)
+    assert rc == 94
+    worker = load_offline_e2e_worker_result_v1(state_root=state_root)
+    assert worker.get("status") != "PASS"

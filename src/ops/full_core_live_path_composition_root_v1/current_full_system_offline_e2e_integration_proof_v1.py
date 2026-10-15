@@ -170,7 +170,10 @@ class CurrentFullSystemOfflineE2eIntegrationProofError(RuntimeError):
 
 @dataclass
 class FakeExchangeTransportWitnessV1:
-    """Durable POST attempt counter for crash/restart proofs."""
+    """Durable POST attempt counter for crash/restart proofs.
+
+    Intentionally mutable (not ``frozen``) so ``record_post_attempt_v1`` can persist counts.
+    """
 
     witness_path: Path
     post_attempt_count: int = 0
@@ -490,6 +493,8 @@ def run_current_full_system_offline_e2e_integration_proof_v1(
     ghv_r = lifecycle.ghv_reverse_join if lifecycle is not None else "SKIPPED"
     if one_shot is not None and one_shot.dw_exchange_reconciliation_ghv_forward_join:
         ghv_f = one_shot.dw_exchange_reconciliation_ghv_forward_join
+    if one_shot is not None and one_shot.dw_exchange_reconciliation_ghv_reverse_join:
+        ghv_r = one_shot.dw_exchange_reconciliation_ghv_reverse_join
 
     counts = standing_real_exchange_counts_v1()
     if witness_path.is_file():
@@ -753,7 +758,6 @@ class ProductionOfflineE2eChainResultV1:
 
 def _apply_crash_injection_v1(crash_point: OfflineE2eCrashPoint) -> None:
     import os
-    import sys
 
     if crash_point is OfflineE2eCrashPoint.NONE:
         return
@@ -798,12 +802,16 @@ def _apply_crash_injection_v1(crash_point: OfflineE2eCrashPoint) -> None:
         return
 
     if crash_point is OfflineE2eCrashPoint.BEFORE_RECON_COMPLETE:
-        orig_orch = orch_mod.orchestrate_post_submit_lifecycle_reconciliation_v1
+        from src.ops.full_core_live_path_composition_root_v1 import (
+            current_productive_dw_exchange_reconciliation_wiring_v1 as dw_mod,
+        )
 
         def _crash_before_recon(**kwargs: Any) -> Any:
+            del kwargs
             os._exit(94)
 
         orch_mod.orchestrate_post_submit_lifecycle_reconciliation_v1 = _crash_before_recon
+        dw_mod.orchestrate_post_submit_lifecycle_reconciliation_v1 = _crash_before_recon
 
 
 PILOT_CAPITAL_GUARD_PREVALIDATED_PROVENANCE_LABEL_V1 = (
@@ -970,7 +978,7 @@ def run_production_pre_external_to_fake_post_chain_v1(
         fake_post_witness_count=int(witness.post_attempt_count),
         standing_real_exchange_counts=counts,
         ghv_forward_join=str(one_shot.dw_exchange_reconciliation_ghv_forward_join or ""),
-        ghv_reverse_join="PASS",
+        ghv_reverse_join=str(one_shot.dw_exchange_reconciliation_ghv_reverse_join or "SKIPPED"),
         reconciliation_outcome=str(one_shot.dw_exchange_reconciliation_outcome or ""),
         dw_disposition=str(one_shot.dw_exchange_reconciliation_disposition or ""),
     )
