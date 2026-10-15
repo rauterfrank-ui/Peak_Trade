@@ -535,7 +535,11 @@ def run_forensic_crosswalk_v1(
             counts["CURRENT_EDGES_INCLUDED"] += 1
 
     census_edges_included = 0
-    obj_ids = {str(o["object_id"]) for o in sources.census.get("census_objects", [])}
+    included_census_native_ids: set[str] = {
+        str(n.get("source_native_id"))
+        for n in result.nodes
+        if n.get("source_system") == "CURRENT_SYSTEM_CENSUS" and n.get("source_native_id")
+    }
     for edge in sources.census.get("semantic_edges", []):
         edge_verdict = classify_census_edge(
             edge,
@@ -572,19 +576,47 @@ def run_forensic_crosswalk_v1(
                     "source_system": "CURRENT_SYSTEM_CENSUS",
                     "reason": note,
                     "current_relevance": edge_verdict.to_record(),
+                    "source_native_id": edge.get("source_object"),
+                    "target_native_id": edge.get("target_object"),
                 }
             )
             continue
-        for side in ("source_object", "target_object"):
-            ref = edge.get(side)
-            if ref and ref.startswith("SO-") and ref not in obj_ids:
-                result.unresolved_edges.append(
-                    {
-                        "edge_id": edge.get("edge_id"),
-                        "reason": f"unresolved_{side}",
-                        "ref": ref,
-                    }
-                )
+        src_ref = edge.get("source_object")
+        tgt_ref = edge.get("target_object")
+        src_ok = bool(src_ref) and str(src_ref) in included_census_native_ids
+        tgt_ok = bool(tgt_ref) and str(tgt_ref) in included_census_native_ids
+        if not src_ok or not tgt_ok:
+            missing: list[str] = []
+            if not src_ok:
+                missing.append(f"unresolved_source_object:{src_ref}")
+            if not tgt_ok:
+                missing.append(f"unresolved_target_object:{tgt_ref}")
+            result.unresolved_edges.append(
+                {
+                    "edge_id": edge.get("edge_id"),
+                    "source_system": "CURRENT_SYSTEM_CENSUS",
+                    "reason": "unresolved_census_edge_endpoints",
+                    "missing_endpoints": missing,
+                    "source_native_id": src_ref,
+                    "target_native_id": tgt_ref,
+                    "current_relevance": edge_verdict.to_record(),
+                    "provenance": _provenance(
+                        tool="ghv_forensic_whole_system_crosswalk_v1",
+                        artifact="config/governance/current_system_census_graph_v1/source_v1.json",
+                        revision=census_revision,
+                        code_revision=code_rev,
+                        native_id=str(edge.get("edge_id")),
+                        canonical_id=str(edge.get("edge_id")),
+                        evidence_type="CONTRACT_EVIDENCE",
+                        activation_conditions=(
+                            (edge_verdict.activation_condition,)
+                            if edge_verdict.activation_condition
+                            else ()
+                        ),
+                    ),
+                }
+            )
+            continue
         flags = edge_semantics_flags(edge_type)
         act = edge_verdict.activation_condition
         result.edges.append(

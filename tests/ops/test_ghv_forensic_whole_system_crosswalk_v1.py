@@ -1017,3 +1017,247 @@ def test_code_snapshot_from_repo() -> None:
         atlas_meta=sources.atlas_meta,
     )
     assert len(snap.git_head) == 40
+
+
+def _census_endpoint_index(result) -> set[tuple[str, str]]:
+    return {
+        (str(n["source_system"]), str(n["source_native_id"]))
+        for n in result.nodes
+        if n.get("source_system") and n.get("source_native_id")
+    }
+
+
+def _assert_census_edge_endpoint_integrity(result) -> None:
+    idx = _census_endpoint_index(result)
+    for edge in result.edges:
+        if edge.get("source_system") != "CURRENT_SYSTEM_CENSUS":
+            continue
+        src = (str(edge["source_system"]), str(edge["source_native_id"]))
+        tgt = (str(edge["source_system"]), str(edge["target_native_id"]))
+        assert src in idx, f"missing source endpoint for {edge.get('edge_id')}"
+        assert tgt in idx, f"missing target endpoint for {edge.get('edge_id')}"
+
+
+def _run_fixture_crosswalk(root: Path) -> object:
+    _git_init_commit(root)
+    return run_forensic_crosswalk_v1(
+        repo_root=root,
+        output_dir=root / "out",
+        rules_path=RULES,
+        include_atlas=False,
+        **_RELAX,
+    )
+
+
+def test_census_edge_both_endpoints_resolve_included() -> None:
+    root = Path("/tmp/ghv_wp1_edge_integrity_both_ok")
+    _write_fixture_tree(root, census=_minimal_census())
+    result = _run_fixture_crosswalk(root)
+    assert any(e.get("edge_id") == "census:E1" for e in result.edges)
+    _assert_census_edge_endpoint_integrity(result)
+
+
+def test_census_edge_missing_so_target_unresolved_not_included(tmp_path: Path) -> None:
+    census = _minimal_census()
+    census["semantic_edges"].append(
+        {
+            "edge_id": "missing_so_target",
+            "source_object": "SO-A",
+            "target_object": "SO-MISSING-TARGET",
+            "flow_type": "DATA_FLOW",
+            "epistemic_status": "PROVEN_CURRENT",
+            "contract_or_payload": "p.v1",
+        }
+    )
+    root = tmp_path / "missing_so_target"
+    _write_fixture_tree(root, census=census)
+    result = _run_fixture_crosswalk(root)
+    assert not any(e.get("edge_id") == "census:missing_so_target" for e in result.edges)
+    assert any(
+        e.get("id") == "missing_so_target" and e.get("relevance_state") == "UNKNOWN"
+        for e in result.excluded
+        if e.get("kind") == "census_edge"
+    )
+
+
+def test_census_edge_missing_so_source_unresolved(tmp_path: Path) -> None:
+    census = _minimal_census()
+    census["semantic_edges"].append(
+        {
+            "edge_id": "missing_so_source",
+            "source_object": "SO-MISSING-SOURCE",
+            "target_object": "SO-B",
+            "flow_type": "DATA_FLOW",
+            "epistemic_status": "PROVEN_CURRENT",
+            "contract_or_payload": "p.v1",
+        }
+    )
+    root = tmp_path / "missing_so_source"
+    _write_fixture_tree(root, census=census)
+    result = _run_fixture_crosswalk(root)
+    assert not any(e.get("edge_id") == "census:missing_so_source" for e in result.edges)
+    assert any(
+        e.get("id") == "missing_so_source" and e.get("relevance_state") == "UNKNOWN"
+        for e in result.excluded
+        if e.get("kind") == "census_edge"
+    )
+
+
+def test_census_edge_non_so_alias_target_unresolved(tmp_path: Path) -> None:
+    census = _minimal_census()
+    census["census_objects"].append(
+        {
+            "object_id": "SO-OPS-PKG:peak_trade_operator_profile_explainability_v1",
+            "current_status": "PROVEN_CURRENT",
+            "epistemic_status": "PROVEN_CURRENT",
+            "primary_class": "SHARED_INFRASTRUCTURE",
+            "paths": ["src/ops/peak_trade_operator_profile_explainability_v1/**"],
+        }
+    )
+    census["semantic_edges"].append(
+        {
+            "edge_id": "operator_profile_b11_to_closure_b12",
+            "source_object": "SO-OPS-PKG:peak_trade_operator_profile_explainability_v1",
+            "target_object": "ranking_selection_profile_closure_b12",
+            "flow_type": "EVIDENCE_FLOW",
+            "epistemic_status": "PROVEN_CURRENT",
+        }
+    )
+    root = tmp_path / "alias_target"
+    _write_fixture_tree(root, census=census)
+    result = _run_fixture_crosswalk(root)
+    assert not any(
+        e.get("edge_id") == "census:operator_profile_b11_to_closure_b12" for e in result.edges
+    )
+    unresolved = next(
+        u
+        for u in result.unresolved_edges
+        if u.get("edge_id") == "operator_profile_b11_to_closure_b12"
+    )
+    assert unresolved.get("target_native_id") == "ranking_selection_profile_closure_b12"
+    assert unresolved.get("provenance")
+
+
+def test_census_edge_non_so_alias_source_unresolved(tmp_path: Path) -> None:
+    census = _minimal_census()
+    census["semantic_edges"].append(
+        {
+            "edge_id": "alias_source",
+            "source_object": "g2_runtime_primary_offline_projection",
+            "target_object": "SO-B",
+            "flow_type": "EVIDENCE_FLOW",
+            "epistemic_status": "PROVEN_CURRENT",
+        }
+    )
+    root = tmp_path / "alias_source"
+    _write_fixture_tree(root, census=census)
+    result = _run_fixture_crosswalk(root)
+    assert not any(e.get("edge_id") == "census:alias_source" for e in result.edges)
+    assert any(u.get("edge_id") == "alias_source" for u in result.unresolved_edges)
+
+
+def test_census_edge_both_alias_endpoints_unresolved_single_report(tmp_path: Path) -> None:
+    census = _minimal_census()
+    census["semantic_edges"].append(
+        {
+            "edge_id": "both_alias",
+            "source_object": "alias_src",
+            "target_object": "alias_tgt",
+            "flow_type": "DATA_FLOW",
+            "epistemic_status": "PROVEN_CURRENT",
+            "contract_or_payload": "p.v1",
+        }
+    )
+    root = tmp_path / "both_alias"
+    _write_fixture_tree(root, census=census)
+    result = _run_fixture_crosswalk(root)
+    matches = [u for u in result.unresolved_edges if u.get("edge_id") == "both_alias"]
+    assert len(matches) == 1
+    assert len(matches[0].get("missing_endpoints") or []) == 2
+    assert not any(e.get("edge_id") == "census:both_alias" for e in result.edges)
+
+
+def test_census_edge_non_current_endpoint_not_included(tmp_path: Path) -> None:
+    census = _minimal_census()
+    census["census_objects"].append(
+        {
+            "object_id": "SO-NC",
+            "current_status": "PROVEN_CURRENT",
+            "epistemic_status": "HISTORICAL",
+            "primary_class": "SHARED_INFRASTRUCTURE",
+            "paths": [],
+        }
+    )
+    census["semantic_edges"].append(
+        {
+            "edge_id": "to_non_current",
+            "source_object": "SO-A",
+            "target_object": "SO-NC",
+            "flow_type": "DATA_FLOW",
+            "epistemic_status": "PROVEN_CURRENT",
+            "contract_or_payload": "p.v1",
+        }
+    )
+    root = tmp_path / "non_current_endpoint"
+    _write_fixture_tree(root, census=census)
+    result = _run_fixture_crosswalk(root)
+    assert not any(e.get("edge_id") == "census:to_non_current" for e in result.edges)
+    assert any(
+        e.get("id") == "to_non_current" and e.get("relevance_state") == "NON_CURRENT"
+        for e in result.excluded
+        if e.get("kind") == "census_edge"
+    )
+
+
+def test_census_unresolved_retains_native_ids_and_not_double_counted(tmp_path: Path) -> None:
+    census = _minimal_census()
+    census["semantic_edges"].append(
+        {
+            "edge_id": "dup_report",
+            "source_object": "missing_a",
+            "target_object": "missing_b",
+            "flow_type": "EVIDENCE_FLOW",
+            "epistemic_status": "PROVEN_CURRENT",
+        }
+    )
+    root = tmp_path / "dup_report"
+    _write_fixture_tree(root, census=census)
+    result = _run_fixture_crosswalk(root)
+    assert result.coverage["CURRENT_EDGES_INCLUDED"] == len(
+        [e for e in result.edges if e.get("source_system") == "CURRENT_SYSTEM_CENSUS"]
+    )
+    _assert_census_edge_endpoint_integrity(result)
+
+
+def test_full_repo_navigation_endpoint_integrity_smoke() -> None:
+    out = Path("/tmp/ghv_wp1_edge_integrity_full_repo_nav")
+    if out.exists():
+        import shutil
+
+        shutil.rmtree(out)
+    result = run_forensic_crosswalk_v1(
+        repo_root=REPO_ROOT,
+        output_dir=out,
+        rules_path=RULES,
+        include_atlas=True,
+        **_REPO_NAV,
+    )
+    assert result.ok
+    _assert_census_edge_endpoint_integrity(result)
+    assert result.coverage["GRAPH_AUTHORITY"] == "NAVIGATION_ONLY"
+    assert result.coverage["CURRENT_GRAPH_VERIFIED"] is False
+
+
+def test_strict_current_still_fails_on_snapshot_drift(tmp_path: Path) -> None:
+    root = tmp_path / "strict_drift"
+    census = _minimal_census()
+    _write_fixture_tree(root, census=census)
+    _git_init_commit(root)
+    result = run_forensic_crosswalk_v1(
+        repo_root=root,
+        output_dir=root / "out",
+        rules_path=RULES,
+        graph_mode=GraphMode.STRICT_CURRENT,
+        strict_repo_invariants=False,
+    )
+    assert result.coverage["CURRENT_GRAPH_VERIFIED"] is False

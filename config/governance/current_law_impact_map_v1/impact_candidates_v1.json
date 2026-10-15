@@ -114,6 +114,7 @@
     "scripts/obs/ai_live_exporter.py",
     "scripts/ops/complete_okx_inst_eth_usdt_perp_v3_raw_staging_funding_archive_v1.py",
     "scripts/ops/current_system_interaction_authority_map_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_causal_integration_v1/",
     "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/",
     "scripts/ops/ingest_okx_futures_public_market_data_canonical_dataset_staging_v1.py",
     "scripts/ops/materialize_ghv_pre_external_observability_from_evidence_v1.py",
