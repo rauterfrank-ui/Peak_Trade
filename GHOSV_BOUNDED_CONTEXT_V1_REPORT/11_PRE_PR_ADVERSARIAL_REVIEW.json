@@ -1,0 +1,14 @@
+{
+  "PRE_PR_ADVERSARIAL_CONTRACT_REVIEW_V1": "PASS",
+  "classification": "INFERENCE",
+  "findings": [],
+  "checks": [
+    "Safety adapter disabled by default",
+    "No kill switch file mutation in code paths",
+    "No external POST",
+    "EXTERNAL_EFFECT_AUTHORIZED unchanged",
+    "Unknown never GREEN in tests",
+    "Duplicate incident replay stable dedupe_keys"
+  ],
+  "note": "Local offline review; GitHub CI not executed in this WP"
+}

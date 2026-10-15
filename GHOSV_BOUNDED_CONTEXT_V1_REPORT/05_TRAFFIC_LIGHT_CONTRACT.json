@@ -1,0 +1,10 @@
+{
+  "GREEN": "All evaluated checks PASS with COMPLETE evidence",
+  "YELLOW": "Missing/unknown/partial evidence; partial fills; out-of-order alone",
+  "RED": "Belegter critical contract FAIL only",
+  "rules": [
+    "UNKNOWN never GREEN",
+    "Timeout alone does not escalate YELLOW to RED",
+    "GHOSV has no release authority"
+  ]
+}

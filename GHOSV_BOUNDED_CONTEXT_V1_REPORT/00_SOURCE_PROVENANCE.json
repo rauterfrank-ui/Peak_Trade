@@ -1,0 +1,10 @@
+{
+  "classification": "FACT",
+  "expected_baseline_sha": "659d8280a6f760c5090e71a1c7f9416f73401d9e",
+  "actual_source_sha": "659d8280a6f760c5090e71a1c7f9416f73401d9e",
+  "implementation_branch": "feat/ghosv-bounded-context-v1",
+  "worktree_path": "/private/tmp/peak_trade_ghosv_bounded_context_v1_wt",
+  "primary_worktree_modified": false,
+  "frozen_c1_worktree_modified": false,
+  "ghv_proof_eligibility": "STRICT_GHV_PROOF_ELIGIBILITY=false"
+}

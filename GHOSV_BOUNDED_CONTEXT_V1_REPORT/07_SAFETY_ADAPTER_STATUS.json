@@ -1,0 +1,8 @@
+{
+  "SAFETY_ESCALATION_ENABLED": false,
+  "ADAPTER_MODE": "DISABLED",
+  "PRODUCTIVE_KILL_SWITCH_MUTATIONS": 0,
+  "KillSwitch.trigger_invoked": false,
+  "state_json_writes": false,
+  "STATUS": "PROPOSED_ONLY handoff documented; CURRENT_CONNECTED=false for productive ingest"
+}

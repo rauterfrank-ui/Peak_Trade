@@ -1,0 +1,17 @@
+{
+  "read_only": true,
+  "states_distinct": [
+    "INCIDENT_CREATED",
+    "INCIDENT_DELIVERY_ATTEMPTED",
+    "INCIDENT_ACCEPTED",
+    "SAFETY_STATE_PERSISTED",
+    "ADMISSION_DENIED",
+    "VENUE_CANCEL_REQUESTED",
+    "FILL_ALREADY_EXECUTED",
+    "UNKNOWN"
+  ],
+  "non_equations": [
+    "INCIDENT_CREATED != TRADE_STOPPED",
+    "ADMISSION_DENIED != OPEN_ORDER_CANCELLED"
+  ]
+}

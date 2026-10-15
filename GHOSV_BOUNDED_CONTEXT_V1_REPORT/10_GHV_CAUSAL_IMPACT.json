@@ -1,0 +1,15 @@
+{
+  "test_classification": "GHV_MODEL_ONLY",
+  "forward": {
+    "GHOSV_to_Master_V2": "CURRENT_MISSING",
+    "GHOSV_to_Double_Play": "CURRENT_MISSING",
+    "GHOSV_to_FILEGATE": "PROPOSED_ONLY via disabled S06",
+    "GHOSV_to_Execution_Admission": "PROPOSED_ONLY",
+    "GHOSV_to_POST_Boundary": "CURRENT_MISSING"
+  },
+  "reverse": {
+    "protected_trading_contract_mutations": 0,
+    "EXTERNAL_EFFECT_AUTHORIZED": false
+  },
+  "STRICT_GHV_PROOF_ELIGIBILITY": false
+}
