@@ -1,0 +1,11 @@
+{
+  "capability": "OWNER_SCOPED_GET_BUDGET_ENFORCEMENT_V1",
+  "causal_claim": "Cumulative Owner GET budget enforced across processes via durable grant ledger",
+  "ghv_authority": "NONE",
+  "origin_main_sha_at_reproof": "4b222dc532bb7229a3d13db8f3b159e97744cbf9",
+  "root_cause_closed": "PER_PROCESS_REQUEST_COUNTER_ONLY",
+  "enforcement_surface": "FullCoreProductiveReadOnlyGetTransportV1.get pre-send reservation",
+  "offline_reproof": "tests/ops/test_owner_scoped_get_budget_enforcement_v1.py",
+  "live_network": false,
+  "post_authorized": false
+}
