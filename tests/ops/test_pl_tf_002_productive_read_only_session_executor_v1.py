@@ -153,12 +153,13 @@ def test_transport_post_and_treasury_forbidden() -> None:
     )
 
     transport = FullCoreProductiveReadOnlyGetTransportV1(handle=None)
-    with pytest.raises(FullCoreProductiveReadOnlyGetError, match="FORBIDDEN_ENDPOINT"):
-        transport.get(
-            endpoint="/api/v5/trade/order",
-            auth_required=False,
-            pretrade_decision_id="pl-tf-002-test",
-        )
+    # PL-TF-002 session surface forbids exact-order lookup; transport may allow GET
+    # on /trade/order for separately scoped reconciliation consumers only.
+    with pytest.raises(
+        PlTf002ProductiveReadOnlySessionError,
+        match="TREASURY_OR_MUTATION_ENDPOINT_FORBIDDEN",
+    ):
+        _assert_get_only_surface_v1(endpoint_path="/api/v5/trade/order", method="GET")
     with pytest.raises(FullCoreProductiveReadOnlyGetError, match="FORBIDDEN_ENDPOINT"):
         transport.get(
             endpoint="/api/v5/asset/withdrawal",
