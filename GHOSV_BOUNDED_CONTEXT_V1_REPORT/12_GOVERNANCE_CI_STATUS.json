@@ -1,0 +1,8 @@
+{
+  "local_pytest": "PASS",
+  "local_ruff_check": "PASS",
+  "local_ruff_format": "PASS",
+  "github_ci": "NOT_RUN",
+  "PR_STATUS": "NOT_OPENED",
+  "OWNER_MERGE_GO": false
+}

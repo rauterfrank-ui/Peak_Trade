@@ -1,0 +1,18 @@
+{
+  "schema": "ghosv_critical_incident.v1",
+  "required_fields": [
+    "incident_id",
+    "incident_type",
+    "severity",
+    "trade_id",
+    "instrument_id",
+    "order_id",
+    "evidence_refs",
+    "detected_at",
+    "source_provenance",
+    "semantic_reason",
+    "correlation_status"
+  ],
+  "dedupe": "logical (incident_type, trade_id, order_id) + stable incident_id hash",
+  "trading_side_effects": false
+}

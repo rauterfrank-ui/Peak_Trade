@@ -1,0 +1,58 @@
+{
+  "classification": "FACT",
+  "pin_sha": "659d8280a6f760c5090e71a1c7f9416f73401d9e",
+  "sources": [
+    {
+      "domain": "ORDER_ENVELOPE",
+      "SOURCE_MODULE": "full_core_live_path_composition_root_v1.final_order_envelope_v1",
+      "SOURCE_CONTRACT": "full_core_final_order_envelope.v1",
+      "IDENTITY_FIELDS": ["envelope_id", "client_order_id", "instrument_id", "venue_plan_clordid"],
+      "TIMESTAMP_SEMANTICS": "creation_epoch",
+      "DURABILITY": "offline envelope binding; productive persistence via governed cycle evidence",
+      "RESTART_BEHAVIOR": "UNKNOWN",
+      "MISSING_DATA_BEHAVIOR": "GHOSV YELLOW",
+      "PRODUCER_PROVEN": true,
+      "CONSUMER_PROVEN": "GHOSV S01 loader load_final_order_envelope_evidence_v1",
+      "AUTHORITY": "canonical_order_intent / full-core envelope; GHOSV AUTHORITY=NONE"
+    },
+    {
+      "domain": "RECONCILIATION_GATE",
+      "SOURCE_MODULE": "ops.productive_reconciliation_runtime_binding_v1",
+      "SOURCE_CONTRACT": "productive_reconciliation_runtime_binding.v1",
+      "IDENTITY_FIELDS": ["session_id", "bound_instrument_id", "evidence_digest", "classification"],
+      "TIMESTAMP_SEMANTICS": "wall_time_unix / event_time_unix",
+      "DURABILITY": "persisted productive_reconciliation_evidence_v1.json",
+      "RESTART_BEHAVIOR": "startup gate re-read",
+      "MISSING_DATA_BEHAVIOR": "GHOSV YELLOW",
+      "PRODUCER_PROVEN": true,
+      "CONSUMER_PROVEN": "GHOSV S01 load_productive_reconciliation_evidence_file_v1",
+      "AUTHORITY": "Cap 1.1 reconciliation owner; GHOSV read-only"
+    },
+    {
+      "domain": "POST_SUBMIT_RECON",
+      "SOURCE_MODULE": "full_core_post_submit_exchange_reconciliation_lifecycle_join_v1",
+      "SOURCE_CONTRACT": "FULL_CORE_POST_SUBMIT_EXCHANGE_RECONCILIATION_LIFECYCLE_JOIN_V1",
+      "IDENTITY_FIELDS": ["client_order_id", "exchange_order_id", "local_submit_outcome"],
+      "TIMESTAMP_SEMANTICS": "join-stage timestamps in GHV bundles",
+      "DURABILITY": "offline/injected OKX only at pin; PRODUCTION_PROVIDER_WIRING=NOT_AUTHORIZED",
+      "RESTART_BEHAVIOR": "UNKNOWN",
+      "MISSING_DATA_BEHAVIOR": "MISSING_EVIDENCE_CONTRACT for productive POST path",
+      "PRODUCER_PROVEN": true,
+      "CONSUMER_PROVEN": false,
+      "AUTHORITY": "full-core lifecycle join; not wired into GHOSV ingest v1"
+    },
+    {
+      "domain": "PRE_EXTERNAL_REPORT",
+      "SOURCE_MODULE": "ghv_current_bounded_natural_evidence_forensic_adapter_v1",
+      "SOURCE_CONTRACT": "ghv_current_bounded_natural_evidence_combined_report.v1",
+      "IDENTITY_FIELDS": ["cycle_index", "s5_disposition"],
+      "PRODUCER_PROVEN": true,
+      "CONSUMER_PROVEN": "optional manual ingest kind PRE_EXTERNAL_REPORT",
+      "AUTHORITY": "GHV_AUTHORITY=NONE"
+    }
+  ],
+  "MISSING_EVIDENCE_CONTRACT": [
+    "Productive live ORDER_ACK stream without section_11_14 ladder activation",
+    "Automated GHOSV ingest from runtime flight recorder (no single CURRENT owner at pin)"
+  ]
+}
