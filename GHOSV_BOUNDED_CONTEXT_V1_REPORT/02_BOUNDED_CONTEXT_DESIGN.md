@@ -1,6 +1,6 @@
 # GHOSV Bounded Context V1
 
-Package: `src/ops/ghosv_bounded_context_v1`
+Package: `src/ops/ghosv_bounded_context_v1/pipeline_v1.py`
 
 | Slice | Module | Role |
 | --- | --- | --- |
