@@ -32,6 +32,11 @@ from src.ops.productive_reconciliation_runtime_binding_v1.persistence_v1 import 
 
 GUARD_CONTRACT = "ghosv_execution_offline_consistency_guard.v1"
 
+ENTRY_STATE_SNAPSHOT_FILENAME = "continuous_run_entry_state_snapshot_v1.json"
+S5_CYCLE_AUTHORIZATION_FILENAME = "s5_cycle_authorization_v1.json"
+PRE_EXTERNAL_REPORT_FILENAME = "PRE_EXTERNAL_CONVERGENCE_REPORT.json"
+_MAX_REPOSITORY_WALK_DEPTH = 64
+
 MAX_INPUT_FILES = 12
 MAX_FILE_BYTES = 8 * 1024 * 1024
 MAX_TOTAL_INPUT_BYTES = 24 * 1024 * 1024
@@ -50,6 +55,87 @@ def _resolved_path_is_under(*, child: Path, parent: Path) -> bool:
     except (ValueError, OSError):
         return False
     return True
+
+
+def _raw_path_has_traversal(raw: str) -> bool:
+    normalized = raw.replace("\\", "/").strip()
+    if not normalized:
+        return False
+    return normalized.startswith("../") or "/../" in f"/{normalized}/"
+
+
+def discover_repository_root_from_paths_v1(
+    *anchor_paths: Path | None,
+) -> Path | None:
+    """Deterministic repository root from evidence paths (not process CWD)."""
+    for raw in anchor_paths:
+        if raw is None:
+            continue
+        path = Path(raw).expanduser()
+        try:
+            resolved = path.resolve()
+        except OSError:
+            continue
+        start = resolved.parent if resolved.is_file() else resolved
+        cur = start
+        for _ in range(_MAX_REPOSITORY_WALK_DEPTH):
+            if (cur / ".git").exists():
+                try:
+                    return cur.resolve()
+                except OSError:
+                    return None
+            parent = cur.parent
+            if parent == cur:
+                break
+            cur = parent
+    return None
+
+
+def resolve_persisted_evidence_root_v1(
+    *,
+    evidence_root_raw: str,
+    repository_root: Path | None,
+) -> tuple[Path | None, tuple[str, ...]]:
+    """Resolve PRE_EXTERNAL EVIDENCE_ROOT without CWD-dependent relative paths."""
+    raw = str(evidence_root_raw or "").strip()
+    if not raw:
+        return None, ("EVIDENCE_ROOT_MISSING",)
+    if _raw_path_has_traversal(raw):
+        return None, ("EVIDENCE_ROOT_TRAVERSAL_REJECTED",)
+
+    candidate = Path(raw)
+    try:
+        if candidate.is_absolute():
+            resolved = candidate.resolve()
+            return resolved, ()
+    except OSError:
+        return None, ("EVIDENCE_ROOT_PATH_ERROR",)
+
+    if repository_root is None:
+        return None, ("EVIDENCE_ROOT_REPOSITORY_ANCHOR_REQUIRED",)
+
+    try:
+        repo_resolved = Path(repository_root).expanduser().resolve()
+        joined = (repo_resolved / raw).resolve()
+        joined.relative_to(repo_resolved)
+    except (ValueError, OSError):
+        return None, ("EVIDENCE_ROOT_ESCAPES_REPOSITORY_ROOT",)
+    return joined, ()
+
+
+def _read_bounded_json_object_file_v1(path: Path) -> tuple[dict[str, Any] | None, tuple[str, ...]]:
+    if not path.is_file():
+        return None, ("FILE_MISSING",)
+    try:
+        raw = _bounded_read_bytes(path, max_bytes=MAX_FILE_BYTES)
+        data = json.loads(raw.decode("utf-8"))
+    except BoundedInputError as exc:
+        return None, (str(exc),)
+    except (json.JSONDecodeError, OSError, UnicodeDecodeError):
+        return None, ("JSON_DECODE_ERROR",)
+    if not isinstance(data, dict):
+        return None, ("NOT_OBJECT",)
+    return data, ()
 
 
 @dataclass(frozen=True)
@@ -435,6 +521,8 @@ def verify_cross_file_bindings_v1(
     pre_external_report: Path | None,
     governed_cycle_evidence_dir: Path | None,
     g004_store_root: Path | None,
+    repository_root: Path | None = None,
+    operator_trade_id: str | None = None,
 ) -> SourceCheckResultV1:
     if pre_external_report is None and governed_cycle_evidence_dir is None:
         return SourceCheckResultV1(
@@ -447,60 +535,195 @@ def verify_cross_file_bindings_v1(
     consistency = "PASS"
     details: dict[str, Any] = {"cross_file_snapshot_guarantee": "NONE"}
 
+    repo_root = (
+        Path(repository_root).expanduser().resolve()
+        if repository_root is not None
+        else discover_repository_root_from_paths_v1(
+            pre_external_report,
+            governed_cycle_evidence_dir,
+        )
+    )
+    if repo_root is not None:
+        details["repository_root"] = str(repo_root)
+
     pre_native = ""
     pre_run_id = ""
-    pre_evidence_root = ""
+    pre_evidence_root_raw = ""
+    pre_path: Path | None = None
+    pre_obj: dict[str, Any] | None = None
     if pre_external_report is not None:
-        pre_path = Path(pre_external_report).resolve()
-        if pre_path.is_file():
+        try:
+            pre_path = Path(pre_external_report).expanduser().resolve()
+        except OSError:
+            reasons.append("PRE_EXTERNAL_PATH_ERROR")
+            consistency = "UNKNOWN"
+        if pre_path is not None and pre_path.is_file():
             try:
                 pre_obj = json.loads(pre_path.read_text(encoding="utf-8"))
-                if isinstance(pre_obj, dict):
-                    pre_native = str(pre_obj.get("NATIVE_ID") or pre_obj.get("instrument_id") or "")
-                    pre_run_id = str(pre_obj.get("RUN_ID") or "")
-                    pre_evidence_root = str(pre_obj.get("EVIDENCE_ROOT") or "")
             except json.JSONDecodeError:
                 reasons.append("PRE_EXTERNAL_UNREADABLE")
                 consistency = "FAIL"
+            if isinstance(pre_obj, dict):
+                pre_native = str(pre_obj.get("NATIVE_ID") or pre_obj.get("instrument_id") or "")
+                pre_run_id = str(pre_obj.get("RUN_ID") or "")
+                pre_evidence_root_raw = str(pre_obj.get("EVIDENCE_ROOT") or "")
 
     cycle_native = ""
     cycle_binding = ""
+    cycle_s5_dir: Path | None = None
     if governed_cycle_evidence_dir is not None:
-        ledger_path = Path(governed_cycle_evidence_dir).resolve() / LEDGER_FILENAME
-        if ledger_path.is_file():
-            obj, led_consistency, led_reasons = _read_stable_json_object_v1(ledger_path)
-            if obj:
-                cycle_native = str(obj.get("native_id") or "")
-                cycle_binding = str(obj.get("binding_digest") or "")
-            if led_consistency != "PASS":
-                reasons.extend(list(led_reasons))
-                consistency = "UNKNOWN"
+        try:
+            cycle_s5_dir = Path(governed_cycle_evidence_dir).expanduser().resolve()
+        except OSError:
+            reasons.append("CYCLE_PATH_ERROR")
+            consistency = "UNKNOWN"
+        if cycle_s5_dir is not None:
+            ledger_path = cycle_s5_dir / LEDGER_FILENAME
+            if ledger_path.is_file():
+                obj, led_consistency, led_reasons = _read_stable_json_object_v1(ledger_path)
+                if obj:
+                    cycle_native = str(obj.get("native_id") or "")
+                    cycle_binding = str(obj.get("binding_digest") or "")
+                if led_consistency != "PASS":
+                    reasons.extend(list(led_reasons))
+                    consistency = "UNKNOWN"
         details["cycle_binding_digest"] = cycle_binding
 
     if pre_native and cycle_native and pre_native != cycle_native:
         reasons.append("NATIVE_ID_CROSS_FILE_MISMATCH")
         consistency = "FAIL"
 
-    if pre_evidence_root and governed_cycle_evidence_dir is not None:
-        cycle_resolved = Path(governed_cycle_evidence_dir).resolve()
-        try:
-            evidence_root = Path(pre_evidence_root).resolve()
-            if not _resolved_path_is_under(child=cycle_resolved, parent=evidence_root):
-                reasons.append("RUN_CYCLE_PATH_NOT_UNDER_EVIDENCE_ROOT")
+    resolved_run_root: Path | None = None
+    if pre_evidence_root_raw:
+        resolved_run_root, root_reasons = resolve_persisted_evidence_root_v1(
+            evidence_root_raw=pre_evidence_root_raw,
+            repository_root=repo_root,
+        )
+        if root_reasons:
+            reasons.extend(list(root_reasons))
+            if any(
+                code
+                in {
+                    "EVIDENCE_ROOT_TRAVERSAL_REJECTED",
+                    "EVIDENCE_ROOT_ESCAPES_REPOSITORY_ROOT",
+                }
+                for code in root_reasons
+            ):
                 consistency = "FAIL"
-        except OSError:
-            reasons.append("EVIDENCE_ROOT_PATH_ERROR")
-            consistency = "UNKNOWN"
-
-    if pre_run_id and governed_cycle_evidence_dir is not None:
-        cycle_str = str(Path(governed_cycle_evidence_dir).resolve())
-        if pre_run_id and pre_run_id not in cycle_str and pre_evidence_root:
-            if pre_run_id not in str(Path(pre_evidence_root).resolve()):
-                reasons.append("RUN_ID_PATH_WEAK_BINDING")
+            else:
                 consistency = "UNKNOWN" if consistency == "PASS" else consistency
+        if resolved_run_root is not None:
+            details["resolved_evidence_root"] = str(resolved_run_root)
+
+    if (
+        resolved_run_root is not None
+        and pre_path is not None
+        and pre_path.is_file()
+        and pre_path.name == PRE_EXTERNAL_REPORT_FILENAME
+        and cycle_s5_dir is not None
+    ):
+        if not _resolved_path_is_under(child=pre_path.parent, parent=resolved_run_root):
+            reasons.append("PRE_EXTERNAL_NOT_UNDER_RESOLVED_EVIDENCE_ROOT")
+            consistency = "FAIL"
+        elif pre_path.parent.resolve() != resolved_run_root.resolve():
+            reasons.append("PRE_EXTERNAL_EVIDENCE_ROOT_LOCATION_MISMATCH")
+            consistency = "FAIL"
+
+    if resolved_run_root is not None and cycle_s5_dir is not None:
+        if not _resolved_path_is_under(child=cycle_s5_dir, parent=resolved_run_root):
+            reasons.append("RUN_CYCLE_PATH_NOT_UNDER_EVIDENCE_ROOT")
+            consistency = "FAIL"
+
+    run_binding_checked = False
+    if pre_run_id and resolved_run_root is not None and cycle_s5_dir is not None:
+        run_binding_checked = True
+        snapshot_path = resolved_run_root / ENTRY_STATE_SNAPSHOT_FILENAME
+        snapshot_obj, snap_reasons = _read_bounded_json_object_file_v1(snapshot_path)
+        if snapshot_obj is None:
+            reasons.append(
+                "RUN_ENTRY_STATE_SNAPSHOT_MISSING"
+                if "FILE_MISSING" in snap_reasons
+                else "RUN_ENTRY_STATE_SNAPSHOT_UNREADABLE"
+            )
+            consistency = "UNKNOWN" if consistency == "PASS" else consistency
+        else:
+            snap_run_id = str(
+                snapshot_obj.get("run_id") or snapshot_obj.get("continuous_run_id") or ""
+            )
+            if snap_run_id and snap_run_id != pre_run_id:
+                reasons.append("RUN_ID_SNAPSHOT_PRE_EXTERNAL_MISMATCH")
+                consistency = "FAIL"
+
+        cycle_instance_dir = cycle_s5_dir.parent
+        cycle_hash = cycle_instance_dir.name
+        auth_path = cycle_instance_dir / S5_CYCLE_AUTHORIZATION_FILENAME
+        auth_obj, auth_reasons = _read_bounded_json_object_file_v1(auth_path)
+        if auth_obj is None:
+            reasons.append(
+                "S5_CYCLE_AUTHORIZATION_MISSING"
+                if "FILE_MISSING" in auth_reasons
+                else "S5_CYCLE_AUTHORIZATION_UNREADABLE"
+            )
+            consistency = "UNKNOWN" if consistency == "PASS" else consistency
+        else:
+            consume_id = str(
+                auth_obj.get("consume_instance_id") or auth_obj.get("cycle_instance_id") or ""
+            )
+            if consume_id and consume_id != cycle_hash:
+                reasons.append("CYCLE_INSTANCE_ID_PATH_MISMATCH")
+                consistency = "FAIL"
+            auth_evidence_raw = str(auth_obj.get("evidence_root") or "")
+            if not auth_evidence_raw:
+                reasons.append("CYCLE_AUTHORIZATION_EVIDENCE_ROOT_MISSING")
+                consistency = "UNKNOWN" if consistency == "PASS" else consistency
+            else:
+                auth_evidence_resolved, auth_root_reasons = resolve_persisted_evidence_root_v1(
+                    evidence_root_raw=auth_evidence_raw,
+                    repository_root=repo_root,
+                )
+                if auth_root_reasons:
+                    reasons.extend([f"AUTH_{code}" for code in auth_root_reasons])
+                    consistency = "UNKNOWN" if consistency == "PASS" else consistency
+                elif auth_evidence_resolved is not None:
+                    try:
+                        auth_resolved = auth_evidence_resolved.resolve()
+                        cycle_resolved = cycle_instance_dir.resolve()
+                        if auth_resolved != cycle_resolved:
+                            reasons.append("CYCLE_AUTHORIZATION_EVIDENCE_ROOT_MISMATCH")
+                            consistency = "FAIL"
+                        elif resolved_run_root is not None and not _resolved_path_is_under(
+                            child=cycle_resolved,
+                            parent=resolved_run_root,
+                        ):
+                            reasons.append("CYCLE_AUTHORIZATION_RUN_ROOT_MISMATCH")
+                            consistency = "FAIL"
+                    except OSError:
+                        reasons.append("CYCLE_AUTHORIZATION_EVIDENCE_ROOT_ERROR")
+                        consistency = "UNKNOWN"
+            auth_cycle_index = auth_obj.get("cycle_index")
+            if pre_obj and auth_cycle_index is not None:
+                reporting_idx = pre_obj.get("REPORTING_S5_CYCLE_INDEX")
+                if reporting_idx not in (None, ""):
+                    try:
+                        if int(auth_cycle_index) != int(reporting_idx):
+                            reasons.append("CYCLE_INDEX_CROSS_FILE_MISMATCH")
+                            consistency = "FAIL"
+                    except (TypeError, ValueError):
+                        reasons.append("CYCLE_INDEX_NOT_COMPARABLE")
+                        consistency = "UNKNOWN"
+
+    operator_tid = str(operator_trade_id or "").strip()
+    if run_binding_checked and operator_tid and pre_run_id and operator_tid != pre_run_id:
+        reasons.append("OPERATOR_TRADE_ID_RUN_ID_MISMATCH")
+        consistency = "FAIL"
+        details["operator_trade_id"] = operator_tid
+        details["pre_external_run_id"] = pre_run_id
 
     if g004_store_root is not None and cycle_binding:
         details["g004_cycle_binding_digest"] = cycle_binding
+
+    if run_binding_checked and not reasons:
+        details["run_cycle_binding_witness"] = "EXPLICIT_PERSISTED_WITNESSES"
 
     return SourceCheckResultV1(
         source_id="cross_file",
@@ -532,6 +755,8 @@ def run_consistency_guard_v1(
     final_order_envelope: Path | None,
     governed_cycle_evidence_dir: Path | None,
     g004_post_attempt_store_root: Path | None,
+    repository_root: Path | None = None,
+    operator_trade_id: str | None = None,
 ) -> ConsistencyGuardResultV1:
     input_paths: list[Path] = []
     for p in (
@@ -554,12 +779,38 @@ def run_consistency_guard_v1(
                 LEDGER_FILENAME,
                 TRANSITIONS_FILENAME,
                 "full_core_post_attempt_exchange_reconciliation_disposition_v1.json",
-                "PRE_EXTERNAL_CONVERGENCE_REPORT.json",
+                PRE_EXTERNAL_REPORT_FILENAME,
             ):
                 candidate = path / name
                 if candidate.is_file():
                     input_paths.append(candidate)
+    if pre_external_report is not None:
+        try:
+            pre_resolved = Path(pre_external_report).expanduser().resolve()
+            snap = pre_resolved.parent / ENTRY_STATE_SNAPSHOT_FILENAME
+            if snap.is_file():
+                input_paths.append(snap)
+        except OSError:
+            pass
+    if governed_cycle_evidence_dir is not None:
+        try:
+            cycle_resolved = Path(governed_cycle_evidence_dir).expanduser().resolve()
+            auth = cycle_resolved.parent / S5_CYCLE_AUTHORIZATION_FILENAME
+            if auth.is_file():
+                input_paths.append(auth)
+        except OSError:
+            pass
     file_count, total_bytes = enforce_input_bounds_v1(tuple(input_paths))
+
+    repo_root = (
+        Path(repository_root).expanduser().resolve()
+        if repository_root is not None
+        else discover_repository_root_from_paths_v1(
+            pre_external_report,
+            governed_cycle_evidence_dir,
+            recon_dir,
+        )
+    )
 
     recon = verify_recon_bundle_v1(recon_dir)
     ledger = verify_governed_cycle_ledger_v1(governed_cycle_evidence_dir)
@@ -572,6 +823,8 @@ def run_consistency_guard_v1(
         pre_external_report=pre_external_report,
         governed_cycle_evidence_dir=governed_cycle_evidence_dir,
         g004_store_root=g004_post_attempt_store_root,
+        repository_root=repo_root,
+        operator_trade_id=operator_trade_id,
     )
     checks = (recon, ledger, transitions, g004, cross)
     return ConsistencyGuardResultV1(
@@ -598,6 +851,9 @@ __all__ = [
     "MAX_OBSERVER_WALL_SECONDS",
     "MAX_TOTAL_INPUT_BYTES",
     "SourceCheckResultV1",
+    "discover_repository_root_from_paths_v1",
     "enforce_input_bounds_v1",
+    "resolve_persisted_evidence_root_v1",
     "run_consistency_guard_v1",
+    "verify_cross_file_bindings_v1",
 ]

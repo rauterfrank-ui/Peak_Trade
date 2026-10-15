@@ -1060,3 +1060,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_ghosv_execution_bounded_offline_observer_v1.py
   notes: 'GHOSV Execution bounded offline observer V1: operator-started one-shot CLI, read-only consistency guard, separate output dir; execution-only; ADAPTER_MODE=DISABLED; no productive activation; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:ghosv_execution_cross_file_guard_contract_remediation_v1
+  from: e9757804a9b34ce731946eb21db14779cb6c192d
+  to: PENDING_CHANGE
+  type: TEST_EVIDENCE
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_ghosv_execution_offline_consistency_guard_cross_file_v1.py
+  notes: 'GHOSV Execution cross-file guard contract remediation: repository-anchored EVIDENCE_ROOT resolution and explicit Run/Cycle witness binding; read-only observer/guard only; ADAPTER_MODE=DISABLED; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
