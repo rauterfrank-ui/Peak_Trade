@@ -1,6 +1,8 @@
 {
   "authority_effect": "NONE",
   "changed_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/ops/specs/CURRENT_FULL_SYSTEM_OFFLINE_E2E_INTEGRATION_PROOF_V1.md",
@@ -11,8 +13,10 @@
     "tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py",
     "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py"
   ],
-  "changed_paths_sha256": "a2a79254351b602295d17ead55a6716e50130723b24cde48f82cc652d4fa1428",
+  "changed_paths_sha256": "247652cf6a675ce5f4e51533059dfe0284ec9c28cad01ac3d7d964008c0c16e0",
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "docs/ops/specs/CURRENT_FULL_SYSTEM_OFFLINE_E2E_INTEGRATION_PROOF_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/provenance/changes.yaml",
