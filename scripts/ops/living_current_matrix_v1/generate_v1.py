@@ -220,12 +220,11 @@ def generate_living_current_matrix_v1(
     else:
         matrix_status = MATRIX_STATUS_COMPLETE
 
-    artifact_hashes = _collect_hashes(output_dir)
     out.manifest = _build_manifest(
         sha=sha,
         status=matrix_status,
         reasons=status_reasons,
-        hashes=artifact_hashes,
+        hashes=_collect_hashes(output_dir),
         wp1_mode=out.wp1_graph_mode,
         snapshot_id=str(composed.get("snapshot_id") or crosswalk.snapshot_id),
         gaps=coverage_gaps,
@@ -252,6 +251,8 @@ def generate_living_current_matrix_v1(
         + "\n",
         encoding="utf-8",
     )
+    out.manifest["artifact_sha256"] = _collect_hashes(output_dir)
+    _write_manifest(output_dir, out.manifest)
 
     out.ok = matrix_status in (MATRIX_STATUS_COMPLETE, MATRIX_STATUS_PARTIAL)
     out.matrix_status = matrix_status

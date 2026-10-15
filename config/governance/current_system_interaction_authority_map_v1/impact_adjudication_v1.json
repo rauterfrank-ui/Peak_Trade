@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "bbae0a4669776a209e27714d506acfadc9580b13",
-  "head_sha": "feaa9bee68871a5df007f57e9ec937c2c5938c52",
+  "head_sha": "2338f3e2a853b74fda43817480c1857560452c08",
   "changed_paths": [
     ".github/workflows/current_matrix_check_v1.yml",
     ".github/workflows/governance_atlas_periodic_v1.yml",
@@ -39,7 +39,7 @@
     "tests/ops/test_living_current_matrix_v1.py",
     "tests/ops/test_system_atlas_impact_v1.py"
   ],
-  "reason": "Living CURRENT Matrix + governance split; diff-bound NO_LAW_IMPACT/NO_MAP_IMPACT; AUTHORITY=NONE.",
+  "reason": "Bugbot remediation PR7117: periodic atlas workflow + manifest hash provenance; NO_MAP/NO_LAW impact.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }

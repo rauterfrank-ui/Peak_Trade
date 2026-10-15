@@ -100,6 +100,9 @@ def test_diff_fail_closed_on_identical_sha(tmp_path: Path) -> None:
     assert result.failure_semantic == "SNAPSHOT_BINDING_FAILURE"
 
 
+CANONICAL_CHECKOUT_SHA = "fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09"
+
+
 def test_generate_matrix_smoke(tmp_path: Path) -> None:
     pytest.importorskip("yaml")
     from scripts.ops.living_current_matrix_v1.generate_v1 import (
@@ -119,6 +122,22 @@ def test_generate_matrix_smoke(tmp_path: Path) -> None:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         assert manifest.get("GHV_RUNTIME_CORRELATION") == "NOT_IMPLEMENTED"
         assert manifest.get("GLOBAL_CAUSAL_CLOSURE_PROVEN") is False
+        manifest_hash = (manifest.get("artifact_sha256") or {}).get(
+            "living_current_matrix_manifest.v1.json"
+        )
+        assert manifest_hash
+
+
+def test_governance_atlas_periodic_workflow_contract() -> None:
+    wf = (REPO_ROOT / ".github" / "workflows" / "governance_atlas_periodic_v1.yml").read_text(
+        encoding="utf-8"
+    )
+    assert f"actions/checkout@{CANONICAL_CHECKOUT_SHA}" in wf
+    assert "7cfc4a7b6c09" not in wf
+    assert "docs/system_atlas/**" in wf
+    assert "Install PyYAML" in wf
+    assert "Resolve diff base" in wf
+    assert 'check_system_atlas_impact_v1.py --base "${{ steps.diff_base.outputs.ref }}"' in wf
 
 
 def test_truth_gates_docs_drift_only_contract() -> None:
