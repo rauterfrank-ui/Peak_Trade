@@ -379,12 +379,14 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:ghosv_execution_current_evidence_binding_v1
+  modified_by: CHANGE:ghosv_execution_existing_evidence_coverage_v1
   source_paths:
   - src/ops/ghosv_bounded_context_v1/current_execution_evidence_reader_v1.py
+  - src/ops/ghosv_bounded_context_v1/current_execution_cycle_evidence_reader_v1.py
   evidence_sources:
   - tests/ops/test_ghosv_current_execution_evidence_reader_v1.py
-  notes: 'Read-only bind of productive reconciliation and portfolio evidence into GHOSV execution-only bounded context; ADAPTER_MODE=DISABLED; no venue POST; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE; POST_COUNT=0.'
+  - tests/ops/test_ghosv_current_execution_cycle_evidence_reader_v1.py
+  notes: 'Read-only GHOSV execution evidence: reconciliation/portfolio, PRE_EXTERNAL, governed-cycle ledger/transitions POST witnesses, optional G004 disposition; ADAPTER_MODE=DISABLED; no venue POST; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE; POST_COUNT=0.'
 - id: RUNTIME_COMPONENT:ghv_current_residency_decoupling_v1
   kind: RUNTIME_COMPONENT
   name: GHV current residency decoupling (O5, materializers, archive root)

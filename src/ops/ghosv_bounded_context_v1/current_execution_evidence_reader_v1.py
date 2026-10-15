@@ -24,6 +24,11 @@ from src.ops.ghosv_bounded_context_v1.types_v1 import (
     GhosvEvidenceKind,
     GhosvEvidenceRecordV1,
 )
+from src.ops.ghosv_bounded_context_v1.current_execution_cycle_evidence_reader_v1 import (
+    GovernedCycleEvidenceOptionsV1,
+    load_g004_disposition_evidence_v1,
+    load_governed_cycle_evidence_dir_v1,
+)
 from src.ops.productive_reconciliation_runtime_binding_v1.constants_v1 import (
     EVIDENCE_FILENAME as RECON_EVIDENCE_FILENAME,
     PORTFOLIO_STATE_FILENAME,
@@ -42,6 +47,9 @@ class CurrentExecutionEvidenceSourcesV1:
     recon_dir: Path | None = None
     final_order_envelope_json: Path | None = None
     pre_external_convergence_report_json: Path | None = None
+    governed_cycle_evidence_dir: Path | None = None
+    g004_post_attempt_store_root: Path | None = None
+    cycle_options: GovernedCycleEvidenceOptionsV1 | None = None
 
 
 def _parse_post_count_v1(data: Mapping[str, Any]) -> tuple[int | None, bool]:
@@ -239,6 +247,24 @@ def read_current_execution_evidence_v1(
             out.extend(
                 load_pre_external_convergence_report_evidence_v1(report_path, trade_id=trade_id)
             )
+
+    if sources.governed_cycle_evidence_dir is not None:
+        out.extend(
+            load_governed_cycle_evidence_dir_v1(
+                Path(sources.governed_cycle_evidence_dir),
+                trade_id=trade_id,
+                options=sources.cycle_options,
+            )
+        )
+
+    if sources.g004_post_attempt_store_root is not None:
+        out.extend(
+            load_g004_disposition_evidence_v1(
+                Path(sources.g004_post_attempt_store_root),
+                trade_id=trade_id,
+                options=sources.cycle_options,
+            )
+        )
 
     return tuple(out)
 
