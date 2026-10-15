@@ -1,45 +1,24 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "bbae0a4669776a209e27714d506acfadc9580b13",
-  "head_sha": "2338f3e2a853b74fda43817480c1857560452c08",
+  "base_sha": "d74a0301d823ec096f0a0b2a99bb0dee1331af88",
+  "head_sha": "607c4e622d13f7fad461e69cd7a50971578461a6",
   "changed_paths": [
-    ".github/workflows/current_matrix_check_v1.yml",
-    ".github/workflows/governance_atlas_periodic_v1.yml",
-    ".github/workflows/truth_gates_pr.yml",
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "scripts/ops/living_current_matrix_v1/__init__.py",
-    "scripts/ops/living_current_matrix_v1/cli.py",
-    "scripts/ops/living_current_matrix_v1/constants_v1.py",
-    "scripts/ops/living_current_matrix_v1/diff_v1.py",
-    "scripts/ops/living_current_matrix_v1/generate_v1.py",
-    "scripts/ops/periodic_current_documentation_sync_v1.py",
-    "tests/ops/test_living_current_matrix_v1.py",
-    "tests/ops/test_system_atlas_impact_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_execution_lifecycle_root_binding_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py",
+    "tests/ops/test_current_productive_execution_lifecycle_root_binding_v1.py"
   ],
-  "changed_paths_sha256": "a57c0ae3099237be5ea9d4fe9567b67af9d558f3ee978e198a56ef984efbfd9e",
+  "changed_paths_sha256": "55a79396b3a4311cda38fd86cfad0c247ac85214b5afebf00b4a934edfbcbfee",
   "covered_candidate_paths": [
-    ".github/workflows/current_matrix_check_v1.yml",
-    ".github/workflows/governance_atlas_periodic_v1.yml",
-    ".github/workflows/truth_gates_pr.yml",
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "scripts/ops/living_current_matrix_v1/__init__.py",
-    "scripts/ops/living_current_matrix_v1/cli.py",
-    "scripts/ops/living_current_matrix_v1/constants_v1.py",
-    "scripts/ops/living_current_matrix_v1/diff_v1.py",
-    "scripts/ops/living_current_matrix_v1/generate_v1.py",
-    "scripts/ops/periodic_current_documentation_sync_v1.py",
-    "tests/ops/test_living_current_matrix_v1.py",
-    "tests/ops/test_system_atlas_impact_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_execution_lifecycle_root_binding_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_enter_post_admission_v1.py",
+    "tests/ops/test_current_productive_execution_lifecycle_root_binding_v1.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_living_current_matrix_v1.py",
-    "tests/ops/test_system_atlas_impact_v1.py"
+    "tests/ops/test_current_productive_execution_lifecycle_root_binding_v1.py",
+    "tests/ops/test_current_system_interaction_authority_map_v1.py"
   ],
-  "reason": "Bugbot remediation PR7117: periodic atlas workflow + manifest hash provenance; NO_MAP/NO_LAW impact.",
+  "reason": "V2 BU01 WP1: offline execution lifecycle root binding under existing full_core composition root; NO_MAP_IMPACT — no source_v1.json or derived map view change; authority_effect NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }
