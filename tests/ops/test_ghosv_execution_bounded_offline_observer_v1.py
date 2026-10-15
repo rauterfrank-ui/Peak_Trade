@@ -182,6 +182,9 @@ def test_pre_external_without_post_submission_witness(tmp_path: Path):
     report = _run_observer(tmp_path, pre_external_report=PRE_EXTERNAL_FIXTURE)
     assert report["execution_lifecycle_completeness"] == "PRE_EXTERNAL_ONLY"
     assert report["observer_run_success"] is True
+    missing = report["missing_evidence_classes"]
+    assert "POST_SUBMISSION_WITNESS" in missing
+    assert missing.count("POST_SUBMISSION_WITNESS") == 1
 
 
 def test_explicit_post_count_zero_cycle(tmp_path: Path):
@@ -236,6 +239,40 @@ def test_malformed_g004(tmp_path: Path):
         g004_post_attempt_store_root=store,
     )
     assert guard.g004.consistency == "UNKNOWN"
+
+
+def test_valid_g004_guard_pass_not_partial(tmp_path: Path):
+    store = tmp_path / "g004_ok"
+    store.mkdir()
+    submit_attempt_id = "attempt-1"
+    envelope_digest = "env-digest"
+    record = {
+        "contract_id": G004_CONTRACT_ID,
+        "submit_attempt_id": submit_attempt_id,
+        "clordid": "cl-1",
+        "envelope_digest": envelope_digest,
+        "attempt_digest": attempt_digest_v1(
+            submit_attempt_id=submit_attempt_id,
+            envelope_digest=envelope_digest,
+        ),
+        "native_id": "BTC-USDT-SWAP",
+        "reconciliation_outcome": "CONFIRMED_FILLED",
+        "typed_post_submit_outcome": "ACKNOWLEDGED",
+        "local_submit_outcome": "SUBMITTED",
+        "ack_is_not_fill": True,
+    }
+    (store / "full_core_post_attempt_exchange_reconciliation_disposition_v1.json").write_text(
+        json.dumps(record), encoding="utf-8"
+    )
+    guard = run_consistency_guard_v1(
+        recon_dir=None,
+        pre_external_report=None,
+        final_order_envelope=None,
+        governed_cycle_evidence_dir=None,
+        g004_post_attempt_store_root=store,
+    )
+    assert guard.g004.consistency == "PASS"
+    assert guard.evidence_consistency == "PASS"
 
 
 def test_g004_confirmed_filled_not_standalone_fill(tmp_path: Path):
@@ -347,6 +384,60 @@ def test_cli_success_not_green_assessment(tmp_path: Path):
     report = _run_observer(tmp_path, recon_dir=CAP11_FIXTURE)
     assert report["disclaimer"]["cli_exit_not_traffic_green"] is True
     assert report["observer_run_status"] == "OBSERVER_RUN_SUCCESS"
+
+
+def test_transitions_optional_absent_not_applicable(tmp_path: Path):
+    cycle = tmp_path / "cycle"
+    cycle.mkdir()
+    (cycle / LEDGER_FILENAME).write_text(json.dumps(_base_ledger()), encoding="utf-8")
+    guard = run_consistency_guard_v1(
+        recon_dir=None,
+        pre_external_report=None,
+        final_order_envelope=None,
+        governed_cycle_evidence_dir=cycle,
+        g004_post_attempt_store_root=None,
+    )
+    assert guard.transitions.consistency == "NOT_APPLICABLE"
+    assert guard.transitions.presence == "SOURCE_NOT_PRESENT"
+
+
+def test_cross_file_evidence_root_prefix_trap(tmp_path: Path):
+    evidence_root = tmp_path / "runs" / "abc"
+    evidence_root.mkdir(parents=True)
+    cycle = tmp_path / "runs" / "abcdef"
+    cycle.mkdir(parents=True)
+    (cycle / LEDGER_FILENAME).write_text(json.dumps(_base_ledger()), encoding="utf-8")
+    pre = tmp_path / "pre.json"
+    pre.write_text(
+        json.dumps(
+            {
+                "NATIVE_ID": "BTC-USDT-SWAP",
+                "RUN_ID": "run-1",
+                "EVIDENCE_ROOT": str(evidence_root),
+            }
+        ),
+        encoding="utf-8",
+    )
+    guard = run_consistency_guard_v1(
+        recon_dir=None,
+        pre_external_report=pre,
+        final_order_envelope=None,
+        governed_cycle_evidence_dir=cycle,
+        g004_post_attempt_store_root=None,
+    )
+    assert "RUN_CYCLE_PATH_NOT_UNDER_EVIDENCE_ROOT" in guard.cross_file.reason_codes
+
+
+def test_malformed_pre_external_still_writes_report(tmp_path: Path):
+    sources = tmp_path / "sources"
+    sources.mkdir()
+    bad_pre = sources / "pre_bad.json"
+    bad_pre.write_text("{not-json", encoding="utf-8")
+    report = _run_observer(tmp_path, pre_external_report=bad_pre)
+    assert (tmp_path / "observer_out" / REPORT_FILENAME).is_file()
+    assert report["observer_run_status"] == "OBSERVER_RUN_FAILED"
+    assert report["ghosv_pipeline_error"] is not None
+    assert report["ghosv_traffic_light"] == "UNKNOWN"
 
 
 def test_valid_completed_cycle_guard_pass(tmp_path: Path):

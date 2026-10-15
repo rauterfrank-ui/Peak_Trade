@@ -21,6 +21,9 @@ from src.ops.ghosv_bounded_context_v1.current_execution_evidence_reader_v1 impor
     observe_current_execution_via_ghosv_v1,
     read_current_execution_evidence_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_persisted_reconciliation_disposition_v1 import (
+    PersistedReconciliationDispositionError,
+)
 from src.ops.ghosv_bounded_context_v1.execution_offline_consistency_guard_v1 import (
     BoundedInputError,
     ConsistencyGuardResultV1,
@@ -112,12 +115,15 @@ def _source_presence_map(paths: ExecutionOfflineObserverPathsV1) -> dict[str, st
     }
 
 
-def _missing_evidence_classes(records_kinds: set[str]) -> list[str]:
+def _missing_evidence_classes(
+    records_kinds: set[str],
+    *,
+    post_submission_witnessed: bool,
+) -> list[str]:
     optional_gaps = []
     expected = {
         "EXECUTION_PREPARATION": GhosvEvidenceKind.ORDER_ENVELOPE.value,
         "PRE_EXTERNAL_WITNESS": GhosvEvidenceKind.PRE_EXTERNAL_REPORT.value,
-        "POST_SUBMISSION_WITNESS": GhosvEvidenceKind.EXECUTION_ATTEMPT.value,
         "VENUE_ACK": GhosvEvidenceKind.ORDER_ACK.value,
         "FILL": GhosvEvidenceKind.FILL.value,
         "FULL_FILL": GhosvEvidenceKind.FULL_FILL.value,
@@ -128,6 +134,8 @@ def _missing_evidence_classes(records_kinds: set[str]) -> list[str]:
     for label, kind in expected.items():
         if kind not in records_kinds:
             optional_gaps.append(label)
+    if not post_submission_witnessed:
+        optional_gaps.append("POST_SUBMISSION_WITNESS")
     return optional_gaps
 
 
@@ -260,8 +268,14 @@ def run_execution_bounded_offline_observer_v1(
             for r in records
         )
         ghosv_result = observe_current_execution_via_ghosv_v1(sources, detected_at=detected)
-    except (GhosvEvidenceIngestError, BoundedInputError) as exc:
-        ghosv_error = str(exc)
+    except (
+        GhosvEvidenceIngestError,
+        BoundedInputError,
+        PersistedReconciliationDispositionError,
+        json.JSONDecodeError,
+        OSError,
+    ) as exc:
+        ghosv_error = f"{type(exc).__name__}:{exc}"
 
     if time.monotonic() - started > MAX_OBSERVER_WALL_SECONDS:
         raise TimeoutError("OBSERVER_WALL_TIME_EXCEEDED")
@@ -319,7 +333,10 @@ def run_execution_bounded_offline_observer_v1(
         "ghosv_result": _serialize_ghosv_result(ghosv_result) if ghosv_result else None,
         "ghosv_traffic_light": traffic,
         "execution_lifecycle_completeness": lifecycle,
-        "missing_evidence_classes": _missing_evidence_classes(record_kinds),
+        "missing_evidence_classes": _missing_evidence_classes(
+            record_kinds,
+            post_submission_witnessed=post_submission_witnessed,
+        ),
         "safety_adapter_status": {
             "adapter_mode": ADAPTER_MODE,
             "safety_escalation_enabled": SAFETY_ESCALATION_ENABLED,

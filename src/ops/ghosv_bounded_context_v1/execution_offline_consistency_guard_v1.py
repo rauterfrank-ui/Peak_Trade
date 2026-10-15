@@ -14,9 +14,12 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
 )
 from src.ops.ghosv_bounded_context_v1.current_execution_cycle_evidence_reader_v1 import (
     TRANSITIONS_FILENAME,
+    GovernedCycleEvidenceOptionsV1,
     _transition_sequence_flags_v1,
+    _validate_g004_record_v1,
     parse_post_count_field_v1,
 )
+from src.ops.ghosv_bounded_context_v1.s01_evidence_ingest_v1 import GhosvEvidenceIngestError
 from src.ops.productive_reconciliation_runtime_binding_v1.constants_v1 import (
     EVIDENCE_FILENAME,
     MANIFEST_FILENAME,
@@ -39,6 +42,14 @@ MAX_OBSERVER_WALL_SECONDS = 120.0
 
 class BoundedInputError(ValueError):
     """Input exceeds observer resource bounds."""
+
+
+def _resolved_path_is_under(*, child: Path, parent: Path) -> bool:
+    try:
+        child.resolve().relative_to(parent.resolve())
+    except (ValueError, OSError):
+        return False
+    return True
 
 
 @dataclass(frozen=True)
@@ -269,7 +280,7 @@ def verify_governed_cycle_transitions_v1(
             source_id="governed_cycle_transitions",
             selected=True,
             presence="SOURCE_NOT_PRESENT",
-            consistency="UNKNOWN",
+            consistency="NOT_APPLICABLE",
             reason_codes=("TRANSITIONS_OPTIONAL_ABSENT",),
         )
     try:
@@ -398,12 +409,23 @@ def verify_g004_store_v1(store_root: Path | None) -> SourceCheckResultV1:
             consistency="UNKNOWN",
             reason_codes=("G004_NOT_OBJECT",),
         )
+    try:
+        _validate_g004_record_v1(data, options=GovernedCycleEvidenceOptionsV1())
+    except GhosvEvidenceIngestError as exc:
+        return SourceCheckResultV1(
+            source_id="g004_disposition",
+            selected=True,
+            presence="PRESENT",
+            consistency="FAIL",
+            reason_codes=(str(exc),),
+            details={"submit_attempt_id": str(data.get("submit_attempt_id") or "")},
+        )
     return SourceCheckResultV1(
         source_id="g004_disposition",
         selected=True,
         presence="PRESENT",
-        consistency="INCOMPLETE",
-        reason_codes=("G004_PRESENT_REQUIRES_READER_VALIDATION",),
+        consistency="PASS",
+        reason_codes=("G004_CONTRACT_OK",),
         details={"submit_attempt_id": str(data.get("submit_attempt_id") or "")},
     )
 
@@ -463,10 +485,9 @@ def verify_cross_file_bindings_v1(
         cycle_resolved = Path(governed_cycle_evidence_dir).resolve()
         try:
             evidence_root = Path(pre_evidence_root).resolve()
-            if cycle_resolved not in evidence_root.parents and cycle_resolved != evidence_root:
-                if not str(cycle_resolved).startswith(str(evidence_root)):
-                    reasons.append("RUN_CYCLE_PATH_NOT_UNDER_EVIDENCE_ROOT")
-                    consistency = "FAIL"
+            if not _resolved_path_is_under(child=cycle_resolved, parent=evidence_root):
+                reasons.append("RUN_CYCLE_PATH_NOT_UNDER_EVIDENCE_ROOT")
+                consistency = "FAIL"
         except OSError:
             reasons.append("EVIDENCE_ROOT_PATH_ERROR")
             consistency = "UNKNOWN"
