@@ -14,8 +14,8 @@
 This view is topology change-coupling, not canonical authority.
 
 ```text
-ATLAS_IMPACT=NONE_WITH_PROOF
-ATLAS_CHANGED_ENTITY_COUNT=1
+ATLAS_IMPACT=UPDATED
+ATLAS_CHANGED_ENTITY_COUNT=5
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:ghv_current_get_only_output_contract_remediation_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7112_owner_scoped_get_budget_enforcement_v1`.
 
 ## Workflow
 
@@ -40,7 +40,11 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `CONTRACT:current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1` |
+| `RUNTIME_COMPONENT:owner_scoped_get_budget_enforcement_v1` |
+| `RUNTIME_COMPONENT:pl_tf_002_productive_read_only_get_budget_wiring_v1` |
+| `GATE:full_core_fresh_pretrade_runtime_get_v1` |
+| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
+| `RUNTIME_COMPONENT:ghv_current_okx_productive_read_only_reconciliation_get_validation_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +96,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- GET-only UNKNOWN POST read-only reconciliation contract remediation: cross-surface fail-closed output adjudication and structured technical GET error observability; PR #7109 Bugbot follow-up aligns technical_get_error_present with technical_get_error_classes (order-relevant blocking unchanged); offline fake-transport tests only; no productive network; execution_authority_effect=NONE; POST and durable apply unchanged; GHV_AUTHORITY=NONE; POST_COUNT=0; ATLAS_AUTHORITY=NONE.
-- introduced_by=CHANGE:ghv_current_get_only_output_contract_remediation_v1
-- modified_by=CHANGE:ghv_current_get_only_output_contract_remediation_v1
+- Owner-scoped cumulative GET budget enforcement for PL-TF-002 read-only sessions; opt-in transport hook; no productive trading-cycle default; no POST; no credential persistence; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
+- introduced_by=CHANGE:pr_7112_owner_scoped_get_budget_enforcement_v1
+- modified_by=CHANGE:pr_7112_owner_scoped_get_budget_enforcement_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

@@ -51,6 +51,10 @@ from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_tr
     FORBIDDEN_METHODS as TRANSPORT_FORBIDDEN_METHODS,
     FullCoreProductiveReadOnlyGetTransportV1,
 )
+from src.ops.owner_scoped_get_budget_enforcement_v1.enforcer_v1 import (
+    OwnerScopedGetBudgetEnforcerV1,
+    OwnerScopedGetBudgetGrantContextV1,
+)
 from src.ops.pl_tf_002_network_evidence_contract_v1.constants_v1 import (
     NE_TF_001_ENDPOINT_PATH,
 )
@@ -242,6 +246,7 @@ def open_pl_tf_002_productive_read_only_get_session_v1(
     acquire_credential: bool,
     backend: OsNativeStoreLookupBackendV1 | None = None,
     integrity_backend: PlTf002RuntimeIntegrityBackendV1 | None = None,
+    owner_scoped_get_budget_grant: OwnerScopedGetBudgetGrantContextV1 | None = None,
 ) -> Iterator[PlTf002ProductiveReadOnlyGetSessionV1]:
     """Ephemeral K1 bind + GET transport. Wipes opaque material and K1 handle on exit."""
 
@@ -279,7 +284,15 @@ def open_pl_tf_002_productive_read_only_get_session_v1(
                 api_key = ""
                 secret = ""
                 phrase = ""
-            transport = FullCoreProductiveReadOnlyGetTransportV1(handle=handle)
+            budget_enforcer = None
+            if owner_scoped_get_budget_grant is not None:
+                budget_enforcer = OwnerScopedGetBudgetEnforcerV1(
+                    grant_context=owner_scoped_get_budget_grant
+                )
+            transport = FullCoreProductiveReadOnlyGetTransportV1(
+                handle=handle,
+                owner_scoped_get_budget_enforcer=budget_enforcer,
+            )
             session = PlTf002ProductiveReadOnlyGetSessionV1(
                 preflight=preflight,
                 transport=transport,

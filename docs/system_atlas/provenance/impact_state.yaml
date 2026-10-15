@@ -1,18 +1,19 @@
 schema_version: system_atlas.v1
-pending_change: false
-introduced_by: CHANGE:ghv_current_get_only_output_contract_remediation_v1
-modified_by: CHANGE:ghv_current_get_only_output_contract_remediation_v1
+pending_change: true
+introduced_by: CHANGE:pr_7112_owner_scoped_get_budget_enforcement_v1
+modified_by: CHANGE:pr_7112_owner_scoped_get_budget_enforcement_v1
 superseded_by: null
-last_recorded_impact: NONE_WITH_PROOF
+last_recorded_impact: UPDATED
 note: >-
-  GET-only UNKNOWN POST read-only reconciliation contract remediation: cross-surface
-  fail-closed output adjudication and structured technical GET error observability;
-  PR #7109 Bugbot follow-up aligns technical_get_error_present with technical_get_error_classes
-  (order-relevant blocking unchanged); offline fake-transport tests only; no productive network;
-  execution_authority_effect=NONE; POST and durable apply unchanged; GHV_AUTHORITY=NONE;
-  POST_COUNT=0; ATLAS_AUTHORITY=NONE.
+  Owner-scoped cumulative GET budget enforcement for PL-TF-002 read-only sessions;
+  opt-in transport hook; no productive trading-cycle default; no POST; no credential
+  persistence; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
 changed_entities:
-  - CONTRACT:current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1
+  - RUNTIME_COMPONENT:owner_scoped_get_budget_enforcement_v1
+  - RUNTIME_COMPONENT:pl_tf_002_productive_read_only_get_budget_wiring_v1
+  - GATE:full_core_fresh_pretrade_runtime_get_v1
+  - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  - RUNTIME_COMPONENT:ghv_current_okx_productive_read_only_reconciliation_get_validation_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []
@@ -20,3 +21,6 @@ changed_venue: []
 changed_census: []
 changed_generated:
   - generated/ATLAS_CHANGE_IMPACT.md
+  - generated/COVERAGE_REPORT.md
+  - generated/ORPHAN_AND_WIRING_GAPS.md
+  - generated/SYSTEM_ATLAS.md

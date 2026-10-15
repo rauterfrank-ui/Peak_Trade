@@ -1585,6 +1585,7 @@ entities:
   - tests/ops/test_full_core_s5_recovery_observation_v1.py
   notes: Durable ledger supplement + closure claims for post-COMPLETED lifecycle hook; S5 entry recovery observation read-only; COMPLETED≠reconciliation success; crash-window PENDING fail-closed; observational only; no POST/GET; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:ghv_current_okx_productive_read_only_reconciliation_get_validation_v1
+  # atlas_entity_review: PR #7112 optional owner-scoped cumulative GET budget enforcer on shared transport; validation semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: RUNTIME_COMPONENT
   name: GHV OKX productive read-only reconciliation GET validation v1
   epistemic_class: FORENSIC_RAW
@@ -4959,6 +4960,41 @@ entities:
   - config/governance/authorized_productive_parameter_seam_v1_decision_v1.json
   notes: "Configuration, authorized parameter seam, and research-evidence join epistemic lane (UNRESOLVED join vs RATIFIED productive gate telemetry); no runtime apply, enforcement, trading-decision authority shift, or external effect. ATLAS_AUTHORITY=NONE.\n      PR #6993 atlas review: dynamic scope + bridge boundary closure; topology/navigation only; ATLAS_AUTHORITY=NONE; POST_COUNT=0."
   # atlas_entity_review: PR #7069 pre-completion P/S/T run evidence retirement; reference/fixture rebind only; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
+- id: RUNTIME_COMPONENT:owner_scoped_get_budget_enforcement_v1
+  kind: RUNTIME_COMPONENT
+  name: Owner-scoped cumulative GET budget enforcement v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+  modified_by: CHANGE:pr_7112_owner_scoped_get_budget_enforcement_v1
+  source_paths:
+  - src/ops/owner_scoped_get_budget_enforcement_v1/__init__.py
+  - src/ops/owner_scoped_get_budget_enforcement_v1/constants_v1.py
+  - src/ops/owner_scoped_get_budget_enforcement_v1/durable_ledger_v1.py
+  - src/ops/owner_scoped_get_budget_enforcement_v1/enforcer_v1.py
+  - src/ops/owner_scoped_get_budget_enforcement_v1/errors_v1.py
+  - src/ops/owner_scoped_get_budget_enforcement_v1/grant_identity_v1.py
+  - src/ops/owner_scoped_get_budget_enforcement_v1/grant_ledger_lock_v1.py
+  evidence_sources:
+  - docs/ops/specs/OWNER_SCOPED_GET_BUDGET_ENFORCEMENT_V1.md
+  - tests/ops/test_owner_scoped_get_budget_enforcement_v1.py
+  - evidence/ops/owner_scoped_get_budget_enforcement_v1/GHV_CAUSAL_REPROOF_V1.json
+  notes: Durable grant-ledger cumulative GET budget for Owner-authorized PL-TF-002 read-only sessions; fail-closed; no POST/credential persistence; not wired into productive trading cycles without explicit grant; ATLAS_AUTHORITY=NONE.
+- id: RUNTIME_COMPONENT:pl_tf_002_productive_read_only_get_budget_wiring_v1
+  kind: RUNTIME_COMPONENT
+  name: PL-TF-002 productive read-only GET budget wiring v1
+  epistemic_class: FORENSIC_RAW
+  current_canonical: false
+  current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
+  modified_by: CHANGE:pr_7112_owner_scoped_get_budget_enforcement_v1
+  source_paths:
+  - src/ops/pl_tf_002_productive_read_only_get_complete_v1/capture_v1.py
+  - src/ops/pl_tf_002_productive_read_only_session_executor_v1/session_executor_v1.py
+  evidence_sources:
+  - docs/ops/specs/OWNER_SCOPED_GET_BUDGET_ENFORCEMENT_V1.md
+  - docs/ops/specs/PL_TF_002_PRODUCTIVE_READ_ONLY_SESSION_EXECUTOR_V1.md
+  - tests/ops/test_owner_scoped_get_budget_enforcement_v1.py
+  notes: Optional grant mint/store_root wiring for Tier-A session executor and F1 capture; session policy unchanged; RUNTIME_AUTHORIZATION_EFFECT=NONE; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1
   kind: RUNTIME_COMPONENT
   name: Offline Funding Account balance read producer v1
@@ -5170,6 +5206,7 @@ entities:
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
   # atlas_entity_review: PR #7069 pre-completion P/S/T run evidence retirement; reference/fixture rebind only; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  # atlas_entity_review: PR #7112 opt-in owner-scoped cumulative GET budget pre-send hook on productive read-only transport only; default enforcer=None preserves productive cycle behavior; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7110 offline full-system E2E integration proof harness (GAP-TRUE-01 → fake POST → OFFLINE_INJECTED recon); composition/wiring only; apply_durable_atomic_state=false; no Live/POST activation; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: GHV pilot guarded Enter-POST admission modules on one-shot join + send seam provenance; fail-closed offline regression; no Live/Testnet activation; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7102 SEC-001 secret-safe fail-closed reconciliation error classification on DW wiring module; observability-only; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.
@@ -5920,6 +5957,7 @@ entities:
   - docs/ops/specs/FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SEAM_V1.md
   notes: Joins FullCoreLivePathInputV1.owner_go into Full-Core admission as typed permit evidence. Exact token match only. Does not arm Live. Does not GET. Does not admit. Does not override FILEGATE. Does not consume the token. Canary OWNER_GO_EXECUTE is mismatch. 11.2.1.Q does not consume OWNER_ONE_SHOT as Live arming. Atlas is not canonical authority. ATLAS_AUTHORITY=NONE. # atlas_entity_review: PR #7079 indirect topology touch via fresh-pretrade GET composition only; no permit semantics change; AUTHORITY=NONE; POST_COUNT=0.
 - id: GATE:full_core_fresh_pretrade_runtime_get_v1
+  # atlas_entity_review: PR #7112 optional durable grant ledger wired via transport/enforcer; F1 collector item count unchanged; no admission widening; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7100 session deadline clamping on productive read-only GET transport only; gate/admission semantics unchanged; AUTHORITY=NONE; POST_COUNT=0.
   kind: GATE
   name: Full-core fresh pretrade runtime GET seam v1

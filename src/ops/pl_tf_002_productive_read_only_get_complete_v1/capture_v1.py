@@ -23,7 +23,10 @@ from src.ops.pl_tf_002_network_evidence_contract_v1.constants_v1 import (
 from src.ops.pl_tf_002_network_evidence_contract_v1.verifier_v1 import (
     verify_pl_tf_002_network_evidence_v1,
 )
+from pathlib import Path
+
 from src.ops.pl_tf_002_productive_read_only_get_complete_v1.constants_v1 import (
+    AUTHORIZED_NETWORK_HOST,
     FRESH_PRETRADE_INST_TYPE,
     FRESH_PRETRADE_TD_MODE,
     FRESH_PRETRADE_VENUE_INST_ID,
@@ -31,6 +34,7 @@ from src.ops.pl_tf_002_productive_read_only_get_complete_v1.constants_v1 import 
     OWNER_GO,
     PRODUCTIVE_TRANSPORT_CLASS,
     SESSION_OWNER_GO,
+    WP_ID,
 )
 from src.ops.pl_tf_002_productive_read_only_get_complete_v1.errors_v1 import (
     PlTf002ProductiveReadOnlyGetCompleteError,
@@ -38,6 +42,12 @@ from src.ops.pl_tf_002_productive_read_only_get_complete_v1.errors_v1 import (
 from src.ops.pl_tf_002_productive_read_only_get_complete_v1.pre_network_jit_v1 import (
     build_pl_tf_002_pre_network_jit_proof_v1,
     merge_session_k1_jit_facts_v1,
+)
+from src.ops.owner_scoped_get_budget_enforcement_v1.enforcer_v1 import (
+    OwnerScopedGetBudgetGrantContextV1,
+)
+from src.ops.owner_scoped_get_budget_enforcement_v1.grant_identity_v1 import (
+    OwnerScopedGetBudgetGrantBindingV1,
 )
 from src.ops.pl_tf_002_productive_read_only_session_executor_v1.session_executor_v1 import (
     open_pl_tf_002_productive_read_only_get_session_v1,
@@ -133,6 +143,25 @@ def build_network_evidence_bundle_v1(
     }
 
 
+def _optional_owner_scoped_get_budget_grant_v1(
+    *,
+    store_root: Path | str | None,
+    wp_owner_go: str,
+    session_owner_go: str,
+    origin_main_sha: str,
+) -> OwnerScopedGetBudgetGrantContextV1 | None:
+    if store_root is None:
+        return None
+    binding = OwnerScopedGetBudgetGrantBindingV1(
+        owner_go=f"{wp_owner_go}|{session_owner_go}",
+        work_package_id=WP_ID,
+        origin_main_sha=str(origin_main_sha or "").strip().lower(),
+        cumulative_request_budget=int(MAX_NETWORK_REQUEST_COUNT),
+        authorized_host=AUTHORIZED_NETWORK_HOST,
+    )
+    return OwnerScopedGetBudgetGrantContextV1.mint_v1(store_root=store_root, binding=binding)
+
+
 def execute_pl_tf_002_productive_read_only_get_capture_v1(
     *,
     wp_owner_go: str,
@@ -141,6 +170,7 @@ def execute_pl_tf_002_productive_read_only_get_capture_v1(
     execute_network: bool,
     integrity_backend: object | None = None,
     os_native_backend: object | None = None,
+    owner_scoped_get_budget_store_root: Path | str | None = None,
 ) -> dict[str, Any]:
     """Capture F1/F2 productive GET evidence or return pre-network JIT only."""
 
@@ -159,12 +189,19 @@ def execute_pl_tf_002_productive_read_only_get_capture_v1(
 
     pretrade_decision_id = f"pl-tf-002-complete-{str(origin_main_sha or '')[:12]}"
     network_request_count = 0
+    budget_grant = _optional_owner_scoped_get_budget_grant_v1(
+        store_root=owner_scoped_get_budget_store_root,
+        wp_owner_go=wp_owner_go,
+        session_owner_go=session_owner_go,
+        origin_main_sha=origin_main_sha,
+    )
     with open_pl_tf_002_productive_read_only_get_session_v1(
         owner_go=session_owner_go,
         origin_main_sha=origin_main_sha,
         acquire_credential=True,
         backend=os_native_backend,
         integrity_backend=integrity_backend,  # type: ignore[arg-type]
+        owner_scoped_get_budget_grant=budget_grant,
     ) as session:
         jit = merge_session_k1_jit_facts_v1(
             jit,

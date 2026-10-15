@@ -29,6 +29,10 @@ from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_
     TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
     FreshPretradeGetTransportResultV1,
 )
+from src.ops.owner_scoped_get_budget_enforcement_v1.enforcer_v1 import (
+    OwnerScopedGetBudgetEnforcerV1,
+)
+from src.ops.owner_scoped_get_budget_enforcement_v1.errors_v1 import OwnerScopedGetBudgetError
 from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.http_client_v1 import (
     parse_json_object_v1,
 )
@@ -61,10 +65,12 @@ class FullCoreProductiveReadOnlyGetTransportV1:
         handle: Any | None = None,
         timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
         max_request_count: int = 16,
+        owner_scoped_get_budget_enforcer: OwnerScopedGetBudgetEnforcerV1 | None = None,
     ) -> None:
         self._handle = handle
         self.timeout_seconds = float(timeout_seconds)
         self.max_request_count = int(max_request_count)
+        self._owner_scoped_get_budget_enforcer = owner_scoped_get_budget_enforcer
         self.request_count = 0
         self.methods_used: list[str] = []
         self.venue_live_contact = False
@@ -123,14 +129,26 @@ class FullCoreProductiveReadOnlyGetTransportV1:
             connect_timeout = session_deadline.bounded_connect_timeout_seconds_v1(
                 default_connect_seconds=CONNECT_TIMEOUT_SECONDS
             )
+        budget_reservation = None
+        if self._owner_scoped_get_budget_enforcer is not None:
+            try:
+                budget_reservation = self._owner_scoped_get_budget_enforcer.begin_get_v1(
+                    endpoint_path=path
+                )
+            except OwnerScopedGetBudgetError as exc:
+                raise FullCoreProductiveReadOnlyGetError(f"OWNER_SCOPED_GET_BUDGET:{exc}") from exc
+
         req = Request(url, method=METHOD_GET, headers=headers)
         opener = build_opener(ProxyHandler({}))
         body = b""
         status = 0
         error_class = ""
         payload: Any = None
+        wire_attempted = False
+        uncertain_wire = False
         try:
             socket.setdefaulttimeout(connect_timeout)
+            wire_attempted = True
             with opener.open(req, timeout=read_timeout) as resp:  # noqa: S310
                 status = int(getattr(resp, "status", 200))
                 body = bytes(resp.read() or b"")
@@ -142,14 +160,35 @@ class FullCoreProductiveReadOnlyGetTransportV1:
             raise
         except TimeoutError:
             error_class = "TIMEOUT"
+            uncertain_wire = True
         except HTTPError as exc:
             status = int(getattr(exc, "code", 0) or 0)
             body = bytes(exc.read() or b"") if hasattr(exc, "read") else b""
             error_class = "AUTH_FAILURE" if status in {401, 403} else "HTTP_ERROR"
         except (URLError, OSError, socket.timeout) as exc:
             error_class = type(exc).__name__[:80]
+            uncertain_wire = True
         finally:
             socket.setdefaulttimeout(None)
+            if (
+                budget_reservation is not None
+                and self._owner_scoped_get_budget_enforcer is not None
+            ):
+                try:
+                    if not wire_attempted:
+                        self._owner_scoped_get_budget_enforcer.release_unsent_v1(budget_reservation)
+                    elif uncertain_wire:
+                        self._owner_scoped_get_budget_enforcer.mark_uncertain_wire_v1(
+                            budget_reservation
+                        )
+                    else:
+                        self._owner_scoped_get_budget_enforcer.mark_completed_v1(budget_reservation)
+                except OwnerScopedGetBudgetError as exc:
+                    raise FullCoreProductiveReadOnlyGetError(
+                        f"OWNER_SCOPED_GET_BUDGET_FINALIZE:{exc}"
+                    ) from exc
+        if uncertain_wire and self._owner_scoped_get_budget_enforcer is not None:
+            raise FullCoreProductiveReadOnlyGetError("OWNER_SCOPED_GET_UNCERTAIN_WIRE_FAIL_CLOSED")
         self.request_count += 1
         self.methods_used.append(METHOD_GET)
         if any(method in FORBIDDEN_METHODS for method in self.methods_used):
