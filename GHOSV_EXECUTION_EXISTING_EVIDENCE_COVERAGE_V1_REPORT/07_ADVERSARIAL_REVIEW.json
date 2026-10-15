@@ -1,0 +1,11 @@
+{
+  "PRE_PR_ADVERSARIAL_CONTRACT_REVIEW_V1": "PASS_WITH_NOTES",
+  "notes_classified": {
+    "dual_execution_attempt_yellow_on_combined_observe": "DOCUMENTED_LIMITATION",
+    "no_productive_venue_lifecycle_feed": "DOCUMENTED_LIMITATION",
+    "optional_g004_absence_not_red": "ACCEPTED_CONTRACT_BOUNDARY",
+    "ghv_global_closure_not_claimed": "ACCEPTED_CONTRACT_BOUNDARY"
+  },
+  "confirmed_defect_count": 0,
+  "unresolved_blocking_risk_count": 0
+}

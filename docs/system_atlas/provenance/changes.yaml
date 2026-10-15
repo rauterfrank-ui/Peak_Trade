@@ -1046,3 +1046,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_ghosv_current_execution_evidence_reader_v1.py
   notes: 'GHOSV Execution V1 read-only CURRENT evidence binding; execution-only bounded context; ADAPTER_MODE=DISABLED; no productive activation or venue POST; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:ghosv_execution_existing_evidence_coverage_v1
+  from: 94bd9ba87fb54dc54bede06c03810a1c14c487da
+  to: PENDING_CHANGE
+  type: TEST_EVIDENCE
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_ghosv_current_execution_cycle_evidence_reader_v1.py
+  notes: 'GHOSV Execution existing evidence coverage V1: governed-cycle ledger/transitions and optional G004 read-only readers; execution-only; ADAPTER_MODE=DISABLED; no venue POST; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
