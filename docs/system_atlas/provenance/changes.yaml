@@ -1039,3 +1039,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_run_pl_tf_002_productive_read_only_get_complete_v1.py
   notes: 'PR #7113: F1 ops runner requires grant store and binds Owner cumulative GET budget 9 for network capture; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:ghosv_execution_current_evidence_binding_v1
+  from: 57b9bb00935ad442ca3e80cff44475cc38fd859b
+  to: PENDING_CHANGE
+  type: TEST_EVIDENCE
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_ghosv_current_execution_evidence_reader_v1.py
+  notes: 'GHOSV Execution V1 read-only CURRENT evidence binding; execution-only bounded context; ADAPTER_MODE=DISABLED; no productive activation or venue POST; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
