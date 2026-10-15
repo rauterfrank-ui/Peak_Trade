@@ -117,11 +117,12 @@ def build_reconciliation_disposition_record_v1(
         "execution_environment": binding.environment,
         "instrument_id": binding.instrument_id,
         "native_id": binding.native_id,
-        "clordid": binding.clordid,
+        "clordid": envelope.client_order_id,
         "envelope_id": envelope.envelope_id,
         "envelope_digest": envelope.envelope_digest,
         "submit_attempt_id": str(submit_attempt_id or "").strip(),
         "attempt_digest": digest,
+        "venue_ord_id": str(post_submit_join.venue_order_id or "").strip() or None,
         "identity_digest": identity.identity_digest(),
         "local_submit_outcome": local_submit_outcome.value,
         "typed_post_submit_outcome": post_submit_join.typed_outcome,
@@ -153,6 +154,57 @@ def _load_enter_post_lifecycle_correlation_v1(*, store_root: Path | str) -> dict
     )
 
     return load_enter_post_lifecycle_correlation_v1(store_root=store_root)
+
+
+def _assert_authorization_binding_matches_envelope_and_correlation_v1(
+    *,
+    binding: FullCoreAuthorizationBindingV1,
+    envelope: FinalOrderEnvelopeV1,
+    correlation: Mapping[str, Any],
+) -> None:
+    """Binding must match envelope and durable correlation (fail-closed)."""
+    assert_envelope_unmodified_v1(envelope)
+    env_clord = str(envelope.client_order_id or "").strip()
+    bind_clord = str(binding.clordid or "").strip()
+    if not env_clord or not bind_clord:
+        raise PersistedReconciliationDispositionError("CLORDID_REQUIRED")
+    if bind_clord != env_clord:
+        raise PersistedReconciliationDispositionError("BINDING_CLORDID_ENVELOPE_MISMATCH")
+    corr_clord = str(correlation.get("clordid") or "").strip()
+    if corr_clord and corr_clord != env_clord:
+        raise PersistedReconciliationDispositionError("CORRELATION_CLORDID_ENVELOPE_MISMATCH")
+    env_digest = str(envelope.envelope_digest or "").strip()
+    bind_digest = str(binding.envelope_digest or "").strip()
+    if not env_digest or not bind_digest:
+        raise PersistedReconciliationDispositionError("ENVELOPE_DIGEST_REQUIRED")
+    if bind_digest != env_digest:
+        raise PersistedReconciliationDispositionError("BINDING_ENVELOPE_DIGEST_MISMATCH")
+    corr_digest = str(correlation.get("envelope_digest") or "").strip()
+    if corr_digest and corr_digest != env_digest:
+        raise PersistedReconciliationDispositionError("CORRELATION_ENVELOPE_DIGEST_MISMATCH")
+
+
+def _assert_reconciliation_identity_matches_attempt_v1(
+    *,
+    identity: FullCoreExchangeReconciliationIdentityV1,
+    envelope: FinalOrderEnvelopeV1,
+    submit_attempt_id: str,
+    post_submit_join: FullCorePostSubmitJoinResultV1,
+) -> None:
+    """Reconciliation identity must align with POST attempt (not a parallel order key)."""
+    env_clord = str(envelope.client_order_id or "").strip()
+    if str(identity.clordid or "").strip() != env_clord:
+        raise PersistedReconciliationDispositionError("IDENTITY_CLORDID_ENVELOPE_MISMATCH")
+    if str(identity.envelope_digest or "").strip() != str(envelope.envelope_digest or "").strip():
+        raise PersistedReconciliationDispositionError("IDENTITY_ENVELOPE_DIGEST_MISMATCH")
+    if str(identity.submit_attempt_id or "").strip() != str(submit_attempt_id or "").strip():
+        raise PersistedReconciliationDispositionError("IDENTITY_SUBMIT_ATTEMPT_MISMATCH")
+    join_clord = str(post_submit_join.client_order_id or "").strip()
+    if join_clord and join_clord != env_clord:
+        raise PersistedReconciliationDispositionError("POST_JOIN_CLORDID_ENVELOPE_MISMATCH")
+    venue_ord = str(post_submit_join.venue_order_id or "").strip()
+    if venue_ord and str(identity.exchange_ord_id or "").strip() not in {"", venue_ord}:
+        raise PersistedReconciliationDispositionError("IDENTITY_VENUE_ORD_ID_MISMATCH")
 
 
 def _assert_correlation_binds_attempt_v1(
@@ -206,8 +258,17 @@ def persist_post_attempt_reconciliation_disposition_v1(
         raise PersistedReconciliationDispositionError("ACCOUNT_SCOPE_CORRELATION_MISMATCH")
     if str(binding.native_id or "").strip() != str(correlation.get("native_id") or "").strip():
         raise PersistedReconciliationDispositionError("NATIVE_ID_CORRELATION_MISMATCH")
-    if str(identity.submit_attempt_id or "").strip() != str(submit_attempt_id or "").strip():
-        raise PersistedReconciliationDispositionError("IDENTITY_SUBMIT_ATTEMPT_MISMATCH")
+    _assert_authorization_binding_matches_envelope_and_correlation_v1(
+        binding=binding,
+        envelope=envelope,
+        correlation=correlation,
+    )
+    _assert_reconciliation_identity_matches_attempt_v1(
+        identity=identity,
+        envelope=envelope,
+        submit_attempt_id=submit_attempt_id,
+        post_submit_join=post_submit_join,
+    )
 
     record = build_reconciliation_disposition_record_v1(
         envelope=envelope,
@@ -270,8 +331,16 @@ def lookup_post_attempt_reconciliation_disposition_v1(
         raise PersistedReconciliationDispositionError("WRONG_ACCOUNT")
     if str(record.get("native_id") or "") != str(binding.native_id or "").strip():
         raise PersistedReconciliationDispositionError("WRONG_INSTRUMENT")
-    if str(record.get("clordid") or "") != str(binding.clordid or "").strip():
+    env_clord = str(envelope.client_order_id or "").strip()
+    if str(record.get("clordid") or "").strip() != env_clord:
         raise PersistedReconciliationDispositionError("WRONG_CLORDID")
+    if str(binding.clordid or "").strip() != env_clord:
+        raise PersistedReconciliationDispositionError("BINDING_CLORDID_ENVELOPE_MISMATCH")
+    if (
+        str(record.get("envelope_digest") or "").strip()
+        != str(envelope.envelope_digest or "").strip()
+    ):
+        raise PersistedReconciliationDispositionError("WRONG_ENVELOPE_DIGEST")
     if str(record.get("envelope_id") or "") != str(envelope.envelope_id or "").strip():
         raise PersistedReconciliationDispositionError("WRONG_ENVELOPE_ID")
     expected_digest = attempt_digest_v1(
