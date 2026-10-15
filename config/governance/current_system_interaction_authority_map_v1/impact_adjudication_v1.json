@@ -1,6 +1,6 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "e9757804a9b34ce731946eb21db14779cb6c192d",
+  "base_sha": "f5f76a4d4480089110f47078a56eb53dcd59ac2c",
   "head_sha": "PENDING_PR_HEAD",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
@@ -8,23 +8,25 @@
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/provenance/changes.yaml",
     "src/ops/ghosv_bounded_context_v1/execution_bounded_offline_observer_v1.py",
-    "src/ops/ghosv_bounded_context_v1/execution_offline_consistency_guard_v1.py",
-    "tests/ops/test_ghosv_execution_offline_consistency_guard_cross_file_v1.py"
+    "src/ops/ghosv_bounded_context_v1/execution_lifecycle_adjudication_v1.py",
+    "tests/ops/test_ghosv_execution_bounded_offline_observer_v1.py",
+    "tests/ops/test_ghosv_execution_lifecycle_adjudication_v1.py"
   ],
-  "changed_paths_sha256": "c8a27505d58daae87541788c514713216065204ff66ffb06a8c4fff7d9e14621",
+  "changed_paths_sha256": "b44c5cf396a0a3a3f1c9aa24903c06e88185d2a970093f8111b1939b1305db17",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/provenance/changes.yaml",
     "src/ops/ghosv_bounded_context_v1/execution_bounded_offline_observer_v1.py",
-    "src/ops/ghosv_bounded_context_v1/execution_offline_consistency_guard_v1.py",
-    "tests/ops/test_ghosv_execution_offline_consistency_guard_cross_file_v1.py"
+    "src/ops/ghosv_bounded_context_v1/execution_lifecycle_adjudication_v1.py",
+    "tests/ops/test_ghosv_execution_bounded_offline_observer_v1.py",
+    "tests/ops/test_ghosv_execution_lifecycle_adjudication_v1.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_ghosv_execution_offline_consistency_guard_cross_file_v1.py",
+    "tests/ops/test_ghosv_execution_lifecycle_adjudication_v1.py",
     "tests/ops/test_ghosv_execution_bounded_offline_observer_v1.py"
   ],
-  "reason": "GHOSV Execution cross-file guard contract remediation; repository-anchored EVIDENCE_ROOT and explicit Run/Cycle witnesses; diff-bound NO_MAP_IMPACT; AUTHORITY=NONE.",
+  "reason": "GHOSV Execution lifecycle adjudication correction; post_occurred-gated POST_SUBMISSION semantics; read-only observer only; diff-bound NO_MAP_IMPACT; AUTHORITY=NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }

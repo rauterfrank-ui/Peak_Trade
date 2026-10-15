@@ -1067,3 +1067,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_ghosv_execution_offline_consistency_guard_cross_file_v1.py
   notes: 'GHOSV Execution cross-file guard contract remediation: repository-anchored EVIDENCE_ROOT resolution and explicit Run/Cycle witness binding; read-only observer/guard only; ADAPTER_MODE=DISABLED; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:ghosv_execution_lifecycle_adjudication_correction_v1
+  from: f5f76a4d4480089110f47078a56eb53dcd59ac2c
+  to: PENDING_CHANGE
+  type: TEST_EVIDENCE
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_ghosv_execution_lifecycle_adjudication_v1.py
+  notes: 'GHOSV Execution lifecycle adjudication correction: POST_SUBMISSION_WITNESSED requires confirmed post_occurred or G004 submit disposition; POST_COUNT field witness not venue POST; read-only observer only; ADAPTER_MODE=DISABLED; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
