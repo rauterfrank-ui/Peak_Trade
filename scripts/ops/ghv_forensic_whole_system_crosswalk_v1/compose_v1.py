@@ -606,7 +606,14 @@ def run_forensic_crosswalk_v1(
         if manifest_path.is_file():
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
             repo_sha = str(manifest.get("repository_sha") or "")
-            if repo_sha and repo_sha != code_rev:
+            if not repo_sha.strip():
+                result.excluded.append(
+                    {
+                        "kind": "ghv_evidence_bundle",
+                        "reason": "missing_repository_sha_in_capture_manifest",
+                    }
+                )
+            elif repo_sha != code_rev:
                 result.excluded.append(
                     {
                         "kind": "ghv_evidence_bundle",

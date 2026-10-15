@@ -17,6 +17,10 @@ _LANDSCAPE_VALIDATOR = (
 )
 
 
+def _validator_script_repo_root() -> Path:
+    return _CENSUS_VALIDATOR.resolve().parents[2]
+
+
 @dataclass
 class SourceValidationResultV1:
     ok: bool
@@ -82,6 +86,8 @@ def validate_landscape_document_minimal(doc: dict[str, Any]) -> list[str]:
 def run_landscape_validator_subprocess(
     *, repo_root: Path, pt_launcher: Path
 ) -> tuple[list[str], bool]:
+    if repo_root.resolve() != _validator_script_repo_root().resolve():
+        return [], False
     if not _LANDSCAPE_VALIDATOR.is_file():
         return ["landscape_validator_missing"], False
     proc = subprocess.run(
@@ -99,6 +105,8 @@ def run_landscape_validator_subprocess(
 def run_census_validator_subprocess(
     *, repo_root: Path, pt_launcher: Path
 ) -> tuple[list[str], bool]:
+    if repo_root.resolve() != _validator_script_repo_root().resolve():
+        return [], False
     proc = subprocess.run(
         [str(pt_launcher), str(_CENSUS_VALIDATOR)],
         cwd=str(repo_root),

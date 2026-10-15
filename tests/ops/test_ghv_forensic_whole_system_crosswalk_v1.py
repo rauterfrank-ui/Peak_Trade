@@ -372,6 +372,28 @@ def test_decision_flow_without_contract_unresolved() -> None:
     assert "UNRESOLVED" in note
 
 
+def test_ghv_evidence_missing_repository_sha_excluded(tmp_path: Path) -> None:
+    evidence = tmp_path / "evidence"
+    evidence.mkdir()
+    (evidence / "ghv_pre_external_runtime_capture_manifest_v1.json").write_text(
+        json.dumps({}),
+        encoding="utf-8",
+    )
+    out = tmp_path / "out"
+    result = run_forensic_crosswalk_v1(
+        repo_root=REPO_ROOT,
+        output_dir=out,
+        rules_path=RULES,
+        evidence_root=evidence,
+        include_atlas=False,
+        **_REPO_NAV,
+    )
+    assert "ghv_evidence_attached" not in result.coverage
+    assert any(
+        e.get("reason") == "missing_repository_sha_in_capture_manifest" for e in result.excluded
+    )
+
+
 def test_conflicting_provenance_ghv_sha_mismatch(tmp_path: Path) -> None:
     evidence = tmp_path / "evidence"
     evidence.mkdir()
