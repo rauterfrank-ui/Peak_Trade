@@ -220,18 +220,18 @@ def generate_living_current_matrix_v1(
     else:
         matrix_status = MATRIX_STATUS_COMPLETE
 
+    manifest_rel = "living_current_matrix_manifest.v1.json"
     out.manifest = _build_manifest(
         sha=sha,
         status=matrix_status,
         reasons=status_reasons,
-        hashes=_collect_hashes(output_dir),
+        hashes=_collect_hashes(output_dir, exclude_rel={manifest_rel}),
         wp1_mode=out.wp1_graph_mode,
         snapshot_id=str(composed.get("snapshot_id") or crosswalk.snapshot_id),
         gaps=coverage_gaps,
         inspection_bundle=inspect.bundle_doc,
         integration_manifest=wp2a.manifest,
     )
-    _write_manifest(output_dir, out.manifest)
     (output_dir / "living_current_matrix_terminal_report.v1.json").write_text(
         json.dumps(
             {
@@ -251,7 +251,8 @@ def generate_living_current_matrix_v1(
         + "\n",
         encoding="utf-8",
     )
-    out.manifest["artifact_sha256"] = _collect_hashes(output_dir)
+    out.manifest["artifact_sha256"] = _collect_hashes(output_dir, exclude_rel={manifest_rel})
+    out.manifest["artifact_sha256"][manifest_rel] = _manifest_self_entry_hash(out.manifest)
     _write_manifest(output_dir, out.manifest)
 
     out.ok = matrix_status in (MATRIX_STATUS_COMPLETE, MATRIX_STATUS_PARTIAL)
@@ -262,14 +263,32 @@ def generate_living_current_matrix_v1(
     return out
 
 
-def _collect_hashes(output_dir: Path) -> dict[str, str]:
+def _collect_hashes(output_dir: Path, *, exclude_rel: set[str] | None = None) -> dict[str, str]:
+    excluded = exclude_rel or set()
     hashes: dict[str, str] = {}
     for path in sorted(output_dir.rglob("*.json")):
         rel = path.relative_to(output_dir).as_posix()
-        if path.name.startswith("."):
+        if path.name.startswith(".") or rel in excluded:
             continue
         hashes[rel] = _sha256_file(path)
     return hashes
+
+
+def _manifest_self_entry_hash(manifest: dict[str, Any]) -> str:
+    """Digest of manifest JSON with the self artifact_sha256 entry omitted."""
+    doc = json.loads(json.dumps(manifest, sort_keys=True))
+    artifacts = dict(doc.get("artifact_sha256") or {})
+    artifacts.pop("living_current_matrix_manifest.v1.json", None)
+    doc["artifact_sha256"] = artifacts
+    payload = json.dumps(doc, indent=2, sort_keys=True) + "\n"
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def verify_manifest_self_entry_hash(manifest: dict[str, Any]) -> bool:
+    stored = (manifest.get("artifact_sha256") or {}).get("living_current_matrix_manifest.v1.json")
+    if not stored:
+        return False
+    return stored == _manifest_self_entry_hash(manifest)
 
 
 def _build_manifest(

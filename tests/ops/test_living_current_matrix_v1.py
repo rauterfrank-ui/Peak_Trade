@@ -107,6 +107,7 @@ def test_generate_matrix_smoke(tmp_path: Path) -> None:
     pytest.importorskip("yaml")
     from scripts.ops.living_current_matrix_v1.generate_v1 import (
         generate_living_current_matrix_v1,
+        verify_manifest_self_entry_hash,
     )
 
     out = tmp_path / "matrix_out"
@@ -122,10 +123,7 @@ def test_generate_matrix_smoke(tmp_path: Path) -> None:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         assert manifest.get("GHV_RUNTIME_CORRELATION") == "NOT_IMPLEMENTED"
         assert manifest.get("GLOBAL_CAUSAL_CLOSURE_PROVEN") is False
-        manifest_hash = (manifest.get("artifact_sha256") or {}).get(
-            "living_current_matrix_manifest.v1.json"
-        )
-        assert manifest_hash
+        assert verify_manifest_self_entry_hash(manifest)
 
 
 def test_governance_atlas_periodic_workflow_contract() -> None:
