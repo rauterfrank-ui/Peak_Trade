@@ -123,13 +123,13 @@ INTEGRATION_GAP_CLASSIFICATIONS_V1: dict[str, IntegrationGapClassification] = {
         IntegrationGapClassification.ALREADY_IMPLEMENTED_AND_PROVEN
     ),
     "GAP_03_CAPITAL_GUARD_RESERVATION_ENVELOPE_PERMIT_IDENTITY": (
-        IntegrationGapClassification.ALREADY_IMPLEMENTED_AND_PROVEN
+        IntegrationGapClassification.ALREADY_IMPLEMENTED_BUT_UNPROVEN
     ),
     "GAP_04_POST_TO_RECONCILIATION_LIFECYCLE": (
         IntegrationGapClassification.ALREADY_IMPLEMENTED_AND_PROVEN
     ),
     "GAP_05_ATOMIC_DURABLE_CRASH_RECOVERY": (
-        IntegrationGapClassification.ALREADY_IMPLEMENTED_AND_PROVEN
+        IntegrationGapClassification.ALREADY_IMPLEMENTED_BUT_UNPROVEN
     ),
     "GAP_06_DISABLED_LIFECYCLE_HOOKS_DEFAULT": IntegrationGapClassification.INTENTIONAL_SAFETY_BOUNDARY,
     "GAP_07_REPRODUCIBLE_FULL_SYSTEM_PROOF": IntegrationGapClassification.ALREADY_IMPLEMENTED_AND_PROVEN,
@@ -806,6 +806,38 @@ def _apply_crash_injection_v1(crash_point: OfflineE2eCrashPoint) -> None:
         orch_mod.orchestrate_post_submit_lifecycle_reconciliation_v1 = _crash_before_recon
 
 
+PILOT_CAPITAL_GUARD_PREVALIDATED_PROVENANCE_LABEL_V1 = (
+    "PILOT_ENFORCE_PILOT_CAPITAL_GUARD_BEFORE_ENTER_POST_V1_OFFLINE_E2E"
+)
+
+
+def assert_pilot_capital_guard_prevalidated_provenance_v1(
+    *,
+    capital_guard_prevalidated: bool,
+    pilot_authorization_binding: Any | None,
+    envelope: FinalOrderEnvelopeV1,
+) -> None:
+    """Fail-closed: prevalidated guard must cite productive pilot bind, not a bare flag."""
+
+    if capital_guard_prevalidated is not True:
+        return
+    if pilot_authorization_binding is None:
+        raise CurrentFullSystemOfflineE2eIntegrationProofError(
+            "PILOT_CAPITAL_GUARD_PROVENANCE_REQUIRED"
+        )
+    binding_cl = str(getattr(pilot_authorization_binding, "clordid", "") or "")
+    env_cl = str(envelope.client_order_id or "")
+    if not binding_cl or binding_cl != env_cl:
+        raise CurrentFullSystemOfflineE2eIntegrationProofError(
+            "PILOT_CAPITAL_GUARD_PROVENANCE_CLORDID_MISMATCH"
+        )
+    owner_go = str(getattr(pilot_authorization_binding, "owner_go", "") or "")
+    if "PILOT_CAPITAL_GUARD" not in owner_go and "CAPITAL_GUARD" not in owner_go:
+        raise CurrentFullSystemOfflineE2eIntegrationProofError(
+            "PILOT_CAPITAL_GUARD_PROVENANCE_OWNER_GO_INVALID"
+        )
+
+
 def run_production_pre_external_to_fake_post_chain_v1(
     *,
     closure: Any,
@@ -854,6 +886,11 @@ def run_production_pre_external_to_fake_post_chain_v1(
 
     envelope = resolve_fresh_executable_enter_final_order_envelope_from_pre_external_closure_v1(
         closure
+    )
+    assert_pilot_capital_guard_prevalidated_provenance_v1(
+        capital_guard_prevalidated=capital_guard_prevalidated,
+        pilot_authorization_binding=pilot_authorization_binding,
+        envelope=envelope,
     )
     envelope_snapshot = state_root / ENVELOPE_SNAPSHOT_FILENAME
     envelope_snapshot.write_text(

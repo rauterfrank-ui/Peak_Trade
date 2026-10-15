@@ -1,39 +1,31 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "0277fbf1d91a2f428fc4240b19f5005cb66b3e53",
-  "head_sha": "b7d1390b419e6e66cd86df8f40d11cef6b60dbb8",
   "changed_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "docs/ops/specs/CURRENT_FULL_SYSTEM_OFFLINE_E2E_INTEGRATION_PROOF_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/run_current_productive_unknown_post_attempt_read_only_reconciliation_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_unknown_post_attempt_read_only_reconciliation_v1.py",
-    "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
-    "tests/ops/test_current_productive_post_hard_crash_matrix_harness_v1.py"
+    "scripts/ops/run_current_full_system_offline_e2e_crash_worker_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_full_system_offline_e2e_integration_proof_v1.py",
+    "tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py",
+    "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py"
   ],
-  "changed_paths_sha256": "111f90643050e70a0b0e4307f507cd9b1246d2cfacd49c81fe8c7d286bf715a9",
+  "changed_paths_sha256": "a2a79254351b602295d17ead55a6716e50130723b24cde48f82cc652d4fa1428",
   "covered_candidate_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
+    "docs/ops/specs/CURRENT_FULL_SYSTEM_OFFLINE_E2E_INTEGRATION_PROOF_V1.md",
     "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/generated/ATLAS_CHANGE_IMPACT.md",
     "docs/system_atlas/provenance/changes.yaml",
-    "docs/system_atlas/provenance/impact_state.yaml",
-    "scripts/ops/run_current_productive_unknown_post_attempt_read_only_reconciliation_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_unknown_post_attempt_read_only_reconciliation_v1.py",
-    "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
-    "tests/ops/test_current_productive_post_hard_crash_matrix_harness_v1.py"
+    "scripts/ops/run_current_full_system_offline_e2e_crash_worker_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_full_system_offline_e2e_integration_proof_v1.py",
+    "tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py",
+    "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_current_productive_post_first_real_attempt_safety_closure_v1.py",
-    "tests/ops/test_current_productive_post_hard_crash_matrix_harness_v1.py"
+    "docs/ops/specs/CURRENT_FULL_SYSTEM_OFFLINE_E2E_INTEGRATION_PROOF_V1.md",
+    "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py"
   ],
-  "reason": "GET-only UNKNOWN POST read-only reconciliation output contract remediation: cross-surface fail-closed adjudication and structured technical GET error fields; PR #7109 Bugbot follow-up aligns technical_get_error_present with technical_get_error_classes (order-relevant blocking unchanged); offline fake-transport regressions only; no CSIA authority-edge or interaction-map semantic change; RUNTIME_AUTHORIZATION_EFFECT=NONE; POST/durable apply unchanged; diff-bound NO_MAP_IMPACT; AUTHORITY=NONE.",
-  "verdict": "NO_MAP_IMPACT",
-  "selector_used_as_map_impact_authority": false
+  "reason": "PR #7110 offline full-system E2E integration proof harness: wires existing productive joins under fake transport and OFFLINE_INJECTED reconciliation only; RUNTIME_AUTHORIZATION_EFFECT=NONE; REAL_EXCHANGE_POST_COUNT=0; REAL_EXCHANGE_GET_COUNT=0; apply_durable_atomic_state=false on production chain; pilot capital guard skip requires enforce_pilot_capital_guard_before_enter_post_v1 authorization_binding provenance; no CSIA source_v1.json semantic edge change; diff-bound NO_MAP_IMPACT; AUTHORITY=NONE.",
+  "selector_used_as_map_impact_authority": false,
+  "verdict": "NO_MAP_IMPACT"
 }

@@ -5170,6 +5170,7 @@ entities:
   notes: Fail-closed companion C2 runtime conversion scaffold reusing read-binding and algebra owners; passthrough fraction default; producer binding deferred to scoped Owner-GO. Does not confer external effect or POST authority. ATLAS_AUTHORITY=NONE.
   # atlas_entity_review: PR #7069 pre-completion P/S/T run evidence retirement; reference/fixture rebind only; TOUCHED_BUT_SEMANTICALLY_UNCHANGED; AUTHORITY=NONE; POST_COUNT=0.
 - id: RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
+  # atlas_entity_review: PR #7110 offline full-system E2E integration proof harness (GAP-TRUE-01 → fake POST → OFFLINE_INJECTED recon); composition/wiring only; apply_durable_atomic_state=false; no Live/POST activation; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: GHV pilot guarded Enter-POST admission modules on one-shot join + send seam provenance; fail-closed offline regression; no Live/Testnet activation; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7102 SEC-001 secret-safe fail-closed reconciliation error classification on DW wiring module; observability-only; RUNTIME_SEMANTICS_CHANGED=false; AUTHORITY=NONE; POST_COUNT=0.
   # atlas_entity_review: PR #7101 default-off DW exchange reconciliation wiring after one-shot POST join; optional OFFLINE_INJECTED/PRODUCTIVE_READ_ONLY modes; send seam unchanged; AUTHORITY=NONE; POST_COUNT=0.
@@ -5192,7 +5193,7 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:ghv_current_pilot_post_guarded_enter_admission_v1
+  modified_by: CHANGE:pr_7110_offline_full_system_e2e_integration_proof_v1
   source_paths:
   - src/ops/capability_11_long_running_testnet_proven_prep_eval_v1/verifier_v1.py
   - src/ops/offline_execution_permission_and_position_creation_producer_wiring_v1/route_c_net_mode_posside_first_party_census_v1.py

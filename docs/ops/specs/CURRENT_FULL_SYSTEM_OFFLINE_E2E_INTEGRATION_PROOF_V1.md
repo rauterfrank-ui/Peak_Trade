@@ -34,11 +34,13 @@ Offline pytest: `tests/ops/test_current_full_system_offline_e2e_integration_proo
 | `PRE_EXTERNAL_CURRENT_PROOF` | PASS via same closure envelope |
 | `FULL_CHAIN_WIRED` | true (GAP-TRUE-01 → pilot bind → one-shot fake POST → OFFLINE_INJECTED recon) |
 | `FULL_CHAIN_OFFLINE_PROVEN` | true (witness `FAKE_POST_COUNT=1`, standing `REAL_*=0`) |
-| `CRASH_RESTART_PROOF` | PASS (subprocess worker + durable witness; exit 91/93 crash points) |
+| `CRASH_RESTART_PROOF` | PASS (subprocess worker + durable fake-POST witness; exit 91/93) |
+| `ATOMIC_RECOVERY` / productive durable apply | NOT_PROVEN (`apply_durable_atomic_state=false` on production chain) |
 | `LIVE_K1_GET_PROVEN` / `LIVE_POST_PROVEN` | NOT_PROVEN (explicitly out of scope) |
 
-Capital guard on the production chain reuses pilot post-bind evidence (`capital_guard_prevalidated`)
-when the offline owner-authorization fixture already sealed pilot admission; full-core
-`OFFLINE_STUB` join remains covered by downstream lifecycle tests.
+Capital guard on the production chain skips full-core `OFFLINE_STUB` join only when
+`capital_guard_prevalidated=true` **and** a productive `FullCoreAuthorizationBindingV1`
+from `enforce_pilot_capital_guard_before_enter_post_v1` is supplied (clOrdId + owner_go
+provenance check). Full-core capital guard join remains proven in downstream lifecycle tests.
 
 Multiprocess entry: `scripts/ops/run_current_full_system_offline_e2e_crash_worker_v1.py`

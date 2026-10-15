@@ -33,6 +33,7 @@ from tests.ops._current_full_system_offline_e2e_test_helpers_v1 import (
 )
 
 from src.ops.full_core_live_path_composition_root_v1.current_full_system_offline_e2e_integration_proof_v1 import (
+    CurrentFullSystemOfflineE2eIntegrationProofError,
     FAKE_EXCHANGE_TRANSPORT_CLASS,
     INTEGRATION_GAP_CLASSIFICATIONS_V1,
     IntegrationGapClassification,
@@ -77,6 +78,38 @@ def _forbid_real_sockets(monkeypatch: pytest.MonkeyPatch) -> None:
 
     monkeypatch.setattr(socket, "create_connection", _boom)
     monkeypatch.setattr(socket.socket, "connect", _boom)
+
+
+def test_capital_guard_prevalidated_requires_pilot_binding_provenance(
+    tmp_path: Path,
+) -> None:
+    bound, gap, origin_sha, _ = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
+    closure = gap.closure
+    state_root = tmp_path / "no_pilot_binding"
+    prepare_offline_owner_authorization_for_one_shot_v1(
+        state_root=state_root,
+        closure=closure,
+        origin_main_sha=origin_sha,
+        bound=bound,
+    )
+    fixture = offline_recon_fixture_for_envelope_v1(closure)
+    with pytest.raises(
+        CurrentFullSystemOfflineE2eIntegrationProofError,
+        match="PILOT_CAPITAL_GUARD_PROVENANCE_REQUIRED",
+    ):
+        run_production_pre_external_to_fake_post_chain_v1(
+            closure=closure,
+            bound_instrument=bound,
+            origin_main_sha=origin_sha,
+            state_root=state_root,
+            read_only_get_transport=pilot_get_transport_v1(native_inst_id=str(bound.venue_native_id)),
+            offline_recon_fixture=fixture,
+            k1_backend=fake_k1_backend_v1(),
+            post_owner_go_persisted=True,
+            admission_seal_established=True,
+            capital_guard_prevalidated=True,
+            pilot_authorization_binding=None,
+        )
 
 
 def test_gap_registry_documents_boundary_audit() -> None:
