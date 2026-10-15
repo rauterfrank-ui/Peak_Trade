@@ -10,7 +10,6 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass, replace
-from decimal import Decimal
 from enum import Enum
 from io import BytesIO
 from pathlib import Path
@@ -276,19 +275,26 @@ def format_pretrade_reference_mark_px_v1(mark_px: float | str) -> str:
     return text.rstrip("0").rstrip(".") or "0"
 
 
-def offline_e2e_natural_enter_capital_guard_config_v1() -> Any:
-    """OFFLINE_STUB guard caps sized for GAP-TRUE-01 envelope evidence (harness-only)."""
+OFFLINE_E2E_NATURAL_ENTER_GUARD_CONFIG_REL_PATH = (
+    "config/ops/current_full_core_capital_guard_offline_e2e_natural_enter_v1.json"
+)
+
+
+def load_offline_e2e_natural_enter_full_core_guard_config_v1() -> Any:
+    """File-backed OFFLINE_STUB guard config for GAP-TRUE-01 envelope (harness-only).
+
+    ``config_digest`` is the SHA-256 of the on-disk JSON bytes; bindings must use the
+    same digest when passing this config to the join (no production-digest forgery).
+    """
 
     from src.ops.full_core_live_path_composition_root_v1.current_full_core_capital_guard_v1 import (
-        ratified_offline_full_core_guard_config_v1,
+        load_full_core_capital_guard_config_v1,
     )
 
-    return replace(
-        ratified_offline_full_core_guard_config_v1(),
-        max_single_order_notional=Decimal("25000"),
-        max_incremental_initial_margin=Decimal("25000"),
-        max_aggregate_exposure=Decimal("25000"),
-        max_session_capital_commitment=Decimal("25000"),
+    repo_root = Path(__file__).resolve().parents[3]
+    return load_full_core_capital_guard_config_v1(
+        repo_root=repo_root,
+        config_path=repo_root / OFFLINE_E2E_NATURAL_ENTER_GUARD_CONFIG_REL_PATH,
     )
 
 
@@ -305,9 +311,10 @@ def run_pre_external_capital_guard_phase_v1(
     if envelope is None or not isinstance(envelope, FinalOrderEnvelopeV1):
         raise CurrentFullSystemOfflineE2eIntegrationProofError("FINAL_ORDER_ENVELOPE_MISSING")
     join_binding = _build_join_binding_from_cycle_v1(cycle=cycle, handoff=handoff)
-    guard_config = replace(
-        offline_e2e_natural_enter_capital_guard_config_v1(),
-        config_digest=join_binding.guard_config_digest,
+    guard_config = load_offline_e2e_natural_enter_full_core_guard_config_v1()
+    join_binding = replace(
+        join_binding,
+        guard_config_digest=str(guard_config.config_digest).strip().lower(),
     )
     return run_full_core_pre_post_capital_guard_join_v1(
         binding=join_binding,

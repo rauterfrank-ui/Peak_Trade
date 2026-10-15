@@ -25,6 +25,10 @@ from src.ops.full_core_live_path_composition_root_v1.current_full_system_offline
     load_offline_e2e_worker_result_v1,
     persist_offline_e2e_worker_input_v1,
     format_pretrade_reference_mark_px_v1,
+    load_offline_e2e_natural_enter_full_core_guard_config_v1,
+    build_governed_cycle_from_pre_external_closure_v1,
+    build_handoff_from_pre_external_closure_v1,
+    run_pre_external_capital_guard_phase_v1,
     run_production_pre_external_to_fake_post_chain_v1,
 )
 from tests.ops._current_full_system_offline_e2e_test_helpers_v1 import (
@@ -582,10 +586,18 @@ def test_gap_03_full_core_capital_guard_production_chain_positive(tmp_path: Path
         pilot_authorization_binding=pilot_auth,
         pretrade_reference_mark_px=ref_mark,
     )
+    e2e_guard_cfg = load_offline_e2e_natural_enter_full_core_guard_config_v1()
     assert chain.full_core_capital_guard_invoked is True
     assert chain.full_core_capital_guard_join_mode == "OFFLINE_STUB"
     assert chain.full_core_capital_guard_binding_digest
     assert chain.capital_guard_allowed is True
+    guard_state_files = list((state_root / "atomic" / "capital_guard").glob("*.state.json"))
+    assert guard_state_files
+    guard_state = json.loads(guard_state_files[0].read_text(encoding="utf-8"))
+    assert (
+        str(guard_state["binding"]["guard_config_digest"]).lower()
+        == str(e2e_guard_cfg.config_digest).lower()
+    )
     assert chain.fake_post_witness_count == 1
     assert closure.current_productive_decision_result == "EXECUTABLE_VENUE_PLAN_BOUND"
 
@@ -621,6 +633,64 @@ def test_gap_03_full_core_capital_guard_blocks_without_reference_mark(tmp_path: 
             pilot_authorization_binding=pilot_auth,
             pretrade_reference_mark_px=None,
         )
+
+
+def test_gap_03_guard_config_digest_mismatch_blocks_false_pass(tmp_path: Path) -> None:
+    from dataclasses import replace
+
+    from src.ops.full_core_live_path_composition_root_v1.current_full_core_capital_guard_v1 import (
+        load_full_core_capital_guard_config_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.current_full_system_offline_e2e_integration_proof_v1 import (
+        _build_join_binding_from_cycle_v1,
+    )
+    from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_join_v1 import (
+        FullCoreCapitalGuardJoinMode,
+        run_full_core_pre_post_capital_guard_join_v1,
+    )
+
+    bound, gap, origin_sha, _, mark_px = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
+    ref_mark = format_pretrade_reference_mark_px_v1(mark_px)
+    cycle = build_governed_cycle_from_pre_external_closure_v1(gap.closure)
+    handoff = build_handoff_from_pre_external_closure_v1(
+        closure=gap.closure,
+        bound_instrument=bound,
+        origin_main_sha=origin_sha,
+        reference_mark_px=ref_mark,
+    )
+    join_binding = _build_join_binding_from_cycle_v1(cycle=cycle, handoff=handoff)
+    production_digest = load_full_core_capital_guard_config_v1().config_digest
+    assert join_binding.guard_config_digest == production_digest
+    e2e_cfg = load_offline_e2e_natural_enter_full_core_guard_config_v1()
+    assert e2e_cfg.config_digest != production_digest
+    envelope = cycle.final_order_envelope
+    assert envelope is not None
+    result = run_full_core_pre_post_capital_guard_join_v1(
+        binding=join_binding,
+        envelope=envelope,
+        join_mode=FullCoreCapitalGuardJoinMode.OFFLINE_STUB,
+        margin_evidence=None,
+        exposure_evidence=None,
+        atomic_state_dir=tmp_path / "digest_mismatch",
+        session_id="gap-03-digest-mismatch",
+        pretrade_reference_mark_px=ref_mark,
+        guard_config=e2e_cfg,
+    )
+    assert result.guard_blocked is True
+    assert "GUARD_CONFIG_DIGEST_MISMATCH" in result.reasons
+
+    rebound = replace(
+        join_binding,
+        guard_config_digest=str(e2e_cfg.config_digest).strip().lower(),
+    )
+    allowed = run_pre_external_capital_guard_phase_v1(
+        cycle=cycle,
+        handoff=handoff,
+        atomic_state_dir=tmp_path / "digest_bound",
+    )
+    assert allowed.guard_allowed is True
+    assert allowed.guard_blocked is False
+    assert rebound.guard_config_digest == str(e2e_cfg.config_digest).lower()
 
 
 def test_gap_05_atomic_durable_apply_isolated_state(tmp_path: Path) -> None:

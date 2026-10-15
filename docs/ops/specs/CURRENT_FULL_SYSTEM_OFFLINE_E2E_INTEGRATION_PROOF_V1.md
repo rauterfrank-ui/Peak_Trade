@@ -45,8 +45,12 @@ Capital guard on the production chain skips full-core `OFFLINE_STUB` join only w
 `capital_guard_prevalidated=true` **and** a productive `FullCoreAuthorizationBindingV1`
 from `enforce_pilot_capital_guard_before_enter_post_v1` is supplied (clOrdId + owner_go
 provenance check). GAP-03 proofs set `capital_guard_prevalidated=false` and supply
-`pretrade_reference_mark_px` (from GAP-TRUE-01 mark). Crash restart after exit 91
-re-enters with pilot prevalidated only (full-core authorization is single-use).
+`pretrade_reference_mark_px` (from GAP-TRUE-01 mark). Full-core guard caps for the
+natural-enter envelope come from file-backed harness config
+`config/ops/current_full_core_capital_guard_offline_e2e_natural_enter_v1.json`; the
+join binding `guard_config_digest` is rebound to that file digest (never the production
+JSON digest with mutated caps). Crash restart after exit 91 re-enters with pilot
+prevalidated only (full-core authorization is single-use).
 
 Worker env: `PEAK_TRADE_OFFLINE_E2E_USE_FULL_CORE_CAPITAL_GUARD`, `PEAK_TRADE_OFFLINE_E2E_APPLY_DURABLE_ATOMIC`.
 
