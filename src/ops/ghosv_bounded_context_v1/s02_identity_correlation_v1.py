@@ -40,7 +40,8 @@ def correlate_evidence_v1(
             status = CORRELATION_CONFLICT
             reasons.append("INSTRUMENT_ID_CONFLICT")
         if not client_ids and not exchange_ids:
-            status = CORRELATION_UNKNOWN
+            if status != CORRELATION_CONFLICT:
+                status = CORRELATION_UNKNOWN
             reasons.append("NO_ORDER_IDENTITY")
         client_order_id = next(iter(client_ids), "")
         exchange_order_id = next(iter(exchange_ids), "")

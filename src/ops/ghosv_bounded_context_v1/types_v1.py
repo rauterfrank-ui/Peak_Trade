@@ -124,3 +124,4 @@ class GhosvBoundedContextResultV1:
     adapter_decision: GhosvSafetyAdapterDecisionV1
     witness: Optional[GhosvSafetyResponseWitnessV1]
     dedupe_keys: Tuple[str, ...]
+    ingest_rejected: Tuple[str, ...] = ()

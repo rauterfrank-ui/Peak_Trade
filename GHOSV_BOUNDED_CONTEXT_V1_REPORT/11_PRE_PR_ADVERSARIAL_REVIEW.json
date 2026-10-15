@@ -1,14 +1,23 @@
 {
   "PRE_PR_ADVERSARIAL_CONTRACT_REVIEW_V1": "PASS",
   "classification": "INFERENCE",
+  "scope": "PR7121_bugbot_remediation_bc75e06f7",
   "findings": [],
   "checks": [
-    "Safety adapter disabled by default",
-    "No kill switch file mutation in code paths",
-    "No external POST",
-    "EXTERNAL_EFFECT_AUTHORIZED unchanged",
-    "Unknown never GREEN in tests",
-    "Duplicate incident replay stable dedupe_keys"
+    "Recon HARD_STOP_CLASSES + hard_stop flag never TRAFFIC_GREEN",
+    "MATCH-only recon may be GREEN; RECOVERABLE_DRIFT and unknown classes YELLOW",
+    "INSTRUMENT_ID_CONFLICT not downgraded by NO_ORDER_IDENTITY",
+    "Missing fill_id / fill_quantity yield YELLOW not GREEN",
+    "EVIDENCE_COMPLETENESS blocks aggregate GREEN when completeness != COMPLETE",
+    "ingest_rejected surfaced on result + EVIDENCE_INGEST_INTEGRITY finding",
+    "Productive recon file loader maps canonical evidence fields",
+    "Safety adapter disabled; ADAPTER_MODE=DISABLED unchanged",
+    "30/30 targeted pytest PASS offline"
   ],
-  "note": "Local offline review; GitHub CI not executed in this WP"
+  "bugbot_adjudication": {
+    "total": 7,
+    "confirmed_remediated": 7,
+    "false_positive": 0
+  },
+  "note": "Post-Bugbot minimal contract fix; no productive activation"
 }

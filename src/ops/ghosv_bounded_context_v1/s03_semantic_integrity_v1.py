@@ -11,10 +11,15 @@ from src.ops.ghosv_bounded_context_v1.constants_v1 import (
     TRAFFIC_YELLOW,
 )
 from src.ops.ghosv_bounded_context_v1.types_v1 import (
+    GhosvCompleteness,
     GhosvCorrelationGroupV1,
     GhosvEvidenceKind,
     GhosvEvidenceRecordV1,
     GhosvIntegrityFindingV1,
+)
+from src.ops.productive_reconciliation_runtime_binding_v1.taxonomy_v1 import (
+    HARD_STOP_CLASSES,
+    ProductiveReconciliationClass,
 )
 
 
@@ -37,13 +42,54 @@ def _dec(
     )
 
 
+def _recon_traffic(recon: GhosvEvidenceRecordV1) -> tuple[str, str]:
+    cls = str(
+        recon.payload.get("classification")
+        or recon.payload.get("reconciliation_classification")
+        or ""
+    ).upper()
+    if recon.payload.get("hard_stop") is True:
+        return TRAFFIC_RED, "RECON_HARD_STOP_FLAG"
+    if cls in {c.value for c in HARD_STOP_CLASSES} or cls in {"HARD_STOP", "UNRECOVERABLE_DRIFT"}:
+        return TRAFFIC_RED, f"RECON_{cls or 'HARD_STOP'}"
+    if cls == ProductiveReconciliationClass.MATCH.value:
+        return TRAFFIC_GREEN, "RECON_MATCH"
+    if cls == ProductiveReconciliationClass.RECOVERABLE_DRIFT.value:
+        return TRAFFIC_YELLOW, "RECON_RECOVERABLE_DRIFT"
+    if cls:
+        return TRAFFIC_YELLOW, f"RECON_NON_ALPHA_SAFE_{cls}"
+    return TRAFFIC_YELLOW, "RECON_UNKNOWN"
+
+
 def evaluate_semantic_integrity_v1(
     *,
     records: Sequence[GhosvEvidenceRecordV1],
     groups: Sequence[GhosvCorrelationGroupV1],
+    ingest_rejected: Sequence[str] = (),
 ) -> tuple[GhosvIntegrityFindingV1, ...]:
     findings: list[GhosvIntegrityFindingV1] = []
     refs_all = tuple(r.event_id for r in records)
+
+    if ingest_rejected:
+        findings.append(
+            _dec(
+                TRAFFIC_YELLOW,
+                "EVIDENCE_INGEST_INTEGRITY",
+                "INGEST_REJECTED",
+                refs_all,
+            )
+        )
+
+    incomplete = [r for r in records if r.completeness != GhosvCompleteness.COMPLETE.value]
+    if incomplete:
+        findings.append(
+            _dec(
+                TRAFFIC_YELLOW,
+                "EVIDENCE_COMPLETENESS",
+                "INCOMPLETE_OR_UNKNOWN_EVIDENCE",
+                tuple(r.event_id for r in incomplete),
+            )
+        )
 
     envelopes = _by_kind(records, GhosvEvidenceKind.ORDER_ENVELOPE.value)
     acks = _by_kind(records, GhosvEvidenceKind.ORDER_ACK.value)
@@ -103,15 +149,21 @@ def evaluate_semantic_integrity_v1(
         findings.append(_dec(TRAFFIC_YELLOW, "ORDER_ACK_SEMANTICS", "ACK_NOT_OBSERVED", refs_all))
 
     # FILL_IDENTITY + DUPLICATE_FILL
-    fill_ids = [f.fill_id for f in fills if f.fill_id]
-    if fill_ids and len(set(fill_ids)) != len(fill_ids):
-        findings.append(
-            _dec(TRAFFIC_RED, "DUPLICATE_FILL_INTEGRITY", "DUPLICATE_FILL_ID", refs_all)
-        )
-    elif fills:
-        findings.append(
-            _dec(TRAFFIC_GREEN, "DUPLICATE_FILL_INTEGRITY", "UNIQUE_FILL_IDS", refs_all)
-        )
+    if fills:
+        missing_fill_id = any(not f.fill_id for f in fills)
+        fill_ids = [f.fill_id for f in fills if f.fill_id]
+        if missing_fill_id:
+            findings.append(
+                _dec(TRAFFIC_YELLOW, "FILL_IDENTITY_INTEGRITY", "MISSING_FILL_ID", refs_all)
+            )
+        elif len(set(fill_ids)) != len(fill_ids):
+            findings.append(
+                _dec(TRAFFIC_RED, "DUPLICATE_FILL_INTEGRITY", "DUPLICATE_FILL_ID", refs_all)
+            )
+        else:
+            findings.append(
+                _dec(TRAFFIC_GREEN, "DUPLICATE_FILL_INTEGRITY", "UNIQUE_FILL_IDS", refs_all)
+            )
     else:
         findings.append(
             _dec(TRAFFIC_YELLOW, "FILL_IDENTITY_INTEGRITY", "NO_FILL_EVIDENCE", refs_all)
@@ -119,9 +171,11 @@ def evaluate_semantic_integrity_v1(
 
     # FILL_QUANTITY_INTEGRITY
     qty_ok = True
+    missing_qty = False
     for f in fills:
         qty = f.payload.get("fill_quantity")
         if qty is None:
+            missing_qty = True
             continue
         try:
             if Decimal(str(qty)) < 0:
@@ -138,6 +192,10 @@ def evaluate_semantic_integrity_v1(
     if fills and not qty_ok:
         findings.append(
             _dec(TRAFFIC_RED, "FILL_QUANTITY_INTEGRITY", "QTY_OVERFLOW_OR_INVALID", refs_all)
+        )
+    elif fills and missing_qty:
+        findings.append(
+            _dec(TRAFFIC_YELLOW, "FILL_QUANTITY_INTEGRITY", "MISSING_FILL_QUANTITY", refs_all)
         )
     elif fills:
         findings.append(_dec(TRAFFIC_GREEN, "FILL_QUANTITY_INTEGRITY", "OK", refs_all))
@@ -188,30 +246,8 @@ def evaluate_semantic_integrity_v1(
 
     # RECONCILIATION_CONSISTENCY
     for recon in recons:
-        cls = str(
-            recon.payload.get("classification")
-            or recon.payload.get("reconciliation_classification")
-            or ""
-        )
-        if cls.upper() in {"HARD_STOP", "UNRECOVERABLE_DRIFT"}:
-            findings.append(
-                _dec(
-                    TRAFFIC_RED,
-                    "RECONCILIATION_CONSISTENCY",
-                    f"RECON_{cls.upper()}",
-                    (recon.event_id,),
-                )
-            )
-        elif cls:
-            findings.append(
-                _dec(TRAFFIC_GREEN, "RECONCILIATION_CONSISTENCY", "RECON_OK", (recon.event_id,))
-            )
-        else:
-            findings.append(
-                _dec(
-                    TRAFFIC_YELLOW, "RECONCILIATION_CONSISTENCY", "RECON_UNKNOWN", (recon.event_id,)
-                )
-            )
+        traffic, reason = _recon_traffic(recon)
+        findings.append(_dec(traffic, "RECONCILIATION_CONSISTENCY", reason, (recon.event_id,)))
 
     if not recons:
         findings.append(

@@ -39,7 +39,11 @@ def run_ghosv_bounded_context_v1(
 ) -> GhosvBoundedContextResultV1:
     ingest = ingest_evidence_records_v1(raw_records)
     groups = correlate_evidence_v1(ingest.records)
-    findings = evaluate_semantic_integrity_v1(records=ingest.records, groups=groups)
+    findings = evaluate_semantic_integrity_v1(
+        records=ingest.records,
+        groups=groups,
+        ingest_rejected=ingest.rejected,
+    )
     trade_ids = tuple(sorted({g.trade_id for g in groups if g.trade_id}))
     traffic = aggregate_traffic_v1(findings)
     traffic_by_trade = aggregate_traffic_by_trade_v1(findings, trade_ids)
@@ -64,4 +68,5 @@ def run_ghosv_bounded_context_v1(
         adapter_decision=adapter,
         witness=witness,
         dedupe_keys=dedupe_incident_keys_v1(incidents),
+        ingest_rejected=ingest.rejected,
     )

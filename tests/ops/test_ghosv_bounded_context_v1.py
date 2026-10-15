@@ -322,3 +322,66 @@ def test_25_protected_contracts_unchanged():
     )
 
     assert EXTERNAL_EFFECT_AUTHORIZED is False
+
+
+def test_26_recon_missing_truth_not_green():
+    records = [
+        _base(
+            kind=GhosvEvidenceKind.RECONCILIATION_GATE.value,
+            payload={"classification": "MISSING_TRUTH", "hard_stop": True},
+        ),
+    ]
+    res = run_ghosv_bounded_context_v1(records)
+    assert res.traffic_overall == TRAFFIC_RED
+
+
+def test_27_instrument_conflict_without_order_ids_stays_red():
+    records = [
+        _base(kind=GhosvEvidenceKind.ORDER_ENVELOPE.value, instrument_id="A", client_order_id=""),
+        _base(
+            kind=GhosvEvidenceKind.ORDER_ENVELOPE.value,
+            instrument_id="B",
+            client_order_id="",
+            event_id="e2",
+        ),
+    ]
+    res = run_ghosv_bounded_context_v1(records)
+    assert res.traffic_overall == TRAFFIC_RED
+
+
+def test_28_missing_fill_id_not_green():
+    records = [
+        _base(kind=GhosvEvidenceKind.FILL.value, fill_id="", payload={"fill_quantity": "1"}),
+    ]
+    res = run_ghosv_bounded_context_v1(records)
+    assert res.traffic_overall != TRAFFIC_GREEN
+    assert any(f.reason == "MISSING_FILL_ID" for f in res.findings)
+
+
+def test_29_ingest_rejection_surfaces_yellow():
+    res = run_ghosv_bounded_context_v1([{"kind": "NOT_A_KIND"}])
+    assert res.ingest_rejected
+    assert res.traffic_overall == TRAFFIC_YELLOW
+
+
+def test_30_productive_recon_file_loader_identity(tmp_path):
+    from src.ops.ghosv_bounded_context_v1.s01_evidence_ingest_v1 import (
+        load_productive_reconciliation_evidence_file_v1,
+    )
+
+    payload = {
+        "classification": "MATCH",
+        "config_digest": "cfg-digest-abc",
+        "single_writer_identity": "productive_portfolio_position_state_writer_v1",
+        "observed_state_digest": "obs-digest",
+        "event_time_unix": 1.0,
+        "wall_time_unix": 2.0,
+        "mutation_plan": {"steps": [{"instrument_id": "ETH-USDT-SWAP"}]},
+        "hard_stop": False,
+    }
+    path = tmp_path / "productive_reconciliation_evidence_v1.json"
+    path.write_text(__import__("json").dumps(payload), encoding="utf-8")
+    rec = load_productive_reconciliation_evidence_file_v1(path)
+    assert rec.trade_id == "productive_portfolio_position_state_writer_v1"
+    assert rec.instrument_id == "ETH-USDT-SWAP"
+    assert rec.correlation_context == "obs-digest"

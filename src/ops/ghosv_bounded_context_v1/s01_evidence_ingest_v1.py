@@ -134,19 +134,33 @@ def load_productive_reconciliation_evidence_file_v1(path: Path) -> GhosvEvidence
     if not isinstance(data, dict):
         raise GhosvEvidenceIngestError("RECON_EVIDENCE_NOT_OBJECT")
     classification = _text(data.get("classification") or data.get("reconciliation_classification"))
+    instrument_id = ""
+    mutation_plan = data.get("mutation_plan")
+    if isinstance(mutation_plan, dict):
+        steps = mutation_plan.get("steps")
+        if isinstance(steps, list) and steps:
+            first = steps[0]
+            if isinstance(first, dict):
+                instrument_id = _text(first.get("instrument_id"))
+    trade_id = _text(data.get("single_writer_identity")) or _text(data.get("config_digest"))
+    correlation_context = (
+        _text(data.get("observed_state_digest"))
+        or _text(data.get("pre_state_digest"))
+        or _text(data.get("config_digest"))
+    )
     return normalize_evidence_record_v1(
         {
             "kind": GhosvEvidenceKind.RECONCILIATION_GATE.value,
             "source_module": "ops.productive_reconciliation_runtime_binding_v1",
             "source_contract": "productive_reconciliation_runtime_binding.v1",
-            "trade_id": _text(data.get("session_id")),
-            "instrument_id": _text(data.get("bound_instrument_id")),
+            "trade_id": trade_id,
+            "instrument_id": instrument_id,
             "client_order_id": "",
             "exchange_order_id": "",
             "fill_id": "",
             "observation_timestamp": _text(data.get("wall_time_unix")),
             "source_timestamp": _text(data.get("event_time_unix")),
-            "correlation_context": _text(data.get("evidence_digest")),
+            "correlation_context": correlation_context,
             "completeness": GhosvCompleteness.COMPLETE.value
             if classification
             else GhosvCompleteness.UNKNOWN.value,
