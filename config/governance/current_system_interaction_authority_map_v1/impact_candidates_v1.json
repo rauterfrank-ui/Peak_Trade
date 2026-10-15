@@ -10,6 +10,7 @@
     ".github/workflows/truth_gates_pr.yml",
     ".nvmrc",
     "GHOSV_BOUNDED_CONTEXT_V1_REPORT/",
+    "GHOSV_EXECUTION_CURRENT_EVIDENCE_BINDING_V1_REPORT/",
     "RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)",
     "config/ci/required_status_checks.json",
     "config/evaluation/golden_vectors/",

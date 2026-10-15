@@ -1,0 +1,14 @@
+{
+  "classification": "EXECUTED_PINNED_CURRENT",
+  "tests": [
+    "tests/ops/test_ghosv_current_execution_evidence_reader_v1.py",
+    "tests/ops/test_ghosv_bounded_context_v1.py"
+  ],
+  "result": "PASS",
+  "count": 41,
+  "fixtures": [
+    "docs/evidence/capability_1_1_productive_reconciliation_runtime_binding_v1/clean_start_match",
+    "tests/fixtures/current_productive_golden_happy_vector_post_7065_reference_v1/PRE_EXTERNAL_CONVERGENCE_REPORT.json"
+  ],
+  "live_exchange": false
+}

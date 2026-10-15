@@ -1,15 +1,15 @@
 schema_version: system_atlas.v1
 pending_change: true
-introduced_by: CHANGE:pr_7113_pl_tf_002_f1_grant_runner_binding_v1
-modified_by: CHANGE:pr_7113_pl_tf_002_f1_grant_runner_binding_v1
+introduced_by: CHANGE:ghosv_execution_current_evidence_binding_v1
+modified_by: CHANGE:ghosv_execution_current_evidence_binding_v1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  PL-TF-002 F1 ops runner grant-store propagation and explicit Owner cumulative GET budget 9
-  binding for network capture; canonical WP/Session OWNER_GO unchanged; technical transport
-  limit 16 unchanged; no trading semantics change; ATLAS_AUTHORITY=NONE.
+  GHOSV read-only CURRENT execution evidence reader registration; execution-only
+  bounded context; ADAPTER_MODE=DISABLED; no trading semantics change;
+  ATLAS_AUTHORITY=NONE.
 changed_entities:
-  - RUNTIME_COMPONENT:pl_tf_002_productive_read_only_get_budget_wiring_v1
+  - RUNTIME_COMPONENT:ghosv_current_execution_evidence_reader_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []

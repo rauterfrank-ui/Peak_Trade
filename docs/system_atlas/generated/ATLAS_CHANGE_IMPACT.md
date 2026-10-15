@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7113_pl_tf_002_f1_grant_runner_binding_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:ghosv_execution_current_evidence_binding_v1`.
 
 ## Workflow
 
@@ -40,7 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:pl_tf_002_productive_read_only_get_budget_wiring_v1` |
+| `RUNTIME_COMPONENT:ghosv_current_execution_evidence_reader_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -92,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- PL-TF-002 F1 ops runner grant-store propagation and explicit Owner cumulative GET budget 9 binding for network capture; canonical WP/Session OWNER_GO unchanged; technical transport limit 16 unchanged; no trading semantics change; ATLAS_AUTHORITY=NONE.
-- introduced_by=CHANGE:pr_7113_pl_tf_002_f1_grant_runner_binding_v1
-- modified_by=CHANGE:pr_7113_pl_tf_002_f1_grant_runner_binding_v1
+- GHOSV read-only CURRENT execution evidence reader registration; execution-only bounded context; ADAPTER_MODE=DISABLED; no trading semantics change; ATLAS_AUTHORITY=NONE.
+- introduced_by=CHANGE:ghosv_execution_current_evidence_binding_v1
+- modified_by=CHANGE:ghosv_execution_current_evidence_binding_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.

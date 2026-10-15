@@ -1,0 +1,35 @@
+{
+  "edges": [
+    {
+      "producer": "productive_reconciliation_runtime_binding_v1",
+      "surface": "productive_reconciliation_evidence_v1.json",
+      "ghosv_slice": "S01/S03/S04/S05",
+      "status": "CURRENT_CONNECTED"
+    },
+    {
+      "producer": "productive_reconciliation_runtime_binding_v1",
+      "surface": "productive_portfolio_state_v1.json",
+      "ghosv_slice": "S01/S03",
+      "status": "CURRENT_CONNECTED"
+    },
+    {
+      "producer": "final_order_envelope_v1",
+      "surface": "runtime JSON payload",
+      "ghosv_slice": "S01/S02/S03",
+      "status": "PARTIAL"
+    },
+    {
+      "producer": "pre_external_convergence_report",
+      "surface": "PRE_EXTERNAL_CONVERGENCE_REPORT.json",
+      "ghosv_slice": "S01/S03",
+      "status": "PARTIAL"
+    },
+    {
+      "producer": "ghv_pre_external_runtime_flight_recorder_v1",
+      "surface": "ghv_pre_external_runtime_flight_record_v1.jsonl",
+      "ghosv_slice": "none",
+      "status": "UNKNOWN",
+      "notes": "GHV forensic reference only; not bound (execution-only boundary)"
+    }
+  ]
+}
