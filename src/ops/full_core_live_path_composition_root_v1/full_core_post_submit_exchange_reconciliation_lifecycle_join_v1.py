@@ -61,6 +61,13 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconcil
     FullCoreExchangeReconciliationDecisionV1,
     LocalSubmitOutcome,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_persisted_reconciliation_disposition_v1 import (
+    PersistedReconciliationDispositionError,
+    persist_post_attempt_reconciliation_disposition_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
+    FinalOrderEnvelopeV1,
+)
 from src.ops.full_core_live_path_composition_root_v1.full_core_post_response_to_ack_mapper_v1 import (
     ACKNOWLEDGED,
     REJECTED,
@@ -242,6 +249,10 @@ def run_full_core_post_submit_lifecycle_reconciliation_join_v1(
     apply_durable_state: bool = False,
     proven_never_submitted: bool = False,
     okx_read_only_forensic_profile: OkxReadOnlyForensicProfileV1 = "INJECTED",
+    post_durable_store_root: Path | None = None,
+    persist_reconciliation_disposition: bool = False,
+    post_attempt_envelope: FinalOrderEnvelopeV1 | None = None,
+    reconciliation_disposition_lane_id: str | None = None,
 ) -> FullCorePostSubmitLifecycleReconciliationJoinResultV1:
     """Run exchange reconciliation immediately after a post-submit lifecycle join."""
 
@@ -333,6 +344,25 @@ def run_full_core_post_submit_lifecycle_reconciliation_join_v1(
         local_submit_outcome=local_outcome,
         decision=recon.decision,
     )
+    if persist_reconciliation_disposition is True:
+        if post_durable_store_root is None or post_attempt_envelope is None:
+            raise FullCorePostSubmitLifecycleReconciliationJoinError(
+                "G004_PERSIST_REQUIRES_STORE_ROOT_AND_ENVELOPE"
+            )
+        try:
+            persist_post_attempt_reconciliation_disposition_v1(
+                store_root=post_durable_store_root,
+                envelope=post_attempt_envelope,
+                binding=binding,
+                identity=identity,
+                decision=recon.decision,
+                local_submit_outcome=local_outcome,
+                post_submit_join=post_submit_join,
+                submit_attempt_id=submit_attempt_id,
+                lane_id=reconciliation_disposition_lane_id,
+            )
+        except PersistedReconciliationDispositionError as exc:
+            raise FullCorePostSubmitLifecycleReconciliationJoinError(str(exc)) from exc
     return FullCorePostSubmitLifecycleReconciliationJoinResultV1(
         post_submit_join=post_submit_join,
         local_submit_outcome=local_outcome,
