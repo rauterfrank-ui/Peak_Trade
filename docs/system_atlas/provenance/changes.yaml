@@ -1053,3 +1053,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_ghosv_current_execution_cycle_evidence_reader_v1.py
   notes: 'GHOSV Execution existing evidence coverage V1: governed-cycle ledger/transitions and optional G004 read-only readers; execution-only; ADAPTER_MODE=DISABLED; no venue POST; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:ghosv_execution_bounded_offline_observer_v1
+  from: 5f41d425c7f5b0b810d28cd3fc8b5af34113702c
+  to: PENDING_CHANGE
+  type: TEST_EVIDENCE
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_ghosv_execution_bounded_offline_observer_v1.py
+  notes: 'GHOSV Execution bounded offline observer V1: operator-started one-shot CLI, read-only consistency guard, separate output dir; execution-only; ADAPTER_MODE=DISABLED; no productive activation; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

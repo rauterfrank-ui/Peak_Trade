@@ -1,0 +1,50 @@
+{
+  "review_id": "PRE_PR_ADVERSARIAL_CONTRACT_REVIEW_V1",
+  "status": "PASS",
+  "confirmed_defect_count": 0,
+  "unresolved_blocking_risk_count": 0,
+  "bugbot_remediation_v1": {
+    "pr_number": 7124,
+    "findings_adjudicated": 5,
+    "confirmed_defects_remediated": 5,
+    "false_positives": 0,
+    "accepted_limitations": 0,
+    "unresolved_findings": 0
+  },
+  "notes_adjudication": {
+    "toctou_cross_file": {
+      "class": "ACCEPTED_DOCUMENTED_LIMITATION",
+      "detail": "CROSS_FILE_SNAPSHOT_GUARANTEE=NONE; traffic demoted on PARTIAL/FAIL consistency"
+    },
+    "output_path_symlinks": {
+      "class": "ACCEPTED_DOCUMENTED_LIMITATION",
+      "detail": "Resolved paths; symlink alias to source rejected; source-inside-output rejected"
+    },
+    "trade_id_operator_supplied": {
+      "class": "ACCEPTED_DOCUMENTED_LIMITATION",
+      "detail": "S02 grouping unchanged; explicit operator trade_id required"
+    },
+    "cli_exit_vs_green": {
+      "class": "ACCEPTED_DOCUMENTED_LIMITATION",
+      "detail": "Report disclaimer; exit 0 means OBSERVER_RUN_SUCCESS only"
+    }
+  },
+  "checks": {
+    "false_green": false,
+    "silent_evidence_discard": false,
+    "inconsistent_generations_as_consistent": false,
+    "malformed_as_valid": false,
+    "output_overwrites_source": false,
+    "symlink_bypass": false,
+    "cli_exit_confused_with_green": false,
+    "optional_missing_produces_red": false,
+    "missing_post_count_as_zero": false,
+    "pre_external_as_post": false,
+    "g004_confirmed_filled_as_synthetic_fill": false,
+    "malformed_evidence_uncaught_exception": false,
+    "valid_g004_forces_partial_consistency": false,
+    "optional_transitions_scored_unknown": false,
+    "cross_file_path_prefix_trap": false,
+    "post_submission_gap_wrong_kind": false
+  }
+}
