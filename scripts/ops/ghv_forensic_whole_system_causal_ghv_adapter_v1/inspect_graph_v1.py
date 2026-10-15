@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -33,6 +35,64 @@ from scripts.ops.ghv_forensic_whole_system_causal_ghv_adapter_v1.types_v1 import
 
 def _is_overlay_edge(edge: dict[str, Any]) -> bool:
     return "SOURCE_CFI" in edge and "TARGET_CFI" in edge
+
+
+def _overlay_edge_binding_digest(edge: dict[str, Any]) -> str:
+    """Canonical overlay identity per WP2-A overlay edge fields (integrate_v1._validate_overlay_edge)."""
+    payload: dict[str, Any] = {}
+    for key in (
+        "SOURCE_CFI",
+        "TARGET_CFI",
+        "EDGE_TYPE",
+        "CURRENT_EVIDENCE",
+        "PROOF_CLASS",
+        "CAUSAL_PROPAGATION_ALLOWED",
+        "temporal",
+        "PROVENANCE",
+    ):
+        if key in edge:
+            payload[key] = edge[key]
+    return json.dumps(payload, sort_keys=True, separators=(",", ":"))
+
+
+def _overlay_edge_multiset(edges: list[dict[str, Any]]) -> Counter[str]:
+    return Counter(_overlay_edge_binding_digest(e) for e in edges if isinstance(e, dict))
+
+
+def _assert_wp1_current_relevance(
+    result: InspectionResultV1,
+    *,
+    kind: str,
+    entity_id: str,
+    rel: Any,
+) -> InspectionResultV1 | None:
+    """Mirror WP2-A load_wp1_v1 current_relevance fail-closed semantics."""
+    if not isinstance(rel, dict):
+        return _fail(
+            result,
+            HISTORICAL_CONTAMINATION,
+            f"missing_{kind}_current_relevance:{entity_id}",
+        )
+    state = rel.get("CURRENT_RELEVANCE_STATE")
+    if state in FORBIDDEN_CURRENT_RELEVANCE:
+        return _fail(
+            result,
+            HISTORICAL_CONTAMINATION,
+            f"forbidden_{kind}_relevance:{entity_id}:{state}",
+        )
+    if state not in ALLOWED_CURRENT_RELEVANCE:
+        return _fail(
+            result,
+            HISTORICAL_CONTAMINATION,
+            f"invalid_{kind}_relevance:{entity_id}:{state}",
+        )
+    if state == "CURRENT_CONDITIONAL" and not rel.get("ACTIVATION_CONDITION"):
+        return _fail(
+            result,
+            HISTORICAL_CONTAMINATION,
+            f"conditional_{kind}_missing_activation:{entity_id}",
+        )
+    return None
 
 
 def _fail(result: InspectionResultV1, semantic: str, msg: str) -> InspectionResultV1:
@@ -92,7 +152,15 @@ def validate_wp2a_bundle_v1(bundle: Wp2aArtifactBundleV1) -> InspectionResultV1:
     if integrated.get("GLOBAL_CAUSAL_CLOSURE_PROVEN") is not False:
         return _fail(out, AUTHORITY_BOUNDARY_FAILURE, "global_causal_closure_must_be_false")
 
-    wp1_mode = str(overlay.get("wp1_graph_mode") or integrated.get("wp1_graph_authority") or "")
+    wp1_mode_overlay = str(overlay.get("wp1_graph_mode") or "")
+    wp1_mode_integrated = str(integrated.get("wp1_graph_authority") or "")
+    if wp1_mode_overlay and wp1_mode_integrated and wp1_mode_overlay != wp1_mode_integrated:
+        return _fail(
+            out,
+            SNAPSHOT_BINDING_FAILURE,
+            "wp1_graph_mode_authority_cross_artifact_mismatch",
+        )
+    wp1_mode = wp1_mode_integrated or wp1_mode_overlay
     if wp1_mode == "NAVIGATION_ONLY" and integrated.get("CURRENT_CAUSAL_GRAPH_VERIFIED"):
         return _fail(
             out,
@@ -127,12 +195,13 @@ def validate_wp2a_bundle_v1(bundle: Wp2aArtifactBundleV1) -> InspectionResultV1:
         if cfi in cfi_set:
             return _fail(out, IDENTITY_BINDING_FAILURE, f"duplicate_canonical_id:{cfi}")
         cfi_set.add(cfi)
+        rel_err = _assert_wp1_current_relevance(
+            out, kind="node", entity_id=cfi, rel=node.get("current_relevance")
+        )
+        if rel_err is not None:
+            return rel_err
         rel = node.get("current_relevance") or {}
         state = rel.get("CURRENT_RELEVANCE_STATE")
-        if state in FORBIDDEN_CURRENT_RELEVANCE:
-            return _fail(out, HISTORICAL_CONTAMINATION, f"forbidden_node_relevance:{cfi}:{state}")
-        if state and state not in ALLOWED_CURRENT_RELEVANCE:
-            return _fail(out, HISTORICAL_CONTAMINATION, f"unknown_node_relevance:{cfi}:{state}")
         if not node.get("provenance"):
             return _fail(out, PROVENANCE_FAILURE, f"node_missing_provenance:{cfi}")
         sys_name = str(node.get("source_system") or "")
@@ -151,12 +220,14 @@ def validate_wp2a_bundle_v1(bundle: Wp2aArtifactBundleV1) -> InspectionResultV1:
 
     wp1_edge_count = int(integrated.get("wp1_edge_count") or 0)
     overlay_in_edges = 0
+    integrated_overlay_edges: list[dict[str, Any]] = []
     edge_inventory: list[dict[str, Any]] = []
     for edge in edges:
         if not isinstance(edge, dict):
             return _fail(out, INVALID_INPUT, "invalid_edge_record")
         if _is_overlay_edge(edge):
             overlay_in_edges += 1
+            integrated_overlay_edges.append(edge)
             src = edge.get("SOURCE_CFI")
             tgt = edge.get("TARGET_CFI")
             if not src or not tgt:
@@ -175,12 +246,12 @@ def validate_wp2a_bundle_v1(bundle: Wp2aArtifactBundleV1) -> InspectionResultV1:
                 }
             )
             continue
-        rel = edge.get("current_relevance") or {}
-        state = rel.get("CURRENT_RELEVANCE_STATE")
-        if state in FORBIDDEN_CURRENT_RELEVANCE:
-            return _fail(
-                out, HISTORICAL_CONTAMINATION, f"forbidden_edge_relevance:{edge.get('edge_id')}"
-            )
+        eid = str(edge.get("edge_id") or "unknown")
+        rel_err = _assert_wp1_current_relevance(
+            out, kind="edge", entity_id=eid, rel=edge.get("current_relevance")
+        )
+        if rel_err is not None:
+            return rel_err
         sys_name = str(edge.get("source_system") or "")
         src_n = str(edge.get("source_native_id") or "")
         tgt_n = str(edge.get("target_native_id") or "")
@@ -209,11 +280,17 @@ def validate_wp2a_bundle_v1(bundle: Wp2aArtifactBundleV1) -> InspectionResultV1:
     if len(edges) != wp1_edge_count + overlay_in_edges:
         return _fail(out, INVALID_INPUT, "integrated_edge_total_count_mismatch")
 
+    overlay_file_records = [e for e in overlay_edges_list if isinstance(e, dict)]
+    if _overlay_edge_multiset(overlay_file_records) != _overlay_edge_multiset(
+        integrated_overlay_edges
+    ):
+        return _fail(out, IDENTITY_BINDING_FAILURE, "overlay_file_integrated_edge_binding_mismatch")
+
     temporal_proven = bool(integrated.get("TEMPORAL_CAUSALITY_PROVEN"))
     if temporal_proven:
-        if not overlay_edges_list:
+        if not integrated_overlay_edges:
             return _fail(out, INSUFFICIENT_CAUSAL_EVIDENCE, "temporal_proven_without_overlay_edges")
-        for oe in overlay_edges_list:
+        for oe in integrated_overlay_edges:
             temporal = oe.get("temporal")
             if not isinstance(temporal, dict) or not str(temporal.get("state_owner") or "").strip():
                 return _fail(

@@ -459,6 +459,75 @@ def test_24_read_only_input_integrity(tmp_path: Path) -> None:
     assert res.ok
 
 
+def test_26_overlay_integrated_binding_mismatch_same_count(tmp_path: Path) -> None:
+    """Count-matched overlay file must not bind to different integrated overlay rows."""
+    wp1 = _write_wp1(tmp_path / "wp1")
+    wp2a = _run_wp2a(tmp_path, wp1)
+    integrated_overlay = {
+        "SOURCE_CFI": "CFI/v1/COMPONENT/snap001/CURRENT_SYSTEM_CENSUS/SO-A",
+        "TARGET_CFI": "CFI/v1/COMPONENT/snap001/CURRENT_SYSTEM_CENSUS/SO-B",
+        "EDGE_TYPE": "OBSERVES",
+        "CURRENT_EVIDENCE": "synthetic",
+        "PROOF_CLASS": "CONTRACT_CONFIRMED",
+        "PROVENANCE": _prov("integrated-overlay"),
+    }
+    overlay_only = {
+        **integrated_overlay,
+        "temporal": {"state_owner": "tampered-only-in-overlay-file"},
+    }
+    ig = json.loads((wp2a / "integrated_causal_graph.v1.json").read_text())
+    ig["edges"] = list(ig["edges"]) + [integrated_overlay]
+    ig["overlay_edge_count"] = 1
+    ig["TEMPORAL_CAUSALITY_PROVEN"] = True
+    (wp2a / "integrated_causal_graph.v1.json").write_text(json.dumps(ig), encoding="utf-8")
+    man = json.loads((wp2a / "causal_integration_manifest.v1.json").read_text())
+    man["overlay_edge_count"] = 1
+    man["TEMPORAL_CAUSALITY_PROVEN"] = True
+    (wp2a / "causal_integration_manifest.v1.json").write_text(json.dumps(man), encoding="utf-8")
+    overlay_doc = json.loads((wp2a / "causal_overlay.v1.json").read_text())
+    overlay_doc["overlay_edges"] = [overlay_only]
+    (wp2a / "causal_overlay.v1.json").write_text(json.dumps(overlay_doc), encoding="utf-8")
+    res = _inspect(wp2a, tmp_path)
+    assert not res.ok
+    assert res.failure_semantic == "IDENTITY_BINDING_FAILURE"
+
+
+def test_27_wp1_graph_mode_authority_mismatch(tmp_path: Path) -> None:
+    wp1 = _write_wp1(tmp_path / "wp1", graph_mode="NAVIGATION_ONLY", current_graph_verified=False)
+    wp2a = _run_wp2a(tmp_path, wp1)
+    overlay = json.loads((wp2a / "causal_overlay.v1.json").read_text())
+    overlay["wp1_graph_mode"] = "STRICT_CURRENT"
+    (wp2a / "causal_overlay.v1.json").write_text(json.dumps(overlay), encoding="utf-8")
+    ig = json.loads((wp2a / "integrated_causal_graph.v1.json").read_text())
+    ig["CURRENT_CAUSAL_GRAPH_VERIFIED"] = True
+    (wp2a / "integrated_causal_graph.v1.json").write_text(json.dumps(ig), encoding="utf-8")
+    res = _inspect(wp2a, tmp_path)
+    assert not res.ok
+    assert res.failure_semantic == "SNAPSHOT_BINDING_FAILURE"
+
+
+def test_28_missing_node_current_relevance_rejected(tmp_path: Path) -> None:
+    wp1 = _write_wp1(tmp_path / "wp1")
+    wp2a = _run_wp2a(tmp_path, wp1)
+    ig = json.loads((wp2a / "integrated_causal_graph.v1.json").read_text())
+    ig["nodes"][0].pop("current_relevance", None)
+    (wp2a / "integrated_causal_graph.v1.json").write_text(json.dumps(ig), encoding="utf-8")
+    res = _inspect(wp2a, tmp_path)
+    assert not res.ok
+    assert res.failure_semantic == "HISTORICAL_CONTAMINATION"
+
+
+def test_29_missing_wp1_edge_current_relevance_rejected(tmp_path: Path) -> None:
+    wp1 = _write_wp1(tmp_path / "wp1")
+    wp2a = _run_wp2a(tmp_path, wp1)
+    ig = json.loads((wp2a / "integrated_causal_graph.v1.json").read_text())
+    ig["edges"][0].pop("current_relevance", None)
+    (wp2a / "integrated_causal_graph.v1.json").write_text(json.dumps(ig), encoding="utf-8")
+    res = _inspect(wp2a, tmp_path)
+    assert not res.ok
+    assert res.failure_semantic == "HISTORICAL_CONTAMINATION"
+
+
 def test_25_no_productive_or_ghv_core_imports() -> None:
     forbidden = (
         "src.trading",
