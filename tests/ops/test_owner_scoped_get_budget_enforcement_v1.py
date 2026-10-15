@@ -340,6 +340,130 @@ def test_concurrent_reserve_respects_budget(tmp_path: Path) -> None:
     assert errors
 
 
+def _tier_a_worker(
+    store: str,
+    budget: int,
+    get_count: int,
+    worker_id: int,
+    wire_attempts: multiprocessing.Value,
+) -> None:
+    binding = OwnerScopedGetBudgetGrantBindingV1(
+        owner_go="OWNER_GO_TEST",
+        work_package_id="TIER_A_WP",
+        origin_main_sha="4b222dc532bb7229a3d13db8f3b159e97744cbf9",
+        cumulative_request_budget=budget,
+        authorized_host=AUTHORIZED_HOST,
+    )
+    ctx = OwnerScopedGetBudgetGrantContextV1.mint_v1(store_root=Path(store), binding=binding)
+    enforcer = OwnerScopedGetBudgetEnforcerV1(grant_context=ctx)
+    transport = FullCoreProductiveReadOnlyGetTransportV1(
+        owner_scoped_get_budget_enforcer=enforcer,
+        max_request_count=16,
+    )
+    body = _okx_json_payload()
+
+    def _open(req, timeout=0):
+        with wire_attempts.get_lock():
+            wire_attempts.value += 1
+        return _FakeHttpResponse(status=200, body=body, url=req.full_url)
+
+    with mock.patch(
+        "src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1.build_opener"
+    ) as bo:
+        bo.return_value.open.side_effect = _open
+        endpoints = (
+            "/api/v5/account/config",
+            "/api/v5/account/balance",
+            "/api/v5/public/instruments",
+        )
+        for idx in range(get_count):
+            transport.get(
+                endpoint=endpoints[idx % len(endpoints)],
+                auth_required=False,
+                pretrade_decision_id=f"tier-a-{worker_id}-{idx}",
+            )
+
+
+def test_tier_a_cumulative_budget_four_processes_fifth_blocked(tmp_path: Path) -> None:
+    """OWNER_BUDGET=4 with process GET counts 1+2+1; fifth attempt blocked pre-wire."""
+    store = str(tmp_path)
+    wire_attempts = multiprocessing.Value("i", 0)
+    workers = [
+        multiprocessing.Process(target=_tier_a_worker, args=(store, 4, 1, 1, wire_attempts)),
+        multiprocessing.Process(target=_tier_a_worker, args=(store, 4, 2, 2, wire_attempts)),
+        multiprocessing.Process(target=_tier_a_worker, args=(store, 4, 1, 3, wire_attempts)),
+    ]
+    for proc in workers:
+        proc.start()
+    for proc in workers:
+        proc.join()
+        assert proc.exitcode == 0
+    assert int(wire_attempts.value) == 4
+
+    ctx = _mint(tmp_path, budget=4, wp="TIER_A_WP")
+    enforcer = OwnerScopedGetBudgetEnforcerV1(grant_context=ctx)
+    transport = FullCoreProductiveReadOnlyGetTransportV1(
+        owner_scoped_get_budget_enforcer=enforcer,
+        max_request_count=16,
+    )
+
+    def _open_should_not_run(req, timeout=0):
+        raise AssertionError("NO_NETWORK_SEND_ON_FIFTH")
+
+    with mock.patch(
+        "src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1.build_opener"
+    ) as bo:
+        bo.return_value.open.side_effect = _open_should_not_run
+        with pytest.raises(FullCoreProductiveReadOnlyGetError):
+            transport.get(
+                endpoint="/api/v5/account/config",
+                auth_required=False,
+                pretrade_decision_id="tier-a-fifth",
+            )
+    loaded = load_owner_scoped_get_budget_ledger_v1(store_root=tmp_path, grant_id=ctx.grant_id)
+    assert int(loaded["record"]["committed_request_count"]) == 4
+    assert loaded["record"]["state"] == GRANT_STATE_EXHAUSTED
+
+
+def test_timeout_without_enforcer_preserves_legacy_result() -> None:
+    transport = FullCoreProductiveReadOnlyGetTransportV1(max_request_count=16)
+
+    def _timeout(req, timeout=0):
+        raise TimeoutError("wire-timeout")
+
+    with mock.patch(
+        "src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1.build_opener"
+    ) as bo:
+        bo.return_value.open.side_effect = _timeout
+        result = transport.get(
+            endpoint="/api/v5/account/config",
+            auth_required=False,
+            pretrade_decision_id="legacy-timeout",
+        )
+    assert result.error_class == "TIMEOUT"
+    assert result.get_performed is False
+
+
+def test_concurrent_mint_same_binding(tmp_path: Path) -> None:
+    binding = _binding(wp="CONCURRENT_MINT")
+    errors: list[str] = []
+
+    def _mint_worker() -> None:
+        try:
+            mint_owner_scoped_get_budget_grant_v1(store_root=tmp_path, binding=binding)
+        except OwnerScopedGetBudgetError as exc:
+            errors.append(str(exc))
+
+    threads = [threading.Thread(target=_mint_worker) for _ in range(4)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    assert not errors
+    first = mint_owner_scoped_get_budget_grant_v1(store_root=tmp_path, binding=binding)
+    assert first["created"] is False
+
+
 def test_mint_is_idempotent_same_binding(tmp_path: Path) -> None:
     binding = _binding()
     first = mint_owner_scoped_get_budget_grant_v1(store_root=tmp_path, binding=binding)

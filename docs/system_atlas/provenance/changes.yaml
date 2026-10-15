@@ -1025,3 +1025,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py
   notes: 'PR #7110: offline full-system E2E integration proof harness (GAP-TRUE-01 → pilot bind → one fake POST → OFFLINE_INJECTED recon); apply_durable_atomic_state=false; capital_guard_prevalidated requires pilot authorization_binding provenance; RUNTIME_AUTHORIZATION_EFFECT=NONE; REAL_EXCHANGE_POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7112_owner_scoped_get_budget_enforcement_v1
+  from: 4b222dc532bb7229a3d13db8f3b159e97744cbf9
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_owner_scoped_get_budget_enforcement_v1.py
+  notes: 'PR #7112: durable cumulative Owner GET budget for PL-TF-002 read-only sessions; opt-in transport pre-send reservation; closes Tier-A 7/4 forensic overrun; no productive trading-cycle default; F1 9-GET compatible; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

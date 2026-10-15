@@ -136,9 +136,7 @@ class FullCoreProductiveReadOnlyGetTransportV1:
                     endpoint_path=path
                 )
             except OwnerScopedGetBudgetError as exc:
-                raise FullCoreProductiveReadOnlyGetError(
-                    f"OWNER_SCOPED_GET_BUDGET:{exc}"
-                ) from exc
+                raise FullCoreProductiveReadOnlyGetError(f"OWNER_SCOPED_GET_BUDGET:{exc}") from exc
 
         req = Request(url, method=METHOD_GET, headers=headers)
         opener = build_opener(ProxyHandler({}))
@@ -172,25 +170,24 @@ class FullCoreProductiveReadOnlyGetTransportV1:
             uncertain_wire = True
         finally:
             socket.setdefaulttimeout(None)
-            if budget_reservation is not None and self._owner_scoped_get_budget_enforcer is not None:
+            if (
+                budget_reservation is not None
+                and self._owner_scoped_get_budget_enforcer is not None
+            ):
                 try:
                     if not wire_attempted:
-                        self._owner_scoped_get_budget_enforcer.release_unsent_v1(
-                            budget_reservation
-                        )
+                        self._owner_scoped_get_budget_enforcer.release_unsent_v1(budget_reservation)
                     elif uncertain_wire:
                         self._owner_scoped_get_budget_enforcer.mark_uncertain_wire_v1(
                             budget_reservation
                         )
                     else:
-                        self._owner_scoped_get_budget_enforcer.mark_completed_v1(
-                            budget_reservation
-                        )
+                        self._owner_scoped_get_budget_enforcer.mark_completed_v1(budget_reservation)
                 except OwnerScopedGetBudgetError as exc:
                     raise FullCoreProductiveReadOnlyGetError(
                         f"OWNER_SCOPED_GET_BUDGET_FINALIZE:{exc}"
                     ) from exc
-        if uncertain_wire:
+        if uncertain_wire and self._owner_scoped_get_budget_enforcer is not None:
             raise FullCoreProductiveReadOnlyGetError("OWNER_SCOPED_GET_UNCERTAIN_WIRE_FAIL_CLOSED")
         self.request_count += 1
         self.methods_used.append(METHOD_GET)

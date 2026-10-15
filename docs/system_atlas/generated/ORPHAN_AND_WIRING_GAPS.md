@@ -163,12 +163,14 @@
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:od_account_equity_sizing_source_canonical_adjudication_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:od_account_equity_sizing_source_canonical_adjudication_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:od_u01_p01_29p_sizing_mint_canonical_adjudication_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:od_u01_p01_29p_sizing_mint_canonical_adjudication_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:owner_scoped_get_budget_enforcement_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:owner_scoped_get_budget_enforcement_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p1_completeness_witness_foundation_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p1_d5_checkpoint_freshness_witness_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p1_d5_checkpoint_freshness_witness_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p1_observation_restart_durability_witness_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p1_observation_restart_durability_witness_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:p1_time_domain_completeness_witness_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:p1_time_domain_completeness_witness_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:phase_24_representation_feedback_loop_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:phase_24_representation_feedback_loop_evidence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:phase_25_dp_attribution_evidence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:phase_25_dp_attribution_evidence_v1 | STATUS=OPEN (not proven) |  |
+| GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:pl_tf_002_productive_read_only_get_budget_wiring_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:pl_tf_002_productive_read_only_get_budget_wiring_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_6939_paper_g2_primary_run_metadata_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_6939_paper_g2_primary_run_metadata_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_6940_live_readiness_convergence_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_6940_live_readiness_convergence_v1 | STATUS=OPEN (not proven) |  |
 | GAP_AUTO:NO_CONSUMER:RUNTIME_COMPONENT:post_6941_pre_external_intent_to_execution_seam_adjudication_v1 | DEFINED_BUT_NO_CONSUMER | RUNTIME_COMPONENT:post_6941_pre_external_intent_to_execution_seam_adjudication_v1 | STATUS=OPEN (not proven) |  |

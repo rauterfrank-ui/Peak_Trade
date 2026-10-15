@@ -111,15 +111,31 @@ def mint_owner_scoped_get_budget_grant_v1(
     }
     _assert_no_secrets(record)
     ledger_dir_v1(store_root).mkdir(parents=True, exist_ok=True)
+    lock = OwnerScopedGetBudgetGrantLockV1(
+        lock_path=lock_path_v1(store_root=store_root, grant_id=grant_id),
+        grant_id=grant_id,
+    )
+    lock.acquire()
     try:
-        append_only_create_json(path=path, payload=record)
-    except FileExistsError as exc:
         existing = load_owner_scoped_get_budget_ledger_v1(store_root=store_root, grant_id=grant_id)
-        rec = existing.get("record") or {}
-        if str(rec.get("owner_grant_identity_digest") or "") != identity:
-            raise OwnerScopedGetBudgetError("GRANT_ID_COLLISION_BINDING_MISMATCH") from exc
-        return {"grant_id": grant_id, "path": str(path), "created": False, "record": rec}
-    return {"grant_id": grant_id, "path": str(path), "created": True, "record": record}
+        if existing.get("present"):
+            rec = existing.get("record") or {}
+            if str(rec.get("owner_grant_identity_digest") or "") != identity:
+                raise OwnerScopedGetBudgetError("GRANT_ID_COLLISION_BINDING_MISMATCH")
+            return {"grant_id": grant_id, "path": str(path), "created": False, "record": rec}
+        try:
+            append_only_create_json(path=path, payload=record)
+        except FileExistsError as exc:
+            existing = load_owner_scoped_get_budget_ledger_v1(
+                store_root=store_root, grant_id=grant_id
+            )
+            rec = existing.get("record") or {}
+            if str(rec.get("owner_grant_identity_digest") or "") != identity:
+                raise OwnerScopedGetBudgetError("GRANT_ID_COLLISION_BINDING_MISMATCH") from exc
+            return {"grant_id": grant_id, "path": str(path), "created": False, "record": rec}
+        return {"grant_id": grant_id, "path": str(path), "created": True, "record": record}
+    finally:
+        lock.release()
 
 
 @dataclass(frozen=True)
