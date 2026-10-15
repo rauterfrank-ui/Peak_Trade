@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "659d8280a6f760c5090e71a1c7f9416f73401d9e",
-  "head_sha": "PENDING_COMMIT",
+  "head_sha": "27c95d645cc5a1e47b609ff0f1f64a2cba1092cf",
   "changed_paths": [
     "GHOSV_BOUNDED_CONTEXT_V1_REPORT/00_SOURCE_PROVENANCE.json",
     "GHOSV_BOUNDED_CONTEXT_V1_REPORT/01_CURRENT_EVIDENCE_INVENTORY.json",
