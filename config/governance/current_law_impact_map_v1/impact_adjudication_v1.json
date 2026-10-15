@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "4b222dc532bb7229a3d13db8f3b159e97744cbf9",
-  "head_sha": "7f36fa83f8df2716bc7d12cd0629ca68e21b352f",
+  "head_sha": "ee5d279be1107d40c57caf5b3ca91c18f6911231",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -59,7 +59,7 @@
     "docs/ops/evidence/OWNER_SCOPED_GET_BUDGET_ENFORCEMENT_ADVERSARIAL_CONTRACT_REVIEW_V1.md",
     "tests/ops/test_owner_scoped_get_budget_enforcement_v1.py"
   ],
-  "reason": "PR #7112: Owner-scoped cumulative GET budget; diff-bound NO_*_IMPACT; AUTHORITY=NONE.",
+  "reason": "PR #7112: diff-bound NO_LAW_IMPACT; AUTHORITY=NONE.",
   "verdict": "NO_LAW_IMPACT",
   "selector_used_as_law_impact_authority": false
 }
