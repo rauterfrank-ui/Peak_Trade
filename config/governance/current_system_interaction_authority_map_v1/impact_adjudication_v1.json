@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "d76566cc768a9c8b97fe8244068c5e7794008859",
-  "head_sha": "63931d2b10e3e73c8c8863a7e851c9029fb71296",
+  "head_sha": "b3378c454c5dd55f8f2b81551f6fdc056509c5a8",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
@@ -24,8 +24,8 @@
   ],
   "changed_paths_sha256": "18c04de74062d3e4ee68ebedd3de617a2fc083b93950003480450b37e863bc30",
   "covered_candidate_paths": [
-    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/__init__.py",
     "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/cli.py",
     "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/compose_v1.py",
@@ -44,7 +44,7 @@
   "evidence_refs": [
     "tests/ops/test_ghv_forensic_whole_system_crosswalk_v1.py"
   ],
-  "reason": "PR #7114: offline GHV forensic crosswalk v1; AUTHORITY=NONE.",
+  "reason": "PR #7114: offline GHV forensic crosswalk v1; NO_MAP_IMPACT; AUTHORITY=NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }
