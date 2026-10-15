@@ -251,9 +251,7 @@ def test_runtime_overlay_without_state_owner_not_temporally_proven(tmp_path: Pat
         (tmp_path / "out_rt_temporal" / "integrated_causal_graph.v1.json").read_text()
     )
     assert integrated["TEMPORAL_CAUSALITY_PROVEN"] is False
-    gaps = json.loads(
-        (tmp_path / "out_rt_temporal" / "causal_coverage_gaps.v1.json").read_text()
-    )
+    gaps = json.loads((tmp_path / "out_rt_temporal" / "causal_coverage_gaps.v1.json").read_text())
     assert any(g.get("reason") == "temporal_fields_incomplete" for g in gaps["gaps"])
 
 
