@@ -3,7 +3,7 @@
   "command": "./scripts/pt -m pytest tests/ops/test_ghosv_bounded_context_v1.py -q",
   "worktree": "/private/tmp/peak_trade_ghosv_bounded_context_v1_wt",
   "result": "PASS",
-  "tests_passed": 30,
+  "tests_passed": 34,
   "tests_failed": 0,
-  "cases": "01-30 including Bugbot regression 26-30"
+  "cases": "01-34 including fill-identity matrix 31-34"
 }

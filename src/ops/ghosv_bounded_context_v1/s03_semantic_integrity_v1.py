@@ -148,19 +148,20 @@ def evaluate_semantic_integrity_v1(
     else:
         findings.append(_dec(TRAFFIC_YELLOW, "ORDER_ACK_SEMANTICS", "ACK_NOT_OBSERVED", refs_all))
 
-    # FILL_IDENTITY + DUPLICATE_FILL
+    # FILL_IDENTITY + DUPLICATE_FILL (independent: missing ID vs duplicate known IDs)
     if fills:
         missing_fill_id = any(not f.fill_id for f in fills)
         fill_ids = [f.fill_id for f in fills if f.fill_id]
+        has_duplicate_known_ids = len(fill_ids) > 0 and len(set(fill_ids)) != len(fill_ids)
         if missing_fill_id:
             findings.append(
                 _dec(TRAFFIC_YELLOW, "FILL_IDENTITY_INTEGRITY", "MISSING_FILL_ID", refs_all)
             )
-        elif len(set(fill_ids)) != len(fill_ids):
+        if has_duplicate_known_ids:
             findings.append(
                 _dec(TRAFFIC_RED, "DUPLICATE_FILL_INTEGRITY", "DUPLICATE_FILL_ID", refs_all)
             )
-        else:
+        elif not missing_fill_id and fill_ids:
             findings.append(
                 _dec(TRAFFIC_GREEN, "DUPLICATE_FILL_INTEGRITY", "UNIQUE_FILL_IDS", refs_all)
             )

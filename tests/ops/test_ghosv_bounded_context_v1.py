@@ -336,17 +336,23 @@ def test_26_recon_missing_truth_not_green():
 
 
 def test_27_instrument_conflict_without_order_ids_stays_red():
+    no_order_ids = {"client_order_id": "", "exchange_order_id": ""}
     records = [
-        _base(kind=GhosvEvidenceKind.ORDER_ENVELOPE.value, instrument_id="A", client_order_id=""),
         _base(
-            kind=GhosvEvidenceKind.ORDER_ENVELOPE.value,
+            kind=GhosvEvidenceKind.ORDER_ACK.value,
+            instrument_id="A",
+            **no_order_ids,
+        ),
+        _base(
+            kind=GhosvEvidenceKind.ORDER_ACK.value,
             instrument_id="B",
-            client_order_id="",
             event_id="e2",
+            **no_order_ids,
         ),
     ]
     res = run_ghosv_bounded_context_v1(records)
     assert res.traffic_overall == TRAFFIC_RED
+    assert any(g.status == "CONFLICT" for g in res.correlation_groups)
 
 
 def test_28_missing_fill_id_not_green():
@@ -362,6 +368,68 @@ def test_29_ingest_rejection_surfaces_yellow():
     res = run_ghosv_bounded_context_v1([{"kind": "NOT_A_KIND"}])
     assert res.ingest_rejected
     assert res.traffic_overall == TRAFFIC_YELLOW
+
+
+def test_31_fill_identity_unique_ids_green():
+    records = [
+        _base(kind=GhosvEvidenceKind.FILL.value, fill_id="f-a", payload={"fill_quantity": "1"}),
+        _base(
+            kind=GhosvEvidenceKind.FILL.value,
+            fill_id="f-b",
+            event_id="e2",
+            payload={"fill_quantity": "1"},
+        ),
+    ]
+    res = run_ghosv_bounded_context_v1(records)
+    assert any(f.reason == "UNIQUE_FILL_IDS" and f.traffic == TRAFFIC_GREEN for f in res.findings)
+
+
+def test_32_fill_identity_missing_id_only_yellow():
+    records = [
+        _base(kind=GhosvEvidenceKind.FILL.value, fill_id="", payload={"fill_quantity": "1"}),
+    ]
+    res = run_ghosv_bounded_context_v1(records)
+    assert res.traffic_overall == TRAFFIC_YELLOW
+    assert any(f.reason == "MISSING_FILL_ID" for f in res.findings)
+    assert not any(f.reason == "DUPLICATE_FILL_ID" for f in res.findings)
+
+
+def test_33_fill_identity_duplicate_known_ids_only_red():
+    records = [
+        _base(kind=GhosvEvidenceKind.FILL.value, fill_id="dup", payload={"fill_quantity": "1"}),
+        _base(
+            kind=GhosvEvidenceKind.FILL.value,
+            fill_id="dup",
+            event_id="e2",
+            payload={"fill_quantity": "1"},
+        ),
+    ]
+    res = run_ghosv_bounded_context_v1(records)
+    assert res.traffic_overall == TRAFFIC_RED
+    assert any(f.reason == "DUPLICATE_FILL_ID" for f in res.findings)
+    assert not any(f.reason == "MISSING_FILL_ID" for f in res.findings)
+
+
+def test_34_fill_identity_missing_and_duplicate_both_findings_red():
+    records = [
+        _base(kind=GhosvEvidenceKind.FILL.value, fill_id="dup", payload={"fill_quantity": "1"}),
+        _base(
+            kind=GhosvEvidenceKind.FILL.value,
+            fill_id="dup",
+            event_id="e2",
+            payload={"fill_quantity": "1"},
+        ),
+        _base(
+            kind=GhosvEvidenceKind.FILL.value,
+            fill_id="",
+            event_id="e3",
+            payload={"fill_quantity": "1"},
+        ),
+    ]
+    res = run_ghosv_bounded_context_v1(records)
+    assert res.traffic_overall == TRAFFIC_RED
+    assert any(f.reason == "MISSING_FILL_ID" for f in res.findings)
+    assert any(f.reason == "DUPLICATE_FILL_ID" for f in res.findings)
 
 
 def test_30_productive_recon_file_loader_identity(tmp_path):

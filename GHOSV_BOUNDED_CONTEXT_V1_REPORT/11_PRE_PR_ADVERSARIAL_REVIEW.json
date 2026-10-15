@@ -1,7 +1,7 @@
 {
   "PRE_PR_ADVERSARIAL_CONTRACT_REVIEW_V1": "PASS",
   "classification": "INFERENCE",
-  "scope": "PR7121_bugbot_remediation_bc75e06f7",
+  "scope": "PR7121_bugbot_final_fill_identity_and_test_27",
   "findings": [],
   "checks": [
     "Recon HARD_STOP_CLASSES + hard_stop flag never TRAFFIC_GREEN",
@@ -12,11 +12,14 @@
     "ingest_rejected surfaced on result + EVIDENCE_INGEST_INTEGRITY finding",
     "Productive recon file loader maps canonical evidence fields",
     "Safety adapter disabled; ADAPTER_MODE=DISABLED unchanged",
-    "30/30 targeted pytest PASS offline"
+    "Fill missing ID and duplicate known IDs evaluated independently",
+    "Combined missing+duplicate preserves both findings; aggregate RED",
+    "test_27 uses ORDER_ACK without client/exchange IDs and asserts CONFLICT",
+    "34/34 targeted pytest PASS offline"
   ],
   "bugbot_adjudication": {
-    "total": 7,
-    "confirmed_remediated": 7,
+    "total": 2,
+    "confirmed_remediated": 2,
     "false_positive": 0
   },
   "note": "Post-Bugbot minimal contract fix; no productive activation"
