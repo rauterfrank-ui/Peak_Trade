@@ -1,0 +1,68 @@
+{
+  "sources": [
+    {
+      "id": "A_EXECUTION_INTENT",
+      "producer": "full_core_live_path_composition_root_v1.final_order_envelope_v1",
+      "contract": "full_core_final_order_envelope.v1",
+      "persistence": "in-memory / closure payloads; optional JSON file",
+      "runtime_path": "pre-external closure / envelope bind slices",
+      "binding_status": "PARTIAL",
+      "notes": "Read via load_final_order_envelope_file_evidence_v1 when path supplied"
+    },
+    {
+      "id": "B_SUBMISSION_ATTEMPT",
+      "producer": "PRE_EXTERNAL_CONVERGENCE_REPORT",
+      "contract": "pre_external_convergence_report.v1",
+      "persistence": "run-scoped JSON reports",
+      "binding_status": "PARTIAL",
+      "notes": "Mapped to EXECUTION_ATTEMPT + PRE_EXTERNAL_REPORT; POST_COUNT witness only"
+    },
+    {
+      "id": "C_VENUE_RESPONSE_ACK",
+      "producer": "MISSING",
+      "binding_status": "MISSING",
+      "notes": "No canonical persisted CURRENT venue ack artifact identified for offline bind"
+    },
+    {
+      "id": "D_ORDER_REJECTION",
+      "producer": "MISSING",
+      "binding_status": "MISSING"
+    },
+    {
+      "id": "E_ORDER_STATE_TRANSITION",
+      "producer": "MISSING",
+      "binding_status": "MISSING"
+    },
+    {
+      "id": "F_FILL_PARTIAL_FULL",
+      "producer": "MISSING",
+      "binding_status": "MISSING",
+      "notes": "No productive persisted fill ledger bound in this slice"
+    },
+    {
+      "id": "G_CANCEL",
+      "producer": "MISSING",
+      "binding_status": "MISSING"
+    },
+    {
+      "id": "H_POSITION_EXECUTION_RECON",
+      "producer": "ops.productive_reconciliation_runtime_binding_v1",
+      "contract": "productive_reconciliation_runtime_binding.v1",
+      "persistence": "runtime_state/recon/productive_reconciliation_evidence_v1.json",
+      "binding_status": "CURRENT_CONNECTED"
+    },
+    {
+      "id": "I_PORTfolio_POSITION",
+      "producer": "ops.productive_reconciliation_runtime_binding_v1",
+      "contract": "productive_portfolio_state.v1",
+      "persistence": "productive_portfolio_state_v1.json",
+      "binding_status": "CURRENT_CONNECTED"
+    },
+    {
+      "id": "J_SAFETY_RESPONSE",
+      "producer": "MISSING_DIRECT",
+      "binding_status": "PROPOSED_ONLY",
+      "notes": "S07 witness only; no productive safety response feed bound"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "READ_ONLY_BINDINGS_IMPLEMENTED": [
+    "read_current_execution_evidence_v1",
+    "observe_current_execution_via_ghosv_v1",
+    "load_productive_portfolio_state_position_evidence_v1",
+    "load_pre_external_convergence_report_evidence_v1",
+    "load_final_order_envelope_file_evidence_v1"
+  ],
+  "activation": false,
+  "runtime_hooks_added": false,
+  "READER_AUTHORITY": "NONE"
+}

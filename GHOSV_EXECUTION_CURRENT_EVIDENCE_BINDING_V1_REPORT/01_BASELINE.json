@@ -1,0 +1,9 @@
+{
+  "CURRENT_SHA": "57b9bb00935ad442ca3e80cff44475cc38fd859b",
+  "WORKTREE_PATH": "/private/tmp/peak_trade_ghosv_execution_evidence_binding_v1_wt",
+  "BRANCH": "feat/ghosv-execution-current-evidence-binding-v1",
+  "GHOSV_PACKAGE": "src/ops/ghosv_bounded_context_v1",
+  "READER_MODULE": "src/ops/ghosv_bounded_context_v1/current_execution_evidence_reader_v1.py",
+  "PRIMARY_WORKTREE_MUTATED": false,
+  "FROZEN_C1_MUTATED": false
+}

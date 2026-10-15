@@ -1,0 +1,14 @@
+{
+  "EXECUTION_ONLY_BOUNDARY": true,
+  "forbidden_couplings": [
+    "GHOSV Market & Scope",
+    "GGE",
+    "Dynamic Scope",
+    "Master V2 decision logic",
+    "Double Play",
+    "Selection/Ranking",
+    "Market price integrity feeds"
+  ],
+  "enforced": "Reader imports only reconciliation, envelope, GHOSV pipeline, EXTERNAL_EFFECT read constant",
+  "GHV_ROLE": "FORENSIC_REFERENCE_ONLY"
+}

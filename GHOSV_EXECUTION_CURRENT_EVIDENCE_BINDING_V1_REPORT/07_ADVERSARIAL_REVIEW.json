@@ -1,0 +1,12 @@
+{
+  "PRE_PR_ADVERSARIAL_CONTRACT_REVIEW_V1": "PASS",
+  "scope": "current_execution_evidence_reader_v1",
+  "checks": [
+    "No producer mutation paths",
+    "Missing trade_id fail-closed",
+    "Recon HARD_STOP maps to RED via existing S03",
+    "POST witness uses EXTERNAL_EFFECT_AUTHORIZED read-only constant",
+    "Adapter remains DISABLED",
+    "No implicit GREEN on empty source set"
+  ]
+}
