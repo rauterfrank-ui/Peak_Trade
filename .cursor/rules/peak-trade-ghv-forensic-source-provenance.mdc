@@ -1,0 +1,16 @@
+---
+description: GHV forensic CURRENT investigations — pinned source and proof eligibility (R1)
+globs:
+  - scripts/ops/ghv_forensic_whole_system_crosswalk_v1/**
+  - scripts/ops/ghv_forensic_source_provenance_v1/**
+  - tests/ops/test_ghv_forensic_source_provenance_v1.py
+alwaysApply: false
+---
+
+# GHV Forensic Source Provenance (R1)
+
+- CURRENT-main code facts for forensic proof: read via **git show / git grep / git ls-tree @ pin-SHA** or an **isolated clean checkout** at `DECLARED_CURRENT_SHA`. Do not treat workspace grep as CURRENT proof.
+- `LOCAL_HEAD == CURRENT_MAIN` is never assumed.
+- `NAVIGATION_ONLY` crosswalk PASS is **not** CURRENT proof (`CURRENT_GRAPH_VERIFIED=false`).
+- Crosswalk CLI `status=PASS` / exit 0 is **not** `PROOF_ELIGIBILITY`; use `forensic_source_provenance_report.v1.json`.
+- `composed_forensic_graph.v1.json` field `source_validation_pass` is not equivalent to `SNAPSHOT_BINDING_VERIFIED` or positive CURRENT proof without `CURRENT_GRAPH_VERIFIED=true` under `STRICT_CURRENT`.
