@@ -1,24 +1,38 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "3ea0fd677073c4d01ead11b79022b4adebe2172a",
-  "head_sha": "1be3e30a82de19a8d84cd96a88f5d1814744234e",
+  "base_sha": "85908da9fd50bcda4193fd8792acb4d782cf46d9",
+  "head_sha": "PENDING_COMMIT",
   "changed_paths": [
+    ".cursor/rules/peak-trade-ghv-forensic-source-provenance.mdc",
+    ".nvmrc",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_persisted_reconciliation_disposition_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
-    "tests/ops/test_current_productive_persisted_reconciliation_disposition_v1.py"
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "docs/ops/specs/GHV_FORENSIC_SOURCE_PROVENANCE_R1_V1.md",
+    "scripts/ops/ghv_forensic_source_provenance_v1/__init__.py",
+    "scripts/ops/ghv_forensic_source_provenance_v1/proof_eligibility_v1.py",
+    "scripts/ops/ghv_forensic_source_provenance_v1/provenance_contract_v1.py",
+    "scripts/ops/ghv_forensic_source_provenance_v1/reporting_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/cli.py",
+    "tests/ops/test_ghv_forensic_source_provenance_v1.py"
   ],
-  "changed_paths_sha256": "1ded0c2563ad7cfc57d2ab89e17960a79b4220e61fe465d041a81590cbbc15dc",
+  "changed_paths_sha256": "80820813128f7f647f81d4ae732f8af23919c2d91c02dcd9439e0e52f600585a",
   "covered_candidate_paths": [
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_persisted_reconciliation_disposition_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
-    "tests/ops/test_current_productive_persisted_reconciliation_disposition_v1.py"
+    ".cursor/rules/peak-trade-ghv-forensic-source-provenance.mdc",
+    ".nvmrc",
+    "docs/ops/specs/GHV_FORENSIC_SOURCE_PROVENANCE_R1_V1.md",
+    "scripts/ops/ghv_forensic_source_provenance_v1/__init__.py",
+    "scripts/ops/ghv_forensic_source_provenance_v1/proof_eligibility_v1.py",
+    "scripts/ops/ghv_forensic_source_provenance_v1/provenance_contract_v1.py",
+    "scripts/ops/ghv_forensic_source_provenance_v1/reporting_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/cli.py",
+    "tests/ops/test_ghv_forensic_source_provenance_v1.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_current_productive_persisted_reconciliation_disposition_v1.py",
+    "docs/ops/specs/GHV_FORENSIC_SOURCE_PROVENANCE_R1_V1.md",
+    "tests/ops/test_ghv_forensic_source_provenance_v1.py",
     "tests/ops/test_current_system_interaction_authority_map_v1.py"
   ],
-  "reason": "V2 G004 WP2: opt-in persisted post-attempt reconciliation disposition under existing full_core lifecycle join; NO_MAP_IMPACT — no source_v1.json or derived map view change; authority_effect NONE; default persist flag false.",
+  "reason": "PR #7120 GHV forensic source provenance R1 (caller reporting + fail-closed PROOF_ELIGIBILITY) and CI remediation (.nvmrc for Promptfoo path triggered by .cursor rule). NO_MAP_IMPACT — no source_v1.json or derived interaction-authority map view change; authority_effect NONE; forensic/offline only.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }

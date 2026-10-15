@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -56,6 +57,21 @@ def main() -> int:
         action="store_true",
         help="Alias for --navigation-only (explicit selector only; no silent fallback)",
     )
+    parser.add_argument(
+        "--declared-current-sha",
+        default=None,
+        help="Owner-declared CURRENT main SHA for forensic proof eligibility (not inferred from HEAD)",
+    )
+    parser.add_argument(
+        "--test-execution-sha",
+        default=None,
+        help="Git SHA of the tree used to execute this crosswalk (fail-closed for CURRENT proof)",
+    )
+    parser.add_argument(
+        "--workspace-read-declared-pin",
+        action="store_true",
+        help="Caller attestation: filesystem reads used unpinned workspace despite declared pin",
+    )
     args = parser.parse_args()
 
     repo_root = args.repo_root.resolve()
@@ -93,11 +109,46 @@ def main() -> int:
         include_atlas=not args.no_atlas,
         graph_mode=graph_mode,
     )
+
+    from scripts.ops.ghv_forensic_source_provenance_v1.reporting_v1 import (
+        build_forensic_source_provenance_report_v1,
+        write_forensic_source_provenance_report_v1,
+    )
+
+    impl_sha = subprocess.check_output(
+        ["git", "-C", str(repo_root), "rev-parse", "HEAD"],
+        text=True,
+    ).strip()
+    provenance_report = build_forensic_source_provenance_report_v1(
+        repo_root=repo_root,
+        output_dir=output_dir,
+        declared_current_sha=args.declared_current_sha,
+        test_execution_sha=args.test_execution_sha,
+        coverage=dict(result.coverage),
+        crosswalk_ok=result.ok,
+        evidence_root=args.evidence_root.resolve() if args.evidence_root else None,
+        workspace_read_declared_pin=args.workspace_read_declared_pin,
+        implementation_source_sha=impl_sha,
+    )
+    write_forensic_source_provenance_report_v1(
+        repo_root=repo_root,
+        output_dir=output_dir,
+        report=provenance_report,
+    )
+    proof_eligibility = provenance_report["record"]["PROOF_ELIGIBILITY"]
     print(
         json.dumps(
             {
                 "status": "PASS" if result.ok else "FAIL",
+                "crosswalk_cli_ok": result.ok,
+                "proof_eligibility": proof_eligibility,
+                "proof_eligibility_reasons": provenance_report["record"][
+                    "PROOF_ELIGIBILITY_REASONS"
+                ],
                 "output_dir": str(output_dir),
+                "forensic_source_provenance_report": str(
+                    output_dir / "forensic_source_provenance_report.v1.json"
+                ),
                 "snapshot_id": result.snapshot_id,
                 "node_count": len(result.nodes),
                 "edge_count": len(result.edges),
