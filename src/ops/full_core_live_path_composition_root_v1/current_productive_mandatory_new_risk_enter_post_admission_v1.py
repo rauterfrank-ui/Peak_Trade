@@ -33,6 +33,11 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_risk_red
     RiskReducingEnvelopeProvenanceError,
     verify_authorized_risk_reducing_envelope_provenance_v1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_execution_lifecycle_root_binding_v1 import (
+    ExecutionLifecycleRootBindingError,
+    assert_atomic_state_dir_bound_to_store_root_v1,
+    assert_correlation_identity_matches_envelope_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.full_core_capital_guard_atomic_one_shot_v1 import (
     FullCoreAuthorizationBindingV1,
     STATE_HALTED_UNRESOLVED,
@@ -112,6 +117,10 @@ def persist_enter_post_lifecycle_correlation_v1(
     atomic_state_dir: Path | str,
 ) -> None:
     assert_envelope_unmodified_v1(envelope)
+    assert_atomic_state_dir_bound_to_store_root_v1(
+        store_root=store_root,
+        atomic_state_dir=atomic_state_dir,
+    )
     record = {
         "contract_id": CONTRACT_ID,
         "envelope_id": envelope.envelope_id,
@@ -154,9 +163,13 @@ def prove_new_risk_enter_post_store_admission_clear_v1(
             )
     correlation = load_enter_post_lifecycle_correlation_v1(store_root=store_root)
     if correlation is not None:
-        prior_digest = str(correlation.get("envelope_digest") or "")
-        if prior_digest and prior_digest != envelope.envelope_digest:
-            raise MandatoryNewRiskEnterPostAdmissionError("LIFECYCLE_CORRELATION_ENVELOPE_MISMATCH")
+        try:
+            assert_correlation_identity_matches_envelope_v1(
+                correlation=correlation,
+                envelope=envelope,
+            )
+        except ExecutionLifecycleRootBindingError as exc:
+            raise MandatoryNewRiskEnterPostAdmissionError(str(exc)) from exc
     atomic_dir = Path(atomic_state_dir) if atomic_state_dir is not None else None
     if atomic_dir is None and correlation is not None:
         raw = str(correlation.get("atomic_state_dir") or "").strip()
