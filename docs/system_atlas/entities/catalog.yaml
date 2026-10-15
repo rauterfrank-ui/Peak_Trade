@@ -379,14 +379,16 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_NONCANONICAL
-  modified_by: CHANGE:ghosv_execution_cross_file_guard_contract_remediation_v1
+  modified_by: CHANGE:ghosv_execution_lifecycle_adjudication_correction_v1
   source_paths:
   - src/ops/ghosv_bounded_context_v1/current_execution_evidence_reader_v1.py
   - src/ops/ghosv_bounded_context_v1/current_execution_cycle_evidence_reader_v1.py
   - src/ops/ghosv_bounded_context_v1/execution_bounded_offline_observer_v1.py
+  - src/ops/ghosv_bounded_context_v1/execution_lifecycle_adjudication_v1.py
   - src/ops/ghosv_bounded_context_v1/execution_offline_consistency_guard_v1.py
   source_symbols:
   - run_execution_bounded_offline_observer_v1
+  - adjudicate_confirmed_venue_post_submission_v1
   - run_consistency_guard_v1
   - verify_cross_file_bindings_v1
   - resolve_persisted_evidence_root_v1
@@ -394,8 +396,9 @@ entities:
   - tests/ops/test_ghosv_current_execution_evidence_reader_v1.py
   - tests/ops/test_ghosv_current_execution_cycle_evidence_reader_v1.py
   - tests/ops/test_ghosv_execution_bounded_offline_observer_v1.py
+  - tests/ops/test_ghosv_execution_lifecycle_adjudication_v1.py
   - tests/ops/test_ghosv_execution_offline_consistency_guard_cross_file_v1.py
-  notes: 'Read-only GHOSV execution evidence + bounded offline observer/guard with repository-anchored cross-file Run/Cycle binding; ADAPTER_MODE=DISABLED; no venue POST; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE; POST_COUNT=0.'
+  notes: 'Read-only GHOSV execution evidence + lifecycle adjudication (post_occurred-gated POST_SUBMISSION); bounded offline observer/guard; ADAPTER_MODE=DISABLED; no venue POST; GHV_AUTHORITY=NONE; ATLAS_AUTHORITY=NONE; POST_COUNT=0.'
 - id: RUNTIME_COMPONENT:ghv_current_residency_decoupling_v1
   kind: RUNTIME_COMPONENT
   name: GHV current residency decoupling (O5, materializers, archive root)

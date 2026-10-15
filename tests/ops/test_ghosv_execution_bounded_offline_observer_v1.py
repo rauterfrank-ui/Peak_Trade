@@ -195,7 +195,8 @@ def test_explicit_post_count_zero_cycle(tmp_path: Path):
     )
     report = _run_observer(tmp_path, governed_cycle_evidence_dir=root)
     assert report["observer_run_success"] is True
-    assert report["execution_lifecycle_completeness"] == "POST_SUBMISSION_WITNESSED"
+    assert report["execution_lifecycle_completeness"] == "PARTIAL_WITNESSED"
+    assert report["lifecycle_adjudication"]["confirmed_venue_post_submission"] is False
 
 
 def test_missing_post_count_unknown(tmp_path: Path):
