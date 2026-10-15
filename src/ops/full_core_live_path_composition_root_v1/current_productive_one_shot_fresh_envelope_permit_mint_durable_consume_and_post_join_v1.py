@@ -134,6 +134,7 @@ class OneShotJoinResultV1:
     dw_exchange_reconciliation_disposition: str = DISPOSITION_SKIPPED
     dw_exchange_reconciliation_outcome: str = ""
     dw_exchange_reconciliation_ghv_forward_join: str = ""
+    dw_exchange_reconciliation_ghv_reverse_join: str = ""
     dw_exchange_reconciliation_error: str = ""
 
 
@@ -407,6 +408,7 @@ def attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consu
         dw_exchange_reconciliation_disposition=wiring.disposition,
         dw_exchange_reconciliation_outcome=wiring.reconciliation_outcome,
         dw_exchange_reconciliation_ghv_forward_join=wiring.ghv_forward_join,
+        dw_exchange_reconciliation_ghv_reverse_join=wiring.ghv_reverse_join,
         dw_exchange_reconciliation_error=wiring.error,
     )
 

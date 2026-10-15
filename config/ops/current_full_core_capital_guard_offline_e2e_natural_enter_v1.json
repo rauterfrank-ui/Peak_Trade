@@ -1,0 +1,21 @@
+{
+  "schema_version": "current_full_core_capital_guard.v1",
+  "contract_id": "CURRENT_FULL_CORE_CAPITAL_GUARD_V1",
+  "full_core_guard_join_enabled": true,
+  "owner_caps_ratified": true,
+  "currency": "USDC",
+  "max_single_order_notional": "25000",
+  "max_incremental_initial_margin": "25000",
+  "max_aggregate_exposure": "25000",
+  "max_leverage": "20",
+  "max_open_positions": 1,
+  "max_submitted_orders": 1,
+  "max_session_capital_commitment": "25000",
+  "max_existing_exposure": "500",
+  "scale_in_forbidden": true,
+  "automatic_retry_forbidden": true,
+  "fee_buffer_usdc": "1",
+  "max_new_orders": 1,
+  "max_new_positions": 1,
+  "spec_doc": "docs/ops/specs/CURRENT_FULL_SYSTEM_OFFLINE_E2E_INTEGRATION_PROOF_V1.md"
+}
