@@ -19,3 +19,9 @@ Kernpunkte:
 
 Verwendung:
 - als Standardregel für Cursor Multi-Agent Orchestrator im Founder/Operator-Arbeitsmodus
+
+### `PEAK_TRADE_TRADING_LOGIC_IMMUTABILITY_POLICY_V1.mdc`
+Zweck:
+- Owner-ratified: CURRENT trading logic is immutable; integration and validation adapt to it
+- forbids reverse adaptation (gates/tests/Bugbot must not drive trading-semantics changes)
+- mandates impact analysis and fail-closed stop when safety or trading semantics would change

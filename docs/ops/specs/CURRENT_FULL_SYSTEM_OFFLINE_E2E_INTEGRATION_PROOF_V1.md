@@ -45,3 +45,5 @@ from `enforce_pilot_capital_guard_before_enter_post_v1` is supplied (clOrdId + o
 provenance check). Full-core capital guard join remains proven in downstream lifecycle tests.
 
 Multiprocess entry: `scripts/ops/run_current_full_system_offline_e2e_crash_worker_v1.py`
+
+Agent policy (Owner-ratified, no runtime effect): `.cursor/rules/PEAK_TRADE_TRADING_LOGIC_IMMUTABILITY_POLICY_V1.mdc`

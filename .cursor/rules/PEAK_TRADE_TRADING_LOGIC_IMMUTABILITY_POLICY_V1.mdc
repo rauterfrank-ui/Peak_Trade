@@ -1,0 +1,89 @@
+---
+description: Owner-ratified trading logic immutability; integration adapts to CURRENT semantics, never the reverse.
+alwaysApply: true
+---
+
+# Peak_Trade Trading Logic Immutability Policy V1
+
+Owner directive (mandatory). Complements `peak-trade-governance.mdc` and canonical SSOT; on conflict with trading semantics or safety, **fail closed** and **STOP_AND_REQUEST_OWNER_DECISION**.
+
+## Machine flags (required)
+
+```text
+CURRENT_TRADING_LOGIC_IMMUTABLE=true
+DOUBLE_PLAY_MUTATION_FORBIDDEN=true
+ENTRY_EXIT_SCALE_IN_MUTATION_FORBIDDEN=true
+STRATEGY_PARAMETER_MUTATION_FORBIDDEN=true
+ADAPTATION_DIRECTION=VALIDATION_AND_INTEGRATION_TO_CURRENT_TRADING_LOGIC
+REVERSE_ADAPTATION_FORBIDDEN=true
+SAFETY_INVARIANTS_PRESERVED=true
+```
+
+## CURRENT FIRST authority
+
+- Recover trading and execution truth from **current `origin/main`**, Master Runbook, Map of Truth, code, config, persistence, and canonical evidence — not from chat, Bugbot, or integration harness convenience.
+- Integration proofs, E2E harnesses, CI, and Cursor rules **do not** authorize Live, Testnet, orders, credentials, or capital movement.
+
+## Protected trading semantics (do not mutate)
+
+Unless explicit scoped Owner-GO names trading-semantics change:
+
+- `trading/**` and `src/trading/**` (Double Play, entry/exit/scale-in policy, strategy parameters, decision thresholds, direction selection).
+- Productive decision producers and governed cycle **semantic outputs** (not observability-only fields on join results).
+- Do not add trading filters, loosen gates, or clear UNKNOWN without authoritative evidence.
+
+## Allowed remediation (adapt integration to CURRENT)
+
+When Bugbot, CI, E2E, or gate friction appears, fix only (priority order):
+
+1. Missing or malformed **input evidence** and fixtures.
+2. Stale or inconsistent **identity / provenance bindings** (clOrdId, decision id, authorization_binding).
+3. **Configuration** and **state handoffs** between joins (paths, wiring mode, offline injectors).
+4. Erroneous **gate classification** or lifecycle **reporting** (observability), not gate authority.
+5. Minimal **integration / validation / harness** code under `src/ops/**`, `tests/**`, `scripts/ops/**`, `docs/**`, `.cursor/rules/**`.
+
+Never disable or bypass a legitimate safety gate merely to make a trade executable.
+
+## Mandatory impact analysis (before any mutation)
+
+State explicitly:
+
+```text
+TRADING_LOGIC_CODE_DELTA=
+TRADING_DECISION_SEMANTICS_DELTA=
+NEW_TRADING_FILTERS=
+EXECUTION_SURFACE_TOUCHED=
+SAFETY_INVARIANTS_PRESERVED=
+```
+
+If `TRADING_LOGIC_CODE_DELTA != ZERO` or `TRADING_DECISION_SEMANTICS_DELTA != ZERO` without Owner trading-semantics GO → **STOP_AND_REQUEST_OWNER_DECISION**.
+
+## Regression proofs (required when touching execution integration)
+
+- **Positive:** valid trading decision + valid execution context → execution path reaches intended join outcome under standing pins (`REAL_*=0` unless separately authorized).
+- **Negative:** valid decision + genuine safety violation → exact fail-closed block (no silent pass).
+- **Defect:** valid decision + technical integration bug → root cause + minimal fix + deterministic regression test.
+
+Preserve fail-closed UNKNOWN handling; do not invent capital or authorization.
+
+## GHV role
+
+- GHV joins are **forensic / reconciliation observability** on post-submit lifecycle wiring.
+- GHV PASS/FAIL must reflect **actual wiring/orchestration results**, not hardcoded proof labels.
+- GHV evidence does not override capital guard, permit consume, POST authorization, or trading decisions.
+
+## Owner authorization boundaries
+
+- Harness fixtures (`OFFLINE_TEST_EVIDENCE_*`, pilot bind GO tokens in tests) are **not** productive Owner-GO.
+- `OWNER_MERGE_GO`, scoped `GO_*`, and runbook-governed activation remain separate from integration work.
+- Weakening safety, unlocking live execution, or changing Double Play semantics requires **explicit Owner decision** — not implied by merge-ready CI.
+
+## Completion proof (when this policy applies to a change set)
+
+```text
+TRADING_LOGIC_CODE_DELTA=ZERO
+TRADING_DECISION_SEMANTICS_DELTA=ZERO
+NEW_TRADING_FILTERS=ZERO
+SAFETY_INVARIANTS_PRESERVED=true
+DOUBLE_PLAY_SEMANTICS_CHANGED=false
+```
