@@ -24,6 +24,10 @@ from src.ops.ghosv_bounded_context_v1.current_execution_evidence_reader_v1 impor
 from src.ops.full_core_live_path_composition_root_v1.current_productive_persisted_reconciliation_disposition_v1 import (
     PersistedReconciliationDispositionError,
 )
+from src.ops.ghosv_bounded_context_v1.execution_lifecycle_adjudication_v1 import (
+    adjudicate_confirmed_venue_post_submission_v1,
+    execution_lifecycle_completeness_v1,
+)
 from src.ops.ghosv_bounded_context_v1.execution_offline_consistency_guard_v1 import (
     BoundedInputError,
     ConsistencyGuardResultV1,
@@ -141,39 +145,6 @@ def _missing_evidence_classes(
     return optional_gaps
 
 
-def _lifecycle_completeness(
-    *,
-    records_kinds: set[str],
-    guard: ConsistencyGuardResultV1,
-    post_submission_witnessed: bool,
-    pre_external_witnessed: bool,
-) -> str:
-    if guard.evidence_consistency == "FAIL":
-        return "INCONSISTENT_SOURCES"
-    has_pre = pre_external_witnessed
-    has_post = post_submission_witnessed
-    has_ack = GhosvEvidenceKind.ORDER_ACK.value in records_kinds
-    has_fill = bool(
-        records_kinds
-        & {
-            GhosvEvidenceKind.FILL.value,
-            GhosvEvidenceKind.FULL_FILL.value,
-            GhosvEvidenceKind.PARTIAL_FILL.value,
-        }
-    )
-    if has_fill:
-        return "FILL_WITNESSED"
-    if has_ack:
-        return "VENUE_ACK_WITNESSED"
-    if has_post:
-        return "POST_SUBMISSION_WITNESSED"
-    if has_pre:
-        return "PRE_EXTERNAL_ONLY"
-    if records_kinds:
-        return "PARTIAL_WITNESSED"
-    return "UNKNOWN"
-
-
 def _serialize_finding(f: GhosvIntegrityFindingV1) -> dict[str, Any]:
     return {
         "check_id": f.check_id,
@@ -261,6 +232,7 @@ def run_execution_bounded_offline_observer_v1(
     ghosv_result: GhosvBoundedContextResultV1 | None = None
     record_kinds: set[str] = set()
     post_submission_witnessed = False
+    post_witness_conflict = False
     pre_external_witnessed = False
     sources = CurrentExecutionEvidenceSourcesV1(
         trade_id=paths.trade_id,
@@ -276,10 +248,8 @@ def run_execution_bounded_offline_observer_v1(
         pre_external_witnessed = any(
             r.kind == GhosvEvidenceKind.PRE_EXTERNAL_REPORT.value for r in records
         )
-        post_submission_witnessed = any(
-            r.kind == GhosvEvidenceKind.EXECUTION_ATTEMPT.value
-            and r.payload.get("post_submission_witness") is True
-            for r in records
+        post_submission_witnessed, post_witness_conflict = (
+            adjudicate_confirmed_venue_post_submission_v1(records)
         )
         ghosv_result = observe_current_execution_via_ghosv_v1(sources, detected_at=detected)
     except (
@@ -300,11 +270,12 @@ def run_execution_bounded_offline_observer_v1(
     if guard.evidence_consistency in {"FAIL", "PARTIAL"} and traffic == TRAFFIC_GREEN:
         traffic = "YELLOW"
 
-    lifecycle = _lifecycle_completeness(
+    lifecycle = execution_lifecycle_completeness_v1(
         records_kinds=record_kinds,
         guard=guard,
         post_submission_witnessed=post_submission_witnessed,
         pre_external_witnessed=pre_external_witnessed,
+        post_witness_conflict=post_witness_conflict,
     )
 
     report: dict[str, Any] = {
@@ -347,6 +318,11 @@ def run_execution_bounded_offline_observer_v1(
         "ghosv_result": _serialize_ghosv_result(ghosv_result) if ghosv_result else None,
         "ghosv_traffic_light": traffic,
         "execution_lifecycle_completeness": lifecycle,
+        "lifecycle_adjudication": {
+            "confirmed_venue_post_submission": post_submission_witnessed,
+            "post_witness_conflict": post_witness_conflict,
+            "post_count_witness_not_venue_post": True,
+        },
         "missing_evidence_classes": _missing_evidence_classes(
             record_kinds,
             post_submission_witnessed=post_submission_witnessed,
