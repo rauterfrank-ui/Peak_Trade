@@ -22,7 +22,7 @@
     "docs/ops/specs/CURRENT_FULL_SYSTEM_OFFLINE_E2E_INTEGRATION_PROOF_V1.md",
     "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py"
   ],
-  "reason": "PR #7110: persist Owner trading-logic immutability Cursor rule and offline E2E integration proof harness; agent policy and observability only; no CURRENT law semantic object or trading-policy change; RUNTIME_AUTHORIZATION_EFFECT=NONE; diff-bound NO_LAW_IMPACT; AUTHORITY=NONE.",
+  "reason": "PR #7110: offline E2E integration proof harness (GAP-03 full-core capital guard, GAP-05 atomic durable apply), Owner trading-logic immutability Cursor rule; ops/test harness only; no CURRENT law semantic object or trading-policy change; RUNTIME_AUTHORIZATION_EFFECT=NONE; diff-bound NO_LAW_IMPACT; AUTHORITY=NONE.",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT"
 }

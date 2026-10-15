@@ -54,7 +54,7 @@ from trading.master_v2.double_play_entry_exit_policy_v0 import ExistingPositionS
 
 def run_gap_true_01_natural_enter_pre_external_v1(
     tmp_path: Path,
-) -> tuple[Any, CurrentProductiveGapTrue01EvidenceResultV1, str, Any]:
+) -> tuple[Any, CurrentProductiveGapTrue01EvidenceResultV1, str, Any, float]:
     origin_sha = _origin_main_sha()
     integrity = MockCurrentProductive29PIntegrityBackendV1(
         origin_main=origin_sha,
@@ -103,7 +103,7 @@ def run_gap_true_01_natural_enter_pre_external_v1(
         execution_integrity_backend=integrity,
     )
     assert result.gap_true_01_verdict == "CLOSED"
-    return bound, result, origin_sha, _productive_transport()
+    return bound, result, origin_sha, _productive_transport(), float(mark_px)
 
 
 def prepare_offline_owner_authorization_for_one_shot_v1(

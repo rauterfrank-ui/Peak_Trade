@@ -36,7 +36,7 @@
     "docs/ops/specs/CURRENT_FULL_SYSTEM_OFFLINE_E2E_INTEGRATION_PROOF_V1.md",
     "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py"
   ],
-  "reason": "PR #7110: Cursor agent policy for trading-logic immutability plus offline full-system E2E proof wiring; no CSIA source_v1.json semantic edge change; integration/reporting fixes only; RUNTIME_AUTHORIZATION_EFFECT=NONE; diff-bound NO_MAP_IMPACT; AUTHORITY=NONE.",
+  "reason": "PR #7110: offline E2E proof closure (GAP-03 full-core capital guard, GAP-05 atomic durable apply) plus trading-logic immutability Cursor rule; no CSIA source_v1.json semantic edge change; RUNTIME_AUTHORIZATION_EFFECT=NONE; diff-bound NO_MAP_IMPACT; AUTHORITY=NONE.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

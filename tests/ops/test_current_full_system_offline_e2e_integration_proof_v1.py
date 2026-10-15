@@ -17,12 +17,14 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot
     POST_OWNER_GO,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_full_system_offline_e2e_integration_proof_v1 import (
+    APPLY_DURABLE_ATOMIC_ENV_VAR,
     CRASH_POINT_ENV_VAR,
     FakeExchangeTransportWitnessV1,
     OfflineE2eCrashPoint,
     default_fake_post_witness_path_v1,
     load_offline_e2e_worker_result_v1,
     persist_offline_e2e_worker_input_v1,
+    format_pretrade_reference_mark_px_v1,
     run_production_pre_external_to_fake_post_chain_v1,
 )
 from tests.ops._current_full_system_offline_e2e_test_helpers_v1 import (
@@ -84,7 +86,7 @@ def _forbid_real_sockets(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_capital_guard_prevalidated_requires_pilot_binding_provenance(
     tmp_path: Path,
 ) -> None:
-    bound, gap, origin_sha, _ = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
+    bound, gap, origin_sha, _, _mark_px = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
     closure = gap.closure
     state_root = tmp_path / "no_pilot_binding"
     prepare_offline_owner_authorization_for_one_shot_v1(
@@ -123,6 +125,16 @@ def test_gap_registry_documents_boundary_audit() -> None:
     assert (
         INTEGRATION_GAP_CLASSIFICATIONS_V1["GAP_LIVE_PRODUCTIVE_OKX_POST"]
         is IntegrationGapClassification.EXTERNAL_LIVE_VALIDATION_ONLY
+    )
+    assert (
+        INTEGRATION_GAP_CLASSIFICATIONS_V1[
+            "GAP_03_CAPITAL_GUARD_RESERVATION_ENVELOPE_PERMIT_IDENTITY"
+        ]
+        is IntegrationGapClassification.ALREADY_IMPLEMENTED_AND_PROVEN
+    )
+    assert (
+        INTEGRATION_GAP_CLASSIFICATIONS_V1["GAP_05_ATOMIC_DURABLE_CRASH_RECOVERY"]
+        is IntegrationGapClassification.ALREADY_IMPLEMENTED_AND_PROVEN
     )
 
 
@@ -273,7 +285,9 @@ def test_ssot_docs_once_present() -> None:
 def test_full_production_chain_natural_enter_pre_external_fake_post_and_recon(
     tmp_path: Path,
 ) -> None:
-    bound, gap, origin_sha, _transport = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
+    bound, gap, origin_sha, _transport, _mark_px = run_gap_true_01_natural_enter_pre_external_v1(
+        tmp_path
+    )
     closure = gap.closure
     state_root = tmp_path / "full_chain"
     pilot_auth = prepare_offline_owner_authorization_for_one_shot_v1(
@@ -313,7 +327,7 @@ def test_full_production_chain_natural_enter_pre_external_fake_post_and_recon(
 
 
 def test_negative_business_rejection_fake_post(tmp_path: Path) -> None:
-    bound, gap, origin_sha, _ = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
+    bound, gap, origin_sha, _, _mark_px = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
     closure = gap.closure
     state_root = tmp_path / "reject"
     pilot_auth = prepare_offline_owner_authorization_for_one_shot_v1(
@@ -341,7 +355,9 @@ def test_negative_business_rejection_fake_post(tmp_path: Path) -> None:
 
 
 def test_negative_permit_reuse_fail_closed(tmp_path: Path) -> None:
-    bound, gap, origin_sha, _transport = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
+    bound, gap, origin_sha, _transport, _mark_px = run_gap_true_01_natural_enter_pre_external_v1(
+        tmp_path
+    )
     closure = gap.closure
     state_root = tmp_path / "reuse"
     pilot_auth = prepare_offline_owner_authorization_for_one_shot_v1(
@@ -396,11 +412,18 @@ def test_fake_exchange_transport_witness_is_mutable_and_persists_attempts(
     assert loaded.post_attempt_count == 1
 
 
-def _run_crash_worker_subprocess(state_root: Path, crash: OfflineE2eCrashPoint) -> int:
+def _run_crash_worker_subprocess(
+    state_root: Path,
+    crash: OfflineE2eCrashPoint,
+    *,
+    extra_env: dict[str, str] | None = None,
+) -> int:
     repo = Path(__file__).resolve().parents[2]
     env = os.environ.copy()
     env["PEAK_TRADE_OFFLINE_E2E_STATE_ROOT"] = str(state_root)
     env[CRASH_POINT_ENV_VAR] = crash.value
+    if extra_env:
+        env.update(extra_env)
     proc = subprocess.run(
         [
             str(repo / "scripts" / "pt"),
@@ -415,7 +438,9 @@ def _run_crash_worker_subprocess(state_root: Path, crash: OfflineE2eCrashPoint) 
 
 
 def test_crash_restart_no_duplicate_fake_post(tmp_path: Path) -> None:
-    bound, gap, origin_sha, _transport = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
+    bound, gap, origin_sha, _transport, _mark_px = run_gap_true_01_natural_enter_pre_external_v1(
+        tmp_path
+    )
     closure = gap.closure
     state_root = tmp_path / "crash_restart"
     pilot_auth = prepare_offline_owner_authorization_for_one_shot_v1(
@@ -464,7 +489,7 @@ def test_crash_restart_no_duplicate_fake_post(tmp_path: Path) -> None:
 
 
 def test_crash_before_durable_consume_allows_single_post_after_restart(tmp_path: Path) -> None:
-    bound, gap, origin_sha, _ = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
+    bound, gap, origin_sha, _, _mark_px = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
     closure = gap.closure
     state_root = tmp_path / "crash_before_consume"
     pilot_auth = prepare_offline_owner_authorization_for_one_shot_v1(
@@ -505,7 +530,7 @@ def test_crash_before_durable_consume_allows_single_post_after_restart(tmp_path:
 
 
 def test_crash_before_recon_complete_exits_94(tmp_path: Path) -> None:
-    bound, gap, origin_sha, _ = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
+    bound, gap, origin_sha, _, _mark_px = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
     closure = gap.closure
     state_root = tmp_path / "crash_before_recon"
     pilot_auth = prepare_offline_owner_authorization_for_one_shot_v1(
@@ -529,3 +554,163 @@ def test_crash_before_recon_complete_exits_94(tmp_path: Path) -> None:
     assert rc == 94
     worker = load_offline_e2e_worker_result_v1(state_root=state_root)
     assert worker.get("status") != "PASS"
+
+
+def test_gap_03_full_core_capital_guard_production_chain_positive(tmp_path: Path) -> None:
+    bound, gap, origin_sha, _, mark_px = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
+    closure = gap.closure
+    ref_mark = format_pretrade_reference_mark_px_v1(mark_px)
+    state_root = tmp_path / "gap_03_full_core_guard"
+    pilot_auth = prepare_offline_owner_authorization_for_one_shot_v1(
+        state_root=state_root,
+        closure=closure,
+        origin_main_sha=origin_sha,
+        bound=bound,
+    )
+    fixture = offline_recon_fixture_for_envelope_v1(closure)
+    chain = run_production_pre_external_to_fake_post_chain_v1(
+        closure=closure,
+        bound_instrument=bound,
+        origin_main_sha=origin_sha,
+        state_root=state_root,
+        read_only_get_transport=pilot_get_transport_v1(native_inst_id=str(bound.venue_native_id)),
+        offline_recon_fixture=fixture,
+        k1_backend=fake_k1_backend_v1(),
+        post_owner_go_persisted=True,
+        admission_seal_established=True,
+        capital_guard_prevalidated=False,
+        pilot_authorization_binding=pilot_auth,
+        pretrade_reference_mark_px=ref_mark,
+    )
+    assert chain.full_core_capital_guard_invoked is True
+    assert chain.full_core_capital_guard_join_mode == "OFFLINE_STUB"
+    assert chain.full_core_capital_guard_binding_digest
+    assert chain.capital_guard_allowed is True
+    assert chain.fake_post_witness_count == 1
+    assert closure.current_productive_decision_result == "EXECUTABLE_VENUE_PLAN_BOUND"
+
+
+def test_gap_03_full_core_capital_guard_blocks_without_reference_mark(tmp_path: Path) -> None:
+    bound, gap, origin_sha, _, _mark_px = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
+    closure = gap.closure
+    state_root = tmp_path / "gap_03_guard_block"
+    pilot_auth = prepare_offline_owner_authorization_for_one_shot_v1(
+        state_root=state_root,
+        closure=closure,
+        origin_main_sha=origin_sha,
+        bound=bound,
+    )
+    fixture = offline_recon_fixture_for_envelope_v1(closure)
+    with pytest.raises(
+        CurrentFullSystemOfflineE2eIntegrationProofError,
+        match="CAPITAL_GUARD_BLOCKED",
+    ):
+        run_production_pre_external_to_fake_post_chain_v1(
+            closure=closure,
+            bound_instrument=bound,
+            origin_main_sha=origin_sha,
+            state_root=state_root,
+            read_only_get_transport=pilot_get_transport_v1(
+                native_inst_id=str(bound.venue_native_id)
+            ),
+            offline_recon_fixture=fixture,
+            k1_backend=fake_k1_backend_v1(),
+            post_owner_go_persisted=True,
+            admission_seal_established=True,
+            capital_guard_prevalidated=False,
+            pilot_authorization_binding=pilot_auth,
+            pretrade_reference_mark_px=None,
+        )
+
+
+def test_gap_05_atomic_durable_apply_isolated_state(tmp_path: Path) -> None:
+    from tests.ops.test_full_core_orchestrated_post_submit_lifecycle_reconciliation_v1 import (
+        test_orchestrator_offline_unknown_restart_recovery,
+    )
+
+    bound, gap, origin_sha, _, mark_px = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
+    closure = gap.closure
+    ref_mark = format_pretrade_reference_mark_px_v1(mark_px)
+    state_root = tmp_path / "gap_05_atomic"
+    pilot_auth = prepare_offline_owner_authorization_for_one_shot_v1(
+        state_root=state_root,
+        closure=closure,
+        origin_main_sha=origin_sha,
+        bound=bound,
+    )
+    fixture = offline_recon_fixture_for_envelope_v1(closure)
+    chain = run_production_pre_external_to_fake_post_chain_v1(
+        closure=closure,
+        bound_instrument=bound,
+        origin_main_sha=origin_sha,
+        state_root=state_root,
+        read_only_get_transport=pilot_get_transport_v1(native_inst_id=str(bound.venue_native_id)),
+        offline_recon_fixture=fixture,
+        k1_backend=fake_k1_backend_v1(),
+        post_owner_go_persisted=True,
+        admission_seal_established=True,
+        capital_guard_prevalidated=False,
+        pilot_authorization_binding=pilot_auth,
+        pretrade_reference_mark_px=ref_mark,
+        apply_durable_atomic_state=True,
+    )
+    assert chain.apply_durable_atomic_state is True
+    assert chain.standing_real_exchange_counts["REAL_EXCHANGE_POST_COUNT"] == 0
+    assert chain.one_shot_join.dw_exchange_reconciliation_invoked is True
+    guard_atomic = list((state_root / "atomic" / "capital_guard").glob("*.state.json"))
+    recon_atomic = list((state_root / "atomic" / "recon").glob("*"))
+    assert guard_atomic
+    assert recon_atomic
+    test_orchestrator_offline_unknown_restart_recovery(tmp_path / "gap_05_orchestrator_reproof")
+
+
+def test_gap_05_crash_before_durable_consume_atomic_restart_single_post(tmp_path: Path) -> None:
+    """Crash before external-effect durable consume; restart completes one fake POST.
+
+    First segment runs full-core capital guard (single-use authorization). Restart
+    uses pilot prevalidated provenance only — guard was already consumed pre-crash.
+    """
+
+    bound, gap, origin_sha, _, mark_px = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
+    closure = gap.closure
+    ref_mark = format_pretrade_reference_mark_px_v1(mark_px)
+    state_root = tmp_path / "gap_05_crash_atomic"
+    pilot_auth = prepare_offline_owner_authorization_for_one_shot_v1(
+        state_root=state_root,
+        closure=closure,
+        origin_main_sha=origin_sha,
+        bound=bound,
+    )
+    fixture = offline_recon_fixture_for_envelope_v1(closure)
+    persist_offline_e2e_worker_input_v1(
+        state_root=state_root,
+        closure=closure,
+        bound_instrument=bound,
+        origin_main_sha=origin_sha,
+        read_only_get_transport=None,
+        offline_recon_fixture=fixture,
+        k1_backend=fake_k1_backend_v1(),
+        pilot_authorization_binding=pilot_auth,
+        pretrade_reference_mark_px=ref_mark,
+    )
+    rc_crash = _run_crash_worker_subprocess(
+        state_root,
+        OfflineE2eCrashPoint.BEFORE_DURABLE_CONSUME,
+        extra_env={
+            APPLY_DURABLE_ATOMIC_ENV_VAR: "true",
+            "PEAK_TRADE_OFFLINE_E2E_USE_FULL_CORE_CAPITAL_GUARD": "true",
+        },
+    )
+    assert rc_crash == 91
+    rc_restart = _run_crash_worker_subprocess(
+        state_root,
+        OfflineE2eCrashPoint.NONE,
+        extra_env={
+            APPLY_DURABLE_ATOMIC_ENV_VAR: "true",
+        },
+    )
+    assert rc_restart == 0
+    witness_count = json.loads(
+        default_fake_post_witness_path_v1(state_root).read_text(encoding="utf-8")
+    )["post_attempt_count"]
+    assert witness_count == 1

@@ -9,7 +9,8 @@ RUNTIME_AUTHORIZATION_EFFECT=NONE
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+from decimal import Decimal
 from enum import Enum
 from io import BytesIO
 from pathlib import Path
@@ -99,6 +100,7 @@ OFFLINE_OWNER_AUTHORIZATION_FIXTURE_LABEL = (
 )
 
 CRASH_POINT_ENV_VAR = "PEAK_TRADE_OFFLINE_E2E_CRASH_POINT_V1"
+APPLY_DURABLE_ATOMIC_ENV_VAR = "PEAK_TRADE_OFFLINE_E2E_APPLY_DURABLE_ATOMIC"
 WORKER_RESULT_FILENAME = "offline_e2e_worker_result_v1.json"
 ENVELOPE_SNAPSHOT_FILENAME = "offline_e2e_envelope_snapshot_v1.json"
 
@@ -123,13 +125,13 @@ INTEGRATION_GAP_CLASSIFICATIONS_V1: dict[str, IntegrationGapClassification] = {
         IntegrationGapClassification.ALREADY_IMPLEMENTED_AND_PROVEN
     ),
     "GAP_03_CAPITAL_GUARD_RESERVATION_ENVELOPE_PERMIT_IDENTITY": (
-        IntegrationGapClassification.ALREADY_IMPLEMENTED_BUT_UNPROVEN
+        IntegrationGapClassification.ALREADY_IMPLEMENTED_AND_PROVEN
     ),
     "GAP_04_POST_TO_RECONCILIATION_LIFECYCLE": (
         IntegrationGapClassification.ALREADY_IMPLEMENTED_AND_PROVEN
     ),
     "GAP_05_ATOMIC_DURABLE_CRASH_RECOVERY": (
-        IntegrationGapClassification.ALREADY_IMPLEMENTED_BUT_UNPROVEN
+        IntegrationGapClassification.ALREADY_IMPLEMENTED_AND_PROVEN
     ),
     "GAP_06_DISABLED_LIFECYCLE_HOOKS_DEFAULT": IntegrationGapClassification.INTENTIONAL_SAFETY_BOUNDARY,
     "GAP_07_REPRODUCIBLE_FULL_SYSTEM_PROOF": IntegrationGapClassification.ALREADY_IMPLEMENTED_AND_PROVEN,
@@ -267,6 +269,29 @@ def _build_join_binding_from_cycle_v1(
     return join_binding
 
 
+def format_pretrade_reference_mark_px_v1(mark_px: float | str) -> str:
+    """Decimal string for full-core guard market-order reference (integration handoff only)."""
+
+    text = format(float(mark_px), ".12f")
+    return text.rstrip("0").rstrip(".") or "0"
+
+
+def offline_e2e_natural_enter_capital_guard_config_v1() -> Any:
+    """OFFLINE_STUB guard caps sized for GAP-TRUE-01 envelope evidence (harness-only)."""
+
+    from src.ops.full_core_live_path_composition_root_v1.current_full_core_capital_guard_v1 import (
+        ratified_offline_full_core_guard_config_v1,
+    )
+
+    return replace(
+        ratified_offline_full_core_guard_config_v1(),
+        max_single_order_notional=Decimal("25000"),
+        max_incremental_initial_margin=Decimal("25000"),
+        max_aggregate_exposure=Decimal("25000"),
+        max_session_capital_commitment=Decimal("25000"),
+    )
+
+
 def run_pre_external_capital_guard_phase_v1(
     *,
     cycle: CurrentProductiveGovernedCycleResultV1,
@@ -280,6 +305,10 @@ def run_pre_external_capital_guard_phase_v1(
     if envelope is None or not isinstance(envelope, FinalOrderEnvelopeV1):
         raise CurrentFullSystemOfflineE2eIntegrationProofError("FINAL_ORDER_ENVELOPE_MISSING")
     join_binding = _build_join_binding_from_cycle_v1(cycle=cycle, handoff=handoff)
+    guard_config = replace(
+        offline_e2e_natural_enter_capital_guard_config_v1(),
+        config_digest=join_binding.guard_config_digest,
+    )
     return run_full_core_pre_post_capital_guard_join_v1(
         binding=join_binding,
         envelope=envelope,
@@ -288,6 +317,8 @@ def run_pre_external_capital_guard_phase_v1(
         exposure_evidence=_default_exposure_v1(),
         atomic_state_dir=atomic_state_dir,
         session_id=session_id,
+        pretrade_reference_mark_px=handoff.reference_mark_px,
+        guard_config=guard_config,
     )
 
 
@@ -681,6 +712,7 @@ def build_handoff_from_pre_external_closure_v1(
     origin_main_sha: str,
     account_identity: str = "acct-offline-e2e-v1",
     environment: str = "OFFLINE_STUB",
+    reference_mark_px: str | None = None,
 ) -> FullCoreCapitalGuardHandoffContextV1:
     from src.ops.full_core_live_path_composition_root_v1.full_core_pre_post_capital_guard_binding_v1 import (
         FullCoreCapitalGuardInstrumentMetadataV1,
@@ -697,6 +729,7 @@ def build_handoff_from_pre_external_closure_v1(
             min_sz="1",
             lot_sz="1",
         ),
+        reference_mark_px=reference_mark_px,
     )
 
 
@@ -747,6 +780,10 @@ class ProductionOfflineE2eChainResultV1:
     pre_external_path_label: str
     owner_authorization_fixture_label: str
     capital_guard_allowed: bool
+    full_core_capital_guard_invoked: bool
+    full_core_capital_guard_join_mode: str
+    full_core_capital_guard_binding_digest: str | None
+    apply_durable_atomic_state: bool
     one_shot_join: OneShotJoinResultV1
     fake_post_witness_count: int
     standing_real_exchange_counts: Mapping[str, int]
@@ -865,6 +902,7 @@ def run_production_pre_external_to_fake_post_chain_v1(
     apply_durable_atomic_state: bool = False,
     natural_enter_path_label: str = NATURAL_ENTER_GAP_TRUE_01_PRODUCTION_PATH_V1,
     capital_guard_prevalidated: bool = False,
+    pretrade_reference_mark_px: str | None = None,
 ) -> ProductionOfflineE2eChainResultV1:
     """PRE_EXTERNAL closure envelope → capital guard → one fake POST → offline recon."""
 
@@ -911,10 +949,15 @@ def run_production_pre_external_to_fake_post_chain_v1(
         closure=closure,
         bound_instrument=bound_instrument,
         origin_main_sha=origin_main_sha,
+        reference_mark_px=pretrade_reference_mark_px,
     )
+    guard_join_mode = ""
+    guard_binding_digest: str | None = None
+    full_core_guard_invoked = False
     if capital_guard_prevalidated is True:
         guard_allowed = True
     else:
+        full_core_guard_invoked = True
         guard = run_pre_external_capital_guard_phase_v1(
             cycle=cycle,
             handoff=handoff,
@@ -924,6 +967,8 @@ def run_production_pre_external_to_fake_post_chain_v1(
         if guard.guard_blocked or guard.guard_allowed is not True:
             raise CurrentFullSystemOfflineE2eIntegrationProofError("CAPITAL_GUARD_BLOCKED")
         guard_allowed = True
+        guard_join_mode = str(guard.join_mode or "")
+        guard_binding_digest = str(guard.binding_digest) if guard.binding_digest else None
 
     join_binding = _build_join_binding_from_cycle_v1(cycle=cycle, handoff=handoff)
     dw_config = build_dw_reconciliation_wiring_config_v1(
@@ -974,6 +1019,10 @@ def run_production_pre_external_to_fake_post_chain_v1(
         pre_external_path_label=PRE_EXTERNAL_HANDOFF_FIXTURE_LABEL,
         owner_authorization_fixture_label=OFFLINE_OWNER_AUTHORIZATION_FIXTURE_LABEL,
         capital_guard_allowed=guard_allowed,
+        full_core_capital_guard_invoked=full_core_guard_invoked,
+        full_core_capital_guard_join_mode=guard_join_mode,
+        full_core_capital_guard_binding_digest=guard_binding_digest,
+        apply_durable_atomic_state=apply_durable_atomic_state is True,
         one_shot_join=one_shot,
         fake_post_witness_count=int(witness.post_attempt_count),
         standing_real_exchange_counts=counts,
@@ -1017,9 +1066,29 @@ def run_offline_e2e_crash_worker_from_persisted_input_v1(*, state_root: Path) ->
             payload={"status": "MISSING_WORKER_INPUT"},
         )
         return 3
+    apply_durable = str(os.environ.get(APPLY_DURABLE_ATOMIC_ENV_VAR) or "").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+    }
+    use_full_core_guard = str(
+        os.environ.get("PEAK_TRADE_OFFLINE_E2E_USE_FULL_CORE_CAPITAL_GUARD") or ""
+    ).strip().lower() in {"1", "true", "yes"}
     loaded = pickle.load(input_path.open("rb"))
     pilot_authorization_binding = None
-    if isinstance(loaded, tuple) and len(loaded) == 7:
+    pretrade_reference_mark_px: str | None = None
+    if isinstance(loaded, tuple) and len(loaded) == 8:
+        (
+            closure,
+            bound,
+            origin_main_sha,
+            read_only_get_transport,
+            offline_recon_fixture,
+            k1_backend,
+            pilot_authorization_binding,
+            pretrade_reference_mark_px,
+        ) = loaded
+    elif isinstance(loaded, tuple) and len(loaded) == 7:
         (
             closure,
             bound,
@@ -1056,8 +1125,10 @@ def run_offline_e2e_crash_worker_from_persisted_input_v1(*, state_root: Path) ->
             post_owner_go_persisted=True,
             admission_seal_established=True,
             crash_point=crash,
-            capital_guard_prevalidated=True,
+            capital_guard_prevalidated=not use_full_core_guard,
             pilot_authorization_binding=pilot_authorization_binding,
+            pretrade_reference_mark_px=pretrade_reference_mark_px,
+            apply_durable_atomic_state=apply_durable,
         )
         persist_offline_e2e_worker_result_v1(
             state_root=state_root,
@@ -1086,6 +1157,7 @@ def persist_offline_e2e_worker_input_v1(
     offline_recon_fixture: OfflineExchangeFixtureV1,
     k1_backend: Any,
     pilot_authorization_binding: Any | None = None,
+    pretrade_reference_mark_px: str | None = None,
 ) -> None:
     import pickle
 
@@ -1098,6 +1170,7 @@ def persist_offline_e2e_worker_input_v1(
         offline_recon_fixture,
         k1_backend,
         pilot_authorization_binding,
+        pretrade_reference_mark_px,
     )
     with (state_root / OFFLINE_E2E_WORKER_INPUT_PICKLE).open("wb") as handle:
         pickle.dump(payload, handle, protocol=pickle.HIGHEST_PROTOCOL)
