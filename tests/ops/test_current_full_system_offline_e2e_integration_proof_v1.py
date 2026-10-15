@@ -102,7 +102,9 @@ def test_capital_guard_prevalidated_requires_pilot_binding_provenance(
             bound_instrument=bound,
             origin_main_sha=origin_sha,
             state_root=state_root,
-            read_only_get_transport=pilot_get_transport_v1(native_inst_id=str(bound.venue_native_id)),
+            read_only_get_transport=pilot_get_transport_v1(
+                native_inst_id=str(bound.venue_native_id)
+            ),
             offline_recon_fixture=fixture,
             k1_backend=fake_k1_backend_v1(),
             post_owner_go_persisted=True,
