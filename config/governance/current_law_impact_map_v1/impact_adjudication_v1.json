@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "57b9bb00935ad442ca3e80cff44475cc38fd859b",
-  "head_sha": "4269e0845ad82ad662ca0899ff5ecc92a24cb609",
+  "head_sha": "603c6369f0f8ee5d8afb1f7852e6da5b13bbe381",
   "changed_paths": [
     "GHOSV_EXECUTION_CURRENT_EVIDENCE_BINDING_V1_REPORT/01_BASELINE.json",
     "GHOSV_EXECUTION_CURRENT_EVIDENCE_BINDING_V1_REPORT/02_CURRENT_EXECUTION_EVIDENCE_INVENTORY.json",
@@ -25,9 +25,10 @@
     "docs/system_atlas/provenance/changes.yaml",
     "docs/system_atlas/provenance/impact_state.yaml",
     "src/ops/ghosv_bounded_context_v1/current_execution_evidence_reader_v1.py",
+    "src/ops/ghosv_bounded_context_v1/s01_evidence_ingest_v1.py",
     "tests/ops/test_ghosv_current_execution_evidence_reader_v1.py"
   ],
-  "changed_paths_sha256": "8740a888ec66d7e976364c167ad5d1eb7dd4d5db20ed7405d5977a70c4691698",
+  "changed_paths_sha256": "1fd35a23be610de2b56d01395f8210693cbceaadc184aeaddc1b8c41a0b3201f",
   "evidence_refs": [
     "tests/ops/test_ghosv_current_execution_evidence_reader_v1.py"
   ],

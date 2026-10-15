@@ -44,6 +44,21 @@ class CurrentExecutionEvidenceSourcesV1:
     pre_external_convergence_report_json: Path | None = None
 
 
+def _parse_post_count_v1(data: Mapping[str, Any]) -> tuple[int | None, bool]:
+    """Return (post_count, known). Missing or non-numeric POST_COUNT is unknown (fail-closed)."""
+    if "POST_COUNT" not in data:
+        return None, False
+    raw = data.get("POST_COUNT")
+    if raw is None:
+        return None, False
+    if isinstance(raw, str) and not raw.strip():
+        return None, False
+    try:
+        return int(raw), True
+    except (TypeError, ValueError):
+        return None, False
+
+
 def _read_json_object(path: Path) -> dict[str, Any]:
     data = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(data, dict):
@@ -109,7 +124,7 @@ def load_pre_external_convergence_report_evidence_v1(
     data = _read_json_object(path)
     native_id = str(data.get("NATIVE_ID") or data.get("instrument_id") or "").strip()
     terminal = str(data.get("TERMINAL_DISPOSITION") or data.get("S5_TERMINAL_CLASS") or "")
-    post_count = int(data.get("POST_COUNT") or 0)
+    post_count, post_count_known = _parse_post_count_v1(data)
     pre_reached = str(data.get("PRE_EXTERNAL_REACHED") or "").lower() == "true"
     from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
         EXTERNAL_EFFECT_AUTHORIZED,
@@ -138,11 +153,20 @@ def load_pre_external_convergence_report_evidence_v1(
                     "disposition": terminal,
                     "pre_external_reached": pre_reached,
                     "post_count": post_count,
+                    "post_count_known": post_count_known,
                     "external_effect_count": data.get("EXTERNAL_EFFECT_COUNT"),
                 },
             }
         )
     )
+    attempt_payload: dict[str, Any] = {
+        "external_effect_authorized": EXTERNAL_EFFECT_AUTHORIZED is True,
+        "post_count_known": post_count_known,
+    }
+    if post_count_known:
+        assert post_count is not None
+        attempt_payload["post_count"] = post_count
+        attempt_payload["post_occurred"] = post_count > 0
     records.append(
         normalize_evidence_record_v1(
             {
@@ -157,13 +181,11 @@ def load_pre_external_convergence_report_evidence_v1(
                 "observation_timestamp": str(data.get("RUN_ID") or ""),
                 "source_timestamp": str(data.get("RUN_ID") or ""),
                 "correlation_context": str(path.name),
-                "completeness": GhosvCompleteness.COMPLETE.value,
+                "completeness": GhosvCompleteness.COMPLETE.value
+                if post_count_known
+                else GhosvCompleteness.UNKNOWN.value,
                 "payload_ref": str(path),
-                "payload": {
-                    "post_occurred": post_count > 0,
-                    "external_effect_authorized": EXTERNAL_EFFECT_AUTHORIZED is True,
-                    "post_count": post_count,
-                },
+                "payload": attempt_payload,
             }
         )
     )
@@ -192,7 +214,12 @@ def read_current_execution_evidence_v1(
         recon_dir = Path(sources.recon_dir)
         recon_path = recon_dir / RECON_EVIDENCE_FILENAME
         if recon_path.is_file():
-            out.append(load_productive_reconciliation_evidence_file_v1(recon_path))
+            out.append(
+                load_productive_reconciliation_evidence_file_v1(
+                    recon_path,
+                    binding_trade_id=trade_id,
+                )
+            )
         portfolio_path = recon_dir / PORTFOLIO_STATE_FILENAME
         if portfolio_path.is_file():
             out.extend(

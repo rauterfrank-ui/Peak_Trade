@@ -128,7 +128,11 @@ def load_final_order_envelope_evidence_v1(
     )
 
 
-def load_productive_reconciliation_evidence_file_v1(path: Path) -> GhosvEvidenceRecordV1:
+def load_productive_reconciliation_evidence_file_v1(
+    path: Path,
+    *,
+    binding_trade_id: str | None = None,
+) -> GhosvEvidenceRecordV1:
     """Read persisted productive reconciliation evidence JSON (no mutation)."""
     data = json.loads(Path(path).read_text(encoding="utf-8"))
     if not isinstance(data, dict):
@@ -142,7 +146,10 @@ def load_productive_reconciliation_evidence_file_v1(path: Path) -> GhosvEvidence
             first = steps[0]
             if isinstance(first, dict):
                 instrument_id = _text(first.get("instrument_id"))
-    trade_id = _text(data.get("single_writer_identity")) or _text(data.get("config_digest"))
+    file_writer_identity = _text(data.get("single_writer_identity"))
+    file_fallback_id = file_writer_identity or _text(data.get("config_digest"))
+    bound = _text(binding_trade_id)
+    trade_id = bound if bound else file_fallback_id
     correlation_context = (
         _text(data.get("observed_state_digest"))
         or _text(data.get("pre_state_digest"))
@@ -165,6 +172,10 @@ def load_productive_reconciliation_evidence_file_v1(path: Path) -> GhosvEvidence
             if classification
             else GhosvCompleteness.UNKNOWN.value,
             "payload_ref": str(path),
-            "payload": data,
+            "payload": {
+                **data,
+                "ghosv_binding_trade_id": bound or None,
+                "ghosv_file_writer_identity": file_writer_identity or None,
+            },
         }
     )

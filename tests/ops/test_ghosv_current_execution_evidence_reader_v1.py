@@ -13,7 +13,8 @@ from src.ops.ghosv_bounded_context_v1.current_execution_evidence_reader_v1 impor
     observe_current_execution_via_ghosv_v1,
     read_current_execution_evidence_v1,
 )
-from src.ops.ghosv_bounded_context_v1.types_v1 import GhosvEvidenceKind
+from src.ops.ghosv_bounded_context_v1.types_v1 import GhosvCompleteness, GhosvEvidenceKind
+from src.ops.ghosv_bounded_context_v1.s02_identity_correlation_v1 import correlate_evidence_v1
 from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
     build_final_order_envelope_v1,
 )
@@ -54,7 +55,9 @@ def test_pre_external_fixture_maps_execution_attempt_and_report():
     assert GhosvEvidenceKind.PRE_EXTERNAL_REPORT.value in kinds
     assert GhosvEvidenceKind.EXECUTION_ATTEMPT.value in kinds
     attempt = next(r for r in records if r.kind == GhosvEvidenceKind.EXECUTION_ATTEMPT.value)
+    assert attempt.payload.get("post_count_known") is True
     assert attempt.payload.get("post_occurred") is False
+    assert attempt.completeness == GhosvCompleteness.COMPLETE.value
 
 
 def test_combined_fixture_observe_yellow_or_green_not_unbounded(tmp_path: Path):
@@ -116,6 +119,81 @@ def test_recon_hard_stop_fixture_red(tmp_path: Path):
     sources = CurrentExecutionEvidenceSourcesV1(trade_id="recon-hs", recon_dir=recon_dir)
     result = observe_current_execution_via_ghosv_v1(sources)
     assert result.traffic_overall == TRAFFIC_RED
+
+
+def test_cap11_recon_uses_binding_trade_id_and_preserves_writer_identity():
+    binding = "operator-bound-trade-xyz"
+    sources = CurrentExecutionEvidenceSourcesV1(
+        trade_id=binding,
+        recon_dir=CAP11_FIXTURE,
+    )
+    records = read_current_execution_evidence_v1(sources)
+    recon = next(r for r in records if r.kind == GhosvEvidenceKind.RECONCILIATION_GATE.value)
+    assert recon.trade_id == binding
+    assert recon.payload.get("single_writer_identity") == (
+        "productive_portfolio_position_state_writer_v1"
+    )
+    assert recon.payload.get("ghosv_binding_trade_id") == binding
+    assert recon.payload.get("ghosv_file_writer_identity") == (
+        "productive_portfolio_position_state_writer_v1"
+    )
+
+
+def test_combined_cap11_sources_single_s02_correlation_group():
+    binding = "single-group-trade"
+    sources = CurrentExecutionEvidenceSourcesV1(
+        trade_id=binding,
+        recon_dir=CAP11_FIXTURE,
+    )
+    records = read_current_execution_evidence_v1(sources)
+    groups = correlate_evidence_v1(records)
+    trade_ids = {g.trade_id for g in groups}
+    assert trade_ids == {binding}
+
+
+def test_pre_external_missing_post_count_unknown_not_zero(tmp_path: Path):
+    import json
+
+    report = {
+        "NATIVE_ID": "BTC-USDT-SWAP",
+        "TERMINAL_DISPOSITION": "HOLD",
+        "PRE_EXTERNAL_REACHED": "true",
+        "RUN_ID": "run-missing-post",
+    }
+    path = tmp_path / "PRE_EXTERNAL_CONVERGENCE_REPORT.json"
+    path.write_text(json.dumps(report), encoding="utf-8")
+    records = read_current_execution_evidence_v1(
+        CurrentExecutionEvidenceSourcesV1(
+            trade_id="missing-post-count",
+            pre_external_convergence_report_json=path,
+        )
+    )
+    attempt = next(r for r in records if r.kind == GhosvEvidenceKind.EXECUTION_ATTEMPT.value)
+    assert attempt.payload.get("post_count_known") is False
+    assert "post_occurred" not in attempt.payload
+    assert "post_count" not in attempt.payload
+    assert attempt.completeness == GhosvCompleteness.UNKNOWN.value
+
+
+def test_pre_external_invalid_post_count_unknown(tmp_path: Path):
+    import json
+
+    report = {
+        "NATIVE_ID": "BTC-USDT-SWAP",
+        "POST_COUNT": "not-a-number",
+        "RUN_ID": "run-bad-post",
+    }
+    path = tmp_path / "PRE_EXTERNAL_CONVERGENCE_REPORT.json"
+    path.write_text(json.dumps(report), encoding="utf-8")
+    records = read_current_execution_evidence_v1(
+        CurrentExecutionEvidenceSourcesV1(
+            trade_id="invalid-post-count",
+            pre_external_convergence_report_json=path,
+        )
+    )
+    attempt = next(r for r in records if r.kind == GhosvEvidenceKind.EXECUTION_ATTEMPT.value)
+    assert attempt.payload.get("post_count_known") is False
+    assert attempt.completeness == GhosvCompleteness.UNKNOWN.value
 
 
 @pytest.mark.parametrize("missing_trade_id", ["", "   "])
