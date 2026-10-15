@@ -54,6 +54,20 @@ Not SecretRef. Not vault file. Not Canary JSON.
 | secretKey | yes |
 | passphrase | yes |
 
+## Read-only endpoint policy (dual layer)
+
+```text
+PL_TF_002_SESSION_ALLOWLIST=FRESH_PRETRADE_PUBLIC_AND_PRIVATE_GET_PATHS_ONLY
+PL_TF_002_EXCLUDES=/api/v5/trade/order (mutation-marked; not F1/NE-TF-001)
+FULL_CORE_TRANSPORT_READ_ONLY_EXACT_ORDER_LOOKUP=GET /api/v5/trade/order
+RECONCILIATION_SCOPE=separate Owner-GO; not PL-TF-002 session allowlist
+```
+
+PL-TF-002 enforces `_assert_get_only_surface_v1` on F1 + NE-TF-001 paths only.
+`FullCoreProductiveReadOnlyGetTransportV1` may perform GET exact-order lookup when
+a separately authorized reconciliation consumer binds the transport. PL-TF-002 does
+not widen its allowlist to include that path.
+
 ## Non-claims
 
 ```text
