@@ -85,12 +85,11 @@ def evaluate_proof_eligibility_v1(
     if snapshot_binding_verified is not True:
         reasons.append("SNAPSHOT_BINDING_UNVERIFIED")
 
-    if ghv_evidence_attached and evidence_repository_sha and ghv_source_sha:
-        if evidence_repository_sha != ghv_source_sha:
+    if evidence_repository_sha and actual_source_sha:
+        if evidence_repository_sha != actual_source_sha:
             reasons.append("GHV_SOURCE_MISMATCH")
     if ghv_source_sha and actual_source_sha and ghv_source_sha != actual_source_sha:
-        if ghv_evidence_attached:
-            reasons.append("GHV_SOURCE_MISMATCH")
+        reasons.append("GHV_SOURCE_MISMATCH")
 
     if (
         source_validation_pass_composed_field is not None

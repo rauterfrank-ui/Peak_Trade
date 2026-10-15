@@ -195,6 +195,184 @@ def test_classify_dirty_clean_fingerprint() -> None:
     assert classify_dirty_status("deadbeef00000000") == SourceDirtyStatus.DIRTY
 
 
+STALE_MANIFEST_SHA = "0000000000000000000000000000000000000001"
+
+
+def _write_composed_strict(out: Path, *, git_head: str = CURRENT_MAIN) -> None:
+    composed = {
+        "schema_version": "composed_forensic_graph.v1",
+        "snapshot_id": "snap-manifest-test",
+        "source_validation_pass": True,
+        "GRAPH_MODE": "STRICT_CURRENT",
+        "CURRENT_GRAPH_VERIFIED": True,
+        "SNAPSHOT_BINDING_VERIFIED": True,
+        "SOURCE_VALIDATION_PASS": True,
+        "code_snapshot": {
+            "git_head": git_head,
+            "dirty_fingerprint": "e3b0c44298fc1c14ab",
+            "worktree_identity": "manifest-test",
+            "repository_path": str(REPO_ROOT),
+        },
+    }
+    (out / "composed_forensic_graph.v1.json").write_text(json.dumps(composed), encoding="utf-8")
+
+
+def _coverage_strict() -> dict:
+    return {
+        "GRAPH_MODE": "STRICT_CURRENT",
+        "CURRENT_GRAPH_VERIFIED": True,
+        "SNAPSHOT_BINDING_VERIFIED": True,
+        "SOURCE_VALIDATION_PASS": True,
+        "CROSSWALK_EXECUTION_SUCCESS": True,
+        "ghv_evidence_attached": False,
+    }
+
+
+def _write_ghv_manifest(evidence_root: Path, *, repository_sha: str | None) -> None:
+    evidence_root.mkdir(parents=True, exist_ok=True)
+    payload: dict = {"schema_version": "ghv_pre_external_runtime_capture_manifest.v1"}
+    if repository_sha is not None:
+        payload["repository_sha"] = repository_sha
+    (evidence_root / "ghv_pre_external_runtime_capture_manifest_v1.json").write_text(
+        json.dumps(payload),
+        encoding="utf-8",
+    )
+
+
+def test_manifest_t01_repository_sha_matches_current_no_false_mismatch(tmp_path: Path) -> None:
+    out = tmp_path / "out"
+    out.mkdir()
+    evidence = tmp_path / "evidence"
+    _write_composed_strict(out)
+    _write_ghv_manifest(evidence, repository_sha=CURRENT_MAIN)
+    report = build_forensic_source_provenance_report_v1(
+        repo_root=REPO_ROOT,
+        output_dir=out,
+        declared_current_sha=CURRENT_MAIN,
+        test_execution_sha=CURRENT_MAIN,
+        coverage=_coverage_strict(),
+        crosswalk_ok=True,
+        evidence_root=evidence,
+    )
+    record = report["record"]
+    assert record["PROOF_ELIGIBILITY"] is True
+    assert "GHV_SOURCE_MISMATCH" not in record["PROOF_ELIGIBILITY_REASONS"]
+    assert record["GHV_SOURCE_SHA"] == CURRENT_MAIN
+
+
+def test_manifest_t02_mismatch_with_ghv_attached_fail_closed(tmp_path: Path) -> None:
+    out = tmp_path / "out"
+    out.mkdir()
+    evidence = tmp_path / "evidence"
+    _write_composed_strict(out)
+    _write_ghv_manifest(evidence, repository_sha=STALE_MANIFEST_SHA)
+    coverage = _coverage_strict()
+    coverage["ghv_evidence_attached"] = True
+    report = build_forensic_source_provenance_report_v1(
+        repo_root=REPO_ROOT,
+        output_dir=out,
+        declared_current_sha=CURRENT_MAIN,
+        test_execution_sha=CURRENT_MAIN,
+        coverage=coverage,
+        crosswalk_ok=True,
+        evidence_root=evidence,
+    )
+    record = report["record"]
+    assert record["PROOF_ELIGIBILITY"] is False
+    assert "GHV_SOURCE_MISMATCH" in record["PROOF_ELIGIBILITY_REASONS"]
+
+
+def test_manifest_t03_mismatch_unattached_fail_closed_bugbot_repro(tmp_path: Path) -> None:
+    """Bugbot: stale --evidence-root manifest with ghv_evidence_attached=false must not pass."""
+    out = tmp_path / "out"
+    out.mkdir()
+    evidence = tmp_path / "evidence"
+    _write_composed_strict(out)
+    _write_ghv_manifest(evidence, repository_sha=STALE_MANIFEST_SHA)
+    report = build_forensic_source_provenance_report_v1(
+        repo_root=REPO_ROOT,
+        output_dir=out,
+        declared_current_sha=CURRENT_MAIN,
+        test_execution_sha=CURRENT_MAIN,
+        coverage=_coverage_strict(),
+        crosswalk_ok=True,
+        evidence_root=evidence,
+    )
+    record = report["record"]
+    assert record["GHV_SOURCE_SHA"] == STALE_MANIFEST_SHA
+    assert record["ACTUAL_SOURCE_SHA"] == CURRENT_MAIN
+    assert record["PROOF_ELIGIBILITY"] is False
+    assert "GHV_SOURCE_MISMATCH" in record["PROOF_ELIGIBILITY_REASONS"]
+
+
+def test_manifest_t04_missing_repository_sha_no_fabricated_identity(tmp_path: Path) -> None:
+    out = tmp_path / "out"
+    out.mkdir()
+    evidence = tmp_path / "evidence"
+    _write_composed_strict(out)
+    _write_ghv_manifest(evidence, repository_sha=None)
+    report = build_forensic_source_provenance_report_v1(
+        repo_root=REPO_ROOT,
+        output_dir=out,
+        declared_current_sha=CURRENT_MAIN,
+        test_execution_sha=CURRENT_MAIN,
+        coverage=_coverage_strict(),
+        crosswalk_ok=True,
+        evidence_root=evidence,
+    )
+    record = report["record"]
+    assert record["GHV_SOURCE_SHA"] == CURRENT_MAIN
+    assert record["PROOF_ELIGIBILITY"] is True
+
+
+def test_manifest_t05_no_manifest_preserves_eligible_semantics(tmp_path: Path) -> None:
+    out = tmp_path / "out"
+    out.mkdir()
+    _write_composed_strict(out)
+    report = build_forensic_source_provenance_report_v1(
+        repo_root=REPO_ROOT,
+        output_dir=out,
+        declared_current_sha=CURRENT_MAIN,
+        test_execution_sha=CURRENT_MAIN,
+        coverage=_coverage_strict(),
+        crosswalk_ok=True,
+        evidence_root=None,
+    )
+    assert report["record"]["PROOF_ELIGIBILITY"] is True
+
+
+def test_manifest_t08_contradictory_ghv_field_ineligible_via_direct_eval() -> None:
+    r = evaluate_proof_eligibility_v1(
+        **_eligible_base_kwargs(
+            ghv_source_sha=STALE_MANIFEST_SHA,
+            ghv_evidence_attached=False,
+            evidence_repository_sha=None,
+        )
+    )
+    assert r.proof_eligibility is False
+    assert "GHV_SOURCE_MISMATCH" in r.reasons
+
+
+def test_manifest_t09_cli_flags_do_not_override_manifest_mismatch(tmp_path: Path) -> None:
+    out = tmp_path / "out"
+    out.mkdir()
+    evidence = tmp_path / "evidence"
+    _write_composed_strict(out)
+    _write_ghv_manifest(evidence, repository_sha=STALE_MANIFEST_SHA)
+    report = build_forensic_source_provenance_report_v1(
+        repo_root=REPO_ROOT,
+        output_dir=out,
+        declared_current_sha=CURRENT_MAIN,
+        test_execution_sha=CURRENT_MAIN,
+        coverage=_coverage_strict(),
+        crosswalk_ok=True,
+        evidence_root=evidence,
+        workspace_read_declared_pin=False,
+    )
+    assert report["record"]["PROOF_ELIGIBILITY"] is False
+    assert "GHV_SOURCE_MISMATCH" in report["record"]["PROOF_ELIGIBILITY_REASONS"]
+
+
 def test_crosswalk_cli_emits_provenance_report(tmp_path: Path) -> None:
     out = tmp_path / "crosswalk_out"
     cmd = [
