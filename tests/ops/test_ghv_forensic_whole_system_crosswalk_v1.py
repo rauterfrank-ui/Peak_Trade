@@ -619,8 +619,90 @@ def test_snapshot_mismatch_fail_closed_on_repo(tmp_path: Path) -> None:
         strict_repo_invariants=True,
     )
     assert result.coverage.get("SOURCE_VALIDATION_PASS") is False
+    assert result.coverage.get("EVERY_REQUIRED_VALIDATOR_EXECUTED_AND_PASSED") is True
+    assert result.coverage.get("CURRENT_GRAPH_VERIFIED") is False
     assert result.coverage.get("GRAPH_MODE") == "STRICT_CURRENT"
     assert result.ok is False
+
+
+def test_validator_coverage_repo_root_mismatch_skipped(tmp_path: Path) -> None:
+    root = tmp_path / "aligned_fixture_skip"
+    _write_fixture_tree(root, census=_minimal_census())
+    head = _git_init_commit(root)
+    _sync_governance_baselines_to_head(root, head)
+    result = run_forensic_crosswalk_v1(
+        repo_root=root,
+        output_dir=root / "out",
+        rules_path=RULES,
+        include_atlas=False,
+        graph_mode=GraphMode.STRICT_CURRENT,
+        strict_repo_invariants=True,
+        pt_launcher=REPO_ROOT / "scripts/pt",
+    )
+    assert result.ok is False
+    assert result.coverage["EVERY_REQUIRED_VALIDATOR_EXECUTED_AND_PASSED"] is False
+    assert result.coverage["SOURCE_VALIDATION_PASS"] is False
+    assert result.coverage["CENSUS_SUBPROCESS_EXECUTED"] is False
+
+
+def test_validator_coverage_subprocess_fail(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    from scripts.ops.ghv_forensic_whole_system_crosswalk_v1 import source_validation_v1 as sv
+
+    def _fail_census(*, repo_root: Path, pt_launcher: Path) -> tuple[list[str], bool]:
+        return (["census_subprocess_failed:test"], True)
+
+    monkeypatch.setattr(sv, "run_census_validator_subprocess", _fail_census)
+    out = tmp_path / "subprocess_fail"
+    result = run_forensic_crosswalk_v1(
+        repo_root=REPO_ROOT,
+        output_dir=out,
+        rules_path=RULES,
+        include_atlas=False,
+        graph_mode=GraphMode.STRICT_CURRENT,
+        strict_repo_invariants=True,
+    )
+    assert result.ok is False
+    assert result.coverage["EVERY_REQUIRED_VALIDATOR_EXECUTED_AND_PASSED"] is False
+    assert result.coverage["SOURCE_VALIDATION_PASS"] is False
+
+
+def test_validator_coverage_all_pass_strict(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    from scripts.ops.ghv_forensic_whole_system_crosswalk_v1 import source_validation_v1 as sv
+
+    monkeypatch.setattr(
+        sv,
+        "validate_snapshot_compatibility",
+        lambda **kwargs: [],
+    )
+    out = tmp_path / "all_pass_strict"
+    result = run_forensic_crosswalk_v1(
+        repo_root=REPO_ROOT,
+        output_dir=out,
+        rules_path=RULES,
+        include_atlas=False,
+        graph_mode=GraphMode.STRICT_CURRENT,
+        strict_repo_invariants=True,
+    )
+    assert result.coverage["EVERY_REQUIRED_VALIDATOR_EXECUTED_AND_PASSED"] is True
+    assert result.coverage["SOURCE_VALIDATION_PASS"] is True
+
+
+def test_navigation_only_snapshot_drift_authority(tmp_path: Path) -> None:
+    out = tmp_path / "nav_drift"
+    result = run_forensic_crosswalk_v1(
+        repo_root=REPO_ROOT,
+        output_dir=out,
+        rules_path=RULES,
+        include_atlas=False,
+        **_REPO_NAV,
+    )
+    assert result.coverage["GRAPH_AUTHORITY"] == "NAVIGATION_ONLY"
+    assert result.coverage["CURRENT_GRAPH_VERIFIED"] is False
+    assert result.coverage["SNAPSHOT_BINDING_VERIFIED"] is False
 
 
 def test_source_validation_connected_on_repo() -> None:

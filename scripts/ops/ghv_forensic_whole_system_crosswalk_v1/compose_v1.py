@@ -289,8 +289,8 @@ def run_forensic_crosswalk_v1(
     if not validation.ok:
         authority = build_graph_authority_coverage(
             graph_mode=graph_mode,
-            source_validation_pass=False,
-            snapshot_binding_verified=False,
+            source_validation_pass=validation_contract_ok,
+            snapshot_binding_verified=snapshot_binding_verified,
             current_only_filter_applied=False,
             current_graph_verified=False,
         )
@@ -299,7 +299,10 @@ def run_forensic_crosswalk_v1(
                 **authority,
                 "CROSSWALK_EXECUTION_SUCCESS": False,
                 **counts,
-                "EVERY_REQUIRED_VALIDATOR_EXECUTED_AND_PASSED": False,
+                "EVERY_REQUIRED_VALIDATOR_EXECUTED_AND_PASSED": (
+                    validation.every_required_validator_executed_and_passed
+                ),
+                "SOURCE_VALIDATION_PASS": validation_contract_ok,
                 "CENSUS_SUBPROCESS_EXECUTED": validation.census_subprocess_executed,
                 "LANDSCAPE_SUBPROCESS_EXECUTED": validation.landscape_subprocess_executed,
                 "CENSUS_VALIDATOR_CONNECTED": validation.census_validator_connected,
