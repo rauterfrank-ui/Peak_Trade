@@ -173,6 +173,90 @@ def _write_wp1_bundle(
     return root
 
 
+def test_composed_authority_none_required_when_otherwise_valid(tmp_path: Path) -> None:
+    wp1 = _write_wp1_bundle(tmp_path / "wp1_auth_ok")
+    bundle, res = load_wp1_artifacts_v1(wp1_output_dir=wp1)
+    assert res.ok and bundle is not None
+
+
+@pytest.mark.parametrize("bad_authority", ["LIVE", "NAVIGATION", ""])
+def test_composed_authority_not_none_rejected(tmp_path: Path, bad_authority: str) -> None:
+    wp1 = _write_wp1_bundle(tmp_path / f"wp1_auth_{bad_authority or 'empty'}")
+    composed_path = wp1 / "composed_forensic_graph.v1.json"
+    composed = json.loads(composed_path.read_text(encoding="utf-8"))
+    composed["authority"] = bad_authority
+    composed_path.write_text(json.dumps(composed), encoding="utf-8")
+    bundle, res = load_wp1_artifacts_v1(wp1_output_dir=wp1)
+    assert bundle is not None
+    assert not res.ok
+    assert res.failure_semantic == "INPUT_VALIDATION_FAILURE"
+    assert "composed_authority_must_be_NONE" in res.errors
+    out = run_causal_integration_v1(wp1_output_dir=wp1, output_dir=tmp_path / "out_bad_auth")
+    assert not out.ok
+    assert "composed_authority_must_be_NONE" in out.errors
+
+
+def test_composed_authority_mismatch_preserves_other_validation_errors(tmp_path: Path) -> None:
+    wp1 = _write_wp1_bundle(tmp_path / "wp1_auth_and_snap", manifest_snapshot="wrong_snap")
+    composed_path = wp1 / "composed_forensic_graph.v1.json"
+    composed = json.loads(composed_path.read_text(encoding="utf-8"))
+    composed["authority"] = "LIVE"
+    composed_path.write_text(json.dumps(composed), encoding="utf-8")
+    bundle, res = load_wp1_artifacts_v1(wp1_output_dir=wp1)
+    assert not res.ok
+    assert "composed_authority_must_be_NONE" in res.errors
+
+
+def test_runtime_overlay_without_state_owner_not_temporally_proven(tmp_path: Path) -> None:
+    wp1 = _write_wp1_bundle(tmp_path / "wp1_rt_temporal")
+    mapping = {
+        "schema_version": "stage_to_cfi_mapping.v1",
+        "stage_transitions": [
+            {
+                "stage": "S1",
+                "source_endpoint": ["CURRENT_SYSTEM_CENSUS", "SO-A"],
+                "target_endpoint": ["CURRENT_SYSTEM_CENSUS", "SO-B"],
+                "edge_type": "PRODUCES",
+                "causal_propagation_allowed": True,
+            }
+        ],
+    }
+    map_path = tmp_path / "map_no_owner.json"
+    map_path.write_text(json.dumps(mapping), encoding="utf-8")
+    ev = tmp_path / "evidence_temporal"
+    ev.mkdir()
+    (ev / CAPTURE_MANIFEST).write_text(
+        json.dumps({"repository_sha": "abc123", "run_id": "r1", "continuous_run_id": "c1"}),
+        encoding="utf-8",
+    )
+    (ev / FLIGHT_RECORD).write_text(json.dumps({"stage": "S1"}) + "\n", encoding="utf-8")
+    out = run_causal_integration_v1(
+        wp1_output_dir=wp1,
+        output_dir=tmp_path / "out_rt_temporal",
+        runtime_evidence=RuntimeEvidenceRequestV1(
+            evidence_root=ev,
+            stage_mapping_path=map_path,
+            runtime_context={
+                "run_id": "r1",
+                "continuous_run_id": "c1",
+                "evidence_contract_id": "ec1",
+            },
+            code_revision="abc123",
+            snapshot_id="snap001",
+        ),
+    )
+    assert out.ok
+    assert out.temporal_causality_proven is False
+    integrated = json.loads(
+        (tmp_path / "out_rt_temporal" / "integrated_causal_graph.v1.json").read_text()
+    )
+    assert integrated["TEMPORAL_CAUSALITY_PROVEN"] is False
+    gaps = json.loads(
+        (tmp_path / "out_rt_temporal" / "causal_coverage_gaps.v1.json").read_text()
+    )
+    assert any(g.get("reason") == "temporal_fields_incomplete" for g in gaps["gaps"])
+
+
 def test_valid_wp1_strict_artifact_loading(tmp_path: Path) -> None:
     wp1 = _write_wp1_bundle(tmp_path / "wp1_strict")
     bundle, res = load_wp1_artifacts_v1(wp1_output_dir=wp1)

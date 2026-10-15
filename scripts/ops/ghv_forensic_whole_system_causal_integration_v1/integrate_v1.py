@@ -44,6 +44,16 @@ class IntegrationResultV1:
     cross_universe_causality_proven: bool = False
 
 
+def _overlay_temporal_causality_proven(overlay_edges: list[dict[str, Any]]) -> bool:
+    if not overlay_edges:
+        return False
+    for edge in overlay_edges:
+        temporal = edge.get("temporal")
+        if not isinstance(temporal, dict) or not str(temporal.get("state_owner") or "").strip():
+            return False
+    return True
+
+
 def _validate_overlay_edge(edge: dict[str, Any]) -> list[str]:
     errs: list[str] = []
     for key in (
@@ -125,13 +135,7 @@ def run_causal_integration_v1(
             return out
 
     wp1_verified = wp1_current_graph_verified(bundle)
-    overlay_accepted = len(overlay_edges)
-    temporal_proven = bool(
-        overlay_edges
-        and all(
-            (e.get("temporal") or {}).get("state_owner") for e in overlay_edges if e.get("temporal")
-        )
-    )
+    temporal_proven = _overlay_temporal_causality_proven(overlay_edges)
     if overlay_edges and not temporal_proven:
         out.coverage_gaps.append(
             {"reason": "temporal_fields_incomplete", "TEMPORAL_CAUSALITY_PROVEN": False}

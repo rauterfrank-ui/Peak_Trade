@@ -115,6 +115,7 @@ def validate_wp1_bundle_v1(bundle: Wp1ArtifactBundleV1) -> Wp1ValidationResultV1
     if c.get("authority") != CROSSWALK_AUTHORITY:
         result.failure_semantic = FAILURE_INPUT_VALIDATION
         result.errors.append("composed_authority_must_be_NONE")
+        return result
 
     snap = str(c.get("snapshot_id") or "")
     if not snap:
