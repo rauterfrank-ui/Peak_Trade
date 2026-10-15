@@ -143,20 +143,45 @@ def build_network_evidence_bundle_v1(
     }
 
 
-def _optional_owner_scoped_get_budget_grant_v1(
+def _assert_execute_network_grant_binding_v1(
     *,
+    execute_network: bool,
     store_root: Path | str | None,
+    cumulative_request_budget: int | None,
+) -> int:
+    if execute_network is not True:
+        return 0
+    if store_root is None:
+        raise PlTf002ProductiveReadOnlyGetCompleteError("OWNER_SCOPED_GET_BUDGET_STORE_REQUIRED")
+    if cumulative_request_budget is None:
+        raise PlTf002ProductiveReadOnlyGetCompleteError(
+            "OWNER_SCOPED_CUMULATIVE_REQUEST_BUDGET_REQUIRED"
+        )
+    budget = int(cumulative_request_budget)
+    if budget < 1:
+        raise PlTf002ProductiveReadOnlyGetCompleteError(
+            "OWNER_SCOPED_CUMULATIVE_REQUEST_BUDGET_INVALID"
+        )
+    if budget > MAX_NETWORK_REQUEST_COUNT:
+        raise PlTf002ProductiveReadOnlyGetCompleteError(
+            "OWNER_SCOPED_CUMULATIVE_REQUEST_BUDGET_EXCEEDS_TECHNICAL_LIMIT"
+        )
+    return budget
+
+
+def _mint_owner_scoped_get_budget_grant_v1(
+    *,
+    store_root: Path | str,
+    cumulative_request_budget: int,
     wp_owner_go: str,
     session_owner_go: str,
     origin_main_sha: str,
-) -> OwnerScopedGetBudgetGrantContextV1 | None:
-    if store_root is None:
-        return None
+) -> OwnerScopedGetBudgetGrantContextV1:
     binding = OwnerScopedGetBudgetGrantBindingV1(
         owner_go=f"{wp_owner_go}|{session_owner_go}",
         work_package_id=WP_ID,
         origin_main_sha=str(origin_main_sha or "").strip().lower(),
-        cumulative_request_budget=int(MAX_NETWORK_REQUEST_COUNT),
+        cumulative_request_budget=int(cumulative_request_budget),
         authorized_host=AUTHORIZED_NETWORK_HOST,
     )
     return OwnerScopedGetBudgetGrantContextV1.mint_v1(store_root=store_root, binding=binding)
@@ -171,10 +196,16 @@ def execute_pl_tf_002_productive_read_only_get_capture_v1(
     integrity_backend: object | None = None,
     os_native_backend: object | None = None,
     owner_scoped_get_budget_store_root: Path | str | None = None,
+    owner_scoped_cumulative_request_budget: int | None = None,
 ) -> dict[str, Any]:
     """Capture F1/F2 productive GET evidence or return pre-network JIT only."""
 
     _assert_owner_gos_v1(wp_owner_go=wp_owner_go, session_owner_go=session_owner_go)
+    owner_budget = _assert_execute_network_grant_binding_v1(
+        execute_network=execute_network,
+        store_root=owner_scoped_get_budget_store_root,
+        cumulative_request_budget=owner_scoped_cumulative_request_budget,
+    )
     jit = build_pl_tf_002_pre_network_jit_proof_v1(
         session_owner_go=session_owner_go,
         origin_main_sha=origin_main_sha,
@@ -189,8 +220,9 @@ def execute_pl_tf_002_productive_read_only_get_capture_v1(
 
     pretrade_decision_id = f"pl-tf-002-complete-{str(origin_main_sha or '')[:12]}"
     network_request_count = 0
-    budget_grant = _optional_owner_scoped_get_budget_grant_v1(
-        store_root=owner_scoped_get_budget_store_root,
+    budget_grant = _mint_owner_scoped_get_budget_grant_v1(
+        store_root=owner_scoped_get_budget_store_root,  # type: ignore[arg-type]
+        cumulative_request_budget=owner_budget,
         wp_owner_go=wp_owner_go,
         session_owner_go=session_owner_go,
         origin_main_sha=origin_main_sha,
@@ -216,7 +248,6 @@ def execute_pl_tf_002_productive_read_only_get_capture_v1(
             raise PlTf002ProductiveReadOnlyGetCompleteError("TRANSPORT_TYPE_MISMATCH")
         if transport.max_request_count > MAX_NETWORK_REQUEST_COUNT:
             raise PlTf002ProductiveReadOnlyGetCompleteError("TRANSPORT_MAX_REQUEST_BUDGET_DRIFT")
-
         evidence = collect_fresh_pretrade_runtime_get_v1(
             pretrade_decision_id=pretrade_decision_id,
             instrument_id=FRESH_PRETRADE_VENUE_INST_ID,
@@ -253,6 +284,8 @@ def execute_pl_tf_002_productive_read_only_get_capture_v1(
             "jit_proof": jit,
             "NETWORK_REQUEST_COUNT": network_request_count,
             "NETWORK_METHODS_USED": sorted({m.upper() for m in transport.methods_used}),
+            "OWNER_SCOPED_GET_BUDGET_GRANT_ID": budget_grant.grant_id,
+            "OWNER_SCOPED_CUMULATIVE_REQUEST_BUDGET": owner_budget,
             "evidence_bundle": bundle,
             "verification": verification,
             "pretrade_evidence_status": evidence.evidence_status,

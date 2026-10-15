@@ -1,0 +1,11 @@
+{
+  "capability": "PL_TF_002_F1_GRANT_RUNNER_BINDING_V1",
+  "causal_claim": "Ops runner propagates durable grant store and explicit Owner cumulative GET budget into F1 capture mint",
+  "ghv_authority": "NONE",
+  "origin_main_sha_at_reproof": "efca36b05961443b28438bc553936be164e4977e",
+  "root_cause_closed": "RUNNER_MISSING_GRANT_STORE_AND_HARDCODED_BUDGET_16",
+  "enforcement_surface": "execute_pl_tf_002_productive_read_only_get_capture_v1 + run_pl_tf_002_productive_read_only_get_complete_v1.py",
+  "offline_reproof": "tests/ops/test_pl_tf_002_productive_read_only_get_complete_v1.py, tests/ops/test_run_pl_tf_002_productive_read_only_get_complete_v1.py",
+  "live_network": false,
+  "post_authorized": false
+}
