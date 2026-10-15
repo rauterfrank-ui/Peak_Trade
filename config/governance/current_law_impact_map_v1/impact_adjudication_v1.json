@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "94bd9ba87fb54dc54bede06c03810a1c14c487da",
-  "head_sha": "aed691c9a9d67a83d26531a2b6df16ab8137421b",
+  "head_sha": "1e0c4b15a7e9567d4fa5a5fc7083ef184a69bfcd",
   "changed_paths": [
     "GHOSV_EXECUTION_EXISTING_EVIDENCE_COVERAGE_V1_REPORT/07_ADVERSARIAL_REVIEW.json",
     "GHOSV_EXECUTION_EXISTING_EVIDENCE_COVERAGE_V1_REPORT/10_OWNER_DECISION.md",
@@ -19,6 +19,10 @@
   "covered_candidate_paths": [
     "GHOSV_EXECUTION_EXISTING_EVIDENCE_COVERAGE_V1_REPORT/07_ADVERSARIAL_REVIEW.json",
     "GHOSV_EXECUTION_EXISTING_EVIDENCE_COVERAGE_V1_REPORT/10_OWNER_DECISION.md",
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "docs/system_atlas/entities/catalog.yaml",
+    "docs/system_atlas/provenance/changes.yaml",
     "src/ops/ghosv_bounded_context_v1/current_execution_cycle_evidence_reader_v1.py",
     "src/ops/ghosv_bounded_context_v1/current_execution_evidence_reader_v1.py",
     "tests/ops/test_ghosv_current_execution_cycle_evidence_reader_v1.py"
@@ -27,7 +31,7 @@
     "tests/ops/test_ghosv_current_execution_cycle_evidence_reader_v1.py",
     "tests/ops/test_ghosv_current_execution_evidence_reader_v1.py"
   ],
-  "reason": "Read-only GHOSV Execution existing evidence coverage; diff-bound NO_MAP_IMPACT; AUTHORITY=NONE.",
-  "verdict": "NO_MAP_IMPACT",
-  "selector_used_as_map_impact_authority": false
+  "reason": "Read-only GHOSV Execution existing evidence coverage; diff-bound NO_LAW_IMPACT; AUTHORITY=NONE.",
+  "verdict": "NO_LAW_IMPACT",
+  "selector_used_as_law_impact_authority": false
 }
