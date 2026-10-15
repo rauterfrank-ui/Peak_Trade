@@ -28,6 +28,7 @@ from src.ops.ghosv_bounded_context_v1.execution_offline_consistency_guard_v1 imp
     BoundedInputError,
     ConsistencyGuardResultV1,
     MAX_OBSERVER_WALL_SECONDS,
+    discover_repository_root_from_paths_v1,
     run_consistency_guard_v1,
 )
 from src.ops.ghosv_bounded_context_v1.s01_evidence_ingest_v1 import GhosvEvidenceIngestError
@@ -51,6 +52,7 @@ class ExecutionOfflineObserverPathsV1:
     final_order_envelope: Path | None = None
     governed_cycle_evidence_dir: Path | None = None
     g004_post_attempt_store_root: Path | None = None
+    repository_root: Path | None = None
     current_baseline_sha: str = ""
 
 
@@ -235,12 +237,24 @@ def run_execution_bounded_offline_observer_v1(
         ),
     )
 
+    repository_root = paths.repository_root
+    if repository_root is not None:
+        repository_root = Path(repository_root).expanduser().resolve()
+    else:
+        repository_root = discover_repository_root_from_paths_v1(
+            paths.pre_external_report,
+            paths.governed_cycle_evidence_dir,
+            paths.recon_dir,
+        )
+
     guard = run_consistency_guard_v1(
         recon_dir=paths.recon_dir,
         pre_external_report=paths.pre_external_report,
         final_order_envelope=paths.final_order_envelope,
         governed_cycle_evidence_dir=paths.governed_cycle_evidence_dir,
         g004_post_attempt_store_root=paths.g004_post_attempt_store_root,
+        repository_root=repository_root,
+        operator_trade_id=paths.trade_id,
     )
 
     ghosv_error: str | None = None
@@ -369,6 +383,12 @@ def _parse_args(argv: list[str] | None = None) -> ExecutionOfflineObserverPathsV
     parser.add_argument("--governed-cycle-evidence-dir", type=Path, default=None)
     parser.add_argument("--g004-post-attempt-store-root", type=Path, default=None)
     parser.add_argument(
+        "--repository-root",
+        type=Path,
+        default=None,
+        help="Repository root for repository-relative PRE_EXTERNAL EVIDENCE_ROOT values.",
+    )
+    parser.add_argument(
         "--current-baseline-sha",
         default="5f41d425c7f5b0b810d28cd3fc8b5af34113702c",
     )
@@ -391,6 +411,7 @@ def _parse_args(argv: list[str] | None = None) -> ExecutionOfflineObserverPathsV
         final_order_envelope=args.final_order_envelope,
         governed_cycle_evidence_dir=args.governed_cycle_evidence_dir,
         g004_post_attempt_store_root=args.g004_post_attempt_store_root,
+        repository_root=args.repository_root,
         current_baseline_sha=str(args.current_baseline_sha).strip(),
     )
 
