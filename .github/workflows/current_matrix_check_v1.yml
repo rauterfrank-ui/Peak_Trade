@@ -1,0 +1,99 @@
+# INFORMATIONAL ONLY — not a branch protection required context.
+name: CURRENT Matrix Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "scripts/ops/ghv_forensic_whole_system_**"
+      - "scripts/ops/living_current_matrix_v1/**"
+      - "config/governance/current_system_census_graph_v1/**"
+      - "config/governance/current_universe_landscape_snapshot_v1/**"
+      - "scripts/ops/system_atlas_v1/**"
+      - "scripts/ops/current_system_interaction_authority_map_v1.py"
+      - ".github/workflows/current_matrix_check_v1.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: current-matrix-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  current-matrix-check:
+    name: CURRENT Matrix Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 17
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+
+      - name: Resolve SHAs
+        id: shas
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "baseline_sha=${{ github.event.pull_request.base.sha }}" >> "$GITHUB_OUTPUT"
+            echo "candidate_sha=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
+          else
+            git fetch origin main --depth=1
+            echo "baseline_sha=$(git rev-parse origin/main)" >> "$GITHUB_OUTPUT"
+            echo "candidate_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+
+      - name: Bootstrap Peak_Trade runtime
+        run: ./scripts/pt-bootstrap
+
+      - name: Compare Living CURRENT Matrix (baseline vs candidate)
+        id: matrix
+        run: |
+          set -euo pipefail
+          work="${RUNNER_TEMP}/living_current_matrix"
+          mkdir -p "$work"
+          ./scripts/pt scripts/ops/living_current_matrix_v1/cli.py compare-shas \
+            --baseline-sha "${{ steps.shas.outputs.baseline_sha }}" \
+            --candidate-sha "${{ steps.shas.outputs.candidate_sha }}" \
+            --work-dir "$work" \
+            --collect-git-diff \
+            --no-atlas
+          cp "$work/current_matrix_change_report.v1.json" "$work/terminal_summary.json"
+          echo "INFORMATIONAL_ONLY=true" >> "$GITHUB_ENV"
+          echo "REQUIRED_STATUS=false" >> "$GITHUB_ENV"
+
+      - name: Upload matrix artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: living-current-matrix-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/living_current_matrix/**
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Summary
+        if: always()
+        shell: bash
+        run: |
+          report="${RUNNER_TEMP}/living_current_matrix/current_matrix_change_report.v1.json"
+          if [[ -f "$report" ]]; then
+            {
+              echo "## CURRENT Matrix Check (informational)"
+              echo ""
+              echo "Baseline: \`${{ steps.shas.outputs.baseline_sha }}\`"
+              echo "Candidate: \`${{ steps.shas.outputs.candidate_sha }}\`"
+              echo ""
+              echo "Report: \`current_matrix_change_report.v1.json\` (artifact)"
+            } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning title=CURRENT Matrix Check::Report not produced; see logs."
+          fi
