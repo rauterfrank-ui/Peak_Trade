@@ -38,8 +38,10 @@ One grant ledger file per identity (append-only mint).
 Optional `owner_scoped_get_budget_grant` on
 `open_pl_tf_002_productive_read_only_get_session_v1`.
 
-F1 capture may pass `owner_scoped_get_budget_store_root` to mint a grant with
-budget `MAX_NETWORK_REQUEST_COUNT` (16), covering the 9 distinct F1 fetch groups.
+F1 capture requires `owner_scoped_get_budget_store_root` and
+`owner_scoped_cumulative_request_budget` when `execute_network=true`. The ops runner
+defaults Owner cumulative budget to `F1_OWNER_SCOPED_CUMULATIVE_GET_BUDGET` (9).
+Transport technical cap `MAX_NETWORK_REQUEST_COUNT` (16) is unchanged.
 
 ## Non-claims
 

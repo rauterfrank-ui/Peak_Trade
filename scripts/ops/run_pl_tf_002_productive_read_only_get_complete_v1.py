@@ -30,6 +30,7 @@ def main(argv: list[str] | None = None) -> int:
 
     from src.ops.pl_tf_002_productive_read_only_get_complete_v1.constants_v1 import (  # noqa: E402
         EVIDENCE_RELROOT,
+        F1_OWNER_SCOPED_CUMULATIVE_GET_BUDGET,
         OWNER_GO,
         SESSION_OWNER_GO,
     )
@@ -47,6 +48,22 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--bound-origin-main-sha", default="")
     parser.add_argument("--execute-network", action="store_true")
     parser.add_argument("--apply-closure-navigation", action="store_true")
+    parser.add_argument(
+        "--owner-scoped-get-budget-store-root",
+        default="",
+        help="Required with --execute-network: durable grant ledger directory",
+    )
+    parser.add_argument(
+        "--owner-scoped-cumulative-request-budget",
+        type=int,
+        default=F1_OWNER_SCOPED_CUMULATIVE_GET_BUDGET,
+        help="Owner cumulative GET budget (default F1=9; technical transport cap remains 16)",
+    )
+    parser.add_argument(
+        "--operator-authorization-label",
+        default="",
+        help="Optional audit label (e.g. external Owner-GO name); does not replace canonical GO checks",
+    )
     args = parser.parse_args(argv)
 
     bound_sha = str(args.bound_origin_main_sha or "").strip() or _origin_main_sha()
@@ -57,11 +74,20 @@ def main(argv: list[str] | None = None) -> int:
         print(f"SESSION_OWNER_GO_MISMATCH:{args.session_owner_go}", file=sys.stderr)
         return 2
 
+    grant_store = str(args.owner_scoped_get_budget_store_root or "").strip()
+    if args.execute_network and not grant_store:
+        print("OWNER_SCOPED_GET_BUDGET_STORE_REQUIRED", file=sys.stderr)
+        return 2
+
     result = execute_pl_tf_002_productive_read_only_get_capture_v1(
         wp_owner_go=args.wp_owner_go,
         session_owner_go=args.session_owner_go,
         origin_main_sha=bound_sha,
         execute_network=args.execute_network,
+        owner_scoped_get_budget_store_root=Path(grant_store) if grant_store else None,
+        owner_scoped_cumulative_request_budget=(
+            int(args.owner_scoped_cumulative_request_budget) if args.execute_network else None
+        ),
     )
     print(json.dumps({k: v for k, v in result.items() if k != "evidence_bundle"}, indent=2))
 
@@ -70,12 +96,18 @@ def main(argv: list[str] | None = None) -> int:
 
     verification = result.get("verification") or {}
     bundle = result.get("evidence_bundle") or {}
+    operator_label = str(args.operator_authorization_label or "").strip()
     persist = persist_pl_tf_002_network_evidence_pack_v1(
         evidence_root=_REPO_ROOT / EVIDENCE_RELROOT,
         origin_main_sha=bound_sha,
         capture_summary={
             "NETWORK_REQUEST_COUNT": result.get("NETWORK_REQUEST_COUNT"),
             "NETWORK_METHODS_USED": result.get("NETWORK_METHODS_USED"),
+            "OWNER_SCOPED_GET_BUDGET_GRANT_ID": result.get("OWNER_SCOPED_GET_BUDGET_GRANT_ID"),
+            "OWNER_SCOPED_CUMULATIVE_REQUEST_BUDGET": result.get(
+                "OWNER_SCOPED_CUMULATIVE_REQUEST_BUDGET"
+            ),
+            "OPERATOR_AUTHORIZATION_LABEL": operator_label or None,
             "jit_proof": result.get("jit_proof"),
         },
         verification=verification,

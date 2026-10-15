@@ -4986,15 +4986,21 @@ entities:
   epistemic_class: FORENSIC_RAW
   current_canonical: false
   current_status: CURRENT_IMPLEMENTATION_WITHOUT_PROVEN_CANONICAL_SUPPORT
-  modified_by: CHANGE:pr_7112_owner_scoped_get_budget_enforcement_v1
+  modified_by: CHANGE:pr_7113_pl_tf_002_f1_grant_runner_binding_v1
   source_paths:
   - src/ops/pl_tf_002_productive_read_only_get_complete_v1/capture_v1.py
+  - src/ops/pl_tf_002_productive_read_only_get_complete_v1/constants_v1.py
   - src/ops/pl_tf_002_productive_read_only_session_executor_v1/session_executor_v1.py
+  - scripts/ops/run_pl_tf_002_productive_read_only_get_complete_v1.py
   evidence_sources:
   - docs/ops/specs/OWNER_SCOPED_GET_BUDGET_ENFORCEMENT_V1.md
   - docs/ops/specs/PL_TF_002_PRODUCTIVE_READ_ONLY_SESSION_EXECUTOR_V1.md
+  - docs/ops/evidence/PL_TF_002_F1_GRANT_RUNNER_BINDING_ADVERSARIAL_CONTRACT_REVIEW_V1.md
   - tests/ops/test_owner_scoped_get_budget_enforcement_v1.py
-  notes: Optional grant mint/store_root wiring for Tier-A session executor and F1 capture; session policy unchanged; RUNTIME_AUTHORIZATION_EFFECT=NONE; ATLAS_AUTHORITY=NONE.
+  - tests/ops/test_pl_tf_002_productive_read_only_get_complete_v1.py
+  - tests/ops/test_run_pl_tf_002_productive_read_only_get_complete_v1.py
+  - evidence/ops/pl_tf_002_f1_grant_runner_binding_v1/GHV_CAUSAL_REPROOF_V1.json
+  notes: Grant store mandatory for F1 network capture; explicit Owner cumulative budget (default 9) propagated through ops runner into grant mint; technical transport cap 16 unchanged; RUNTIME_AUTHORIZATION_EFFECT=NONE; ATLAS_AUTHORITY=NONE.
 - id: RUNTIME_COMPONENT:offline_funding_balance_read_producer_v1
   kind: RUNTIME_COMPONENT
   name: Offline Funding Account balance read producer v1

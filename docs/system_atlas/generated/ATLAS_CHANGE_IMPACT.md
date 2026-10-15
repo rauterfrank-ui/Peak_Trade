@@ -15,7 +15,7 @@ This view is topology change-coupling, not canonical authority.
 
 ```text
 ATLAS_IMPACT=UPDATED
-ATLAS_CHANGED_ENTITY_COUNT=5
+ATLAS_CHANGED_ENTITY_COUNT=1
 ATLAS_CHANGED_RELATION_COUNT=0
 ATLAS_REVIEW_REQUIRED_COUNT=0
 ATLAS_GENERATED_FILES_CURRENT=true
@@ -23,7 +23,7 @@ ATLAS_VALIDATION_STATUS=OK
 SYSTEM_ATLAS_DRIFT_DETECTED=false
 ```
 
-Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7112_owner_scoped_get_budget_enforcement_v1`.
+Live PRs are classified by `scripts/ops/check_system_atlas_impact_v1.py`. Do not invent commit or PR identifiers before they exist. Before merge, provenance may be `CHANGE:pr_7113_pl_tf_002_f1_grant_runner_binding_v1`.
 
 ## Workflow
 
@@ -40,11 +40,7 @@ Do not manually patch generated Markdown.
 
 | id |
 | --- |
-| `RUNTIME_COMPONENT:owner_scoped_get_budget_enforcement_v1` |
 | `RUNTIME_COMPONENT:pl_tf_002_productive_read_only_get_budget_wiring_v1` |
-| `GATE:full_core_fresh_pretrade_runtime_get_v1` |
-| `RUNTIME_COMPONENT:full_core_live_path_composition_root_v1` |
-| `RUNTIME_COMPONENT:ghv_current_okx_productive_read_only_reconciliation_get_validation_v1` |
 
 ## CHANGED_RELATIONS
 
@@ -96,8 +92,8 @@ Do not manually patch generated Markdown.
 
 ## Notes
 
-- Owner-scoped cumulative GET budget enforcement for PL-TF-002 read-only sessions; opt-in transport hook; no productive trading-cycle default; no POST; no credential persistence; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
-- introduced_by=CHANGE:pr_7112_owner_scoped_get_budget_enforcement_v1
-- modified_by=CHANGE:pr_7112_owner_scoped_get_budget_enforcement_v1
+- PL-TF-002 F1 ops runner grant-store propagation and explicit Owner cumulative GET budget 9 binding for network capture; canonical WP/Session OWNER_GO unchanged; technical transport limit 16 unchanged; no trading semantics change; ATLAS_AUTHORITY=NONE.
+- introduced_by=CHANGE:pr_7113_pl_tf_002_f1_grant_runner_binding_v1
+- modified_by=CHANGE:pr_7113_pl_tf_002_f1_grant_runner_binding_v1
 
 `ATLAS_AUTHORITY=NONE`. This mechanism keeps the Atlas current. It does not make the Atlas canonical SSOT.
