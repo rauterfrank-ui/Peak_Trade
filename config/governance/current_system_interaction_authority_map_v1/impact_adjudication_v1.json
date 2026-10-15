@@ -1,43 +1,38 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "13a53f371983ba9337cef15a8211530e81db850d",
-  "head_sha": "e5da3cdaf33846086cfd6d2cec06c85e5070b0ec",
+  "base_sha": "d75479e477c38338667854937a8f10013f67c234",
+  "head_sha": "a959b1a153567c1642d5ef8ab774153ea36a54cf",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "scripts/ops/ghv_forensic_whole_system_causal_integration_v1/__init__.py",
-    "scripts/ops/ghv_forensic_whole_system_causal_integration_v1/cli.py",
-    "scripts/ops/ghv_forensic_whole_system_causal_integration_v1/constants_v1.py",
-    "scripts/ops/ghv_forensic_whole_system_causal_integration_v1/integrate_v1.py",
-    "scripts/ops/ghv_forensic_whole_system_causal_integration_v1/load_wp1_v1.py",
-    "scripts/ops/ghv_forensic_whole_system_causal_integration_v1/runtime_evidence_v1.py",
-    "scripts/ops/ghv_forensic_whole_system_causal_integration_v1/stage_to_cfi_mapping.v1.json",
-    "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/compose_v1.py",
-    "tests/ops/test_ghv_forensic_whole_system_causal_integration_v1.py",
-    "tests/ops/test_ghv_forensic_whole_system_crosswalk_v1.py"
+    "scripts/ops/ghv_forensic_whole_system_causal_ghv_adapter_v1/__init__.py",
+    "scripts/ops/ghv_forensic_whole_system_causal_ghv_adapter_v1/cli.py",
+    "scripts/ops/ghv_forensic_whole_system_causal_ghv_adapter_v1/contracts_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_causal_ghv_adapter_v1/emit_bundle_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_causal_ghv_adapter_v1/inspect_graph_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_causal_ghv_adapter_v1/load_integrated_graph_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_causal_ghv_adapter_v1/types_v1.py",
+    "tests/ops/test_ghv_forensic_whole_system_causal_ghv_adapter_v1.py"
   ],
-  "changed_paths_sha256": "ab361b7f296c3c9a368f6e389476e4a048b436ede00de1e48480253828973e42",
+  "changed_paths_sha256": "a8d11a894c01d77776c457054d3e8d01755f9131c50b1eddf2c40a2ba6e2290b",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "scripts/ops/ghv_forensic_whole_system_causal_integration_v1/__init__.py",
-    "scripts/ops/ghv_forensic_whole_system_causal_integration_v1/cli.py",
-    "scripts/ops/ghv_forensic_whole_system_causal_integration_v1/constants_v1.py",
-    "scripts/ops/ghv_forensic_whole_system_causal_integration_v1/integrate_v1.py",
-    "scripts/ops/ghv_forensic_whole_system_causal_integration_v1/load_wp1_v1.py",
-    "scripts/ops/ghv_forensic_whole_system_causal_integration_v1/runtime_evidence_v1.py",
-    "scripts/ops/ghv_forensic_whole_system_causal_integration_v1/stage_to_cfi_mapping.v1.json",
-    "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/compose_v1.py",
-    "tests/ops/test_ghv_forensic_whole_system_causal_integration_v1.py",
-    "tests/ops/test_ghv_forensic_whole_system_crosswalk_v1.py"
+    "scripts/ops/ghv_forensic_whole_system_causal_ghv_adapter_v1/__init__.py",
+    "scripts/ops/ghv_forensic_whole_system_causal_ghv_adapter_v1/cli.py",
+    "scripts/ops/ghv_forensic_whole_system_causal_ghv_adapter_v1/contracts_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_causal_ghv_adapter_v1/emit_bundle_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_causal_ghv_adapter_v1/inspect_graph_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_causal_ghv_adapter_v1/load_integrated_graph_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_causal_ghv_adapter_v1/types_v1.py",
+    "tests/ops/test_ghv_forensic_whole_system_causal_ghv_adapter_v1.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_ghv_forensic_whole_system_causal_integration_v1.py",
-    "tests/ops/test_ghv_forensic_whole_system_crosswalk_v1.py"
+    "tests/ops/test_ghv_forensic_whole_system_causal_ghv_adapter_v1.py"
   ],
-  "reason": "PR #7115: combined WP1 census edge integrity + WP2-A offline causal overlay; NO_MAP_IMPACT; AUTHORITY=NONE.",
+  "reason": "PR WP2-B-A1: offline graph inspection adapter; NO_MAP_IMPACT; AUTHORITY=NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }
