@@ -21,8 +21,6 @@
     "GHOSV_EXECUTION_BOUNDED_OFFLINE_OBSERVER_V1_REPORT/10_OWNER_DECISION.md",
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/system_atlas/entities/catalog.yaml",
     "docs/system_atlas/provenance/changes.yaml",
     "src/ops/ghosv_bounded_context_v1/execution_bounded_offline_observer_v1.py",
