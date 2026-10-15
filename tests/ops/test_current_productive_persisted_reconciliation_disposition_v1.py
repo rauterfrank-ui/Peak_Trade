@@ -611,3 +611,78 @@ def test_record_clordid_authoritative_from_envelope(tmp_path: Path) -> None:
     assert record is not None
     assert record["clordid"] == envelope.client_order_id
     assert record.get("venue_ord_id") == ORD
+
+
+def _persist_disposition_via_join(tmp_path: Path):
+    envelope = _new_risk_envelope()
+    binding = _binding_for_envelope(envelope)
+    sent = envelope.client_order_id
+    _seed_correlation(tmp_path, binding, envelope)
+    post_join = join_full_core_post_result_to_lifecycle_v1(
+        result=_ack_post_result(clordid=sent),
+        sent_clordid=sent,
+    )
+    run_full_core_post_submit_lifecycle_reconciliation_join_v1(
+        post_submit_join=post_join,
+        binding=binding,
+        decision_outcome="ENTER",
+        venue_plan_identity="vp-g004",
+        envelope_identity="env-g004",
+        submit_attempt_id=SUBMIT_ATTEMPT,
+        local_durable_state_version="v1",
+        offline_fixture=_fixture_filled(clordid=sent),
+        post_durable_store_root=tmp_path,
+        persist_reconciliation_disposition=True,
+        post_attempt_envelope=envelope,
+        reconciliation_disposition_lane_id=LANE,
+    )
+    return envelope, binding
+
+
+def test_restart_lookup_binding_digest_parity(tmp_path: Path) -> None:
+    envelope, binding = _persist_disposition_via_join(tmp_path)
+    loaded = lookup_post_attempt_reconciliation_disposition_v1(
+        store_root=tmp_path,
+        envelope=envelope,
+        binding=binding,
+        submit_attempt_id=SUBMIT_ATTEMPT,
+        lane_id=LANE,
+    )
+    assert loaded["reconciliation_outcome"] is not None
+    loaded_again = lookup_post_attempt_reconciliation_disposition_v1(
+        store_root=tmp_path,
+        envelope=envelope,
+        binding=binding,
+        submit_attempt_id=SUBMIT_ATTEMPT,
+        lane_id=LANE,
+    )
+    assert loaded_again == loaded
+
+
+def test_restart_lookup_wrong_binding_envelope_digest_fail_closed(tmp_path: Path) -> None:
+    envelope, binding = _persist_disposition_via_join(tmp_path)
+    wrong_digest_binding = replace(binding, envelope_digest="deadbeef" * 8)
+    with pytest.raises(
+        PersistedReconciliationDispositionError,
+        match="BINDING_ENVELOPE_DIGEST_MISMATCH",
+    ):
+        lookup_post_attempt_reconciliation_disposition_v1(
+            store_root=tmp_path,
+            envelope=envelope,
+            binding=wrong_digest_binding,
+            submit_attempt_id=SUBMIT_ATTEMPT,
+            lane_id=LANE,
+        )
+
+
+def test_restart_lookup_missing_binding_envelope_digest_fail_closed(tmp_path: Path) -> None:
+    envelope, binding = _persist_disposition_via_join(tmp_path)
+    missing_digest_binding = replace(binding, envelope_digest="")
+    with pytest.raises(PersistedReconciliationDispositionError, match="ENVELOPE_DIGEST_REQUIRED"):
+        lookup_post_attempt_reconciliation_disposition_v1(
+            store_root=tmp_path,
+            envelope=envelope,
+            binding=missing_digest_binding,
+            submit_attempt_id=SUBMIT_ATTEMPT,
+            lane_id=LANE,
+        )

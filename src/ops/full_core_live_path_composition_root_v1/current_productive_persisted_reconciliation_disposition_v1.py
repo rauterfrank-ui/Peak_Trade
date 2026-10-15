@@ -156,6 +156,19 @@ def _load_enter_post_lifecycle_correlation_v1(*, store_root: Path | str) -> dict
     return load_enter_post_lifecycle_correlation_v1(store_root=store_root)
 
 
+def _assert_binding_envelope_digest_matches_v1(
+    *,
+    binding: FullCoreAuthorizationBindingV1,
+    envelope: FinalOrderEnvelopeV1,
+) -> None:
+    env_digest = str(envelope.envelope_digest or "").strip()
+    bind_digest = str(binding.envelope_digest or "").strip()
+    if not env_digest or not bind_digest:
+        raise PersistedReconciliationDispositionError("ENVELOPE_DIGEST_REQUIRED")
+    if bind_digest != env_digest:
+        raise PersistedReconciliationDispositionError("BINDING_ENVELOPE_DIGEST_MISMATCH")
+
+
 def _assert_authorization_binding_matches_envelope_and_correlation_v1(
     *,
     binding: FullCoreAuthorizationBindingV1,
@@ -173,12 +186,8 @@ def _assert_authorization_binding_matches_envelope_and_correlation_v1(
     corr_clord = str(correlation.get("clordid") or "").strip()
     if corr_clord and corr_clord != env_clord:
         raise PersistedReconciliationDispositionError("CORRELATION_CLORDID_ENVELOPE_MISMATCH")
+    _assert_binding_envelope_digest_matches_v1(binding=binding, envelope=envelope)
     env_digest = str(envelope.envelope_digest or "").strip()
-    bind_digest = str(binding.envelope_digest or "").strip()
-    if not env_digest or not bind_digest:
-        raise PersistedReconciliationDispositionError("ENVELOPE_DIGEST_REQUIRED")
-    if bind_digest != env_digest:
-        raise PersistedReconciliationDispositionError("BINDING_ENVELOPE_DIGEST_MISMATCH")
     corr_digest = str(correlation.get("envelope_digest") or "").strip()
     if corr_digest and corr_digest != env_digest:
         raise PersistedReconciliationDispositionError("CORRELATION_ENVELOPE_DIGEST_MISMATCH")
@@ -336,6 +345,7 @@ def lookup_post_attempt_reconciliation_disposition_v1(
         raise PersistedReconciliationDispositionError("WRONG_CLORDID")
     if str(binding.clordid or "").strip() != env_clord:
         raise PersistedReconciliationDispositionError("BINDING_CLORDID_ENVELOPE_MISMATCH")
+    _assert_binding_envelope_digest_matches_v1(binding=binding, envelope=envelope)
     if (
         str(record.get("envelope_digest") or "").strip()
         != str(envelope.envelope_digest or "").strip()
