@@ -1,0 +1,78 @@
+# Periodic / manual governance documentation checks (informational).
+# PR-required docs-drift-guard retains sensitive-path → required_docs pairing only.
+name: Governance Atlas Periodic
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "config/ops/system_atlas_v1/**"
+      - "scripts/ops/system_atlas_v1/**"
+      - "scripts/ops/validate_system_atlas_v1.py"
+      - "scripts/ops/check_system_atlas_impact_v1.py"
+      - "docs/system_atlas/**"
+      - "config/governance/current_law_impact_map_v1/**"
+      - "scripts/ops/current_law_impact_map_v1.py"
+      - "scripts/ops/check_current_law_impact_v1.py"
+      - ".github/workflows/governance_atlas_periodic_v1.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  atlas-and-law-periodic:
+    name: governance-atlas-periodic
+    runs-on: ubuntu-latest
+    timeout-minutes: 17
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+
+      - name: Fetch origin
+        run: git fetch --prune origin
+
+      - name: Resolve diff base (push vs dispatch)
+        id: diff_base
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            before="${{ github.event.before }}"
+            if [[ -z "${before}" || "${before}" == "0000000000000000000000000000000000000000" ]]; then
+              before="$(git rev-parse HEAD~1)"
+            fi
+            echo "ref=${before}" >> "$GITHUB_OUTPUT"
+          elif git diff --quiet origin/main...HEAD; then
+            echo "ref=HEAD~1" >> "$GITHUB_OUTPUT"
+          else
+            echo "ref=origin/main" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.11"
+
+      - name: Install PyYAML (atlas / truth loaders)
+        run: python3 -m pip install --disable-pip-version-check --no-cache-dir pyyaml
+
+      - name: Validate System Atlas generated views
+        run: python3 scripts/ops/validate_system_atlas_v1.py
+
+      - name: Atlas impact vs resolved base
+        run: python3 scripts/ops/check_system_atlas_impact_v1.py --base "${{ steps.diff_base.outputs.ref }}"
+
+      - name: Current Law Impact Map currency
+        run: |
+          set -euo pipefail
+          python3 scripts/ops/current_law_impact_map_v1.py generate --check
+          python3 scripts/ops/current_law_impact_map_v1.py validate --diff-base "${{ steps.diff_base.outputs.ref }}"
+
+      - name: Current Law Impact checker (advisory)
+        run: python3 scripts/ops/check_current_law_impact_v1.py --base "${{ steps.diff_base.outputs.ref }}" --advisory-only
+
+      - name: Periodic documentation sync analysis
+        run: python3 scripts/ops/periodic_current_documentation_sync_v1.py --report-json /tmp/periodic_doc_sync_report.json

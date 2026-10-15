@@ -5,6 +5,8 @@
   "selector_modes_are_map_impact_authority": false,
   "surfaces": [
     ".cursor/rules/",
+    ".github/workflows/current_matrix_check_v1.yml",
+    ".github/workflows/governance_atlas_periodic_v1.yml",
     ".github/workflows/truth_gates_pr.yml",
     "RETIRED_PRE_COMPLETION_EVIDENCE (BASELINE=2bcf835a3ef00085be1d6325b38b22031d3b0416; external Disaster Backup only)",
     "config/ci/required_status_checks.json",
@@ -284,6 +286,8 @@
     "scripts/ops/ghv_forensic_whole_system_causal_ghv_adapter_v1/",
     "scripts/ops/ghv_forensic_whole_system_causal_integration_v1/",
     "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/",
+    "scripts/ops/living_current_matrix_v1/",
+    "scripts/ops/periodic_current_documentation_sync_v1.py",
     "scripts/ops/ingest_okx_futures_public_market_data_canonical_dataset_staging_v1.py",
     "scripts/ops/law_map_v1/",
     "scripts/ops/materialize_ghv_pre_external_observability_from_evidence_v1.py",
