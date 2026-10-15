@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from dataclasses import replace
 from pathlib import Path
 
 import pytest
@@ -20,9 +21,11 @@ from src.ops.ghosv_bounded_context_v1.execution_bounded_offline_observer_v1 impo
 )
 from src.ops.ghosv_bounded_context_v1.execution_lifecycle_adjudication_v1 import (
     adjudicate_confirmed_venue_post_submission_v1,
+    apply_post_witness_conflict_traffic_guard_v1,
     venue_post_outcome_from_attempt_payload_v1,
 )
-from src.ops.ghosv_bounded_context_v1.types_v1 import GhosvEvidenceKind
+from src.ops.ghosv_bounded_context_v1.constants_v1 import TRAFFIC_GREEN, TRAFFIC_RED, TRAFFIC_YELLOW
+from src.ops.ghosv_bounded_context_v1.types_v1 import GhosvBoundedContextResultV1, GhosvEvidenceKind
 from src.ops.ghosv_bounded_context_v1.s01_evidence_ingest_v1 import normalize_evidence_record_v1
 
 REPO = Path(__file__).resolve().parents[2]
@@ -258,3 +261,87 @@ def test_l_current_productive_run_20261012_l10(tmp_path: Path):
     assert report["execution_lifecycle_completeness"] == "PRE_EXTERNAL_ONLY"
     assert report["lifecycle_adjudication"]["confirmed_venue_post_submission"] is False
     assert report["ghosv_traffic_light"] == "YELLOW"
+
+
+@pytest.mark.parametrize(
+    ("traffic_in", "conflict", "expected"),
+    [
+        (TRAFFIC_GREEN, True, TRAFFIC_YELLOW),
+        (TRAFFIC_YELLOW, True, TRAFFIC_YELLOW),
+        (TRAFFIC_RED, True, TRAFFIC_RED),
+        (TRAFFIC_GREEN, False, TRAFFIC_GREEN),
+        (TRAFFIC_YELLOW, False, TRAFFIC_YELLOW),
+    ],
+)
+def test_post_witness_conflict_traffic_guard_matrix(
+    traffic_in: str, conflict: bool, expected: str
+) -> None:
+    assert apply_post_witness_conflict_traffic_guard_v1(traffic_in, conflict) == expected
+
+
+def _write_g004_submitted_store(tmp_path: Path) -> Path:
+    store = tmp_path / "g004_conflict"
+    store.mkdir()
+    submit_attempt_id = "attempt-1"
+    envelope_digest = "env-digest"
+    record = {
+        "contract_id": G004_CONTRACT_ID,
+        "submit_attempt_id": submit_attempt_id,
+        "clordid": "cl-1",
+        "envelope_digest": envelope_digest,
+        "attempt_digest": attempt_digest_v1(
+            submit_attempt_id=submit_attempt_id,
+            envelope_digest=envelope_digest,
+        ),
+        "native_id": "BTC-USDT-SWAP",
+        "reconciliation_outcome": "PENDING",
+        "typed_post_submit_outcome": "UNKNOWN",
+        "local_submit_outcome": "SUBMITTED",
+        "ack_is_not_fill": True,
+    }
+    (store / "full_core_post_attempt_exchange_reconciliation_disposition_v1.json").write_text(
+        json.dumps(record), encoding="utf-8"
+    )
+    return store
+
+
+def test_m_post_witness_conflict_demotes_observer_green_when_pipeline_green(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Bugbot: confirmed POST witness contradiction must not leave observer GREEN."""
+    from src.ops.ghosv_bounded_context_v1 import execution_bounded_offline_observer_v1 as obs_mod
+    from src.ops.ghosv_bounded_context_v1.types_v1 import GhosvBoundedContextResultV1
+
+    store = _write_g004_submitted_store(tmp_path)
+    root = _write_cycle_dir(tmp_path, ledger=_base_ledger())
+    real_observe = obs_mod.observe_current_execution_via_ghosv_v1
+
+    def _patched_observe(*args: object, **kwargs: object) -> GhosvBoundedContextResultV1:
+        result = real_observe(*args, **kwargs)
+        return replace(result, traffic_overall=TRAFFIC_GREEN)
+
+    monkeypatch.setattr(obs_mod, "observe_current_execution_via_ghosv_v1", _patched_observe)
+    report = _run_observer(
+        tmp_path,
+        governed_cycle_evidence_dir=root,
+        g004_post_attempt_store_root=store,
+    )
+    assert report["lifecycle_adjudication"]["post_witness_conflict"] is True
+    assert report["execution_lifecycle_completeness"] == "INCONSISTENT_SOURCES"
+    assert report["ghosv_traffic_light"] == TRAFFIC_YELLOW
+    assert report["ghosv_result"]["traffic_overall"] == TRAFFIC_GREEN
+
+
+def test_n_pre_external_only_without_post_witness_conflict(tmp_path: Path) -> None:
+    if not PRE_EXTERNAL_FIXTURE.is_file():
+        pytest.skip("fixture missing")
+    report = _run_observer(tmp_path, pre_external_report=PRE_EXTERNAL_FIXTURE)
+    assert report["lifecycle_adjudication"]["post_witness_conflict"] is False
+    assert report["execution_lifecycle_completeness"] == "PRE_EXTERNAL_ONLY"
+
+
+def test_o_missing_post_evidence_without_contradiction(tmp_path: Path) -> None:
+    root = _write_cycle_dir(tmp_path, ledger=_base_ledger())
+    report = _run_observer(tmp_path, governed_cycle_evidence_dir=root)
+    assert report["lifecycle_adjudication"]["post_witness_conflict"] is False
+    assert report["execution_lifecycle_completeness"] != "INCONSISTENT_SOURCES"

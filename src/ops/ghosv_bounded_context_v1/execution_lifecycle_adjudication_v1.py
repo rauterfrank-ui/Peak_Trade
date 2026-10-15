@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Mapping, Sequence
 
+from src.ops.ghosv_bounded_context_v1.constants_v1 import TRAFFIC_GREEN, TRAFFIC_YELLOW
 from src.ops.ghosv_bounded_context_v1.execution_offline_consistency_guard_v1 import (
     ConsistencyGuardResultV1,
 )
@@ -67,6 +68,16 @@ def adjudicate_confirmed_venue_post_submission_v1(
     return bool(outcomes[0]), False
 
 
+def apply_post_witness_conflict_traffic_guard_v1(
+    traffic: str,
+    post_witness_conflict: bool,
+) -> str:
+    """Confirmed contradictory POST witnesses must not yield overall GREEN."""
+    if post_witness_conflict and traffic == TRAFFIC_GREEN:
+        return TRAFFIC_YELLOW
+    return traffic
+
+
 def execution_lifecycle_completeness_v1(
     *,
     records_kinds: set[str],
@@ -102,6 +113,7 @@ def execution_lifecycle_completeness_v1(
 __all__ = [
     "LIFECYCLE_ADJUDICATION_CONTRACT",
     "adjudicate_confirmed_venue_post_submission_v1",
+    "apply_post_witness_conflict_traffic_guard_v1",
     "execution_lifecycle_completeness_v1",
     "g004_confirms_venue_submission_v1",
     "venue_post_outcome_from_attempt_payload_v1",

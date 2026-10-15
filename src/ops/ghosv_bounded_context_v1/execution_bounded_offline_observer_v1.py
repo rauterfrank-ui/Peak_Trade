@@ -26,6 +26,7 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_persiste
 )
 from src.ops.ghosv_bounded_context_v1.execution_lifecycle_adjudication_v1 import (
     adjudicate_confirmed_venue_post_submission_v1,
+    apply_post_witness_conflict_traffic_guard_v1,
     execution_lifecycle_completeness_v1,
 )
 from src.ops.ghosv_bounded_context_v1.execution_offline_consistency_guard_v1 import (
@@ -269,6 +270,7 @@ def run_execution_bounded_offline_observer_v1(
         traffic = "UNKNOWN"
     if guard.evidence_consistency in {"FAIL", "PARTIAL"} and traffic == TRAFFIC_GREEN:
         traffic = "YELLOW"
+    traffic = apply_post_witness_conflict_traffic_guard_v1(traffic, post_witness_conflict)
 
     lifecycle = execution_lifecycle_completeness_v1(
         records_kinds=record_kinds,
