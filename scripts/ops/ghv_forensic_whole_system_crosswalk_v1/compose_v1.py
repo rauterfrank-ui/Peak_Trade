@@ -258,7 +258,11 @@ def run_forensic_crosswalk_v1(
     snapshot_binding_verified = len(validation.snapshot_errors) == 0
     if graph_mode == GraphMode.NAVIGATION_ONLY:
         validation.snapshot_errors = []
-        validation.ok = not validation.census_errors and not validation.landscape_errors
+        validation.ok = (
+            not validation.census_errors
+            and not validation.landscape_errors
+            and validation.every_required_validator_executed_and_passed
+        )
         snapshot_binding_verified = False
 
     if graph_mode == GraphMode.STRICT_CURRENT and validation.snapshot_errors:
@@ -267,6 +271,9 @@ def run_forensic_crosswalk_v1(
     if not validation.ok:
         result.ok = False
         result.errors = validation.all_errors()
+    validation_contract_ok = (
+        validation.ok and validation.every_required_validator_executed_and_passed
+    )
 
     counts = {
         "CURRENT_ENTITIES_INCLUDED": 0,
@@ -292,6 +299,9 @@ def run_forensic_crosswalk_v1(
                 **authority,
                 "CROSSWALK_EXECUTION_SUCCESS": False,
                 **counts,
+                "EVERY_REQUIRED_VALIDATOR_EXECUTED_AND_PASSED": False,
+                "CENSUS_SUBPROCESS_EXECUTED": validation.census_subprocess_executed,
+                "LANDSCAPE_SUBPROCESS_EXECUTED": validation.landscape_subprocess_executed,
                 "CENSUS_VALIDATOR_CONNECTED": validation.census_validator_connected,
                 "LANDSCAPE_VALIDATOR_CONNECTED": validation.landscape_validator_connected,
                 "ATLAS_CURRENT_ANCHOR_ENFORCED": True,
@@ -629,6 +639,9 @@ def run_forensic_crosswalk_v1(
                 {"kind": "ghv_evidence_bundle", "reason": "missing_capture_manifest"}
             )
 
+    if not result.coverage.get("ghv_evidence_attached"):
+        evidence_snap = build_evidence_snapshot_v1(evidence_root=None)
+
     included_states = {
         n.get("current_relevance", {}).get("CURRENT_RELEVANCE_STATE") for n in result.nodes
     } | {e.get("current_relevance", {}).get("CURRENT_RELEVANCE_STATE") for e in result.edges}
@@ -649,6 +662,7 @@ def run_forensic_crosswalk_v1(
     )
     current_graph_verified = (
         graph_mode == GraphMode.STRICT_CURRENT
+        and validation_contract_ok
         and snapshot_binding_verified
         and filters_ok
         and len(result.unresolved_edges) == 0
@@ -656,7 +670,7 @@ def run_forensic_crosswalk_v1(
     )
     authority = build_graph_authority_coverage(
         graph_mode=graph_mode,
-        source_validation_pass=True,
+        source_validation_pass=validation_contract_ok,
         snapshot_binding_verified=snapshot_binding_verified,
         current_only_filter_applied=True,
         current_graph_verified=current_graph_verified,
@@ -667,6 +681,12 @@ def run_forensic_crosswalk_v1(
     result.coverage.update(
         {
             **authority,
+            "SOURCE_VALIDATION_PASS": validation_contract_ok,
+            "EVERY_REQUIRED_VALIDATOR_EXECUTED_AND_PASSED": (
+                validation.every_required_validator_executed_and_passed
+            ),
+            "CENSUS_SUBPROCESS_EXECUTED": validation.census_subprocess_executed,
+            "LANDSCAPE_SUBPROCESS_EXECUTED": validation.landscape_subprocess_executed,
             "CURRENT_RELEVANCE_VERIFIED": counts["CURRENT_ENTITIES_INCLUDED"]
             + counts["CURRENT_EDGES_INCLUDED"],
             "CURRENT_RELEVANCE_UNKNOWN": counts["UNKNOWN_ENTITIES_EXCLUDED"]

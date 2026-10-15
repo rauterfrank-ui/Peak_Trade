@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import importlib.util
-import json
 import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -21,6 +20,12 @@ def _validator_script_repo_root() -> Path:
     return _CENSUS_VALIDATOR.resolve().parents[2]
 
 
+def _subprocess_validators_required(
+    *, strict_repo_invariants: bool, pt_launcher: Path | None
+) -> bool:
+    return bool(strict_repo_invariants and pt_launcher and pt_launcher.is_file())
+
+
 @dataclass
 class SourceValidationResultV1:
     ok: bool
@@ -29,6 +34,9 @@ class SourceValidationResultV1:
     snapshot_errors: list[str] = field(default_factory=list)
     census_validator_connected: bool = False
     landscape_validator_connected: bool = False
+    census_subprocess_executed: bool = False
+    landscape_subprocess_executed: bool = False
+    every_required_validator_executed_and_passed: bool = False
 
     def all_errors(self) -> list[str]:
         return [*self.census_errors, *self.landscape_errors, *self.snapshot_errors]
@@ -87,15 +95,21 @@ def run_landscape_validator_subprocess(
     *, repo_root: Path, pt_launcher: Path
 ) -> tuple[list[str], bool]:
     if repo_root.resolve() != _validator_script_repo_root().resolve():
-        return [], False
+        return (
+            ["landscape_subprocess_validator_skipped:repo_root_mismatch_with_validator_checkout"],
+            False,
+        )
     if not _LANDSCAPE_VALIDATOR.is_file():
         return ["landscape_validator_missing"], False
-    proc = subprocess.run(
-        [str(pt_launcher), str(_LANDSCAPE_VALIDATOR)],
-        cwd=str(repo_root),
-        capture_output=True,
-        text=True,
-    )
+    try:
+        proc = subprocess.run(
+            [str(pt_launcher), str(_LANDSCAPE_VALIDATOR)],
+            cwd=str(repo_root),
+            capture_output=True,
+            text=True,
+        )
+    except OSError as exc:
+        return [f"landscape_subprocess_validator_start_failed:{exc}"], False
     if proc.returncode != 0:
         msg = (proc.stderr or proc.stdout or "landscape_validation_failed").strip()
         return [msg.splitlines()[-1] if msg else "landscape_validation_failed"], True
@@ -106,13 +120,21 @@ def run_census_validator_subprocess(
     *, repo_root: Path, pt_launcher: Path
 ) -> tuple[list[str], bool]:
     if repo_root.resolve() != _validator_script_repo_root().resolve():
-        return [], False
-    proc = subprocess.run(
-        [str(pt_launcher), str(_CENSUS_VALIDATOR)],
-        cwd=str(repo_root),
-        capture_output=True,
-        text=True,
-    )
+        return (
+            ["census_subprocess_validator_skipped:repo_root_mismatch_with_validator_checkout"],
+            False,
+        )
+    if not _CENSUS_VALIDATOR.is_file():
+        return ["census_validator_missing"], False
+    try:
+        proc = subprocess.run(
+            [str(pt_launcher), str(_CENSUS_VALIDATOR)],
+            cwd=str(repo_root),
+            capture_output=True,
+            text=True,
+        )
+    except OSError as exc:
+        return [f"census_subprocess_validator_start_failed:{exc}"], False
     if proc.returncode != 0:
         msg = (proc.stderr or proc.stdout or "census_validation_failed").strip()
         return [msg.splitlines()[-1] if msg else "census_validation_failed"], True
@@ -148,6 +170,25 @@ def validate_snapshot_compatibility(
     return errors
 
 
+def _finalize_validation_result(
+    result: SourceValidationResultV1,
+    *,
+    subprocess_required: bool,
+) -> None:
+    if subprocess_required:
+        executed = result.census_subprocess_executed and result.landscape_subprocess_executed
+        passed = executed and not result.census_errors and not result.landscape_errors
+        result.every_required_validator_executed_and_passed = passed
+        if not executed and not result.census_errors and not result.landscape_errors:
+            result.census_errors.append("required_census_subprocess_validator_not_executed")
+            result.landscape_errors.append("required_landscape_subprocess_validator_not_executed")
+    else:
+        result.every_required_validator_executed_and_passed = (
+            not result.census_errors and not result.landscape_errors
+        )
+    result.ok = not result.all_errors() and result.every_required_validator_executed_and_passed
+
+
 def validate_sources_v1(
     *,
     repo_root: Path,
@@ -161,20 +202,32 @@ def validate_sources_v1(
     census_errors, census_connected = validate_census_document(
         census_doc, strict_repo_invariants=strict_repo_invariants
     )
-    result.census_errors = census_errors
+    result.census_errors = list(census_errors)
     result.census_validator_connected = census_connected
 
-    if strict_repo_invariants and pt_launcher and pt_launcher.is_file():
-        sub_err, _ = run_census_validator_subprocess(repo_root=repo_root, pt_launcher=pt_launcher)
-        if sub_err:
-            result.census_errors.extend(sub_err)
-        land_err, land_connected = run_landscape_validator_subprocess(
+    result.landscape_errors = validate_landscape_document_minimal(landscape_doc)
+
+    subprocess_required = _subprocess_validators_required(
+        strict_repo_invariants=strict_repo_invariants, pt_launcher=pt_launcher
+    )
+    if subprocess_required:
+        assert pt_launcher is not None
+        census_sub_err, census_executed = run_census_validator_subprocess(
             repo_root=repo_root, pt_launcher=pt_launcher
         )
-        result.landscape_errors = land_err
-        result.landscape_validator_connected = land_connected
+        result.census_subprocess_executed = census_executed
+        result.census_validator_connected = census_connected and census_executed
+        if census_sub_err:
+            result.census_errors.extend(census_sub_err)
+
+        land_sub_err, land_executed = run_landscape_validator_subprocess(
+            repo_root=repo_root, pt_launcher=pt_launcher
+        )
+        result.landscape_subprocess_executed = land_executed
+        result.landscape_validator_connected = land_executed
+        if land_sub_err:
+            result.landscape_errors.extend(land_sub_err)
     else:
-        result.landscape_errors = validate_landscape_document_minimal(landscape_doc)
         result.landscape_validator_connected = False
 
     result.snapshot_errors = validate_snapshot_compatibility(
@@ -183,6 +236,5 @@ def validate_sources_v1(
         landscape_doc=landscape_doc,
         strict=strict_repo_invariants,
     )
-    if result.all_errors():
-        result.ok = False
+    _finalize_validation_result(result, subprocess_required=subprocess_required)
     return result

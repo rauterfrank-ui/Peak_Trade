@@ -21,6 +21,8 @@ def census_flow_to_typed_edge(edge: dict[str, Any]) -> tuple[str | None, str]:
         return None, "UNRESOLVED_DECISION_FLOW_WITHOUT_CONTRACT"
     if flow in {"DATA_FLOW", "OBSERVATION_FLOW"}:
         return "PRODUCES", "CONTRACT_EVIDENCE"
+    if flow == "EVIDENCE_FLOW":
+        return "OBSERVES", "CONTRACT_EVIDENCE"
     return None, f"UNRESOLVED_FLOW_TYPE:{flow}"
 
 

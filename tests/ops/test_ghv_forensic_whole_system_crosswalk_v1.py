@@ -643,6 +643,9 @@ def test_source_validation_connected_on_repo() -> None:
         strict_repo_invariants=True,
         pt_launcher=REPO_ROOT / "scripts/pt",
     )
+    assert vr.census_subprocess_executed is True
+    assert vr.landscape_subprocess_executed is True
+    assert vr.every_required_validator_executed_and_passed is True
     assert vr.census_validator_connected is True
     assert vr.landscape_validator_connected is True
     assert not vr.census_errors
@@ -826,6 +829,97 @@ def test_historical_excluded_both_modes(tmp_path: Path) -> None:
             strict_repo_invariants=False,
         )
         assert result.coverage["HISTORICAL_ENTITIES_INGESTED"] == 0
+
+
+def test_source_validation_repo_root_mismatch_fails_strict(tmp_path: Path) -> None:
+    from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.source_validation_v1 import (
+        validate_sources_v1,
+    )
+    from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.load_sources_v1 import (
+        load_sources_v1,
+    )
+
+    root = tmp_path / "fixture"
+    _write_fixture_tree(root, census=_minimal_census())
+    _git_init_commit(root)
+    sources = load_sources_v1(repo_root=root, rules_path=RULES)
+    vr = validate_sources_v1(
+        repo_root=root,
+        census_doc=sources.census,
+        landscape_doc=sources.landscape,
+        git_head="abc",
+        strict_repo_invariants=True,
+        pt_launcher=REPO_ROOT / "scripts/pt",
+    )
+    assert vr.ok is False
+    assert vr.every_required_validator_executed_and_passed is False
+    assert vr.census_subprocess_executed is False
+    assert vr.landscape_subprocess_executed is False
+    assert any("repo_root_mismatch" in e for e in vr.all_errors())
+
+
+def test_source_validation_aligned_repo_executes_subprocess() -> None:
+    from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.source_validation_v1 import (
+        validate_sources_v1,
+    )
+    from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.load_sources_v1 import (
+        load_sources_v1,
+    )
+
+    sources = load_sources_v1(repo_root=REPO_ROOT, rules_path=RULES)
+    head = subprocess.check_output(
+        ["git", "-C", str(REPO_ROOT), "rev-parse", "HEAD"], text=True
+    ).strip()
+    vr = validate_sources_v1(
+        repo_root=REPO_ROOT,
+        census_doc=sources.census,
+        landscape_doc=sources.landscape,
+        git_head=head,
+        strict_repo_invariants=True,
+        pt_launcher=REPO_ROOT / "scripts/pt",
+    )
+    assert vr.census_subprocess_executed is True
+    assert vr.landscape_subprocess_executed is True
+    assert not vr.census_errors
+    assert not vr.landscape_errors
+
+
+def test_navigation_requires_source_validation_pass(tmp_path: Path) -> None:
+    result = run_forensic_crosswalk_v1(
+        repo_root=REPO_ROOT,
+        output_dir=tmp_path / "nav",
+        rules_path=RULES,
+        **_REPO_NAV,
+    )
+    assert result.coverage["EVERY_REQUIRED_VALIDATOR_EXECUTED_AND_PASSED"] is True
+    assert result.coverage["SOURCE_VALIDATION_PASS"] is True
+
+
+def test_atlas_hypothesis_entity_excluded(tmp_path: Path) -> None:
+    root = tmp_path / "hypothesis"
+    _write_fixture_tree(root, census=_minimal_census())
+    (root / "docs/system_atlas/entities/catalog.yaml").write_text(
+        "entities:\n"
+        "  - id: HYP-1\n    kind: COMPONENT\n"
+        "    epistemic_class: HYPOTHESIS\n"
+        "    current_canonical: true\n"
+        "    evidence_sources:\n      - src/a.py\n",
+        encoding="utf-8",
+    )
+    _git_init_commit(root)
+    result = run_forensic_crosswalk_v1(
+        repo_root=root, output_dir=root / "out", rules_path=RULES, **_RELAX
+    )
+    assert any(e.get("id") == "HYP-1" for e in result.excluded)
+
+
+def test_evidence_flow_maps_to_observes_structural() -> None:
+    edge_type, _ = census_flow_to_typed_edge(
+        {"flow_type": "EVIDENCE_FLOW", "contract_or_payload": "x"}
+    )
+    assert edge_type == "OBSERVES"
+    flags = edge_semantics_flags(edge_type)
+    assert flags["structural_only"] is True
 
 
 def test_code_snapshot_from_repo() -> None:

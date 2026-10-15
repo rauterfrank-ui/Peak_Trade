@@ -249,10 +249,10 @@ def classify_atlas_entity(
 ) -> CurrentRelevanceVerdict:
     artifact = "docs/system_atlas/entities/catalog.yaml"
     epistemic = str(entity.get("epistemic_class") or entity.get("epistemic_status") or "").upper()
-    if epistemic == "HISTORICAL":
+    if epistemic in ATLAS_EPISTEMIC_EXCLUDE or epistemic == "HISTORICAL":
         return CurrentRelevanceVerdict(
             state=CurrentRelevanceState.NON_CURRENT,
-            current_relevance_evidence="atlas_epistemic_class=HISTORICAL",
+            current_relevance_evidence=f"atlas_epistemic_excluded:{epistemic}",
             evidence_source=artifact,
             evidence_revision=evidence_revision,
             validation_status="EXCLUDED",
