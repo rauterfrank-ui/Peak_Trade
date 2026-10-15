@@ -673,7 +673,10 @@ def verify_cross_file_bindings_v1(
                 reasons.append("CYCLE_INSTANCE_ID_PATH_MISMATCH")
                 consistency = "FAIL"
             auth_evidence_raw = str(auth_obj.get("evidence_root") or "")
-            if auth_evidence_raw and repo_root is not None:
+            if not auth_evidence_raw:
+                reasons.append("CYCLE_AUTHORIZATION_EVIDENCE_ROOT_MISSING")
+                consistency = "UNKNOWN" if consistency == "PASS" else consistency
+            else:
                 auth_evidence_resolved, auth_root_reasons = resolve_persisted_evidence_root_v1(
                     evidence_root_raw=auth_evidence_raw,
                     repository_root=repo_root,
@@ -683,8 +686,16 @@ def verify_cross_file_bindings_v1(
                     consistency = "UNKNOWN" if consistency == "PASS" else consistency
                 elif auth_evidence_resolved is not None:
                     try:
-                        if auth_evidence_resolved.resolve() != cycle_instance_dir.resolve():
+                        auth_resolved = auth_evidence_resolved.resolve()
+                        cycle_resolved = cycle_instance_dir.resolve()
+                        if auth_resolved != cycle_resolved:
                             reasons.append("CYCLE_AUTHORIZATION_EVIDENCE_ROOT_MISMATCH")
+                            consistency = "FAIL"
+                        elif resolved_run_root is not None and not _resolved_path_is_under(
+                            child=cycle_resolved,
+                            parent=resolved_run_root,
+                        ):
+                            reasons.append("CYCLE_AUTHORIZATION_RUN_ROOT_MISMATCH")
                             consistency = "FAIL"
                     except OSError:
                         reasons.append("CYCLE_AUTHORIZATION_EVIDENCE_ROOT_ERROR")

@@ -305,6 +305,97 @@ def test_cross_run_cycle_mixture_fails(tmp_path: Path):
     )
 
 
+def test_absolute_root_auth_witness_mismatch_without_repo_root_fails(tmp_path: Path):
+    """Absolute PRE_EXTERNAL root: auth evidence_root must still be checked without repo_root."""
+    run_a = tmp_path / "run_a"
+    run_b = tmp_path / "run_b"
+    cycle_hash = "a" * 64
+    s5_a = run_a / "cycles" / cycle_hash / "s5"
+    s5_a.mkdir(parents=True)
+    run_b.mkdir()
+    pre_path = run_a / PRE_EXTERNAL_REPORT_FILENAME
+    pre_path.write_text(
+        json.dumps(
+            {
+                "NATIVE_ID": "BTC-USDT-SWAP",
+                "RUN_ID": "runid1234567890",
+                "EVIDENCE_ROOT": str(run_a.resolve()),
+                "REPORTING_S5_CYCLE_INDEX": "1",
+            }
+        ),
+        encoding="utf-8",
+    )
+    (run_a / ENTRY_STATE_SNAPSHOT_FILENAME).write_text(
+        json.dumps({"run_id": "runid1234567890"}), encoding="utf-8"
+    )
+    (s5_a.parent / S5_CYCLE_AUTHORIZATION_FILENAME).write_text(
+        json.dumps(
+            {
+                "consume_instance_id": cycle_hash,
+                "cycle_index": 1,
+                "evidence_root": str(run_b.resolve()),
+            }
+        ),
+        encoding="utf-8",
+    )
+    (s5_a / LEDGER_FILENAME).write_text(
+        json.dumps({"native_id": "BTC-USDT-SWAP", "binding_digest": "d"}),
+        encoding="utf-8",
+    )
+    guard = verify_cross_file_bindings_v1(
+        pre_external_report=pre_path,
+        governed_cycle_evidence_dir=s5_a,
+        g004_store_root=None,
+        repository_root=None,
+    )
+    assert guard.consistency == "FAIL"
+    assert "CYCLE_AUTHORIZATION_EVIDENCE_ROOT_MISMATCH" in guard.reason_codes
+
+
+def test_absolute_root_valid_auth_witness_without_repo_root_passes(tmp_path: Path):
+    run_dir = tmp_path / "abs_run"
+    cycle_hash = "c" * 64
+    s5_dir = run_dir / "cycles" / cycle_hash / "s5"
+    s5_dir.mkdir(parents=True)
+    pre_path = run_dir / PRE_EXTERNAL_REPORT_FILENAME
+    pre_path.write_text(
+        json.dumps(
+            {
+                "NATIVE_ID": "BTC-USDT-SWAP",
+                "RUN_ID": "runid1234567890",
+                "EVIDENCE_ROOT": str(run_dir.resolve()),
+                "REPORTING_S5_CYCLE_INDEX": "7",
+            }
+        ),
+        encoding="utf-8",
+    )
+    (run_dir / ENTRY_STATE_SNAPSHOT_FILENAME).write_text(
+        json.dumps({"run_id": "runid1234567890"}), encoding="utf-8"
+    )
+    (s5_dir.parent / S5_CYCLE_AUTHORIZATION_FILENAME).write_text(
+        json.dumps(
+            {
+                "consume_instance_id": cycle_hash,
+                "cycle_index": 7,
+                "evidence_root": str((s5_dir.parent).resolve()),
+            }
+        ),
+        encoding="utf-8",
+    )
+    (s5_dir / LEDGER_FILENAME).write_text(
+        json.dumps({"native_id": "BTC-USDT-SWAP", "binding_digest": "d"}),
+        encoding="utf-8",
+    )
+    guard = verify_cross_file_bindings_v1(
+        pre_external_report=pre_path,
+        governed_cycle_evidence_dir=s5_dir,
+        g004_store_root=None,
+        repository_root=None,
+    )
+    assert guard.consistency == "PASS"
+    assert guard.reason_codes == ("CROSS_FILE_CHECKS_OK",)
+
+
 def test_missing_run_entry_snapshot_unknown(tmp_path: Path):
     repo = _init_repo_root(tmp_path)
     run_dir, pre_path, s5_dir = _write_witnessed_run_bundle(repo)
