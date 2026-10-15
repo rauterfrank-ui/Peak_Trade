@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "bbae0a4669776a209e27714d506acfadc9580b13",
-  "head_sha": "bbae0a4669776a209e27714d506acfadc9580b13",
+  "head_sha": "feaa9bee68871a5df007f57e9ec937c2c5938c52",
   "changed_paths": [
     ".github/workflows/current_matrix_check_v1.yml",
     ".github/workflows/governance_atlas_periodic_v1.yml",
@@ -26,8 +26,6 @@
     ".github/workflows/truth_gates_pr.yml",
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "scripts/ops/living_current_matrix_v1/__init__.py",
     "scripts/ops/living_current_matrix_v1/cli.py",
     "scripts/ops/living_current_matrix_v1/constants_v1.py",
@@ -41,7 +39,7 @@
     "tests/ops/test_living_current_matrix_v1.py",
     "tests/ops/test_system_atlas_impact_v1.py"
   ],
-  "reason": "Living CURRENT Matrix + governance split (Atlas periodic); diff-bound NO_LAW_IMPACT/NO_MAP_IMPACT; AUTHORITY=NONE.",
+  "reason": "Living CURRENT Matrix + governance split; diff-bound NO_LAW_IMPACT/NO_MAP_IMPACT; AUTHORITY=NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }

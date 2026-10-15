@@ -132,14 +132,12 @@ def test_atlas_yaml_only_is_updated() -> None:
 
 
 def test_governance_atlas_periodic_runs_atlas_impact_checker() -> None:
-    periodic = (
-        REPO_ROOT / ".github" / "workflows" / "governance_atlas_periodic_v1.yml"
-    ).read_text(encoding="utf-8")
-    assert "check_system_atlas_impact_v1.py" in periodic
-    assert "validate_system_atlas_v1.py" in periodic
-    truth = (REPO_ROOT / ".github" / "workflows" / "truth_gates_pr.yml").read_text(
+    periodic = (REPO_ROOT / ".github" / "workflows" / "governance_atlas_periodic_v1.yml").read_text(
         encoding="utf-8"
     )
+    assert "check_system_atlas_impact_v1.py" in periodic
+    assert "validate_system_atlas_v1.py" in periodic
+    truth = (REPO_ROOT / ".github" / "workflows" / "truth_gates_pr.yml").read_text(encoding="utf-8")
     assert "check_docs_drift_guard.py" in truth
     assert "name: docs-drift-guard" in truth
 
