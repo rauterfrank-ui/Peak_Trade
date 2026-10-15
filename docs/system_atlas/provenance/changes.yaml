@@ -1032,3 +1032,10 @@ changes:
   epistemic_status: FORENSIC_RAW
   evidence: tests/ops/test_owner_scoped_get_budget_enforcement_v1.py
   notes: 'PR #7112: durable cumulative Owner GET budget for PL-TF-002 read-only sessions; opt-in transport pre-send reservation; closes Tier-A 7/4 forensic overrun; no productive trading-cycle default; F1 9-GET compatible; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'
+- id: CHANGE:pr_7113_pl_tf_002_f1_grant_runner_binding_v1
+  from: efca36b05961443b28438bc553936be164e4977e
+  to: PENDING_CHANGE
+  type: RUNTIME_WIRING
+  epistemic_status: FORENSIC_RAW
+  evidence: tests/ops/test_run_pl_tf_002_productive_read_only_get_complete_v1.py
+  notes: 'PR #7113: F1 ops runner requires grant store and binds Owner cumulative GET budget 9 for network capture; RUNTIME_SEMANTICS_CHANGED=false; POST_COUNT=0; ATLAS_AUTHORITY=NONE.'

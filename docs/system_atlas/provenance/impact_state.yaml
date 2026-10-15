@@ -1,19 +1,15 @@
 schema_version: system_atlas.v1
 pending_change: true
-introduced_by: CHANGE:pr_7112_owner_scoped_get_budget_enforcement_v1
-modified_by: CHANGE:pr_7112_owner_scoped_get_budget_enforcement_v1
+introduced_by: CHANGE:pr_7113_pl_tf_002_f1_grant_runner_binding_v1
+modified_by: CHANGE:pr_7113_pl_tf_002_f1_grant_runner_binding_v1
 superseded_by: null
 last_recorded_impact: UPDATED
 note: >-
-  Owner-scoped cumulative GET budget enforcement for PL-TF-002 read-only sessions;
-  opt-in transport hook; no productive trading-cycle default; no POST; no credential
-  persistence; RUNTIME_SEMANTICS_CHANGED=false; ATLAS_AUTHORITY=NONE.
+  PL-TF-002 F1 ops runner grant-store propagation and explicit Owner cumulative GET budget 9
+  binding for network capture; canonical WP/Session OWNER_GO unchanged; technical transport
+  limit 16 unchanged; no trading semantics change; ATLAS_AUTHORITY=NONE.
 changed_entities:
-  - RUNTIME_COMPONENT:owner_scoped_get_budget_enforcement_v1
   - RUNTIME_COMPONENT:pl_tf_002_productive_read_only_get_budget_wiring_v1
-  - GATE:full_core_fresh_pretrade_runtime_get_v1
-  - RUNTIME_COMPONENT:full_core_live_path_composition_root_v1
-  - RUNTIME_COMPONENT:ghv_current_okx_productive_read_only_reconciliation_get_validation_v1
 changed_relations: []
 changed_closures: []
 changed_wiring: []
