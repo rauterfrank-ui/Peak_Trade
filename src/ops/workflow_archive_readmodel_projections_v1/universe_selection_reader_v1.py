@@ -40,6 +40,14 @@ LOAD_ERROR_NON_AUTHORIZING_REQUIRED = "NON_AUTHORIZING_REQUIRED"
 PROJECTION_COVERAGE_LOAD_MODE = "projection_coverage"
 
 
+class UniverseSelectionVerifiedLoadError(ValueError):
+    """Fail-closed verify-before-trust load error (archive-smoke / binding)."""
+
+    def __init__(self, code: str, detail: str = "") -> None:
+        self.code = code
+        super().__init__(f"{code}:{detail}" if detail else code)
+
+
 def _repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
 
@@ -178,6 +186,31 @@ def _load_manifest_verified_readmodel(
     except UniverseSelectionContractError:
         return _empty_slice(load_errors=(LOAD_ERROR_CONTRACT_INVALID,))
 
+    return payload, contract
+
+
+def load_universe_selection_contract_verified_v1(
+    archive_root: str | Path,
+    *,
+    require_non_authorizing: bool = False,
+    reject_fixture_marked: bool = False,
+) -> tuple[dict[str, Any], UniverseSelectionContractV1]:
+    """Shared verify-before-trust load path; raises on any integrity failure."""
+    loaded = _load_manifest_verified_readmodel(archive_root)
+    if not isinstance(loaded, tuple):
+        errors = loaded.load_errors
+        if not errors:
+            raise UniverseSelectionVerifiedLoadError(
+                "READMODEL_NOT_FOUND",
+                "universe_selection_readmodel.v1 missing under readmodels/",
+            )
+        raise UniverseSelectionVerifiedLoadError(errors[0])
+
+    payload, contract = loaded
+    if reject_fixture_marked and contract.fixture_marked:
+        raise UniverseSelectionVerifiedLoadError(LOAD_ERROR_FIXTURE_MARKED_NOT_OBSERVABILITY_TRUTH)
+    if require_non_authorizing and contract.non_authorizing is not True:
+        raise UniverseSelectionVerifiedLoadError(LOAD_ERROR_NON_AUTHORIZING_REQUIRED)
     return payload, contract
 
 
