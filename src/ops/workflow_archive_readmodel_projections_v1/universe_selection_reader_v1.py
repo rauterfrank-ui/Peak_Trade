@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -59,6 +60,28 @@ def _import_verify_manifest() -> Any:
     from scripts.ops.primary_evidence_retention_v0 import verify_manifest_sha256
 
     return verify_manifest_sha256
+
+
+def _manifest_verifies_readmodel_entry(readmodels_dir: Path) -> bool:
+    """Require universe readmodel to be an explicit MANIFEST.sha256 entry (not sibling-only)."""
+    readmodel_path = readmodels_dir / READMODEL_FILENAME
+    manifest_path = readmodels_dir / MANIFEST_FILENAME
+    if not readmodel_path.is_file() or not manifest_path.is_file():
+        return False
+    expected_rel = READMODEL_FILENAME
+    for raw in manifest_path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        parts = line.split(None, 1)
+        if len(parts) != 2:
+            return False
+        digest, rel = parts
+        if rel != expected_rel:
+            continue
+        actual = hashlib.sha256(readmodel_path.read_bytes()).hexdigest()
+        return actual == digest
+    return False
 
 
 def _empty_slice(*, load_errors: tuple[str, ...]) -> UniverseSelectionDashboardSliceV1:
@@ -166,6 +189,8 @@ def _load_manifest_verified_readmodel(
     verify_manifest_sha256 = _import_verify_manifest()
     verify_ok, _ = verify_manifest_sha256(readmodels_dir)
     if not verify_ok:
+        return _empty_slice(load_errors=(LOAD_ERROR_MANIFEST_VERIFY_FAILED,))
+    if not _manifest_verifies_readmodel_entry(readmodels_dir):
         return _empty_slice(load_errors=(LOAD_ERROR_MANIFEST_VERIFY_FAILED,))
 
     try:

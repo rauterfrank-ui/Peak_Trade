@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import multiprocessing
 import subprocess
@@ -111,6 +112,23 @@ def test_b_invalid_manifest_fail_closed(tmp_path: Path) -> None:
     (readmodels / "MANIFEST.sha256").write_text("deadbeef  universe_selection_readmodel.v1.json\n")
     with pytest.raises(ProductiveHostAuthorizationError, match="MANIFEST_VERIFY_FAILED"):
         resolve_selected_instrument_from_archive_v1(archive_root=archive)
+
+
+def test_b2_manifest_omits_universe_readmodel_fail_closed(tmp_path: Path) -> None:
+    archive = _seed_verified_archive(tmp_path)
+    readmodels = archive / "readmodels"
+    sibling = readmodels / "dynamic_scope_state_v1.json"
+    sibling.write_text('{"schema_name":"dynamic_scope_state_v1"}\n', encoding="utf-8")
+    digest = hashlib.sha256(sibling.read_bytes()).hexdigest()
+    (readmodels / "MANIFEST.sha256").write_text(
+        f"{digest}  dynamic_scope_state_v1.json\n", encoding="utf-8"
+    )
+    with pytest.raises(ProductiveHostAuthorizationError, match="MANIFEST_VERIFY_FAILED"):
+        resolve_selected_instrument_from_archive_v1(
+            archive_root=archive,
+            expected_symbol="SATS-USDT-SWAP",
+            require_instrument_pin=True,
+        )
 
 
 def test_c_valid_producer_archive_accepted(tmp_path: Path) -> None:
