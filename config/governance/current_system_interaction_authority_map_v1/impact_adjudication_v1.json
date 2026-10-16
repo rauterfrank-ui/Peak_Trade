@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "b6ffca1d3b39b3dd8814c7c795a8aa6e04bc177a",
-  "head_sha": "0ee8efdc945bb1568c93d07e4df18bbd1eb5af4b",
+  "head_sha": "5d1219433af668bd5a21341039b5d06c925756d1",
   "changed_paths": [
     ".github/workflows/ci.yml",
     "config/ci/duplicate_test_names_allowlist.json",
@@ -9,10 +9,6 @@
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "config/ops/canonical_runtime_operations_activation_contract_v1.json",
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/loop_backflow_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/parameter_lineage_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
     "docs/ops/CANONICAL_RUNTIME_OPERATOR_ENTRYPOINT_O8_V1.md",
     "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
     "docs/ops/registry/DOCS_TRUTH_MAP.md",
@@ -296,7 +292,7 @@
     "tests/webui/test_workflow_dashboard_runtime_v1.py",
     "tests/webui/test_workflow_script_dto_contract_v0.py"
   ],
-  "changed_paths_sha256": "9b073cbf87536f981f1dae4aa4e129d630d63bb23ef8f53dbf2c47ef0b28225f",
+  "changed_paths_sha256": "560ec2f3ecad1703bccfd9b6a57a067670d8fcabbf9e62af5398664a6a592abc",
   "covered_candidate_paths": [
     "config/ops/canonical_runtime_operations_activation_contract_v1.json",
     "src/live/web/app.py",
