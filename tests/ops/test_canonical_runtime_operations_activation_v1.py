@@ -83,6 +83,8 @@ def test_activation_contract_valid_in_repository(repo_root: Path) -> None:
     assert contract["second_ssot_allowed"] is False
     for cmd in CANONICAL_SUBCOMMANDS:
         assert cmd in contract["canonical_subcommands"]
+    assert contract["o6_productive_recovery_o2_supervisor_coupling"] == "DETACHED_V1"
+    assert contract["canonical_operator_entry_productive_full_core_dependency"] is False
 
 
 def test_activation_contract_rejects_authority_and_second_ssot(

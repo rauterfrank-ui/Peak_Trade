@@ -42,6 +42,8 @@ REQUIRED_CONTRACT_KEYS: tuple[str, ...] = (
     "read_model_authority_effect",
     "master_runbook_is_only_ssot",
     "second_ssot_allowed",
+    "o6_productive_recovery_o2_supervisor_coupling",
+    "canonical_operator_entry_productive_full_core_dependency",
 )
 FORBIDDEN_TOKEN_BASENAMES: frozenset[str] = frozenset(
     {

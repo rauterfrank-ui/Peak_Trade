@@ -1,7 +1,7 @@
 """Bounded recovery: fence → reconcile → resume (no alpha authority).
 
-Reuses O2 supervisor lifecycle fencing/single-writer semantics. Does not invent
-a parallel supervision stack or alter trading/alpha authority.
+Productive cursor recovery is O6-native. Offline supervisor single-writer proofs
+use the O6-owned fixture; no O2 supervisor coupling for productive recovery.
 """
 
 from __future__ import annotations
@@ -11,20 +11,12 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
-from src.ops.canonical_local_launcher_and_process_supervision_v1.errors_v1 import (
+from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.o6_offline_supervisor_fixture_v1 import (
     ConflictingWriterError,
-    DuplicateSessionError,
-)
-from src.ops.canonical_local_launcher_and_process_supervision_v1.lifecycle_v1 import (
-    CanonicalLocalLauncherV1,
-    LauncherPathsV1,
-)
-from src.ops.canonical_local_launcher_and_process_supervision_v1.models_v1 import (
+    O6OfflineSingleWriterV1,
+    O6OfflineSupervisorPathsV1,
     ProcessIdentityV1,
     SessionRecordV1,
-)
-from src.ops.canonical_local_launcher_and_process_supervision_v1.single_writer_v1 import (
-    LauncherSingleWriterV1,
 )
 from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.constants_v1 import (
     DEFAULT_BOUNDED_RETRY_LIMIT,
@@ -227,23 +219,12 @@ def recover_from_persisted_active_state_v1(
     }
 
 
-def fence_o2_session_v1(launcher: CanonicalLocalLauncherV1, session_id: str) -> dict[str, Any]:
-    """Reuse O2 recover to fence stale/failed sessions before resume."""
-    result = launcher.recover(session_id)
-    return {
-        "ok": True,
-        "session_fenced_before_recovery": True,
-        "o2_recover": result,
-        "action": result.get("action"),
-    }
-
-
 def assert_single_writer_enforced_v1(registry_root: Path, session_id: str) -> dict[str, Any]:
-    first = LauncherSingleWriterV1(registry_root, session_id=session_id)
+    first = O6OfflineSingleWriterV1(registry_root, session_id=session_id)
     first.acquire()
     conflict = False
     try:
-        second = LauncherSingleWriterV1(registry_root, session_id=f"{session_id}-other")
+        second = O6OfflineSingleWriterV1(registry_root, session_id=f"{session_id}-other")
         try:
             second.acquire()
         except ConflictingWriterError:
@@ -292,8 +273,8 @@ class RecoveryHarnessPathsV1:
     cursor_path: Path
     extra: dict[str, Any] = field(default_factory=dict)
 
-    def to_launcher_paths(self) -> LauncherPathsV1:
-        return LauncherPathsV1(
+    def to_offline_supervisor_paths(self) -> O6OfflineSupervisorPathsV1:
+        return O6OfflineSupervisorPathsV1(
             repository_root=self.repository_root,
             state_root=self.state_root,
             log_root=self.log_root,

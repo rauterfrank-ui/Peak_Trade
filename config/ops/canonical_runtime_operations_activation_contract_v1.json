@@ -20,6 +20,8 @@
   ],
   "canonical_supervision_backend": "repository_owned_supervisor",
   "canonical_supervisor": "src/ops/canonical_local_launcher_and_process_supervision_v1",
+  "o6_productive_recovery_o2_supervisor_coupling": "DETACHED_V1",
+  "canonical_operator_entry_productive_full_core_dependency": false,
   "capability_id": "CAPABILITY_O8_CANONICAL_RUNTIME_OPERATIONS_ACTIVATION_V1",
   "core_logic_changed": false,
   "credentials_authorized": false,
