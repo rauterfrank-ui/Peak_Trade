@@ -12,7 +12,7 @@
   "not_a_universe_ratification": true,
   "not_a_replacement_for_canonical_authority_sources": true,
   "graph_loses_on_conflict": true,
-  "source_baseline_head": "dfcf4d04b8400763bee6ab0b465fa182927dea75",
+  "source_baseline_head": "e5d9296fb269208b06980518d410b4f2b616bf5b",
   "universe_landscape_snapshot_ref": "config/governance/current_universe_landscape_snapshot_v1/source_v1.json",
   "census_version": "CURRENT_COMPLETE_SYSTEM_CENSUS_V1",
   "census_phase_1_status": "INCOMPLETE",

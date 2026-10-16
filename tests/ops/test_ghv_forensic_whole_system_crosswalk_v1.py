@@ -608,7 +608,16 @@ def test_invalid_census_schema_fail_closed(tmp_path: Path) -> None:
     assert result.coverage.get("SOURCE_VALIDATION_PASS") is False
 
 
-def test_snapshot_mismatch_fail_closed_on_repo(tmp_path: Path) -> None:
+def test_snapshot_mismatch_fail_closed_on_repo(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from scripts.ops.ghv_forensic_whole_system_crosswalk_v1 import source_validation_v1 as sv
+
+    monkeypatch.setattr(
+        sv,
+        "validate_snapshot_compatibility",
+        lambda **kwargs: ["census_source_baseline_head_mismatch:forced"],
+    )
     out = tmp_path / "snap_fail"
     result = run_forensic_crosswalk_v1(
         repo_root=REPO_ROOT,
@@ -618,8 +627,7 @@ def test_snapshot_mismatch_fail_closed_on_repo(tmp_path: Path) -> None:
         graph_mode=GraphMode.STRICT_CURRENT,
         strict_repo_invariants=True,
     )
-    assert result.coverage.get("SOURCE_VALIDATION_PASS") is False
-    assert result.coverage.get("EVERY_REQUIRED_VALIDATOR_EXECUTED_AND_PASSED") is True
+    assert result.coverage.get("SNAPSHOT_BINDING_VERIFIED") is False
     assert result.coverage.get("CURRENT_GRAPH_VERIFIED") is False
     assert result.coverage.get("GRAPH_MODE") == "STRICT_CURRENT"
     assert result.ok is False
@@ -846,9 +854,11 @@ def test_no_implicit_strict_to_navigation_cli(tmp_path: Path) -> None:
         capture_output=True,
         text=True,
     )
-    assert proc.returncode == 1
     payload = json.loads(proc.stdout.strip().splitlines()[-1])
     assert payload["graph_mode"] == "STRICT_CURRENT"
+    assert proc.returncode == (0 if payload["status"] == "PASS" else 1)
+    assert payload["status"] == "PASS"
+    assert payload["coverage"]["CURRENT_GRAPH_VERIFIED"] is True
 
 
 def test_navigation_cli_smoke(tmp_path: Path) -> None:
@@ -1118,7 +1128,7 @@ def test_census_edge_non_so_alias_target_unresolved(tmp_path: Path) -> None:
         {
             "edge_id": "operator_profile_b11_to_closure_b12",
             "source_object": "SO-OPS-PKG:peak_trade_operator_profile_explainability_v1",
-            "target_object": "ranking_selection_profile_closure_b12",
+            "target_object": "unmapped_domain_alias_v1",
             "flow_type": "EVIDENCE_FLOW",
             "epistemic_status": "PROVEN_CURRENT",
         }
@@ -1134,7 +1144,7 @@ def test_census_edge_non_so_alias_target_unresolved(tmp_path: Path) -> None:
         for u in result.unresolved_edges
         if u.get("edge_id") == "operator_profile_b11_to_closure_b12"
     )
-    assert unresolved.get("target_native_id") == "ranking_selection_profile_closure_b12"
+    assert unresolved.get("target_native_id") == "unmapped_domain_alias_v1"
     assert unresolved.get("provenance")
 
 
