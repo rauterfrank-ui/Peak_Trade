@@ -12,7 +12,7 @@
   "not_a_universe_ratification": true,
   "not_a_replacement_for_canonical_authority_sources": true,
   "graph_loses_on_conflict": true,
-  "source_baseline_head": "f1fb283b3d8b0df3a015727f2946d6abe8e225e8",
+  "source_baseline_head": "c3b58c20ce38877704e18a71555ab59e56f62bdc",
   "universe_landscape_snapshot_ref": "config/governance/current_universe_landscape_snapshot_v1/source_v1.json",
   "census_version": "CURRENT_COMPLETE_SYSTEM_CENSUS_V1",
   "census_phase_1_status": "INCOMPLETE",
@@ -1244,9 +1244,10 @@
     },
     {
       "object_id": "SO-SRC-PKG:webui",
-      "name": "webui",
+      "name": "workflow_archive_readmodel_projections_v1",
       "paths": [
-        "src/webui/**"
+        "src/ops/workflow_archive_readmodel_projections_v1/**",
+        "src/ops/presentation_archive_root_v1/**"
       ],
       "object_type": "SRC_PACKAGE",
       "current_status": "PROVEN_CURRENT",
@@ -1266,10 +1267,12 @@
       "transport_role": null,
       "productive_reachability": false,
       "evidence_refs": [
-        "src/webui/"
+        "src/ops/workflow_archive_readmodel_projections_v1/",
+        "src/ops/workflow_archive_readmodel_projections_v1/builder.py",
+        "src/ops/presentation_archive_root_v1/resolver_v1.py"
       ],
       "epistemic_status": "PROVEN_CURRENT",
-      "notes": null,
+      "notes": "Stable census object_id SO-SRC-PKG:webui after src/webui/ retirement; covers producer, verified reader, session-pin consumers, presentation builder, and presentation_archive_root_v1 resolver (301-object conservation).",
       "program_tags": [],
       "secondary_roles": []
     },
@@ -6179,7 +6182,8 @@
       "object_id": "SO-OPS-PKG:presentation_projection_operational_materializer_invocation_v1",
       "name": "presentation_projection_operational_materializer_invocation_v1",
       "paths": [
-        "src/ops/presentation_projection_operational_materializer_invocation_v1/**"
+        "src/ops/presentation_projection_operational_materializer_invocation_v1/**",
+        "src/ops/presentation_archive_materializers_v1/**"
       ],
       "object_type": "OPS_CAPABILITY_PACKAGE",
       "current_status": "PROVEN_CURRENT",
@@ -6200,7 +6204,9 @@
       "productive_reachability": false,
       "evidence_refs": [
         "src/ops/presentation_projection_operational_materializer_invocation_v1/",
-        "src/ops/presentation_projection_operational_materializer_invocation_v1/constants_v1.py"
+        "src/ops/presentation_projection_operational_materializer_invocation_v1/constants_v1.py",
+        "src/ops/presentation_archive_materializers_v1/",
+        "src/ops/presentation_archive_materializers_v1/canonical_decision_presentation_projection_materializer_v1.py"
       ],
       "epistemic_status": "PROVEN_CURRENT",
       "notes": null,
@@ -11684,6 +11690,218 @@
         "src/ops/presentation_archive_materializers_v1/canonical_decision_presentation_projection_materializer_v1.py"
       ],
       "epistemic_status": "PROVEN_CURRENT"
+    },
+    {
+      "edge_id": "archive_selection_binding_to_universe_readmodel_surface",
+      "source_object": "SO-OPS-PKG:single_selected_future_runtime_binding_v1",
+      "target_object": "SO-SRC-PKG:webui",
+      "source_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "target_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "flow_type": "EVIDENCE_FLOW",
+      "producer": "single_selected_future_runtime_binding_v1",
+      "consumer": "workflow_archive_readmodel_projections_v1",
+      "contract_or_payload": "selection context → universe_selection_readmodel.v1 closeout producer surface",
+      "transport": "FILE",
+      "authority_effect": "NONE",
+      "runtime_reachability": "EVIDENCE_ONLY_REACHABILITY",
+      "productive_reachability": false,
+      "map_relationship": "CODE_ONLY",
+      "current_evidence": [
+        "src/ops/workflow_archive_readmodel_projections_v1/universe_selection_producer_v1.py",
+        "src/ops/workflow_archive_readmodel_projections_v1/futures_universe_upstream_adapter_v1.py"
+      ],
+      "epistemic_status": "PROVEN_CURRENT"
+    },
+    {
+      "edge_id": "archive_verified_readmodel_to_smoke_host",
+      "source_object": "SO-SRC-PKG:webui",
+      "target_object": "SO-OPS-PKG:productive_decision_host_active_archive_three_family_binding_v1",
+      "source_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "target_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "flow_type": "EVIDENCE_FLOW",
+      "producer": "workflow_archive_readmodel_projections_v1",
+      "consumer": "productive_decision_host_active_archive_three_family_binding_v1",
+      "contract_or_payload": "manifest-verified universe_selection + archive root binding + session pin",
+      "transport": "FILE",
+      "authority_effect": "NONE",
+      "runtime_reachability": "EVIDENCE_ONLY_REACHABILITY",
+      "productive_reachability": false,
+      "map_relationship": "CODE_ONLY",
+      "current_evidence": [
+        "src/ops/workflow_archive_readmodel_projections_v1/universe_selection_reader_v1.py",
+        "src/ops/presentation_archive_root_v1/resolver_v1.py",
+        "src/ops/productive_decision_host_active_archive_three_family_binding_v1/archive_binding_v1.py",
+        "src/ops/productive_decision_host_active_archive_three_family_binding_v1/archive_session_pin_v1.py"
+      ],
+      "epistemic_status": "PROVEN_CURRENT"
+    },
+    {
+      "edge_id": "archive_smoke_host_to_double_play_exporter",
+      "source_object": "SO-OPS-PKG:productive_decision_host_active_archive_three_family_binding_v1",
+      "target_object": "SO-OPS-PKG:double_play_archive_sibling_exporter_v1",
+      "source_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "target_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "flow_type": "EVIDENCE_FLOW",
+      "producer": "export_families_after_runtime_commit_v1",
+      "consumer": "double_play_archive_sibling_exporter_v1",
+      "contract_or_payload": "double_play display sibling export",
+      "transport": "FILE",
+      "authority_effect": "NONE",
+      "runtime_reachability": "EVIDENCE_ONLY_REACHABILITY",
+      "productive_reachability": false,
+      "map_relationship": "CODE_ONLY",
+      "current_evidence": [
+        "src/ops/productive_decision_host_active_archive_three_family_binding_v1/family_export_adapter_v1.py",
+        "src/ops/double_play_archive_sibling_exporter_v1/exporter_v1.py"
+      ],
+      "epistemic_status": "PROVEN_CURRENT"
+    },
+    {
+      "edge_id": "archive_smoke_host_to_regime_bull_bear_exporter",
+      "source_object": "SO-OPS-PKG:productive_decision_host_active_archive_three_family_binding_v1",
+      "target_object": "SO-OPS-PKG:regime_bull_bear_switch_archive_sibling_exporter_v1",
+      "source_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "target_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "flow_type": "EVIDENCE_FLOW",
+      "producer": "export_families_after_runtime_commit_v1",
+      "consumer": "regime_bull_bear_switch_archive_sibling_exporter_v1",
+      "contract_or_payload": "bull_bear_regime sibling export",
+      "transport": "FILE",
+      "authority_effect": "NONE",
+      "runtime_reachability": "EVIDENCE_ONLY_REACHABILITY",
+      "productive_reachability": false,
+      "map_relationship": "CODE_ONLY",
+      "current_evidence": [
+        "src/ops/productive_decision_host_active_archive_three_family_binding_v1/family_export_adapter_v1.py",
+        "src/ops/regime_bull_bear_switch_archive_sibling_exporter_v1/exporter_v1.py"
+      ],
+      "epistemic_status": "PROVEN_CURRENT"
+    },
+    {
+      "edge_id": "archive_smoke_host_to_risk_sizing_exporter",
+      "source_object": "SO-OPS-PKG:productive_decision_host_active_archive_three_family_binding_v1",
+      "target_object": "SO-OPS-PKG:risk_sizing_capital_archive_sibling_exporter_v1",
+      "source_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "target_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "flow_type": "EVIDENCE_FLOW",
+      "producer": "export_families_after_runtime_commit_v1",
+      "consumer": "risk_sizing_capital_archive_sibling_exporter_v1",
+      "contract_or_payload": "risk_sizing_capital sibling export",
+      "transport": "FILE",
+      "authority_effect": "NONE",
+      "runtime_reachability": "EVIDENCE_ONLY_REACHABILITY",
+      "productive_reachability": false,
+      "map_relationship": "CODE_ONLY",
+      "current_evidence": [
+        "src/ops/productive_decision_host_active_archive_three_family_binding_v1/family_export_adapter_v1.py",
+        "src/ops/risk_sizing_capital_archive_sibling_exporter_v1/exporter_v1.py"
+      ],
+      "epistemic_status": "PROVEN_CURRENT"
+    },
+    {
+      "edge_id": "archive_smoke_host_to_execution_reconciliation_exporter",
+      "source_object": "SO-OPS-PKG:productive_decision_host_active_archive_three_family_binding_v1",
+      "target_object": "SO-OPS-PKG:execution_reconciliation_archive_sibling_exporter_v1",
+      "source_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "target_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "flow_type": "EVIDENCE_FLOW",
+      "producer": "export_families_after_runtime_commit_v1",
+      "consumer": "execution_reconciliation_archive_sibling_exporter_v1",
+      "contract_or_payload": "execution_reconciliation sibling export",
+      "transport": "FILE",
+      "authority_effect": "NONE",
+      "runtime_reachability": "EVIDENCE_ONLY_REACHABILITY",
+      "productive_reachability": false,
+      "map_relationship": "CODE_ONLY",
+      "current_evidence": [
+        "src/ops/productive_decision_host_active_archive_three_family_binding_v1/family_export_adapter_v1.py",
+        "src/ops/execution_reconciliation_archive_sibling_exporter_v1/exporter_v1.py"
+      ],
+      "epistemic_status": "PROVEN_CURRENT"
+    },
+    {
+      "edge_id": "archive_smoke_host_to_economic_summary_exporter",
+      "source_object": "SO-OPS-PKG:productive_decision_host_active_archive_three_family_binding_v1",
+      "target_object": "SO-OPS-PKG:economic_summary_archive_sibling_exporter_v1",
+      "source_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "target_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "flow_type": "EVIDENCE_FLOW",
+      "producer": "export_families_after_runtime_commit_v1",
+      "consumer": "economic_summary_archive_sibling_exporter_v1",
+      "contract_or_payload": "economic_summary sibling export",
+      "transport": "FILE",
+      "authority_effect": "NONE",
+      "runtime_reachability": "EVIDENCE_ONLY_REACHABILITY",
+      "productive_reachability": false,
+      "map_relationship": "CODE_ONLY",
+      "current_evidence": [
+        "src/ops/productive_decision_host_active_archive_three_family_binding_v1/family_export_adapter_v1.py",
+        "src/ops/economic_summary_archive_sibling_exporter_v1/exporter_v1.py"
+      ],
+      "epistemic_status": "PROVEN_CURRENT"
+    },
+    {
+      "edge_id": "archive_smoke_host_to_safety_authority_exporter",
+      "source_object": "SO-OPS-PKG:productive_decision_host_active_archive_three_family_binding_v1",
+      "target_object": "SO-OPS-PKG:safety_authority_archive_sibling_exporter_v1",
+      "source_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "target_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "flow_type": "EVIDENCE_FLOW",
+      "producer": "export_families_after_runtime_commit_v1",
+      "consumer": "safety_authority_archive_sibling_exporter_v1",
+      "contract_or_payload": "safety_authority presentation sibling export",
+      "transport": "FILE",
+      "authority_effect": "NONE",
+      "runtime_reachability": "EVIDENCE_ONLY_REACHABILITY",
+      "productive_reachability": false,
+      "map_relationship": "CODE_ONLY",
+      "current_evidence": [
+        "src/ops/productive_decision_host_active_archive_three_family_binding_v1/family_export_adapter_v1.py",
+        "src/ops/safety_authority_archive_sibling_exporter_v1/exporter_v1.py"
+      ],
+      "epistemic_status": "PROVEN_CURRENT"
+    },
+    {
+      "edge_id": "archive_materializer_invocation_to_octet_orchestrator",
+      "source_object": "SO-OPS-PKG:presentation_projection_operational_materializer_invocation_v1",
+      "target_object": "SO-OPS-PKG:presentation_projection_octet_orchestrator_v1",
+      "source_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "target_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "flow_type": "EVIDENCE_FLOW",
+      "producer": "presentation_projection_operational_materializer_invocation_v1",
+      "consumer": "presentation_projection_octet_orchestrator_v1",
+      "contract_or_payload": "octet orchestrator invokes presentation_archive materializers",
+      "transport": "FILE",
+      "authority_effect": "NONE",
+      "runtime_reachability": "EVIDENCE_ONLY_REACHABILITY",
+      "productive_reachability": false,
+      "map_relationship": "CODE_ONLY",
+      "current_evidence": [
+        "src/ops/presentation_projection_octet_orchestrator_v1/orchestrator_v1.py",
+        "src/ops/presentation_archive_materializers_v1/"
+      ],
+      "epistemic_status": "PROVEN_CURRENT"
+    },
+    {
+      "edge_id": "archive_octet_orchestrator_to_presentation_builder",
+      "source_object": "SO-OPS-PKG:presentation_projection_octet_orchestrator_v1",
+      "target_object": "SO-SRC-PKG:webui",
+      "source_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "target_universe_or_plane": "TD-PRESENTATION-ARCHIVE",
+      "flow_type": "EVIDENCE_FLOW",
+      "producer": "presentation_projection_octet_orchestrator_v1",
+      "consumer": "workflow_archive_readmodel_projections_v1",
+      "contract_or_payload": "workflow_dashboard_readmodel.v1 builder consumes archive projections",
+      "transport": "FILE",
+      "authority_effect": "NONE",
+      "runtime_reachability": "EVIDENCE_ONLY_REACHABILITY",
+      "productive_reachability": false,
+      "map_relationship": "CODE_ONLY",
+      "current_evidence": [
+        "src/ops/workflow_archive_readmodel_projections_v1/builder.py",
+        "src/ops/presentation_projection_octet_orchestrator_v1/orchestrator_v1.py"
+      ],
+      "epistemic_status": "PROVEN_CURRENT"
     }
   ],
   "edge_reconciliation": {
@@ -11692,12 +11910,12 @@
     "map_only_edge_count": 44,
     "edge_conflict_count": 1,
     "reconciliation_status": "DISCREPANCY_PRESERVED",
-    "reconciliation_note": "Phase-2 census narrative counts (31+44+1+9) are preserved alongside materialized semantic_edges map_relationship tallies (32 CODE_AND_MAP, 43 MAP_ONLY, 13 CODE_ONLY, 0 CONFLICTING); archive-seam minimum net-risk edges are CODE_ONLY evidence paths; see CD-006, CD-008, CD-010.",
+    "reconciliation_note": "Phase-2 census narrative counts preserved; materialized_map_relationship_tally includes CD-010 archive-seam CODE_ONLY edges (producer→smoke→exporters→materializer→octet→builder); see CD-006, CD-008, CD-010.",
     "materialized_map_relationship_tally": {
       "CODE_AND_MAP": 32,
       "MAP_ONLY": 43,
       "CONFLICTING": 0,
-      "CODE_ONLY": 13
+      "CODE_ONLY": 23
     }
   },
   "topology_domains": [
@@ -12299,8 +12517,8 @@
     },
     {
       "id": "CD-010",
-      "topic": "archive instrument seam census partial coverage",
-      "detail": "presentation_archive_root_v1 and workflow_archive_readmodel_projections_v1 are CURRENT code paths but not separate census objects (301-object conservation); four CODE_ONLY semantic_edges document smoke host export chain only; Refresh/Producer to universe readmodel remains OPEN."
+      "topic": "archive instrument seam census coverage",
+      "detail": "CLOSED_PASS: SO-SRC-PKG:webui retargeted to workflow_archive_readmodel_projections_v1 and presentation_archive_root_v1; materializer package paths bound to presentation_projection_operational_materializer_invocation_v1; archive-seam CODE_ONLY semantic_edges document producer/reader/binding→smoke→all active family exporters→materializer→octet→builder. 301-object conservation preserved."
     }
   ]
 }

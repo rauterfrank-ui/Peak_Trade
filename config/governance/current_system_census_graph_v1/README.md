@@ -7,7 +7,7 @@
 It materializes:
 
 - **301** census objects (package / infrastructure-surface granularity)
-- **84** semantic system edges (not a Python import graph)
+- **98** semantic system edges (not a Python import graph; includes CD-010 archive-seam CODE_ONLY edges)
 - Topology domains, WebSocket closure, intelligence topology, productive hot path, and authority-map reconciliation **as census evidence**
 
 ## What it is not
@@ -54,11 +54,12 @@ See `census_discrepancies` in `source_v1.json` for preserved epistemic mismatche
 ## Future audit / Cursor workflow
 
 1. Read `source_v1.json`.
-2. Compare `git rev-parse HEAD` to `source_baseline_head`.
-3. `git diff --name-only <source_baseline_head>..HEAD` against `objects[].paths` and `evidence_refs`.
-4. Re-prove only impacted objects/edges.
-5. **Never** treat unchanged graph records as runtime permission to trade, post, or activate capabilities.
-6. Update this graph only through separate, evidence-backed governance work (not silent drift).
+2. Compare `git rev-parse HEAD` to `source_baseline_head` (census **provenance pin**: the git commit at which this `source_v1.json` body was last ratified; GHV strips this field when diffing census material across commits).
+3. After census edits, rebind `source_baseline_head` to the **commit SHA that contains the ratified census** (same commit via amend is the canonical pattern; not a circular runtime dependency because the pin field is excluded from GHV material comparison).
+4. `git diff --name-only <source_baseline_head>..HEAD` against `objects[].paths` and `evidence_refs`.
+5. Re-prove only impacted objects/edges.
+6. **Never** treat unchanged graph records as runtime permission to trade, post, or activate capabilities.
+7. Update this graph only through separate, evidence-backed governance work (not silent drift).
 
 ## Validation
 

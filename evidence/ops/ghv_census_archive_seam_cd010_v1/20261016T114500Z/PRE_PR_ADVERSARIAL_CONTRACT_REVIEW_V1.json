@@ -1,0 +1,60 @@
+{
+  "review_id": "PRE_PR_ADVERSARIAL_CONTRACT_REVIEW_V1",
+  "scope": "CD-010 archive-seam census and GHV graph coverage only",
+  "authority_effect": "NONE",
+  "verdict": "PASS_WITH_NOTES",
+  "findings": [
+    {
+      "id": "ADV-001",
+      "severity": "NOTE",
+      "topic": "301-object conservation",
+      "detail": "No new census object_ids; SO-SRC-PKG:webui retargeted and materializer paths expanded under existing OPS packages."
+    },
+    {
+      "id": "ADV-002",
+      "severity": "NOTE",
+      "topic": "Edge semantics",
+      "detail": "All new archive-seam edges remain CODE_ONLY EVIDENCE_FLOW with authority_effect NONE; no PROMOTION_FLOW or AUTHORIZES edges added."
+    },
+    {
+      "id": "ADV-003",
+      "severity": "NOTE",
+      "topic": "Trading surfaces",
+      "detail": "No changes under src/trading, src/execution, src/risk, or archive verify/bind runtime modules."
+    },
+    {
+      "id": "ADV-004",
+      "severity": "NOTE",
+      "topic": "GLOBAL_NON_INTERFERENCE",
+      "detail": "Improved census coverage does not prove system-wide non-interference; GHV manifest flags remain false by design."
+    }
+  ],
+  "counter_evidence_sought": [
+    "AUTHORIZED trading edges from archive smoke host",
+    "AUTHORIZES typed edges in new census rows",
+    "Validator EXPECTED_OBJECTS or primary_class count drift"
+  ],
+  "counter_evidence_found": false,
+  "provenance_binding": {
+    "source_baseline_head_semantics": "CENSUS_PROVENANCE_PIN_RATIFIED_AT_COMMIT_SHA",
+    "ghv_strip_field": "source_baseline_head",
+    "rebind_pattern": "SAME_COMMIT_AMEND_AFTER_CENSUS_EDIT",
+    "circular_sha_dependency": false
+  },
+  "regression_notes": [
+    {
+      "test_id": "tests/ops/test_dynamic_scope_archive_sibling_exporter_v1.py::test_path_boundary_only_authorized_sibling",
+      "classification": "PRE_EXISTING_INDEPENDENT",
+      "reproduced_at_pins": ["0578d813db4f2881082077338636e2a634e77869"],
+      "root_cause": "Exporter now writes readmodels/MANIFEST.sha256 via finalize_manifest_for_sibling_target_v1; test expectation predates manifest finalize.",
+      "cd010_regression": false,
+      "security_defect": false,
+      "remediation_track": "Separate bounded test-contract update (out of CD-010 census scope)"
+    }
+  ],
+  "graph_direction_review": {
+    "webui_in_reverse_traversal": "Expected: archive_verified_readmodel_to_smoke_host is webui→smoke_host upstream.",
+    "materializer_to_octet": "EVIDENCE artifact handoff (projection files consumed by orchestrator batch); call graph is octet→materializer but evidence flow matches exporter→materializer pattern.",
+    "identity_conservation": "Producer/reader/pin/root mapped to SO-SRC-PKG:webui + smoke_host package paths; not separate object_ids by design (301 conservation)."
+  }
+}
