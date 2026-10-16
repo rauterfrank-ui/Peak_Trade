@@ -23,7 +23,7 @@
     "CURRENT_UNIVERSE_LANDSCAPE_IS_AUTHORITY": false,
     "CONFLICT_LOSING_AUTHORITY": "Master Runbook, code, contracts, proven evidence"
   },
-  "evidence_baseline_sha": "2a348bb2d9f0fa4e25d0ec7dffab1513072d960f",
+  "evidence_baseline_sha": "e5d9296fb269208b06980518d410b4f2b616bf5b",
   "evidence_baseline_tree_sha": "6422bfde79fd5aa45d2939a821980abf9aa4e3df",
   "cartography_refresh_note": "Navigation-only realignment at origin/main 6422bfde (GGE non-universe subsystem, Full-Core GHV carrier, PRE_EXTERNAL pin fix); AUTHORITY=NONE",
   "universe_map_consolidation_v1": {
@@ -851,7 +851,7 @@
         "SO-OPS-PKG:productive_reconciliation_runtime_binding_v1"
       ],
       "cross_universe_handoffs": [
-        "reconciliation_runtime_binding→runtime_binding_cap24"
+        "reconciliation_runtime_binding\u2192runtime_binding_cap24"
       ],
       "handoff_contracts": [
         "src/ops/single_selected_future_runtime_binding_v1/binding_gate_v1.py",
@@ -903,7 +903,7 @@
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_reconciliation_admission_v1.py"
       ],
       "cross_universe_handoffs": [
-        "runtime_binding_cap24→mv2_double_play"
+        "runtime_binding_cap24\u2192mv2_double_play"
       ],
       "handoff_contracts": [
         "docs/ops/specs/MASTER_V2_PRODUCTIVE_RECONCILIATION_SINGLE_CHECK_AND_ENTRY_CONTRACT_V1.md",
