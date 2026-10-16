@@ -1,32 +1,29 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "f5f76a4d4480089110f47078a56eb53dcd59ac2c",
+  "base_sha": "be8861538a8f6bc64df1679644a79d358072a636",
   "head_sha": "PENDING_PR_HEAD",
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/provenance/changes.yaml",
-    "src/ops/ghosv_bounded_context_v1/execution_bounded_offline_observer_v1.py",
-    "src/ops/ghosv_bounded_context_v1/execution_lifecycle_adjudication_v1.py",
-    "tests/ops/test_ghosv_execution_bounded_offline_observer_v1.py",
-    "tests/ops/test_ghosv_execution_lifecycle_adjudication_v1.py"
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "tests/ops/_ghv_closure_v3_restart_eval_subprocess_v1.py",
+    "tests/ops/test_ghv_final_execution_recovery_evidence_closure_v3.py",
+    "tests/ops/test_ghv_full_autonomous_offline_e2e_closure_v2.py"
   ],
-  "changed_paths_sha256": "b44c5cf396a0a3a3f1c9aa24903c06e88185d2a970093f8111b1939b1305db17",
+  "changed_paths_sha256": "8d3b0da0cd42cc49a5da7c5589c74fe9c60e71ad4de6c25afbbfb7620ac6b328",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "docs/system_atlas/entities/catalog.yaml",
-    "docs/system_atlas/provenance/changes.yaml",
-    "src/ops/ghosv_bounded_context_v1/execution_bounded_offline_observer_v1.py",
-    "src/ops/ghosv_bounded_context_v1/execution_lifecycle_adjudication_v1.py",
-    "tests/ops/test_ghosv_execution_bounded_offline_observer_v1.py",
-    "tests/ops/test_ghosv_execution_lifecycle_adjudication_v1.py"
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
+    "tests/ops/_ghv_closure_v3_restart_eval_subprocess_v1.py",
+    "tests/ops/test_ghv_final_execution_recovery_evidence_closure_v3.py",
+    "tests/ops/test_ghv_full_autonomous_offline_e2e_closure_v2.py"
   ],
   "evidence_refs": [
-    "tests/ops/test_ghosv_execution_lifecycle_adjudication_v1.py",
-    "tests/ops/test_ghosv_execution_bounded_offline_observer_v1.py"
+    "tests/ops/test_ghv_full_autonomous_offline_e2e_closure_v2.py",
+    "tests/ops/test_ghv_final_execution_recovery_evidence_closure_v3.py"
   ],
-  "reason": "GHOSV Execution lifecycle adjudication correction; read-only observer only; diff-bound NO_LAW_IMPACT; AUTHORITY=NONE.",
+  "reason": "Offline E2E execution/recovery closure V2/V3 tests only; diff-bound NO_LAW_IMPACT; AUTHORITY=NONE.",
   "verdict": "NO_LAW_IMPACT",
   "selector_used_as_law_impact_authority": false
 }
