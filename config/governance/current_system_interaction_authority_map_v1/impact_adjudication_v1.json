@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "b6ffca1d3b39b3dd8814c7c795a8aa6e04bc177a",
-  "head_sha": "5d1219433af668bd5a21341039b5d06c925756d1",
+  "head_sha": "bfce18de3a2c4a968d70168427358b654c280eb8",
   "changed_paths": [
     ".github/workflows/ci.yml",
     "config/ci/duplicate_test_names_allowlist.json",
@@ -11,6 +11,7 @@
     "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
     "docs/ops/CANONICAL_RUNTIME_OPERATOR_ENTRYPOINT_O8_V1.md",
     "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+    "docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json",
     "docs/ops/registry/DOCS_TRUTH_MAP.md",
     "docs/ops/specs/PILOT_GO_NO_GO_OPERATIONAL_SLICE.md",
     "evidence/ops/wp_r2b_r4_presentation_retirement_v1/20261016T041630Z/ambiguity_report.v1.json",
@@ -292,7 +293,7 @@
     "tests/webui/test_workflow_dashboard_runtime_v1.py",
     "tests/webui/test_workflow_script_dto_contract_v0.py"
   ],
-  "changed_paths_sha256": "560ec2f3ecad1703bccfd9b6a57a067670d8fcabbf9e62af5398664a6a592abc",
+  "changed_paths_sha256": "81456e4697ce14e02e87ad0437cfd9a81721bf99a3065d324e28c407c56a39ad",
   "covered_candidate_paths": [
     "config/ops/canonical_runtime_operations_activation_contract_v1.json",
     "src/live/web/app.py",
