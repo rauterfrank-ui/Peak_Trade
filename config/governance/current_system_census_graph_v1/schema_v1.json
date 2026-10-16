@@ -41,8 +41,8 @@
     },
     "semantic_edges": {
       "type": "array",
-      "minItems": 84,
-      "maxItems": 84,
+      "minItems": 98,
+      "maxItems": 98,
       "items": { "$ref": "#/$defs/semantic_edge" }
     },
     "census_discrepancies": {

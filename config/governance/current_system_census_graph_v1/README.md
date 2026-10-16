@@ -7,7 +7,7 @@
 It materializes:
 
 - **301** census objects (package / infrastructure-surface granularity)
-- **84** semantic system edges (not a Python import graph)
+- **98** semantic system edges (not a Python import graph; includes CD-010 archive-seam CODE_ONLY edges)
 - Topology domains, WebSocket closure, intelligence topology, productive hot path, and authority-map reconciliation **as census evidence**
 
 ## What it is not
@@ -54,11 +54,12 @@ See `census_discrepancies` in `source_v1.json` for preserved epistemic mismatche
 ## Future audit / Cursor workflow
 
 1. Read `source_v1.json`.
-2. Compare `git rev-parse HEAD` to `source_baseline_head`.
-3. `git diff --name-only <source_baseline_head>..HEAD` against `objects[].paths` and `evidence_refs`.
-4. Re-prove only impacted objects/edges.
-5. **Never** treat unchanged graph records as runtime permission to trade, post, or activate capabilities.
-6. Update this graph only through separate, evidence-backed governance work (not silent drift).
+2. Compare `git rev-parse HEAD` to `source_baseline_head` (census **provenance pin**: the git commit at which this `source_v1.json` body was last ratified; GHV strips this field when diffing census material across commits).
+3. After census **material** edits, use a **two-commit rebind**: (a) commit census changes with `source_baseline_head` still pointing at the prior ratified ancestor (e.g. `origin/main`); (b) follow-up commit that updates only `source_baseline_head` to the SHA of commit (a). GHV compares stripped census bodies across ancestor pins; a single `--amend` loop does not work because amended SHAs are not ancestors. Pin-only rebinding does not require trading-surface changes.
+4. `git diff --name-only <source_baseline_head>..HEAD` against `objects[].paths` and `evidence_refs`.
+5. Re-prove only impacted objects/edges.
+6. **Never** treat unchanged graph records as runtime permission to trade, post, or activate capabilities.
+7. Update this graph only through separate, evidence-backed governance work (not silent drift).
 
 ## Validation
 
