@@ -10,8 +10,8 @@ docs_token: DOCS_TOKEN_PILOT_GO_NO_GO_OPERATIONAL_SLICE
 This document maps each checklist item in `PILOT_GO_NO_GO_CHECKLIST` to the concrete evidence sources an operator can use to answer the question. It makes the go/no-go material operator-usable without adding execution authority.
 
 ## Relationship
-- Companion to `docs/ops/specs/PILOT_GO_NO_GO_CHECKLIST.md`
-- References Ops Cockpit payload structure from `src/ops/presentation_retirement_fail_closed_v1.py` (presentation HTTP retired; fail-closed stub aliased as `build_ops_cockpit_payload` in pilot scripts)
+- Companion to `docs&#47;ops&#47;specs&#47;PILOT_GO_NO_GO_CHECKLIST.md`
+- References Ops Cockpit payload structure from `src&#47;ops&#47;presentation_retirement_fail_closed_v1.py` (presentation HTTP retired; fail-closed stub aliased as `build_ops_cockpit_payload` in pilot scripts)
 - No direct activation authority; read-only operator guidance
 - Optional docs-only pointer metadata for externally retained go/no-go **eval** captures (bounded pilot L2; no payloads in git): [`MASTER_V2_BOUNDED_PILOT_L2_GO_NO_GO_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L2_GO_NO_GO_EVIDENCE_POINTER_CONTRACT_V0.md)
 
@@ -24,7 +24,7 @@ This document maps each checklist item in `PILOT_GO_NO_GO_CHECKLIST` to the conc
 | 3 | Policy Posture | current policy action visible? | Ops Cockpit | `policy_state.action` (NO_TRADE / TRADE_READY), `policy_state.summary` |
 | 4 | Operator Visibility | blocked vs allowed quickly identifiable? | Ops Cockpit | `policy_state.blocked`, `incident_state.requires_operator_attention`, Executive Summary |
 | 5 | Pilot Caps | bounded caps defined and documented? | Ops Cockpit + Config | `exposure_state.caps_configured` (from `live_risk` in config.toml) |
-| 6 | Treasury Separation | trading vs treasury explicit? | Ops Cockpit | `guard_state.treasury_separation` = enforced; `src/ops/treasury_separation_gate.py` |
+| 6 | Treasury Separation | trading vs treasury explicit? | Ops Cockpit | `guard_state.treasury_separation` = enforced; `src&#47;ops&#47;treasury_separation_gate.py` |
 | 7 | Fee/Slippage Realism | conservative assumptions documented? | Assumptions Doc + Edge Case Matrix | `FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS`, `PILOT_EXECUTION_EDGE_CASE_MATRIX` Fee/slippage row |
 | 8 | Partial Fill Handling | bounded and understood? | Specs + Engine | `PILOT_EXECUTION_EDGE_CASE_MATRIX`, `ReconciliationEngine` (position/cash recon) |
 | 9 | Stale State Handling | stale balance/order/position handled safely? | Ops Cockpit | `stale_state` (balance, position, order, exposure); `exposure_state.stale` |
@@ -36,14 +36,14 @@ This document maps each checklist item in `PILOT_GO_NO_GO_CHECKLIST` to the conc
 | 15 | Ambiguity Rule | ambiguity → NO_TRADE / safe stop? | Ops Cockpit + Specs | `policy_state`, `incident_state`; `RECONCILIATION_FLOW_SPEC` |
 
 ## Ops Cockpit Entry Point
-- Payload: `build_presentation_retired_cockpit_payload_v1()` in `src/ops/presentation_retirement_fail_closed_v1.py` — pilot scripts call it via `build_ops_cockpit_payload()` alias (`scripts/ops/pilot_go_no_go_eval_v1.py`, bounded-pilot preflight)
+- Payload: `build_presentation_retired_cockpit_payload_v1()` in `src&#47;ops&#47;presentation_retirement_fail_closed_v1.py` — pilot scripts call it via `build_ops_cockpit_payload()` alias (`scripts&#47;ops&#47;pilot_go_no_go_eval_v1.py`, bounded-pilot preflight)
 - HTML: **retired** — no presentation HTTP host; operators use JSON preflight scripts only
 
 ## Known Gaps (Follow-up)
 - ~~Fee/slippage: dedicated conservative-assumptions document~~ (done: `FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS`)
 - ~~Restart mid-session: dedicated runbook~~ (done: `RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION`)
 - ~~Human supervision: explicit cockpit surface (optional)~~ (done: `human_supervision_state` in Ops Cockpit)
-- ~~Go/No-Go script: automated checklist evaluation against cockpit/config (future)~~ (done: `scripts/ops/pilot_go_no_go_eval_v1.py`)
+- ~~Go/No-Go script: automated checklist evaluation against cockpit/config (future)~~ (done: `scripts&#47;ops&#47;pilot_go_no_go_eval_v1.py`)
 
 ## Explicit Non-Goals
 - no direct activation authority
