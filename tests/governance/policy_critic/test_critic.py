@@ -146,6 +146,24 @@ class TestPolicyCriticOrchestration:
         assert result.max_severity == Severity.WARN
         assert result.recommended_action == RecommendedAction.REVIEW_REQUIRED
 
+    def test_risk_limit_deletion_only_does_not_block(self):
+        """Removed limit fields (e.g. presentation retirement) must not trigger raises."""
+        critic = PolicyCritic()
+        input_data = PolicyCriticInput(
+            diff="""
+--- a/src/webui/app.py
++++ b/src/webui/app.py
+-max_leverage=1.0,
+            """,
+            changed_files=["src/webui/app.py"],
+        )
+
+        result = critic.review(input_data)
+
+        assert not any(
+            v.rule_id == "RISK_LIMIT_RAISE_WITHOUT_JUSTIFICATION" for v in result.violations
+        )
+
     def test_large_critical_changes_without_test_plan_warns(self):
         """Large critical changes without test plan should warn."""
         critic = PolicyCritic()

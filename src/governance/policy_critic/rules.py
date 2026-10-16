@@ -271,41 +271,39 @@ class RiskLimitRaiseRule(PolicyRule):
         # Check if justification is provided
         has_justification = bool(context_dict.get("justification"))
 
-        # Look for limit increases in diff
-        for pattern in self.LIMIT_PATTERNS:
-            matches = list(re.finditer(pattern, diff, re.IGNORECASE))
-            if matches:
-                for match in matches:
-                    file_path = NoSecretsRule._extract_file_from_diff_position(diff, match.start())
+        # Only added lines (+) can raise limits; deletions/context must not trigger.
+        for file_path, content in iter_diff_added_lines(diff):
+            if file_path and any(
+                file_path.startswith(excluded)
+                for excluded in ["docs/", "tmp/", "tests/fixtures/", "tests/"]
+            ):
+                continue
 
-                    # Skip excluded paths: docs/, tmp/, tests/ (tests instantiate configs, not production limits)
-                    if file_path and any(
-                        file_path.startswith(excluded)
-                        for excluded in ["docs/", "tmp/", "tests/fixtures/", "tests/"]
-                    ):
-                        continue
+            for pattern in self.LIMIT_PATTERNS:
+                match = re.search(pattern, content, re.IGNORECASE)
+                if not match:
+                    continue
 
-                    severity = Severity.WARN if has_justification else Severity.BLOCK
-                    message = f"Risk limit change detected in {file_path or 'config'}."
+                severity = Severity.WARN if has_justification else Severity.BLOCK
+                message = f"Risk limit change detected in {file_path or 'config'}."
+                if not has_justification:
+                    message += " No justification provided."
 
-                    if not has_justification:
-                        message += " No justification provided."
-
-                    violations.append(
-                        Violation(
-                            rule_id=self.rule_id,
-                            severity=severity,
-                            message=message,
-                            evidence=[
-                                Evidence(
-                                    file_path=file_path or "unknown",
-                                    snippet=match.group(0),
-                                    pattern=pattern,
-                                )
-                            ],
-                            suggested_fix="Provide justification via --context-json with 'justification' field explaining why limits are changed.",
-                        )
+                violations.append(
+                    Violation(
+                        rule_id=self.rule_id,
+                        severity=severity,
+                        message=message,
+                        evidence=[
+                            Evidence(
+                                file_path=file_path or "unknown",
+                                snippet=match.group(0),
+                                pattern=pattern,
+                            )
+                        ],
+                        suggested_fix="Provide justification via --context-json with 'justification' field explaining why limits are changed.",
                     )
+                )
 
         return violations
 
