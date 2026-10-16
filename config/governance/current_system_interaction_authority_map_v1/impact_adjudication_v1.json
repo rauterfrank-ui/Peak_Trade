@@ -1,29 +1,31 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "be8861538a8f6bc64df1679644a79d358072a636",
+  "base_sha": "f91d2cf2fed95af09376c464489f0ca19734e7f7",
   "head_sha": "PENDING_PR_HEAD",
   "changed_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "tests/ops/_ghv_closure_v3_restart_eval_subprocess_v1.py",
-    "tests/ops/test_ghv_final_execution_recovery_evidence_closure_v3.py",
-    "tests/ops/test_ghv_full_autonomous_offline_e2e_closure_v2.py"
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/system_atlas/entities/catalog.yaml",
+    "src/ops/public_md_observation_get_adapter_v1/contract_v1.py"
   ],
-  "changed_paths_sha256": "8d3b0da0cd42cc49a5da7c5589c74fe9c60e71ad4de6c25afbbfb7620ac6b328",
+  "changed_paths_sha256": "67098e411e308a86ed3289bb8b9b1a82e211b54af4607ee6477bfe8ca4412575",
   "covered_candidate_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "tests/ops/_ghv_closure_v3_restart_eval_subprocess_v1.py",
-    "tests/ops/test_ghv_final_execution_recovery_evidence_closure_v3.py",
-    "tests/ops/test_ghv_full_autonomous_offline_e2e_closure_v2.py"
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/system_atlas/entities/catalog.yaml"
   ],
   "evidence_refs": [
-    "tests/ops/test_ghv_full_autonomous_offline_e2e_closure_v2.py",
-    "tests/ops/test_ghv_final_execution_recovery_evidence_closure_v3.py"
+    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+    "tests/ops/test_current_system_interaction_authority_map_v1.py"
   ],
-  "reason": "Offline E2E execution/recovery closure V2/V3 tests only; diff-bound NO_MAP_IMPACT; AUTHORITY=NONE.",
-  "verdict": "NO_MAP_IMPACT",
+  "reason": "OTUI-exclusive unused public-MD observation GET seam removed; governance navigation and impact candidates synchronized; structured map source baseline rebound only (AUTHORITY=NONE); no trading or execution authority change.",
+  "verdict": "MAP_UPDATE_REQUIRED",
   "selector_used_as_map_impact_authority": false
 }
