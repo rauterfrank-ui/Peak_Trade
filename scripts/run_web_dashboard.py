@@ -1,25 +1,26 @@
-# scripts/run_web_dashboard.py
+#!/usr/bin/env python3
+"""Retired presentation dashboard entry (fail-closed)."""
+
 from __future__ import annotations
 
+import json
 import sys
-from pathlib import Path
 
-import uvicorn
 
-# src/ zum Pythonpfad hinzufügen, damit "webui" gefunden wird
-ROOT = Path(__file__).resolve().parents[1]
-SRC_DIR = ROOT / "src"
-if str(SRC_DIR) not in sys.path:
-    sys.path.insert(0, str(SRC_DIR))
+def main() -> int:
+    sys.stdout.write(
+        json.dumps(
+            {
+                "ok": False,
+                "code": "PRESENTATION_WEB_DASHBOARD_RETIRED",
+                "detail": "Use OKX Safari observation; local WebUI retired.",
+            },
+            sort_keys=True,
+        )
+        + "\n"
+    )
+    return 2
 
 
 if __name__ == "__main__":
-    # Import-String für reload-Modus verwenden
-    uvicorn.run(
-        "webui.app:create_app",
-        factory=True,
-        host="127.0.0.1",
-        port=8000,
-        reload=True,
-        reload_dirs=[str(SRC_DIR), str(ROOT / "templates")],
-    )
+    raise SystemExit(main())

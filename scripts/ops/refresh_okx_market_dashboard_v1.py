@@ -28,15 +28,15 @@ from src.ops.okx_selected_instrument_ohlcv_readmodel_v1 import (
     materialize_selected_okx_ohlcv_readmodel_v1,
 )
 from src.ops.presentation_archive_root_v1.resolver_v1 import resolve_workflow_dashboard_archive_root
-from src.webui.workflow_dashboard_readmodel_v1.futures_producer_packet_real_metadata_source_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.futures_producer_packet_real_metadata_source_v1 import (
     FuturesProducerPacketRealMetadataSourceError,
     bundle_to_upstream_input,
     load_futures_producer_packet_governed,
 )
-from src.webui.workflow_dashboard_readmodel_v1.futures_universe_upstream_adapter_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.futures_universe_upstream_adapter_v1 import (
     map_futures_packets_to_universe_selection_readmodel,
 )
-from src.webui.workflow_dashboard_readmodel_v1.universe_selection_producer_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.universe_selection_producer_v1 import (
     write_universe_selection_readmodel,
 )
 

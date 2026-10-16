@@ -1,15 +1,12 @@
-"""Offline/local integration evidence for O7 productive wiring (no network/auth)."""
+"""Offline integration evidence for O7 PSO→O4→O5 wiring (no HTTP / no O2 supervisor)."""
 
 from __future__ import annotations
 
 import json
-import time
-import urllib.request
 from pathlib import Path
 
-from src.ops.canonical_local_launcher_and_process_supervision_v1.lifecycle_v1 import (
-    CanonicalLocalLauncherV1,
-    LauncherPathsV1,
+from src.ops.canonical_derived_public_md_read_model_v1.durable_read_model_store_v1 import (
+    load_durable_read_model_v1,
 )
 from src.ops.canonical_public_md_and_ohlcv_transport_reconciliation_v1.pso_to_o4_o5_live_bridge_v1 import (
     PsoToO4O5LiveBridgeV1,
@@ -42,11 +39,9 @@ def run_offline_integration_evidence_v1(*, repository_root: Path, evidence_root:
     evidence_root.mkdir(parents=True, exist_ok=True)
     work = evidence_root / "work"
     state = work / "state"
-    logs = work / "logs"
-    ev = work / "evidence"
     cfg = work / "config.json"
     cfg.parent.mkdir(parents=True, exist_ok=True)
-    cfg.write_text(json.dumps({"mode": "dashboard-only", "offline_wiring": True}) + "\n")
+    cfg.write_text(json.dumps({"mode": "offline-evidence", "offline_wiring": True}) + "\n")
 
     bridge = PsoToO4O5LiveBridgeV1(
         session_id="o7-offline-wiring",
@@ -56,40 +51,7 @@ def run_offline_integration_evidence_v1(*, repository_root: Path, evidence_root:
     )
     t0 = 1_700_300_000.0
     ingest = bridge.ingest_normalized_event(_md(210.0, t0))
-    launcher = CanonicalLocalLauncherV1(
-        LauncherPathsV1(
-            repository_root=repository_root,
-            state_root=state,
-            log_root=logs,
-            evidence_root=ev,
-        )
-    )
-    started = launcher.start(
-        mode="dashboard-only",
-        session_id="o7-offline-http",
-        config_path=cfg,
-        repository_sha="offline" * 5,
-    )
-    status = launcher.status("o7-offline-http")
-    base = status["http_base_url"]
-    with urllib.request.urlopen(f"{base}/market", timeout=2.0) as resp:
-        market = json.loads(resp.read().decode("utf-8"))
-    with urllib.request.urlopen(f"{base}/api/market/landscape/ohlcv", timeout=2.0) as resp:
-        ohlcv = json.loads(resp.read().decode("utf-8"))
-    pid_before = int(started["session"]["process_identity"]["pid"])
-    restarted = launcher.restart("o7-offline-http")
-    status2 = launcher.status("o7-offline-http")
-    deadline = time.time() + 5.0
-    market2 = None
-    while time.time() < deadline:
-        try:
-            with urllib.request.urlopen(f"{status2['http_base_url']}/market", timeout=1.0) as resp:
-                market2 = json.loads(resp.read().decode("utf-8"))
-            break
-        except Exception:
-            time.sleep(0.1)
-    stop = launcher.stop("o7-offline-http", graceful_timeout_seconds=3.0)
-
+    durable = load_durable_read_model_v1(state)
     payload = {
         "schema_id": "ops.o7_productive_wiring_offline_integration_evidence_v1",
         "ok": True,
@@ -105,24 +67,31 @@ def run_offline_integration_evidence_v1(*, repository_root: Path, evidence_root:
         "productive_wiring_implemented": dict(PRODUCTIVE_WIRING_IMPLEMENTED),
         "bridge_ingest_accepted": bool(ingest.get("accepted")),
         "timestamp_chain": ingest.get("timestamp_chain"),
-        "http_host": status.get("http_host"),
-        "http_port": status.get("http_port"),
-        "market_route_ok": market.get("trading_authority") is False,
-        "ohlcv_route_ok": ohlcv.get("trading_authority") is False,
-        "restart_ok": bool(restarted.get("ok")),
-        "restart_pid_changed": int(status2["process_identity"]["pid"]) != pid_before,
-        "durable_reload_bar_count": (market2 or {}).get("read_model", {}).get("bar_count"),
-        "stop_ok": bool(stop.get("ok")),
+        "durable_read_model_present": durable is not None,
+        "presentation_http_host_retired": True,
+        "o2_dashboard_supervisor_retired": True,
+        "http_host": None,
+        "http_port": None,
+        "market_route_ok": None,
+        "ohlcv_route_ok": None,
+        "restart_ok": None,
+        "restart_pid_changed": None,
+        "durable_reload_bar_count": (durable or {}).get("bar_count")
+        if isinstance(durable, dict)
+        else None,
+        "stop_ok": None,
         "residual_gaps": [
             "LIVE_OHLCV_MATRIX_CONTINUITY",
             "DASHBOARD_HTTP_POLL_CONTINUITY",
             "END_TO_END_NETWORK_LATENCY",
             "NETWORK_FAILURE_RECOVERY_EVIDENCE",
+            "PRESENTATION_HTTP_HOST_RETIRED",
         ],
         "notes": [
-            "Attempt-2 already proves long-running public-MD.",
-            "Separate post-merge Owner-GO network evidence session required to close residual gaps.",
+            "PSO→O4→O5 durable bridge proven offline without presentation HTTP.",
+            "Presentation operator entry retired fail-closed under O8.",
         ],
+        "repository_root_bound": str(repository_root),
     }
     out = evidence_root / "OFFLINE_INTEGRATION_EVIDENCE.json"
     out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")

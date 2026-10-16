@@ -1,0 +1,51 @@
+{
+  "IMPLEMENTATION_SOURCE_SHA": "b6ffca1d3b39b3dd8814c7c795a8aa6e04bc177a",
+  "authority": "NONE",
+  "crosswalk_cli_ok": true,
+  "interpretation": {
+    "CLI_RESULT_OK_IS_NOT_PROOF_ELIGIBILITY": true,
+    "NAVIGATION_ONLY_PASS_IS_NOT_CURRENT_PROOF": true,
+    "SOURCE_VALIDATION_PASS_COMPOSED_FIELD_IS_NOT_SNAPSHOT_BINDING": true,
+    "composed_source_validation_pass_literal_true_is_ambiguous_without_CURRENT_GRAPH_VERIFIED": true
+  },
+  "p05_adjudication": {
+    "CURRENT_GRAPH_VERIFIED": true,
+    "composed_graph_literal_source_validation_pass": true,
+    "coverage_SOURCE_VALIDATION_PASS": true,
+    "eligible_current_proof_requires": [
+      "CURRENT_GRAPH_VERIFIED=true",
+      "SNAPSHOT_BINDING_VERIFIED=true",
+      "SOURCE_VALIDATION_PASS reported true under STRICT_CURRENT",
+      "not NAVIGATION_ONLY"
+    ],
+    "finding": "P05_SOURCE_VALIDATION_PASS_SEMANTICS",
+    "ghv_core_changed": false
+  },
+  "record": {
+    "ACTUAL_SOURCE_SHA": "b6ffca1d3b39b3dd8814c7c795a8aa6e04bc177a",
+    "CURRENT_GRAPH_VERIFIED": true,
+    "DECLARED_CURRENT_SHA": "UNKNOWN",
+    "GHV_SOURCE_SHA": "b6ffca1d3b39b3dd8814c7c795a8aa6e04bc177a",
+    "GLOBAL_CAUSAL_CLOSURE_PROVEN": false,
+    "GLOBAL_NON_INTERFERENCE_PROVEN": false,
+    "PROOF_ELIGIBILITY": false,
+    "PROOF_ELIGIBILITY_REASONS": [
+      "MISSING_PROVENANCE",
+      "DIRTY_SOURCE_UNVERIFIED"
+    ],
+    "RUNTIME_CORRELATION_PROVEN": false,
+    "SNAPSHOT_BINDING_VERIFIED": true,
+    "SNAPSHOT_ID": "cc0d6099a96201fc195f0b18a53ae324",
+    "SOURCE_DIRTY_STATUS": "DIRTY",
+    "SOURCE_PROVENANCE": "SNAPSHOT_BINDING",
+    "SOURCE_REPOSITORY_PATH": "/Users/frnkhrz/Peak_Trade/.worktrees/complete_presentation_infrastructure_retirement_v1",
+    "SOURCE_TREE_IDENTITY": "1a9ba69fbe7aec91",
+    "SOURCE_VALIDATION_MODE": "STRICT_CURRENT",
+    "SOURCE_VALIDATION_PASS_COMPOSED_FIELD": true,
+    "SOURCE_VALIDATION_PASS_REPORTED": true,
+    "TEST_EXECUTION_CLASS": "EXECUTED_LOCAL_WIP",
+    "TEST_EXECUTION_SHA": "b6ffca1d3b39b3dd8814c7c795a8aa6e04bc177a",
+    "schema_version": "forensic_source_provenance.v1"
+  },
+  "schema_version": "forensic_source_provenance_report.v1"
+}

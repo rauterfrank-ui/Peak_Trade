@@ -118,12 +118,6 @@
       ],
       "reason": "legacy duplicate test names; tracked for future cleanup"
     },
-    "tests/test_r_and_d_api.py": {
-      "names": [
-        "test_status_no_trades"
-      ],
-      "reason": "legacy duplicate test names; tracked for future cleanup"
-    },
     "tests/test_regime_detection.py": {
       "names": [
         "test_detect_regimes_returns_series",
@@ -190,12 +184,6 @@
       "names": [
         "test_custom_values",
         "test_default_values"
-      ],
-      "reason": "legacy duplicate test names; tracked for future cleanup"
-    },
-    "tests/test_webui_live_track.py": {
-      "names": [
-        "test_client"
       ],
       "reason": "legacy duplicate test names; tracked for future cleanup"
     }

@@ -33,14 +33,12 @@ from src.trading.master_v2.double_play_state import TransitionDecision
 from src.trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     StateSwitchEvidenceV1,
 )
-from src.webui.market_dashboard_landscape_producer_binding_v2 import bind_market_universe_slots
-from src.webui.market_dashboard_landscape_v2.availability import Availability
 from src.ops.presentation_archive_materializers_v1.bull_bear_regime_presentation_projection_materializer_v1 import (
     SOURCE_REGIME_RELATIVE_PATH,
     materialize_bull_bear_regime_presentation_projection_v1,
     try_load_regime_bull_bear_switch_source_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.bull_bear_regime_presentation_projection_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.bull_bear_regime_presentation_projection_v1 import (
     STORAGE_RELATIVE_PATH,
     try_load_bull_bear_regime_presentation_projection_v1,
 )
@@ -163,15 +161,6 @@ def test_export_materialize_loader_binder_chain(tmp_path: Path) -> None:
     projection = try_load_bull_bear_regime_presentation_projection_v1(archive_root)
     assert projection.loaded is True
     assert projection.binder_fields is not None
-
-    from datetime import datetime, timezone
-
-    slots = bind_market_universe_slots(
-        generated_at=datetime(2026, 9, 21, 12, 0, 0, tzinfo=timezone.utc),
-        archive_root=archive_root,
-    )
-    regime_slot = slots["regime_bull_bear_switch"]
-    assert regime_slot.availability in (Availability.AVAILABLE, Availability.STALE)
 
 
 def test_family_export_regime_does_not_break_double_play_hard_stop(tmp_path: Path) -> None:

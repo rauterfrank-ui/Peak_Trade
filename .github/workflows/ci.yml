@@ -544,28 +544,15 @@ jobs:
           for pid in "${PIDS_OPS[@]}"; do wait "$pid" || SHARD_FAIL=1; done
           exit "$SHARD_FAIL"
 
-      - name: WebUI bounded pytest (market/observability surface)
+      - name: Presentation retirement bounded pytest (legacy webui lane)
         if: ${{ needs.ready-exact-head-reuse.outputs.reuse != 'true' && github.event_name == 'pull_request' && needs.changes.outputs.webui_surface_changed == 'true' && needs.changes.outputs.run_matrix != 'true' }}
-        env:
-          PEAK_TRADE_LAST_PAPER_RUN_PANEL_ENABLED: ""
-          PEAK_TRADE_LAST_PAPER_RUN_BUNDLE_ROOT: ""
-          PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED: ""
-          PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT: ""
         run: |
           set -euo pipefail
           pytest \
-            tests/webui/test_workflow_dashboard_readmodel_v1.py \
-            tests/webui/test_observability_workflow_dashboard_structure_contract_v1.py \
-            tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py \
-            tests/webui/test_observability_hub.py \
-            tests/webui/test_last_paper_run_panel_readmodel_v0.py \
-            tests/webui/test_observability_last_paper_run_panel_structure_contract_v0.py \
-            tests/ops/test_last_paper_run_panel_env_schema_boundary_v0.py \
-            tests/webui/test_pkg_landscape_current_consumer_boundary_v1.py \
-            tests/webui/test_market_landscape_dashboard_v2_contracts_v0.py \
-            tests/webui/test_market_landscape_dashboard_v2_architecture_guards_v0.py \
-            tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py \
-            tests/webui/test_market_landscape_dashboard_v2_producer_binding_v0.py \
+            tests/ops/test_ops_cockpit_payload_top_level_contract.py \
+            tests/ops/test_canonical_runtime_operations_activation_v1.py \
+            tests/ops/test_pilot_go_no_go_eval_v1.py \
+            tests/ops/test_pilot_gonogo_eval_ops_cockpit_payload_field_mapping_crosslink_v1.py \
             -q --tb=short -m "not network and not external_tools"
 
   # ============================================================================

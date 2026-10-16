@@ -24,7 +24,7 @@ from src.ops.safety_authority_archive_sibling_exporter_v1.replay_commit_source_v
 from src.ops.presentation_archive_materializers_v1.safety_authority_presentation_projection_materializer_v1 import (
     materialize_safety_authority_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.safety_authority_presentation_projection_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.safety_authority_presentation_projection_v1 import (
     SOURCE_FIELDS_RELATIVE_PATH,
     try_load_safety_authority_presentation_projection_v1,
 )
@@ -101,37 +101,6 @@ def test_integrated_replay_export_materialize_loader_e2e(tmp_path: Path) -> None
     assert loaded.loaded is True
     assert loaded.kill_switch_state == "ACTIVE"
     assert loaded.veto_active is False
-
-
-def test_dashboard_autobind_after_export(tmp_path: Path) -> None:
-    from src.webui.market_dashboard_landscape_producer_binding_v2 import bind_market_universe_slots
-    from src.webui.market_dashboard_landscape_v2.availability import Availability
-
-    integrated = _run(
-        side_state=SideState.LONG_ARMED,
-        direction_state=EntryExitDirectionState.LONG_ARMED,
-    )
-    assert integrated.replay_execution_safety is not None
-
-    archive = tmp_path / "archive"
-    export_safety_authority_to_archive_sibling_from_replay_commit_v1(
-        archive_root=archive,
-        replay_execution_safety=integrated.replay_execution_safety,
-        decision_evidence=integrated.evidence,
-    )
-    ts_iso = "2026-09-21T12:00:00Z"
-    ts = datetime(2026, 9, 21, 12, 0, 0, tzinfo=timezone.utc)
-    materialize_safety_authority_presentation_projection_v1(
-        archive,
-        generated_at=ts_iso,
-        effective_at=ts_iso,
-        saved_at=ts_iso,
-    )
-    slots = bind_market_universe_slots(archive_root=archive, generated_at=ts)
-    safety = slots["safety_authority"]
-    assert safety.availability in (Availability.AVAILABLE, Availability.STALE)
-    assert safety.kill_switch_state == "ACTIVE"
-    assert safety.veto_active is False
 
 
 def test_veto_active_when_emergency_boundary_active(tmp_path: Path) -> None:

@@ -23,7 +23,7 @@ from src.ops.presentation_archive_materializers_v1.risk_sizing_capital_presentat
     SOURCE_FIELDS_RELATIVE_PATH,
     materialize_risk_sizing_capital_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.risk_sizing_capital_presentation_projection_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.risk_sizing_capital_presentation_projection_v1 import (
     try_load_risk_sizing_capital_presentation_projection_v1,
 )
 from tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1 import _run
@@ -86,40 +86,6 @@ def test_replay_commit_export_and_materialize_e2e(tmp_path: Path) -> None:
     assert mat.written is True
     loaded = try_load_risk_sizing_capital_presentation_projection_v1(archive)
     assert loaded.loaded is True
-
-
-def test_dashboard_autobind_after_export(tmp_path: Path) -> None:
-    from datetime import datetime, timezone
-
-    from src.webui.market_dashboard_landscape_producer_binding_v2 import bind_market_universe_slots
-    from src.webui.market_dashboard_landscape_v2.availability import Availability
-
-    integrated = _run(
-        side_state=SideState.LONG_ARMED,
-        direction_state=EntryExitDirectionState.LONG_ARMED,
-    )
-    if (
-        integrated.intermediate is None
-        or integrated.intermediate.capital_risk_sizing_decision is None
-    ):
-        pytest.skip("replay intermediate sizing unavailable")
-
-    archive = tmp_path / "archive"
-    export_risk_sizing_capital_to_archive_sibling_from_replay_commit_v1(
-        archive_root=archive,
-        replay_intermediate=integrated.intermediate,
-    )
-    ts_iso = "2026-09-21T12:00:00Z"
-    ts = datetime(2026, 9, 21, 12, 0, 0, tzinfo=timezone.utc)
-    mat = materialize_risk_sizing_capital_presentation_projection_v1(
-        archive,
-        generated_at=ts_iso,
-        effective_at=ts_iso,
-    )
-    assert mat.written is True
-    slots = bind_market_universe_slots(archive_root=archive, generated_at=ts)
-    rs_slot = slots["risk_sizing_capital"]
-    assert rs_slot.availability in (Availability.AVAILABLE, Availability.STALE)
 
 
 def test_blocked_outcome_maps_sizing_status_block_without_post_sizing() -> None:

@@ -220,7 +220,9 @@ def main() -> int:
     repo_root = args.repo_root or (_REPO_ROOT if _REPO_ROOT.exists() else Path.cwd())
 
     try:
-        from src.webui.ops_cockpit import build_ops_cockpit_payload
+        from src.ops.presentation_retirement_fail_closed_v1 import (
+            build_presentation_retired_cockpit_payload_v1 as build_ops_cockpit_payload,
+        )
 
         payload = build_ops_cockpit_payload(repo_root=repo_root)
     except Exception as e:

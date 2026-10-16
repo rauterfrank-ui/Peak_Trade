@@ -13,7 +13,9 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from src.webui.ops_cockpit import build_ops_cockpit_payload
+from src.ops.presentation_retirement_fail_closed_v1 import (
+    build_presentation_retired_cockpit_payload_v1 as build_ops_cockpit_payload,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 OPS_COCKPIT_OPERATOR_SUMMARY_SPEC = (
@@ -124,6 +126,11 @@ def _minimal_truth_docs(repo: Path) -> None:
 def test_build_ops_cockpit_payload_top_level_keys_contract(tmp_path: Path) -> None:
     _minimal_truth_docs(tmp_path)
     payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    if payload.get("presentation_ops_cockpit_retired") is True:
+        assert payload["policy_state"]["action"] == "NO_TRADE"
+        assert payload["policy_state"]["blocked"] is True
+        assert payload["runtime_state"].get("presentation_http_retired") is True
+        return
     missing = EXPECTED_OPS_COCKPIT_PAYLOAD_TOP_LEVEL_KEYS - payload.keys()
     assert not missing, f"Missing top-level keys: {sorted(missing)}"
 

@@ -10,7 +10,6 @@ MANIFEST_FILENAME = "MANIFEST.sha256"
 
 # Reuse O1–O6 canonical owners — never invent parallel authorities.
 O1_ENVIRONMENT_PACKAGE = "canonical_runtime_environment_contract_v1"
-O2_LAUNCHER_PACKAGE = "canonical_local_launcher_and_process_supervision_v1"
 O3_TOKEN_PACKAGE = "secure_confirm_token_family_and_hidden_input_handoff_v1"
 O4_TRANSPORT_PACKAGE = "canonical_public_md_and_ohlcv_transport_reconciliation_v1"
 O5_READ_MODEL_PACKAGE = "canonical_derived_public_md_read_model_v1"
@@ -18,7 +17,6 @@ O6_HEALTH_PACKAGE = "runtime_health_recovery_and_failure_injection_closure_v1"
 
 PRODUCTION_SURFACES_REUSED = (
     O1_ENVIRONMENT_PACKAGE,
-    O2_LAUNCHER_PACKAGE,
     O3_TOKEN_PACKAGE,
     O4_TRANSPORT_PACKAGE,
     O5_READ_MODEL_PACKAGE,
@@ -46,11 +44,12 @@ LADDER_DEFERRED_ITEMS = (
 
 # Productive wiring landed offline; network-bound proof remains deferred.
 PRODUCTIVE_WIRING_IMPLEMENTED = {
-    "O2_SUPERVISED_FASTAPI_HTTP_HOST": True,
+    "O2_SUPERVISED_FASTAPI_HTTP_HOST": False,
+    "O2_DASHBOARD_SUPERVISOR_RETIRED": True,
     "PSO_TO_O4_LIVE_BRIDGE": True,
     "O4_TO_O5_DURABLE_READ_MODEL": True,
     "JOINED_TIMESTAMP_PROVENANCE": True,
-    "DASHBOARD_RESTART_WITHOUT_PSO_RESTART": True,
+    "PRESENTATION_HTTP_HOST_RETIRED": True,
     "NETWORK_BOUND_PROOF_STILL_REQUIRED": True,
 }
 

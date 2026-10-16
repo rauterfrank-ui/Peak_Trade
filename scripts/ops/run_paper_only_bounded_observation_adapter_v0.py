@@ -41,7 +41,7 @@ from scripts.ops.primary_evidence_retention_v0 import (
     verify_manifest_sha256,
     write_manifest_sha256 as _write_manifest_sha256,
 )
-from src.webui.workflow_dashboard_readmodel_v1.universe_selection_producer_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.universe_selection_producer_v1 import (
     emit_universe_selection_closeout_machine_lines,
     maybe_write_missing_truth_after_bounded_closeout,
 )

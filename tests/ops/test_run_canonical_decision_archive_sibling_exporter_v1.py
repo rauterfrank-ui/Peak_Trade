@@ -344,7 +344,7 @@ def test_exported_sibling_is_materializer_source_shape(tmp_path: Path) -> None:
         materialize_canonical_decision_presentation_projection_v1,
         try_load_canonical_decision_evidence_source_v1,
     )
-    from src.webui.workflow_dashboard_readmodel_v1.canonical_decision_presentation_projection_v1 import (
+    from src.ops.workflow_archive_readmodel_projections_v1.canonical_decision_presentation_projection_v1 import (
         STORAGE_RELATIVE_PATH,
         try_load_canonical_decision_presentation_projection_v1,
     )

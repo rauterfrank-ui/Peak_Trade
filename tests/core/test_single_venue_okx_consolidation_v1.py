@@ -83,8 +83,6 @@ def test_removed_kraken_client_modules_are_absent() -> None:
         __import__("src.data.kraken_cache_loader")
     with pytest.raises(ModuleNotFoundError):
         __import__("src.ops.kraken_futures_demo_credential_presence_contract_v0")
-    with pytest.raises(ModuleNotFoundError):
-        __import__("src.webui.workflow_dashboard_readmodel_v1.kraken_metadata_coverage_reader_v1")
     assert not (
         REPO_ROOT / "scripts/ops/check_kraken_futures_demo_credentials_presence_readonly_v0.py"
     ).is_file()

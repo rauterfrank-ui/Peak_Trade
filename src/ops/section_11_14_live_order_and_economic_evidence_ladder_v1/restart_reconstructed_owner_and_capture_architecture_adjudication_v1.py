@@ -515,7 +515,7 @@ def bind_capture_seam_graph_census_v1() -> dict[str, Any]:
         ),
         _seam(
             seam_id="S16_HOST_PROCESS_SUPERVISION",
-            location="src/ops/canonical_local_launcher_and_process_supervision_v1/",
+            location="src/ops/runtime_health_recovery_and_failure_injection_closure_v1/o6_offline_supervisor_fixture_v1/",
             upstream_producers=("single_writer_v1",),
             available_fields=(),
             missing_fields=tuple(required),

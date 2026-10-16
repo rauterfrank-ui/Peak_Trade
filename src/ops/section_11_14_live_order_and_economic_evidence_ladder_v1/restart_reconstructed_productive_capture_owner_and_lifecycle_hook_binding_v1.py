@@ -284,7 +284,7 @@ def census_productive_path_graph_v1(*, repo_root: Path) -> dict[str, Any]:
         _stage(
             stage_id="RESTART_BOUNDARY",
             symbol="SupervisorLifecycle.restart",
-            path="src/ops/canonical_local_launcher_and_process_supervision_v1/lifecycle_v1.py",
+            path="src/ops/runtime_health_recovery_and_failure_injection_closure_v1/o6_offline_supervisor_fixture_v1/lifecycle_v1.py",
             productive_callers="local launcher/supervisor; not Live handoff path",
             productive_callees="stop then start; no handoff writer",
             ownership="PROCESS_SUPERVISION_NOT_LIVE_HANDOFF",
@@ -395,7 +395,7 @@ def census_productive_capture_owner_candidates_v1(*, repo_root: Path) -> dict[st
         },
         {
             "CANDIDATE": "SupervisorLifecycle.restart",
-            "PATH": "src/ops/canonical_local_launcher_and_process_supervision_v1/lifecycle_v1.py",
+            "PATH": "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/o6_offline_supervisor_fixture_v1/lifecycle_v1.py",
             "OWNS_BOUND_FILL_PROVEN_AND_RESTART_NOT_YET_OCCURRED": False,
             "REASON": "Process stop/start. Does not observe bound fill. Does not call the writer.",
             "STATUS": "REFUTED_NOT_OWNER",
@@ -466,7 +466,7 @@ def census_productive_lifecycle_hook_candidates_v1(*, repo_root: Path) -> dict[s
         {
             "SEARCH_CLASS": "supervisor transition",
             "CANDIDATE": "SupervisorLifecycle.restart",
-            "PATH": "src/ops/canonical_local_launcher_and_process_supervision_v1/lifecycle_v1.py",
+            "PATH": "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/o6_offline_supervisor_fixture_v1/lifecycle_v1.py",
             "BOUND_FILL_ALREADY_PROVEN_BEFORE_HOOK": False,
             "HOOK_BEFORE_RESTART": False,
             "CALLS_WRITER": False,
@@ -496,7 +496,7 @@ def census_productive_lifecycle_hook_candidates_v1(*, repo_root: Path) -> dict[s
         {
             "SEARCH_CLASS": "pre-restart shutdown hook",
             "CANDIDATE": "SupervisorLifecycle.stop",
-            "PATH": "src/ops/canonical_local_launcher_and_process_supervision_v1/lifecycle_v1.py",
+            "PATH": "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/o6_offline_supervisor_fixture_v1/lifecycle_v1.py",
             "BOUND_FILL_ALREADY_PROVEN_BEFORE_HOOK": False,
             "HOOK_BEFORE_RESTART": False,
             "CALLS_WRITER": False,

@@ -58,7 +58,7 @@ from src.ops.wallclock_session_evidence_v0 import (
     build_wallclock_evidence_from_manifest_fields,
     write_wallclock_evidence,
 )
-from src.webui.workflow_dashboard_readmodel_v1.universe_selection_producer_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.universe_selection_producer_v1 import (
     emit_universe_selection_closeout_machine_lines,
     maybe_write_missing_truth_after_bounded_closeout,
 )

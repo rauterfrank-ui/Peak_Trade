@@ -58,12 +58,10 @@ from trading.master_v2.double_play_survival import (
     SurvivalEnvelopeDecision,
     SurvivalEnvelopeStatus,
 )
-from src.webui.market_dashboard_landscape_producer_binding_v2 import bind_market_universe_slots
-from src.webui.market_dashboard_landscape_v2.availability import Availability
 from src.ops.presentation_archive_materializers_v1.double_play_presentation_projection_materializer_v1 import (
     SOURCE_DISPLAY_RELATIVE_PATH,
 )
-from src.webui.workflow_dashboard_readmodel_v1.double_play_presentation_projection_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.double_play_presentation_projection_v1 import (
     STORAGE_RELATIVE_PATH,
     try_load_double_play_presentation_projection_v1,
 )
@@ -268,33 +266,6 @@ def test_partial_intermediate_fail_closed(tmp_path: Path) -> None:
     )
     assert out.exported is False
     assert out.error_code == ERROR_REPLAY_COMMIT_INCOMPLETE
-
-
-def test_dashboard_autobind_after_export(tmp_path: Path) -> None:
-    from datetime import datetime, timezone
-
-    archive_root = tmp_path / "archive"
-    export_double_play_display_to_archive_sibling_from_replay_commit_v1(
-        archive_root=archive_root,
-        replay_intermediate=_intermediate_with_bundle(),
-    )
-    from src.ops.presentation_archive_materializers_v1.double_play_presentation_projection_materializer_v1 import (
-        materialize_double_play_presentation_projection_v1,
-    )
-
-    ts_iso = "2026-09-21T12:00:00Z"
-    ts = datetime(2026, 9, 21, 12, 0, 0, tzinfo=timezone.utc)
-    materialize_double_play_presentation_projection_v1(
-        archive_root,
-        generated_at=ts_iso,
-        effective_at=ts_iso,
-    )
-    slots = bind_market_universe_slots(
-        archive_root=archive_root,
-        generated_at=ts,
-    )
-    dp_slot = slots["double_play"]
-    assert dp_slot.availability in (Availability.AVAILABLE, Availability.STALE)
 
 
 def test_exporter_replay_commit_module_no_compose_import() -> None:

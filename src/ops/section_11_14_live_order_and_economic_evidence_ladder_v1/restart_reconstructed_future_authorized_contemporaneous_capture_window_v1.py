@@ -113,7 +113,7 @@ MISSING_PREDICATES: tuple[str, ...] = (
 _PRODUCTIVE_PREFIXES: tuple[str, ...] = (
     "src/execution/",
     "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/",
-    "src/ops/canonical_local_launcher_and_process_supervision_v1/",
+    "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/o6_offline_supervisor_fixture_v1/",
     "src/ops/section_11_12_8_actual_productive_testnet_campaign_run_start_v1/",
     "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/",
     "src/learning/",

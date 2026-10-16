@@ -38,7 +38,7 @@ def test_capability_constants_and_safety() -> None:
     assert DEFERRED_CLASSIFICATIONS["SEPARATE_NETWORK_SESSION_OWNER_GO_REQUIRED"] is True
     assert len(LADDER_PROVEN_ITEMS) == 10
     assert len(LADDER_DEFERRED_ITEMS) == 3
-    assert "canonical_local_launcher_and_process_supervision_v1" in PRODUCTION_SURFACES_REUSED
+    assert "canonical_local_launcher_and_process_supervision_v1" not in PRODUCTION_SURFACES_REUSED
     assert "runtime_health_recovery_and_failure_injection_closure_v1" in PRODUCTION_SURFACES_REUSED
 
 
@@ -63,10 +63,11 @@ def test_offline_harness_proves_bounded_ladder(tmp_path: Path, repo_root: Path) 
     assert metrics["authorization_consumed"] is False
     assert metrics["confirm_token_minted"] is False
     assert result["PROOFS"]["multi_session"]["duplicate_blocked"] is True
-    assert (
-        result["PROOFS"]["dashboard_restart_without_scaffold_restart"]["scaffold_pid_unchanged"]
-        is True
-    )
+    assert metrics["o2_dashboard_supervisor_used"] is False
+    assert metrics["http_worker_spawned"] is False
+    dash_proof = result["PROOFS"]["dashboard_restart_without_scaffold_restart"]
+    assert dash_proof["o2_supervisor_restarted"] is False
+    assert dash_proof["read_model_anchor_unchanged"] is True
     assert (
         result["PROOFS"]["scaffold_restart_with_read_model_recovery"]["read_model_digest_match"]
         is True
@@ -91,6 +92,7 @@ def test_deferred_network_classifications_are_explicit() -> None:
         PRODUCTIVE_WIRING_IMPLEMENTED,
     )
 
-    assert PRODUCTIVE_WIRING_IMPLEMENTED["O2_SUPERVISED_FASTAPI_HTTP_HOST"] is True
+    assert PRODUCTIVE_WIRING_IMPLEMENTED["O2_SUPERVISED_FASTAPI_HTTP_HOST"] is False
+    assert PRODUCTIVE_WIRING_IMPLEMENTED["O2_DASHBOARD_SUPERVISOR_RETIRED"] is True
     assert PRODUCTIVE_WIRING_IMPLEMENTED["NETWORK_BOUND_PROOF_STILL_REQUIRED"] is True
     assert REQUIRED_TRUTH_CLASSIFICATIONS["O7_FULL_CAPABILITY_CLOSED"] is False

@@ -66,9 +66,7 @@ HOOK_RELPATH = (
     "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/pre_restart_handoff_capture_hook_v1.py"
 )
 RESTART_BOUNDARY_SYMBOL = "SupervisorLifecycle.restart"
-RESTART_BOUNDARY_PATH = (
-    "src/ops/canonical_local_launcher_and_process_supervision_v1/lifecycle_v1.py"
-)
+RESTART_BOUNDARY_PATH = "src/ops/runtime_health_recovery_and_failure_injection_closure_v1/o6_offline_supervisor_fixture_v1/lifecycle_v1.py"
 CANONICAL_BOUND_FILL_KIND = "LIVE_IDENTITY_BOUND_VENUE_FILL"
 FORBIDDEN_BOUND_FILL_KINDS: frozenset[str] = frozenset(
     {
