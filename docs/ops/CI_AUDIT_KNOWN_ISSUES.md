@@ -300,7 +300,7 @@ PREFLIGHT_REMAINS_BLOCKED=true
 | Universe selection readmodel contract | `docs&#47;webui&#47;observability&#47;UNIVERSE_SELECTION_READMODEL_V1.md` |
 | Real-source charter (U4b) | `docs&#47;webui&#47;observability&#47;FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md` |
 | Governed snapshot template (U2c) | `docs&#47;webui&#47;observability&#47;FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md` |
-| U2b loader guard | `src&#47;webui&#47;workflow_dashboard_readmodel_v1&#47;futures_producer_packet_real_metadata_source_v1.py` |
+| U2b loader guard (archived readmodel intake) | `src&#47;ops&#47;workflow_archive_readmodel_projections_v1&#47;futures_producer_packet_real_metadata_source_v1.py` |
 | U2b loader tests | `tests&#47;webui&#47;test_futures_producer_packet_real_metadata_source_v1.py` |
 | U2b→U1→U3 closeout chain tests | `tests&#47;webui&#47;test_universe_selection_producer_u2b_u1_closeout_chain_v1.py` |
 | Reader fail-closed tests | `tests&#47;webui&#47;test_universe_selection_reader_v1.py` |
@@ -1455,7 +1455,7 @@ NEW_PARALLEL_SSOT_CREATED=false
 
 | Concern | Owner |
 |---------|-------|
-| Ops Cockpit payload + freshness thresholds | `src&#47;webui&#47;ops_cockpit.py` (`FRESHNESS_FRESH_HOURS=24`, `FRESHNESS_OLDER_DAYS=30`, `_freshness_label`, `_render_operator_summary_evidence_freshness_observation_read_only`) |
+| Ops Cockpit payload + freshness thresholds (historical — presentation retired WP-R2B-R4) | `src&#47;webui&#47;ops_cockpit.py` (`FRESHNESS_FRESH_HOURS=24`, `FRESHNESS_OLDER_DAYS=30`, `_freshness_label`, `_render_operator_summary_evidence_freshness_observation_read_only`) <!-- pt:ref-target-ignore --> |
 | Evidence/audit observation builder | `src&#47;ops&#47;evidence_audit_observation.py` (`build_evidence_audit_observation`) |
 | Operator summary spec | `docs&#47;ops&#47;specs&#47;OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md` — **Evidence freshness observation (read-only)** section |
 | v2.5 truth-first runbook | `docs&#47;ops&#47;runbooks&#47;webui_ops_cockpit_v2_5_truth_first.md` |
@@ -1527,7 +1527,7 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false
 | Master V2 / Double Play non-authority contract (SSOT) | `docs&#47;ops&#47;specs&#47;OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md` — **§8** required preamble wording |
 | Operator summary surface (preamble row) | `docs&#47;ops&#47;specs&#47;OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md` — `operator-summary-preamble` / `operator-summary-master-v2-non-authority` |
 | Required views coverage (preamble anchor) | `docs&#47;ops&#47;specs&#47;OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md` — **Canonical anchors** |
-| HTML preamble render (reference only) | `src&#47;webui&#47;ops_cockpit.py` — `_render_operator_summary_preamble` |
+| HTML preamble render (reference only; historical — presentation retired WP-R2B-R4) | `src&#47;webui&#47;ops_cockpit.py` — `_render_operator_summary_preamble` <!-- pt:ref-target-ignore --> |
 | WebUI preamble contract test (reuse) | `tests&#47;webui&#47;test_ops_cockpit.py` — `test_ops_cockpit_preamble_is_master_v2_non_authorizing` |
 | Strategy → Master V2 static crosslink (reuse) | `tests&#47;ops&#47;test_strategy_to_master_v2_integration_contract_static_crosslink_v0.py` |
 | MV2 alignment RC table row (reuse pointer) | CI_AUDIT § Master V2 / Double Play Read-only Alignment Inventory RC v0 — **SLICE-MV2-1** (~6024) |
@@ -3494,8 +3494,8 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 |---------|-------|
 | Scheduler Boundary Hard-Block SSOT — §7 residual + §7b opt-in | `docs&#47;ops&#47;specs&#47;SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md` |
 | Shared scheduler start guard (read-only reference) | `scripts&#47;ops&#47;scheduler_start_boundary_guard_v0.py` |
-| P67 library scheduler (reference only) | `src&#47;ops&#47;p67&#47;shadow_session_scheduler_v1.py` |
-| P72 pack pass-through (reference only) | `src&#47;ops&#47;p72&#47;run_shadowloop_pack_v1.py` |
+| P67 library scheduler (reference only; path removed — chronicle anchor) | `src&#47;ops&#47;p67&#47;shadow_session_scheduler_v1.py` <!-- pt:ref-target-ignore --> |
+| P72 pack pass-through (reference only; path removed — chronicle anchor) | `src&#47;ops&#47;p72&#47;run_shadowloop_pack_v1.py` <!-- pt:ref-target-ignore --> |
 | P67/P72 library opt-in contract tests (reuse) | `tests&#47;ops&#47;test_p67_library_scheduler_boundary_opt_in_v0.py` |
 | Closed #4177 launcher hard-block crosslink (reuse pointer only — **no** re-chronicle) | CI_AUDIT § Scheduler Boundary Hard Block — `SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_V1=true` |
 | CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests&#47;ops&#47;test_remote_runtime_contract_docs_guard_v0.py` |
