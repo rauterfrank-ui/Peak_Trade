@@ -96,7 +96,9 @@ def test_smoke_host_outbound_edges_use_decision_host_source_universe() -> None:
 def test_archive_verified_readmodel_to_smoke_host_cross_plane() -> None:
     doc = _load_census()
     edge = next(
-        e for e in doc["semantic_edges"] if e["edge_id"] == "archive_verified_readmodel_to_smoke_host"
+        e
+        for e in doc["semantic_edges"]
+        if e["edge_id"] == "archive_verified_readmodel_to_smoke_host"
     )
     assert edge.get("source_universe_or_plane") == TD_PRESENTATION_ARCHIVE
     assert edge.get("target_universe_or_plane") == TD_DECISION_HOST_ARCHIVE
