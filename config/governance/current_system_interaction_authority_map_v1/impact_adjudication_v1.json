@@ -1,20 +1,32 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "f1fb283b3d8b0df3a015727f2946d6abe8e225e8",
-  "head_sha": "adaec4c03e2b8d6cd9c5ccaf487034ca64c70d0d",
+  "base_sha": "0578d813db4f2881082077338636e2a634e77869",
+  "head_sha": "2819111107b6111b3076c440e73992a598d8edff",
   "changed_paths": [
+    "config/governance/current_system_census_graph_v1/README.md",
+    "config/governance/current_system_census_graph_v1/schema_v1.json",
     "config/governance/current_system_census_graph_v1/source_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json"
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "evidence/ops/ghv_census_archive_seam_cd010_v1/20261016T114500Z/PRE_PR_ADVERSARIAL_CONTRACT_REVIEW_V1.json",
+    "scripts/ops/validate_current_system_census_graph_v1.py",
+    "tests/governance/test_archive_seam_census_coverage_cd010_v1.py"
   ],
-  "changed_paths_sha256": "639a1948f8189f18f667c5f73acde3230ec88034498065a7cea7682a3c31f31c",
+  "changed_paths_sha256": "5357428cac62b3c2555c15d63b2b82935e019c24e661de162406f1e922aaca7e",
   "covered_candidate_paths": [
-    "config/governance/current_system_census_graph_v1/source_v1.json"
+    "config/governance/current_system_census_graph_v1/README.md",
+    "config/governance/current_system_census_graph_v1/schema_v1.json",
+    "config/governance/current_system_census_graph_v1/source_v1.json",
+    "evidence/ops/ghv_census_archive_seam_cd010_v1/20261016T114500Z/PRE_PR_ADVERSARIAL_CONTRACT_REVIEW_V1.json",
+    "scripts/ops/validate_current_system_census_graph_v1.py",
+    "tests/governance/test_archive_seam_census_coverage_cd010_v1.py"
   ],
   "evidence_refs": [
     "config/governance/current_system_census_graph_v1/source_v1.json",
-    "https://github.com/rauterfrank-ui/Peak_Trade/pull/7135"
+    "evidence/ops/ghv_census_archive_seam_cd010_v1/20261016T114500Z/PRE_PR_ADVERSARIAL_CONTRACT_REVIEW_V1.json",
+    "https://github.com/rauterfrank-ui/Peak_Trade/pull/7136"
   ],
-  "reason": "Post-squash census source_baseline_head rebind to f1fb283 only; CSIA source_v1.json and derived interaction-authority views unchanged; impact adjudication rebinding for map-currency gate; NO_MAP_IMPACT; AUTHORITY=NONE.",
+  "reason": "CD-010 archive-seam census/GHV coverage only; CSIA source_v1.json and derived interaction-authority views unchanged; map-currency adjudication rebinding; NO_MAP_IMPACT; AUTHORITY=NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }
