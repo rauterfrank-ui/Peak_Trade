@@ -245,6 +245,7 @@
     "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_hardening_v2/",
     "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/",
     "src/ops/whole_system_connection_closure_bounded_wp_v1/",
+    "src/ops/workflow_archive_readmodel_projections_v1/",
     "src/trading/market_state/directional_confirmation_progress_v1.py",
     "src/trading/master_v2/",
     "src/trading/master_v2/canonical_core_runtime_integration_bridge_v0.py",
