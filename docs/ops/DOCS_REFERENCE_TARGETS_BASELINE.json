@@ -1,14 +1,14 @@
 {
-  "generated_at_utc": "2026-09-26T05:06:21.197237+00:00",
-  "git_sha": "f33000f8909c4fad45a2050bcdcd0e1afa884e2c",
+  "generated_at_utc": "2026-10-16T04:54:06.842231+00:00",
+  "git_sha": "4464c9b63d7088ba3edc921ae4d70c4b21fc4e9a",
   "tool_version": "1.0.0",
   "scan_stats": {
-    "total_markdown_files": 3179,
+    "total_markdown_files": 3306,
     "ignored_files": 458,
-    "scanned_files": 2721,
-    "total_references": 15401
+    "scanned_files": 2848,
+    "total_references": 16423
   },
-  "missing_count": 243,
+  "missing_count": 467,
   "missing_items": [
     {
       "source_file": "docs/AUTONOMOUS_AI_WORKFLOW.md",
@@ -26,6 +26,30 @@
       "source_file": "docs/AUTONOMOUS_AI_WORKFLOW.md",
       "line_number": 75,
       "target": "src/autonomous/monitors.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/CLI_CHEATSHEET.md",
+      "line_number": 871,
+      "target": "../src/live/web/api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/CLI_CHEATSHEET.md",
+      "line_number": 871,
+      "target": "src/live/web/api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/DEMO_SCRIPT_DASHBOARD_V11.md",
+      "line_number": 112,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/DEMO_SCRIPT_DASHBOARD_V11.md",
+      "line_number": 113,
+      "target": "src/webui/live_track.py",
       "link_text": null
     },
     {
@@ -47,6 +71,48 @@
       "link_text": null
     },
     {
+      "source_file": "docs/LIVE_OPERATIONAL_RUNBOOKS.md",
+      "line_number": 1527,
+      "target": "../src/live/web/api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/LIVE_OPERATIONAL_RUNBOOKS.md",
+      "line_number": 1527,
+      "target": "src/live/web/api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/LIVE_OPERATIONAL_RUNBOOKS.md",
+      "line_number": 1688,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_MINI_ROADMAP_V1_RESEARCH_LIVE_BETA.md",
+      "line_number": 258,
+      "target": "src/webui/live_track.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_MINI_ROADMAP_V1_RESEARCH_LIVE_BETA.md",
+      "line_number": 259,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_MINI_ROADMAP_V1_RESEARCH_LIVE_BETA.md",
+      "line_number": 370,
+      "target": "src/webui/live_track.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_MINI_ROADMAP_V1_RESEARCH_LIVE_BETA.md",
+      "line_number": 371,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/PEAK_TRADE_OVERVIEW_PHASES_1_40.md",
       "line_number": 183,
       "target": "src/exchange/kraken_testnet.py",
@@ -59,15 +125,177 @@
       "link_text": null
     },
     {
+      "source_file": "docs/PEAK_TRADE_STATUS_OVERVIEW.md",
+      "line_number": 965,
+      "target": "src/webui/live_track.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_STATUS_OVERVIEW.md",
+      "line_number": 1032,
+      "target": "src/webui/live_track.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_STATUS_OVERVIEW.md",
+      "line_number": 1121,
+      "target": "src/webui/live_track.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_STATUS_OVERVIEW.md",
+      "line_number": 1122,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_STATUS_OVERVIEW.md",
+      "line_number": 1292,
+      "target": "src/webui/r_and_d_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_STATUS_OVERVIEW.md",
+      "line_number": 1311,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_V1_KNOWN_LIMITATIONS.md",
+      "line_number": 111,
+      "target": "src/live/web/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_V1_OVERVIEW_FULL.md",
+      "line_number": 288,
+      "target": "src/webui/r_and_d_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PEAK_TRADE_V1_OVERVIEW_FULL.md",
+      "line_number": 436,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/PHASE_31_SHADOW_PAPER_FLOW.md",
       "line_number": 56,
       "target": "src/data/kraken_live.py",
       "link_text": null
     },
     {
+      "source_file": "docs/PHASE_34_ALERTS_AND_WEB_UI.md",
+      "line_number": 143,
+      "target": "src/live/web/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_34_ALERTS_AND_WEB_UI.md",
+      "line_number": 222,
+      "target": "src/live/web/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_34_ALERTS_AND_WEB_UI.md",
+      "line_number": 421,
+      "target": "src/live/web/__init__.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_34_ALERTS_AND_WEB_UI.md",
+      "line_number": 422,
+      "target": "src/live/web/app.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/PHASE_75_R_AND_D_STRATEGY_WAVE_V2_PRESETS.md",
       "line_number": 26,
       "target": "src/strategies/armstrong/armstrong_cycle_strategy.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md",
+      "line_number": 105,
+      "target": "src/webui/r_and_d_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_76_R_AND_D_DASHBOARD_V0_DESIGN.md",
+      "line_number": 384,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_76_R_AND_D_EXPERIMENTS_OVERVIEW_V1_1.md",
+      "line_number": 38,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_76_R_AND_D_EXPERIMENTS_OVERVIEW_V1_1.md",
+      "line_number": 42,
+      "target": "src/webui/r_and_d_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_76_R_AND_D_EXPERIMENTS_OVERVIEW_V1_1.md",
+      "line_number": 109,
+      "target": "src/webui/r_and_d_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_76_R_AND_D_EXPERIMENTS_OVERVIEW_V1_1.md",
+      "line_number": 117,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_76_R_AND_D_EXPERIMENTS_OVERVIEW_V1_1.md",
+      "line_number": 141,
+      "target": "src/webui/r_and_d_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_76_R_AND_D_EXPERIMENTS_OVERVIEW_V1_1.md",
+      "line_number": 142,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_77_R_AND_D_EXPERIMENT_DETAIL_VIEWER.md",
+      "line_number": 106,
+      "target": "src/webui/r_and_d_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_77_R_AND_D_EXPERIMENT_DETAIL_VIEWER.md",
+      "line_number": 114,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_77_R_AND_D_EXPERIMENT_DETAIL_VIEWER.md",
+      "line_number": 135,
+      "target": "src/webui/r_and_d_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_77_R_AND_D_EXPERIMENT_DETAIL_VIEWER.md",
+      "line_number": 136,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_78_R_AND_D_REPORT_GALLERY_AND_COMPARISON_V1.md",
+      "line_number": 189,
+      "target": "src/webui/r_and_d_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_78_R_AND_D_REPORT_GALLERY_AND_COMPARISON_V1.md",
+      "line_number": 190,
+      "target": "src/webui/app.py",
       "link_text": null
     },
     {
@@ -83,9 +311,51 @@
       "link_text": null
     },
     {
+      "source_file": "docs/PHASE_81_LIVE_RISK_SEVERITY_AND_ALERTS_V1.md",
+      "line_number": 63,
+      "target": "src/webui/live_track.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_82_LIVE_TRACK_DASHBOARD.md",
+      "line_number": 17,
+      "target": "src/webui/live_track.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_82_LIVE_TRACK_DASHBOARD.md",
+      "line_number": 18,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_84_LIVE_TRACK_DEMO_WALKTHROUGH.md",
+      "line_number": 82,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md",
+      "line_number": 95,
+      "target": "src/webui/live_track.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/PHASE_85_LIVE_TRACK_SESSION_EXPLORER.md",
+      "line_number": 96,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/RESILIENCE.md",
       "line_number": 675,
       "target": "../examples/resilience/README.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/R_AND_D_OPERATOR_FLOW.md",
+      "line_number": 279,
+      "target": "src/webui/r_and_d_api.py",
       "link_text": null
     },
     {
@@ -192,6 +462,12 @@
     },
     {
       "source_file": "docs/audit/REPO_AUDIT_REPORT.md",
+      "line_number": 94,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/audit/REPO_AUDIT_REPORT.md",
       "line_number": 158,
       "target": "src/peak_trade/__init__.py",
       "link_text": null
@@ -227,6 +503,60 @@
       "link_text": null
     },
     {
+      "source_file": "docs/audits/MONITORING_TOPOLOGY_READ_ONLY_AUDIT_2026-07-17.md",
+      "line_number": 57,
+      "target": "src/webui/health_endpoint.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/dev/knowledge/KNOWLEDGE_API_IMPLEMENTATION_SUMMARY.md",
+      "line_number": 97,
+      "target": "src/webui/services/knowledge_service.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/dev/knowledge/KNOWLEDGE_API_IMPLEMENTATION_SUMMARY.md",
+      "line_number": 119,
+      "target": "src/webui/knowledge_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/dev/knowledge/KNOWLEDGE_API_IMPLEMENTATION_SUMMARY.md",
+      "line_number": 145,
+      "target": "src/webui/knowledge_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/dev/knowledge/KNOWLEDGE_API_IMPLEMENTATION_SUMMARY.md",
+      "line_number": 317,
+      "target": "src/webui/knowledge_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/dev/knowledge/KNOWLEDGE_API_IMPLEMENTATION_SUMMARY.md",
+      "line_number": 318,
+      "target": "src/webui/services/knowledge_service.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/dev/knowledge/KNOWLEDGE_API_IMPLEMENTATION_SUMMARY.md",
+      "line_number": 329,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/dev/knowledge/KNOWLEDGE_API_IMPLEMENTATION_SUMMARY.md",
+      "line_number": 587,
+      "target": "src/webui/knowledge_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/dev/knowledge/KNOWLEDGE_API_IMPLEMENTATION_SUMMARY.md",
+      "line_number": 588,
+      "target": "src/webui/services/knowledge_service.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/evidence/auth_005_el_karoui_armstrong_non_authority_classification_v1/non_authority_contract.md",
       "line_number": 16,
       "target": "src/strategies/armstrong/armstrong_cycle_strategy.py",
@@ -236,6 +566,12 @@
       "source_file": "docs/evidence/auth_005_el_karoui_armstrong_non_authority_classification_v1/non_authority_contract.md",
       "line_number": 25,
       "target": "src/experiments/armstrong_elkaroui_combi_experiment.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/ehlers_bouchaud_system_integration_audit_v1/ehlers_inventory.md",
+      "line_number": 57,
+      "target": "src/webui/r_and_d_api.py",
       "link_text": null
     },
     {
@@ -438,6 +774,12 @@
     },
     {
       "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 159,
+      "target": "src/webui/r_and_d_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
       "line_number": 193,
       "target": "src/experiments/armstrong_elkaroui_combi_experiment.py",
       "link_text": null
@@ -576,6 +918,12 @@
     },
     {
       "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 136,
+      "target": "src/webui/r_and_d_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
       "line_number": 164,
       "target": "src/experiments/armstrong_elkaroui_combi_experiment.py",
       "link_text": null
@@ -593,15 +941,33 @@
       "link_text": null
     },
     {
+      "source_file": "docs/evidence/obl_b05_bollinger_entry_side_authority_operator_go_selection_v1/legacy_productive_path_analysis.md",
+      "line_number": 16,
+      "target": "src/webui/double_play_dashboard_display_json_route_v0.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/canonical_chain_trace.md",
       "line_number": 34,
       "target": "docs/product/evidence/read_only_canonical_chain_and_zero_trade_blocker_reaudit_v1_20260717T235727Z/decision.json",
       "link_text": null
     },
     {
+      "source_file": "docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/competing_authority_inventory.md",
+      "line_number": 33,
+      "target": "src/webui/double_play_dashboard_display_json_route_v0.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/evidence/post_surface_p_canonical_chain_zero_trade_blocker_reaudit_v1/first_real_blocker.md",
       "line_number": 61,
       "target": "docs/product/evidence/read_only_canonical_chain_and_zero_trade_blocker_reaudit_v1_20260717T235727Z/decision.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/execution/phase16/PHASE16A_EXECUTION_PIPELINE_MVP.md",
+      "line_number": 64,
+      "target": "src/webui/execution_watch_api_v0.py",
       "link_text": null
     },
     {
@@ -677,15 +1043,9 @@
       "link_text": null
     },
     {
-      "source_file": "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md",
-      "line_number": 812,
-      "target": "config/research/armstrong_cycle_v1_versioned_research_binding_v0.json",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md",
-      "line_number": 813,
-      "target": "config/research/armstrong_cycle_v1_offline_economic_evaluation_scope_ratification_v0.json",
+      "source_file": "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+      "line_number": 259,
+      "target": "src/webui/workflow_dashboard_archive_root_v1.py",
       "link_text": null
     },
     {
@@ -701,21 +1061,87 @@
       "link_text": null
     },
     {
-      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
-      "line_number": 3497,
-      "target": "src/ops/p67/shadow_session_scheduler_v1.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
-      "line_number": 3498,
-      "target": "src/ops/p72/run_shadowloop_pack_v1.py",
+      "source_file": "docs/ops/EVIDENCE_INDEX.md",
+      "line_number": 399,
+      "target": "src/live/web/app.py",
       "link_text": null
     },
     {
       "source_file": "docs/ops/PHASE_16L_DOCKER_OPS_RUNNER.md",
       "line_number": 25,
       "target": "src/utils/report_paths.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_518_CI_GOVERNANCE_HEALTH_PANEL.md",
+      "line_number": 113,
+      "target": "src/webui/ops_ci_health_router.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_518_CI_GOVERNANCE_HEALTH_PANEL.md",
+      "line_number": 138,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_518_CI_HEALTH_PANEL_V0_2.md",
+      "line_number": 48,
+      "target": "src/webui/ops_ci_health_router.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_519_CI_HEALTH_BUTTONS_V0_2.md",
+      "line_number": 41,
+      "target": "src/webui/ops_ci_health_router.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PR_PHASE_16AB_EXECUTION_PIPELINE_TELEMETRY.md",
+      "line_number": 38,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/README.md",
+      "line_number": 64,
+      "target": "../../src/live/web/api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/README.md",
+      "line_number": 64,
+      "target": "src/live/web/api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/README.md",
+      "line_number": 66,
+      "target": "src/live/web/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/STASH_TRIAGE_SESSION_20251223-051920.md",
+      "line_number": 49,
+      "target": "src/webui/health_endpoint.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/STASH_TRIAGE_SESSION_20251223-051920.md",
+      "line_number": 50,
+      "target": "src/webui/alerts_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/STASH_TRIAGE_SESSION_20251223-051920.md",
+      "line_number": 51,
+      "target": "src/webui/live_track.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/STASH_TRIAGE_SESSION_20251223-051920.md",
+      "line_number": 54,
+      "target": "src/webui/services/live_panel_data.py",
       "link_text": null
     },
     {
@@ -764,6 +1190,12 @@
       "source_file": "docs/ops/evidence/CANONICAL_ACCEPTANCE_RUN_20260319_CLOSEOUT.md",
       "line_number": 15,
       "target": "scripts/ops/run_bounded_pilot_with_local_secrets.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/EV_20260120_PHASE16A_EXECUTION_PIPELINE_MVP.md",
+      "line_number": 5,
+      "target": "src/webui/execution_watch_api_v0.py",
       "link_text": null
     },
     {
@@ -869,6 +1301,18 @@
       "link_text": null
     },
     {
+      "source_file": "docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md",
+      "line_number": 988,
+      "target": "src/webui/market_dashboard_landscape_v2/owner_registry.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/market_dashboard/PEAK_TRADE_MARKET_DASHBOARD_LANDSCAPE_MASTER_RUNBOOK_V2.md",
+      "line_number": 1046,
+      "target": "src/webui/market_dashboard_landscape_v2/owner_registry.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/reports/phases/PHASE_16L_IMPLEMENTATION_SUMMARY.md",
       "line_number": 26,
       "target": "src/utils/report_paths.py",
@@ -971,27 +1415,27 @@
       "link_text": null
     },
     {
-      "source_file": "docs/ops/roadmap/CURRENT_FOCUS.md",
+      "source_file": "docs/ops/reviews/incident_state_read_model_usage_plan/PLAN.md",
       "line_number": 13,
-      "target": "../release/README.md",
+      "target": "src/webui/ops_cockpit.py",
       "link_text": null
     },
     {
-      "source_file": "docs/ops/roadmap/CURRENT_FOCUS.md",
-      "line_number": 348,
-      "target": "../release/README.md",
+      "source_file": "docs/ops/reviews/incident_state_read_model_usage_plan/PLAN.md",
+      "line_number": 81,
+      "target": "src/webui/ops_cockpit.py",
       "link_text": null
     },
     {
-      "source_file": "docs/ops/roadmap/CURRENT_FOCUS.md",
-      "line_number": 421,
-      "target": "../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md",
+      "source_file": "docs/ops/reviews/incident_stop_kill_switch_consistency_review/REVIEW.md",
+      "line_number": 14,
+      "target": "src/webui/ops_cockpit.py",
       "link_text": null
     },
     {
-      "source_file": "docs/ops/roadmap/CURRENT_FOCUS.md",
-      "line_number": 486,
-      "target": "../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md",
+      "source_file": "docs/ops/reviews/incident_stop_kill_switch_consistency_review/REVIEW.md",
+      "line_number": 41,
+      "target": "src/webui/ops_cockpit.py",
       "link_text": null
     },
     {
@@ -1046,6 +1490,30 @@
       "source_file": "docs/ops/runbooks/RUNBOOK_COMMIT_SALVAGE_CB006C4A_POINTER.md",
       "line_number": 28,
       "target": "../archives/repo_root_docs/RUNBOOK_COMMIT_SALVAGE_CB006C4A.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md",
+      "line_number": 27,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_OPS_SUITE_DASHBOARD_VNEXT_PLAN.md",
+      "line_number": 61,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md",
+      "line_number": 15,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md",
+      "line_number": 31,
+      "target": "src/webui/ops_cockpit.py",
       "link_text": null
     },
     {
@@ -1115,6 +1583,174 @@
       "link_text": null
     },
     {
+      "source_file": "docs/ops/runbooks/UPDATE_OFFICER_V10_OPERATOR_VALIDATION_AIDS.md",
+      "line_number": 40,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/UPDATE_OFFICER_V10_OPERATOR_VALIDATION_AIDS.md",
+      "line_number": 41,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/UPDATE_OFFICER_V11_CONSOLIDATION_TRACE.md",
+      "line_number": 35,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/UPDATE_OFFICER_V6_OPS_COCKPIT_WEBUI_INTEGRATION.md",
+      "line_number": 5,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/UPDATE_OFFICER_V7_APP_ROUTE_WIRING.md",
+      "line_number": 47,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/UPDATE_OFFICER_V7_APP_ROUTE_WIRING.md",
+      "line_number": 49,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/UPDATE_OFFICER_V8_OPERATOR_SOURCE_SELECTION.md",
+      "line_number": 44,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/UPDATE_OFFICER_V8_OPERATOR_SOURCE_SELECTION.md",
+      "line_number": 46,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/UPDATE_OFFICER_V9_OPERATOR_PRESETS.md",
+      "line_number": 56,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/UPDATE_OFFICER_V9_OPERATOR_PRESETS.md",
+      "line_number": 57,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/WORKFLOW_OFFICER_V1_IMPLEMENTATION_RUNBOOK.md",
+      "line_number": 52,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/WORKFLOW_OFFICER_V1_IMPLEMENTATION_RUNBOOK.md",
+      "line_number": 52,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/webui_ops_cockpit_v2_1_truth_first.md",
+      "line_number": 23,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/webui_ops_cockpit_v2_1_truth_first.md",
+      "line_number": 24,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/webui_ops_cockpit_v2_2_truth_first.md",
+      "line_number": 23,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/webui_ops_cockpit_v2_2_truth_first.md",
+      "line_number": 24,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/webui_ops_cockpit_v2_3_truth_first.md",
+      "line_number": 23,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/webui_ops_cockpit_v2_3_truth_first.md",
+      "line_number": 24,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/webui_ops_cockpit_v2_4_truth_first.md",
+      "line_number": 22,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/webui_ops_cockpit_v2_5_truth_first.md",
+      "line_number": 18,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/webui_ops_cockpit_v2_6_truth_first.md",
+      "line_number": 21,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/webui_ops_cockpit_v2_6_truth_first.md",
+      "line_number": 22,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/webui_ops_cockpit_v2_7_truth_first.md",
+      "line_number": 20,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/webui_ops_cockpit_v2_7_truth_first.md",
+      "line_number": 21,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/webui_ops_cockpit_v2_8_truth_first.md",
+      "line_number": 20,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/webui_ops_cockpit_v2_8_truth_first.md",
+      "line_number": 21,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/webui_ops_cockpit_v2_9_truth_first.md",
+      "line_number": 21,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/webui_ops_cockpit_v2_9_truth_first.md",
+      "line_number": 22,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/slides/BOUNDED_ACCEPTANCE_SLIDES_V1.md",
       "line_number": 73,
       "target": "scripts/ops/run_bounded_pilot_with_local_secrets.py",
@@ -1127,15 +1763,213 @@
       "link_text": null
     },
     {
+      "source_file": "docs/ops/specs/BOUNDED_PILOT_CAPS_ENFORCEMENT_POINT.md",
+      "line_number": 66,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/specs/CAPABILITY_PHASE_9_2_STEP_5_FINAL_GENERIC_BINDING_EVIDENCE_EPHEMERAL_PERSISTENCE_ISOLATION_FIX_V1.md",
       "line_number": 36,
       "target": "docs/evidence/capability_phase_9_2_step_5_final_generic_binding_evidence_ephemeral_persistence_isolation_fix_v1",
       "link_text": null
     },
     {
+      "source_file": "docs/ops/specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md",
+      "line_number": 41,
+      "target": "src/webui/double_play_dashboard_display_json_route_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md",
+      "line_number": 42,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md",
+      "line_number": 43,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md",
+      "line_number": 51,
+      "target": "src/webui/r_and_d_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md",
+      "line_number": 103,
+      "target": "../../../src/webui/double_play_dashboard_display_json_route_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md",
+      "line_number": 131,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_ARITHMETIC_SEQUENCE_SURVIVAL_CONTRACT_V0.md",
       "line_number": 11,
       "target": "../_archive/downloads_intake_20260519T195748Z/README.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md",
+      "line_number": 61,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md",
+      "line_number": 62,
+      "target": "src/live/web/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md",
+      "line_number": 69,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md",
+      "line_number": 77,
+      "target": "src/live/web/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md",
+      "line_number": 194,
+      "target": "src/webui/double_play_dashboard_display_json_route_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md",
+      "line_number": 63,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md",
+      "line_number": 65,
+      "target": "src/live/web/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_WEBUI_READONLY_ROUTE_CONTRACT_V0.md",
+      "line_number": 70,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SYSTEM_DATAFLOW_AND_AI_LAYER_OVERVIEW_V0.md",
+      "line_number": 56,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SYSTEM_DATAFLOW_AND_AI_LAYER_OVERVIEW_V0.md",
+      "line_number": 105,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SYSTEM_DATAFLOW_AND_AI_LAYER_OVERVIEW_V0.md",
+      "line_number": 133,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md",
+      "line_number": 32,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md",
+      "line_number": 33,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md",
+      "line_number": 148,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md",
+      "line_number": 185,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md",
+      "line_number": 190,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md",
+      "line_number": 191,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md",
+      "line_number": 196,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md",
+      "line_number": 197,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md",
+      "line_number": 198,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md",
+      "line_number": 199,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md",
+      "line_number": 5,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md",
+      "line_number": 24,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md",
+      "line_number": 20,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md",
+      "line_number": 49,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_SUITE_DASHBOARD_VNEXT_SPEC.md",
+      "line_number": 63,
+      "target": "src/webui/ops_cockpit.py",
       "link_text": null
     },
     {
@@ -1148,6 +1982,24 @@
       "source_file": "docs/ops/specs/OPS_SUITE_DEPENDENCIES_STATE_DATA_QUALITY_REVIEW.md",
       "line_number": 86,
       "target": "src/data/kraken_cache_loader.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_SUITE_EVIDENCE_STATE_REAL_SIGNAL_REVIEW.md",
+      "line_number": 98,
+      "target": "src/webui/services/live_panel_data.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_SUITE_EXPOSURE_READ_MODEL_CONTRACT.md",
+      "line_number": 155,
+      "target": "src/webui/ops_cockpit.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_SUITE_OPERATOR_STATE_REAL_SIGNAL_REVIEW.md",
+      "line_number": 11,
+      "target": "src/webui/ops_cockpit.py",
       "link_text": null
     },
     {
@@ -1175,6 +2027,96 @@
       "link_text": null
     },
     {
+      "source_file": "docs/ops/specs/WEBUI_CI_HEALTH_READ_SURFACE_SIDE_EFFECT_ELIMINATION_V1.md",
+      "line_number": 28,
+      "target": "../../../src/webui/ops_ci_health_router.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/WEBUI_CI_HEALTH_READ_SURFACE_SIDE_EFFECT_ELIMINATION_V1.md",
+      "line_number": 28,
+      "target": "src/webui/ops_ci_health_router.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/WEBUI_CI_HEALTH_READ_SURFACE_SIDE_EFFECT_ELIMINATION_V1.md",
+      "line_number": 29,
+      "target": "../../../src/webui/local_admin_write_auth_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/WEBUI_CI_HEALTH_READ_SURFACE_SIDE_EFFECT_ELIMINATION_V1.md",
+      "line_number": 29,
+      "target": "src/webui/local_admin_write_auth_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1.md",
+      "line_number": 24,
+      "target": "../../../src/webui/local_admin_write_auth_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1.md",
+      "line_number": 24,
+      "target": "src/webui/local_admin_write_auth_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1.md",
+      "line_number": 25,
+      "target": "../../../src/webui/knowledge_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1.md",
+      "line_number": 25,
+      "target": "../../../src/webui/ops_ci_health_router.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1.md",
+      "line_number": 25,
+      "target": "src/webui/knowledge_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/WEBUI_LOCAL_ADMIN_WRITE_SURFACE_AUTH_GATE_V1.md",
+      "line_number": 25,
+      "target": "src/webui/ops_ci_health_router.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/stash_refs/knowledge_db_strategy_vault_ref_20251223-052351.md",
+      "line_number": 17,
+      "target": "src/webui/services/live_panel_data.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/stash_refs/knowledge_db_strategy_vault_ref_20251223-052351.md",
+      "line_number": 28,
+      "target": "src/webui/health_endpoint.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/stash_refs/knowledge_db_strategy_vault_ref_20251223-052351.md",
+      "line_number": 39,
+      "target": "src/webui/health_endpoint.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/phase83_alert_history_dashboard.md",
+      "line_number": 98,
+      "target": "src/webui/alerts_api.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/phase83_alert_history_dashboard.md",
+      "line_number": 108,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/project_docs/BACKTEST_INTEGRATION.md",
       "line_number": 229,
       "target": "scripts/demo_backtest_with_risk.py",
@@ -1184,6 +2126,12 @@
       "source_file": "docs/project_docs/BACKTEST_INTEGRATION.md",
       "line_number": 495,
       "target": "scripts/demo_backtest_with_risk.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/project_docs/CHANGELOG.md",
+      "line_number": 38,
+      "target": "src/webui/live_track.py",
       "link_text": null
     },
     {
@@ -1355,6 +2303,12 @@
       "link_text": null
     },
     {
+      "source_file": "docs/runbooks/LIVE_RISK_SEVERITY_INTEGRATION.md",
+      "line_number": 75,
+      "target": "src/webui/live_track.py",
+      "link_text": null
+    },
+    {
       "source_file": "docs/runbooks/appendix/A1_incoming_taxonomy.md",
       "line_number": 10,
       "target": "src/exchange/kraken_testnet.py",
@@ -1376,6 +2330,12 @@
       "source_file": "docs/runbooks/appendix/A1_incoming_taxonomy.md",
       "line_number": 11,
       "target": "src/data/providers/kraken_ccxt_backend.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/runbooks/appendix/A1_incoming_taxonomy.md",
+      "line_number": 12,
+      "target": "src/live/web/metrics_prom.py",
       "link_text": null
     },
     {
@@ -1410,8 +2370,50 @@
     },
     {
       "source_file": "docs/runbooks/appendix/A1_incoming_taxonomy_evidence.md",
+      "line_number": 66,
+      "target": "src/live/web/metrics_prom.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/runbooks/appendix/A1_incoming_taxonomy_evidence.md",
       "line_number": 68,
       "target": "src/trigger_training/session_store.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_PRESENTATION_IMPLEMENTATION_RUNBOOK.md",
+      "line_number": 456,
+      "target": "src/webui/market_dashboard_landscape_v2/projections.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_PRESENTATION_IMPLEMENTATION_RUNBOOK.md",
+      "line_number": 457,
+      "target": "src/webui/market_dashboard_landscape_producer_binding_v2.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_PRESENTATION_IMPLEMENTATION_RUNBOOK.md",
+      "line_number": 458,
+      "target": "src/webui/market_dashboard_landscape_producer_binding_v2.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_PRESENTATION_IMPLEMENTATION_RUNBOOK.md",
+      "line_number": 459,
+      "target": "src/webui/market_dashboard_landscape_v2/presenter.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_PRESENTATION_IMPLEMENTATION_RUNBOOK.md",
+      "line_number": 460,
+      "target": "src/webui/market_dashboard_landscape_v2/serialization.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/runbooks/canonical/PEAK_TRADE_CANONICAL_RUNTIME_OPERATIONS_DASHBOARD_AND_PROCESS_SUPERVISION_RUNBOOK_V2_4.md",
+      "line_number": 237,
+      "target": "src/webui/market_dashboard_landscape_shell_router_v2.py",
       "link_text": null
     },
     {
@@ -1466,6 +2468,348 @@
       "source_file": "docs/trigger_training/WORKFLOW_MULTI_SESSION_REPORTS.md",
       "line_number": 36,
       "target": "src/trigger_training/operator_meta_report.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/LIVE_PANELS_POSITIONS_PORTFOLIO_RISK.md",
+      "line_number": 286,
+      "target": "../../src/webui/services/live_panel_data.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/LIVE_PANELS_POSITIONS_PORTFOLIO_RISK.md",
+      "line_number": 288,
+      "target": "../../src/webui/health_endpoint.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/LIVE_PANELS_POSITIONS_PORTFOLIO_RISK.md",
+      "line_number": 289,
+      "target": "../../tests/test_live_status_snapshot_panels.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/LIVE_STATUS_PANELS.md",
+      "line_number": 64,
+      "target": "src/webui/services/live_panel_data.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/LIVE_STATUS_PANELS.md",
+      "line_number": 147,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/LIVE_STATUS_PANELS.md",
+      "line_number": 281,
+      "target": "../../src/webui/services/live_panel_data.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/LIVE_STATUS_PANELS.md",
+      "line_number": 284,
+      "target": "../../tests/test_live_status_snapshot_panels.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/MARKET_DASHBOARD_REMOVED.md",
+      "line_number": 22,
+      "target": "src/webui/market_dashboard_landscape_shell_router_v2.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md",
+      "line_number": 62,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/futures_producer_packet_real_metadata_source_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md",
+      "line_number": 63,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/futures_universe_upstream_adapter_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md",
+      "line_number": 56,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/futures_universe_upstream_adapter_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md",
+      "line_number": 57,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/futures_producer_packet_fixture_source_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md",
+      "line_number": 58,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/universe_selection_producer_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md",
+      "line_number": 59,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/universe_selection_reader_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/OBSERVABILITY_HUB_V0.md",
+      "line_number": 50,
+      "target": "src/webui/workflow_dashboard_runtime_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/OBSERVABILITY_HUB_V0.md",
+      "line_number": 51,
+      "target": "src/webui/workflow_dashboard_archive_root_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/OBSERVABILITY_HUB_V0.md",
+      "line_number": 73,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/universe_selection_contract_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/OBSERVABILITY_HUB_V0.md",
+      "line_number": 84,
+      "target": "src/webui/last_paper_run_panel_runtime_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md",
+      "line_number": 82,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/futures_producer_packet_real_metadata_source_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/OKX_TO_FUTURES_PRODUCER_PACKET_GOVERNED_CHARTER_V1.md",
+      "line_number": 83,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/futures_universe_upstream_adapter_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md",
+      "line_number": 50,
+      "target": "src/webui/execution_watch_api_v0_2.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md",
+      "line_number": 61,
+      "target": "src/live/web/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md",
+      "line_number": 72,
+      "target": "../../../src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md",
+      "line_number": 72,
+      "target": "../../../src/webui/paper_shadow_summary_api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md",
+      "line_number": 72,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md",
+      "line_number": 72,
+      "target": "src/webui/paper_shadow_summary_api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md",
+      "line_number": 174,
+      "target": "../../../src/webui/paper_shadow_summary_api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_ARTIFACT_READ_MODEL_V0.md",
+      "line_number": 174,
+      "target": "src/webui/paper_shadow_summary_api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md",
+      "line_number": 7,
+      "target": "../../../src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md",
+      "line_number": 7,
+      "target": "../../../src/webui/paper_shadow_summary_api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md",
+      "line_number": 7,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md",
+      "line_number": 7,
+      "target": "src/webui/paper_shadow_summary_api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md",
+      "line_number": 63,
+      "target": "../../../src/webui/paper_shadow_summary_api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md",
+      "line_number": 63,
+      "target": "src/webui/paper_shadow_summary_api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md",
+      "line_number": 151,
+      "target": "../../../src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md",
+      "line_number": 176,
+      "target": "../../../tests/webui/test_paper_shadow_summary_api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md",
+      "line_number": 193,
+      "target": "../../../src/webui/paper_shadow_summary_api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_RUNTIME_SOURCE_CONTRACT_V0.md",
+      "line_number": 193,
+      "target": "src/webui/paper_shadow_summary_api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md",
+      "line_number": 41,
+      "target": "../../../tests/webui/test_paper_shadow_summary_readmodel_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md",
+      "line_number": 47,
+      "target": "../../../src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md",
+      "line_number": 47,
+      "target": "../../../src/webui/paper_shadow_summary_api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md",
+      "line_number": 47,
+      "target": "src/webui/app.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md",
+      "line_number": 47,
+      "target": "src/webui/paper_shadow_summary_api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md",
+      "line_number": 48,
+      "target": "../../../tests/webui/test_paper_shadow_summary_api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/PAPER_SHADOW_SUMMARY_READ_MODEL_SCHEMA_V0.md",
+      "line_number": 199,
+      "target": "../../../tests/webui/test_paper_shadow_summary_api_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md",
+      "line_number": 54,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/futures_producer_packet_real_metadata_source_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md",
+      "line_number": 70,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/futures_universe_upstream_adapter_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md",
+      "line_number": 71,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/futures_producer_packet_real_metadata_source_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md",
+      "line_number": 241,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/futures_producer_packet_real_metadata_source_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/UNIVERSE_SELECTION_READMODEL_V1.md",
+      "line_number": 36,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/universe_selection_contract_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/UNIVERSE_SELECTION_READMODEL_V1.md",
+      "line_number": 37,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/builder.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/UNIVERSE_SELECTION_READMODEL_V1.md",
+      "line_number": 38,
+      "target": "src/webui/market_dashboard_landscape_producer_binding_v2.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/UNIVERSE_SELECTION_READMODEL_V1.md",
+      "line_number": 40,
+      "target": "src/webui/workflow_dashboard_archive_root_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/UNIVERSE_SELECTION_READMODEL_V1.md",
+      "line_number": 169,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/universe_selection_producer_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/UNIVERSE_SELECTION_READMODEL_V1.md",
+      "line_number": 245,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/universe_selection_reader_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/UNIVERSE_SELECTION_READMODEL_V1.md",
+      "line_number": 246,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/builder.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/webui/observability/UNIVERSE_SELECTION_READMODEL_V1.md",
+      "line_number": 282,
+      "target": "src/webui/workflow_dashboard_readmodel_v1/builder.py",
       "link_text": null
     }
   ]
