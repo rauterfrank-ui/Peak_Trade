@@ -3,6 +3,8 @@
   "base_sha": "efaa6692d60d53a019c79aceb7aa96c284455a07",
   "head_sha": "PENDING_PR_HEAD",
   "changed_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "src/ops/presentation_archive_materializers_v1/bull_bear_regime_presentation_projection_materializer_v1.py",
@@ -47,8 +49,10 @@
     "tests/webui/test_risk_sizing_capital_presentation_projection_materializer_v1.py",
     "tests/webui/test_safety_authority_presentation_projection_materializer_v1.py"
   ],
-  "changed_paths_sha256": "6aedbaa01e6a80a3f6e3f33475ccc09cd331ecb9452e3a12d656381a06a9e04f",
+  "changed_paths_sha256": "1a4a09106b3fe5a1668c24b5a0692b5b44fcdcc8fcb415df9c18cf37fd99a9dd",
   "covered_candidate_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "src/ops/presentation_archive_materializers_v1/bull_bear_regime_presentation_projection_materializer_v1.py",
     "src/ops/presentation_archive_materializers_v1/canonical_decision_presentation_projection_materializer_v1.py",
     "src/ops/presentation_archive_materializers_v1/double_play_presentation_projection_materializer_v1.py",
@@ -97,7 +101,7 @@
     "tests/ops/test_presentation_projection_operational_materializer_invocation_v1.py",
     "tests/ops/test_double_play_dashboard_display_archive_sibling_exporter_v1.py"
   ],
-  "reason": "WP-R1: relocate archive readmodel presentation projection modules from WebUI to src/ops/workflow_archive_readmodel_projections_v1; rebind materializer and archive export import paths only; WebUI re-export shims; import-guard test remediation. No CSIA structured source_v1.json change; no trading authority, interaction edge, or archive JSON schema semantics change (move-only projection contracts). Candidate catalog extended for previously-unlisted presentation projection paths.",
+  "reason": "WP-R1: relocate archive readmodel presentation projection modules from WebUI to src/ops/workflow_archive_readmodel_projections_v1; rebind materializer and archive export import paths only; WebUI re-export shims; import-guard test remediation; companion law-map candidate/adjudication updates for the same diff. No CSIA structured source_v1.json change; no trading authority or interaction edge change.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }

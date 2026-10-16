@@ -100,7 +100,7 @@
     "tests/webui/test_double_play_presentation_projection_materializer_v1.py",
     "tests/ops/test_presentation_projection_operational_materializer_invocation_v1.py"
   ],
-  "reason": "WP-R1: extract archive readmodel presentation projections to ops package; rebind materializer/archive import paths; WebUI re-export shims only. No current_law_impact_map source_v1.json change; NO_LAW_IMPACT for law semantics.",
+  "reason": "WP-R1: extract archive readmodel presentation projections to ops package; rebind materializer/archive import paths; WebUI re-export shims; companion CSIA candidate/adjudication updates for the same diff. No law source_v1.json change.",
   "verdict": "NO_LAW_IMPACT",
   "selector_used_as_law_impact_authority": false
 }
