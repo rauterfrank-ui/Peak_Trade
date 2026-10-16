@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -36,7 +37,16 @@ from src.ops.productive_decision_host_active_archive_three_family_binding_v1.sta
 )
 
 
-REPO_SHA = "b6ffca1d3b39b3dd8814c7c795a8aa6e04bc177a"
+def _current_repo_sha() -> str:
+    repo_root = Path(__file__).resolve().parents[2]
+    return subprocess.check_output(
+        ["git", "rev-parse", "HEAD"],
+        cwd=repo_root,
+        text=True,
+    ).strip()
+
+
+REPO_SHA = _current_repo_sha()
 
 
 def _universe_payload(symbol: str = "SATS-USDT-SWAP") -> dict[str, object]:
@@ -86,6 +96,8 @@ def _universe_payload(symbol: str = "SATS-USDT-SWAP") -> dict[str, object]:
 
 
 def _seed_archive(tmp_path: Path, symbol: str = "SATS-USDT-SWAP") -> Path:
+    from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
+
     archive = tmp_path / "archive"
     readmodels = archive / "readmodels"
     readmodels.mkdir(parents=True)
@@ -93,6 +105,7 @@ def _seed_archive(tmp_path: Path, symbol: str = "SATS-USDT-SWAP") -> Path:
         json.dumps(_universe_payload(symbol), indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
+    write_manifest_sha256(readmodels)
     return archive
 
 
