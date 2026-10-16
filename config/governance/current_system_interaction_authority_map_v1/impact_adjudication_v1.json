@@ -1,34 +1,20 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "316f91331ec776c4f1d2c8e45e0692116f521119",
-  "head_sha": "2329f3f77c087bf20c9abbc34e20f9492f15ab8d",
+  "base_sha": "f1fb283b3d8b0df3a015727f2946d6abe8e225e8",
+  "head_sha": "adaec4c03e2b8d6cd9c5ccaf487034ca64c70d0d",
   "changed_paths": [
     "config/governance/current_system_census_graph_v1/source_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "scripts/ops/validate_current_system_census_graph_v1.py",
-    "src/ops/productive_decision_host_active_archive_three_family_binding_v1/archive_binding_v1.py",
-    "src/ops/productive_decision_host_active_archive_three_family_binding_v1/archive_session_pin_v1.py",
-    "src/ops/productive_decision_host_active_archive_three_family_binding_v1/cycle_session_v1.py",
-    "src/ops/workflow_archive_readmodel_projections_v1/universe_selection_reader_v1.py",
-    "tests/ops/test_archive_instrument_seam_minimum_net_risk_v1.py",
-    "tests/ops/test_productive_decision_host_active_archive_three_family_binding_v1.py"
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json"
   ],
-  "changed_paths_sha256": "ec23eb40a7e052041bde6edbb09f8e66b2228c245fca3facacc511bdd43342f3",
+  "changed_paths_sha256": "639a1948f8189f18f667c5f73acde3230ec88034498065a7cea7682a3c31f31c",
   "covered_candidate_paths": [
-    "config/governance/current_system_census_graph_v1/source_v1.json",
-    "scripts/ops/validate_current_system_census_graph_v1.py",
-    "src/ops/productive_decision_host_active_archive_three_family_binding_v1/archive_binding_v1.py",
-    "src/ops/productive_decision_host_active_archive_three_family_binding_v1/archive_session_pin_v1.py",
-    "src/ops/productive_decision_host_active_archive_three_family_binding_v1/cycle_session_v1.py",
-    "src/ops/workflow_archive_readmodel_projections_v1/universe_selection_reader_v1.py",
-    "tests/ops/test_archive_instrument_seam_minimum_net_risk_v1.py",
-    "tests/ops/test_productive_decision_host_active_archive_three_family_binding_v1.py"
-  ],
-  "evidence_refs": [
-    "tests/ops/test_archive_instrument_seam_minimum_net_risk_v1.py",
     "config/governance/current_system_census_graph_v1/source_v1.json"
   ],
-  "reason": "Archive-seam verify/pin smoke path and census CODE_ONLY evidence edges; CSIA source_v1.json unchanged; derived interaction-authority views unchanged; NO_MAP_IMPACT bookkeeping rebinding; AUTHORITY=NONE.",
+  "evidence_refs": [
+    "config/governance/current_system_census_graph_v1/source_v1.json",
+    "https://github.com/rauterfrank-ui/Peak_Trade/pull/7135"
+  ],
+  "reason": "Post-squash census source_baseline_head rebind to f1fb283 only; CSIA source_v1.json and derived interaction-authority views unchanged; impact adjudication rebinding for map-currency gate; NO_MAP_IMPACT; AUTHORITY=NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }
