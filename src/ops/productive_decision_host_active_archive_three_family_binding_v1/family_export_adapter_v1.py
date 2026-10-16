@@ -47,7 +47,7 @@ from src.ops.double_play_archive_sibling_exporter_v1.exporter_v1 import (
 from src.ops.presentation_archive_materializers_v1.double_play_presentation_projection_materializer_v1 import (
     materialize_double_play_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.double_play_presentation_projection_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.double_play_presentation_projection_v1 import (
     STORAGE_RELATIVE_PATH as DOUBLE_PLAY_PRESENTATION_STORAGE_RELATIVE_PATH,
     try_load_double_play_presentation_projection_v1,
 )
@@ -67,13 +67,13 @@ from src.ops.productive_decision_host_active_archive_three_family_binding_v1.sta
 from src.ops.presentation_archive_materializers_v1.canonical_decision_presentation_projection_materializer_v1 import (
     materialize_canonical_decision_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.canonical_decision_presentation_projection_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.canonical_decision_presentation_projection_v1 import (
     try_load_canonical_decision_presentation_projection_v1,
 )
 from src.ops.presentation_archive_materializers_v1.dynamic_scope_presentation_projection_materializer_v1 import (
     materialize_dynamic_scope_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.dynamic_scope_presentation_projection_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.dynamic_scope_presentation_projection_v1 import (
     try_load_dynamic_scope_presentation_projection_v1,
 )
 from src.ops.presentation_archive_materializers_v1.bull_bear_regime_presentation_projection_materializer_v1 import (
@@ -85,29 +85,29 @@ from src.ops.presentation_archive_materializers_v1.risk_sizing_capital_presentat
 from src.ops.presentation_archive_materializers_v1.execution_reconciliation_presentation_projection_materializer_v1 import (
     materialize_execution_reconciliation_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.execution_reconciliation_presentation_projection_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.execution_reconciliation_presentation_projection_v1 import (
     STORAGE_RELATIVE_PATH as EXECUTION_RECONCILIATION_PRESENTATION_STORAGE_RELATIVE_PATH,
     try_load_execution_reconciliation_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.risk_sizing_capital_presentation_projection_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.risk_sizing_capital_presentation_projection_v1 import (
     STORAGE_RELATIVE_PATH as RISK_SIZING_PRESENTATION_STORAGE_RELATIVE_PATH,
     try_load_risk_sizing_capital_presentation_projection_v1,
 )
 from src.ops.presentation_archive_materializers_v1.economic_summary_presentation_projection_materializer_v1 import (
     materialize_economic_summary_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.economic_summary_presentation_projection_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.economic_summary_presentation_projection_v1 import (
     STORAGE_RELATIVE_PATH as ECONOMIC_SUMMARY_PRESENTATION_STORAGE_RELATIVE_PATH,
     try_load_economic_summary_presentation_projection_v1,
 )
 from src.ops.presentation_archive_materializers_v1.safety_authority_presentation_projection_materializer_v1 import (
     materialize_safety_authority_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.safety_authority_presentation_projection_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.safety_authority_presentation_projection_v1 import (
     STORAGE_RELATIVE_PATH as SAFETY_AUTHORITY_PRESENTATION_STORAGE_RELATIVE_PATH,
     try_load_safety_authority_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.bull_bear_regime_presentation_projection_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.bull_bear_regime_presentation_projection_v1 import (
     STORAGE_RELATIVE_PATH as REGIME_PRESENTATION_STORAGE_RELATIVE_PATH,
     try_load_bull_bear_regime_presentation_projection_v1,
 )

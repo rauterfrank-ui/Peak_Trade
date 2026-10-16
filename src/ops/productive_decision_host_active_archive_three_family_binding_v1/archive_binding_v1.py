@@ -26,7 +26,7 @@ from src.ops.presentation_archive_root_v1.resolver_v1 import (
     PRECEDENCE_EXPLICIT,
     resolve_workflow_dashboard_archive_root,
 )
-from src.webui.workflow_dashboard_readmodel_v1.universe_selection_contract_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.universe_selection_contract_v1 import (
     STORAGE_RELATIVE_PATH,
     UniverseSelectionContractError,
     load_universe_selection_contract,

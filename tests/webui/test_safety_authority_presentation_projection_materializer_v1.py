@@ -11,6 +11,10 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
+from tests.webui.presentation_materializer_import_guard_v1 import (
+    assert_presentation_materializer_import_guard_v1,
+)
+
 from src.webui.app import create_app
 from src.webui.market_dashboard_landscape_producer_binding_v2 import (
     SAFETY_EVIDENCE_PRODUCER_MODULE,
@@ -258,8 +262,16 @@ def test_end_to_end_materialize_to_autobind_consumer(
 
 
 def test_materializer_and_projection_have_no_forbidden_imports() -> None:
+    forbidden_calls = frozenset(
+        {
+            "KillSwitch",
+            "evaluate_offline_killswitch_boundary_v0",
+            "bind_killswitch_boundary_offline_replay_evidence_v0",
+        }
+    )
     for relative in (
-        "src/ops/presentation_archive_materializers_v1/safety_authority_presentation_projection_v1.py",
+        "src/ops/workflow_archive_readmodel_projections_v1/"
+        "safety_authority_presentation_projection_v1.py",
         "src/ops/presentation_archive_materializers_v1/"
         "safety_authority_presentation_projection_materializer_v1.py",
     ):
@@ -267,25 +279,9 @@ def test_materializer_and_projection_have_no_forbidden_imports() -> None:
         text = path.read_text(encoding="utf-8")
         assert "live data/kill_switch" not in text
         assert "KillSwitch(" not in text
-        tree = ast.parse(text)
-        imported: set[str] = set()
-        for node in ast.walk(tree):
-            if isinstance(node, ast.Import):
-                for alias in node.names:
-                    imported.add(alias.name)
-            elif isinstance(node, ast.ImportFrom):
-                if node.level and node.level > 0:
-                    continue
-                if node.module:
-                    imported.add(node.module)
-            if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
-                assert node.func.id not in {
-                    "KillSwitch",
-                    "evaluate_offline_killswitch_boundary_v0",
-                    "bind_killswitch_boundary_offline_replay_evidence_v0",
-                }
-        for module in imported:
-            root = module.split(".", 1)[0]
-            assert root not in {"trading", "src", "risk_layer"}
-            assert not module.startswith("src.risk_layer")
-            assert "killswitch_boundary" not in module
+        assert_presentation_materializer_import_guard_v1(
+            path,
+            forbidden_call_names=forbidden_calls,
+            forbidden_roots=frozenset({"trading", "risk_layer"}),
+            forbidden_module_substrings=("killswitch_boundary", "src.risk_layer"),
+        )
