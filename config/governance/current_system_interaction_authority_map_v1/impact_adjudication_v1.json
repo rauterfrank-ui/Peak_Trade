@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "b6ffca1d3b39b3dd8814c7c795a8aa6e04bc177a",
-  "head_sha": "bfce18de3a2c4a968d70168427358b654c280eb8",
+  "head_sha": "553f29d470f8ba3c7facd17c6789d2ec02db9281",
   "changed_paths": [
     ".github/workflows/ci.yml",
     "config/ci/duplicate_test_names_allowlist.json",
@@ -39,6 +39,7 @@
     "scripts/ops/run_testnet_bounded_observation_adapter_v0.py",
     "scripts/run_web_dashboard.py",
     "scripts/serve_live_dashboard.py",
+    "src/governance/policy_critic/rules.py",
     "src/live/status_providers.py",
     "src/live/web/__init__.py",
     "src/live/web/api_v0.py",
@@ -153,6 +154,7 @@
     "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     "tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py",
     "tests/core/test_single_venue_okx_consolidation_v1.py",
+    "tests/governance/policy_critic/test_critic.py",
     "tests/live/test_execution_watch_api_v0.py",
     "tests/live/test_execution_watch_api_v0_2.py",
     "tests/ops/test_build_u2c_governed_snapshot_candidate_v1.py",
@@ -293,9 +295,10 @@
     "tests/webui/test_workflow_dashboard_runtime_v1.py",
     "tests/webui/test_workflow_script_dto_contract_v0.py"
   ],
-  "changed_paths_sha256": "81456e4697ce14e02e87ad0437cfd9a81721bf99a3065d324e28c407c56a39ad",
+  "changed_paths_sha256": "b7cf98376c7a665d9642d345e1d77e1d24dcc778d9ba4bf3e547ec0db0e869b3",
   "covered_candidate_paths": [
     "config/ops/canonical_runtime_operations_activation_contract_v1.json",
+    "src/governance/policy_critic/rules.py",
     "src/live/web/app.py",
     "src/ops/canonical_runtime_operations_activation_v1/constants_v1.py",
     "src/ops/canonical_runtime_operations_activation_v1/contract_v1.py",
@@ -463,7 +466,8 @@
   ],
   "evidence_refs": [
     "evidence/ops/wp_r2b_r4_presentation_retirement_v1/20261016T043611Z_r4_final/PRE_PR_ADVERSARIAL_CONTRACT_REVIEW_V1.json",
-    "tests/ops/test_canonical_runtime_operations_activation_v1.py"
+    "tests/ops/test_canonical_runtime_operations_activation_v1.py",
+    "tests/governance/policy_critic/test_critic.py"
   ],
   "reason": "WP-R2B-R4 complete presentation infrastructure retirement: O7 offline, O2/O8 fail-closed, WebUI/MDL/HTTP removal, workflow archive intake; MAP_UPDATE_REQUIRED for diff-bound open-record evidence realignment only; AUTHORITY=NONE; no CURRENT authority edge or trading semantics change.",
   "verdict": "MAP_UPDATE_REQUIRED",
