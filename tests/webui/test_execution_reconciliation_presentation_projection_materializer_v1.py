@@ -11,6 +11,10 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
+from tests.webui.presentation_materializer_import_guard_v1 import (
+    assert_presentation_materializer_import_guard_v1,
+)
+
 from src.webui.app import create_app
 from src.webui.market_dashboard_landscape_producer_binding_v2 import (
     EXECUTION_PRODUCER_MODULE,
@@ -239,25 +243,16 @@ def test_materializer_module_has_no_forbidden_trading_or_governance_imports() ->
         / "src/ops/presentation_archive_materializers_v1"
         / "execution_reconciliation_presentation_projection_materializer_v1.py"
     )
-    tree = ast.parse(path.read_text(encoding="utf-8"))
-    imported: set[str] = set()
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Import):
-            for alias in node.names:
-                imported.add(alias.name.split(".", 1)[0])
-        elif isinstance(node, ast.ImportFrom):
-            if node.level and node.level > 0:
-                continue
-            if node.module:
-                imported.add(node.module.split(".", 1)[0])
-    assert "trading" not in imported
-    assert "src" not in imported
-    for node in ast.walk(tree):
-        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
-            assert node.func.id not in {
+    assert_presentation_materializer_import_guard_v1(
+        path,
+        forbidden_call_names=frozenset(
+            {
                 "build_canonical_order_intent_v1",
                 "bind_canonical_order_intent_offline_replay_evidence_v0",
                 "evaluate_offline_reconciliation",
                 "compose_double_play_decision",
                 "KillSwitch",
             }
+        ),
+        forbidden_roots=frozenset({"trading"}),
+    )

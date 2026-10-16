@@ -36,10 +36,10 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Mapping
 
-from src.webui.workflow_dashboard_readmodel_v1.readmodels_manifest_coherence_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.readmodels_manifest_coherence_v1 import (
     finalize_manifest_for_readmodel_artifact_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.execution_reconciliation_presentation_projection_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.execution_reconciliation_presentation_projection_v1 import (
     AUTHORITY_EFFECT,
     EXECUTION_AUTHORITY_EFFECT,
     LOAD_ERROR_FIELDS_INVALID,
