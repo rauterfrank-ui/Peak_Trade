@@ -3,7 +3,7 @@
   "schema_version": "1",
   "authority_effect": "NONE",
   "map_authority": "NONE",
-  "baseline_sha": "1bac0d93302c6e589effafe46fccb055d82bd44e",
+  "baseline_sha": "f91d2cf2fed95af09376c464489f0ca19734e7f7",
   "normalize_unknown_to_current": false,
   "domains": [
     {
@@ -4492,7 +4492,7 @@
     {
       "id": "mv2_proof_baseline_sha",
       "epistemic_class": "PARTIAL",
-      "statement": "MV2 plus double-play proof package pins historical baseline SHA in whole_system_connection_closure_bounded_wp_v1; map baseline_sha tracks origin/main 070f8940b1ec027f903e9f55a5718dfee8cd35ab. Navigation only; does not re-prove MV2 on CURRENT HEAD.",
+      "statement": "MV2 plus double-play proof package pins historical baseline SHA in whole_system_connection_closure_bounded_wp_v1; map baseline_sha tracks origin/main f91d2cf2fed95af09376c464489f0ca19734e7f7. Navigation only; does not re-prove MV2 on CURRENT HEAD.",
       "evidence_refs": [
         "src/ops/whole_system_connection_closure_bounded_wp_v1/constants_v1.py",
         "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py"

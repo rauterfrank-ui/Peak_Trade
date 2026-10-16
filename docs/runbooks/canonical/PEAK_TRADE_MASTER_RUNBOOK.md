@@ -1467,8 +1467,6 @@ ARC_001_CURRENT=src/ops/presentation_archive_root_v1/resolver_v1.py
 ARCHIVE_CONFIG_CURRENT=config/ops/presentation_archive_root_v1.json
 BR_001_CURRENT=existing bridge path; imports bound to canonical_derived_public_md_read_model_v1
 DP_001=SHARED_KEEP
-OTUI_SEAM_CURRENT=src/ops/public_md_observation_get_adapter_v1/contract_v1.py
-OTUI_CONTRACT=GET_only; AUTHORITY=NONE; no mutation routes
 WEBUI_ARCHIVE_COMPAT=src/webui/workflow_dashboard_archive_root_v1.py
 ```
 

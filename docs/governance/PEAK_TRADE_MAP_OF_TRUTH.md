@@ -257,7 +257,6 @@ in the Master Runbook and the named packages.
 | Presentation archive root resolver ARC-001 (#7032) | `src/ops/presentation_archive_root_v1/resolver_v1.py` |
 | Canonical presentation archive config | `config/ops/presentation_archive_root_v1.json` |
 | WebUI archive-root compatibility surface | `src/webui/workflow_dashboard_archive_root_v1.py` |
-| OTUI public-MD observation GET seam (AUTHORITY=NONE) | `src/ops/public_md_observation_get_adapter_v1/contract_v1.py` |
 
 ------------------------------------------------------------------------
 

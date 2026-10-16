@@ -516,7 +516,6 @@
     "src/ops/productive_futures_ranking_producer_v1/",
     "src/ops/productive_pure_stack_numeric_policy_shadow_campaign_v1/",
     "src/ops/productive_reconciliation_runtime_binding_v1/",
-    "src/ops/public_md_observation_get_adapter_v1/",
     "src/ops/ranking_universe_to_full_core_ssf_handoff_contract_v1.py",
     "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/",
     "src/ops/single_selected_future_policy_v1/",

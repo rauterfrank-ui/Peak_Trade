@@ -411,7 +411,6 @@ entities:
   - src/ops/canonical_read_model_and_market_dashboard_rebuild_v1/
   - src/ops/presentation_archive_materializers_v1/
   - src/ops/presentation_archive_root_v1/
-  - src/ops/public_md_observation_get_adapter_v1/
   - src/ops/canonical_public_md_and_ohlcv_transport_reconciliation_v1/pso_to_o4_o5_live_bridge_v1.py
   - src/ops/presentation_projection_octet_orchestrator_v1/orchestrator_v1.py
   - src/ops/productive_decision_host_active_archive_three_family_binding_v1/
