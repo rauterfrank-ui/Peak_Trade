@@ -400,45 +400,6 @@ def test_dashboard_only_mint_and_consume_forbidden() -> None:
         )
 
 
-def test_o2_start_passes_auth_validated_without_mint(tmp_path: Path) -> None:
-    from src.ops.canonical_local_launcher_and_process_supervision_v1.lifecycle_v1 import (
-        CanonicalLocalLauncherV1,
-        LauncherPathsV1,
-    )
-
-    state = tmp_path / "state"
-    logs = tmp_path / "logs"
-    evidence = tmp_path / "evidence"
-    cfg = tmp_path / "cfg.toml"
-    cfg.write_text("[o2]\nmode='dashboard-only'\n", encoding="utf-8")
-    launcher = CanonicalLocalLauncherV1(
-        LauncherPathsV1(
-            repository_root=REPO_ROOT,
-            state_root=state,
-            log_root=logs,
-            evidence_root=evidence,
-        )
-    )
-    started = launcher.start(
-        mode="dashboard-only",
-        config_path=cfg,
-        session_id="o3-dash",
-        repository_sha="deadbeef" * 5,
-    )
-    assert started["ok"] is True
-    session = started["session"]
-    assert session["lifecycle_state"] == "RUNNING"
-    assert session["safety_invariants"]["CONFIRM_TOKEN_MINTED"] is False
-    # Transitions should include AUTH_VALIDATED
-    transitions = (
-        state / "canonical_local_launcher_v1" / "sessions" / "o3-dash" / "transitions.jsonl"
-    )
-    text = transitions.read_text(encoding="utf-8")
-    assert "AUTH_VALIDATED" in text
-    assert "O3_DASHBOARD_ONLY_NO_TOKEN" in text
-    launcher.stop("o3-dash")
-
-
 def test_file_handoff_verify_and_cleanup(tmp_path: Path) -> None:
     repo, evidence, token_home = _roots(tmp_path)
     handle = SecureEphemeralConfirmTokenHandleV1.mint_pso_v1(

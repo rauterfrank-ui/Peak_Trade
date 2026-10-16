@@ -7,10 +7,6 @@ from pathlib import Path
 
 import pytest
 
-from src.ops.canonical_local_launcher_and_process_supervision_v1.constants_v1 import (
-    AUTHORIZED_MODES,
-    MODE_DASHBOARD_ONLY,
-)
 from src.ops.productive_decision_host_active_archive_three_family_binding_v1.archive_binding_v1 import (
     bind_active_archive_v1,
     resolve_selected_instrument_from_archive_v1,
@@ -25,6 +21,7 @@ from src.ops.productive_decision_host_active_archive_three_family_binding_v1.con
     CAPABILITY_ID,
     HARD_STOP_DOUBLE_PLAY_CANONICAL_INPUT_CONTRACT_MISMATCH,
     O2_AUTHORIZED_MODES_REQUIRED,
+    PRESENTATION_SUPERVISOR_RETIRED,
     PRODUCTIVE_HOST_SYMBOL,
 )
 from src.ops.productive_decision_host_active_archive_three_family_binding_v1.cycle_session_v1 import (
@@ -39,7 +36,7 @@ from src.ops.productive_decision_host_active_archive_three_family_binding_v1.sta
 )
 
 
-REPO_SHA = "6e095cd7a21d2eea6132811feec1fcadcf494f52"
+REPO_SHA = "b6ffca1d3b39b3dd8814c7c795a8aa6e04bc177a"
 
 
 def _universe_payload(symbol: str = "SATS-USDT-SWAP") -> dict[str, object]:
@@ -116,8 +113,8 @@ def test_wrong_repository_sha_fail_closed() -> None:
 
 
 def test_o2_remains_dashboard_only() -> None:
-    assert set(AUTHORIZED_MODES) == set(O2_AUTHORIZED_MODES_REQUIRED)
-    assert MODE_DASHBOARD_ONLY in AUTHORIZED_MODES
+    assert PRESENTATION_SUPERVISOR_RETIRED is True
+    assert "dashboard-only" in O2_AUTHORIZED_MODES_REQUIRED
     proof = prove_network_and_order_boundary_v1()
     assert proof.ok is True
     assert proof.order_submit_reachable is False

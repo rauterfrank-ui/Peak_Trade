@@ -16,7 +16,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from src.webui.workflow_dashboard_readmodel_v1.futures_producer_packet_real_metadata_source_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.futures_producer_packet_real_metadata_source_v1 import (
     LOADER_PERSIST_CONFIRM_TOKEN,
     FuturesProducerPacketRealMetadataSourceError,
     persist_governed_snapshot_loader_run_v1,

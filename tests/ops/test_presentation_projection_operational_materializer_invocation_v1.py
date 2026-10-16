@@ -33,11 +33,11 @@ from src.trading.master_v2.double_play_state import TransitionDecision
 from src.trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     StateSwitchEvidenceV1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.bull_bear_regime_presentation_projection_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.bull_bear_regime_presentation_projection_v1 import (
     STORAGE_RELATIVE_PATH as REGIME_PROJECTION_PATH,
     try_load_bull_bear_regime_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.double_play_presentation_projection_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.double_play_presentation_projection_v1 import (
     STORAGE_RELATIVE_PATH as DP_PROJECTION_PATH,
     try_load_double_play_presentation_projection_v1,
 )

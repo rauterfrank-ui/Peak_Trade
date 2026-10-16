@@ -252,37 +252,6 @@ def test_ohlcv_adapter_stamps_o5_chrome_without_parallel_producer() -> None:
     assert stale["connection_state"] == CONNECTION_STALE
 
 
-def test_presenter_connection_state_uses_o5_vocabulary() -> None:
-    from src.webui.market_dashboard_landscape_v2.availability import Availability
-    from src.webui.market_dashboard_landscape_v2.presenter import _ohlcv_data_connection_state
-
-    assert (
-        _ohlcv_data_connection_state(
-            browser_payload=None,
-            ohlcv_payload=None,
-            chart_availability=Availability.MISSING_SOURCE,
-        )
-        == CONNECTION_MISSING_SOURCE
-    )
-    assert (
-        _ohlcv_data_connection_state(
-            browser_payload={"bars": [{"open": "1", "high": "1", "low": "1", "close": "1"}]},
-            ohlcv_payload={"is_stale": True, "captured_at": "2023-11-15T00:01:40Z"},
-            chart_availability=Availability.STALE,
-        )
-        == CONNECTION_STALE
-    )
-    assert (
-        _ohlcv_data_connection_state(
-            browser_payload={"bars": []},
-            ohlcv_payload={"captured_at": "2023-11-15T00:01:40Z"},
-            chart_availability=Availability.AVAILABLE,
-            disconnected=True,
-        )
-        == CONNECTION_DISCONNECTED
-    )
-
-
 def test_no_network_or_order_side_effects_in_o5_package() -> None:
     root = Path(__file__).resolve().parents[2]
     pkg = root / "src/ops/canonical_derived_public_md_read_model_v1"

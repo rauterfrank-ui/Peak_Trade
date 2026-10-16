@@ -4,7 +4,7 @@ AUTHORITY_EFFECT=NONE for dashboard / projection surfaces.
 CORE_LOGIC_CHANGE=false
 TRADING_LOGIC_CHANGE=false
 DASHBOARD_AUTHORITY_EFFECT=NONE
-O2_AUTHORIZED_MODES remain {'dashboard-only'} (unchanged).
+Presentation O2 dashboard supervisor retired; historical mode token retained for boundary proofs only.
 """
 
 from __future__ import annotations
@@ -95,6 +95,7 @@ FORBIDDEN_PRIVATE_PATH_PREFIXES = (
 )
 
 O2_AUTHORIZED_MODES_REQUIRED = frozenset({"dashboard-only"})
+PRESENTATION_SUPERVISOR_RETIRED = True
 
 LIVE_ORDERS = False
 TESTNET_ORDERS = False

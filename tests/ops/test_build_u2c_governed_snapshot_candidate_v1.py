@@ -12,7 +12,7 @@ from scripts.ops.primary_evidence_retention_v0 import (
     parse_manifest_verify_log_rc,
     verify_manifest_sha256,
 )
-from src.webui.workflow_dashboard_readmodel_v1.futures_producer_packet_real_metadata_source_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.futures_producer_packet_real_metadata_source_v1 import (
     FuturesProducerPacketRealMetadataSourceError,
     load_futures_producer_packet_governed,
 )

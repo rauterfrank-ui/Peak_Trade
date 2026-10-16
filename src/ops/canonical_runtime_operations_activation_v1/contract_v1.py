@@ -125,4 +125,20 @@ def validate_activation_contract_v1(contract: Mapping[str, Any]) -> dict[str, An
             "ACTIVATION_CONTRACT_OPERATOR_ENTRY_PRODUCTIVE_DEPENDENCY",
             str(contract.get("canonical_operator_entry_productive_full_core_dependency")),
         )
+    if contract.get("presentation_operator_entry_retired") is not True:
+        raise ActivationContractError("ACTIVATION_CONTRACT_PRESENTATION_ENTRY_NOT_RETIRED", "")
+    if contract.get("presentation_operator_entry_fail_closed") is not True:
+        raise ActivationContractError("ACTIVATION_CONTRACT_PRESENTATION_ENTRY_NOT_FAIL_CLOSED", "")
+    if contract.get("o2_dashboard_supervisor_retired") is not True:
+        raise ActivationContractError("ACTIVATION_CONTRACT_O2_SUPERVISOR_NOT_RETIRED", "")
+    if contract.get("canonical_supervisor") != "RETIRED_PRESENTATION_SUPERVISOR_V1":
+        raise ActivationContractError(
+            "ACTIVATION_CONTRACT_SUPERVISOR_NOT_RETIRED",
+            str(contract.get("canonical_supervisor")),
+        )
+    if contract.get("canonical_dashboard_path") != "RETIRED_PRESENTATION_DASHBOARD_V1":
+        raise ActivationContractError(
+            "ACTIVATION_CONTRACT_DASHBOARD_PATH_NOT_RETIRED",
+            str(contract.get("canonical_dashboard_path")),
+        )
     return dict(contract)

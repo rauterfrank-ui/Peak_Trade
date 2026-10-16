@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 PILOT_SLICE_DOC = ROOT / "docs" / "ops" / "specs" / "PILOT_GO_NO_GO_OPERATIONAL_SLICE.md"
 PILOT_EVAL_SCRIPT = ROOT / "scripts" / "ops" / "pilot_go_no_go_eval_v1.py"
 PILOT_EVAL_TEST = ROOT / "tests" / "ops" / "test_pilot_go_no_go_eval_v1.py"
-OPS_COCKPIT_MODULE = ROOT / "src" / "webui" / "ops_cockpit.py"
+OPS_COCKPIT_MODULE = ROOT / "src" / "ops" / "presentation_retirement_fail_closed_v1.py"
 PAYLOAD_CONTRACT_TEST = ROOT / "tests" / "ops" / "test_ops_cockpit_payload_top_level_contract.py"
 ROW7_GUARD_TEST = (
     ROOT / "tests" / "ops" / "test_pilot_fee_slippage_conservative_assumptions_crosslink_v1.py"
@@ -31,7 +31,7 @@ TEST_REL = "tests/ops/test_pilot_gonogo_eval_ops_cockpit_payload_field_mapping_c
 PILOT_SLICE_REL = "docs/ops/specs/PILOT_GO_NO_GO_OPERATIONAL_SLICE.md"
 PILOT_EVAL_REL = "scripts/ops/pilot_go_no_go_eval_v1.py"
 PILOT_EVAL_TEST_REL = "tests/ops/test_pilot_go_no_go_eval_v1.py"
-OPS_COCKPIT_MODULE_REL = "src/webui/ops_cockpit.py"
+OPS_COCKPIT_MODULE_REL = "src/ops/presentation_retirement_fail_closed_v1.py"
 PAYLOAD_CONTRACT_TEST_REL = "tests/ops/test_ops_cockpit_payload_top_level_contract.py"
 ROW7_GUARD_REL = "tests/ops/test_pilot_fee_slippage_conservative_assumptions_crosslink_v1.py"
 ROWS81011_GUARD_REL = "tests/ops/test_pilot_gonogo_rows_8_10_11_exclusion_crosslink_v1.py"
@@ -139,7 +139,7 @@ def test_ops_cockpit_payload_top_level_contract_covers_eval_paths_v1() -> None:
 
     ops_cockpit_text = OPS_COCKPIT_MODULE.read_text(encoding="utf-8")
     assert OPS_COCKPIT_MODULE.is_file()
-    assert "def build_ops_cockpit_payload" in ops_cockpit_text
+    assert "def build_presentation_retired_cockpit_payload_v1" in ops_cockpit_text
 
 
 def test_row_boundary_and_exclusion_guards_referenced_v1() -> None:

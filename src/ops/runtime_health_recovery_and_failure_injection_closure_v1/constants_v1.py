@@ -8,7 +8,7 @@ PACKAGE_MARKER = "RUNTIME_HEALTH_RECOVERY_AND_FAILURE_INJECTION_CLOSURE_V1=true"
 
 # O4 / O5 canonical owners — never invent parallel producers.
 # O2 supervisor: operator/evidence path only; productive O6 cursor recovery is detached.
-O2_SUPERVISOR_PACKAGE = "canonical_local_launcher_and_process_supervision_v1"
+O2_SUPERVISOR_PACKAGE = "RETIRED_PRESENTATION_SUPERVISOR_V1"
 O6_PRODUCTIVE_RECOVERY_O2_SUPERVISOR_COUPLING = "DETACHED_V1"
 O4_BAR_PRODUCER = "CanonicalPublicMdBarProducerV1"
 O5_READ_MODEL_PACKAGE = "canonical_derived_public_md_read_model_v1"

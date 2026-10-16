@@ -24,7 +24,7 @@ from src.ops.presentation_archive_materializers_v1.execution_reconciliation_pres
     SOURCE_FIELDS_RELATIVE_PATH,
     materialize_execution_reconciliation_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.execution_reconciliation_presentation_projection_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.execution_reconciliation_presentation_projection_v1 import (
     try_load_execution_reconciliation_presentation_projection_v1,
 )
 from tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1 import _run
@@ -119,32 +119,6 @@ def test_bound_offline_replay_commit_export_materialize_loader(tmp_path: Path) -
     assert mat.written is True
     loaded = try_load_execution_reconciliation_presentation_projection_v1(archive)
     assert loaded.loaded is True
-
-
-def test_dashboard_autobind_after_bound_offline_export(tmp_path: Path) -> None:
-    from datetime import datetime, timezone
-
-    from src.webui.market_dashboard_landscape_producer_binding_v2 import bind_market_universe_slots
-    from src.webui.market_dashboard_landscape_v2.availability import Availability
-
-    evidence, intermediate = _bound_offline_replay_commit()
-    archive = tmp_path / "archive"
-    export_execution_reconciliation_to_archive_sibling_from_replay_commit_v1(
-        archive_root=archive,
-        replay_intermediate=intermediate,
-        decision_evidence=evidence,
-    )
-    ts_iso = "2026-09-21T12:00:00Z"
-    ts = datetime(2026, 9, 21, 12, 0, 0, tzinfo=timezone.utc)
-    materialize_execution_reconciliation_presentation_projection_v1(
-        archive,
-        generated_at=ts_iso,
-        effective_at=ts_iso,
-    )
-    slots = bind_market_universe_slots(archive_root=archive, generated_at=ts)
-    er_slot = slots["execution_reconciliation"]
-    assert er_slot.availability in (Availability.AVAILABLE, Availability.STALE)
-    assert er_slot.execution_status == ORDER_INTENT_EFFECT_BOUND_OFFLINE
 
 
 def test_unbound_integrated_replay_exports_none_status(tmp_path: Path) -> None:

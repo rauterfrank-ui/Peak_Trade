@@ -1154,6 +1154,12 @@ def _validate_historical_surface_paths(
     surfaces: tuple[HistoricalSurfaceRecordV0, ...],
 ) -> None:
     for surface in surfaces:
+        rel = surface.path.strip()
+        if rel.startswith("src/webui/"):
+            candidate = repo_root / rel
+            if not candidate.is_file():
+                # Presentation HTTP/WebUI tree retired (WP-R2B-R4); census paths may remain in config.
+                continue
         _require_repo_relative_file(
             repo_root=repo_root,
             relative_path=surface.path,

@@ -1,0 +1,216 @@
+{
+  "review_id": "PRE_PR_ADVERSARIAL_CONTRACT_REVIEW_V1",
+  "work_package": "WP-R2B-R4_COMPLETE_PRESENTATION_INFRASTRUCTURE_RETIREMENT_V1",
+  "phase": "R4_FINAL_VERIFICATION_AND_GOVERNANCE_CLOSURE_V1",
+  "status": "PASS",
+  "baseline_sha": "b6ffca1d3b39b3dd8814c7c795a8aa6e04bc177a",
+  "worktree": "/Users/frnkhrz/Peak_Trade/.worktrees/complete_presentation_infrastructure_retirement_v1",
+  "branch": "feat/complete-presentation-infrastructure-retirement-v1",
+  "worktree_head_sha": "b6ffca1d3b39b3dd8814c7c795a8aa6e04bc177a",
+  "final_diff_vs_baseline_sha256": "ab1e30ee88d660f0aba813cf2dfb1d4c64c113358c35aff5a0341a603b803d4f",
+  "final_diff_file_count": 266,
+  "confirmed_defect_count": 0,
+  "unresolved_blocking_risk_count": 0,
+  "remediated_regressions_in_wp": [
+    {
+      "id": "PILOT_GONOGO_CROSSLINK_WEBUI_COCKPIT_PATH",
+      "class": "GOVERNANCE_POINTER_DRIFT",
+      "fix": "PILOT slice, CI_AUDIT, DOCS_TRUTH_MAP, crosslink tests retargeted to presentation_retirement_fail_closed_v1"
+    },
+    {
+      "id": "SINGLE_VENUE_OKX_ERRONEOUS_MODULE_ABSENCE_ASSERT",
+      "class": "TEST_FIXTURE_CORRUPTION",
+      "fix": "Removed erroneous ModuleNotFoundError expectation for workflow_archive_readmodel_projections_v1"
+    }
+  ],
+  "regression_7_fail_classification": [
+    {
+      "test_id": "tests/ops/test_check_bounded_pilot_readiness.py::test_valid_pe32_pe26_composition_passes",
+      "error_summary": "assert result['composition_pass'] is True — fail_reasons include pe26_assembly_digest unavailable and PE-26 traceability mismatch",
+      "root_cause": "Fixture _coherent_lifecycle_proof_fixtures() binds null pe32/pe26 digests; evaluate_* lifecycle integrators no longer emit digests matching static binding expectations (pre-existing fixture/evaluator drift)",
+      "contracts": [
+        "bounded_pilot_readiness_v1",
+        "bounded_pilot_readiness_lifecycle_static_proof_composition_v0"
+      ],
+      "baseline_b6ffca1_clean": "FAIL (identical)",
+      "worktree_wp": "FAIL (identical)",
+      "classification": "BASELINE_IDENTICAL",
+      "presentation_retirement_non_interference": "Proven — check_bounded_pilot_readiness cockpit import retargeted only; lifecycle composition logic unchanged in WP diff"
+    },
+    {
+      "test_id": "tests/ops/test_check_bounded_pilot_readiness.py::test_pe26_assembly_digest_mismatch_fails",
+      "error_summary": "assert any('pe26_assembly_digest mismatch' in fail_reasons) — composition already fails for unrelated reasons",
+      "root_cause": "Same fixture drift as above; negative-path assertion never reached because composition fails closed earlier",
+      "contracts": ["bounded_pilot_readiness_lifecycle_static_proof_composition_v0"],
+      "baseline_b6ffca1_clean": "FAIL (identical)",
+      "worktree_wp": "FAIL (identical)",
+      "classification": "BASELINE_IDENTICAL",
+      "presentation_retirement_non_interference": "Proven — no WP mutation to evaluate_lifecycle_static_proof_composition"
+    },
+    {
+      "test_id": "tests/ops/test_check_bounded_pilot_readiness.py::test_run_bounded_pilot_readiness_with_valid_lifecycle_proof",
+      "error_summary": "assert ok is True — lifecycle static proof composition_pass false propagates to run_bounded_pilot_readiness",
+      "root_cause": "Downstream of PE32/PE26 fixture drift (composition_pass false)",
+      "contracts": ["bounded_pilot_readiness_v1"],
+      "baseline_b6ffca1_clean": "FAIL (identical)",
+      "worktree_wp": "FAIL (identical)",
+      "classification": "BASELINE_IDENTICAL",
+      "presentation_retirement_non_interference": "Proven — script uses retired cockpit stub; failure is lifecycle composition not cockpit build"
+    },
+    {
+      "test_id": "tests/ops/test_pilot_gonogo_eval_ops_cockpit_payload_field_mapping_crosslink_v1.py::test_operational_slice_documents_row_payload_field_mappings_v1",
+      "error_summary": "(historical WP interim) missing src/ops/presentation_retirement_fail_closed_v1.py in PILOT slice doc",
+      "root_cause": "Presentation retirement removed src/webui/ops_cockpit.py while crosslink docs still referenced webui path",
+      "contracts": ["PILOT_GO_NO_GO_OPERATIONAL_SLICE", "PILOT_GONOGO_EVAL_OPS_COCKPIT_PAYLOAD_FIELD_MAPPING_CI_AUDIT"],
+      "baseline_b6ffca1_clean": "PASS",
+      "worktree_wp_initial": "FAIL",
+      "worktree_wp_final": "PASS",
+      "classification": "NEW_REGRESSION_REMEDIATED",
+      "presentation_retirement_non_interference": "Governance-only correction; no trading authority"
+    },
+    {
+      "test_id": "tests/ops/test_pilot_gonogo_eval_ops_cockpit_payload_field_mapping_crosslink_v1.py::test_docs_truth_map_field_mapping_chronicle_v1",
+      "error_summary": "(historical WP interim) DOCS_TRUTH_MAP chronicle row missing new cockpit module path",
+      "root_cause": "Same governance pointer drift after cockpit retirement",
+      "contracts": ["DOCS_TRUTH_MAP"],
+      "baseline_b6ffca1_clean": "PASS",
+      "worktree_wp_initial": "FAIL",
+      "worktree_wp_final": "PASS",
+      "classification": "NEW_REGRESSION_REMEDIATED"
+    },
+    {
+      "test_id": "tests/ops/test_pilot_gonogo_eval_ops_cockpit_payload_field_mapping_crosslink_v1.py::test_ci_audit_field_mapping_reciprocal_crosslink_v1",
+      "error_summary": "(historical WP interim) CI_AUDIT reciprocal section missing retired cockpit owner path",
+      "root_cause": "Same governance pointer drift",
+      "contracts": ["CI_AUDIT_KNOWN_ISSUES"],
+      "baseline_b6ffca1_clean": "PASS",
+      "worktree_wp_initial": "FAIL",
+      "worktree_wp_final": "PASS",
+      "classification": "NEW_REGRESSION_REMEDIATED"
+    },
+    {
+      "test_id": "tests/ops/test_pilot_gonogo_eval_ops_cockpit_payload_field_mapping_crosslink_v1.py::test_canonical_owners_referenced_in_docs_v1",
+      "error_summary": "(historical WP interim) truth_map/ci_audit missing presentation_retirement_fail_closed_v1 owner",
+      "root_cause": "Same governance pointer drift",
+      "contracts": ["DOCS_TRUTH_MAP", "CI_AUDIT_KNOWN_ISSUES"],
+      "baseline_b6ffca1_clean": "PASS",
+      "worktree_wp_initial": "FAIL",
+      "worktree_wp_final": "PASS",
+      "classification": "NEW_REGRESSION_REMEDIATED"
+    }
+  ],
+  "extended_known_failures_outside_125_batch": [
+    {
+      "test_id": "tests/ops/test_execution_reconciliation_archive_sibling_exporter_v1.py::test_bound_offline_replay_commit_export_materialize_loader",
+      "error_summary": "order_intent_effect 'NONE' != 'BOUND_OFFLINE'",
+      "classification": "BASELINE_IDENTICAL",
+      "presentation_retirement_non_interference": "No WP diff to execution reconciliation exporter or integrated replay intent binding"
+    },
+    {
+      "test_id": "tests/ops/test_dynamic_scope_archive_sibling_exporter_v1.py::test_path_boundary_only_authorized_sibling",
+      "error_summary": "written_files includes readmodels/MANIFEST.sha256 in addition to dynamic_scope_state_v1.json",
+      "classification": "BASELINE_IDENTICAL",
+      "presentation_retirement_non_interference": "No WP diff to dynamic_scope archive sibling exporter path policy"
+    }
+  ],
+  "regression_125_batch_final": {
+    "total": 125,
+    "pass": 122,
+    "fail": 3,
+    "fail_test_ids": [
+      "tests/ops/test_check_bounded_pilot_readiness.py::test_valid_pe32_pe26_composition_passes",
+      "tests/ops/test_check_bounded_pilot_readiness.py::test_pe26_assembly_digest_mismatch_fails",
+      "tests/ops/test_check_bounded_pilot_readiness.py::test_run_bounded_pilot_readiness_with_valid_lifecycle_proof"
+    ],
+    "all_failures_baseline_identical": true
+  },
+  "contracts_reviewed": [
+    "CAPABILITY_O8_CANONICAL_RUNTIME_OPERATIONS_ACTIVATION_V1",
+    "CAPABILITY_O7_GOVERNED_END_TO_END_RUNTIME_AND_DASHBOARD_EVIDENCE_V1",
+    "CAPABILITY_O6_OFFLINE_SUPERVISOR",
+    "O4_O5_CANONICAL_READ_MODEL_AND_MARKET_DASHBOARD_REBUILD_V1",
+    "presentation_retirement_fail_closed_v1",
+    "workflow_archive_readmodel_projections_v1 (#7130 baseline + __init__ export extension + intake modules untracked)",
+    "archive_sibling_exporters_octet",
+    "bounded_pilot_readiness_v1",
+    "pilot_go_no_go_eval_v1"
+  ],
+  "adversarial_scenarios": [
+    {
+      "scenario": "Residual src.webui static import in productive code",
+      "result": "PASS",
+      "evidence": "rg src/scripts *.py — zero src.webui imports"
+    },
+    {
+      "scenario": "Dashboard HTTP worker re-entry via peak_trade_runtime",
+      "result": "PASS",
+      "evidence": "O8 tests + peak_trade_runtime fail-closed; O2 package deleted"
+    },
+    {
+      "scenario": "Cockpit stub grants TRADE_READY / live authority",
+      "result": "PASS",
+      "evidence": "presentation_retired payload policy_state.action=NO_TRADE, blocked=true"
+    },
+    {
+      "scenario": "Archive exporter imports webui MDL binding",
+      "result": "PASS",
+      "evidence": "Sibling exporter tests green; webui autobind tests removed"
+    },
+    {
+      "scenario": "O7 harness starts HTTP supervisor",
+      "result": "PASS",
+      "evidence": "harness_v1 offline-only; 3/3 O7 tests pass"
+    },
+    {
+      "scenario": "Fail-open live panel providers after webui removal",
+      "result": "PASS",
+      "evidence": "status_providers returns unknown fallback with explicit retirement note"
+    },
+    {
+      "scenario": "Duplicate workflow_archive package vs #7130",
+      "result": "PASS",
+      "evidence": "Package exists at baseline; WP adds __init__ exports + untracked intake modules (not duplicate projection files)"
+    },
+    {
+      "scenario": "CI webui shard executes deleted tests/webui",
+      "result": "PASS",
+      "evidence": "ci.yml fast-lane retargeted to presentation retirement ops tests"
+    }
+  ],
+  "checks": {
+    "productive_import_closure": true,
+    "presentation_http_entrypoints_fail_closed": true,
+    "o4_o5_pso_archive_preserved": true,
+    "protected_trading_semantic_delta": false,
+    "active_safety_contracts_o6_o7_o8": true,
+    "string_module_refs_webui_in_productive_scripts": false,
+    "unexpected_http_worker_bindings": false,
+    "fail_open_presentation_fallbacks": false,
+    "evidence_manifest_mutation": false,
+    "global_non_interference_claimed": false
+  },
+  "ghv_reproof": {
+    "path": "evidence/ops/wp_r2b_r4_presentation_retirement_v1/20261016T043611Z_r4_final",
+    "graph_mode": "STRICT_CURRENT",
+    "status": "PASS",
+    "node_count": 302,
+    "edge_count": 67,
+    "current_relevance_unknown": 242,
+    "proof_eligibility": false,
+    "proof_eligibility_reasons": ["MISSING_PROVENANCE", "DIRTY_SOURCE_UNVERIFIED"],
+    "global_non_interference_proven": false,
+    "causal_closure_proven": false
+  },
+  "accepted_limitations": [
+    "Three PE32/PE26 bounded-pilot lifecycle tests remain BASELINE_IDENTICAL failures — out of WP scope per protected-area rule",
+    "Two archive sibling contract tests (execution reconciliation bound_offline, dynamic_scope manifest list) BASELINE_IDENTICAL — not presentation-retirement regressions",
+    "GHV proof_eligibility false on dirty worktree; no global non-interference claim",
+    "Historical runbooks still mention src/webui/ops_cockpit.py as archive reference — not treated as active CURRENT",
+    "Untracked intake modules under workflow_archive_readmodel_projections_v1 required for refresh script imports until commit"
+  ],
+  "regression_evidence": {
+    "command_125_batch": "./scripts/pt -m pytest tests/ops/test_governed_end_to_end_runtime_and_dashboard_evidence_v1.py tests/ops/test_canonical_runtime_operations_activation_v1.py tests/ops/test_canonical_read_model_and_market_dashboard_rebuild_v1.py tests/ops/test_economic_summary_archive_sibling_exporter_v1.py tests/ops/test_regime_bull_bear_switch_archive_sibling_exporter_v1.py tests/ops/test_double_play_dashboard_display_archive_sibling_exporter_v1.py tests/ops/test_presentation_projection_octet_orchestrator_family_exporter_v1.py tests/ops/test_ops_cockpit_payload_top_level_contract.py tests/ops/test_pilot_go_no_go_eval_v1.py tests/ops/test_check_bounded_pilot_readiness.py tests/ops/test_pilot_gonogo_eval_ops_cockpit_payload_field_mapping_crosslink_v1.py tests/ops/test_productive_decision_host_active_archive_three_family_binding_v1.py",
+    "result": "122 passed, 3 failed (all BASELINE_IDENTICAL PE32/PE26)",
+    "baseline_comparison_method": "git stash clean tree at b6ffca1 vs WP dirty tree; identical fail sets for PE32/execution/dynamic_scope"
+  }
+}

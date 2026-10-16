@@ -7,15 +7,12 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
-from src.ops.canonical_local_launcher_and_process_supervision_v1.constants_v1 import (
-    AUTHORIZED_MODES,
-    MODE_DASHBOARD_ONLY,
-)
 from src.ops.productive_decision_host_active_archive_three_family_binding_v1.constants_v1 import (
     EXCHANGE_CREDENTIAL_USE,
     FORBIDDEN_PRIVATE_PATH_PREFIXES,
     LIVE_ORDERS,
     O2_AUTHORIZED_MODES_REQUIRED,
+    PRESENTATION_SUPERVISOR_RETIRED,
     ORDER_PATH_ACTIVATED,
     OWNER,
     PAPER_EXCHANGE_ORDERS,
@@ -113,14 +110,15 @@ def require_repository_sha_match_v1(
         )
 
 
-def prove_o2_dashboard_only_unchanged_v1() -> None:
-    if set(AUTHORIZED_MODES) != set(O2_AUTHORIZED_MODES_REQUIRED):
+def prove_presentation_supervisor_retired_v1(*, repo_root: Path) -> None:
+    if not PRESENTATION_SUPERVISOR_RETIRED:
+        raise ProductiveHostAuthorizationError("PRESENTATION_SUPERVISOR_RETIREMENT_FLAG_FALSE")
+    o2_pkg = repo_root / "src/ops/canonical_local_launcher_and_process_supervision_v1"
+    if o2_pkg.is_dir():
         raise ProductiveHostAuthorizationError(
-            "O2_AUTHORIZED_MODES_DRIFT",
-            f"AUTHORIZED_MODES={sorted(AUTHORIZED_MODES)}",
+            "O2_DASHBOARD_SUPERVISOR_PACKAGE_STILL_PRESENT",
+            str(o2_pkg),
         )
-    if MODE_DASHBOARD_ONLY not in AUTHORIZED_MODES:
-        raise ProductiveHostAuthorizationError("O2_DASHBOARD_ONLY_MISSING")
 
 
 def _bridge_authority_flags_from_source(repo_root: Path) -> dict[str, bool]:
@@ -158,8 +156,8 @@ def prove_network_and_order_boundary_v1(
     repo_root: Path | None = None,
 ) -> BoundaryProofV1:
     """Static fail-closed proof: public-MD allowlist only; no order/credential path."""
-    prove_o2_dashboard_only_unchanged_v1()
     root = Path(repo_root) if repo_root is not None else Path(__file__).resolve().parents[3]
+    prove_presentation_supervisor_retired_v1(repo_root=root)
     flags = _bridge_authority_flags_from_source(root)
     order_reachable = bool(
         flags["ORDERS_AUTHORIZED"]
@@ -182,8 +180,8 @@ def prove_network_and_order_boundary_v1(
     )
     proof = BoundaryProofV1(
         ok=ok,
-        o2_authorized_modes=tuple(sorted(AUTHORIZED_MODES)),
-        o2_unchanged=set(AUTHORIZED_MODES) == set(O2_AUTHORIZED_MODES_REQUIRED),
+        o2_authorized_modes=tuple(sorted(O2_AUTHORIZED_MODES_REQUIRED)),
+        o2_unchanged=PRESENTATION_SUPERVISOR_RETIRED,
         public_md_hosts=PUBLIC_MD_ALLOWED_HOSTS,
         public_md_path_prefixes=PUBLIC_MD_ALLOWED_PATH_PREFIXES,
         private_endpoints_reachable=private_reachable,
@@ -205,14 +203,20 @@ def prove_network_and_order_boundary_v1(
 
 
 def resolve_git_head_sha_v1(repo_root: Path) -> str:
-    git_dir = repo_root / ".git"
-    if not git_dir.exists():
-        raise ProductiveHostAuthorizationError("GIT_DIR_MISSING", str(git_dir))
-    head = (git_dir / "HEAD").read_text(encoding="utf-8").strip()
-    if head.startswith("ref:"):
-        ref = head.split(" ", 1)[1].strip()
-        ref_path = git_dir / ref
-        if not ref_path.is_file():
-            raise ProductiveHostAuthorizationError("GIT_REF_MISSING", ref)
-        return ref_path.read_text(encoding="utf-8").strip().lower()
-    return head.lower()
+    import subprocess
+
+    proc = subprocess.run(
+        ["git", "-C", str(repo_root), "rev-parse", "HEAD"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if proc.returncode != 0:
+        raise ProductiveHostAuthorizationError(
+            "GIT_REV_PARSE_FAILED",
+            (proc.stderr or proc.stdout or "").strip(),
+        )
+    sha = proc.stdout.strip().lower()
+    if len(sha) != 40:
+        raise ProductiveHostAuthorizationError("GIT_REV_PARSE_INVALID", sha)
+    return sha

@@ -44,6 +44,9 @@ REQUIRED_CONTRACT_KEYS: tuple[str, ...] = (
     "second_ssot_allowed",
     "o6_productive_recovery_o2_supervisor_coupling",
     "canonical_operator_entry_productive_full_core_dependency",
+    "presentation_operator_entry_retired",
+    "presentation_operator_entry_fail_closed",
+    "o2_dashboard_supervisor_retired",
 )
 FORBIDDEN_TOKEN_BASENAMES: frozenset[str] = frozenset(
     {

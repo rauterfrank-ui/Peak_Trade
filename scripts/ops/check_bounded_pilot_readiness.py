@@ -430,7 +430,9 @@ def run_bounded_pilot_readiness(
     """
     from scripts.check_live_readiness import run_readiness_checks
     from scripts.ops.pilot_go_no_go_eval_v1 import evaluate
-    from src.webui.ops_cockpit import build_ops_cockpit_payload
+    from src.ops.presentation_retirement_fail_closed_v1 import (
+        build_presentation_retired_cockpit_payload_v1 as build_ops_cockpit_payload,
+    )
 
     bundle: dict[str, Any] = {"contract": CONTRACT_ID}
 

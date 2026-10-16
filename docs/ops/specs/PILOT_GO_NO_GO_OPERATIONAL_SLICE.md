@@ -11,7 +11,7 @@ This document maps each checklist item in `PILOT_GO_NO_GO_CHECKLIST` to the conc
 
 ## Relationship
 - Companion to `docs/ops/specs/PILOT_GO_NO_GO_CHECKLIST.md`
-- References Ops Cockpit payload structure from `src/webui/ops_cockpit.py`
+- References Ops Cockpit payload structure from `src/ops/presentation_retirement_fail_closed_v1.py` (presentation HTTP retired; fail-closed stub aliased as `build_ops_cockpit_payload` in pilot scripts)
 - No direct activation authority; read-only operator guidance
 - Optional docs-only pointer metadata for externally retained go/no-go **eval** captures (bounded pilot L2; no payloads in git): [`MASTER_V2_BOUNDED_PILOT_L2_GO_NO_GO_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L2_GO_NO_GO_EVIDENCE_POINTER_CONTRACT_V0.md)
 
@@ -36,8 +36,8 @@ This document maps each checklist item in `PILOT_GO_NO_GO_CHECKLIST` to the conc
 | 15 | Ambiguity Rule | ambiguity → NO_TRADE / safe stop? | Ops Cockpit + Specs | `policy_state`, `incident_state`; `RECONCILIATION_FLOW_SPEC` |
 
 ## Ops Cockpit Entry Point
-- Payload: `build_ops_cockpit_payload()` in `src/webui/ops_cockpit.py`
-- HTML: `render_ops_cockpit_html()` for operator dashboard view
+- Payload: `build_presentation_retired_cockpit_payload_v1()` in `src/ops/presentation_retirement_fail_closed_v1.py` — pilot scripts call it via `build_ops_cockpit_payload()` alias (`scripts/ops/pilot_go_no_go_eval_v1.py`, bounded-pilot preflight)
+- HTML: **retired** — no presentation HTTP host; operators use JSON preflight scripts only
 
 ## Known Gaps (Follow-up)
 - ~~Fee/slippage: dedicated conservative-assumptions document~~ (done: `FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS`)

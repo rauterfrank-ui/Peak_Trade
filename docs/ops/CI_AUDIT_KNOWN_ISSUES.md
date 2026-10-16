@@ -530,7 +530,7 @@ PREFLIGHT_REMAINS_BLOCKED=true
 
 **Operator-GO:** `GO_PILOT_GONOGO_EVAL_OPS_COCKPIT_PAYLOAD_FIELD_MAPPING_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `…&#47;planning&#47;systemwide_next_safe_scope_ranking_after_pilot_gonogo_15_to_11_eval_boundary_crosslink_guard_merge_no_run_v1_20260612T200914Z&#47;`
 
-**Purpose:** Static reciprocal crosslink guard so the **11-row** pilot eval (`pilot_go_no_go_eval_v1.py`), **15-row** operational slice Row→Payload field mappings (`PILOT_GO_NO_GO_OPERATIONAL_SLICE.md`), and **Ops Cockpit payload builder** (`build_ops_cockpit_payload()` in `src/webui/ops_cockpit.py`) plus **SLICE-OC-2** top-level contract (`test_ops_cockpit_payload_top_level_contract.py`) remain visibly aligned in CI_AUDIT and DOCS_TRUTH_MAP — with reuse pointers to the existing Row 7 (#4189), Rows 8/10/11 (#4190), and 15→11 eval-scope boundary (#4191) guards — **without** authorizing pilot GO, changing DRAFT posture, adding cockpit rows, changing payload semantics, execution/trading/strategy logic changes, runtime, or execute.
+**Purpose:** Static reciprocal crosslink guard so the **11-row** pilot eval (`pilot_go_no_go_eval_v1.py`), **15-row** operational slice Row→Payload field mappings (`PILOT_GO_NO_GO_OPERATIONAL_SLICE.md`), and **Ops Cockpit payload builder** (`build_presentation_retired_cockpit_payload_v1()` in `src/ops/presentation_retirement_fail_closed_v1.py`, aliased as `build_ops_cockpit_payload` in pilot scripts; presentation HTTP retired) plus **SLICE-OC-2** top-level contract (`test_ops_cockpit_payload_top_level_contract.py`) remain visibly aligned in CI_AUDIT and DOCS_TRUTH_MAP — with reuse pointers to the existing Row 7 (#4189), Rows 8/10/11 (#4190), and 15→11 eval-scope boundary (#4191) guards — **without** authorizing pilot GO, changing DRAFT posture, adding cockpit rows, changing payload semantics, execution/trading/strategy logic changes, runtime, or execute.
 
 **Canonical repo owners (reuse — do not duplicate):**
 
@@ -539,7 +539,7 @@ PREFLIGHT_REMAINS_BLOCKED=true
 | Pilot Go/No-Go operational slice (Row→Payload mapping, DRAFT) | `docs/ops/specs/PILOT_GO_NO_GO_OPERATIONAL_SLICE.md` |
 | Pilot eval (11 cockpit rows; payload-path evaluators) | `scripts/ops/pilot_go_no_go_eval_v1.py` |
 | Pilot eval tests | `tests/ops/test_pilot_go_no_go_eval_v1.py` |
-| Ops Cockpit payload builder | `src/webui/ops_cockpit.py` (`build_ops_cockpit_payload()`) |
+| Ops Cockpit payload builder | `src/ops/presentation_retirement_fail_closed_v1.py` (`build_presentation_retired_cockpit_payload_v1`; pilot alias `build_ops_cockpit_payload`) |
 | SLICE-OC-2 top-level payload contract | `tests/ops/test_ops_cockpit_payload_top_level_contract.py` |
 | Row 7 doc-based exclusion guard (#4189) | `tests/ops/test_pilot_fee_slippage_conservative_assumptions_crosslink_v1.py` |
 | Rows 8/10/11 doc-based exclusion guard (#4190) | `tests/ops/test_pilot_gonogo_rows_8_10_11_exclusion_crosslink_v1.py` |

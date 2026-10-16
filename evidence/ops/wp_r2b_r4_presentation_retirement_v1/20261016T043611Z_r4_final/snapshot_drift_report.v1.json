@@ -1,0 +1,28 @@
+{
+  "census_baseline_is_ancestor_of_head": true,
+  "census_baseline_matches_head": false,
+  "census_source_baseline_head": "e5d9296fb269208b06980518d410b4f2b616bf5b",
+  "classification_note": "Drift SHA mismatch does not alone prove semantic census/landscape incompatibility; validators assess schema integrity separately.",
+  "commits_since_census_baseline": [
+    {
+      "drift_class": "UNKNOWN",
+      "sha": "b6ffca1d3b39b3dd8814c7c795a8aa6e04bc177a",
+      "subject": "refactor(ops): detach O6 recovery evidence from O2 supervisor (#7131)"
+    },
+    {
+      "drift_class": "UNKNOWN",
+      "sha": "408846fc1dad31f58cad9871a331b81a41efb0be",
+      "subject": "refactor(ops): extract shared archive readmodel projections from webui (#7130)"
+    },
+    {
+      "drift_class": "CURRENT_RELEVANT",
+      "sha": "efaa6692d60d53a019c79aceb7aa96c284455a07",
+      "subject": "GHV: Complete Whole-System Causal Traversal and Conservative Impact Analysis (#7129)"
+    }
+  ],
+  "git_head": "b6ffca1d3b39b3dd8814c7c795a8aa6e04bc177a",
+  "landscape_baseline_matches_head": false,
+  "landscape_evidence_baseline_sha": "e5d9296fb269208b06980518d410b4f2b616bf5b",
+  "schema_version": "snapshot_drift_report.v1",
+  "snapshot_drift_root_cause": "CODE_AHEAD_OF_PINNED_GOVERNANCE_BASELINE"
+}

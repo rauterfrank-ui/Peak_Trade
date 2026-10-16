@@ -208,7 +208,10 @@ def test_main_exits_3_when_cockpit_payload_build_fails(
     def _no_cockpit(**kw) -> object:
         raise RuntimeError("cockpit down")
 
-    monkeypatch.setattr("src.webui.ops_cockpit.build_ops_cockpit_payload", _no_cockpit)
+    monkeypatch.setattr(
+        "src.ops.presentation_retirement_fail_closed_v1.build_presentation_retired_cockpit_payload_v1",
+        _no_cockpit,
+    )
     monkeypatch.setattr(
         sys,
         "argv",

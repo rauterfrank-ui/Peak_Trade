@@ -32,14 +32,11 @@ from src.ops.productive_decision_host_active_archive_three_family_binding_v1.mod
 from src.ops.productive_decision_host_active_archive_three_family_binding_v1.state_root_layout_v1 import (
     materialize_state_root_layout_v1,
 )
-from src.webui.market_dashboard_landscape_producer_binding_v2 import (
-    economic_viability_evidence_fields_from_v1,
-)
 from src.ops.presentation_archive_materializers_v1.economic_summary_presentation_projection_materializer_v1 import (
     SOURCE_FIELDS_RELATIVE_PATH,
     materialize_economic_summary_presentation_projection_v1,
 )
-from src.webui.workflow_dashboard_readmodel_v1.economic_summary_presentation_projection_v1 import (
+from src.ops.workflow_archive_readmodel_projections_v1.economic_summary_presentation_projection_v1 import (
     try_load_economic_summary_presentation_projection_v1,
 )
 from tests.backtest.test_economic_viability_evidence_v1 import (
@@ -49,7 +46,7 @@ from tests.backtest.test_economic_viability_evidence_v1 import (
 )
 
 EXPORTER_PKG = Path("src/ops/economic_summary_archive_sibling_exporter_v1")
-PRODUCER_BINDING = Path("src/webui/market_dashboard_landscape_producer_binding_v2.py")
+EXPLICIT_BUNDLE_SOURCE = EXPORTER_PKG / "explicit_bundle_source_v1.py"
 FORBIDDEN_IMPORT_PREFIXES = (
     "src.webui",
     "webui",
@@ -93,14 +90,11 @@ def _persist_step29m_bundle(
 
 def test_explicit_bundle_export_materialize_loader_and_field_mapping(tmp_path: Path) -> None:
     bundle = _persist_step29m_bundle(tmp_path)
-    loaded = ev.load_economic_viability_evidence_bundle_v1(bundle)
-    expected = economic_viability_evidence_fields_from_v1(
-        loaded.evidence,
-        generated_at=datetime(2026, 9, 21, 12, 0, 0, tzinfo=timezone.utc),
-        source_reference=str(bundle),
+    expected, build_errors = build_economic_summary_sibling_payload_from_explicit_bundle_v1(
+        economic_viability_evidence_bundle_path=bundle,
     )
-    for drop in ("generated_at", "source_reference"):
-        expected.pop(drop, None)
+    assert build_errors == ()
+    assert expected is not None
 
     archive = tmp_path / "archive"
     out = export_economic_summary_to_archive_sibling_from_explicit_bundle_v1(
@@ -124,29 +118,6 @@ def test_explicit_bundle_export_materialize_loader_and_field_mapping(tmp_path: P
     assert mat.written is True
     loaded_proj = try_load_economic_summary_presentation_projection_v1(archive)
     assert loaded_proj.loaded is True
-
-
-def test_dashboard_autobind_after_explicit_bundle_export(tmp_path: Path) -> None:
-    from src.webui.market_dashboard_landscape_producer_binding_v2 import bind_market_universe_slots
-    from src.webui.market_dashboard_landscape_v2.availability import Availability
-
-    bundle = _persist_step29m_bundle(tmp_path)
-    archive = tmp_path / "archive"
-    export_economic_summary_to_archive_sibling_from_explicit_bundle_v1(
-        archive_root=archive,
-        economic_viability_evidence_bundle_path=bundle,
-    )
-    ts_iso = "2026-09-21T12:00:00Z"
-    ts = datetime(2026, 9, 21, 12, 0, 0, tzinfo=timezone.utc)
-    materialize_economic_summary_presentation_projection_v1(
-        archive,
-        generated_at=ts_iso,
-        effective_at=ts_iso,
-    )
-    slots = bind_market_universe_slots(archive_root=archive, generated_at=ts)
-    eco_slot = slots["economic_summary"]
-    assert eco_slot.availability in (Availability.AVAILABLE, Availability.STALE)
-    assert eco_slot.economic_viability_status == "RESEARCH_ONLY"
 
 
 def test_missing_bundle_path_fail_closed(tmp_path: Path) -> None:
@@ -251,10 +222,10 @@ def test_cross_sectional_shaped_artifact_rejected(tmp_path: Path) -> None:
     assert ERROR_CROSS_SECTIONAL_SHAPE in errors
 
 
-def test_producer_binding_forbids_economic_discovery() -> None:
-    text = PRODUCER_BINDING.read_text(encoding="utf-8")
-    assert "Never discover/select EconomicViabilityEvidenceV1" in text
-    assert "AUTHORITY_EFFECT=NONE" in text or "authority_effect" in text
+def test_explicit_bundle_source_forbids_discovery() -> None:
+    text = EXPLICIT_BUNDLE_SOURCE.read_text(encoding="utf-8")
+    assert "No registry, latest, or filesystem discovery" in text
+    assert "explicit" in text.lower()
 
 
 def test_d4_4_witness_started_separately() -> None:

@@ -291,7 +291,7 @@ def test_end_to_end_export_materialize_loader(tmp_path: Path) -> None:
         materialize_double_play_presentation_projection_v1,
         try_load_double_play_display_source_v1,
     )
-    from src.webui.workflow_dashboard_readmodel_v1.double_play_presentation_projection_v1 import (
+    from src.ops.workflow_archive_readmodel_projections_v1.double_play_presentation_projection_v1 import (
         STORAGE_RELATIVE_PATH,
         try_load_double_play_presentation_projection_v1,
     )

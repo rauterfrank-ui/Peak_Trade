@@ -2689,9 +2689,9 @@ def test_fast_lane_skips_full_static_sweep_when_focused() -> None:
     assert "fast_lane_contract_mode == 'FULL_STATIC_CONTRACTS'" in static_if
     assert "OPS_SHARD_COUNT=8" in text
     # Case D (webui_surface_only): skip FULL_STATIC; bounded WebUI pytest still gates.
-    webui_if = text.split("name: WebUI bounded pytest (market/observability surface)", 1)[1].split(
-        "run:", 1
-    )[0]
+    webui_if = text.split("name: Presentation retirement bounded pytest (legacy webui lane)", 1)[
+        1
+    ].split("run:", 1)[0]
     assert "webui_surface_changed == 'true'" in webui_if
     assert "run_matrix != 'true'" in webui_if
 

@@ -60,18 +60,11 @@ SELECTOR = Path("scripts/ops/ci_test_selection_v1.py")
 _BOOT_CI_YML = ".github/workflows/ci.yml"
 _BOOT_CONTRACT = "tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py"
 _BOOT = (_BOOT_CI_YML, _BOOT_CONTRACT)
-WEBUI_BOUNDED_PYTEST_MODULES = (
-    "tests/webui/test_workflow_dashboard_readmodel_v1.py",
-    "tests/webui/test_observability_workflow_dashboard_structure_contract_v1.py",
-    "tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py",
-    "tests/webui/test_observability_hub.py",
-    "tests/webui/test_last_paper_run_panel_readmodel_v0.py",
-    "tests/webui/test_observability_last_paper_run_panel_structure_contract_v0.py",
-    "tests/ops/test_last_paper_run_panel_env_schema_boundary_v0.py",
-    "tests/webui/test_observability_workflow_dashboard_structure_contract_v1.py",
-    "tests/webui/test_pkg_landscape_current_consumer_boundary_v1.py",
-    "tests/webui/test_market_landscape_dashboard_v2_shell_route_v0.py",
-    "tests/webui/test_market_landscape_dashboard_v2_producer_binding_v0.py",
+PRESENTATION_RETIREMENT_BOUNDED_PYTEST_MODULES = (
+    "tests/ops/test_ops_cockpit_payload_top_level_contract.py",
+    "tests/ops/test_canonical_runtime_operations_activation_v1.py",
+    "tests/ops/test_pilot_go_no_go_eval_v1.py",
+    "tests/ops/test_pilot_gonogo_eval_ops_cockpit_payload_field_mapping_crosslink_v1.py",
 )
 
 
@@ -430,13 +423,11 @@ def test_fast_lane_runs_static_contract_tests_when_applicable() -> None:
     assert "docs_or_static_contract_only" not in narrow
 
 
-def test_fast_lane_webui_bounded_pytest_modules() -> None:
+def test_fast_lane_presentation_retirement_bounded_pytest_modules() -> None:
     text = _ci_text()
-    assert "WebUI bounded pytest (market/observability surface)" in text
+    assert "Presentation retirement bounded pytest (legacy webui lane)" in text
     assert "needs.changes.outputs.webui_surface_changed == 'true'" in text
-    assert "PEAK_TRADE_LAST_PAPER_RUN_PANEL_ENABLED" in text
-    assert "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED" in text
-    for module in WEBUI_BOUNDED_PYTEST_MODULES:
+    for module in PRESENTATION_RETIREMENT_BOUNDED_PYTEST_MODULES:
         assert module in text
 
 

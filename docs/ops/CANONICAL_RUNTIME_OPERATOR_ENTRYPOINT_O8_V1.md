@@ -12,8 +12,10 @@
 scripts/ops/peak_trade_runtime.py
 ```
 
-This is the sole recommended local operator entrypoint for supervised
-dashboard-only runtime operations under the O8 activation contract.
+This is the sole recommended local operator entrypoint for canonical runtime
+operations under the O8 activation contract. **Presentation HTTP/dashboard
+supervision (legacy O2) is retired** — `peak_trade_runtime.py` is fail-closed
+(exit 2) until a non-presentation operator surface is explicitly re-authorized.
 
 Canonical subcommands:
 
@@ -46,20 +48,29 @@ consume authorization, open network sessions, or read token/credential files.
 
 ## Compatibility and legacy policy
 
-Required compatibility paths remain present and callable:
+Retired presentation entrypoints (fail-closed; do not start HTTP dashboards):
 
 ```text
 scripts/run_web_dashboard.py
+scripts/serve_live_dashboard.py
+scripts/webui/local_market_dashboard.sh
+scripts/webui/review_server.sh
+src/webui/   (removed — archive read models live under src/ops/workflow_archive_readmodel_projections_v1/)
+src/live/web/   (removed)
+```
+
+Archive / read-model refresh (non-HTTP, productive):
+
+```text
 scripts/ops/refresh_okx_market_dashboard_v1.py
 ```
 
-Non-canonical observer stack (read-only parallel live.web host) remains present;
 O8 `legacy_path_policy.deletion_allowed` stays `false` (fail-closed against
-ad-hoc legacy deletion). Governed dedup removed the duplicate launcher only:
+ad-hoc legacy deletion). Governed presentation retirement removed duplicate
+launchers and the O2 supervisor package:
 
 ```text
-scripts/serve_live_dashboard.py
-src/live/web/app.py
+src/ops/canonical_local_launcher_and_process_supervision_v1/   (removed)
 ```
 
 Removed duplicate (must not be reintroduced):

@@ -1,32 +1,32 @@
 #!/usr/bin/env python3
-"""Canonical Peak_Trade local runtime launcher (O2 + O8 activation surface).
+"""Retired presentation operator entrypoint (fail-closed).
 
-CANONICAL_OPERATOR_ENTRYPOINT for Peak_Trade local runtime operations.
-
-Command surface:
-  preflight | start | status | health | logs | stop | restart | recover | verify
-
-Does not authorize live/testnet/paper exchange orders, credentials,
-confirm-token minting, or public network sessions.
-
-Legacy launch paths remain physically present and callable. Operator
-recommendation and documentation pointers are activated to this entrypoint
-under CAPABILITY_O8_CANONICAL_RUNTIME_OPERATIONS_ACTIVATION_V1. Legacy
-deletion or functional mutation is out of scope for O8 bounded activation.
+CAPABILITY_O8 retains contract metadata only. Local dashboard / HTTP supervisor
+paths are retired; Safari + OKX replace presentation observation.
 """
 
 from __future__ import annotations
 
+import json
 import sys
-from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
 
-from src.ops.canonical_local_launcher_and_process_supervision_v1.cli_v1 import (  # noqa: E402
-    main,
-)
+def main() -> int:
+    payload = {
+        "ok": False,
+        "code": "PRESENTATION_OPERATOR_ENTRY_RETIRED_FAIL_CLOSED",
+        "capability_id": "CAPABILITY_O8_CANONICAL_RUNTIME_OPERATIONS_ACTIVATION_V1",
+        "presentation_http_host_retired": True,
+        "o2_dashboard_supervisor_retired": True,
+        "network_session_started": False,
+        "orders_submitted": False,
+        "credentials_used": False,
+        "authorization_consumed": False,
+        "detail": "Use productive full-core entrypoints; presentation operator CLI retired.",
+    }
+    sys.stdout.write(json.dumps(payload, sort_keys=True) + "\n")
+    return 2
+
 
 if __name__ == "__main__":
     raise SystemExit(main())
