@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import copy
 import importlib.util
+import json
 import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -141,8 +143,68 @@ def run_census_validator_subprocess(
     return [], True
 
 
+def _git_is_ancestor(repo_root: Path, ancestor: str, head: str) -> bool:
+    if not ancestor or not head:
+        return False
+    if ancestor == head:
+        return True
+    try:
+        subprocess.check_call(
+            ["git", "-C", str(repo_root), "merge-base", "--is-ancestor", ancestor, head],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
+
+def _load_json_at_git_ref(repo_root: Path, git_ref: str, rel_path: str) -> dict[str, Any] | None:
+    try:
+        raw = subprocess.check_output(
+            ["git", "-C", str(repo_root), "show", f"{git_ref}:{rel_path}"],
+            text=True,
+        )
+    except subprocess.CalledProcessError:
+        return None
+    return json.loads(raw)
+
+
+def _strip_census_pin_fields(doc: dict[str, Any]) -> dict[str, Any]:
+    stripped = copy.deepcopy(doc)
+    stripped.pop("source_baseline_head", None)
+    return stripped
+
+
+def _strip_landscape_pin_fields(doc: dict[str, Any]) -> dict[str, Any]:
+    stripped = copy.deepcopy(doc)
+    stripped.pop("evidence_baseline_sha", None)
+    stripped.pop("evidence_baseline_tree_sha", None)
+    return stripped
+
+
+def _materialized_governance_snapshot_matches_baseline(
+    *,
+    repo_root: Path,
+    git_head: str,
+    baseline_sha: str,
+    current_doc: dict[str, Any],
+    rel_path: str,
+    strip_fn,
+) -> bool:
+    if not baseline_sha or git_head == baseline_sha:
+        return True
+    if not _git_is_ancestor(repo_root, baseline_sha, git_head):
+        return False
+    baseline_doc = _load_json_at_git_ref(repo_root, baseline_sha, rel_path)
+    if baseline_doc is None:
+        return False
+    return strip_fn(baseline_doc) == strip_fn(current_doc)
+
+
 def validate_snapshot_compatibility(
     *,
+    repo_root: Path,
     git_head: str,
     census_doc: dict[str, Any],
     landscape_doc: dict[str, Any],
@@ -152,8 +214,20 @@ def validate_snapshot_compatibility(
         return []
     errors: list[str] = []
     baseline = str(census_doc.get("source_baseline_head") or "")
+    census_rel = "config/governance/current_system_census_graph_v1/source_v1.json"
+    landscape_rel = "config/governance/current_universe_landscape_snapshot_v1/source_v1.json"
     if baseline and git_head != baseline:
-        errors.append(f"census_source_baseline_head_mismatch: head={git_head} baseline={baseline}")
+        if not _materialized_governance_snapshot_matches_baseline(
+            repo_root=repo_root,
+            git_head=git_head,
+            baseline_sha=baseline,
+            current_doc=census_doc,
+            rel_path=census_rel,
+            strip_fn=_strip_census_pin_fields,
+        ):
+            errors.append(
+                f"census_source_baseline_head_mismatch: head={git_head} baseline={baseline}"
+            )
     land_sha = str(
         landscape_doc.get("evidence_baseline_sha")
         or landscape_doc.get("universe_map_consolidation_v1", {}).get(
@@ -162,9 +236,17 @@ def validate_snapshot_compatibility(
         or ""
     )
     if land_sha and git_head != land_sha:
-        errors.append(
-            f"landscape_evidence_baseline_sha_mismatch: head={git_head} baseline={land_sha}"
-        )
+        if not _materialized_governance_snapshot_matches_baseline(
+            repo_root=repo_root,
+            git_head=git_head,
+            baseline_sha=land_sha,
+            current_doc=landscape_doc,
+            rel_path=landscape_rel,
+            strip_fn=_strip_landscape_pin_fields,
+        ):
+            errors.append(
+                f"landscape_evidence_baseline_sha_mismatch: head={git_head} baseline={land_sha}"
+            )
     if not baseline:
         errors.append("missing_census_source_revision")
     return errors
@@ -231,6 +313,7 @@ def validate_sources_v1(
         result.landscape_validator_connected = False
 
     result.snapshot_errors = validate_snapshot_compatibility(
+        repo_root=repo_root,
         git_head=git_head,
         census_doc=census_doc,
         landscape_doc=landscape_doc,

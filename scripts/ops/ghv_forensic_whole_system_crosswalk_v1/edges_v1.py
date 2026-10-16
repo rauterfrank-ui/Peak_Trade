@@ -12,8 +12,24 @@ from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.constants_v1 import (
 ALL_TYPED_EDGE_TYPES = CAUSAL_EDGE_TYPES | STRUCTURAL_EDGE_TYPES
 
 
+def _normalize_flow_type(flow: str) -> str:
+    raw = str(flow or "").strip().upper()
+    if raw.endswith("_FLOW"):
+        return raw
+    mapping = {
+        "DATA": "DATA_FLOW",
+        "EVIDENCE": "EVIDENCE_FLOW",
+        "DECISION": "DECISION_FLOW",
+        "CONSTRAINT": "CONSTRAINT_FLOW",
+        "PRESENTATION": "PRESENTATION_FLOW",
+        "PROMOTION": "PROMOTION_FLOW",
+        "OBSERVATION": "OBSERVATION_FLOW",
+    }
+    return mapping.get(raw, raw)
+
+
 def census_flow_to_typed_edge(edge: dict[str, Any]) -> tuple[str | None, str]:
-    flow = str(edge.get("flow_type") or "")
+    flow = _normalize_flow_type(str(edge.get("flow_type") or ""))
     contract = edge.get("contract_or_payload")
     if flow == "DECISION_FLOW":
         if contract and str(contract).strip():
@@ -22,6 +38,12 @@ def census_flow_to_typed_edge(edge: dict[str, Any]) -> tuple[str | None, str]:
     if flow in {"DATA_FLOW", "OBSERVATION_FLOW"}:
         return "PRODUCES", "CONTRACT_EVIDENCE"
     if flow == "EVIDENCE_FLOW":
+        return "OBSERVES", "CONTRACT_EVIDENCE"
+    if flow == "CONSTRAINT_FLOW":
+        return "BLOCKS", "CONTRACT_EVIDENCE"
+    if flow == "PROMOTION_FLOW":
+        return "AUTHORIZES", "CONTRACT_EVIDENCE"
+    if flow == "PRESENTATION_FLOW":
         return "OBSERVES", "CONTRACT_EVIDENCE"
     return None, f"UNRESOLVED_FLOW_TYPE:{flow}"
 

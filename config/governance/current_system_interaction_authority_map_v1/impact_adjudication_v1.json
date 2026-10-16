@@ -1,31 +1,39 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "f91d2cf2fed95af09376c464489f0ca19734e7f7",
+  "base_sha": "e5d9296fb269208b06980518d410b4f2b616bf5b",
   "head_sha": "PENDING_PR_HEAD",
   "changed_paths": [
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
+    "config/governance/current_system_census_graph_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-    "docs/system_atlas/entities/catalog.yaml",
-    "src/ops/public_md_observation_get_adapter_v1/contract_v1.py"
+    "config/governance/current_universe_landscape_snapshot_v1/source_v1.json",
+    "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/census_endpoint_resolve_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/compose_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/edges_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/impact_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/source_validation_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/traversal_v1.py",
+    "tests/ops/test_ghv_forensic_causal_engine_v1.py",
+    "tests/ops/test_ghv_forensic_whole_system_crosswalk_v1.py"
   ],
-  "changed_paths_sha256": "67098e411e308a86ed3289bb8b9b1a82e211b54af4607ee6477bfe8ca4412575",
+  "changed_paths_sha256": "b0777d9a4eebe54fbda14d5705b6b8ba40e5642f9b7b0fb8fa465d54ab5d893c",
   "covered_candidate_paths": [
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
-    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-    "docs/system_atlas/entities/catalog.yaml"
+    "config/governance/current_system_census_graph_v1/source_v1.json",
+    "config/governance/current_universe_landscape_snapshot_v1/source_v1.json",
+    "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/census_endpoint_resolve_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/compose_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/edges_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/impact_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/source_validation_v1.py",
+    "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/traversal_v1.py",
+    "tests/ops/test_ghv_forensic_causal_engine_v1.py",
+    "tests/ops/test_ghv_forensic_whole_system_crosswalk_v1.py"
   ],
   "evidence_refs": [
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
-    "tests/ops/test_current_system_interaction_authority_map_v1.py"
+    "tests/ops/test_ghv_forensic_whole_system_crosswalk_v1.py",
+    "tests/ops/test_ghv_forensic_causal_engine_v1.py"
   ],
-  "reason": "OTUI-exclusive unused public-MD observation GET seam removed; governance navigation and impact candidates synchronized; structured map source baseline rebound only (AUTHORITY=NONE); no trading or execution authority change.",
-  "verdict": "MAP_UPDATE_REQUIRED",
+  "reason": "GHV whole-system crosswalk causal traversal and conservative impact analysis (REFERENCE_ONLY, AUTHORITY=NONE); governance census/landscape pins remain navigation evidence at merge-base with materialized snapshot unchanged; bounded snapshot semantic binding for strict repo validation; no CSIA structured source or trading authority change.",
+  "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }
