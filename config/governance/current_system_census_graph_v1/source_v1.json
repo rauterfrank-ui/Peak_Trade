@@ -12,7 +12,7 @@
   "not_a_universe_ratification": true,
   "not_a_replacement_for_canonical_authority_sources": true,
   "graph_loses_on_conflict": true,
-  "source_baseline_head": "5438b89df403ff3d2554dcf4e8f071ead25e051f",
+  "source_baseline_head": "ae131a986e5f0106831b501203725cea7e30bc6c",
   "universe_landscape_snapshot_ref": "config/governance/current_universe_landscape_snapshot_v1/source_v1.json",
   "census_version": "CURRENT_COMPLETE_SYSTEM_CENSUS_V1",
   "census_phase_1_status": "INCOMPLETE",
@@ -10360,7 +10360,7 @@
       "flow_type": "DATA_FLOW",
       "producer": "market_intelligence_forecast_calibration_offline_stack_d03",
       "consumer": "optimization_universe",
-      "contract_or_payload": "MI-enriched M4 intake: market_intelligence_optimization_research_input_v1 + canonical_optimization_universe_mi_enriched_m4_intake_v1 → run_optimization_universe_experiment_plane_v1; PROPOSAL_ONLY; OPTIMIZATION_PRODUCTIVE_AUTHORITY NONE",
+      "contract_or_payload": "MI-enriched M4 intake: market_intelligence_optimization_research_input_v1 + canonical_optimization_universe_mi_enriched_m4_intake_v1 \u2192 run_optimization_universe_experiment_plane_v1; PROPOSAL_ONLY; OPTIMIZATION_PRODUCTIVE_AUTHORITY NONE",
       "transport": null,
       "authority_effect": "NONE",
       "runtime_reachability": null,
@@ -10383,7 +10383,7 @@
       "flow_type": "DATA_FLOW",
       "producer": "market_intelligence_forecast_calibration_offline_stack_d03",
       "consumer": "optimization_universe",
-      "contract_or_payload": "Phase 10 MI-crossing bounded multi-cycle offline replay: offline orchestrator MI-enriched M4 closure → M5 return → M6 meta ingest → M7 feedback → deterministic multi-cycle identity; SEARCH_EXECUTION_AUTHORIZED=false",
+      "contract_or_payload": "Phase 10 MI-crossing bounded multi-cycle offline replay: offline orchestrator MI-enriched M4 closure \u2192 M5 return \u2192 M6 meta ingest \u2192 M7 feedback \u2192 deterministic multi-cycle identity; SEARCH_EXECUTION_AUTHORIZED=false",
       "transport": null,
       "authority_effect": "NONE",
       "runtime_reachability": null,
@@ -10665,7 +10665,7 @@
       "flow_type": "EVIDENCE_FLOW",
       "producer": "bind_runtime_to_learning_input_to_canonical_optimization_universe_learning_input_v1",
       "consumer": "validate_canonical_optimization_universe_learning_input_v1",
-      "contract_or_payload": "learning_evidence_record_v1 (runtime-derived) → CANONICAL_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_V1 ack",
+      "contract_or_payload": "learning_evidence_record_v1 (runtime-derived) \u2192 CANONICAL_OPTIMIZATION_UNIVERSE_LEARNING_INPUT_V1 ack",
       "transport": null,
       "authority_effect": "NONE",
       "runtime_reachability": null,
@@ -10687,7 +10687,7 @@
       "flow_type": "EVIDENCE_FLOW",
       "producer": "export_learning_evidence_from_state_v1",
       "consumer": "run_m4_m8_evidence_return_loop_v1",
-      "contract_or_payload": "M4–M8 return loop continuation (fixture-bounded DDO learning_evidence_export path only)",
+      "contract_or_payload": "M4\u2013M8 return loop continuation (fixture-bounded DDO learning_evidence_export path only)",
       "transport": null,
       "authority_effect": "NONE",
       "runtime_reachability": null,
@@ -10708,7 +10708,7 @@
       "flow_type": "EVIDENCE_FLOW",
       "producer": "run_g2_runtime_to_m4_m8_evidence_return_continuation_v1",
       "consumer": "run_m4_m8_evidence_return_loop_v1",
-      "contract_or_payload": "runtime-derived learning_evidence_record_v1 → bounded offline M4 plane → run_m4_m8_evidence_return_loop_v1",
+      "contract_or_payload": "runtime-derived learning_evidence_record_v1 \u2192 bounded offline M4 plane \u2192 run_m4_m8_evidence_return_loop_v1",
       "transport": null,
       "authority_effect": "NONE",
       "runtime_reachability": null,
@@ -10730,7 +10730,7 @@
       "flow_type": "EVIDENCE_FLOW",
       "producer": "run_m4_m8_evidence_return_loop_v1",
       "consumer": "ingest_meta_learning_evidence_from_return_input_v1",
-      "contract_or_payload": "M4–M8 cycle meta_learning_ingest + meta_learning_evidence_v1 (runtime lineage)",
+      "contract_or_payload": "M4\u2013M8 cycle meta_learning_ingest + meta_learning_evidence_v1 (runtime lineage)",
       "transport": null,
       "authority_effect": "NONE",
       "runtime_reachability": null,
@@ -10752,7 +10752,7 @@
       "flow_type": "EVIDENCE_FLOW",
       "producer": "validate_meta_to_optimization_feedback_input_v1",
       "consumer": "validate_meta_to_optimization_feedback_input_v1",
-      "contract_or_payload": "meta_learning_evidence_v1 → bounded_research_feedback_decision_v1",
+      "contract_or_payload": "meta_learning_evidence_v1 \u2192 bounded_research_feedback_decision_v1",
       "transport": null,
       "authority_effect": "NONE",
       "runtime_reachability": null,
@@ -10795,7 +10795,7 @@
       "flow_type": "EVIDENCE_FLOW",
       "producer": "bridge_m5_to_optimization_envelope_evidence_v1",
       "consumer": "adjudicate_evidence_intake_v1",
-      "contract_or_payload": "bridge_m5_to_optimization_envelope_evidence_v1 → terminate_optimization_envelope_at_a_v1",
+      "contract_or_payload": "bridge_m5_to_optimization_envelope_evidence_v1 \u2192 terminate_optimization_envelope_at_a_v1",
       "transport": null,
       "authority_effect": "NONE",
       "runtime_reachability": null,
@@ -10817,7 +10817,7 @@
       "flow_type": "EVIDENCE_FLOW",
       "producer": "bridge_m6_to_meta_learning_routed_evidence_v1",
       "consumer": "adjudicate_evidence_intake_v1",
-      "contract_or_payload": "bridge_m6_to_meta_learning_routed_evidence_v1 → terminate_meta_learning_routed_at_a_v1",
+      "contract_or_payload": "bridge_m6_to_meta_learning_routed_evidence_v1 \u2192 terminate_meta_learning_routed_at_a_v1",
       "transport": null,
       "authority_effect": "NONE",
       "runtime_reachability": null,
@@ -11700,7 +11700,7 @@
       "flow_type": "EVIDENCE_FLOW",
       "producer": "single_selected_future_runtime_binding_v1",
       "consumer": "workflow_archive_readmodel_projections_v1",
-      "contract_or_payload": "selection context → universe_selection_readmodel.v1 closeout producer surface",
+      "contract_or_payload": "selection context \u2192 universe_selection_readmodel.v1 closeout producer surface",
       "transport": "FILE",
       "authority_effect": "NONE",
       "runtime_reachability": "EVIDENCE_ONLY_REACHABILITY",
@@ -11910,7 +11910,7 @@
     "map_only_edge_count": 44,
     "edge_conflict_count": 1,
     "reconciliation_status": "DISCREPANCY_PRESERVED",
-    "reconciliation_note": "Phase-2 census narrative counts preserved; materialized_map_relationship_tally includes CD-010 archive-seam CODE_ONLY edges (producer→smoke→exporters→materializer→octet→builder); see CD-006, CD-008, CD-010.",
+    "reconciliation_note": "Phase-2 census narrative counts preserved; materialized_map_relationship_tally includes CD-010 archive-seam CODE_ONLY edges (producer\u2192smoke\u2192exporters\u2192materializer\u2192octet\u2192builder); see CD-006, CD-008, CD-010.",
     "materialized_map_relationship_tally": {
       "CODE_AND_MAP": 32,
       "MAP_ONLY": 43,
@@ -12493,7 +12493,7 @@
     {
       "id": "CD-005",
       "topic": "Cap22/Private positive membership text corrections",
-      "detail": "Phase-2 narrative adjusted Cap22 ops count 4→3 and Private strict count 4→2 while POSITIVE_UNIVERSE_MEMBER aggregate remained 42."
+      "detail": "Phase-2 narrative adjusted Cap22 ops count 4\u21923 and Private strict count 4\u21922 while POSITIVE_UNIVERSE_MEMBER aggregate remained 42."
     },
     {
       "id": "CD-006",
@@ -12518,7 +12518,7 @@
     {
       "id": "CD-010",
       "topic": "archive instrument seam census coverage",
-      "detail": "CLOSED_PASS: SO-SRC-PKG:webui retargeted to workflow_archive_readmodel_projections_v1 and presentation_archive_root_v1; materializer package paths bound to presentation_projection_operational_materializer_invocation_v1; archive-seam CODE_ONLY semantic_edges document producer/reader/binding→smoke→all active family exporters→materializer→octet→builder. 301-object conservation preserved."
+      "detail": "CLOSED_PASS: SO-SRC-PKG:webui retargeted to workflow_archive_readmodel_projections_v1 and presentation_archive_root_v1; materializer package paths bound to presentation_projection_operational_materializer_invocation_v1; archive-seam CODE_ONLY semantic_edges document producer/reader/binding\u2192smoke\u2192all active family exporters\u2192materializer\u2192octet\u2192builder. 301-object conservation preserved."
     }
   ]
 }
