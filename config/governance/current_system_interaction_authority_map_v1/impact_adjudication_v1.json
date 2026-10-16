@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "388fe623e810ba105efd8df7c0e73ff6f1244769",
-  "head_sha": "0b1b5e8354a125713e8637f0700787ff67e35b12",
+  "head_sha": "7034bb2225463af05b3e1fc04da57f18680c5f06",
   "changed_paths": [
     ".cursor/rules/README.md",
     ".cursor/rules/capital-safety-evidence-integrity-v1.mdc",
