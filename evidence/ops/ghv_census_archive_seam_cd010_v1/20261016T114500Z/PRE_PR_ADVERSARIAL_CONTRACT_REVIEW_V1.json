@@ -3,6 +3,14 @@
   "scope": "CD-010 archive-seam census and GHV graph coverage only",
   "authority_effect": "NONE",
   "verdict": "PASS_WITH_NOTES",
+  "bugbot_remediation": {
+    "finding": "Smoke-host edges use inconsistent universe",
+    "bugbot_bug_id": "a9444e4f-f3fe-4e09-bf02-83461d013067",
+    "classification": "CONFIRMED_CENSUS_METADATA_DEFECT",
+    "root_cause": "Six CD-010 archive_smoke_host_to_* exporter edges copied TD-PRESENTATION-ARCHIVE for source_universe_or_plane; object candidate_or_related_universe and the first three sibling edges use TD-DECISION-HOST-ARCHIVE → TD-PRESENTATION-ARCHIVE cross-plane pattern.",
+    "fix": "Align all smoke-host outbound edges to DECISION-HOST source and PRESENTATION target; set archive_verified_readmodel_to_smoke_host target to TD-DECISION-HOST-ARCHIVE.",
+    "trading_logic_change": false
+  },
   "findings": [
     {
       "id": "ADV-001",
@@ -27,6 +35,12 @@
       "severity": "NOTE",
       "topic": "GLOBAL_NON_INTERFERENCE",
       "detail": "Improved census coverage does not prove system-wide non-interference; GHV manifest flags remain false by design."
+    },
+    {
+      "id": "ADV-005",
+      "severity": "NOTE",
+      "topic": "Universe plane consistency (Bugbot)",
+      "detail": "Post-remediation: all archive_smoke_host_to_* edges share source TD-DECISION-HOST-ARCHIVE per CROSS_UNIVERSE_BOUNDARY smoke-host object; presentation-side sibling exporters remain target TD-PRESENTATION-ARCHIVE."
     }
   ],
   "counter_evidence_sought": [

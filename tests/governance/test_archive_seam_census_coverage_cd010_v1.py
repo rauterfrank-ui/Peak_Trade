@@ -16,6 +16,8 @@ CROSSWALK_CLI = REPO / "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/cli.p
 
 SMOKE_HOST = "SO-OPS-PKG:productive_decision_host_active_archive_three_family_binding_v1"
 WEBUI = "SO-SRC-PKG:webui"
+TD_DECISION_HOST_ARCHIVE = "TD-DECISION-HOST-ARCHIVE"
+TD_PRESENTATION_ARCHIVE = "TD-PRESENTATION-ARCHIVE"
 MATERIALIZER = "SO-OPS-PKG:presentation_projection_operational_materializer_invocation_v1"
 OCTET = "SO-OPS-PKG:presentation_projection_octet_orchestrator_v1"
 
@@ -76,6 +78,28 @@ def test_cd010_archive_seam_edges_present_and_non_authorizing() -> None:
         assert edge.get("flow_type") in {"EVIDENCE_FLOW", "EVIDENCE"}
         assert edge.get("map_relationship") == "CODE_ONLY"
         assert edge.get("productive_reachability") is False
+
+
+def test_smoke_host_outbound_edges_use_decision_host_source_universe() -> None:
+    """Smoke-host producer lives in TD-DECISION-HOST-ARCHIVE; exporters sit in presentation archive seam."""
+    doc = _load_census()
+    smoke = next(o for o in doc["census_objects"] if o["object_id"] == SMOKE_HOST)
+    assert smoke.get("candidate_or_related_universe") == TD_DECISION_HOST_ARCHIVE
+    for edge in doc["semantic_edges"]:
+        if not edge.get("edge_id", "").startswith("archive_smoke_host_to_"):
+            continue
+        assert edge["source_object"] == SMOKE_HOST
+        assert edge.get("source_universe_or_plane") == TD_DECISION_HOST_ARCHIVE
+        assert edge.get("target_universe_or_plane") == TD_PRESENTATION_ARCHIVE
+
+
+def test_archive_verified_readmodel_to_smoke_host_cross_plane() -> None:
+    doc = _load_census()
+    edge = next(
+        e for e in doc["semantic_edges"] if e["edge_id"] == "archive_verified_readmodel_to_smoke_host"
+    )
+    assert edge.get("source_universe_or_plane") == TD_PRESENTATION_ARCHIVE
+    assert edge.get("target_universe_or_plane") == TD_DECISION_HOST_ARCHIVE
 
 
 def test_cd010_discrepancy_closed() -> None:
