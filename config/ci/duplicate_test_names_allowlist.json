@@ -186,7 +186,7 @@
         "test_default_values"
       ],
       "reason": "legacy duplicate test names; tracked for future cleanup"
-    },
+    }
   },
   "version": 1
 }
