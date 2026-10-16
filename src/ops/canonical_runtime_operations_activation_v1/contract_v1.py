@@ -115,4 +115,14 @@ def validate_activation_contract_v1(contract: Mapping[str, Any]) -> dict[str, An
         )
     if rollback.get("preserves_o7_evidence") is not True:
         raise ActivationContractError("ACTIVATION_CONTRACT_ROLLBACK_O7_UNSAFE", "")
+    if contract.get("o6_productive_recovery_o2_supervisor_coupling") != "DETACHED_V1":
+        raise ActivationContractError(
+            "ACTIVATION_CONTRACT_O6_O2_COUPLING_NOT_DETACHED",
+            str(contract.get("o6_productive_recovery_o2_supervisor_coupling")),
+        )
+    if contract.get("canonical_operator_entry_productive_full_core_dependency") is not False:
+        raise ActivationContractError(
+            "ACTIVATION_CONTRACT_OPERATOR_ENTRY_PRODUCTIVE_DEPENDENCY",
+            str(contract.get("canonical_operator_entry_productive_full_core_dependency")),
+        )
     return dict(contract)

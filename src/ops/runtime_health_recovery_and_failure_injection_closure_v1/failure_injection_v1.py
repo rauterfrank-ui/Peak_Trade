@@ -1,8 +1,7 @@
 """Deterministic offline failure-injection harness for O6.
 
-No network sessions, no authorization consumption, no live processes beyond
-optional O2 scaffold workers spawned under tmp paths when required by a
-bounded scenario. Scenarios that need process lifecycle reuse O2 contracts.
+No network sessions, no authorization consumption, no live HTTP workers.
+Supervisor lifecycle scenarios use the O6-owned offline supervisor fixture.
 """
 
 from __future__ import annotations
@@ -13,19 +12,15 @@ import time
 from pathlib import Path
 from typing import Any, Callable, Optional
 
-from src.ops.canonical_local_launcher_and_process_supervision_v1.errors_v1 import (
-    ConflictingWriterError,
+from src.ops.runtime_health_recovery_and_failure_injection_closure_v1.o6_offline_supervisor_fixture_v1 import (
+    CAPABILITY_ID as O6_FIXTURE_CAPABILITY_ID,
     DuplicateSessionError,
-)
-from src.ops.canonical_local_launcher_and_process_supervision_v1.lifecycle_v1 import (
-    CanonicalLocalLauncherV1,
-    LauncherPathsV1,
-)
-from src.ops.canonical_local_launcher_and_process_supervision_v1.models_v1 import (
     ProcessIdentityV1,
-)
-from src.ops.canonical_local_launcher_and_process_supervision_v1.single_writer_v1 import (
-    LauncherSingleWriterV1,
+    SCHEMA_VERSION as O6_FIXTURE_SCHEMA_VERSION,
+    SUPERVISION_BACKEND as O6_FIXTURE_SUPERVISION_BACKEND,
+    SUPERVISOR_IDENTITY as O6_FIXTURE_SUPERVISOR_IDENTITY,
+    SessionRecordV1,
+    build_offline_supervisor_fixture_v1,
 )
 from src.ops.canonical_public_md_and_ohlcv_transport_reconciliation_v1.bar_state_contract_v1 import (
     BarStateContractErrorV1,
@@ -149,34 +144,15 @@ def _scenario_result(
     }
 
 
-def _write_minimal_config(path: Path) -> Path:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text('{"schema":"o6_offline_fixture","mode":"dashboard-only"}\n', encoding="utf-8")
-    return path
-
-
-def _launcher(tmp: Path) -> tuple[CanonicalLocalLauncherV1, Path]:
-    config = _write_minimal_config(tmp / "config" / "o6.json")
-    paths = LauncherPathsV1(
-        repository_root=tmp / "repo",
-        state_root=tmp / "state",
-        log_root=tmp / "logs",
-        evidence_root=tmp / "evidence",
-    )
-    (tmp / "repo").mkdir(parents=True, exist_ok=True)
-    # Minimal git HEAD so resolve_repository_sha works without real .git when explicit sha passed.
-    return CanonicalLocalLauncherV1(paths), config
-
-
 def scenario_process_start_failure(tmp: Path) -> dict[str, Any]:
-    launcher, config = _launcher(tmp / "process_start_failure")
+    supervisor, config = build_offline_supervisor_fixture_v1(tmp / "process_start_failure")
     now = 1_700_500_000.0
     blocked = False
     detail = ""
     try:
-        launcher.start(
+        supervisor.start(
             session_id="o6-start-fail",
-            config_path=tmp / "missing-config.json",
+            config_path=tmp / "process_start_failure" / "missing-config.json",
             repository_sha="e" * 40,
         )
     except Exception as exc:  # noqa: BLE001
@@ -185,10 +161,10 @@ def scenario_process_start_failure(tmp: Path) -> dict[str, Any]:
     # Also prove missing config path is classified via preflight.
     preflight_blocked = False
     try:
-        launcher.preflight(
+        supervisor.preflight(
             mode="dashboard-only",
             session_id="o6-start-fail-2",
-            config_path=tmp / "missing-config.json",
+            config_path=tmp / "process_start_failure" / "missing-config.json",
             repository_sha="e" * 40,
         )
     except Exception as exc:  # noqa: BLE001
@@ -259,34 +235,23 @@ def scenario_unexpected_child_exit(tmp: Path) -> dict[str, Any]:
 
 def scenario_stale_pid_or_session_registry(tmp: Path) -> dict[str, Any]:
     root = tmp / "stale_pid"
-    launcher, config = _launcher(root)
+    supervisor, config = build_offline_supervisor_fixture_v1(root)
     sid = "o6-stale-pid"
-    # Materialize a session record with stale identity and recover via O2.
-    from src.ops.canonical_local_launcher_and_process_supervision_v1.constants_v1 import (
-        CAPABILITY_ID,
-        SCHEMA_VERSION,
-        SUPERVISION_BACKEND,
-        SUPERVISOR_IDENTITY,
-    )
-    from src.ops.canonical_local_launcher_and_process_supervision_v1.models_v1 import (
-        SessionRecordV1,
-    )
-
-    launcher.registry.ensure_layout()
-    session_dir = launcher.registry.session_dir(sid)
+    supervisor.registry.ensure_layout()
+    session_dir = supervisor.registry.session_dir(sid)
     session_dir.mkdir(parents=True, exist_ok=True)
     now = time.time()
     record = SessionRecordV1(
-        schema_version=SCHEMA_VERSION,
-        capability_id=CAPABILITY_ID,
+        schema_version=O6_FIXTURE_SCHEMA_VERSION,
+        capability_id=O6_FIXTURE_CAPABILITY_ID,
         session_id=sid,
         mode="dashboard-only",
         lifecycle_state="RUNNING",
         repository_sha="e" * 40,
         config_digest="cfg-stale",
         config_path=str(config),
-        supervisor_identity=SUPERVISOR_IDENTITY,
-        supervision_backend=SUPERVISION_BACKEND,
+        supervisor_identity=O6_FIXTURE_SUPERVISOR_IDENTITY,
+        supervision_backend=O6_FIXTURE_SUPERVISION_BACKEND,
         supervisor_instance_id="o6-stale",
         process_identity=ProcessIdentityV1(
             pid=1,
@@ -305,9 +270,9 @@ def scenario_stale_pid_or_session_registry(tmp: Path) -> dict[str, Any]:
         o1_effective_environment_digest="e",
         last_reason_code="INJECTED_STALE",
     )
-    launcher.registry.write_session(record)
-    launcher.registry.claim_mode(mode="dashboard-only", session_id=sid, now_unix=now)
-    recovered = launcher.recover(sid)
+    supervisor.registry.write_session(record)
+    supervisor.registry.claim_mode(mode="dashboard-only", session_id=sid, now_unix=now)
+    recovered = supervisor.recover(sid)
     failure = _failure(
         root_cause_class="STALE_PID_OR_SESSION_REGISTRY",
         reason_code="STALE_PID_CLEARED",
@@ -332,35 +297,23 @@ def scenario_stale_pid_or_session_registry(tmp: Path) -> dict[str, Any]:
 
 def scenario_duplicate_session_start(tmp: Path) -> dict[str, Any]:
     root = tmp / "dup_session"
-    launcher, config = _launcher(root)
-    # Simulate active live session pointer without spawning (offline): active state RUNNING
-    # with no process identity still blocks duplicate under O2 rules for STARTING/RUNNING/DEGRADED.
-    from src.ops.canonical_local_launcher_and_process_supervision_v1.constants_v1 import (
-        CAPABILITY_ID,
-        SCHEMA_VERSION,
-        SUPERVISION_BACKEND,
-        SUPERVISOR_IDENTITY,
-    )
-    from src.ops.canonical_local_launcher_and_process_supervision_v1.models_v1 import (
-        SessionRecordV1,
-    )
-
-    launcher.registry.ensure_layout()
+    supervisor, config = build_offline_supervisor_fixture_v1(root)
+    supervisor.registry.ensure_layout()
     sid = "o6-dup-live"
     now = time.time()
-    session_dir = launcher.registry.session_dir(sid)
+    session_dir = supervisor.registry.session_dir(sid)
     session_dir.mkdir(parents=True, exist_ok=True)
     record = SessionRecordV1(
-        schema_version=SCHEMA_VERSION,
-        capability_id=CAPABILITY_ID,
+        schema_version=O6_FIXTURE_SCHEMA_VERSION,
+        capability_id=O6_FIXTURE_CAPABILITY_ID,
         session_id=sid,
         mode="dashboard-only",
         lifecycle_state="RUNNING",
         repository_sha="e" * 40,
         config_digest="cfg-dup",
         config_path=str(config),
-        supervisor_identity=SUPERVISOR_IDENTITY,
-        supervision_backend=SUPERVISION_BACKEND,
+        supervisor_identity=O6_FIXTURE_SUPERVISOR_IDENTITY,
+        supervision_backend=O6_FIXTURE_SUPERVISION_BACKEND,
         supervisor_instance_id="o6-dup",
         process_identity=None,
         log_root=str(root / "logs" / sid),
@@ -374,11 +327,11 @@ def scenario_duplicate_session_start(tmp: Path) -> dict[str, Any]:
         o1_effective_environment_digest="e",
         last_reason_code="INJECTED_ACTIVE",
     )
-    launcher.registry.write_session(record)
-    launcher.registry.claim_mode(mode="dashboard-only", session_id=sid, now_unix=now)
+    supervisor.registry.write_session(record)
+    supervisor.registry.claim_mode(mode="dashboard-only", session_id=sid, now_unix=now)
     blocked = False
     try:
-        launcher.start(
+        supervisor.start(
             session_id="o6-dup-new",
             config_path=config,
             repository_sha="e" * 40,
