@@ -1,7 +1,7 @@
 {
   "authority_effect": "NONE",
   "base_sha": "0578d813db4f2881082077338636e2a634e77869",
-  "head_sha": "2819111107b6111b3076c440e73992a598d8edff",
+  "head_sha": "0e8fda758d7ebf721af1a862b018fb6a8b9d2d8e",
   "changed_paths": [
     "config/governance/current_system_census_graph_v1/README.md",
     "config/governance/current_system_census_graph_v1/schema_v1.json",
