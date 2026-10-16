@@ -28,6 +28,7 @@ from src.ops.archive_sibling_export_contract_v1.manifest_finalize_v1 import (
 )
 from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
 
+
 def _current_repo_sha() -> str:
     repo_root = Path(__file__).resolve().parents[2]
     return subprocess.check_output(
