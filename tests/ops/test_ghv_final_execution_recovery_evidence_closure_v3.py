@@ -106,12 +106,8 @@ class TestSlice1CancelRejectQualification:
                 order_history={"data": [_order_row(state="canceled", sz="10", acc="0")]}
             )
         )
-        assert rec.decision.outcome in {
-            OUTCOME_CONFIRMED_OPEN,
-            OUTCOME_CONFIRMED_PARTIALLY_FILLED,
-            OUTCOME_CONFIRMED_CANCELED,
-            OUTCOME_HALTED_UNRESOLVED,
-        }
+        assert rec.decision.outcome == OUTCOME_CONFIRMED_CANCELED
+        assert rec.decision.order_state == "canceled"
 
     def test_cr04_conflicting_evidence_fail_closed(self) -> None:
         live = _order_row(state="live", sz="10", acc="0")

@@ -71,6 +71,7 @@ from tests.ops.test_full_core_post_submit_exchange_reconciliation_lifecycle_join
     _ack_post_result,
     _join_from_post,
     _join_kwargs,
+    _order_row_join as _order_row_join_recon,
 )
 
 
@@ -139,8 +140,8 @@ class TestSlice1CancelInterleaving:
             m.transition("CANCELLED")
         assert exc.value.code == "ILLEGAL_LIFECYCLE_TRANSITION"
         fixture = OfflineExchangeFixtureV1(
-            pending_orders={"data": [_order_row_join(state="live")]},
-            order_history={"data": [_order_row_join(state="filled", acc="10")]},
+            pending_orders={"data": [_order_row_join_recon(state="live")]},
+            order_history={"data": [_order_row_join_recon(state="filled", acc="10")]},
         )
         post_join = _join_from_post(_ack_post_result())
         res = run_full_core_post_submit_lifecycle_reconciliation_join_v1(
@@ -150,6 +151,7 @@ class TestSlice1CancelInterleaving:
             **_join_kwargs(),
         )
         assert res.reconciliation.decision.outcome == OUTCOME_HALTED_UNRESOLVED
+        assert res.reconciliation.decision.reasons == ("CONFLICTING_ORDER_STATE",)
 
     def test_s1_d_cancel_rejected_not_modeled_fsm_order_remains_live_via_partial(self) -> None:
         """CANCEL_REJECTED is not a Cap-11.1 state; live order modeled as CANCEL_PENDING → PARTIAL without CANCELLED."""
@@ -354,10 +356,11 @@ class TestSlice3UnifiedOfflineE2E:
             request=_wiring_request(
                 sha=sha,
                 submit_kind=CycleSubmitInjectionKind.UNKNOWN_TIMEOUT,
-                state_dir=state_dir / "retry_blocked",
+                state_dir=state_dir,
                 apply_durable=True,
             ),
         )
-        assert second.lifecycle is not None
-        assert second.lifecycle.reconciliation.decision.outcome == OUTCOME_HALTED_UNRESOLVED
+        assert second.lifecycle is None
+        assert second.guard_blocked is True
+        assert second.skip_reason == "CAPITAL_GUARD_BLOCKED"
         assert POST_COUNT == 0
