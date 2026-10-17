@@ -48,6 +48,7 @@ def _line(
     record_id: str,
     decision_event_ref: str,
     selected_side: str = "none",
+    event_time_text: str | None = None,
 ) -> str:
     row = {
         "record_type": "double_play_entry_exit_observation",
@@ -55,7 +56,9 @@ def _line(
         "payload": {
             "cycle_id": f"{LIVE}:cycle:{trading_epoch}",
             "decision_event_ref": decision_event_ref,
-            "event_time_utc": format_utc_second_v1(event_unix),
+            "event_time_utc": (
+                format_utc_second_v1(event_unix) if event_time_text is None else event_time_text
+            ),
             "producer_canonical_payload": {
                 "instrument_id": instrument_id,
                 "trading_epoch": trading_epoch,
@@ -575,3 +578,124 @@ def test_16_reporter_and_pending_do_not_reach_decision_or_apply_writers() -> Non
     for token in forbidden:
         assert token not in reporter
         assert token not in creation
+
+
+DOS_ENTER_SECOND = "2026-10-12T19:13:00Z"
+
+
+def _dos_enter_line(event_time_text: str, *, record_id: str = "ddo.dpo:dos-subsecond") -> str:
+    return _line(
+        instrument_id=DOS,
+        trading_epoch=8,
+        decision_outcome="enter_long",
+        event_unix=DOS_ENTER_UNIX,
+        record_id=record_id,
+        decision_event_ref=f"ddo.dec:{record_id.rsplit(':', 1)[-1]}",
+        selected_side="long",
+        event_time_text=event_time_text,
+    )
+
+
+def test_17_utc_second_normalization_truncates_without_rounding() -> None:
+    assert format_utc_second_v1(DOS_ENTER_UNIX) == DOS_ENTER_SECOND
+    assert format_utc_second_v1("2026-10-12T19:13:00Z") == DOS_ENTER_SECOND
+    assert format_utc_second_v1("2026-10-12T19:13:00.123Z") == DOS_ENTER_SECOND
+    assert format_utc_second_v1("2026-10-12T19:13:00.999999Z") == DOS_ENTER_SECOND
+    assert format_utc_second_v1("2026-10-12T19:13:00.999999999Z") == DOS_ENTER_SECOND
+    assert format_utc_second_v1(DOS_ENTER_UNIX + 0.999) == DOS_ENTER_SECOND
+
+
+def test_18_non_contract_timestamps_fail_closed() -> None:
+    for text in (
+        "2026-10-12T19:13:00",
+        "2026-10-12T19:13:00.123",
+        "2026-10-12T21:13:00+02:00",
+        "2026-10-12T19:13:00+00:00",
+        "2026-10-12 19:13:00Z",
+        "2026-10-12T19:13:00.Z",
+        "2026-10-12T19:13:00.1234567890Z",
+        "2026-13-12T19:13:00Z",
+        "2026-10-12T25:13:00Z",
+        "not-a-time",
+        "",
+    ):
+        assert format_utc_second_v1(text) == "", text
+
+
+def test_19_subsecond_dpo_binds_to_candle_second(tmp_path: Path) -> None:
+    for index, text in enumerate(
+        ("2026-10-12T19:13:00Z", "2026-10-12T19:13:00.123Z", "2026-10-12T19:13:00.999999Z")
+    ):
+        root = tmp_path / f"case-{index}"
+        ddo = _write(root, _dos_enter_line(text))
+        lane = root / "lane"
+        _cursor(lane, instrument_id=DOS, last_evaluated=8, trading_epoch=9)
+        result = _eval(ddo, instrument_id=DOS, event_unix=DOS_ENTER_UNIX, lane=lane)
+        assert result.correlation_status == DPO_BOUND, text
+        assert result.natural_enter_observed is True
+        assert result.dpo.get("event_time_utc") == DOS_ENTER_SECOND
+        assert result.dpo.get("instrument_id") == DOS
+
+
+def test_20_two_subsecond_dpos_same_instrument_same_second_are_ambiguous(
+    tmp_path: Path,
+) -> None:
+    ddo = _write(
+        tmp_path,
+        _dos_enter_line("2026-10-12T19:13:00.100Z", record_id="ddo.dpo:dos-a"),
+        _dos_enter_line("2026-10-12T19:13:00.900Z", record_id="ddo.dpo:dos-b"),
+    )
+    result = _eval(ddo, instrument_id=DOS, event_unix=DOS_ENTER_UNIX)
+    assert result.correlation_status == DPO_AMBIGUOUS
+    assert result.dpo == {}
+    assert result.natural_enter_observed is False
+
+
+def test_21_same_second_other_instrument_is_not_adopted(tmp_path: Path) -> None:
+    ddo = _write(
+        tmp_path,
+        _line(
+            instrument_id=STRK,
+            trading_epoch=8,
+            decision_outcome="enter_long",
+            event_unix=DOS_ENTER_UNIX,
+            record_id="ddo.dpo:strk-same-second",
+            decision_event_ref="ddo.dec:strk-same-second",
+            selected_side="long",
+            event_time_text="2026-10-12T19:13:00.500Z",
+        ),
+        _dos_enter_line("2026-10-12T19:13:00.250Z"),
+    )
+    result = _eval(ddo, instrument_id=DOS, event_unix=DOS_ENTER_UNIX)
+    assert result.correlation_status == DPO_BOUND
+    assert result.dpo.get("dpo_ref") == "ddo.dpo:dos-subsecond"
+    assert result.dpo.get("instrument_id") == DOS
+
+
+def test_22_invalid_or_zoneless_dpo_time_is_unbound(tmp_path: Path) -> None:
+    for index, text in enumerate(
+        ("2026-10-12T19:13:00.123", "2026-10-12T21:13:00+02:00", "garbage")
+    ):
+        root = tmp_path / f"case-{index}"
+        ddo = _write(root, _dos_enter_line(text))
+        result = _eval(ddo, instrument_id=DOS, event_unix=DOS_ENTER_UNIX)
+        assert result.correlation_status == DPO_UNBOUND, text
+        assert result.dpo == {}
+        assert result.natural_enter_observed is False
+
+
+def test_23_subsecond_dpo_keeps_cursor_off_by_one_guard(tmp_path: Path) -> None:
+    ddo = _write(tmp_path, _dos_enter_line("2026-10-12T19:13:00.123Z"))
+    lane = tmp_path / "lane"
+    _cursor(lane, instrument_id=DOS, last_evaluated=7, trading_epoch=8)
+    result = _eval(ddo, instrument_id=DOS, event_unix=DOS_ENTER_UNIX, lane=lane)
+    assert result.correlation_status == DPO_CURSOR_INCONSISTENT
+    assert result.dpo == {}
+
+
+def test_24_subsecond_dpo_does_not_change_journal_bytes(tmp_path: Path) -> None:
+    ddo = _write(tmp_path, _dos_enter_line("2026-10-12T19:13:00.123Z"))
+    before = ddo.read_bytes()
+    result = _eval(ddo, instrument_id=DOS, event_unix=DOS_ENTER_UNIX)
+    assert result.correlation_status == DPO_BOUND
+    assert ddo.read_bytes() == before

@@ -10,6 +10,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping, Protocol, Sequence
 
+from src.learning.deterministic_decision_outcome_v0.common_v0 import UTC_EVENT_TIME_RE
+
 PRODUCTIVE_LIVE_C1_DDO_SESSION_MARKER = "persistent-natural-enter-live-c1"
 BOOTSTRAP_DDO_SESSION_MARKER = "persistent-natural-enter-bootstrap"
 PRODUCTIVE_LANE_ID = "LANE_1"
@@ -21,7 +23,7 @@ DPO_UNBOUND = "DPO_UNBOUND"
 DPO_AMBIGUOUS = "DPO_AMBIGUOUS"
 DPO_CURSOR_INCONSISTENT = "DPO_CURSOR_INCONSISTENT"
 REPORTING_CYCLE_AMBIGUOUS = "REPORTING_CYCLE_AMBIGUOUS"
-_UTC_SECOND_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$")
+_UTC_SECOND_FORMAT = "%Y-%m-%dT%H:%M:%SZ"
 
 
 class _CycleRecordLike(Protocol):
@@ -63,21 +65,30 @@ class _CursorCorrelationFieldsV1:
     field_invalid: bool
 
 
+def _utc_second_from_event_time_text_v1(text: str) -> str:
+    """Truncate a DDO-contract UTC event time to its second; never rounds."""
+    if not UTC_EVENT_TIME_RE.fullmatch(text):
+        return ""
+    second = text[:19] + "Z"
+    try:
+        datetime.strptime(second, _UTC_SECOND_FORMAT)
+    except ValueError:
+        return ""
+    return second
+
+
 def format_utc_second_v1(value: object) -> str:
     """Format a candle instant the same way DPO capture writes event_time_utc."""
     if value is None or isinstance(value, bool):
         return ""
     if isinstance(value, str):
-        text = value.strip()
-        if _UTC_SECOND_RE.fullmatch(text):
-            return text
-        return ""
+        return _utc_second_from_event_time_text_v1(value.strip())
     if isinstance(value, (int, float)):
         if isinstance(value, float) and (math.isnan(value) or math.isinf(value)):
             return ""
         try:
             return datetime.fromtimestamp(float(value), tz=timezone.utc).strftime(
-                "%Y-%m-%dT%H:%M:%SZ"
+                _UTC_SECOND_FORMAT
             )
         except (OverflowError, OSError, ValueError):
             return ""
@@ -102,9 +113,12 @@ def _parse_dpo_row(row: Mapping[str, Any]) -> ProductiveDpoObservationV1 | None:
         trading_epoch = int(trading_epoch_raw) if trading_epoch_raw is not None else None
     except (TypeError, ValueError):
         trading_epoch = None
-    event_time = str(payload.get("event_time_utc") or "").strip()
-    if event_time and not _UTC_SECOND_RE.fullmatch(event_time):
-        event_time = ""
+    raw_event_time = payload.get("event_time_utc")
+    event_time = (
+        _utc_second_from_event_time_text_v1(raw_event_time)
+        if isinstance(raw_event_time, str)
+        else ""
+    )
     return ProductiveDpoObservationV1(
         cycle_id=cycle_id,
         trading_epoch=trading_epoch,
