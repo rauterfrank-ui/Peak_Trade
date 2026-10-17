@@ -1,38 +1,24 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "769d13663badb8daed64b32a0e3047cd198da900",
-  "head_sha": "f1cb6843c5c689a4dddcaae750ad93142e150c9f",
+  "base_sha": "a0033c429564463b68550c90270d0ce5a0e748d7",
+  "head_sha": "f91e970babcccb211de6b20127dd6eb24f622e85",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "evidence/ops/bwp_current_29p_identity_gate_remediation_v1/20261017T150530Z/BWP_CURRENT_29P_IDENTITY_GATE_REMEDIATION_TERMINAL_REPORT_V1.json",
-    "evidence/ops/bwp_current_29p_identity_gate_remediation_v1/20261017T150530Z/SHA256SUMS",
     "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
-    "src/ops/current_productive_eea_universe_inventory_acquisition_v1/transport_v1.py",
-    "src/ops/economic_md_input_producer_v1/public_md_source_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_selection_network_budget_v1.py",
-    "tests/ops/test_current_productive_selection_network_budget_v1.py"
+    "tests/ops/test_bwp_live_get_004_binding_epoch_contract_v1.py"
   ],
-  "changed_paths_sha256": "f242f641d085e1f97504b0cee08b60094cf39c53504f20000dac6d0a58b7e342",
+  "changed_paths_sha256": "c3f86e9d4f365e7b0137cd93d9d6d00e8ef4211d420e395a91df92cb885b7688",
   "covered_candidate_paths": [
-    "evidence/ops/bwp_current_29p_identity_gate_remediation_v1/20261017T150530Z/BWP_CURRENT_29P_IDENTITY_GATE_REMEDIATION_TERMINAL_REPORT_V1.json",
-    "evidence/ops/bwp_current_29p_identity_gate_remediation_v1/20261017T150530Z/SHA256SUMS",
     "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
-    "src/ops/current_productive_eea_universe_inventory_acquisition_v1/transport_v1.py",
-    "src/ops/economic_md_input_producer_v1/public_md_source_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_selection_network_budget_v1.py",
-    "tests/ops/test_current_productive_selection_network_budget_v1.py"
+    "tests/ops/test_bwp_live_get_004_binding_epoch_contract_v1.py"
   ],
   "evidence_refs": [
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "scripts/ops/run_current_productive_full_core_pre_external_closure_v1.py",
     "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
     "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_selection_network_budget_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_chain_baseline_contract_v1.py"
+    "src/ops/single_selected_future_runtime_binding_v1/cap24_runtime_binding_witness_epoch_v1.py"
   ],
-  "reason": "BWP-CURRENT-29P identity-gate remediation moves the selection GET ceiling onto the Economic-MD source the existing Cap-2.4 writer already forwards. The protected writer, the identity gate, source_v1.json, and derived map views are unchanged. No new domain owner, interaction, or authority edge. Two previously undetermined paths are named as exact candidates: the inventory transport file and this remediation evidence directory. Standing POST pins stay false. NO_MAP_IMPACT. AUTHORITY=NONE.",
+  "reason": "BWP-LIVE-GET-004 adds the missing optional --binding-epoch parser attribute. The launcher already uses args.binding_epoch or _utc_iso(). No source_v1.json change, no new domain owner, and no authority edge. POST and GET-budget gates stay unchanged. NO_MAP_IMPACT. AUTHORITY=NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }
