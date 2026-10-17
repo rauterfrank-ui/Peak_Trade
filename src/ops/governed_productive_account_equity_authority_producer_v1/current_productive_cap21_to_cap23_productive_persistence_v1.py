@@ -20,6 +20,12 @@ from src.ops.current_productive_eea_universe_inventory_acquisition_v1.acquire_v1
 from src.ops.current_productive_eea_universe_inventory_acquisition_v1.constants_v1 import (
     SOURCE_KIND,
 )
+from src.ops.economic_md_input_producer_v1.universe_gate_v1 import (
+    load_cap21_eligible_instruments_v1,
+)
+from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_selection_network_budget_v1 import (
+    SelectionNetworkBudgetV1,
+)
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     CANARY_DEFAULT_INSTRUMENT_ID,
 )
@@ -168,6 +174,7 @@ def run_cap21_to_cap23_persist_productive_v1(
     scoped_residency_integrated_evaluation: ScopedResidencyIntegratedEvaluationConfigV1
     | None = None,
     cap21_coalesce_repo_root: Path | None = None,
+    selection_budget: SelectionNetworkBudgetV1 | None = None,
 ) -> CurrentProductiveCap21ToCap23PersistResultV1:
     """Run Cap-2.1→2.3 producers into ``store/runtime_state/*`` (persisted)."""
 
@@ -223,6 +230,25 @@ def run_cap21_to_cap23_persist_productive_v1(
     uni_snapshot_dict = uni.get("snapshot")
     if not isinstance(uni_snapshot_dict, Mapping):
         return _result(ok=False, status="CAP21_SNAPSHOT_DICT_MISSING", selection=None)
+    # The protected Cap-2.4 writer does not accept a budget argument. The
+    # productive launcher attaches the budget to the Economic-MD source that
+    # the writer already forwards. An explicit argument remains for tests.
+    bound_budget = selection_budget
+    if bound_budget is None:
+        bound_budget = getattr(economic_md_public_source, "selection_budget", None)
+    if bound_budget is not None:
+        if not isinstance(bound_budget, SelectionNetworkBudgetV1):
+            return _result(ok=False, status="SELECTION_BUDGET_TYPE_INVALID", selection=None)
+        eligible_gate = load_cap21_eligible_instruments_v1(uni_snapshot_dict)
+        if eligible_gate.ok is not True:
+            return _result(
+                ok=False,
+                status="CAP21_ELIGIBLE_SET_UNAVAILABLE_FOR_SELECTION_BUDGET",
+                selection=None,
+            )
+        bound_budget.require_complete_economic_md_collection(
+            eligible_count=len(eligible_gate.eligible)
+        )
     collection_started = observed_unix - 1.0
     feature_snap = build_cap22_feature_production_snapshot_for_cap21_universe_only_v1(
         universe_snapshot=uni_snapshot_dict,
