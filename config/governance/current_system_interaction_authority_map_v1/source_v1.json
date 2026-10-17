@@ -4442,13 +4442,13 @@
     {
       "id": "runbook_freshness_stamp",
       "epistemic_class": "PARTIAL",
-      "statement": "RESOLVED_BY_CURRENT_RATIFICATION for review stamp: Master Runbook CURRENT_REVIEWED_AT_SHA=d26caea78d1a178fde0a9e91aee169d454eebcae ARCHITECTURE_NAVIGATION_METADATA_CONVERGENCE_V1; map baseline_sha rebound; navigation-only.",
+      "statement": "Master Runbook navigation review stamp CURRENT_REVIEWED_AT_SHA=9971ad8bcef222c6200d476c823de89820add7aa. This map baseline_sha remains f91d2cf2fed95af09376c464489f0ca19734e7f7 and is not that review stamp. Edge alignment of this map to 9971ad8b is NOT_PROVEN. The prior stamp sentence citing d26caea78d1a178fde0a9e91aee169d454eebcae is not the current review stamp. Representation-closure fixture SHA 744a9c896f53d33b2d3c24977da1891a2e8549f1 stays a historical test anchor, not this review stamp. Navigation only. map_authority=NONE.",
       "evidence_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
         "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
       ],
       "closure_adjudication_class": "REPRESENTATION_ONLY",
-      "closure_note": "Review stamp rebound POST_6925 navigation baseline rebind WP; navigation-only."
+      "closure_note": "Prior d26caea7 review-stamp sentence retracted as the current stamp. Map baseline_sha unchanged. No edge added or removed. map_authority=NONE."
     },
     {
       "id": "treasury_import_wording",

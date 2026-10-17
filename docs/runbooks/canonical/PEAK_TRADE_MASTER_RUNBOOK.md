@@ -6,10 +6,10 @@ DOCUMENT_ROLE=CURRENT_OPERATIONAL_SSOT
 AUTHORITY_EFFECT=IMPLEMENTATION_AND_OPERATIONAL_SEMANTIC_AUTHORITY
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 NO_PARALLEL_SEMANTIC_MODEL=true
-CURRENT_REVIEWED_AT_SHA=6ed52d01ac181e629b2839271f83b52fc7ffe61f
-BOUND_ORIGIN_MAIN_SHA=6ed52d01ac181e629b2839271f83b52fc7ffe61f
+CURRENT_REVIEWED_AT_SHA=9971ad8bcef222c6200d476c823de89820add7aa
+BOUND_ORIGIN_MAIN_SHA=9971ad8bcef222c6200d476c823de89820add7aa
 STALE_IF_HEAD_DIFFERS=true
-REVIEW_SHA_SEMANTICS=CONTENT_ORIGIN_SHA preserves evidence/workpackage collection baselines; CURRENT_REVIEWED_AT_SHA is navigation/review binding only
+REVIEW_SHA_SEMANTICS=CONTENT_ORIGIN_SHA preserves evidence/workpackage collection baselines; CURRENT_REVIEWED_AT_SHA is navigation/review binding only and does not rebind historical witnesses
 TRACK_A_CLOSURE_CONTENT_ORIGIN_SHA=d0edb85fc83a5415a8a652299144cd0fe6da7644
 NATURAL_ENTER_PRE_EXTERNAL_CLOSURE_CONTENT_ORIGIN_SHA=6ed52d01ac181e629b2839271f83b52fc7ffe61f
 ```
@@ -106,7 +106,15 @@ NATURAL_ENTER_TO_PRE_EXTERNAL_PROVEN=true
 CURRENT_FUNCTIONAL_PATH_PROVEN_THROUGH_PRE_EXTERNAL=true
 CURRENT_FUNCTIONAL_PATH_PROVEN_BEYOND_PRE_EXTERNAL=false
 CURRENT_RUNTIME_PROOF_READY=true
+CARTOGRAPHY_AND_NATURAL_ENTER_TOKENS_BOUND_TO_SYSTEM_BASELINE=true
+CARTOGRAPHY_AND_NATURAL_ENTER_TOKENS_REPROVEN_AT_CURRENT_REVIEWED_AT_SHA=false
 ```
+
+The cartography status and the Natural Enter witness in this section stay
+bound to `SYSTEM_BASELINE` / `NATURAL_ENTER_PRE_EXTERNAL_CLOSURE_CONTENT_ORIGIN_SHA`
+(`6ed52d01`). The navigation review stamp above does not move that witness
+onto a later `origin/main` SHA. Commits `#7137` through `#7142` are inside
+the review stamp and do not by themselves re-prove Natural Enter.
 
 Canonical closure evidence (navigation; `AUTHORITY_EFFECT=NONE`):
 [`docs/ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md`](../../ops/evidence/CURRENT_NATURAL_ENTER_PRE_EXTERNAL_CANONICAL_CLOSURE_V1.md).
@@ -758,6 +766,16 @@ EXTERNAL_EFFECT_AUTHORIZED=false
 ATLAS_AUTHORITY=NONE
 ```
 
+CURRENT description at the navigation review stamp, without rewriting the
+consumed Owner-GO record above: the package
+`src/ops/governed_productive_account_equity_authority_producer_v1/` is
+present. `PRODUCER_IMPLEMENTATION_PRESENT=false` remains the historical
+consumed-record flag. Package presence is not a numeric cap ratification,
+not a fresh equity GET, and not POST or Keychain authorization. The same
+historical flag is still `false` for the reference-price Owner-GO block
+below, while `src/ops/governed_productive_reference_price_authority_producer_v1/`
+is also present; that historical flag is likewise not rewritten.
+
 ### B05 Full-Core reference price authority owner ratification
 
 Owner-GO
@@ -1304,7 +1322,10 @@ Additional required controls:
 
 - physical separation between decision intent and external venue mutation
 - credential material never printed; references only
-- kill-switch durable and enforceable
+- kill-switch durable and enforceable. The CURRENT post-path gate
+  `src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py`
+  denies when evidence is missing, stale, or without a verified recovery
+  attestation. That description does not authorize POST.
 - authorization-token separation (persist GO ≠ runtime GO ≠ GET GO ≠
   cycle GO ≠ continuous GO ≠ permit GO ≠ POST GO)
 - event-time / identity / ordering must be preserved for evidence claims
@@ -1368,8 +1389,9 @@ TREASURY_IS_TRADING_DECISION_OWNER=false
 Bound baseline for this SSOT revision:
 
 ```text
-CURRENT_REVIEWED_AT_SHA=3f671f03543fa429facfd052618c837608aa7ad2
-BOUND_ORIGIN_MAIN_SHA=3f671f03543fa429facfd052618c837608aa7ad2
+CURRENT_REVIEWED_AT_SHA=9971ad8bcef222c6200d476c823de89820add7aa
+BOUND_ORIGIN_MAIN_SHA=9971ad8bcef222c6200d476c823de89820add7aa
+NATURAL_ENTER_PRE_EXTERNAL_CLOSURE_CONTENT_ORIGIN_SHA=6ed52d01ac181e629b2839271f83b52fc7ffe61f
 TRACK_A_CLOSURE_CONTENT_ORIGIN_SHA=d0edb85fc83a5415a8a652299144cd0fe6da7644
 ```
 
@@ -1470,8 +1492,8 @@ DP_001=SHARED_KEEP
 WEBUI_ARCHIVE_COMPAT=src/webui/workflow_dashboard_archive_root_v1.py
 ```
 
-Presentation projection **loaders** that remain under `src/webui/` by design are
-not materializer residency; do not conflate with MAT-01..08 ops packages.
+Presentation projection **loaders** under the historical tree `src&#47;webui&#47;` are,
+by design, not materializer residency; do not conflate with MAT-01..08 ops packages.
 
 ### CURRENT operator workspace hygiene fixpoint (post local-artifact cleanup)
 

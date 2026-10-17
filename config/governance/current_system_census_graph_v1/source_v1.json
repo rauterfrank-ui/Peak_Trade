@@ -26,8 +26,10 @@
   ],
   "semantic_edge_definition": "Architecture/system semantic edges; not full Python import graph.",
   "authority_map_authority": "NONE",
-  "authority_map_baseline_sha": "d26caea78d1a178fde0a9e91aee169d454eebcae",
-  "authority_map_currentness": "ALIGNED_AT_ARCHITECTURE_NAVIGATION_FIXPOINT_V1",
+  "authority_map_historical_fixpoint_sha": "d26caea78d1a178fde0a9e91aee169d454eebcae",
+  "authority_map_baseline_sha": "f91d2cf2fed95af09376c464489f0ca19734e7f7",
+  "authority_map_currentness": "NOT_ALIGNED_TO_IAM_BASELINE",
+  "authority_map_alignment_note": "authority_map_baseline_sha is the IAM source baseline_sha observed at navigation review. It is not origin/main HEAD. The previous value d26caea78d1a178fde0a9e91aee169d454eebcae remains authority_map_historical_fixpoint_sha. Alignment of census edges to the IAM baseline is NOT_PROVEN. authority=NONE. No census expansion.",
   "reported_proven_current_universe_count": 12,
   "taxonomy_status": "OPEN_CURRENT",
   "taxonomy_issue": "Phase-2 report count/list mismatch: Cross-Boundaries, Offline/Research and Presentation surfaces listed alongside fachliche Universes.",
@@ -12519,6 +12521,11 @@
       "id": "CD-010",
       "topic": "archive instrument seam census coverage",
       "detail": "CLOSED_PASS: SO-SRC-PKG:webui retargeted to workflow_archive_readmodel_projections_v1 and presentation_archive_root_v1; materializer package paths bound to presentation_projection_operational_materializer_invocation_v1; archive-seam CODE_ONLY semantic_edges document producer/reader/binding\u2192smoke\u2192all active family exporters\u2192materializer\u2192octet\u2192builder. 301-object conservation preserved."
+    },
+    {
+      "id": "CD-011",
+      "topic": "authority map alignment claim retracted",
+      "detail": "RETRACTED: authority_map_currentness ALIGNED_AT_ARCHITECTURE_NAVIGATION_FIXPOINT_V1 cited authority_map_baseline_sha d26caea78d1a178fde0a9e91aee169d454eebcae, which is not the IAM source baseline_sha f91d2cf2fed95af09376c464489f0ca19734e7f7. Currentness is NOT_ALIGNED_TO_IAM_BASELINE. Edge re-proof against that IAM baseline is NOT_PROVEN. CD-001 through CD-010 are unchanged. authority=NONE."
     }
   ]
 }
