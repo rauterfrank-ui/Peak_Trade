@@ -27,6 +27,7 @@ from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.current_live_canary
     compute_canary_plan_digest_v1,
     evaluate_canary_capital_guard_entry_v1,
     parse_canary_capital_guard_config_v1,
+    parse_optional_finite_decimal_cap_v1,
 )
 
 CONTRACT_ID = "CURRENT_FULL_CORE_CAPITAL_GUARD_V1"
@@ -135,6 +136,9 @@ def parse_full_core_capital_guard_config_v1(
     schema = str(payload.get("schema_version") or "").strip()
     if schema != SCHEMA_VERSION:
         raise FullCoreCapitalGuardError(f"GUARD_SCHEMA_MISMATCH:{schema or '<empty>'}")
+    join_enabled = payload.get("full_core_guard_join_enabled")
+    if join_enabled is not None and not isinstance(join_enabled, bool):
+        raise CanaryCapitalGuardError("INVALID_BOOL_FLAG:full_core_guard_join_enabled")
     canary = parse_canary_capital_guard_config_v1(
         {
             **payload,
@@ -143,15 +147,12 @@ def parse_full_core_capital_guard_config_v1(
         },
         config_digest=config_digest,
     )
-    max_existing = payload.get("max_existing_exposure")
-    existing_dec: Decimal | None
-    if max_existing is None:
-        existing_dec = None
-    else:
-        existing_dec = Decimal(str(max_existing))
+    existing_dec = parse_optional_finite_decimal_cap_v1(
+        payload.get("max_existing_exposure"), field="max_existing_exposure"
+    )
     return FullCoreCapitalGuardConfigV1(
         schema_version=schema,
-        full_core_guard_join_enabled=bool(payload.get("full_core_guard_join_enabled")),
+        full_core_guard_join_enabled=canary.live_canary_allowed,
         owner_caps_ratified=canary.owner_caps_ratified,
         currency=canary.currency,
         max_single_order_notional=canary.max_single_order_notional,
