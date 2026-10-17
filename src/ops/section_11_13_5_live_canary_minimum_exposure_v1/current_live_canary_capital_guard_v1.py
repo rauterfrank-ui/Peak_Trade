@@ -112,13 +112,37 @@ class CanaryCapitalGuardConfigV1:
         }
 
 
-def _parse_optional_decimal(raw: Any) -> Decimal | None:
+def _parse_strict_flag(raw: Any, *, field: str, default: bool) -> bool:
+    """Only a JSON boolean sets a guard flag; any other type fails closed."""
+    if raw is None:
+        return default
+    if isinstance(raw, bool):
+        return raw
+    raise CanaryCapitalGuardError(f"INVALID_BOOL_FLAG:{field}")
+
+
+def _parse_optional_decimal(raw: Any, *, field: str = "cap") -> Decimal | None:
     if raw is None:
         return None
+    if isinstance(raw, bool):
+        raise CanaryCapitalGuardError(f"INVALID_DECIMAL:{field}")
     text = str(raw).strip()
     if not text:
         return None
-    return _dec(text, field="cap")
+    value = _dec(text, field=field)
+    if not value.is_finite():
+        raise CanaryCapitalGuardError(f"NON_FINITE_CAP:{field}")
+    return value
+
+
+def parse_optional_finite_decimal_cap_v1(raw: Any, *, field: str) -> Decimal | None:
+    return _parse_optional_decimal(raw, field=field)
+
+
+def _parse_optional_non_negative_int(raw: Any, *, field: str) -> int | None:
+    if raw is None:
+        return None
+    return _parse_required_non_negative_int(raw, field=field)
 
 
 def _parse_required_non_negative_int(raw: Any, *, field: str) -> int:
@@ -175,31 +199,43 @@ def parse_canary_capital_guard_config_v1(
         raise CanaryCapitalGuardError("GUARD_CURRENCY_MISSING")
     return CanaryCapitalGuardConfigV1(
         schema_version=schema,
-        live_canary_allowed=bool(payload.get("live_canary_allowed")),
-        owner_caps_ratified=bool(payload.get("owner_caps_ratified")),
+        live_canary_allowed=_parse_strict_flag(
+            payload.get("live_canary_allowed"), field="live_canary_allowed", default=False
+        ),
+        owner_caps_ratified=_parse_strict_flag(
+            payload.get("owner_caps_ratified"), field="owner_caps_ratified", default=False
+        ),
         currency=currency,
-        max_single_order_notional=_parse_optional_decimal(payload.get("max_single_order_notional")),
+        max_single_order_notional=_parse_optional_decimal(
+            payload.get("max_single_order_notional"), field="max_single_order_notional"
+        ),
         max_incremental_initial_margin=_parse_optional_decimal(
-            payload.get("max_incremental_initial_margin")
+            payload.get("max_incremental_initial_margin"), field="max_incremental_initial_margin"
         ),
-        max_aggregate_exposure=_parse_optional_decimal(payload.get("max_aggregate_exposure")),
-        max_leverage=_parse_optional_decimal(payload.get("max_leverage")),
-        max_open_positions=(
-            None
-            if payload.get("max_open_positions") is None
-            else int(payload.get("max_open_positions"))
+        max_aggregate_exposure=_parse_optional_decimal(
+            payload.get("max_aggregate_exposure"), field="max_aggregate_exposure"
         ),
-        max_submitted_orders=(
-            None
-            if payload.get("max_submitted_orders") is None
-            else int(payload.get("max_submitted_orders"))
+        max_leverage=_parse_optional_decimal(payload.get("max_leverage"), field="max_leverage"),
+        max_open_positions=_parse_optional_non_negative_int(
+            payload.get("max_open_positions"), field="max_open_positions"
+        ),
+        max_submitted_orders=_parse_optional_non_negative_int(
+            payload.get("max_submitted_orders"), field="max_submitted_orders"
         ),
         max_session_capital_commitment=_parse_optional_decimal(
-            payload.get("max_session_capital_commitment")
+            payload.get("max_session_capital_commitment"), field="max_session_capital_commitment"
         ),
-        scale_in_forbidden=bool(payload.get("scale_in_forbidden", True)),
-        automatic_retry_forbidden=bool(payload.get("automatic_retry_forbidden", True)),
-        fee_buffer_usdc=_parse_optional_decimal(payload.get("fee_buffer_usdc")),
+        scale_in_forbidden=_parse_strict_flag(
+            payload.get("scale_in_forbidden"), field="scale_in_forbidden", default=True
+        ),
+        automatic_retry_forbidden=_parse_strict_flag(
+            payload.get("automatic_retry_forbidden"),
+            field="automatic_retry_forbidden",
+            default=True,
+        ),
+        fee_buffer_usdc=_parse_optional_decimal(
+            payload.get("fee_buffer_usdc"), field="fee_buffer_usdc"
+        ),
         max_new_orders=_parse_required_non_negative_int(
             payload.get("max_new_orders"), field="max_new_orders"
         ),
@@ -753,6 +789,7 @@ __all__ = [
     "load_canary_capital_guard_config_v1",
     "offline_proof_guard_config_v1",
     "parse_canary_capital_guard_config_v1",
+    "parse_optional_finite_decimal_cap_v1",
     "record_canary_capital_guard_entry_attempt_v1",
     "refuse_canary_capital_guard_entry_unless_pass_v1",
     "refuse_canary_capital_guard_flatten_unless_pass_v1",
