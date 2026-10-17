@@ -1,31 +1,44 @@
 {
   "authority_effect": "NONE",
   "base_sha": "eef9d9cd3d7dbce0740a21e41b84bd17edb1c779",
-  "head_sha": "2fdcb7ed9b25876e480b895c7f21fd31553f8ee8",
+  "head_sha": "2bc3f3ad21177a9327fc1038d4033f22aaa7dab0",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "scripts/ops/ci_test_selection_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py",
     "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/current_live_canary_capital_guard_v1.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    "tests/ops/_current_full_system_offline_e2e_crash_child_runner_v1.py",
+    "tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py",
     "tests/ops/_protected_surface_content_pins_v1.py",
-    "tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py"
+    "tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py",
+    "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py"
   ],
-  "changed_paths_sha256": "cec3e7390876fd800317e87cd80637d51091c2f46d21041ab2da1a50d4dce81d",
+  "changed_paths_sha256": "d0ef5c85c0f904481853ac4cf378578b3249a0b7f16a8e35c86b08fda4b0933c",
   "covered_candidate_paths": [
+    "scripts/ops/ci_test_selection_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py",
     "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/current_live_canary_capital_guard_v1.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    "tests/ops/_current_full_system_offline_e2e_crash_child_runner_v1.py",
+    "tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py",
     "tests/ops/_protected_surface_content_pins_v1.py",
-    "tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py"
+    "tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py",
+    "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py"
   ],
   "evidence_refs": [
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "config/ops/current_full_core_capital_guard_v1.json",
     "config/ops/current_live_canary_capital_guard_v1.json",
+    "scripts/ops/ci_test_selection_v1.py",
     "src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_mandatory_new_risk_admission_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_global_venue_effect_authority_ledger_v1.py",
     "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/current_live_canary_capital_guard_v1.py",
-    "tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py"
+    "tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py",
+    "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py"
   ],
-  "reason": "BWP-LIVE-001 B2 hardens the existing capital-guard config parsers in place: guard flags (live_canary_allowed, owner_caps_ratified, scale_in_forbidden, automatic_retry_forbidden, full_core_guard_join_enabled) accept only JSON booleans (the string \"false\" previously ratified owner caps and enabled the full-core join via bool()), and decimal caps reject non-finite values (Infinity/NaN previously accepted). Stricter input validation only: no cap value ratified or invented, canonical configs stay owner_caps_ratified=false with null caps, no domain owner, interaction or authority edge added or removed, no new POST path, credential or authority, standing EXTERNAL_EFFECT_AUTHORIZED/POST_ALLOWED/REAL_VENUE_POST_ALLOWED stay false. The protected-surface content pin binds the exact new capital-guard content to the owner offline-implementation GO. New tests are AST/unit regression guards (B2 parsing, B4 standing pins, B7 no runner->POST call chain). source_v1.json and derived views unchanged; NO_MAP_IMPACT; AUTHORITY=NONE.",
+  "reason": "BWP-LIVE-002 keeps the BWP-LIVE-001 capital-guard parser hardening and adds no domain owner, interaction, or authority edge. Offline E2E crash children re-anchor the existing kill-switch root in-process and the restart assertions follow the existing global ledger replay deny (OWNER_AUTHORIZATION_IDENTITY consumed at claim, orphan claim stays unresolved). The CI selector gains one exact PR_BOUNDED_FULL package so the existing B2/B4/B7 test file runs when its production paths change; a test-only edit of that file is CONTRACT_FOCUSED instead of NO_OP. Two previously undetermined paths (scripts/ops/ci_test_selection_v1.py, tests/ci/test_ci_diff_aware_test_selection_v1.py) are named as exact candidate files. source_v1.json and derived views unchanged. Standing POST pins stay false. NO_MAP_IMPACT. AUTHORITY=NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }
