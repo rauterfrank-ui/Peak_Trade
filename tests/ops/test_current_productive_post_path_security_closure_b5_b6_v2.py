@@ -6,6 +6,7 @@ Offline only: fake states under tmp_path, no venue, no credentials, no owner led
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import os
 import subprocess
@@ -48,11 +49,18 @@ from src.ops.gates.risk_gate import (
     canonical_kill_switch_state_path,
     kill_switch_should_block_trading,
 )
-from src.risk_layer.kill_switch.cli import cmd_recover, cmd_trigger
+from src.risk_layer.kill_switch.cli import (
+    EXIT_DENIED,
+    EXIT_OK,
+    cmd_complete_recovery,
+    cmd_recover,
+    cmd_trigger,
+)
 from src.risk_layer.kill_switch.core import KillSwitch
 from src.risk_layer.kill_switch.state import KillSwitchState
 from tests.ops._post_path_safety_fixtures_v1 import (
     isolate_kill_switch_state_root_v1,
+    set_kill_switch_test_approval_env_v1,
     write_kill_switch_state_v1,
 )
 from tests.ops.test_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
@@ -126,13 +134,31 @@ def test_v2_writer_and_all_readers_share_one_source_across_cwd(
     assert _admission(evidence).decision is PostPathKillSwitchDecisionV1.DENY
     assert _writer().state is KillSwitchState.KILLED
 
-    cmd_recover(Namespace(reason="v2-recover", code="any", approved_by="test"), writer)
+    monkeypatch.setattr(sys, "stdin", io.StringIO("any\n"))
+    assert cmd_recover(
+        Namespace(reason="v2-recover", approved_by="test", code_stdin=True), writer
+    ) == (EXIT_DENIED)
+    assert json.loads(path.read_text(encoding="utf-8"))["state"] == "KILLED"
+    code = set_kill_switch_test_approval_env_v1(monkeypatch)
+    monkeypatch.setattr(sys, "stdin", io.StringIO(code + "\n"))
+    assert (
+        cmd_recover(Namespace(reason="v2-recover", approved_by="test", code_stdin=True), writer)
+        == EXIT_OK
+    )
     assert json.loads(path.read_text(encoding="utf-8"))["state"] == "RECOVERING"
     assert kill_switch_should_block_trading(explicit_active=False) is True
     assert _admission(read_post_path_kill_switch_evidence_v1()).decision is (
         PostPathKillSwitchDecisionV1.DENY
     )
-    assert writer.complete_recovery() is True
+    assert writer.complete_recovery() is False
+    monkeypatch.setattr(sys, "stdin", io.StringIO(code + "\n"))
+    assert (
+        cmd_complete_recovery(
+            Namespace(approved_by="test", request_id=writer.pending_request_id, code_stdin=True),
+            writer,
+        )
+        == EXIT_OK
+    )
     assert writer.state is KillSwitchState.ACTIVE
     evidence = read_post_path_kill_switch_evidence_v1()
     assert evidence.writer_schema_state == "ACTIVE"

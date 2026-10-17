@@ -2,6 +2,9 @@
 
 Kill-switch evidence is produced by writing a real state file under ``tmp_path``
 and reading it through the CURRENT reader; nothing fabricates TRUSTED_PRESENT.
+ACTIVE is only produced through the canonical recovery flow
+(trigger → request_recovery → complete_recovery) with a test-only approval
+secret, so it carries a real attestation and journal binding.
 Global ledgers live under ``tmp_path``; the canonical per-user ledger root is
 refused under pytest.
 """
@@ -9,10 +12,12 @@ refused under pytest.
 from __future__ import annotations
 
 import json
+import os
 import tempfile
 import time
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Callable, Iterator
 
 import pytest
 
@@ -39,25 +44,88 @@ from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 imp
     FinalOrderEnvelopeV1,
 )
 from src.ops.gates import risk_gate
+from src.risk_layer.kill_switch.core import KillSwitch
 from src.risk_layer.kill_switch.persistence import StatePersistence
+from src.risk_layer.kill_switch.recovery_attestation import DEFAULT_APPROVAL_CODE_ENV
 from src.risk_layer.kill_switch.state import KillSwitchState
 
 KILL_SWITCH_ENV = "PEAK_KILL_SWITCH_STATE_PATH"
 KILL_SWITCH_ENV_ALT = "PEAKTRADE_KILL_SWITCH_STATE_PATH"
+KILL_SWITCH_EMERGENCY_ENV = "PEAK_KILL_SWITCH"
 TEST_BASELINE_SHA = "ab" * 20
+TEST_APPROVAL_CODE = "pt-test-only-kill-switch-approval-v1"
+TEST_APPROVER = "fixture_operator"
+
+
+@contextmanager
+def kill_switch_test_approval_env_v1(code: str = TEST_APPROVAL_CODE) -> Iterator[str]:
+    """Temporarily expose the test-only approval secret; restores the previous value."""
+    previous = os.environ.get(DEFAULT_APPROVAL_CODE_ENV)
+    os.environ[DEFAULT_APPROVAL_CODE_ENV] = code
+    try:
+        yield code
+    finally:
+        if previous is None:
+            os.environ.pop(DEFAULT_APPROVAL_CODE_ENV, None)
+        else:
+            os.environ[DEFAULT_APPROVAL_CODE_ENV] = previous
+
+
+def set_kill_switch_test_approval_env_v1(
+    monkeypatch: pytest.MonkeyPatch, code: str = TEST_APPROVAL_CODE
+) -> str:
+    monkeypatch.setenv(DEFAULT_APPROVAL_CODE_ENV, code)
+    return code
+
+
+def durable_kill_switch_at_v1(path: Path, **config: Any) -> KillSwitch:
+    """Durable KillSwitch bound to ``path`` (cooldown 0 unless overridden)."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    merged = {"persist_state": True, "recovery_cooldown_seconds": 0, **config}
+    return KillSwitch(
+        merged,
+        persistence=StatePersistence(str(path), backup_dir=str(path.parent / "backups")),
+    )
+
+
+def recover_kill_switch_to_active_v1(ks: KillSwitch, code: str = TEST_APPROVAL_CODE) -> None:
+    """Canonical KILLED/ACTIVE → KILLED → RECOVERING → ACTIVE with a real attestation."""
+    if ks.state is not KillSwitchState.KILLED:
+        ks.trigger("fixture_recovery_cycle", triggered_by="fixture")
+    assert ks.request_recovery(TEST_APPROVER, code) is True, ks.last_denial_reason
+    request_id = ks.pending_request_id
+    assert request_id
+    assert ks.complete_recovery(TEST_APPROVER, code, request_id=request_id) is True, (
+        ks.last_denial_reason
+    )
+
+
+def write_attested_active_kill_switch_state_v1(path: Path) -> Path:
+    with kill_switch_test_approval_env_v1() as code:
+        recover_kill_switch_to_active_v1(durable_kill_switch_at_v1(path), code)
+    return path
+
+
+def write_unattested_kill_switch_state_v1(path: Path, *, state: str) -> Path:
+    """Raw writer output without recovery attestation (negative tests only)."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    StatePersistence(str(path), backup_dir=str(path.parent / "backups")).save(
+        KillSwitchState[state]
+    )
+    return path
 
 
 def write_kill_switch_state_v1(
     path: Path, *, state: str = "ACTIVE", raw: str | None = None
 ) -> Path:
-    """Valid enum states go through the CURRENT ``StatePersistence`` writer."""
+    """ACTIVE goes through the canonical recovery flow; other enum states through the writer."""
     path.parent.mkdir(parents=True, exist_ok=True)
     if raw is not None:
         path.write_text(raw, encoding="utf-8")
+    elif state == "ACTIVE":
+        write_attested_active_kill_switch_state_v1(path)
     elif state in KillSwitchState.__members__:
-        StatePersistence(str(path), backup_dir=str(path.parent / "backups")).save(
-            KillSwitchState[state]
-        )
+        write_unattested_kill_switch_state_v1(path, state=state)
     else:
         path.write_text(json.dumps({"state": state}) + "\n", encoding="utf-8")
     return path
@@ -68,10 +136,13 @@ def isolate_kill_switch_state_root_v1(monkeypatch: pytest.MonkeyPatch, root: Pat
 
     Writer and every reader keep resolving through ``canonical_kill_switch_state_path``;
     nothing outside this in-process injection (env, pytest import) can redirect it.
+    The test-only approval secret is exposed for the same test so ACTIVE re-reads
+    can verify their attestation.
     """
     monkeypatch.delenv(KILL_SWITCH_ENV, raising=False)
     monkeypatch.delenv(KILL_SWITCH_ENV_ALT, raising=False)
     monkeypatch.setattr(risk_gate, "_KILL_SWITCH_STATE_ROOT", root.resolve())
+    set_kill_switch_test_approval_env_v1(monkeypatch)
     return Path(risk_gate.canonical_kill_switch_state_path())
 
 
@@ -82,6 +153,7 @@ def activate_isolated_kill_switch_state_v1(
     state: str = "ACTIVE",
 ) -> Path:
     path = isolate_kill_switch_state_root_v1(monkeypatch, tmp_path / "kill_switch_fixture")
+    monkeypatch.delenv(KILL_SWITCH_EMERGENCY_ENV, raising=False)
     return write_kill_switch_state_v1(path, state=state)
 
 
@@ -91,7 +163,8 @@ def kill_switch_evidence_from_state_v1(
     path = write_kill_switch_state_v1(
         tmp_path / "kill_switch_evidence_fixture" / f"{state.lower()}.json", state=state
     )
-    return read_post_path_kill_switch_evidence_v1(state_path=path)
+    with kill_switch_test_approval_env_v1():
+        return read_post_path_kill_switch_evidence_v1(state_path=path)
 
 
 def trusted_active_kill_switch_evidence_v1(tmp_path: Path) -> PostPathKillSwitchEvidenceV1:
@@ -227,10 +300,19 @@ def execute_with_isolated_global_ledger_v1(execute_fn: Callable[..., Any]) -> Ca
 
 
 __all__ = [
+    "KILL_SWITCH_EMERGENCY_ENV",
     "KILL_SWITCH_ENV",
+    "TEST_APPROVAL_CODE",
+    "TEST_APPROVER",
     "TEST_BASELINE_SHA",
     "activate_isolated_kill_switch_state_v1",
     "claim_for_join_v1",
+    "durable_kill_switch_at_v1",
+    "kill_switch_test_approval_env_v1",
+    "recover_kill_switch_to_active_v1",
+    "set_kill_switch_test_approval_env_v1",
+    "write_attested_active_kill_switch_state_v1",
+    "write_unattested_kill_switch_state_v1",
     "execute_with_isolated_global_ledger_v1",
     "isolated_join_safety_kwargs_v1",
     "join_with_isolated_post_path_safety_v1",

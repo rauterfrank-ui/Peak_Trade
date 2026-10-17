@@ -13,7 +13,10 @@ from src.risk_layer.kill_switch.cli import cmd_trigger
 from src.risk_layer.kill_switch.core import KillSwitch
 from src.risk_layer.kill_switch.persistence import StatePersistence
 from src.risk_layer.kill_switch.state import KillSwitchState
-from tests.ops._post_path_safety_fixtures_v1 import isolate_kill_switch_state_root_v1
+from tests.ops._post_path_safety_fixtures_v1 import (
+    isolate_kill_switch_state_root_v1,
+    set_kill_switch_test_approval_env_v1,
+)
 
 
 def _persist_config(tmp_path, monkeypatch):
@@ -123,11 +126,20 @@ def test_recovery_does_not_silently_clear_killed(tmp_path, monkeypatch):
     assert json.loads(path.read_text(encoding="utf-8"))["state"] == "KILLED"
     assert kill_switch_should_block_trading(explicit_active=False) is True
 
-    assert restarted.request_recovery("operator") is True
+    # require_approval_code=False cannot disable durable recovery authorization.
+    assert restarted.request_recovery("operator") is False
+    assert json.loads(path.read_text(encoding="utf-8"))["state"] == "KILLED"
+    code = set_kill_switch_test_approval_env_v1(monkeypatch)
+    assert restarted.request_recovery("operator", code) is True
     assert json.loads(path.read_text(encoding="utf-8"))["state"] == "RECOVERING"
     assert kill_switch_should_block_trading(explicit_active=False) is True
 
-    assert restarted.complete_recovery() is True
+    assert restarted.complete_recovery() is False
+    assert json.loads(path.read_text(encoding="utf-8"))["state"] == "RECOVERING"
+    assert (
+        restarted.complete_recovery("operator", code, request_id=restarted.pending_request_id)
+        is True
+    )
     assert json.loads(path.read_text(encoding="utf-8"))["state"] == "ACTIVE"
     assert kill_switch_should_block_trading(explicit_active=False) is False
 

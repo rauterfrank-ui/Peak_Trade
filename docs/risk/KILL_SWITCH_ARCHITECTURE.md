@@ -244,7 +244,8 @@ if portfolio_drawdown < -0.15:
 ```bash
 python3 -m src.risk_layer.kill_switch.cli status
 python3 -m src.risk_layer.kill_switch.cli trigger --reason "Wartung" --confirm
-python3 -m src.risk_layer.kill_switch.cli recover --code "..." --reason "..."
+python3 -m src.risk_layer.kill_switch.cli recover --approved-by "..." --reason "..."
+python3 -m src.risk_layer.kill_switch.cli complete-recovery --approved-by "..." --request-id "..."
 python3 -m src.risk_layer.kill_switch.cli audit --limit 50
 python3 -m src.risk_layer.kill_switch.cli health
 ```
