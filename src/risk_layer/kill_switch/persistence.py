@@ -5,6 +5,7 @@ Provides crash-safe state persistence using atomic writes.
 
 import json
 import logging
+import os
 import shutil
 from datetime import datetime
 from pathlib import Path
@@ -96,6 +97,8 @@ class StatePersistence:
             # Write to temporary file
             with open(tmp_file, "w") as f:
                 json.dump(data, f, indent=2)
+                f.flush()
+                os.fsync(f.fileno())
 
             # Backup existing file
             if self.state_file.exists():

@@ -53,6 +53,7 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_post_response_to_
     join_full_core_post_result_to_lifecycle_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_productive_http_post_transport_v1 import (
+    PRE_SEND_GATE_DENIED_PREFIX,
     FullCoreProductiveHttpPostError,
     FullCoreProductiveTradeOrderPostTransportV1,
     FullCoreTradeOrderPostResultV1,
@@ -189,7 +190,7 @@ def attempt_envelope_bound_external_effect_send_v1(
             "HOST_NOT_EEA_OKX",
             "WWW_OKX_FORBIDDEN",
             "K1_SIGNING_HANDLE_UNAVAILABLE",
-        }:
+        } or msg.startswith(f"{PRE_SEND_GATE_DENIED_PREFIX}:"):
             raise FullCoreEnvelopeBoundSendSeamError(msg) from exc
         raise FullCoreEnvelopeBoundSendSeamError("UNKNOWN_OUTCOME") from exc
     except Exception as exc:

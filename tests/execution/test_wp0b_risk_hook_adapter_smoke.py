@@ -12,6 +12,7 @@ from src.execution.risk_runtime import NoopPolicy, MaxOpenOrdersPolicy, RiskRunt
 from src.execution.risk_hook_impl import RuntimeRiskHook, create_runtime_risk_hook
 from src.execution.order_ledger import OrderLedger
 from src.execution.position_ledger import PositionLedger
+from tests.ops._post_path_safety_fixtures_v1 import isolate_kill_switch_state_root_v1
 
 
 def test_runtime_risk_hook_evaluate_order_allow():
@@ -64,9 +65,9 @@ def test_runtime_risk_hook_check_kill_switch():
 
 def test_runtime_risk_hook_check_kill_switch_blocks_when_state_killed(tmp_path, monkeypatch):
     """Kill-switch state file KILLED yields BLOCK from check_kill_switch."""
-    state_file = tmp_path / "ks.json"
+    state_file = isolate_kill_switch_state_root_v1(monkeypatch, tmp_path)
+    state_file.parent.mkdir(parents=True)
     state_file.write_text(json.dumps({"state": "KILLED"}), encoding="utf-8")
-    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(state_file))
     monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
 
     runtime = RiskRuntime(policies=[NoopPolicy()])

@@ -9,6 +9,7 @@ import pytest
 from src.execution.contracts import OrderSide
 from src.execution.orchestrator import ExecutionMode, ExecutionOrchestrator, OrderIntent
 from src.execution.venue_adapters.simulated import SimulatedVenueAdapter
+from tests.ops._post_path_safety_fixtures_v1 import isolate_kill_switch_state_root_v1
 
 
 def _read_jsonl(path: Path) -> list[dict]:
@@ -77,9 +78,9 @@ def test_reject_kill_switch_from_state_file_without_explicit_flag(
 ):
     """Orchestrator blocks when state file says KILLED even if kill_switch_active is False."""
     log_path = tmp_path / "execution_events.jsonl"
-    state_file = tmp_path / "state.json"
+    state_file = isolate_kill_switch_state_root_v1(monkeypatch, tmp_path)
+    state_file.parent.mkdir(parents=True)
     state_file.write_text(json.dumps({"state": "KILLED"}), encoding="utf-8")
-    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(state_file))
     monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
 
     orch = ExecutionOrchestrator(

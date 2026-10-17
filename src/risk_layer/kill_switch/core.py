@@ -106,11 +106,19 @@ class KillSwitch:
             return persistence
         if not config.get("persist_state"):
             return None
-        from src.ops.gates.risk_gate import canonical_kill_switch_state_path
+        from src.ops.gates.risk_gate import (
+            canonical_kill_switch_state_path,
+            kill_switch_env_override_rejected,
+        )
 
         from .persistence import StatePersistence as _StatePersistence
 
         path = canonical_kill_switch_state_path()
+        if kill_switch_env_override_rejected():
+            self._logger.critical(
+                "Kill-switch state path env override rejected; persisting at canonical %s",
+                path,
+            )
         self._logger.info("KillSwitch persistence bound at %s", path)
         return _StatePersistence(path, logger_instance=self._logger)
 

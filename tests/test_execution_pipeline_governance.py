@@ -547,11 +547,12 @@ class TestExecuteWithSafetyGovernance:
         from src.core.environment import EnvironmentConfig, TradingEnvironment
         from src.orders.paper import PaperMarketContext, PaperOrderExecutor
         from src.orders.base import OrderRequest
+        from tests.ops._post_path_safety_fixtures_v1 import isolate_kill_switch_state_root_v1
 
         # Kill switch state file: KILLED
-        state_file = tmp_path / "kill_switch_state.json"
+        state_file = isolate_kill_switch_state_root_v1(monkeypatch, tmp_path)
+        state_file.parent.mkdir(parents=True)
         state_file.write_text(json.dumps({"state": "KILLED", "version": "1.0"}))
-        monkeypatch.setenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", str(state_file))
 
         env_config = EnvironmentConfig(
             environment=TradingEnvironment.LIVE,

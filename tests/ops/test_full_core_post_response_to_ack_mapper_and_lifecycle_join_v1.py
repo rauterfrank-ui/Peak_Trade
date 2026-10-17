@@ -5,6 +5,8 @@ Non-networking fixtures only. REAL_POST_COUNT=0. No venue POST.
 
 from __future__ import annotations
 
+from tests.ops._post_path_safety_fixtures_v1 import fresh_trusted_active_kill_switch_evidence_v1
+
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Optional
@@ -198,11 +200,8 @@ def _send(*, transport: FixturePostTransportV1, tmp_path: Path):
     permit = issue_external_effect_permit_v1(
         envelope,
         authority_ref="BOUNDED_FULL_CORE_POST_SUBMIT_LIFECYCLE_ACTIVATION_AND_JOIN_V1",
-        kill_switch_blocked=False,
-        durable_kill_switch_evidence_status=(
-            DurableKillSwitchEvidenceStatusV1.TRUSTED_PRESENT.value
-        ),
-        filegate_denied=False,
+        kill_switch_evidence=fresh_trusted_active_kill_switch_evidence_v1(),
+        risk_reduction_proof=None,
         step_29q_status=STEP_29Q_PLAN_ONLY,
     )
     handle = FullCoreSendCredentialHandleV1(
@@ -442,24 +441,12 @@ def test_send_seam_admission_predicates_remain_before_post() -> None:
 
 
 def test_protected_surfaces_unchanged_vs_origin_main() -> None:
-    import subprocess
+    from tests.ops._protected_surface_content_pins_v1 import unauthorized_protected_changes_v1
 
-    diff = subprocess.run(
-        [
-            "git",
-            "diff",
-            "--name-only",
-            "origin/main",
-            "--",
-            *PROTECTED_ALGORITHM_FILES,
-            *PROTECTED_AUTHORITY_FILES,
-        ],
-        cwd=REPO_ROOT,
-        check=True,
-        capture_output=True,
-        text=True,
+    assert (
+        unauthorized_protected_changes_v1((*PROTECTED_ALGORITHM_FILES, *PROTECTED_AUTHORITY_FILES))
+        == []
     )
-    assert diff.stdout.strip() == ""
 
 
 def test_ssot_docs_once_present() -> None:

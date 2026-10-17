@@ -1,7 +1,9 @@
 """Durable single-use consume ledger for the actual-venue POST Owner-GO.
 
 Module-level POST_GO_STATUS in the one-shot join remains UNCONSUMED for standing
-boundary proofs. Productive execution consumes this durable record exactly once.
+boundary proofs. Productive execution consumes this durable record exactly once
+per store root (flock + mkstemp + fsync + replace). The cross-root single-use
+boundary is the global venue effect authority ledger.
 
 Does not POST. Does not load credentials.
 
@@ -14,6 +16,13 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Final, Mapping
+
+from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_durable_consume_v1 import (
+    exclusive_store_root_lock_v1,
+)
+from src.ops.section_11_13_5_live_canary_minimum_exposure_v1.canary_capital_guard_atomic_one_shot_v1 import (
+    _atomic_write_state_v1,
+)
 
 POST_OWNER_GO = (
     "OWNER_GO_CURRENT_PRODUCTIVE_ACTUAL_VENUE_POST_WITH_FRESH_ENVELOPE_BOUND_SINGLE_USE_PERMIT_V1"
@@ -97,24 +106,25 @@ def persist_durable_post_owner_go_consume_v1(
     sha = str(baseline_origin_main_sha or "").strip()
     if len(sha) != 40:
         raise CurrentProductiveActualVenuePostOwnerGoConsumeError("BASELINE_SHA_INVALID")
-    existing = load_durable_post_owner_go_consume_v1(store_root=store_root)
-    if existing.get("consumed") is True:
-        raise CurrentProductiveActualVenuePostOwnerGoConsumeError("POST_OWNER_GO_ALREADY_CONSUMED")
-    bound = {
-        "consumed": True,
-        "owner_go_token": go,
-        "baseline_origin_main_sha": sha,
-        "consumed_at_utc": _utc_now_iso_v1(),
-        "retry_authorized": False,
-        "second_post_authorized": False,
-    }
-    _assert_no_secrets(bound)
     root = Path(store_root)
     root.mkdir(parents=True, exist_ok=True)
     path = durable_post_owner_go_path_v1(root)
-    tmp = path.with_suffix(path.suffix + ".tmp")
-    tmp.write_text(_canonical_json(bound) + "\n", encoding="utf-8")
-    tmp.replace(path)
+    with exclusive_store_root_lock_v1(root):
+        existing = load_durable_post_owner_go_consume_v1(store_root=root)
+        if existing.get("consumed") is True:
+            raise CurrentProductiveActualVenuePostOwnerGoConsumeError(
+                "POST_OWNER_GO_ALREADY_CONSUMED"
+            )
+        bound = {
+            "consumed": True,
+            "owner_go_token": go,
+            "baseline_origin_main_sha": sha,
+            "consumed_at_utc": _utc_now_iso_v1(),
+            "retry_authorized": False,
+            "second_post_authorized": False,
+        }
+        _assert_no_secrets(bound)
+        _atomic_write_state_v1(path, bound)
     return bound
 
 

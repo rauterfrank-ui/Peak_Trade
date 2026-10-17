@@ -43,7 +43,7 @@ from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_tr
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 import (
     OWNER_GO,
     CurrentProductiveActualVenuePostError,
-    execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1,
+    execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 as _execute_v1,
 )
 from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_unknown_post_attempt_read_only_reconciliation_v1 import (
     CONFIRMED_ACCEPTED_WORKING,
@@ -64,6 +64,25 @@ from tests.ops._pilot_guard_enter_post_test_helpers_v1 import (
     PilotGuardReadTransport,
     mandatory_new_risk_execute_kwargs,
 )
+
+
+from tests.ops._post_path_safety_fixtures_v1 import (
+    activate_isolated_kill_switch_state_v1,
+    execute_with_isolated_global_ledger_v1,
+)
+
+execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 = (
+    execute_with_isolated_global_ledger_v1(_execute_v1)
+)
+
+
+@pytest.fixture(autouse=True)
+def _active_kill_switch_state(
+    monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory
+) -> None:
+    activate_isolated_kill_switch_state_v1(
+        monkeypatch, tmp_path_factory.mktemp("kill_switch_active")
+    )
 
 
 def _clean_post_integrity() -> MockCurrentProductive29PIntegrityBackendV1:

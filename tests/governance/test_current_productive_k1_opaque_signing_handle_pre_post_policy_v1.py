@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from src.governance.current_productive_k1_opaque_signing_handle_pre_post_policy_v1 import (
     BASELINE_ORIGIN_MAIN_SHA,
     OWNER_GO_TOKEN,
@@ -59,6 +61,18 @@ FAKE_K1_OPAQUE = json.dumps(
     {"apiKey": "ak-test", "secretKey": "sk-test", "passphrase": "pp-test"},
     separators=(",", ":"),
 ).encode("utf-8")
+
+
+from tests.ops._post_path_safety_fixtures_v1 import activate_isolated_kill_switch_state_v1
+
+
+@pytest.fixture(autouse=True)
+def _active_kill_switch_state(
+    monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory
+) -> None:
+    activate_isolated_kill_switch_state_v1(
+        monkeypatch, tmp_path_factory.mktemp("kill_switch_active")
+    )
 
 
 class FakeOsNativeStoreLookupBackendV1:

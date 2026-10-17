@@ -37,6 +37,7 @@ from src.ops.full_core_live_path_composition_root_v1.owner_one_shot_permit_v1 im
 )
 from src.risk_layer.kill_switch.persistence import StatePersistence
 from src.risk_layer.kill_switch.state import KillSwitchState
+from tests.ops._post_path_safety_fixtures_v1 import isolate_kill_switch_state_root_v1
 from tests.ops.test_full_core_execution_admission_contract_v1 import _live_inputs
 from tests.ops.test_full_core_live_path_composition_root_v1 import _run
 from tests.trading.master_v2.test_master_v2_integrated_replay_safety_before_intent_restore_contract_v1 import (
@@ -49,10 +50,9 @@ SPEC_PATH = REPO_ROOT / "docs/ops/specs/FULL_CORE_OWNER_ONE_SHOT_TYPED_PERMIT_SE
 
 
 def _bind_state_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
-    path = tmp_path / "kill_switch_state.json"
-    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(path))
-    monkeypatch.delenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", raising=False)
     monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
+    path = isolate_kill_switch_state_root_v1(monkeypatch, tmp_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
     return path
 
 

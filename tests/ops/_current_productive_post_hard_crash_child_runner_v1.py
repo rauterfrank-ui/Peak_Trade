@@ -21,7 +21,11 @@ if str(_REPO_ROOT) not in sys.path:
 from tests.ops._current_productive_post_hard_crash_harness_v1 import (  # noqa: E402
     CRASH_EXIT,
     ValidOkxPostAckOpenerV1,
+    harness_global_ledger_v1,
+    harness_kill_switch_root_v1,
 )
+from src.ops.gates import risk_gate  # noqa: E402
+from tests.ops._post_path_safety_fixtures_v1 import isolated_join_safety_kwargs_v1  # noqa: E402
 from tests.ops._pilot_guard_enter_post_test_helpers_v1 import (  # noqa: E402
     OWNER_GO_CURRENT_PILOT_CAPITAL_GUARD_POST_BIND_V1,
     PilotGuardReadTransport,
@@ -109,6 +113,7 @@ def _run_one_shot_join(
         k1_backend=_FakeKeychainBackend(),
         opener_factory=opener_factory or (lambda: _TimeoutOpener()),
         probe=OneShotJoinProbeV1(),
+        **isolated_join_safety_kwargs_v1(envelope, ledger=harness_global_ledger_v1(store_root)),
     )
 
 
@@ -137,6 +142,7 @@ def _run_execute_post(
         perform_real_venue_post=True,
         k1_backend=_FakeKeychainBackend(),
         opener_factory=opener_factory or (lambda: _TimeoutOpener()),
+        global_authority_ledger=harness_global_ledger_v1(store_root),
         read_only_get_transport=PilotGuardReadTransport(avail_eq="10000"),
         execution_integrity_backend=MockCurrentProductive29PIntegrityBackendV1(
             origin_main=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
@@ -204,19 +210,24 @@ def _scenario_c4(store_root: Path, envelope: Any) -> None:
 
 
 def _scenario_c6(store_root: Path, envelope: Any) -> None:
-    from tests.ops._current_productive_post_hard_crash_harness_v1 import DURABLE_CONSUME_TMP_NAME
+    from tests.ops._current_productive_post_hard_crash_harness_v1 import (
+        DURABLE_CONSUME_FINAL_NAME,
+        DURABLE_CONSUME_TMP_PREFIX,
+    )
 
-    orig_replace = Path.replace
+    orig_replace = os.replace
 
-    def _crash_before_replace(self: Path, target: Path) -> None:
-        if self.name == DURABLE_CONSUME_TMP_NAME:
+    def _crash_before_replace(src: Any, dst: Any, *args: Any, **kwargs: Any) -> None:
+        if Path(str(dst)).name == DURABLE_CONSUME_FINAL_NAME and Path(str(src)).name.startswith(
+            DURABLE_CONSUME_TMP_PREFIX
+        ):
             _crash(CRASH_EXIT["C6"])
-        return orig_replace(self, target)
+        return orig_replace(src, dst, *args, **kwargs)
 
     establish_new_risk_one_shot_admission_seal_for_tests_v1(
         store_root=store_root, envelope=envelope
     )
-    with patch.object(Path, "replace", _crash_before_replace):
+    with patch.object(os, "replace", _crash_before_replace):
         _run_one_shot_join(store_root, envelope)
 
 
@@ -370,6 +381,7 @@ def main() -> None:
     parser.add_argument("--config", required=True)
     args = parser.parse_args()
     store_root = Path(args.store_root)
+    risk_gate._KILL_SWITCH_STATE_ROOT = harness_kill_switch_root_v1(store_root)
     config = _load_config(Path(args.config))
     point = str(config.get("crash_point") or "").strip()
     extra = config.get("extra") if isinstance(config.get("extra"), dict) else {}

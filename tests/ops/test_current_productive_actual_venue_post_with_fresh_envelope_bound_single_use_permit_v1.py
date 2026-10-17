@@ -27,7 +27,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
     OWNER_GO,
     CurrentProductiveActualVenuePostError,
-    execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1,
+    execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 as _execute_v1,
     prove_pre_live_actual_venue_post_readiness_v1,
 )
 from src.governance.current_productive_actual_venue_post_admission_policy_v1 import (
@@ -101,6 +101,25 @@ class _TrustedReadTransport:
             error_class="",
             data_safety_source_kind="REAL",
         )
+
+
+from tests.ops._post_path_safety_fixtures_v1 import (
+    activate_isolated_kill_switch_state_v1,
+    execute_with_isolated_global_ledger_v1,
+)
+
+execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 = (
+    execute_with_isolated_global_ledger_v1(_execute_v1)
+)
+
+
+@pytest.fixture(autouse=True)
+def _active_kill_switch_state(
+    monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory
+) -> None:
+    activate_isolated_kill_switch_state_v1(
+        monkeypatch, tmp_path_factory.mktemp("kill_switch_active")
+    )
 
 
 @pytest.fixture(autouse=True)

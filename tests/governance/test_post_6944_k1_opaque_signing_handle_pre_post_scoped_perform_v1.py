@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from src.governance.post_6944_k1_opaque_signing_handle_pre_post_scoped_perform_v1 import (
     DECISION_CONFIG,
     NORMATIVE_SPEC,
@@ -23,6 +25,18 @@ from tests.governance.test_current_productive_k1_opaque_signing_handle_pre_post_
 )
 
 REPO = Path(__file__).resolve().parents[2]
+
+
+from tests.ops._post_path_safety_fixtures_v1 import activate_isolated_kill_switch_state_v1
+
+
+@pytest.fixture(autouse=True)
+def _active_kill_switch_state(
+    monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory
+) -> None:
+    activate_isolated_kill_switch_state_v1(
+        monkeypatch, tmp_path_factory.mktemp("kill_switch_active")
+    )
 
 
 def _bound_fake() -> FakeOsNativeStoreLookupBackendV1:

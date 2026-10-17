@@ -42,8 +42,12 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot
 from src.ops.full_core_live_path_composition_root_v1.external_effect_gate_v1 import (
     TRADE_ORDER_PATH,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_post_path_kill_switch_gate_v1 import (
+    read_post_path_kill_switch_evidence_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_v1 import (
     ExternalEffectPermitV1,
+    FullCoreExternalEffectPermitError,
     issue_external_effect_permit_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 import (
@@ -155,8 +159,16 @@ def attempt_governed_current_productive_k1_pre_post_productive_chain_v1(
     permit: ExternalEffectPermitV1 | None = None
     permit_minted = False
     if permit_mint_auth:
-        permit = issue_external_effect_permit_v1(envelope, authority_ref=POST_OWNER_GO)
-        permit_minted = True
+        try:
+            permit = issue_external_effect_permit_v1(
+                envelope,
+                authority_ref=POST_OWNER_GO,
+                kill_switch_evidence=read_post_path_kill_switch_evidence_v1(),
+                risk_reduction_proof=None,
+            )
+            permit_minted = True
+        except FullCoreExternalEffectPermitError:
+            permit = None
 
     request_url = f"https://{AUTHORIZED_HOST}{TRADE_ORDER_PATH}"
     pre_post: CurrentProductiveK1PrePostRequestEnvelopeV1 | None = None

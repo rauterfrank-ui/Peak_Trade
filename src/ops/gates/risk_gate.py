@@ -8,14 +8,17 @@ from pathlib import Path
 from typing import Dict, Optional
 
 # Default path aligned with KillSwitch persistence (see config / pipeline bounded_pilot).
+# Relative to the repository root of this checkout, never to the process CWD.
 DEFAULT_KILL_SWITCH_STATE_PATH = "data/kill_switch/state.json"
 
 # Env vars for kill-switch state file path (canonical first; legacy alias for older tooling).
+# Never honored as a redirect: a set override is rejected fail-closed in every process.
 KILL_SWITCH_STATE_PATH_ENV_VARS = (
     "PEAK_KILL_SWITCH_STATE_PATH",
     "PEAKTRADE_KILL_SWITCH_STATE_PATH",
 )
 
+_KILL_SWITCH_STATE_ROOT = Path(__file__).resolve().parents[3]
 _KILL_SWITCH_BLOCKING_STATES = frozenset({"KILLED", "RECOVERING"})
 _KILL_SWITCH_NON_BLOCKING_STATES = frozenset({"ACTIVE", "DISABLED"})
 
@@ -29,9 +32,31 @@ def kill_switch_state_path_from_env() -> Optional[str]:
     return None
 
 
+def kill_switch_env_override_rejected() -> bool:
+    """True when an env path override is set (fail-closed signal; it never redirects)."""
+    return kill_switch_state_path_from_env() is not None
+
+
+def _anchor_kill_switch_path(raw: str) -> Path:
+    candidate = Path(raw).expanduser()
+    if not candidate.is_absolute():
+        candidate = _KILL_SWITCH_STATE_ROOT / candidate
+    return candidate.resolve()
+
+
 def canonical_kill_switch_state_path() -> str:
-    """Resolved persist/read path: env alias first, else default file path."""
-    return kill_switch_state_path_from_env() or DEFAULT_KILL_SWITCH_STATE_PATH
+    """Single absolute persist/read path shared by the KillSwitch writer and every reader.
+
+    Anchored at the repository root of this checkout. Independent of the process
+    CWD, the environment and imported modules.
+    """
+    return str(_anchor_kill_switch_path(DEFAULT_KILL_SWITCH_STATE_PATH))
+
+
+def legacy_cwd_kill_switch_state_paths() -> tuple[str, ...]:
+    """CWD-relative legacy location when it differs from the canonical path (deny-only)."""
+    resolved = str(Path(DEFAULT_KILL_SWITCH_STATE_PATH).resolve())
+    return () if resolved == canonical_kill_switch_state_path() else (resolved,)
 
 
 class RiskDenyReason(str, Enum):
@@ -90,7 +115,7 @@ def resolve_kill_switch_limit_from_state_file(
       treat the path as configured/expected must fail-closed rather than treat
       this as ACTIVE.
     """
-    path = Path(state_path or DEFAULT_KILL_SWITCH_STATE_PATH)
+    path = Path(state_path or canonical_kill_switch_state_path())
     if not path.is_file():
         return None
     try:
@@ -120,18 +145,26 @@ def kill_switch_should_block_trading(*, explicit_active: bool = False) -> bool:
     - When no state path is configured and the default file is absent,
       ``PEAK_KILL_SWITCH=1`` remains an explicit operator deny overlay.
       It is not a second persisted kill-state machine.
+    - A set env path override blocks (never redirects).
+    - A CWD-relative legacy state file that is not a valid non-blocking state blocks.
     """
     if explicit_active:
         return True
-    env_path = kill_switch_state_path_from_env()
-    path = env_path or DEFAULT_KILL_SWITCH_STATE_PATH
+    if kill_switch_env_override_rejected():
+        return True
+    for legacy in legacy_cwd_kill_switch_state_paths():
+        if (
+            Path(legacy).is_file()
+            and resolve_kill_switch_limit_from_state_file(legacy) is not False
+        ):
+            return True
+    path = canonical_kill_switch_state_path()
     resolved = resolve_kill_switch_limit_from_state_file(path)
     if resolved is True:
         return True
     if resolved is False:
         return False
-    file_present = Path(path).is_file()
-    if file_present or env_path:
+    if Path(path).is_file():
         return True
     return os.getenv("PEAK_KILL_SWITCH", "0") == "1"
 

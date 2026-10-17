@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import socket
+import tempfile
 from dataclasses import replace
 from pathlib import Path
 from typing import Any
@@ -62,9 +63,19 @@ from src.ops.full_core_live_path_composition_root_v1.submission_authorized_v1 im
 from src.ops.single_selected_future_runtime_binding_v1.constants_v1 import (
     MAX_POSITIONS_EFFECTIVE,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_global_venue_effect_authority_ledger_v1 import (
+    GlobalVenueEffectReplayDeniedError,
+)
 from tests.ops._pilot_guard_enter_post_test_helpers_v1 import (
     bind_authorized_exact_object_flatten_envelope_for_tests_v1,
     establish_new_risk_one_shot_admission_seal_for_tests_v1,
+)
+from tests.ops._post_path_safety_fixtures_v1 import (
+    activate_isolated_kill_switch_state_v1,
+    claim_for_join_v1,
+    fresh_trusted_active_kill_switch_evidence_v1,
+    isolated_global_ledger_v1,
+    risk_reduction_proof_for_envelope_v1,
 )
 
 JOIN_PATH = Path(
@@ -142,6 +153,47 @@ def _forbid_real_sockets(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(socket.socket, "connect", _boom)
 
 
+_SAFETY: dict[str, Any] = {}
+
+
+@pytest.fixture(autouse=True)
+def _post_path_safety(
+    monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory
+) -> None:
+    safety_root = tmp_path_factory.mktemp("post_path_safety")
+    activate_isolated_kill_switch_state_v1(monkeypatch, safety_root)
+    _SAFETY["ledger"] = isolated_global_ledger_v1(safety_root)
+
+
+def _ledger():
+    return _SAFETY["ledger"]
+
+
+def _safety_kwargs(envelope: Any, *, ledger: Any = None) -> dict[str, Any]:
+    use = (
+        ledger
+        if ledger is not None
+        else isolated_global_ledger_v1(Path(tempfile.mkdtemp(prefix="pt_join_ledger_")))
+    )
+    return {
+        "global_authority_ledger": use,
+        "global_claim": claim_for_join_v1(use, envelope),
+        "risk_reduction_proof": (
+            risk_reduction_proof_for_envelope_v1(envelope) if envelope.reduce_only else None
+        ),
+    }
+
+
+_JOIN_EVENTS_TO_HTTP = [
+    "KILL_SWITCH_ADMITTED_PRE_MINT",
+    "PERMIT_MINTED",
+    "POST_ADMISSION_GRANTED",
+    "GLOBAL_CLAIM_BOUND",
+    "DURABLE_CONSUME_OBSERVED",
+    "GLOBAL_SENT_INITIATED",
+]
+
+
 def _new_risk_envelope():
     plan = VenuePlanCandidateV1(
         instrument_id="okx_eea:linear_perpetual:0G:USDT:USDT:0g-usdt-swap",
@@ -200,14 +252,17 @@ def _attempt(tmp_path: Path, **kwargs: Any):
         )
     if kwargs.pop("persist_post_go", True) and str(post_owner_go) == POST_OWNER_GO:
         _persist_post_go(store_root)
+    ledger = kwargs.pop("ledger", None)
+    safety = _safety_kwargs(kwargs.pop("claim_envelope", envelope), ledger=ledger)
+    safety.update(kwargs)
     attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
         envelope=envelope,
         post_owner_go=post_owner_go,
         store_root=store_root,
-        k1_backend=kwargs.pop("k1_backend", backend),
-        opener_factory=kwargs.pop("opener_factory", lambda: opener),
+        k1_backend=safety.pop("k1_backend", backend),
+        opener_factory=safety.pop("opener_factory", lambda: opener),
         probe=probe,
-        **kwargs,
+        **safety,
     )
     return probe, opener
 
@@ -276,6 +331,7 @@ def test_envelope_id_and_digest_mismatch_deny_before_mint(tmp_path: Path) -> Non
         _attempt(
             tmp_path,
             envelope=replace(envelope, envelope_id="env-not-bound"),
+            claim_envelope=envelope,
             probe=probe,
             persist_post_go=False,
         )
@@ -287,6 +343,7 @@ def test_envelope_id_and_digest_mismatch_deny_before_mint(tmp_path: Path) -> Non
         _attempt(
             tmp_path,
             envelope=replace(envelope, envelope_digest="0" * 64),
+            claim_envelope=envelope,
             probe=probe_digest,
             persist_post_go=False,
         )
@@ -302,13 +359,15 @@ def test_direct_one_shot_new_risk_without_seal_blocked(tmp_path: Path) -> None:
         CurrentProductiveOneShotFreshEnvelopeJoinError,
         match="NEW_RISK_ADMISSION_SEAL_MISSING|RISK_REDUCING_.*PROVENANCE",
     ):
+        envelope = _new_risk_envelope()
         attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
-            envelope=_new_risk_envelope(),
+            envelope=envelope,
             post_owner_go=POST_OWNER_GO,
             store_root=tmp_path,
             k1_backend=_FakeKeychainBackend(),
             opener_factory=lambda: _TimeoutOpener(),
             probe=probe,
+            **_safety_kwargs(envelope),
         )
     assert probe.permit_minted is False
 
@@ -328,6 +387,7 @@ def test_direct_one_shot_new_risk_with_persisted_seal_succeeds(tmp_path: Path) -
         k1_backend=_FakeKeychainBackend(),
         opener_factory=lambda: _TimeoutOpener(),
         probe=probe,
+        **_safety_kwargs(envelope),
     )
     assert join.unknown_outcome is True
     assert probe.permit_minted is True
@@ -357,7 +417,12 @@ def test_forged_permit_constraints_deny() -> None:
         CurrentProductiveOneShotFreshEnvelopeJoinError, match="SECOND_SUBMIT_FORBIDDEN"
     ):
         assert_one_shot_join_permit_constraints_v1(second, envelope)
-    wrong_authority = issue_external_effect_permit_v1(envelope, authority_ref="OTHER_AUTHORITY_REF")
+    wrong_authority = issue_external_effect_permit_v1(
+        envelope,
+        authority_ref="OTHER_AUTHORITY_REF",
+        kill_switch_evidence=fresh_trusted_active_kill_switch_evidence_v1(),
+        risk_reduction_proof=None,
+    )
     with pytest.raises(
         CurrentProductiveOneShotFreshEnvelopeJoinError, match="AUTHORITY_REF_MISMATCH"
     ):
@@ -373,21 +438,22 @@ def test_durable_consume_precedes_k1_and_http_and_timeout_is_single_unknown(
     opener = _TimeoutOpener()
     probe = OneShotJoinProbeV1()
     _persist_post_go(tmp_path)
+    first_envelope = _envelope()
     join = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
-        envelope=_envelope(),
+        envelope=first_envelope,
         post_owner_go=POST_OWNER_GO,
         store_root=tmp_path,
         k1_backend=_FakeKeychainBackend(),
         opener_factory=lambda: opener,
         probe=probe,
+        **_safety_kwargs(first_envelope, ledger=_ledger()),
     )
     assert join.unknown_outcome is True
     assert probe.events == [
-        "PERMIT_MINTED",
-        "POST_ADMISSION_GRANTED",
-        "DURABLE_CONSUME_OBSERVED",
+        *_JOIN_EVENTS_TO_HTTP,
         "K1_BOUND",
         "HTTP_POST_ENTER",
+        "GLOBAL_CLAIM_SETTLED:UNKNOWN_OUTCOME",
     ]
     assert probe.permit_minted is True
     assert probe.http_post_attempts == 1
@@ -419,11 +485,22 @@ def test_durable_consume_precedes_k1_and_http_and_timeout_is_single_unknown(
     assert durable["second_submit_allowed"] is False
     assert durable["max_post_count"] == 1
     assert "sk-test" not in json.dumps(durable)
+    global_retry = OneShotJoinProbeV1()
+    with pytest.raises(GlobalVenueEffectReplayDeniedError, match="GLOBAL_REPLAY_DENIED"):
+        _attempt(tmp_path, probe=global_retry, opener=opener, ledger=_ledger())
+    assert global_retry.http_post_attempts == 0
+    assert global_retry.events == []
     retry_probe = OneShotJoinProbeV1()
     with pytest.raises(CurrentProductiveOneShotFreshEnvelopeJoinError, match="CONSUMED_PERMIT"):
         _attempt(tmp_path, probe=retry_probe, opener=opener)
     assert retry_probe.http_post_attempts == 0
-    assert retry_probe.events == ["PERMIT_MINTED", "POST_ADMISSION_GRANTED"]
+    assert retry_probe.events[:-1] == [
+        "KILL_SWITCH_ADMITTED_PRE_MINT",
+        "PERMIT_MINTED",
+        "POST_ADMISSION_GRANTED",
+        "GLOBAL_CLAIM_BOUND",
+    ]
+    assert retry_probe.events[-1] == "GLOBAL_CLAIM_SETTLED:ABORTED_BEFORE_TRANSPORT"
     assert len(opener.requests) == 1
 
 
@@ -464,10 +541,9 @@ def test_k1_failure_after_consume_makes_post_unreachable(tmp_path: Path) -> None
     ):
         _attempt(tmp_path, probe=probe, opener=opener, backend=backend)
     assert probe.events == [
-        "PERMIT_MINTED",
-        "POST_ADMISSION_GRANTED",
-        "DURABLE_CONSUME_OBSERVED",
+        *_JOIN_EVENTS_TO_HTTP,
         "K1_FAILED",
+        "GLOBAL_CLAIM_SETTLED:ABORTED_BEFORE_TRANSPORT",
     ]
     assert probe.http_post_attempts == 0
     assert opener.requests == []
@@ -547,13 +623,15 @@ def test_bypass_flags_are_false(tmp_path: Path) -> None:
     opener = _TimeoutOpener()
     first = OneShotJoinProbeV1()
     _persist_post_go(tmp_path / "once")
+    once_envelope = _envelope()
     first_join = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
-        envelope=_envelope(),
+        envelope=once_envelope,
         post_owner_go=POST_OWNER_GO,
         store_root=tmp_path / "once",
         k1_backend=_FakeKeychainBackend(),
         opener_factory=lambda: opener,
         probe=first,
+        **_safety_kwargs(once_envelope),
     )
     assert first_join.unknown_outcome is True
     second = OneShotJoinProbeV1()

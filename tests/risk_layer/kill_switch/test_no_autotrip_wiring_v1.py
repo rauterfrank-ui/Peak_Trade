@@ -13,6 +13,7 @@ import pytest
 
 from src.ops.gates.risk_gate import kill_switch_should_block_trading
 from src.risk_layer.kill_switch import KillSwitch, __all__ as KILL_SWITCH_PUBLIC_API
+from tests.ops._post_path_safety_fixtures_v1 import isolate_kill_switch_state_root_v1
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 TRIGGER_PACKAGE = "src.risk_layer.kill_switch.triggers"
@@ -61,8 +62,7 @@ def test_src_has_no_productive_autotrip_import() -> None:
 def test_filegate_reader_and_cli_writer_remain_the_durable_path(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    path = tmp_path / "state.json"
-    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(path))
+    path = isolate_kill_switch_state_root_v1(monkeypatch, tmp_path)
     monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
     ks = KillSwitch(
         {
