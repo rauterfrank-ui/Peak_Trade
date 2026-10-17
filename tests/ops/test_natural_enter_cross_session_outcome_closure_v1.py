@@ -62,6 +62,7 @@ def _reporting_enter(**overrides: Any) -> NaturalEnterReportingResultV1:
         "selected_side": "long",
         "trading_epoch": "5",
         "s5_cycle_index": "4",
+        "instrument_id": CANON,
     }
     dpo.update(overrides.get("dpo") or {})
     return NaturalEnterReportingResultV1(
@@ -344,12 +345,26 @@ def test_T27_productive_caps_unchanged() -> None:
     assert MAX_CYCLES_PER_RUN_CAP <= 12
 
 
-def test_T30_bootstrap_handoff_still_runs(tmp_path: Path) -> None:
+def test_T30_bootstrap_handoff_still_runs(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    from tests.ops._current_productive_pre_external_shared_process_state_v1 import (
+        reset_current_productive_pre_external_shared_test_process_state_v1,
+    )
+    from tests.ops._current_productive_pre_external_test_process_isolation_v1 import (
+        establish_current_productive_pre_external_test_process_isolation_v1,
+    )
     from tests.ops.test_current_productive_master_v2_ddo_capture_to_offline_export_join_v1 import (
         test_mv2_cycle_offline_export_handoff_accepted,
     )
 
-    test_mv2_cycle_offline_export_handoff_accepted(tmp_path)  # noqa: SLF001
+    establish_current_productive_pre_external_test_process_isolation_v1(
+        monkeypatch=monkeypatch,
+        f1_root=tmp_path / "f1-m9-canonical-isolation",
+        reseed_workspace_f1_m9=False,
+    )
+    try:
+        test_mv2_cycle_offline_export_handoff_accepted(tmp_path)  # noqa: SLF001
+    finally:
+        reset_current_productive_pre_external_shared_test_process_state_v1()
 
 
 def test_T25_T26_trading_surfaces_untouched() -> None:

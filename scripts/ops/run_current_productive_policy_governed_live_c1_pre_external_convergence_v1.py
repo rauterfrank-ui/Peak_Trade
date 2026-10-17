@@ -624,6 +624,7 @@ def _main() -> int:
         terminal_disposition=str(orch.disposition or ""),
         ddo_jsonl=lane_state_root / "LANE_1/ddo_learning_capture_v1.jsonl",
         lane_state_root=lane_state_root,
+        expected_instrument_id=str(bound.instrument_id or ""),
     )
     dpo = dict(reporting.dpo)
     outcome = str(dpo.get("decision_outcome") or "").lower()
@@ -721,6 +722,7 @@ def _main() -> int:
         "REPORTING_S5_DISPOSITION": reporting.reporting_s5_disposition,
         "S5_CYCLE_SUMMARIES": cycle_summaries,
         "DPO": dpo,
+        "DPO_CORRELATION_STATUS": reporting.correlation_status,
         "CONTINUOUS_RUN_AUTHORIZED_MODULE_PIN": str(CONTINUOUS_RUN_AUTHORIZED).lower(),
         "POST_COUNT": orch.post_count,
         "PERMIT_CREATED": str(orch.permit_created).lower(),

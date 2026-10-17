@@ -1,32 +1,37 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "0578d813db4f2881082077338636e2a634e77869",
-  "head_sha": "0e8fda758d7ebf721af1a862b018fb6a8b9d2d8e",
+  "base_sha": "6261c8f9e08be1e3e606fcd5b2fd63d3493f4dc9",
+  "head_sha": "6195c323bcdd3eeb85ab0176c9945c1a47585de5",
   "changed_paths": [
-    "config/governance/current_system_census_graph_v1/README.md",
-    "config/governance/current_system_census_graph_v1/schema_v1.json",
-    "config/governance/current_system_census_graph_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "evidence/ops/ghv_census_archive_seam_cd010_v1/20261016T114500Z/PRE_PR_ADVERSARIAL_CONTRACT_REVIEW_V1.json",
-    "scripts/ops/validate_current_system_census_graph_v1.py",
-    "tests/governance/test_archive_seam_census_coverage_cd010_v1.py"
+    "scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_golden_happy_vector_startability_evaluator_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py",
+    "tests/ops/test_dpo_correlation_remediation_v1.py",
+    "tests/ops/test_natural_enter_cross_session_outcome_closure_v1.py",
+    "tests/ops/test_pre_external_convergence_natural_enter_reporting_v1.py",
+    "tests/ops/test_session004_t2_exception_diagnostic_and_dpo_correlation_v1.py"
   ],
-  "changed_paths_sha256": "5357428cac62b3c2555c15d63b2b82935e019c24e661de162406f1e922aaca7e",
+  "changed_paths_sha256": "835bd14937db8b4f259b0ff896ed008fc462c5e3031d27f2528a892d6438bbd4",
   "covered_candidate_paths": [
-    "config/governance/current_system_census_graph_v1/README.md",
-    "config/governance/current_system_census_graph_v1/schema_v1.json",
-    "config/governance/current_system_census_graph_v1/source_v1.json",
-    "evidence/ops/ghv_census_archive_seam_cd010_v1/20261016T114500Z/PRE_PR_ADVERSARIAL_CONTRACT_REVIEW_V1.json",
-    "scripts/ops/validate_current_system_census_graph_v1.py",
-    "tests/governance/test_archive_seam_census_coverage_cd010_v1.py"
+    "scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_golden_happy_vector_startability_evaluator_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py",
+    "tests/ops/test_dpo_correlation_remediation_v1.py",
+    "tests/ops/test_natural_enter_cross_session_outcome_closure_v1.py",
+    "tests/ops/test_pre_external_convergence_natural_enter_reporting_v1.py",
+    "tests/ops/test_session004_t2_exception_diagnostic_and_dpo_correlation_v1.py"
   ],
   "evidence_refs": [
-    "config/governance/current_system_census_graph_v1/source_v1.json",
-    "evidence/ops/ghv_census_archive_seam_cd010_v1/20261016T114500Z/PRE_PR_ADVERSARIAL_CONTRACT_REVIEW_V1.json",
-    "https://github.com/rauterfrank-ui/Peak_Trade/pull/7136"
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "scripts/ops/pre_external_convergence_natural_enter_reporting_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/natural_enter_cross_session_outcome_closure_v1/creation_v1.py",
+    "tests/ops/test_dpo_correlation_remediation_v1.py",
+    "https://github.com/rauterfrank-ui/Peak_Trade/pull/7137"
   ],
-  "reason": "CD-010 archive-seam census/GHV coverage only; CSIA source_v1.json and derived interaction-authority views unchanged; map-currency adjudication rebinding; NO_MAP_IMPACT; AUTHORITY=NONE.",
+  "reason": "PR #7137 binds the natural-enter DPO by canonical instrument and reporting candle UTC second and refuses pending creation on instrument mismatch; CSIA entries current_productive_persistent_natural_enter_policy_governed_live_c1_continuous_run_v1 and pr_7073_natural_enter_cross_session_outcome_closure_v1 stay accurate (PRE_EXTERNAL stop, no POST, no MV2/Double Play/threshold/authority change); no interaction or authority edge added or removed; source_v1.json and derived views unchanged; NO_MAP_IMPACT; AUTHORITY=NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }
