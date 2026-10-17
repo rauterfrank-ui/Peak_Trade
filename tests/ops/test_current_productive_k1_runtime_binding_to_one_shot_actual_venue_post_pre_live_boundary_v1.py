@@ -38,6 +38,18 @@ FAKE_K1_OPAQUE = json.dumps(
 ).encode("utf-8")
 
 
+from tests.ops._post_path_safety_fixtures_v1 import activate_isolated_kill_switch_state_v1
+
+
+@pytest.fixture(autouse=True)
+def _active_kill_switch_state(
+    monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory
+) -> None:
+    activate_isolated_kill_switch_state_v1(
+        monkeypatch, tmp_path_factory.mktemp("kill_switch_active")
+    )
+
+
 class FakeOsNativeStoreLookupBackendV1:
     def copy_matching_generic_password_value_data_v1(
         self,

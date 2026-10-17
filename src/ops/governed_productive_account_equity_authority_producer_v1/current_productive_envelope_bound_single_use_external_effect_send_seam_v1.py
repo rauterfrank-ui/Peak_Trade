@@ -49,8 +49,8 @@ from src.ops.full_core_live_path_composition_root_v1.envelope_bound_external_eff
     attempt_envelope_bound_external_effect_send_v1,
     prove_follow_on_submit_isolated_v1,
 )
-from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
-    DurableKillSwitchEvidenceStatusV1,
+from src.ops.full_core_live_path_composition_root_v1.current_productive_post_path_kill_switch_gate_v1 import (
+    read_post_path_kill_switch_evidence_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.external_effect_gate_v1 import (
     evaluate_external_effect_v1,
@@ -336,20 +336,20 @@ def execute_current_productive_envelope_bound_single_use_external_effect_send_se
         provenance_ref="FULL_CORE_TRANSFORMED_VENUE_PLAN_FIXTURE",
         creation_epoch="2026-09-15T21:20:00Z",
     )
+    kill_switch_evidence = read_post_path_kill_switch_evidence_v1()
     permit = issue_external_effect_permit_v1(
         envelope,
         authority_ref=AUTHORITY_REF,
-        kill_switch_blocked=False,
-        durable_kill_switch_evidence_status=(
-            DurableKillSwitchEvidenceStatusV1.TRUSTED_PRESENT.value
-        ),
-        filegate_denied=False,
+        kill_switch_evidence=kill_switch_evidence,
+        risk_reduction_proof=None,
         step_29q_status=STEP_29Q_PLAN_ONLY,
     )
     try:
         issue_external_effect_permit_v1(
             envelope,
             authority_ref=AUTHORITY_REF,
+            kill_switch_evidence=kill_switch_evidence,
+            risk_reduction_proof=None,
             submission_authorized=False,
         )
     except FullCoreExternalEffectPermitError as exc:

@@ -33,6 +33,18 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
 )
 
 
+from tests.ops._post_path_safety_fixtures_v1 import activate_isolated_kill_switch_state_v1
+
+
+@pytest.fixture(autouse=True)
+def _active_kill_switch_state(
+    monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory
+) -> None:
+    activate_isolated_kill_switch_state_v1(
+        monkeypatch, tmp_path_factory.mktemp("kill_switch_active")
+    )
+
+
 @pytest.fixture(autouse=True)
 def _forbid_real_sockets(monkeypatch: pytest.MonkeyPatch) -> None:
     def _boom(*_args: Any, **_kwargs: Any) -> None:
@@ -65,8 +77,14 @@ def test_c6_atomicity_single_write_no_split_sent_initiated() -> None:
         "def finalize_external_effect_durable_consume_v1", 1
     )[0]
     assert '"durable_state": durable_state' in fn
-    assert fn.count("tmp.replace(path)") == 1
-    assert "SENT_INITIATED" not in fn.split("bound = {", 1)[0]
+    persist_body = fn.split("\ndef ", 1)[0]
+    assert persist_body.count("_atomic_write_state_v1(") == 1
+    assert "with exclusive_store_root_lock_v1(root):" in persist_body
+    assert persist_body.index("with exclusive_store_root_lock_v1(root):") < persist_body.index(
+        "_atomic_write_state_v1("
+    )
+    assert "SENT_INITIATED" not in persist_body
+    assert ".replace(path)" not in src
 
 
 @pytest.mark.parametrize(

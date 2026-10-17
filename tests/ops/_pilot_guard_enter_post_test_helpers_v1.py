@@ -28,10 +28,19 @@ class PilotGuardReadTransport:
         avail_eq: str = "5000",
         open_orders: bool = False,
         balance_ccy: str = "USDC",
+        risk_reduction_envelope: Any = None,
     ) -> None:
         self._avail_eq = avail_eq
         self._open_orders = open_orders
         self._balance_ccy = balance_ccy
+        self._rr_payloads: tuple[Any, Any, Any] | None = None
+        self.get_cache_policies: list[str | None] = []
+        if risk_reduction_envelope is not None:
+            from tests.ops._post_path_safety_fixtures_v1 import rr_venue_payloads_v1
+
+            self._rr_payloads = rr_venue_payloads_v1(
+                risk_reduction_envelope, uid=PILOT_TEST_ACCOUNT_UID
+            )
         tiers_raw = encode_fixture_position_tiers_payload_v1(
             inst_family=PILOT_TEST_INST_FAMILY,
             qty_one_imr="0.05",
@@ -42,8 +51,16 @@ class PilotGuardReadTransport:
         )
         self._tiers_payload = json.loads(tiers_raw.decode("utf-8"))
 
-    def get(self, *, endpoint: str, auth_required: bool, pretrade_decision_id: str):
+    def get(
+        self,
+        *,
+        endpoint: str,
+        auth_required: bool,
+        pretrade_decision_id: str,
+        get_cache_policy: str | None = None,
+    ):
         del auth_required, pretrade_decision_id
+        self.get_cache_policies.append(get_cache_policy)
         path = str(endpoint).split("?", 1)[0]
         from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
             FreshPretradeGetTransportResultV1,
@@ -61,6 +78,8 @@ class PilotGuardReadTransport:
                     }
                 ],
             }
+        elif "config" in path and self._rr_payloads is not None:
+            payload = self._rr_payloads[0]
         elif "config" in path:
             payload = {"code": "0", "data": [{"uid": PILOT_TEST_ACCOUNT_UID}]}
         elif "leverage-info" in path:
@@ -72,6 +91,8 @@ class PilotGuardReadTransport:
                 [{"instId": PILOT_TEST_INST, "clOrdId": "pending-1"}] if self._open_orders else []
             )
             payload = {"code": "0", "data": rows}
+        elif "positions" in path and self._rr_payloads is not None:
+            payload = self._rr_payloads[1]
         elif "positions" in path:
             payload = {"code": "0", "data": []}
         elif "instruments" in path or "price-limit" in path:

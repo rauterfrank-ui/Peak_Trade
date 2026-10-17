@@ -27,6 +27,13 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot
     OneShotJoinProbeV1,
     OneShotJoinResultV1,
     attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1,
+    build_global_venue_effect_identity_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_global_venue_effect_authority_ledger_v1 import (
+    GlobalVenueEffectAuthorityLedgerV1,
+)
+from src.ops.full_core_live_path_composition_root_v1.external_effect_permit_v1 import (
+    expected_permit_identity_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_dw_exchange_reconciliation_wiring_v1 import (
     DwExchangeReconciliationWiringConfigV1,
@@ -1004,6 +1011,18 @@ def run_production_pre_external_to_fake_post_chain_v1(
     clordid = str(envelope.client_order_id or "cl-offline-e2e")
     opener = _FakeExchangeOpener(witness=witness, scenario=scenario, clordid=clordid)
     probe = OneShotJoinProbeV1()
+    offline_ledger = GlobalVenueEffectAuthorityLedgerV1(
+        root=state_root / "global_venue_effect_authority_ledger_offline"
+    )
+    offline_claim = offline_ledger.claim_v1(
+        build_global_venue_effect_identity_v1(
+            ledger=offline_ledger,
+            envelope=envelope,
+            permit_id=expected_permit_identity_v1(envelope, authority_ref=POST_OWNER_GO).permit_id,
+            post_owner_go=POST_OWNER_GO,
+            baseline_origin_main_sha=resolve_origin_main_sha_v1(declared=origin_main_sha),
+        )
+    )
     one_shot = attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1(
         envelope=envelope,
         post_owner_go=POST_OWNER_GO,
@@ -1013,6 +1032,8 @@ def run_production_pre_external_to_fake_post_chain_v1(
         probe=probe,
         dw_exchange_reconciliation_wiring_mode=DwExchangeReconciliationWiringModeV1.OFFLINE_INJECTED,
         dw_exchange_reconciliation_wiring=dw_config,
+        global_authority_ledger=offline_ledger,
+        global_claim=offline_claim,
     )
 
     if witness_path.is_file():

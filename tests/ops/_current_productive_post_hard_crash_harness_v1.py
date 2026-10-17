@@ -3,12 +3,15 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 from typing import Any
+
+from tests.ops._post_path_safety_fixtures_v1 import fresh_trusted_active_kill_switch_evidence_v1
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CHILD_RUNNER = REPO_ROOT / "tests/ops/_current_productive_post_hard_crash_child_runner_v1.py"
@@ -29,7 +32,35 @@ CRASH_EXIT: dict[str, int] = {
 
 SUBPROCESS_TIMEOUT_SECONDS = 45
 
-DURABLE_CONSUME_TMP_NAME = "full_core_external_effect_permit_consume_v1.json.tmp"
+DURABLE_CONSUME_FINAL_NAME = "full_core_external_effect_permit_consume_v1.json"
+DURABLE_CONSUME_TMP_PREFIX = f".{DURABLE_CONSUME_FINAL_NAME}."
+
+
+def harness_global_ledger_root_v1(store_root: Path) -> Path:
+    """Isolated global ledger shared by crash child and restart evaluation (never canonical)."""
+    return store_root.parent / f"{store_root.name}__global_venue_effect_ledger"
+
+
+def harness_global_ledger_v1(store_root: Path) -> Any:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_global_venue_effect_authority_ledger_v1 import (
+        GlobalVenueEffectAuthorityLedgerV1,
+    )
+
+    return GlobalVenueEffectAuthorityLedgerV1(root=harness_global_ledger_root_v1(store_root))
+
+
+def harness_kill_switch_root_v1(store_root: Path) -> Path:
+    """Isolated kill-switch root the crash child re-anchors to explicitly (never canonical)."""
+    return (store_root.parent / f"{store_root.name}__kill_switch").resolve()
+
+
+def harness_kill_switch_state_path_v1(store_root: Path) -> Path:
+    from src.ops.gates.risk_gate import DEFAULT_KILL_SWITCH_STATE_PATH
+    from tests.ops._post_path_safety_fixtures_v1 import write_kill_switch_state_v1
+
+    return write_kill_switch_state_v1(
+        harness_kill_switch_root_v1(store_root) / DEFAULT_KILL_SWITCH_STATE_PATH, state="ACTIVE"
+    ).resolve()
 
 
 class RestartEvaluationReplayProbeError(RuntimeError):
@@ -158,9 +189,8 @@ def attempt_permit_send_seam_same_envelope_replay_v1(
     permit = issue_external_effect_permit_v1(
         envelope,
         authority_ref=authority_ref,
-        kill_switch_blocked=False,
-        durable_kill_switch_evidence_status=DurableKillSwitchEvidenceStatusV1.TRUSTED_PRESENT.value,
-        filegate_denied=False,
+        kill_switch_evidence=fresh_trusted_active_kill_switch_evidence_v1(),
+        risk_reduction_proof=None,
         step_29q_status=STEP_29Q_PLAN_ONLY,
     )
     if permit.permit_id != permit_id_before:
@@ -243,6 +273,7 @@ def _attempt_execute_path_same_envelope_replay_v1(
             perform_real_venue_post=True,
             k1_backend=_FakeKeychainBackend(),
             opener_factory=lambda: counting_opener,
+            global_authority_ledger=harness_global_ledger_v1(store_root),
             read_only_get_transport=PilotGuardReadTransport(avail_eq="10000"),
             execution_integrity_backend=MockCurrentProductive29PIntegrityBackendV1(
                 origin_main=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
@@ -300,10 +331,17 @@ def spawn_hard_crash_child_v1(
         "--config",
         str(config_path),
     ]
+    from tests.ops._post_path_safety_fixtures_v1 import KILL_SWITCH_ENV, KILL_SWITCH_ENV_ALT
+
+    child_env = {
+        k: v for k, v in os.environ.items() if k not in {KILL_SWITCH_ENV, KILL_SWITCH_ENV_ALT}
+    }
+    harness_kill_switch_state_path_v1(store_root)
     try:
         completed = subprocess.run(
             cmd,
             cwd=str(REPO_ROOT),
+            env=child_env,
             capture_output=True,
             text=True,
             timeout=SUBPROCESS_TIMEOUT_SECONDS,
@@ -427,7 +465,7 @@ def evaluate_restart_after_crash_v1(
     notes: list[str] = []
     if correlation_path_v1(store_root=store_root).is_file():
         notes.append("CORRELATION_FILE_PRESENT")
-    tmp_consume = list(store_root.glob("full_core_external_effect_permit_consume_v1.json.tmp"))
+    tmp_consume = list(store_root.glob(f"{DURABLE_CONSUME_TMP_PREFIX}*"))
     if tmp_consume:
         notes.append("DURABLE_CONSUME_TMP_PRESENT")
 

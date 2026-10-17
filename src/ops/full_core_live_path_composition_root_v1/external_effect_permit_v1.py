@@ -4,6 +4,11 @@ Standing EXTERNAL_EFFECT_AUTHORIZED remains false. This permit is a narrow
 object bound to one envelope digest. It is not STEP-29Q eligibility and not a
 standing send unlock. SUBMIT_UNLOCKED alone is not permission to send.
 
+Issuance requires typed durable kill-switch evidence (no trusted default) and,
+for ``reduce_only`` envelopes, a fresh venue-evidence risk-reduction proof. The
+permit object is constructible data; the one-shot boundary is enforced by the
+POST join, the pre-send gate, and the global authority ledger.
+
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 """
 
@@ -22,6 +27,15 @@ from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     SUBMISSION_AUTHORIZED,
     SUBMIT_UNLOCKED,
     WIRE_SEND_PERMITTED,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_post_path_kill_switch_gate_v1 import (
+    PostPathKillSwitchEvidenceV1,
+    evaluate_post_path_kill_switch_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_risk_reduction_venue_proof_v1 import (
+    RiskReductionNotProvenError,
+    RiskReductionVenueProofV1,
+    assert_risk_reduction_proof_valid_for_envelope_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.execution_admission_contract_v1 import (
     DurableKillSwitchEvidenceStatusV1,
@@ -109,15 +123,68 @@ def _permit_id_from_payload_v1(payload: Mapping[str, Any]) -> str:
     return f"eep-{digest[:32]}"
 
 
+def _permit_payload_v1(envelope: FinalOrderEnvelopeV1, authority: str) -> dict[str, Any]:
+    return {
+        "authority_ref": authority,
+        "envelope_digest": envelope.envelope_digest,
+        "envelope_id": envelope.envelope_id,
+        "issued_for_exact_action": ISSUED_FOR_EXACT_ACTION,
+        "max_post_count": MAX_POST_COUNT,
+        "retry_allowed": False,
+        "schema_version": PERMIT_SCHEMA_VERSION,
+        "second_submit_allowed": False,
+        "single_use": True,
+        "standing_external_effect_authorized": False,
+        "step_29q_status": STEP_29Q_PLAN_ONLY,
+    }
+
+
+def _permit_from_payload_v1(
+    envelope: FinalOrderEnvelopeV1, authority: str, payload: Mapping[str, Any]
+) -> ExternalEffectPermitV1:
+    _assert_no_secrets(payload)
+    permit = ExternalEffectPermitV1(
+        permit_id=_permit_id_from_payload_v1(payload),
+        envelope_id=envelope.envelope_id,
+        envelope_digest=envelope.envelope_digest,
+        authority_ref=authority,
+        issued_for_exact_action=ISSUED_FOR_EXACT_ACTION,
+        single_use=True,
+        max_post_count=MAX_POST_COUNT,
+        retry_allowed=False,
+        second_submit_allowed=False,
+        standing_external_effect_authorized=False,
+        step_29q_status=STEP_29Q_PLAN_ONLY,
+    )
+    if _permit_id_from_payload_v1(permit.to_canonical_payload_v1()) != permit.permit_id:
+        raise FullCoreExternalEffectPermitError("PERMIT_ID_DRIFT")
+    return permit
+
+
+def expected_permit_identity_v1(
+    envelope: FinalOrderEnvelopeV1,
+    *,
+    authority_ref: str,
+) -> ExternalEffectPermitV1:
+    """Deterministic permit identity for ledger binding and replay checks only.
+
+    Carries no issuance decision (no kill-switch, risk-reduction, or standing-pin
+    evaluation) and therefore no authority. Used to pre-bind the global authority
+    claim and to prove that the durable ledgers refuse a follow-on submit.
+    """
+    assert_envelope_unmodified_v1(envelope)
+    authority = str(authority_ref or "").strip()
+    if not authority or authority != str(authority_ref):
+        raise FullCoreExternalEffectPermitError("AUTHORITY_REF_MISSING")
+    return _permit_from_payload_v1(envelope, authority, _permit_payload_v1(envelope, authority))
+
+
 def issue_external_effect_permit_v1(
     envelope: FinalOrderEnvelopeV1,
     *,
     authority_ref: str,
-    kill_switch_blocked: bool = False,
-    durable_kill_switch_evidence_status: str = (
-        DurableKillSwitchEvidenceStatusV1.TRUSTED_PRESENT.value
-    ),
-    filegate_denied: bool = False,
+    kill_switch_evidence: PostPathKillSwitchEvidenceV1,
+    risk_reduction_proof: Optional[RiskReductionVenueProofV1],
     step_29q_status: str = STEP_29Q_PLAN_ONLY,
     submission_authorized: Optional[bool] = None,
     live_authorized: Optional[bool] = None,
@@ -148,16 +215,31 @@ def issue_external_effect_permit_v1(
         reasons.append("WIRE_SEND_NOT_PERMITTED")
     if reachable is not True:
         reasons.append("PRODUCTIVE_WIRE_SEND_NOT_REACHABLE")
-    if kill_switch_blocked is True:
-        reasons.append("KILL_SWITCH_BLOCKED")
-    elif kill_switch_blocked is None:
-        reasons.append("KILL_SWITCH_UNKNOWN")
-    ks_status = str(durable_kill_switch_evidence_status or "").strip()
-    trusted = DurableKillSwitchEvidenceStatusV1.TRUSTED_PRESENT.value
-    if ks_status in _UNKNOWN_KS or ks_status != trusted:
-        reasons.append("KILL_SWITCH_EVIDENCE_NOT_TRUSTED")
-    if filegate_denied is True:
-        reasons.append("FILEGATE_DENY")
+    if not isinstance(kill_switch_evidence, PostPathKillSwitchEvidenceV1):
+        reasons.append("KILL_SWITCH_EVIDENCE_TYPE_REQUIRED")
+    else:
+        ks_status = str(kill_switch_evidence.evidence_status or "").strip()
+        if ks_status in _UNKNOWN_KS or (
+            ks_status != DurableKillSwitchEvidenceStatusV1.TRUSTED_PRESENT.value
+        ):
+            reasons.append("KILL_SWITCH_EVIDENCE_NOT_TRUSTED")
+        else:
+            ks_admission = evaluate_post_path_kill_switch_v1(
+                evidence=kill_switch_evidence,
+                envelope=envelope,
+                risk_reduction_proof=risk_reduction_proof,
+            )
+            if not ks_admission.admitted:
+                reasons.extend(ks_admission.reason_codes)
+    if envelope.reduce_only is True:
+        try:
+            assert_risk_reduction_proof_valid_for_envelope_v1(
+                proof=risk_reduction_proof, envelope=envelope
+            )
+        except RiskReductionNotProvenError as exc:
+            reasons.append(str(exc))
+    elif risk_reduction_proof is not None:
+        reasons.append("RISK_REDUCTION_PROOF_ON_NON_REDUCE_ONLY_ENVELOPE")
     if str(step_29q_status or "") != STEP_29Q_PLAN_ONLY:
         reasons.append("STEP_29Q_MUST_REMAIN_PLAN_ONLY")
     if EXTERNAL_EFFECT_AUTHORIZED is True:
@@ -169,36 +251,7 @@ def issue_external_effect_permit_v1(
         reasons.append("AUTHORITY_REF_MISSING")
     if reasons:
         raise FullCoreExternalEffectPermitError(",".join(dict.fromkeys(reasons)))
-    payload = {
-        "authority_ref": authority,
-        "envelope_digest": envelope.envelope_digest,
-        "envelope_id": envelope.envelope_id,
-        "issued_for_exact_action": ISSUED_FOR_EXACT_ACTION,
-        "max_post_count": MAX_POST_COUNT,
-        "retry_allowed": False,
-        "schema_version": PERMIT_SCHEMA_VERSION,
-        "second_submit_allowed": False,
-        "single_use": True,
-        "standing_external_effect_authorized": False,
-        "step_29q_status": STEP_29Q_PLAN_ONLY,
-    }
-    _assert_no_secrets(payload)
-    permit = ExternalEffectPermitV1(
-        permit_id=_permit_id_from_payload_v1(payload),
-        envelope_id=envelope.envelope_id,
-        envelope_digest=envelope.envelope_digest,
-        authority_ref=authority,
-        issued_for_exact_action=ISSUED_FOR_EXACT_ACTION,
-        single_use=True,
-        max_post_count=MAX_POST_COUNT,
-        retry_allowed=False,
-        second_submit_allowed=False,
-        standing_external_effect_authorized=False,
-        step_29q_status=STEP_29Q_PLAN_ONLY,
-    )
-    if _permit_id_from_payload_v1(permit.to_canonical_payload_v1()) != permit.permit_id:
-        raise FullCoreExternalEffectPermitError("PERMIT_ID_DRIFT")
-    return permit
+    return _permit_from_payload_v1(envelope, authority, _permit_payload_v1(envelope, authority))
 
 
 def permit_authorizes_one_shot_real_post_v1(permit: ExternalEffectPermitV1) -> bool:

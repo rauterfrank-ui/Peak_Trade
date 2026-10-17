@@ -268,22 +268,17 @@ def test_current_pre_external_semantics_unchanged_no_canary_submit_in_productive
     )
     text = orch_path.read_text(encoding="utf-8")
     assert "run_canary_submit_transport_v1" not in text
-    diff = subprocess.run(
-        [
-            "git",
-            "diff",
-            "--name-only",
-            "origin/main",
-            "--",
-            "src/ops/full_core_live_path_composition_root_v1/",
-            "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
-        ],
-        cwd=REPO_ROOT,
-        check=True,
-        capture_output=True,
-        text=True,
+    from tests.ops._protected_surface_content_pins_v1 import unauthorized_protected_changes_v1
+
+    assert (
+        unauthorized_protected_changes_v1(
+            (
+                "src/ops/full_core_live_path_composition_root_v1/",
+                "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
+            )
+        )
+        == []
     )
-    assert diff.stdout.strip() == ""
 
 
 def test_no_alternative_canary_entry_post_bypass() -> None:

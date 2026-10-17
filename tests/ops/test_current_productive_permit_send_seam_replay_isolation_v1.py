@@ -29,6 +29,18 @@ from tests.ops.test_current_productive_one_shot_fresh_envelope_permit_mint_durab
 )
 
 
+from tests.ops._post_path_safety_fixtures_v1 import activate_isolated_kill_switch_state_v1
+
+
+@pytest.fixture(autouse=True)
+def _active_kill_switch_state(
+    monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory
+) -> None:
+    activate_isolated_kill_switch_state_v1(
+        monkeypatch, tmp_path_factory.mktemp("kill_switch_active")
+    )
+
+
 @pytest.fixture(autouse=True)
 def _forbid_real_sockets(monkeypatch: pytest.MonkeyPatch) -> None:
     def _boom(*_args: Any, **_kwargs: Any) -> None:

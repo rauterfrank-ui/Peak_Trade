@@ -32,7 +32,7 @@ from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconcil
     OkxReadOnlyReconciliationProviderError,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 import (
-    attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1,
+    attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 as _join_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.full_core_orchestrated_post_submit_lifecycle_reconciliation_v1 import (
     FullCoreOrchestratedLifecycleReconciliationError,
@@ -74,6 +74,24 @@ from tests.ops.test_full_core_post_submit_exchange_reconciliation_lifecycle_join
     _ack_post_result,
     _join_from_post,
 )
+
+from tests.ops._post_path_safety_fixtures_v1 import (
+    activate_isolated_kill_switch_state_v1,
+    join_with_isolated_post_path_safety_v1,
+)
+
+attempt_current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1 = (
+    join_with_isolated_post_path_safety_v1(_join_v1)
+)
+
+
+@pytest.fixture(autouse=True)
+def _active_kill_switch_state(
+    monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory
+) -> None:
+    activate_isolated_kill_switch_state_v1(
+        monkeypatch, tmp_path_factory.mktemp("kill_switch_active")
+    )
 
 
 def _origin_main() -> str:

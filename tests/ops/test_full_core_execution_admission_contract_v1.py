@@ -34,6 +34,7 @@ from src.ops.full_core_live_path_composition_root_v1.execution_admission_contrac
     evaluate_execution_admission_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.models_v1 import FrozenPretradeEvidenceV1
+from tests.ops._post_path_safety_fixtures_v1 import isolate_kill_switch_state_root_v1
 from tests.ops.test_full_core_live_path_composition_root_v1 import _run
 from tests.trading.master_v2.test_master_v2_integrated_replay_safety_before_intent_restore_contract_v1 import (
     _confirmed_replay_input,
@@ -163,9 +164,7 @@ def test_full_core_offline_path_halts_when_filegate_evidence_is_missing(
     monkeypatch: pytest.MonkeyPatch,
     tmp_path,
 ) -> None:
-    missing = tmp_path / "absent_kill_switch.json"
-    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(missing))
-    monkeypatch.delenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", raising=False)
+    isolate_kill_switch_state_root_v1(monkeypatch, tmp_path / "absent_kill_switch")
     monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
     result, replay = _run(monkeypatch, _confirmed_replay_input(side="LONG"))
     assert replay.capital_risk_mode == CAPITAL_RISK_MODE_OFFLINE_ALGEBRA

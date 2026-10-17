@@ -52,7 +52,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
     OWNER_GO,
     CurrentProductiveActualVenuePostError,
-    execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1,
+    execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 as _execute_v1,
 )
 from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
     MockCurrentProductive29PIntegrityBackendV1,
@@ -68,6 +68,25 @@ from tests.ops.test_current_productive_actual_venue_post_with_fresh_envelope_bou
     _FakeKeychainBackend,
     _TimeoutOpener,
 )
+
+
+from tests.ops._post_path_safety_fixtures_v1 import (
+    activate_isolated_kill_switch_state_v1,
+    execute_with_isolated_global_ledger_v1,
+)
+
+execute_current_productive_actual_venue_post_with_fresh_envelope_bound_single_use_permit_v1 = (
+    execute_with_isolated_global_ledger_v1(_execute_v1)
+)
+
+
+@pytest.fixture(autouse=True)
+def _active_kill_switch_state(
+    monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory
+) -> None:
+    activate_isolated_kill_switch_state_v1(
+        monkeypatch, tmp_path_factory.mktemp("kill_switch_active")
+    )
 
 
 @pytest.fixture(autouse=True)
@@ -356,7 +375,7 @@ def test_reduce_only_post_exempt_from_mandatory_entry_guard(tmp_path: Path) -> N
             perform_real_venue_post=True,
             k1_backend=_FakeKeychainBackend(),
             opener_factory=lambda: _TimeoutOpener(),
-            read_only_get_transport=PilotGuardReadTransport(),
+            read_only_get_transport=PilotGuardReadTransport(risk_reduction_envelope=envelope),
             execution_integrity_backend=MockCurrentProductive29PIntegrityBackendV1(
                 origin_main=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
                 head=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
@@ -716,7 +735,7 @@ def test_adversarial_authorized_exit_uses_own_contract_not_entry_bypass(tmp_path
             perform_real_venue_post=True,
             k1_backend=_FakeKeychainBackend(),
             opener_factory=lambda: _TimeoutOpener(),
-            read_only_get_transport=PilotGuardReadTransport(),
+            read_only_get_transport=PilotGuardReadTransport(risk_reduction_envelope=envelope),
             execution_integrity_backend=MockCurrentProductive29PIntegrityBackendV1(
                 origin_main=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,
                 head=EXPECTED_BASELINE_ORIGIN_MAIN_SHA,

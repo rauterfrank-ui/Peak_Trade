@@ -13,14 +13,12 @@ from src.risk_layer.kill_switch.cli import cmd_trigger
 from src.risk_layer.kill_switch.core import KillSwitch
 from src.risk_layer.kill_switch.persistence import StatePersistence
 from src.risk_layer.kill_switch.state import KillSwitchState
+from tests.ops._post_path_safety_fixtures_v1 import isolate_kill_switch_state_root_v1
 
 
 def _persist_config(tmp_path, monkeypatch):
-    path = tmp_path / "kill_switch_state.json"
-    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(path))
-    monkeypatch.delenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", raising=False)
     monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
-    return path
+    return isolate_kill_switch_state_root_v1(monkeypatch, tmp_path)
 
 
 def test_cli_trigger_persists_and_second_process_filegate_blocks(tmp_path, monkeypatch):
@@ -83,25 +81,21 @@ def test_persistence_atomic_json_enum_round_trip(tmp_path):
 
 
 def test_missing_unreadable_invalid_state_policies(tmp_path, monkeypatch):
-    configured = tmp_path / "missing.json"
-    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(configured))
+    canonical = isolate_kill_switch_state_root_v1(monkeypatch, tmp_path / "root")
     monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
+    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(tmp_path / "missing.json"))
+    assert kill_switch_should_block_trading(explicit_active=False) is True
+    monkeypatch.delenv("PEAK_KILL_SWITCH_STATE_PATH")
+
+    canonical.parent.mkdir(parents=True)
+    canonical.write_text("{not json", encoding="utf-8")
     assert kill_switch_should_block_trading(explicit_active=False) is True
 
-    bad = tmp_path / "bad.json"
-    bad.write_text("{not json", encoding="utf-8")
-    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(bad))
+    canonical.write_text(json.dumps({"state": "NOPE"}), encoding="utf-8")
     assert kill_switch_should_block_trading(explicit_active=False) is True
 
-    invalid = tmp_path / "invalid.json"
-    invalid.write_text(json.dumps({"state": "NOPE"}), encoding="utf-8")
-    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(invalid))
-    assert kill_switch_should_block_trading(explicit_active=False) is True
-
+    canonical.unlink()
     monkeypatch.chdir(tmp_path)
-    monkeypatch.delenv("PEAK_KILL_SWITCH_STATE_PATH", raising=False)
-    monkeypatch.delenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", raising=False)
-    monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
     assert kill_switch_should_block_trading(explicit_active=False) is False
 
 

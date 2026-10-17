@@ -51,6 +51,7 @@ TRANSPORT_CLASS_NON_NETWORKING_TEST = "FULL_CORE_NON_NETWORKING_TEST_POST_V1"
 TRANSPORT_CLASS_PRODUCTIVE_HTTP = "FULL_CORE_PRODUCTIVE_HTTP_TRADE_ORDER_POST_V1"
 DEFAULT_TIMEOUT_SECONDS = 20.0
 CONNECT_TIMEOUT_SECONDS = 10.0
+PRE_SEND_GATE_DENIED_PREFIX = "PRE_SEND_GATE_DENIED"
 
 
 class FullCoreProductiveHttpPostError(RuntimeError):
@@ -132,10 +133,12 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         signing_handle: Any | None = None,
         opener_factory: Callable[[], OpenerDirector] | None = None,
         timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS,
+        pre_send_safety_gate: Any | None = None,
     ) -> None:
         self._handle = handle
         self._signing_handle = signing_handle
         self._opener_factory = opener_factory
+        self._pre_send_safety_gate = pre_send_safety_gate
         self.timeout_seconds = float(timeout_seconds)
         self.post_count = 0
         self.methods_used: list[str] = []
@@ -162,6 +165,21 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
             raise FullCoreProductiveHttpPostError("REAL_VENUE_POST_FORBIDDEN_IN_THIS_SLICE")
         return self._perform_http_post_v1(payload=payload)
 
+    def _assert_pre_send_safety_gate_v1(self, *, payload: Mapping[str, Any]) -> None:
+        from src.ops.full_core_live_path_composition_root_v1.current_productive_post_path_kill_switch_gate_v1 import (
+            PreSendSafetyGateV1,
+        )
+
+        gate = self._pre_send_safety_gate
+        if not isinstance(gate, PreSendSafetyGateV1):
+            raise FullCoreProductiveHttpPostError(
+                f"{PRE_SEND_GATE_DENIED_PREFIX}:PRE_SEND_SAFETY_GATE_REQUIRED"
+            )
+        try:
+            gate.assert_admits_send_v1(payload=payload)
+        except Exception as exc:
+            raise FullCoreProductiveHttpPostError(f"{PRE_SEND_GATE_DENIED_PREFIX}:{exc}") from exc
+
     def _perform_http_post_v1(
         self, *, payload: Mapping[str, Any]
     ) -> FullCoreTradeOrderPostResultV1:
@@ -186,6 +204,7 @@ class FullCoreProductiveHttpTradeOrderTransportV1:
         req = Request(url, data=body.encode("utf-8"), method="POST", headers=headers)
         factory = self._opener_factory or (lambda: build_opener(ProxyHandler({})))
         opener = factory()
+        self._assert_pre_send_safety_gate_v1(payload=payload)
         raw = b""
         status = 0
         transport_error_class = ""

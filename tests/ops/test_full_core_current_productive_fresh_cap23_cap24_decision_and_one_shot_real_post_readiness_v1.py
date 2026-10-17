@@ -10,6 +10,7 @@ from pathlib import Path
 
 import pytest
 
+from tests.ops._post_path_safety_fixtures_v1 import fresh_trusted_active_kill_switch_evidence_v1
 from src.ops.full_core_live_path_composition_root_v1.constants_v1 import (
     CANARY_DEFAULT_INSTRUMENT_ID,
     ENVELOPE_BOUND_SINGLE_USE_EXTERNAL_EFFECT_SEAM,
@@ -199,21 +200,15 @@ def test_readiness_go_does_not_authorize_one_shot_real_post() -> None:
     readiness_permit = issue_external_effect_permit_v1(
         envelope,
         authority_ref=OWNER_GO,
-        kill_switch_blocked=False,
-        durable_kill_switch_evidence_status=(
-            DurableKillSwitchEvidenceStatusV1.TRUSTED_PRESENT.value
-        ),
-        filegate_denied=False,
+        kill_switch_evidence=fresh_trusted_active_kill_switch_evidence_v1(),
+        risk_reduction_proof=None,
         step_29q_status=STEP_29Q_PLAN_ONLY,
     )
     later_permit = issue_external_effect_permit_v1(
         envelope,
         authority_ref=LATER_POST_GO,
-        kill_switch_blocked=False,
-        durable_kill_switch_evidence_status=(
-            DurableKillSwitchEvidenceStatusV1.TRUSTED_PRESENT.value
-        ),
-        filegate_denied=False,
+        kill_switch_evidence=fresh_trusted_active_kill_switch_evidence_v1(),
+        risk_reduction_proof=None,
         step_29q_status=STEP_29Q_PLAN_ONLY,
     )
     assert permit_authorizes_one_shot_real_post_v1(readiness_permit) is False
@@ -252,11 +247,8 @@ def test_send_seam_mocked_path_unchanged_for_non_one_shot_permit(tmp_path: Path)
     permit = issue_external_effect_permit_v1(
         envelope,
         authority_ref=OWNER_GO,
-        kill_switch_blocked=False,
-        durable_kill_switch_evidence_status=(
-            DurableKillSwitchEvidenceStatusV1.TRUSTED_PRESENT.value
-        ),
-        filegate_denied=False,
+        kill_switch_evidence=fresh_trusted_active_kill_switch_evidence_v1(),
+        risk_reduction_proof=None,
         step_29q_status=STEP_29Q_PLAN_ONLY,
     )
     transport = FullCoreNonNetworkingTestPostTransportV1()
@@ -277,11 +269,8 @@ def test_send_seam_one_shot_flag_reaches_full_core_transport_double(tmp_path: Pa
     permit = issue_external_effect_permit_v1(
         envelope,
         authority_ref=LATER_POST_GO,
-        kill_switch_blocked=False,
-        durable_kill_switch_evidence_status=(
-            DurableKillSwitchEvidenceStatusV1.TRUSTED_PRESENT.value
-        ),
-        filegate_denied=False,
+        kill_switch_evidence=fresh_trusted_active_kill_switch_evidence_v1(),
+        risk_reduction_proof=None,
         step_29q_status=STEP_29Q_PLAN_ONLY,
     )
     transport = _RecordingOneShotTransport()

@@ -58,6 +58,7 @@ from tests.ops.test_full_core_execution_admission_contract_v1 import _live_input
 from tests.ops.test_full_core_fresh_pretrade_runtime_get_seam_v1 import (
     InjectedFreshGetTransportV1,
 )
+from tests.ops._post_path_safety_fixtures_v1 import isolate_kill_switch_state_root_v1
 from tests.ops.test_full_core_live_path_composition_root_v1 import _run
 from tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1 import (
     _INSTRUMENT,
@@ -156,10 +157,9 @@ def _join_live(*, transport=_DEFAULT_TRANSPORT, expected_account_identity=_TEST_
 
 
 def _bind_state_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
-    path = tmp_path / "kill_switch_state.json"
-    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(path))
-    monkeypatch.delenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", raising=False)
     monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
+    path = isolate_kill_switch_state_root_v1(monkeypatch, tmp_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
     return path
 
 

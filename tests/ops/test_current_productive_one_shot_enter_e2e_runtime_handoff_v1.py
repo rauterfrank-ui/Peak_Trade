@@ -36,6 +36,7 @@ from tests.ops._current_productive_natural_mv2_dp_enter_fixture_v1 import (
     governed_c1_candles_payload_from_enter_closes_v1,
     prepare_layered_long_armed_seed_for_pre_external_invoke_v1,
 )
+from tests.ops._post_path_safety_fixtures_v1 import activate_isolated_kill_switch_state_v1
 from tests.ops._pre_external_cap21_inst_type_test_helpers_v1 import (
     write_cap21_productivity_root_for_inst_v1,
 )
@@ -52,6 +53,15 @@ SPEC_PATH = (
     REPO_ROOT
     / "docs/ops/specs/FULL_CORE_CURRENT_PRODUCTIVE_ONE_SHOT_ENTER_E2E_RUNTIME_HANDOFF_V1.md"
 )
+
+
+@pytest.fixture(autouse=True)
+def _active_kill_switch_state(
+    monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory
+) -> None:
+    activate_isolated_kill_switch_state_v1(
+        monkeypatch, tmp_path_factory.mktemp("kill_switch_active")
+    )
 
 
 def _sample_envelope():

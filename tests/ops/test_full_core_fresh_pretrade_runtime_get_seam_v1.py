@@ -80,6 +80,7 @@ from src.ops.governed_productive_monetary_normalization_v1.constants_v1 import (
     USDT_USDC_PAIR_NATIVE_ID,
     USDT_USDC_SOURCE_IDENTITY,
 )
+from tests.ops._post_path_safety_fixtures_v1 import isolate_kill_switch_state_root_v1
 from tests.ops._monetary_normalization_test_helpers_v1 import (
     usdt_usdc_index_tickers_payload_v1,
 )
@@ -166,10 +167,9 @@ class InjectedFreshGetTransportV1:
 
 
 def _bind_state_path(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
-    path = tmp_path / "kill_switch_state.json"
-    monkeypatch.setenv("PEAK_KILL_SWITCH_STATE_PATH", str(path))
-    monkeypatch.delenv("PEAKTRADE_KILL_SWITCH_STATE_PATH", raising=False)
     monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
+    path = isolate_kill_switch_state_root_v1(monkeypatch, tmp_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
     return path
 
 

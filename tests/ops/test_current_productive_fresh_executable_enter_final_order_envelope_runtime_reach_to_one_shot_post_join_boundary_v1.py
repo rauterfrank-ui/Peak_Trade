@@ -41,6 +41,18 @@ SPEC_PATH = (
 )
 
 
+from tests.ops._post_path_safety_fixtures_v1 import activate_isolated_kill_switch_state_v1
+
+
+@pytest.fixture(autouse=True)
+def _active_kill_switch_state(
+    monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory
+) -> None:
+    activate_isolated_kill_switch_state_v1(
+        monkeypatch, tmp_path_factory.mktemp("kill_switch_active")
+    )
+
+
 def _sample_envelope():
     plan = VenuePlanCandidateV1(
         instrument_id="okx_eea:linear_perpetual:0G:USDT:USDT:0g-usdt-swap",
