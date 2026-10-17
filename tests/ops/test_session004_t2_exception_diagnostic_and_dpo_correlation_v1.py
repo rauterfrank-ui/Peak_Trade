@@ -38,14 +38,11 @@ SESSION004 = (
     not (SESSION004 / "fresh_lane_state_root/LANE_1/ddo_learning_capture_v1.jsonl").is_file(),
     reason="Session-004 lane evidence not present",
 )
-def test_session004_dpo_correlates_by_trading_epoch_not_run_local_index() -> None:
+def test_session004_cursor_trading_epoch_does_not_bind_dpo_without_candle_identity() -> None:
     from scripts.ops.pre_external_convergence_natural_enter_reporting_v1 import (
         load_productive_live_dpo_observations_v1,
     )
-    from tests.ops.test_pre_external_convergence_natural_enter_reporting_v1 import (
-        _Rec,
-        _dpo_line,
-    )
+    from tests.ops.test_pre_external_convergence_natural_enter_reporting_v1 import _Rec
 
     lane = SESSION004 / "fresh_lane_state_root"
     ddo = lane / "LANE_1/ddo_learning_capture_v1.jsonl"
@@ -62,11 +59,9 @@ def test_session004_dpo_correlates_by_trading_epoch_not_run_local_index() -> Non
         ddo_jsonl=ddo,
         lane_state_root=lane,
     )
-    assert result.dpo.get("trading_epoch") == "14"
-    assert "cycle:14" in str(result.dpo.get("cycle_id") or "")
-    assert result.dpo.get("decision_outcome") == "observe"
-    assert result.dpo.get("dpo_ref") == "ddo.dpo:0341803b09c156139f4e25d5"
-    assert result.dpo.get("s5_cycle_index") != "2"
+    assert result.correlation_status == "DPO_UNBOUND"
+    assert result.dpo == {}
+    assert result.natural_enter_observed is False
 
 
 def test_t2_unexpected_exception_captures_causal_evidence(tmp_path: Path) -> None:

@@ -82,6 +82,14 @@ def maybe_create_natural_enter_pending_outcome_v1(
             skipped=True,
             reason="NOT_GENUINE_NATURAL_ENTER",
         )
+    dpo_instrument_id = str(reporting.dpo.get("instrument_id") or "").strip()
+    expected_instrument_id = str(canonical_instrument_id or "").strip()
+    if not dpo_instrument_id or dpo_instrument_id != expected_instrument_id:
+        return NaturalEnterPendingCreationResultV1(
+            created=False,
+            skipped=True,
+            reason="DPO_INSTRUMENT_MISMATCH",
+        )
     decision_event_ref = str(reporting.dpo.get("decision_event_ref") or "")
     ddo_path = lane_state_root / "LANE_1/ddo_learning_capture_v1.jsonl"
     if pending_outcome_has_closed_outcome_in_ddo_ledger_v1(ddo_path, decision_event_ref):

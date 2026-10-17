@@ -109,6 +109,7 @@ class StartabilityEvaluationReportV1:
 class _CycleRec:
     cycle_index: int
     s5_disposition: str
+    c1_venue_event_time: float | None = None
 
 
 def _domain(
@@ -259,8 +260,13 @@ def _evaluate_execution_pre_external_domain_v1(root: Path) -> DomainEvaluationV1
 
 def _evaluate_double_play_natural_enter_domain_v1(root: Path) -> DomainEvaluationV1:
     rep = json.loads((root / "PRE_EXTERNAL_CONVERGENCE_REPORT.json").read_text(encoding="utf-8"))
+    manifest = _load_manifest(root)
     cycles = [
-        _CycleRec(int(c["cycle_index"]), str(c["s5_disposition"]))
+        _CycleRec(
+            int(c["cycle_index"]),
+            str(c["s5_disposition"]),
+            None if c.get("c1_venue_event_time") is None else float(c["c1_venue_event_time"]),
+        )
         for c in rep.get("S5_CYCLE_SUMMARIES") or []
     ]
     ddo = root / "lane_state/LANE_1/ddo_learning_capture_v1.jsonl"
@@ -268,6 +274,8 @@ def _evaluate_double_play_natural_enter_domain_v1(root: Path) -> DomainEvaluatio
         cycle_records=cycles,
         terminal_disposition=str(rep.get("TERMINAL_DISPOSITION") or ""),
         ddo_jsonl=ddo,
+        lane_state_root=root / "lane_state",
+        expected_instrument_id=str(manifest.get("INSTRUMENT_ID") or ""),
     )
     ok = (
         result.natural_enter_observed
