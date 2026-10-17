@@ -19,6 +19,8 @@ It materializes:
 
 If this graph conflicts with CURRENT code or canonical authority sources: **`GRAPH_LOSES=true`**.
 
+`authority_map_currentness=NOT_ALIGNED_TO_IAM_BASELINE`. The historical fixpoint SHA `d26caea78d1a178fde0a9e91aee169d454eebcae` is not the IAM `baseline_sha`. Census edges are not re-proven against that IAM baseline. This README change does not expand the census.
+
 ## Authority
 
 ```text

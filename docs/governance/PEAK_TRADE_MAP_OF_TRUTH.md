@@ -15,7 +15,9 @@ PARALLEL_SSOT_CREATED=false
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 CURRENT_ONLY_INVENTORY=false
 CURRENT_ONLY_INVENTORY_REASON=NAVIGATION_ONLY_DESIGN_MIXES_CURRENT_HISTORICAL_FORENSIC_TARGETS
-CURRENT_REVIEWED_AT_SHA=3f671f03543fa429facfd052618c837608aa7ad2
+CURRENT_REVIEWED_AT_SHA=9971ad8bcef222c6200d476c823de89820add7aa
+NAVIGATION_REVIEW_DOES_NOT_REBIND_HISTORICAL_WITNESSES=true
+NATURAL_ENTER_PRE_EXTERNAL_CLOSURE_CONTENT_ORIGIN_SHA=6ed52d01ac181e629b2839271f83b52fc7ffe61f
 GRAPH_LOSES_TO_CANONICAL_CURRENT_CODE=true
 AUTHORITY=NONE
 NAVIGATION_ONLY=true
@@ -147,6 +149,8 @@ INDEPENDENT_CURRENT_SUBSYSTEM=MD runtime, private read, WebUI, learning loops
 ```text
 RUNTIME_PROOF_COMPLETE=false
 NATURAL_ENTER_TO_PRE_EXTERNAL_PROVEN=true
+NATURAL_ENTER_PROOF_CONTENT_ORIGIN_SHA=6ed52d01ac181e629b2839271f83b52fc7ffe61f
+NATURAL_ENTER_PROOF_REBOUND_TO_NAVIGATION_REVIEW_SHA=false
 CURRENT_FUNCTIONAL_PATH_PROVEN_THROUGH_PRE_EXTERNAL=true
 CURRENT_FUNCTIONAL_PATH_PROVEN_BEYOND_PRE_EXTERNAL=false
 POST_ALLOWED=false
@@ -256,7 +260,7 @@ in the Master Runbook and the named packages.
 | Presentation archive materializers MAT-01..08 (#7032) | `src/ops/presentation_archive_materializers_v1/` |
 | Presentation archive root resolver ARC-001 (#7032) | `src/ops/presentation_archive_root_v1/resolver_v1.py` |
 | Canonical presentation archive config | `config/ops/presentation_archive_root_v1.json` |
-| WebUI archive-root compatibility surface | `src/webui/workflow_dashboard_archive_root_v1.py` |
+| WebUI archive-root compatibility surface (historical reference; path absent from tree) | `src&#47;webui&#47;workflow_dashboard_archive_root_v1.py` | <!-- pt:ref-target-ignore -->
 
 ------------------------------------------------------------------------
 

@@ -2,9 +2,11 @@
 
 Persists the Owner-ratified Cap 2.2 productive ranking policy matrix
 (PEAK_TRADE_RANKING_MATRIX_POLICY_V1). Grants CAP22_RANKING_POLICY_AUTHORITY
-only. Does not wire productive Cap 2.2 economic ranking runtime (B06), does
-not activate economic rank, and does not grant selection, execution, live,
-testnet, or multi-future authority. B04/B05 are separate bounded slices.
+only. Later constants in this module record that the B06 economic-ranking
+runtime is wired and that ECONOMIC_RANK_ACTIVATED is true. The separate pin
+PRODUCTIVE_ECONOMIC_RANK_ACTIVATION stays false until INPUT2 max-age is
+ratified. This module does not grant selection, execution, live, testnet,
+or multi-future authority. B04/B05 are separate bounded slices.
 """
 
 from __future__ import annotations
