@@ -314,6 +314,11 @@ def _main() -> int:
             f"launcher wall time; default {PRODUCTIVE_DEFAULT_MAX_RUN_DURATION_SECONDS})"
         ),
     )
+    parser.add_argument(
+        "--binding-epoch",
+        default=None,
+        help="Optional binding epoch; defaults to current UTC timestamp.",
+    )
     args = parser.parse_args()
     try:
         observation_budget = resolve_continuous_observation_budget_v1(
