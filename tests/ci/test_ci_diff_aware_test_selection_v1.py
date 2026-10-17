@@ -7590,3 +7590,52 @@ def test_selector_package_clock_trust_and_expiry_v1_combined_diff_pr_bounded_ful
     for path in PACKAGE_CLOCK_TRUST_AND_EXPIRY_V1_ALL_TESTOWNERS:
         assert path in bounded
         assert bounded.count(path) == 1
+
+
+BWP_LIVE_CAPITAL_GUARD_PRODUCTION = (
+    "src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py"
+)
+BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_TESTOWNER = (
+    "tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py"
+)
+
+
+def test_selector_bwp_live_capital_guard_production_pr_bounded_full_includes_testowner() -> None:
+    sel = _run_selector(BWP_LIVE_CAPITAL_GUARD_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["test_selection_reason"] == "category_central_src_requires_full"
+    bounded = _bounded_targets(sel)
+    assert BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_TESTOWNER in bounded
+    assert bounded.count(BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_TESTOWNER) == 1
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in bounded
+
+
+def test_selector_bwp_live_capital_guard_testowner_only_is_focused() -> None:
+    sel = _run_selector(BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_TESTOWNER)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == (
+        "bwp_live_capital_guard_post_isolation_testowner_focused"
+    )
+    assert _targets(sel) == [BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_TESTOWNER]
+
+
+def test_selector_bwp_live_capital_guard_combined_diff_includes_testowner_once() -> None:
+    sel = _run_selector(
+        BWP_LIVE_CAPITAL_GUARD_PRODUCTION,
+        BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_TESTOWNER,
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    assert bounded.count(BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_TESTOWNER) == 1
+
+
+def test_selector_central_src_without_bwp_live_path_excludes_testowner() -> None:
+    sel = _run_selector("src/core/foo.py")
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_TESTOWNER not in _bounded_targets(sel)
+
+
+def test_selector_empty_diff_does_not_add_bwp_live_testowner() -> None:
+    sel = _run_selector()
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_TESTOWNER not in _bounded_targets(sel)

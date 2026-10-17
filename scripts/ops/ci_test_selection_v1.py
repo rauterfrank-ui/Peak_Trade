@@ -1337,6 +1337,35 @@ PR_BOUNDED_FULL_VAR_SUITE_ADAPTER_TARGETS: tuple[str, ...] = (
     "tests/scripts/test_backtest_returns_var_suite_offline_v1.py",
 )
 
+PR_BOUNDED_FULL_PACKAGE_BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_V1_TESTOWNER: str = (
+    "tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py"
+)
+
+PR_BOUNDED_FULL_PACKAGE_BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_V1_TRIGGER_PATHS: frozenset[str] = (
+    frozenset(
+        {
+            "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/current_live_canary_capital_guard_v1.py",
+            "src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py",
+            "src/ops/full_core_live_path_composition_root_v1/constants_v1.py",
+            "src/ops/full_core_live_path_composition_root_v1/full_core_productive_http_post_transport_v1.py",
+            "src/ops/full_core_live_path_composition_root_v1/current_productive_one_shot_fresh_envelope_permit_mint_durable_consume_and_post_join_v1.py",
+            "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_cycle_orchestrator_v1.py",
+            "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+            "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+            "src/ops/full_core_live_path_composition_root_v1/full_core_governed_cycle_host_post_submit_lifecycle_wiring_v1.py",
+            "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+            "scripts/ops/run_post_6948_productive_continuous_run_authority_live_c1_convergence_v1.py",
+            "config/ops/current_full_core_capital_guard_v1.json",
+            "config/ops/current_live_canary_capital_guard_v1.json",
+            PR_BOUNDED_FULL_PACKAGE_BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_V1_TESTOWNER,
+        }
+    )
+)
+
+PR_BOUNDED_FULL_PACKAGE_BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_V1_TARGETS: tuple[str, ...] = (
+    PR_BOUNDED_FULL_PACKAGE_BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_V1_TESTOWNER,
+)
+
 PR_BOUNDED_FULL_PACKAGE_A_META_TRIGGER_PATHS: frozenset[str] = frozenset(
     {
         "src/meta/learning_loop/contract_safety_v1.py",
@@ -2439,6 +2468,10 @@ def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
 
     if normalized & PR_BOUNDED_FULL_VAR_SUITE_ADAPTER_TRIGGER_PATHS:
         for path in PR_BOUNDED_FULL_VAR_SUITE_ADAPTER_TARGETS:
+            add(path)
+
+    if normalized & PR_BOUNDED_FULL_PACKAGE_BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_V1_TRIGGER_PATHS:
+        for path in PR_BOUNDED_FULL_PACKAGE_BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_V1_TARGETS:
             add(path)
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_A_META_TRIGGER_PATHS:
@@ -6325,6 +6358,15 @@ def resolve_selection(
     if categories <= NO_OP_CATEGORIES:
         if _has_productive_src_python(normalized):
             return SelectionResult("FULL", "productive_src_no_op_blocked_fail_closed", ())
+        bwp_live_testowner = (
+            PR_BOUNDED_FULL_PACKAGE_BWP_LIVE_CAPITAL_GUARD_POST_ISOLATION_V1_TESTOWNER
+        )
+        if bwp_live_testowner in set(normalized):
+            return SelectionResult(
+                "FOCUSED",
+                "bwp_live_capital_guard_post_isolation_testowner_focused",
+                (bwp_live_testowner,),
+            )
         return SelectionResult("NO_OP", "docs_workflow_or_static_contract_only", ())
 
     strategy_focused = _try_strategy_regime_owner_focused(normalized)

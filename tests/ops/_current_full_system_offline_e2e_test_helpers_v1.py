@@ -136,7 +136,7 @@ def prepare_offline_owner_authorization_for_one_shot_v1(
     )
     pretrade_id = str(closure.common_epoch_id or "offline-e2e")
     native_id = str(bound.venue_native_id or _TEST_INST)
-    atomic = state_root / "atomic" / "pilot_guard"
+    atomic = one_shot_root / "atomic" / "pilot_guard"
     pilot_bind = enforce_pilot_capital_guard_before_enter_post_v1(
         pilot_capital_guard_bind_go=OWNER_GO_CURRENT_PILOT_CAPITAL_GUARD_POST_BIND_V1,
         envelope=envelope,
@@ -196,6 +196,8 @@ class _InstrumentAwarePilotReadTransport(PilotGuardReadTransport):
         self._avail_eq = avail_eq
         self._open_orders = False
         self._balance_ccy = "USDC"
+        self._rr_payloads = None
+        self.get_cache_policies: list[str | None] = []
         self._inst_family = str(native_inst_id).split("-")[0] + "-USDT"
         tiers_raw = encode_fixture_position_tiers_payload_v1(
             inst_family=self._inst_family,

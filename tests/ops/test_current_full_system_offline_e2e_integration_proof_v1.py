@@ -72,10 +72,34 @@ from tests.ops.test_full_core_governed_cycle_host_post_submit_lifecycle_wiring_v
     _order_row_join,
     _origin_main,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_global_venue_effect_authority_ledger_v1 import (
+    STATE_CLAIMED,
+    GlobalVenueEffectAuthorityLedgerV1,
+    GlobalVenueEffectReplayDeniedError,
+)
+from src.ops.gates.risk_gate import DEFAULT_KILL_SWITCH_STATE_PATH
+from tests.ops._current_full_system_offline_e2e_crash_child_runner_v1 import (
+    offline_e2e_kill_switch_root_v1,
+)
+from tests.ops._post_path_safety_fixtures_v1 import (
+    KILL_SWITCH_ENV,
+    KILL_SWITCH_ENV_ALT,
+    activate_isolated_kill_switch_state_v1,
+    write_kill_switch_state_v1,
+)
 from tests.ops.test_full_core_exchange_reconciliation_v1 import CL
 from src.ops.full_core_live_path_composition_root_v1.full_core_exchange_reconciliation_offline_provider_v1 import (
     OfflineExchangeFixtureV1,
 )
+
+
+@pytest.fixture(autouse=True)
+def _active_kill_switch_state(
+    monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory
+) -> None:
+    activate_isolated_kill_switch_state_v1(
+        monkeypatch, tmp_path_factory.mktemp("kill_switch_active")
+    )
 
 
 @pytest.fixture(autouse=True)
@@ -384,7 +408,7 @@ def test_negative_permit_reuse_fail_closed(tmp_path: Path) -> None:
         capital_guard_prevalidated=True,
         pilot_authorization_binding=pilot_auth,
     )
-    with pytest.raises(CurrentProductiveOneShotFreshEnvelopeJoinError, match="CONSUMED_PERMIT"):
+    with pytest.raises(GlobalVenueEffectReplayDeniedError, match=_GLOBAL_OWNER_AUTH_REPLAY):
         run_production_pre_external_to_fake_post_chain_v1(
             closure=closure,
             bound_instrument=bound,
@@ -403,6 +427,7 @@ def test_negative_permit_reuse_fail_closed(tmp_path: Path) -> None:
     witness = default_fake_post_witness_path_v1(state_root)
     assert witness.is_file()
     assert int(json.loads(witness.read_text())["post_attempt_count"]) == 1
+    assert _offline_ledger_unresolved_v1(state_root) == []
 
 
 def test_fake_exchange_transport_witness_is_mutable_and_persists_attempts(
@@ -416,6 +441,23 @@ def test_fake_exchange_transport_witness_is_mutable_and_persists_attempts(
     assert loaded.post_attempt_count == 1
 
 
+_GLOBAL_OWNER_AUTH_REPLAY = "GLOBAL_REPLAY_DENIED:OWNER_AUTHORIZATION_IDENTITY"
+
+
+def _fake_post_count_v1(state_root: Path) -> int:
+    witness = default_fake_post_witness_path_v1(state_root)
+    if not witness.is_file():
+        return 0
+    return int(json.loads(witness.read_text(encoding="utf-8"))["post_attempt_count"])
+
+
+def _offline_ledger_unresolved_v1(state_root: Path) -> list[dict[str, Any]]:
+    ledger = GlobalVenueEffectAuthorityLedgerV1(
+        root=state_root / "global_venue_effect_authority_ledger_offline"
+    )
+    return ledger.unresolved_claims_v1()
+
+
 def _run_crash_worker_subprocess(
     state_root: Path,
     crash: OfflineE2eCrashPoint,
@@ -423,7 +465,11 @@ def _run_crash_worker_subprocess(
     extra_env: dict[str, str] | None = None,
 ) -> int:
     repo = Path(__file__).resolve().parents[2]
-    env = os.environ.copy()
+    write_kill_switch_state_v1(
+        offline_e2e_kill_switch_root_v1(state_root) / DEFAULT_KILL_SWITCH_STATE_PATH,
+        state="ACTIVE",
+    )
+    env = {k: v for k, v in os.environ.items() if k not in {KILL_SWITCH_ENV, KILL_SWITCH_ENV_ALT}}
     env["PEAK_TRADE_OFFLINE_E2E_STATE_ROOT"] = str(state_root)
     env[CRASH_POINT_ENV_VAR] = crash.value
     if extra_env:
@@ -431,7 +477,9 @@ def _run_crash_worker_subprocess(
     proc = subprocess.run(
         [
             str(repo / "scripts" / "pt"),
-            "scripts/ops/run_current_full_system_offline_e2e_crash_worker_v1.py",
+            "tests/ops/_current_full_system_offline_e2e_crash_child_runner_v1.py",
+            "--state-root",
+            str(state_root),
         ],
         cwd=str(repo),
         env=env,
@@ -470,7 +518,7 @@ def test_crash_restart_no_duplicate_fake_post(tmp_path: Path) -> None:
         default_fake_post_witness_path_v1(state_root).read_text(encoding="utf-8")
     )["post_attempt_count"]
     assert witness_count == 1
-    with pytest.raises(CurrentProductiveOneShotFreshEnvelopeJoinError, match="CONSUMED_PERMIT"):
+    with pytest.raises(GlobalVenueEffectReplayDeniedError, match=_GLOBAL_OWNER_AUTH_REPLAY):
         run_production_pre_external_to_fake_post_chain_v1(
             closure=closure,
             bound_instrument=bound,
@@ -492,7 +540,9 @@ def test_crash_restart_no_duplicate_fake_post(tmp_path: Path) -> None:
     assert witness_count_after == 1
 
 
-def test_crash_before_durable_consume_allows_single_post_after_restart(tmp_path: Path) -> None:
+def test_crash_before_durable_consume_restart_denied_by_global_replay_no_post(
+    tmp_path: Path,
+) -> None:
     bound, gap, origin_sha, _, _mark_px = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
     closure = gap.closure
     state_root = tmp_path / "crash_before_consume"
@@ -515,22 +565,29 @@ def test_crash_before_durable_consume_allows_single_post_after_restart(tmp_path:
     )
     rc = _run_crash_worker_subprocess(state_root, OfflineE2eCrashPoint.BEFORE_DURABLE_CONSUME)
     assert rc == 91
-    chain = run_production_pre_external_to_fake_post_chain_v1(
-        closure=closure,
-        bound_instrument=bound,
-        origin_main_sha=origin_sha,
-        state_root=state_root,
-        read_only_get_transport=pilot_get_transport_v1(native_inst_id=str(bound.venue_native_id)),
-        offline_recon_fixture=fixture,
-        k1_backend=fake_k1_backend_v1(),
-        post_owner_go_persisted=True,
-        admission_seal_established=True,
-        capital_guard_prevalidated=True,
-        pilot_authorization_binding=pilot_auth,
-    )
-    assert chain.fake_post_witness_count == 1
-    worker = load_offline_e2e_worker_result_v1(state_root=state_root)
-    assert worker.get("status") in {None, "PASS", ""} or worker == {}
+    assert _fake_post_count_v1(state_root) == 0
+    [orphan] = _offline_ledger_unresolved_v1(state_root)
+    assert orphan["state"] == STATE_CLAIMED
+    with pytest.raises(GlobalVenueEffectReplayDeniedError, match=_GLOBAL_OWNER_AUTH_REPLAY):
+        run_production_pre_external_to_fake_post_chain_v1(
+            closure=closure,
+            bound_instrument=bound,
+            origin_main_sha=origin_sha,
+            state_root=state_root,
+            read_only_get_transport=pilot_get_transport_v1(
+                native_inst_id=str(bound.venue_native_id)
+            ),
+            offline_recon_fixture=fixture,
+            k1_backend=fake_k1_backend_v1(),
+            post_owner_go_persisted=True,
+            admission_seal_established=True,
+            capital_guard_prevalidated=True,
+            pilot_authorization_binding=pilot_auth,
+        )
+    assert _fake_post_count_v1(state_root) == 0
+    assert [c["claim_id"] for c in _offline_ledger_unresolved_v1(state_root)] == [
+        orphan["claim_id"]
+    ]
 
 
 def test_crash_before_recon_complete_exits_94(tmp_path: Path) -> None:
@@ -734,11 +791,14 @@ def test_gap_05_atomic_durable_apply_isolated_state(tmp_path: Path) -> None:
     test_orchestrator_offline_unknown_restart_recovery(tmp_path / "gap_05_orchestrator_reproof")
 
 
-def test_gap_05_crash_before_durable_consume_atomic_restart_single_post(tmp_path: Path) -> None:
-    """Crash before external-effect durable consume; restart completes one fake POST.
+def test_gap_05_crash_before_durable_consume_atomic_restart_denied_no_post(
+    tmp_path: Path,
+) -> None:
+    """Crash before external-effect durable consume; the restart is denied, no fake POST.
 
-    First segment runs full-core capital guard (single-use authorization). Restart
-    uses pilot prevalidated provenance only — guard was already consumed pre-crash.
+    First segment runs full-core capital guard (single-use authorization). The
+    global ledger keeps the owner-authorization replay marker, so the restarted
+    process cannot reuse it; the orphaned claim stays unresolved for G004.
     """
 
     bound, gap, origin_sha, _, mark_px = run_gap_true_01_natural_enter_pre_external_v1(tmp_path)
@@ -772,6 +832,9 @@ def test_gap_05_crash_before_durable_consume_atomic_restart_single_post(tmp_path
         },
     )
     assert rc_crash == 91
+    assert _fake_post_count_v1(state_root) == 0
+    [orphan] = _offline_ledger_unresolved_v1(state_root)
+    assert orphan["state"] == STATE_CLAIMED
     rc_restart = _run_crash_worker_subprocess(
         state_root,
         OfflineE2eCrashPoint.NONE,
@@ -779,8 +842,12 @@ def test_gap_05_crash_before_durable_consume_atomic_restart_single_post(tmp_path
             APPLY_DURABLE_ATOMIC_ENV_VAR: "true",
         },
     )
-    assert rc_restart == 0
-    witness_count = json.loads(
-        default_fake_post_witness_path_v1(state_root).read_text(encoding="utf-8")
-    )["post_attempt_count"]
-    assert witness_count == 1
+    assert rc_restart == 1
+    assert load_offline_e2e_worker_result_v1(state_root=state_root) == {
+        "error": "GlobalVenueEffectReplayDeniedError",
+        "status": "FAIL",
+    }
+    assert _fake_post_count_v1(state_root) == 0
+    assert [c["claim_id"] for c in _offline_ledger_unresolved_v1(state_root)] == [
+        orphan["claim_id"]
+    ]
