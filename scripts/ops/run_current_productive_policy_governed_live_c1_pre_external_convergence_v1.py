@@ -194,7 +194,16 @@ def _main() -> int:
     parser.add_argument("--evidence-root", type=Path, required=True)
     parser.add_argument("--lane-state-root", type=Path, required=True)
     parser.add_argument("--productivity-root", type=Path, required=True)
-    parser.add_argument("--binding-epoch", default=None)
+    parser.add_argument(
+        "--selection-max-total-get-attempts",
+        type=int,
+        default=None,
+        help=(
+            "Hard ceiling for this selection run: four inventory GETs plus two "
+            "Economic-MD GETs per Cap-2.1-eligible instrument, retries 0 on this path. "
+            "Required before the first selection GET."
+        ),
+    )
     parser.add_argument(
         "--wp-branch-evidence-run",
         action="store_true",
@@ -329,6 +338,18 @@ def _main() -> int:
     from src.ops.current_productive_eea_universe_inventory_acquisition_v1.transport_v1 import (
         UrllibEeaPublicUniverseGetTransportV1,
     )
+    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_cap24_selection_state_canonical_writer_v1 import (
+        CurrentProductiveCap24SelectionStateWriterError,
+    )
+    from src.ops.current_productive_eea_universe_inventory_acquisition_v1.constants_v1 import (
+        MAX_REQUEST_COUNT,
+    )
+    from src.ops.governed_productive_account_equity_authority_producer_v1.current_productive_selection_network_budget_v1 import (
+        SelectionNetworkBudgetError,
+        SelectionNetworkBudgetExceeded,
+        SelectionNetworkBudgetV1,
+        build_budgeted_economic_md_source_v1,
+    )
     from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_continuous_cycle_orchestrator_v1 import (
         CONTINUOUS_RUN_AUTHORIZED,
         DISPOSITION_PRE_EXTERNAL_EFFECT,
@@ -391,11 +412,58 @@ def _main() -> int:
     repository_sha = execution_head_sha
     decision_epoch = args.binding_epoch or _utc_iso()
 
-    acq = acquire_eea_universe_inventory_v1(transport=UrllibEeaPublicUniverseGetTransportV1())
+    if args.selection_max_total_get_attempts is None:
+        out = {"status": "FAIL", "blocker": "SELECTION_GET_BUDGET_EXPLICIT_REQUIRED"}
+        print(json.dumps(out, sort_keys=True))
+        return 2
+    try:
+        selection_budget = SelectionNetworkBudgetV1(
+            max_total_attempts=int(args.selection_max_total_get_attempts)
+        )
+    except (SelectionNetworkBudgetError, TypeError, ValueError) as exc:
+        out = {
+            "status": "FAIL",
+            "blocker": "SELECTION_MAX_TOTAL_GET_ATTEMPTS_INVALID",
+            "detail": str(exc)[:200],
+        }
+        print(json.dumps(out, sort_keys=True))
+        return 2
+
+    try:
+        acq = acquire_eea_universe_inventory_v1(
+            transport=UrllibEeaPublicUniverseGetTransportV1(
+                before_attempt=selection_budget.before_http_attempt
+            )
+        )
+    except SelectionNetworkBudgetExceeded as exc:
+        out = {
+            "status": "FAIL",
+            "blocker": "SELECTION_NETWORK_BUDGET_EXCEEDED",
+            "detail": str(exc)[:200],
+        }
+        print(json.dumps(out, sort_keys=True))
+        return 2
     if acq.ok is not True:
         out = {"status": "FAIL", "blocker": "EEA_UNIVERSE_ACQUISITION_FAIL"}
         print(json.dumps(out, sort_keys=True))
         return 2
+    recorded = acq.request_count
+    if (
+        isinstance(recorded, bool)
+        or not isinstance(recorded, int)
+        or selection_budget.attempts != recorded
+    ):
+        out = {"status": "FAIL", "blocker": "SELECTION_INVENTORY_ATTEMPTS_NOT_RECORDED"}
+        print(json.dumps(out, sort_keys=True))
+        return 2
+    if recorded != MAX_REQUEST_COUNT:
+        out = {"status": "FAIL", "blocker": "SELECTION_INVENTORY_ATTEMPT_COUNT_NOT_CURRENT"}
+        print(json.dumps(out, sort_keys=True))
+        return 2
+    economic_md_source = build_budgeted_economic_md_source_v1(
+        budget=selection_budget,
+        capture_timestamp=decision_epoch,
+    )
 
     from src.ops.top20_opportunity_evaluation_residency_v1.scoped_residency_integrated_evaluation_propagation_v1 import (
         build_m01_scoped_residency_cap24_propagation_handoff_v1,
@@ -411,23 +479,40 @@ def _main() -> int:
         repository_sha=repository_sha,
         repo_root=REPO_ROOT,
     )
-    execute_current_productive_cap24_selection_state_canonical_write_v1(
-        owner_go="CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITE_V1",
-        origin_main_sha=origin_sha,
-        acquisition_result=acq,
-        productivity_root=productivity_root,
-        repository_sha=repository_sha,
-        allow_default_productivity_root=False,
-        decision_epoch=decision_epoch,
-        execution_integrity_backend=backend,
-        residency_runtime_config=residency_handoff.residency_runtime_config,
-        cap23_residency_eligibility_gate=residency_handoff.cap23_residency_eligibility_gate,
-        scoped_top20_evaluation_residency_v1=residency_handoff.scoped_top20_evaluation_residency_v1,
-        scoped_residency_integrated_evaluation=(
-            residency_handoff.scoped_residency_integrated_evaluation
-        ),
-        cap21_coalesce_repo_root=residency_handoff.cap21_coalesce_repo_root,
-    )
+    try:
+        execute_current_productive_cap24_selection_state_canonical_write_v1(
+            owner_go="CURRENT_PRODUCTIVE_CAP24_SELECTION_STATE_CANONICAL_WRITE_V1",
+            origin_main_sha=origin_sha,
+            acquisition_result=acq,
+            productivity_root=productivity_root,
+            repository_sha=repository_sha,
+            allow_default_productivity_root=False,
+            decision_epoch=decision_epoch,
+            execution_integrity_backend=backend,
+            residency_runtime_config=residency_handoff.residency_runtime_config,
+            cap23_residency_eligibility_gate=residency_handoff.cap23_residency_eligibility_gate,
+            scoped_top20_evaluation_residency_v1=residency_handoff.scoped_top20_evaluation_residency_v1,
+            scoped_residency_integrated_evaluation=(
+                residency_handoff.scoped_residency_integrated_evaluation
+            ),
+            cap21_coalesce_repo_root=residency_handoff.cap21_coalesce_repo_root,
+            economic_md_public_source=economic_md_source,
+        )
+    except SelectionNetworkBudgetExceeded as exc:
+        out = {
+            "status": "FAIL",
+            "blocker": "SELECTION_NETWORK_BUDGET_EXCEEDED",
+            "detail": str(exc)[:200],
+        }
+        print(json.dumps(out, sort_keys=True))
+        return 2
+    except CurrentProductiveCap24SelectionStateWriterError as exc:
+        text = str(exc)
+        if text.startswith("SELECTION_"):
+            out = {"status": "FAIL", "blocker": text.split(":", 1)[0]}
+            print(json.dumps(out, sort_keys=True))
+            return 2
+        raise
     from src.ops.single_selected_future_policy_v1.persistence_v1 import (
         load_and_validate_selection_v1,
     )

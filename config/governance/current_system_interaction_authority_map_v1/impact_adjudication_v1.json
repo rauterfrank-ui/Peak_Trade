@@ -1,44 +1,38 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "eef9d9cd3d7dbce0740a21e41b84bd17edb1c779",
-  "head_sha": "2bc3f3ad21177a9327fc1038d4033f22aaa7dab0",
+  "base_sha": "769d13663badb8daed64b32a0e3047cd198da900",
+  "head_sha": "f1cb6843c5c689a4dddcaae750ad93142e150c9f",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "scripts/ops/ci_test_selection_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py",
-    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/current_live_canary_capital_guard_v1.py",
-    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
-    "tests/ops/_current_full_system_offline_e2e_crash_child_runner_v1.py",
-    "tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py",
-    "tests/ops/_protected_surface_content_pins_v1.py",
-    "tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py",
-    "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py"
+    "evidence/ops/bwp_current_29p_identity_gate_remediation_v1/20261017T150530Z/BWP_CURRENT_29P_IDENTITY_GATE_REMEDIATION_TERMINAL_REPORT_V1.json",
+    "evidence/ops/bwp_current_29p_identity_gate_remediation_v1/20261017T150530Z/SHA256SUMS",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "src/ops/current_productive_eea_universe_inventory_acquisition_v1/transport_v1.py",
+    "src/ops/economic_md_input_producer_v1/public_md_source_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_selection_network_budget_v1.py",
+    "tests/ops/test_current_productive_selection_network_budget_v1.py"
   ],
-  "changed_paths_sha256": "d0ef5c85c0f904481853ac4cf378578b3249a0b7f16a8e35c86b08fda4b0933c",
+  "changed_paths_sha256": "f242f641d085e1f97504b0cee08b60094cf39c53504f20000dac6d0a58b7e342",
   "covered_candidate_paths": [
-    "scripts/ops/ci_test_selection_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py",
-    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/current_live_canary_capital_guard_v1.py",
-    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
-    "tests/ops/_current_full_system_offline_e2e_crash_child_runner_v1.py",
-    "tests/ops/_current_full_system_offline_e2e_test_helpers_v1.py",
-    "tests/ops/_protected_surface_content_pins_v1.py",
-    "tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py",
-    "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py"
+    "evidence/ops/bwp_current_29p_identity_gate_remediation_v1/20261017T150530Z/BWP_CURRENT_29P_IDENTITY_GATE_REMEDIATION_TERMINAL_REPORT_V1.json",
+    "evidence/ops/bwp_current_29p_identity_gate_remediation_v1/20261017T150530Z/SHA256SUMS",
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "src/ops/current_productive_eea_universe_inventory_acquisition_v1/transport_v1.py",
+    "src/ops/economic_md_input_producer_v1/public_md_source_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_selection_network_budget_v1.py",
+    "tests/ops/test_current_productive_selection_network_budget_v1.py"
   ],
   "evidence_refs": [
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/ops/current_full_core_capital_guard_v1.json",
-    "config/ops/current_live_canary_capital_guard_v1.json",
-    "scripts/ops/ci_test_selection_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_full_core_capital_guard_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_global_venue_effect_authority_ledger_v1.py",
-    "src/ops/section_11_13_5_live_canary_minimum_exposure_v1/current_live_canary_capital_guard_v1.py",
-    "tests/ops/test_bwp_live_001_full_system_live_readiness_closure_v1.py",
-    "tests/ops/test_current_full_system_offline_e2e_integration_proof_v1.py"
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap24_selection_state_canonical_writer_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_selection_network_budget_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_29p_chain_baseline_contract_v1.py"
   ],
-  "reason": "BWP-LIVE-002 keeps the BWP-LIVE-001 capital-guard parser hardening and adds no domain owner, interaction, or authority edge. Offline E2E crash children re-anchor the existing kill-switch root in-process and the restart assertions follow the existing global ledger replay deny (OWNER_AUTHORIZATION_IDENTITY consumed at claim, orphan claim stays unresolved). The CI selector gains one exact PR_BOUNDED_FULL package so the existing B2/B4/B7 test file runs when its production paths change; a test-only edit of that file is CONTRACT_FOCUSED instead of NO_OP. Two previously undetermined paths (scripts/ops/ci_test_selection_v1.py, tests/ci/test_ci_diff_aware_test_selection_v1.py) are named as exact candidate files. source_v1.json and derived views unchanged. Standing POST pins stay false. NO_MAP_IMPACT. AUTHORITY=NONE.",
+  "reason": "BWP-CURRENT-29P identity-gate remediation moves the selection GET ceiling onto the Economic-MD source the existing Cap-2.4 writer already forwards. The protected writer, the identity gate, source_v1.json, and derived map views are unchanged. No new domain owner, interaction, or authority edge. Two previously undetermined paths are named as exact candidates: the inventory transport file and this remediation evidence directory. Standing POST pins stay false. NO_MAP_IMPACT. AUTHORITY=NONE.",
   "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }

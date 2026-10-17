@@ -233,13 +233,25 @@ class OkxPublicEconomicMdReadAdapterV1:
     fetcher: PublicGetFetcher = _default_public_get
     timeout_seconds: float = HTTP_TIMEOUT_SECONDS
     max_response_bytes: int = HTTP_MAX_RESPONSE_BYTES
+    max_retries: int | None = None
+    before_attempt: Callable[[], None] | None = None
+
+    def _attempt_limit(self) -> int:
+        retries = HTTP_MAX_RETRIES if self.max_retries is None else self.max_retries
+        if isinstance(retries, bool) or not isinstance(retries, int) or retries < 0:
+            raise EconomicMdPublicSourceError(
+                EconomicMdFailureCodeV1.PUBLIC_MD_SOURCE_UNAVAILABLE.value,
+                "MAX_RETRIES_INVALID",
+            )
+        return retries + 1
 
     def _get_json(self, path: str, params: Mapping[str, str]) -> Mapping[str, Any]:
         path = assert_public_get_path_allowed_v1(path)
         url = _build_url(path, params)
         last_error: Optional[Exception] = None
-        attempts = HTTP_MAX_RETRIES + 1
-        for _attempt in range(attempts):
+        for _attempt in range(self._attempt_limit()):
+            if self.before_attempt is not None:
+                self.before_attempt()
             try:
                 status, body, _headers = self.fetcher(
                     url, self.timeout_seconds, self.max_response_bytes

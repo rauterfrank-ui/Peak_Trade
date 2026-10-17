@@ -1,0 +1,72 @@
+{
+  "BASELINE_SHA": "769d13663badb8daed64b32a0e3047cd198da900",
+  "BWP_STATUS": "PASS",
+  "CALL_ORDER": [
+    "launcher identity or wp-branch protected-diff check",
+    "explicit selection ceiling required",
+    "four inventory GETs counted by before_attempt",
+    "inventory attempt reconciliation",
+    "budgeted economic MD source constructed outside the writer",
+    "unchanged writer identity check, then Cap-2.1 eligible-set budget check on the forwarded source, then economic MD, then Cap-2.3 and Cap-2.4 publish"
+  ],
+  "CAUSAL_TRAVERSAL": {
+    "forward": "launcher budget -> inventory transport -> budgeted MD source -> unchanged writer -> cap21 eligible check -> economic MD -> cap23 selection -> cap24 publish -> later pretrade and 29P consume BoundInstrument",
+    "reverse": "29P common-epoch handoff and live-account binding require the published Cap-2.4 BoundInstrument; that publish remains owned by the unchanged writer",
+    "transitive": "protected path list includes the writer; budget state now travels on the Economic-MD source and the unprotected Cap-2.1 to Cap-2.3 persist function"
+  },
+  "CHANGED_FILES": [
+    "scripts/ops/run_current_productive_policy_governed_live_c1_pre_external_convergence_v1.py",
+    "src/ops/current_productive_eea_universe_inventory_acquisition_v1/transport_v1.py",
+    "src/ops/economic_md_input_producer_v1/public_md_source_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_selection_network_budget_v1.py",
+    "tests/ops/test_current_productive_selection_network_budget_v1.py"
+  ],
+  "CURRENT_GRAPH_STATUS": "STALE_REFERENCE_ONLY_CODE_TRAVERSAL_AUTHORITATIVE",
+  "DOUBLE_PLAY_CHANGED": false,
+  "EXECUTION_WORKTREE": "/Users/frnkhrz/Peak_Trade/.worktrees/bwp_live_productive_unblock_v1",
+  "FINANCIAL_GUARANTEE": "NONE",
+  "GHV_ARTIFACT_PATH": "evidence/ops/wp_r2b_r4_presentation_retirement_v1/20261016T043611Z_r4_final/composed_forensic_graph.v1.json",
+  "GHV_AUTHORITY": "NONE",
+  "GHV_BOUND_GIT_HEAD": "b6ffca1d3b39b3dd8814c7c795a8aa6e04bc177a",
+  "GHV_GRAPH_STATUS": "STALE",
+  "GHV_SNAPSHOT_ID": "cc0d6099a96201fc195f0b18a53ae324",
+  "GHV_STATUS": "REFERENCE_ONLY",
+  "IDENTITY_GATE_BYPASS": false,
+  "IDENTITY_GATE_SHA": "769d13663badb8daed64b32a0e3047cd198da900",
+  "IDENTITY_GATE_STATUS": "PASS",
+  "IDENTITY_INVARIANT": "HEAD must equal origin/main and the protected-path diff must be empty. The gate function and the protected path tuple were not modified.",
+  "KEYCHAIN_ATTEMPTS": 0,
+  "LIVE_TRADING_AUTHORIZED": false,
+  "MASTER_V2_CHANGED": false,
+  "NETWORK_ATTEMPTS": 0,
+  "OFFLINE_REPROOF": {
+    "cap24_writer_tests": "PASS",
+    "economic_md_producer_tests": "10_PASS",
+    "eea_ssot_docs_token_test": "PREEXISTING_FAIL_UNMODIFIED_ATLAS",
+    "eea_to_cap24_behavior_tests": "PASS",
+    "execution_ladder_negative_identity_tests": "PASS",
+    "fresh_runtime_envelope_tests": "PREEXISTING_FAIL_UNMODIFIED_CALLER_MISSING_ECONOMIC_MD_SOURCE_AND_ATLAS_TOKEN",
+    "identity_baseline_contract_tests": "PASS",
+    "keychain_attempts": 0,
+    "network_attempts": 0,
+    "post_attempts": 0,
+    "ruff_check": "PASS",
+    "ruff_format": "PASS",
+    "selection_budget_tests": "14_PASS"
+  },
+  "POST_ATTEMPTS": 0,
+  "PRIOR_PINNED_DIFF_SHA256": "49bcb529ddb9161a13c3e718b8d8328e5c2120c33170d743df4ffe75ccf9db1b",
+  "PROTECTED_SURFACE_DIFF": "EMPTY",
+  "REMAINING_RISKS": [
+    "A feature-branch HEAD is not origin/main, so the unchanged full identity gate returns HEAD_NOT_AT_ORIGIN_MAIN until merge. The existing --wp-branch-evidence-run path still rejects a non-empty protected-surface diff.",
+    "GHV snapshot cc0d6099 is bound to b6ffca1d and is reference only.",
+    "Unmodified baseline tests test_ssot_docs_once_present fail on atlas token absence. They are outside this diff.",
+    "Productive read-only execution remains a separate Owner GO. This change does not authorize live trading."
+  ],
+  "REMEDIATION_VARIANT": "A",
+  "ROOT_CAUSE": "PROTECTED_CHAIN_SURFACE_DRIFT",
+  "ROOT_CAUSE_DETAIL": "The pinned selection-budget diff edited current_productive_cap24_selection_state_canonical_writer_v1.py. That path is a member of PROTECTED_CURRENT_PRODUCTIVE_29P_CHAIN_SURFACE_PATHS. assert_current_productive_29p_execution_identity_v1 diffs those paths against origin/main and fails closed before inventory GET, economic MD, and publish.",
+  "VARIANT_B": "NOT_USED",
+  "schema": "BWP_CURRENT_29P_IDENTITY_GATE_REMEDIATION_V1"
+}

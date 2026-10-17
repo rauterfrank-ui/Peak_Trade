@@ -10,7 +10,7 @@ import hashlib
 import json
 import socket
 from dataclasses import dataclass
-from typing import Any, Mapping, Protocol
+from typing import Any, Callable, Mapping, Protocol
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, urlparse
 from urllib.request import ProxyHandler, Request, build_opener
@@ -70,12 +70,14 @@ class UrllibEeaPublicUniverseGetTransportV1:
         *,
         timeout_seconds: float = READ_TIMEOUT_SECONDS,
         connect_timeout_seconds: float = CONNECT_TIMEOUT_SECONDS,
+        before_attempt: Callable[[], None] | None = None,
     ) -> None:
         self.timeout_seconds = float(timeout_seconds)
         self.connect_timeout_seconds = float(connect_timeout_seconds)
         self.request_count = 0
         self.methods_used: list[str] = []
         self.venue_live_contact = False
+        self._before_attempt = before_attempt
 
     def get(self, *, path: str, query: Mapping[str, str]) -> EeaPublicGetResultV1:
         if self.request_count >= 4:
@@ -89,6 +91,8 @@ class UrllibEeaPublicUniverseGetTransportV1:
             headers={"Accept": "application/json", "User-Agent": USER_AGENT},
         )
         opener = build_opener(ProxyHandler({}))
+        if self._before_attempt is not None:
+            self._before_attempt()
         body = b""
         status = 0
         error_class = ""
