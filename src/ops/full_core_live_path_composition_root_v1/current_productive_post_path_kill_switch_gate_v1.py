@@ -8,12 +8,19 @@ process working directory.
 
 Decision semantics (fail-closed):
 
+- ``PEAK_KILL_SWITCH=1`` emergency deny      -> DENY (no state file and no
+                                               risk-reduction proof overrides it)
 - env path override set                      -> DENY
 - evidence not TRUSTED_PRESENT              -> DENY
 - state DISABLED (backtest-only enum value) -> DENY
 - state ACTIVE written by the canonical writer (schema ``version`` + ``saved_at``)
-                                            -> ALLOW
+  AND carrying a verified recovery attestation (HMAC bound to the signed journal
+  REQUESTED/COMPLETED pair, last transition in the journal)
+                                            -> ALLOW (kill-switch only; every other
+                                               POST gate still applies)
 - state ACTIVE without the writer schema    -> DENY
+- state ACTIVE without verified attestation -> DENY (forged, copied, restored or
+                                               superseded ACTIVE files)
 - state KILLED / RECOVERING                 -> ALLOW only for a verified, fresh,
                                                envelope-bound risk-reduction proof
 - any other combination                     -> DENY
@@ -57,9 +64,11 @@ from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 imp
 from src.ops.gates.risk_gate import (
     _anchor_kill_switch_path,
     canonical_kill_switch_state_path,
+    kill_switch_emergency_env_deny,
     kill_switch_env_override_rejected,
     legacy_cwd_kill_switch_state_paths,
 )
+from src.risk_layer.kill_switch.recovery_attestation import verify_active_attestation_from_env
 
 CONTRACT_ID = "CURRENT_PRODUCTIVE_POST_PATH_KILL_SWITCH_GATE_V1"
 WRITER_SCHEMA_VERSION = "1.0"
@@ -77,6 +86,8 @@ DENY_SECONDARY_SIGNAL = "KILL_SWITCH_SECONDARY_PATH_DENY_SIGNAL"
 DENY_EVIDENCE_STALE = "KILL_SWITCH_EVIDENCE_STALE"
 DENY_ENV_OVERRIDE_REJECTED = "KILL_SWITCH_ENV_OVERRIDE_REJECTED"
 DENY_ACTIVE_NOT_CANONICAL_WRITER = "KILL_SWITCH_ACTIVE_NOT_WRITTEN_BY_CANONICAL_WRITER"
+DENY_ACTIVE_ATTESTATION_NOT_VERIFIED = "KILL_SWITCH_ACTIVE_ATTESTATION_NOT_VERIFIED"
+DENY_EMERGENCY_ENV = "KILL_SWITCH_EMERGENCY_ENV_DENY"
 MAX_KILL_SWITCH_EVIDENCE_AGE_SECONDS = 15.0
 MAX_FUTURE_SKEW_SECONDS = 1.0
 
@@ -104,6 +115,9 @@ class PostPathKillSwitchEvidenceV1:
     writer_schema_state: Optional[str] = None
     writer_saved_at: Optional[str] = None
     contract_id: str = CONTRACT_ID
+    emergency_env_deny: bool = True
+    active_attestation_verified: bool = False
+    active_attestation_reason: Optional[str] = None
 
 
 @dataclass(frozen=True)
@@ -131,20 +145,22 @@ def _secondary_candidate_paths_v1(primary: Path) -> tuple[Path, ...]:
     return tuple(out)
 
 
-def _read_writer_schema_v1(path: Path) -> tuple[Optional[str], Optional[str]]:
-    """(state, saved_at) when the file carries the canonical StatePersistence schema."""
+def _read_writer_schema_v1(
+    path: Path,
+) -> tuple[Optional[str], Optional[str], Optional[dict]]:
+    """(state, saved_at, payload) when the file carries the canonical StatePersistence schema."""
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, ValueError):
-        return None, None
+        return None, None, None
     if not isinstance(payload, dict) or payload.get("version") != WRITER_SCHEMA_VERSION:
-        return None, None
+        return None, None, None
     saved_at = str(payload.get("saved_at") or "").strip()
     try:
         datetime.fromisoformat(saved_at)
     except ValueError:
-        return None, None
-    return str(payload.get("state") or "").strip().upper() or None, saved_at
+        return None, None, None
+    return str(payload.get("state") or "").strip().upper() or None, saved_at, payload
 
 
 def read_post_path_kill_switch_evidence_v1(
@@ -156,7 +172,13 @@ def read_post_path_kill_switch_evidence_v1(
         if state_path is not None
         else resolve_post_path_kill_switch_state_path_v1()
     )
-    writer_state, writer_saved_at = _read_writer_schema_v1(primary)
+    writer_state, writer_saved_at, payload = _read_writer_schema_v1(primary)
+    attestation_verified = False
+    attestation_reason: Optional[str] = None
+    if writer_state == _STATE_ACTIVE and payload is not None:
+        check = verify_active_attestation_from_env(primary, payload)
+        attestation_verified = check.verified is True
+        attestation_reason = check.reason
     joined = read_durable_filegate_join_evidence_v1(state_path=str(primary))
     secondary_deny: list[str] = []
     for candidate in _secondary_candidate_paths_v1(primary):
@@ -176,6 +198,9 @@ def read_post_path_kill_switch_evidence_v1(
         env_override_rejected=kill_switch_env_override_rejected(),
         writer_schema_state=writer_state,
         writer_saved_at=writer_saved_at,
+        emergency_env_deny=kill_switch_emergency_env_deny(),
+        active_attestation_verified=attestation_verified,
+        active_attestation_reason=attestation_reason,
     )
 
 
@@ -199,6 +224,8 @@ def evaluate_post_path_kill_switch_v1(
 
     if evidence.contract_id != CONTRACT_ID:
         return _deny(f"{DENY_EVIDENCE_NOT_TRUSTED}:CONTRACT_MISMATCH")
+    if evidence.emergency_env_deny is not False or kill_switch_emergency_env_deny():
+        return _deny(DENY_EMERGENCY_ENV)
     if evidence.env_override_rejected is not False:
         return _deny(DENY_ENV_OVERRIDE_REJECTED)
     if evidence.evidence_status != _TRUSTED:
@@ -215,6 +242,11 @@ def evaluate_post_path_kill_switch_v1(
     if state == _STATE_ACTIVE and evidence.blocked is False:
         if evidence.writer_schema_state != _STATE_ACTIVE or not evidence.writer_saved_at:
             return _deny(DENY_ACTIVE_NOT_CANONICAL_WRITER)
+        if evidence.active_attestation_verified is not True:
+            return _deny(
+                DENY_ACTIVE_ATTESTATION_NOT_VERIFIED,
+                str(evidence.active_attestation_reason or "ACTIVE_ATTESTATION_ABSENT"),
+            )
         return PostPathKillSwitchAdmissionV1(
             decision=PostPathKillSwitchDecisionV1.ALLOW,
             reason_codes=("KILL_SWITCH_ACTIVE_TRUSTED",),
@@ -321,7 +353,9 @@ __all__ = [
     "PreSendSafetyGateV1",
     "DENY_BLOCKED",
     "DENY_BLOCKED_RISK_REDUCTION_NOT_PROVEN",
+    "DENY_ACTIVE_ATTESTATION_NOT_VERIFIED",
     "DENY_ACTIVE_NOT_CANONICAL_WRITER",
+    "DENY_EMERGENCY_ENV",
     "DENY_DISABLED_NOT_LIVE_STATE",
     "DENY_ENV_OVERRIDE_REJECTED",
     "DENY_EVIDENCE_NOT_TRUSTED",

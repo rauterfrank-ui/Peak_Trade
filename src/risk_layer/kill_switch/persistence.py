@@ -3,18 +3,35 @@
 Provides crash-safe state persistence using atomic writes.
 """
 
+import fcntl
 import json
 import logging
 import os
 import shutil
+import time
+from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Iterator, Optional
 
 from .state import KillSwitchState
 
 
 logger = logging.getLogger(__name__)
+
+_LOCK_POLL_SECONDS = 0.01
+
+
+class StateLockTimeoutError(RuntimeError):
+    """The process-exclusive state lock was not acquired in time."""
+
+
+def _fsync_dir(path: Path) -> None:
+    fd = os.open(str(path), os.O_RDONLY)
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
 
 
 class StatePersistence:
@@ -68,16 +85,19 @@ class StatePersistence:
         killed_at: Optional[datetime] = None,
         trigger_reason: Optional[str] = None,
         recovery_started_at: Optional[datetime] = None,
+        recovery: Optional[dict] = None,
     ):
         """Save current state to disk.
 
-        Uses atomic write pattern (tmp → rename) for crash safety.
+        Uses atomic write pattern (tmp → fsync → rename → dir fsync) for crash safety.
 
         Args:
             state: Current kill switch state
             killed_at: Timestamp when killed (if KILLED)
             trigger_reason: Reason for trigger (if KILLED)
             recovery_started_at: Timestamp when recovery started (if RECOVERING)
+            recovery: Request binding (RECOVERING) or attestation record (ACTIVE);
+                never contains the approval secret
         """
         data = {
             "state": state.name,
@@ -89,6 +109,8 @@ class StatePersistence:
             ),
             "version": "1.0",
         }
+        if recovery is not None:
+            data["recovery"] = dict(recovery)
 
         # Atomic write: tmp → rename
         tmp_file = self.state_file.with_suffix(".tmp")
@@ -109,6 +131,7 @@ class StatePersistence:
 
             # Atomic rename
             tmp_file.rename(self.state_file)
+            _fsync_dir(self.state_file.parent)
 
             self._logger.debug(f"State saved: {state.name}")
 
@@ -142,6 +165,32 @@ class StatePersistence:
         except Exception as e:
             self._logger.error(f"Failed to load state: {e}", exc_info=True)
             return None
+
+    @contextmanager
+    def exclusive_lock(self, timeout_seconds: float) -> Iterator[None]:
+        """Process-exclusive ``flock`` on the state directory itself (no lock file).
+
+        Bounded: raises :class:`StateLockTimeoutError` instead of waiting forever.
+        """
+        directory = self.state_file.parent
+        directory.mkdir(parents=True, exist_ok=True)
+        fd = os.open(str(directory), os.O_RDONLY)
+        try:
+            deadline = time.monotonic() + max(0.0, float(timeout_seconds))
+            while True:
+                try:
+                    fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                    break
+                except BlockingIOError:
+                    if time.monotonic() >= deadline:
+                        raise StateLockTimeoutError("KILL_SWITCH_STATE_LOCK_TIMEOUT") from None
+                    time.sleep(_LOCK_POLL_SECONDS)
+            try:
+                yield
+            finally:
+                fcntl.flock(fd, fcntl.LOCK_UN)
+        finally:
+            os.close(fd)
 
     def clear(self):
         """Clear saved state."""

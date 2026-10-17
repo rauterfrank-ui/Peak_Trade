@@ -126,7 +126,7 @@ def test_resolve_kill_switch_missing_file(tmp_path):
         ("KILLED", True),
         ("RECOVERING", True),
         ("ACTIVE", False),
-        ("DISABLED", False),
+        ("DISABLED", True),
     ],
 )
 def test_resolve_kill_switch_from_file(tmp_path, state, expected):
@@ -184,8 +184,14 @@ def test_kill_switch_should_block_trading_invalid_enum_fail_closed(tmp_path, mon
 
 def test_kill_switch_should_block_trading_file_active_no_block(tmp_path, monkeypatch):
     _canonical_state_file(monkeypatch, tmp_path, json.dumps({"state": "ACTIVE"}))
-    monkeypatch.setenv("PEAK_KILL_SWITCH", "1")
+    monkeypatch.delenv("PEAK_KILL_SWITCH", raising=False)
     assert kill_switch_should_block_trading(explicit_active=False) is False
+
+
+def test_kill_switch_emergency_env_blocks_even_with_active_file(tmp_path, monkeypatch):
+    _canonical_state_file(monkeypatch, tmp_path, json.dumps({"state": "ACTIVE"}))
+    monkeypatch.setenv("PEAK_KILL_SWITCH", "1")
+    assert kill_switch_should_block_trading(explicit_active=False) is True
 
 
 def test_kill_switch_env_override_to_active_file_blocks_and_never_redirects(tmp_path, monkeypatch):

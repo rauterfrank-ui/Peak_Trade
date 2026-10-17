@@ -267,8 +267,10 @@ python3 -m src.risk_layer.kill_switch.cli status
 # Trigger
 python3 -m src.risk_layer.kill_switch.cli trigger --reason "Maintenance" --confirm
 
-# Recover
-python3 -m src.risk_layer.kill_switch.cli recover --code "SECRET" --reason "Fixed"
+# Recover (approval code is prompted or read via --code-stdin, never argv)
+python3 -m src.risk_layer.kill_switch.cli recover --approved-by "operator" --reason "Fixed"
+# Complete after cooldown (ACTIVE is not a trading/POST authorization)
+python3 -m src.risk_layer.kill_switch.cli complete-recovery --approved-by "operator" --request-id "<id>"
 
 # Audit
 python3 -m src.risk_layer.kill_switch.cli audit --since 24h --limit 50

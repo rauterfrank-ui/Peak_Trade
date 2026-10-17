@@ -24,6 +24,9 @@ AUTHORIZATION_B5_B6_V1_V2 = (
 AUTHORIZATION_B6_LINUX_LEDGER_V5 = (
     AUTHORIZATION_B5_B6_V1_V2 + "+OWNER_GO=IMPLEMENT_B6_LINUX_LEDGER_ALLOWLIST_FIX_V5"
 )
+AUTHORIZATION_WP_B5_KILL_SWITCH_CLOSURE = (
+    "OWNER_IMPLEMENTATION_GO=WP_B5_KILL_SWITCH_SAFETY_AND_RECOVERY_CLOSURE"
+)
 NEW_FILE_BASE_BLOB = None
 
 # path -> (authorization, origin/main blob id or None for new file, content sha256)
@@ -49,9 +52,9 @@ AUTHORIZED_PROTECTED_SURFACE_CHANGES_V1: Mapping[str, tuple[str, Optional[str], 
         "5b2f6237f733b35f50d3e37f0f9991645db0426c6d50b5a75bce1e6184574f9d",
     ),
     "src/ops/full_core_live_path_composition_root_v1/current_productive_post_path_kill_switch_gate_v1.py": (
-        AUTHORIZATION_B5_B6_V1_V2,
-        NEW_FILE_BASE_BLOB,
-        "92899a48c8b2e56c10e86b1d2e555f17ed5a63b9997cc31ff5f9aa003767017a",
+        AUTHORIZATION_WP_B5_KILL_SWITCH_CLOSURE,
+        "9fb2729bff6cf8f63d9ad04cf1be93d236e3f022",
+        "f95a36596d081ca9ce0c72c25c7bb3ea30ab53c094db109da6d35ac42969f482",
     ),
     "src/ops/full_core_live_path_composition_root_v1/current_productive_risk_reduction_venue_proof_v1.py": (
         AUTHORIZATION_B5_B6_V1_V2,

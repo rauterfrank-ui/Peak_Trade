@@ -13,7 +13,10 @@ import pytest
 
 from src.ops.gates.risk_gate import kill_switch_should_block_trading
 from src.risk_layer.kill_switch import KillSwitch, __all__ as KILL_SWITCH_PUBLIC_API
-from tests.ops._post_path_safety_fixtures_v1 import isolate_kill_switch_state_root_v1
+from tests.ops._post_path_safety_fixtures_v1 import (
+    isolate_kill_switch_state_root_v1,
+    set_kill_switch_test_approval_env_v1,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 TRIGGER_PACKAGE = "src.risk_layer.kill_switch.triggers"
@@ -74,5 +77,6 @@ def test_filegate_reader_and_cli_writer_remain_the_durable_path(
     assert ks.trigger("KS_THIN_01_contract", triggered_by="manual_cli") is True
     assert path.is_file()
     assert kill_switch_should_block_trading(explicit_active=False) is True
-    assert ks.request_recovery(approved_by="operator") is True
+    code = set_kill_switch_test_approval_env_v1(monkeypatch)
+    assert ks.request_recovery(approved_by="operator", approval_code=code) is True
     assert kill_switch_should_block_trading(explicit_active=False) is True

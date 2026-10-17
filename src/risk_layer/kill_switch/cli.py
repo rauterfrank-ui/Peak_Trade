@@ -6,24 +6,46 @@ Commands:
     - status: Show current status
     - trigger: Manually trigger kill switch
     - recover: Request recovery
+    - complete-recovery: Complete an authorized recovery after cooldown
     - audit: Show audit trail
     - health: Check system health
+
+The approval code is never accepted via argv. It is read with ``getpass`` from
+the terminal or, with ``--code-stdin``, as one line from stdin. The expected code
+comes from the environment variable named by ``approval_code_env``.
+
+ACTIVE means only "kill-switch recovery completed". It never authorizes live
+trading, orders or a venue POST; every other gate stays independent.
+
+Exit codes:
+    0 success
+    1 configuration / unexpected error
+    2 usage error (argparse, e.g. a rejected ``--code`` argument)
+    3 denied (authorization, state, request binding, cooldown, journal)
+    4 KILL journaled but the state write was blocked by the state lock
+    5 KILL could not be made durable at all
 """
 
 import argparse
+import getpass
 import logging
 import os
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 # Add src to path if running as script
 if __name__ == "__main__":
     sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent))
 
-from src.risk_layer.kill_switch import KillSwitch, load_config, get_approval_code
+from src.risk_layer.kill_switch import KillSwitch, load_config
 from src.risk_layer.kill_switch.audit import AuditTrail
+from src.risk_layer.kill_switch.core import KillSwitchKillFailedError, KillSwitchKillPendingError
+from src.risk_layer.kill_switch.recovery_attestation import (
+    JournalError,
+    TransitionJournal,
+)
 from src.risk_layer.kill_switch.exchange_probe import (
     is_exchange_probe_disabled,
     probe_exchange_http_public,
@@ -40,6 +62,28 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 _EXCHANGE_CONNECTED_ENV = "PEAK_KILL_SWITCH_EXCHANGE_CONNECTED"
+
+EXIT_OK = 0
+EXIT_ERROR = 1
+EXIT_USAGE = 2
+EXIT_DENIED = 3
+EXIT_KILL_PENDING = 4
+EXIT_KILL_FAILED = 5
+
+ACTIVE_IS_NOT_TRADING_AUTHORIZATION = (
+    "ACTIVE = kill-switch recovery completed. It is NOT a live-trading, order or "
+    "venue-POST authorization; all other gates remain closed and independent."
+)
+
+
+def read_approval_code(args) -> Optional[str]:
+    """Approval code from stdin (``--code-stdin``) or an interactive prompt; never argv."""
+    if getattr(args, "code_stdin", False):
+        line = sys.stdin.readline()
+        return line.rstrip("\r\n") or None
+    if sys.stdin is not None and sys.stdin.isatty():
+        return getpass.getpass("Enter approval code: ") or None
+    return None
 
 
 def resolve_exchange_connected_for_health(cli_choice: str) -> Tuple[bool, Dict[str, Any]]:
@@ -110,6 +154,11 @@ def cmd_status(args, kill_switch: KillSwitch):
     print(f"│ Events:        {status['event_count']:<20} │")
 
     print("└────────────────────────────────────────┘")
+    if status.get("request_id"):
+        print(f"Recovery request id: {status['request_id']}")
+    if state == "ACTIVE":
+        print(ACTIVE_IS_NOT_TRADING_AUTHORIZATION)
+    return EXIT_OK
 
 
 def cmd_trigger(args, kill_switch: KillSwitch):
@@ -123,55 +172,95 @@ def cmd_trigger(args, kill_switch: KillSwitch):
         response = input("Are you sure? (type 'yes' to confirm): ")
         if response.lower() != "yes":
             print("Aborted.")
-            return
+            return EXIT_ERROR
 
-    # Trigger
-    success = kill_switch.trigger(reason, triggered_by="manual_cli")
-
-    if not success:
-        print("❌ Failed to trigger (already killed or disabled)")
-        return
     persist_path = kill_switch.persistence_path
     if not persist_path:
         raise RuntimeError("kill_switch trigger did not persist state")
+    try:
+        success = kill_switch.trigger(reason, triggered_by="manual_cli")
+    except KillSwitchKillPendingError:
+        print("🚨 KILL JOURNALED; state write blocked by the state lock.")
+        print(f"Every ACTIVE reader denies via the journal: {kill_switch.journal_path}")
+        print("Re-run 'trigger' to persist KILLED once the lock is free.")
+        return EXIT_KILL_PENDING
+    except KillSwitchKillFailedError:
+        print("❌ KILL could not be made durable (journal and state both failed).")
+        return EXIT_KILL_FAILED
+
+    if not success:
+        print("❌ Failed to trigger (disabled)")
+        return EXIT_KILL_FAILED
     print(f"🚨 KILL SWITCH TRIGGERED: {reason}")
     print("Trading is now BLOCKED.")
     print(f"Persisted state: {persist_path}")
+    return EXIT_OK
 
 
 def cmd_recover(args, kill_switch: KillSwitch):
-    """Request kill switch recovery."""
+    """Request kill switch recovery (KILLED → RECOVERING)."""
     reason = args.reason or "Recovery via CLI"
-
-    # Get approval code
-    code = args.code
-    if not code:
-        code = input("Enter approval code: ")
-
-    # Request recovery
-    success = kill_switch.request_recovery(
-        approved_by=args.approved_by or os.getenv("USER", "operator"),
-        approval_code=code,
-    )
-
-    if not success:
-        print("❌ Recovery request failed")
-        print("Possible reasons:")
-        print("  - Not in KILLED state")
-        print("  - Invalid approval code")
-        return
     persist_path = kill_switch.persistence_path
     if not persist_path:
         raise RuntimeError("kill_switch recovery did not persist state")
+
+    success = kill_switch.request_recovery(
+        approved_by=args.approved_by,
+        approval_code=read_approval_code(args),
+    )
+
+    if not success:
+        print(f"❌ Recovery request denied: {kill_switch.last_denial_reason}")
+        return EXIT_DENIED
     print("⏳ RECOVERY STARTED")
     print(f"Reason: {reason}")
+    print(f"Recovery request id: {kill_switch.pending_request_id}")
     print("Cooldown active. Use 'status' to check progress.")
     print(f"Persisted state: {persist_path} (RECOVERING still blocks trading)")
+    return EXIT_OK
+
+
+def cmd_complete_recovery(args, kill_switch: KillSwitch):
+    """Complete an authorized recovery (RECOVERING → ACTIVE) after cooldown."""
+    persist_path = kill_switch.persistence_path
+    if not persist_path:
+        raise RuntimeError("kill_switch completion requires durable state")
+
+    success = kill_switch.complete_recovery(
+        approved_by=args.approved_by,
+        approval_code=read_approval_code(args),
+        request_id=args.request_id,
+    )
+    if not success:
+        print(f"❌ Recovery completion denied: {kill_switch.last_denial_reason}")
+        return EXIT_DENIED
+    print("✅ KILL SWITCH RECOVERY COMPLETED")
+    print(ACTIVE_IS_NOT_TRADING_AUTHORIZATION)
+    print(f"Persisted state: {persist_path}")
+    print(f"Audit journal: {kill_switch.journal_path}")
+    return EXIT_OK
 
 
 def cmd_audit(args, config: dict):
-    """Show audit trail."""
-    audit_dir = config.get("kill_switch", {}).get("audit_dir", "data/kill_switch/audit")
+    """Show audit trail (durable transition journal first, then legacy daily files)."""
+    from src.ops.gates.risk_gate import canonical_kill_switch_state_path
+    from src.risk_layer.kill_switch.recovery_attestation import journal_path_for_state_file
+
+    journal = TransitionJournal(journal_path_for_state_file(canonical_kill_switch_state_path()))
+    print(f"\n📒 TRANSITION JOURNAL: {journal.path}")
+    try:
+        journal_events = journal.read_events()
+    except JournalError as exc:
+        print(f"❌ Journal unreadable ({exc}); every ACTIVE reader denies.")
+        return EXIT_DENIED
+    for event in journal_events[-args.limit :]:
+        print(
+            f"{event.get('timestamp', ''):<27} {event.get('kind', ''):<19} "
+            f"{event.get('new_state', ''):<11} {event.get('approved_by') or event.get('triggered_by') or ''} "
+            f"{event.get('request_id') or ''} {event.get('reason_code') or ''}"
+        )
+
+    audit_dir = str(journal.path.parent)
     audit = AuditTrail(audit_dir)
 
     # Parse time filters
@@ -192,8 +281,8 @@ def cmd_audit(args, config: dict):
     events = audit.get_events(since=since, limit=args.limit)
 
     if not events:
-        print("No audit events found.")
-        return
+        print("No legacy audit events found.")
+        return EXIT_OK
 
     print(f"\n📋 AUDIT TRAIL ({len(events)} events)\n")
     print(f"{'Timestamp':<20} {'Previous':<12} {'New State':<12} {'Triggered By':<15} Reason")
@@ -215,6 +304,7 @@ def cmd_audit(args, config: dict):
     print(f"  Total events: {stats['total_events']}")
     print(f"  Total files: {stats['total_files']}")
     print(f"  Total size: {stats['total_size_mb']:.2f} MB")
+    return EXIT_OK
 
 
 def cmd_health(args, config: dict):
@@ -276,9 +366,23 @@ def main():
 
     # Recover command
     recover_parser = subparsers.add_parser("recover", help="Request recovery")
-    recover_parser.add_argument("--code", help="Approval code")
     recover_parser.add_argument("--reason", help="Reason for recovery")
-    recover_parser.add_argument("--approved-by", help="Approver name")
+    recover_parser.add_argument("--approved-by", required=True, help="Approver identity")
+    recover_parser.add_argument(
+        "--code-stdin", action="store_true", help="Read the approval code from stdin"
+    )
+
+    complete_parser = subparsers.add_parser(
+        "complete-recovery",
+        help="Complete an authorized recovery after cooldown (not a trading authorization)",
+    )
+    complete_parser.add_argument("--approved-by", required=True, help="Approver identity")
+    complete_parser.add_argument(
+        "--request-id", required=True, help="Recovery request id printed by 'recover'"
+    )
+    complete_parser.add_argument(
+        "--code-stdin", action="store_true", help="Read the approval code from stdin"
+    )
 
     # Audit command
     audit_parser = subparsers.add_parser("audit", help="Show audit trail")
@@ -316,34 +420,36 @@ def main():
         return 1
 
     # Initialize kill switch for most commands
-    if args.command in ["status", "trigger", "recover"]:
+    if args.command in ["status", "trigger", "recover", "complete-recovery"]:
         try:
             kill_switch = KillSwitch(kill_switch_config, logger=logger)
         except Exception as e:
             logger.error(f"Failed to initialize kill switch: {e}")
-            return 1
+            return EXIT_ERROR
 
     # Execute command
     try:
         if args.command == "status":
-            cmd_status(args, kill_switch)
+            rc = cmd_status(args, kill_switch)
         elif args.command == "trigger":
-            cmd_trigger(args, kill_switch)
+            rc = cmd_trigger(args, kill_switch)
         elif args.command == "recover":
-            cmd_recover(args, kill_switch)
+            rc = cmd_recover(args, kill_switch)
+        elif args.command == "complete-recovery":
+            rc = cmd_complete_recovery(args, kill_switch)
         elif args.command == "audit":
-            cmd_audit(args, config)
+            rc = cmd_audit(args, config)
         elif args.command == "health":
-            cmd_health(args, config)
+            rc = cmd_health(args, config)
         else:
             parser.print_help()
-            return 1
+            return EXIT_ERROR
 
-        return 0
+        return EXIT_OK if rc is None else int(rc)
 
     except Exception as e:
         logger.error(f"Command failed: {e}", exc_info=True)
-        return 1
+        return EXIT_ERROR
 
 
 if __name__ == "__main__":

@@ -38,7 +38,8 @@ Usage:
 Commands:
     status              Show current kill switch status
     trigger [reason]    Trigger kill switch (emergency stop)
-    recover             Request recovery (requires approval code)
+    recover             Request recovery (approval code typed at the prompt)
+    complete-recovery ID  Complete recovery after cooldown (not a trading authorization)
     audit [--since X]   Show audit trail
     health              Check system health
 
@@ -56,7 +57,7 @@ Examples:
     ./kill_switch_ctl.sh audit --since 24h
 
 Environment Variables:
-    KILL_SWITCH_APPROVAL_CODE    Approval code for recovery
+    KILL_SWITCH_APPROVAL_CODE    Expected approval code (the code itself is typed at the prompt)
 
 EOF
 }
@@ -89,38 +90,46 @@ cmd_trigger() {
 }
 
 cmd_recover() {
-    echo -e "${YELLOW}Starting Kill Switch Recovery...${NC}\n"
+    echo -e "${YELLOW}Starting Kill Switch Recovery Request...${NC}\n"
 
-    # Check if approval code is in environment
+    # The expected code must be present in the environment; the provided code is
+    # typed at the prompt (never passed via argv).
     if [ -z "${KILL_SWITCH_APPROVAL_CODE:-}" ]; then
         echo -e "${RED}Error: KILL_SWITCH_APPROVAL_CODE not set in environment${NC}"
-        echo ""
-        echo "Set it with:"
-        echo "  export KILL_SWITCH_APPROVAL_CODE='your_code_here'"
         exit 1
     fi
 
-    # Get operator name
     OPERATOR="${USER:-operator}"
-
-    # Get reason
     read -p "Reason for recovery: " reason
     reason="${reason:-Recovery via ops script}"
 
     echo ""
-    echo -e "${YELLOW}Requesting recovery...${NC}"
     "$PT" -m src.risk_layer.kill_switch.cli recover \
-        --code "$KILL_SWITCH_APPROVAL_CODE" \
         --reason "$reason" \
         --approved-by "$OPERATOR"
 
     echo ""
-    echo -e "${GREEN}Recovery process started.${NC}"
-    echo ""
     echo "Next steps:"
-    echo "  1. Wait for cooldown period (5 minutes)"
+    echo "  1. Wait for the cooldown period"
     echo "  2. Monitor status: $(basename "$0") status"
-    echo "  3. System will gradually restart with reduced position limits"
+    echo "  3. Complete: $(basename "$0") complete-recovery <request-id>"
+    echo "Nothing completes automatically. ACTIVE is not a trading authorization."
+}
+
+cmd_complete_recovery() {
+    local request_id="${1:-}"
+    if [ -z "$request_id" ]; then
+        echo -e "${RED}Error: request id required (printed by 'recover' and 'status')${NC}"
+        exit 1
+    fi
+    if [ -z "${KILL_SWITCH_APPROVAL_CODE:-}" ]; then
+        echo -e "${RED}Error: KILL_SWITCH_APPROVAL_CODE not set in environment${NC}"
+        exit 1
+    fi
+    OPERATOR="${USER:-operator}"
+    "$PT" -m src.risk_layer.kill_switch.cli complete-recovery \
+        --approved-by "$OPERATOR" \
+        --request-id "$request_id"
 }
 
 cmd_audit() {
@@ -159,6 +168,10 @@ main() {
             ;;
         recover)
             cmd_recover
+            ;;
+        complete-recovery)
+            shift
+            cmd_complete_recovery "$@"
             ;;
         audit)
             shift

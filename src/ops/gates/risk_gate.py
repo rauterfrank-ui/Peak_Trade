@@ -19,8 +19,16 @@ KILL_SWITCH_STATE_PATH_ENV_VARS = (
 )
 
 _KILL_SWITCH_STATE_ROOT = Path(__file__).resolve().parents[3]
-_KILL_SWITCH_BLOCKING_STATES = frozenset({"KILLED", "RECOVERING"})
-_KILL_SWITCH_NON_BLOCKING_STATES = frozenset({"ACTIVE", "DISABLED"})
+# DISABLED is backtest-only and never written by the durable writer: a persisted
+# DISABLED file must not neutralize a kill.
+_KILL_SWITCH_BLOCKING_STATES = frozenset({"KILLED", "RECOVERING", "DISABLED"})
+_KILL_SWITCH_NON_BLOCKING_STATES = frozenset({"ACTIVE"})
+EMERGENCY_DENY_ENV = "PEAK_KILL_SWITCH"
+
+
+def kill_switch_emergency_env_deny() -> bool:
+    """``PEAK_KILL_SWITCH=1`` is an operator emergency deny that no state file overrides."""
+    return os.getenv(EMERGENCY_DENY_ENV, "0") == "1"
 
 
 def kill_switch_state_path_from_env() -> Optional[str]:
@@ -108,9 +116,10 @@ def resolve_kill_switch_limit_from_state_file(
     Reads ``state`` from JSON (same contract as ``data/kill_switch/state.json``).
     Returns:
 
-    - ``True`` — state is ``KILLED`` or ``RECOVERING`` (trading should be denied).
-    - ``False`` — file exists, parsed, and state is a valid non-blocking enum
-      (``ACTIVE`` or ``DISABLED``).
+    - ``True`` — state is ``KILLED``, ``RECOVERING`` or ``DISABLED``, or an
+      ``ACTIVE`` state superseded by a later transition in the durable journal
+      (trading should be denied).
+    - ``False`` — file exists, parsed, and state is ``ACTIVE`` not superseded.
     - ``None`` — file missing, unreadable, or semantically invalid. Callers that
       treat the path as configured/expected must fail-closed rather than treat
       this as ACTIVE.
@@ -127,7 +136,11 @@ def resolve_kill_switch_limit_from_state_file(
     if state in _KILL_SWITCH_BLOCKING_STATES:
         return True
     if state in _KILL_SWITCH_NON_BLOCKING_STATES:
-        return False
+        from src.risk_layer.kill_switch.recovery_attestation import (
+            active_state_superseded_by_journal,
+        )
+
+        return bool(active_state_superseded_by_journal(path, data))
     return None
 
 
@@ -138,17 +151,19 @@ def kill_switch_should_block_trading(*, explicit_active: bool = False) -> bool:
     - If ``explicit_active`` is True (e.g. orchestrator constructor), block.
     - Else read state via :func:`canonical_kill_switch_state_path` and
       :func:`resolve_kill_switch_limit_from_state_file`.
-    - ``KILLED`` / ``RECOVERING`` block.
-    - Valid ``ACTIVE`` / ``DISABLED`` do not block from the file.
+    - ``PEAK_KILL_SWITCH=1`` always blocks; no state file (not even ACTIVE)
+      overrides this emergency deny. It is not a second persisted kill-state machine.
+    - ``KILLED`` / ``RECOVERING`` / ``DISABLED`` block.
+    - ``ACTIVE`` does not block from the file unless the durable journal shows a
+      later transition (e.g. a KILL whose state write is still pending).
     - Configured path missing, or an existing file that is unreadable or
       semantically invalid, fail-closed (block).
-    - When no state path is configured and the default file is absent,
-      ``PEAK_KILL_SWITCH=1`` remains an explicit operator deny overlay.
-      It is not a second persisted kill-state machine.
     - A set env path override blocks (never redirects).
     - A CWD-relative legacy state file that is not a valid non-blocking state blocks.
     """
     if explicit_active:
+        return True
+    if kill_switch_emergency_env_deny():
         return True
     if kill_switch_env_override_rejected():
         return True
@@ -166,7 +181,7 @@ def kill_switch_should_block_trading(*, explicit_active: bool = False) -> bool:
         return False
     if Path(path).is_file():
         return True
-    return os.getenv("PEAK_KILL_SWITCH", "0") == "1"
+    return False
 
 
 def evaluate_risk(limits: RiskLimits, ctx: RiskContext) -> RiskDecision:
