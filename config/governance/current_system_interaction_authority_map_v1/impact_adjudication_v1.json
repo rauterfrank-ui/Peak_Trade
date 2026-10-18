@@ -1,36 +1,23 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "9971ad8bcef222c6200d476c823de89820add7aa",
+  "base_sha": "6e3143bdfaa769e329c260c45a2fd58bfeb65dfc",
   "head_sha": "PENDING_PR_HEAD",
   "changed_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/source_v1.json",
-    "config/governance/current_system_census_graph_v1/README.md",
-    "config/governance/current_system_census_graph_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
-    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
-    "src/ops/peak_trade_ranking_matrix_policy_v1.py"
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "docs/ops/specs/MV2_DECISION_PATH_BOUNDARY_V1.md",
+    "tests/ops/test_current_system_interaction_authority_map_v1.py"
   ],
-  "changed_paths_sha256": "1a9c4972bafc96dabede832432f6cd92b1f8b740cf9059f711bb9c0acd7f20bc",
+  "changed_paths_sha256": "255640b7dda5322ac56e6c7bb71bfe65bde6302824381ede31e26bfaad07ccd1",
   "covered_candidate_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/source_v1.json",
-    "config/governance/current_system_census_graph_v1/README.md",
-    "config/governance/current_system_census_graph_v1/source_v1.json",
-    "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
-    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
-    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+    "docs/ops/specs/MV2_DECISION_PATH_BOUNDARY_V1.md"
   ],
   "evidence_refs": [
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "docs/ops/specs/MV2_DECISION_PATH_BOUNDARY_V1.md",
+    "scripts/ops/current_system_interaction_authority_map_v1.py"
   ],
-  "reason": "Navigation-review sync updates open record runbook_freshness_stamp to Master Runbook CURRENT_REVIEWED_AT_SHA=9971ad8bcef222c6200d476c823de89820add7aa, retracts the prior d26caea review-stamp sentence, and leaves map baseline_sha f91d2cf2fed95af09376c464489f0ca19734e7f7 unchanged. Derived authority_view was regenerated. No authority edge was added or removed. The NO_MAP_IMPACT record at origin/main 9971ad8bcef222c6200d476c823de89820add7aa stays historical and is not this diff's verdict. src/ops/peak_trade_ranking_matrix_policy_v1.py is docstring-only and outside candidate surfaces; ranking constants are unchanged. MAP_UPDATE_REQUIRED. AUTHORITY=NONE.",
-  "verdict": "MAP_UPDATE_REQUIRED",
+  "reason": "PR 7144 adds the declarative reference spec docs/ops/specs/MV2_DECISION_PATH_BOUNDARY_V1.md and lists that exact path in the candidate catalog. source_v1.json is unchanged. Derived views are unchanged. The inherited adjudication described a different navigation-sync diff and is not this diff. NO_MAP_IMPACT. AUTHORITY=NONE.",
+  "verdict": "NO_MAP_IMPACT",
   "selector_used_as_map_impact_authority": false
 }
