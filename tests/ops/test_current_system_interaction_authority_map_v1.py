@@ -186,6 +186,129 @@ def test_map_update_required_without_source_or_regen_fails() -> None:
     assert any("without regenerated derived views" in error for error in errors)
 
 
+def _bound_declaration(changed: list[str], verdict: str) -> dict:
+    return {
+        "authority_effect": "NONE",
+        "selector_used_as_map_impact_authority": False,
+        "verdict": verdict,
+        "reason": "bounded map-currency regression fixture",
+        "changed_paths": list(changed),
+        "changed_paths_sha256": MAP.paths_sha256(changed),
+        "evidence_refs": ["docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"],
+        "covered_candidate_paths": [],
+    }
+
+
+def test_missing_declaration_fails() -> None:
+    errors = MAP.evaluate_impact(
+        ["docs/ops/specs/MV2_DECISION_PATH_BOUNDARY_V1.md"],
+        None,
+        surfaces=[],
+        surfaces_exhaustive=False,
+        source_changed=False,
+        derived_clean=True,
+    )
+    assert errors == ["missing impact adjudication"]
+
+
+def test_hash_mismatch_fails() -> None:
+    changed = ["docs/ops/specs/MV2_DECISION_PATH_BOUNDARY_V1.md"]
+    declaration = _bound_declaration(changed, "NO_MAP_IMPACT")
+    declaration["changed_paths_sha256"] = "0" * 64
+    declaration["covered_candidate_paths"] = changed
+    errors = MAP.evaluate_impact(
+        changed,
+        declaration,
+        surfaces=changed,
+        surfaces_exhaustive=False,
+        source_changed=False,
+        derived_clean=True,
+    )
+    assert any("hash mismatch" in error for error in errors)
+
+
+def test_change_binding_mismatch_fails() -> None:
+    actual = ["docs/ops/specs/MV2_DECISION_PATH_BOUNDARY_V1.md"]
+    declaration = _bound_declaration(["README.md"], "NO_MAP_IMPACT")
+    errors = MAP.evaluate_impact(
+        actual,
+        declaration,
+        surfaces=actual,
+        surfaces_exhaustive=False,
+        source_changed=False,
+        derived_clean=True,
+    )
+    assert any("not change-bound" in error for error in errors)
+
+
+def test_stale_declaration_fails_against_new_diff() -> None:
+    stale = ["docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"]
+    new_diff = ["docs/ops/specs/MV2_DECISION_PATH_BOUNDARY_V1.md"]
+    declaration = _bound_declaration(stale, "MAP_UPDATE_REQUIRED")
+    errors = MAP.evaluate_impact(
+        new_diff,
+        declaration,
+        surfaces=new_diff,
+        surfaces_exhaustive=False,
+        source_changed=False,
+        derived_clean=True,
+    )
+    assert any("not change-bound" in error for error in errors)
+    assert any("hash mismatch" in error for error in errors)
+    assert any("without structured source update" in error for error in errors)
+
+
+def test_unlisted_docs_spec_no_map_impact_fails_closed() -> None:
+    changed = ["docs/ops/specs/MV2_DECISION_PATH_BOUNDARY_V1.md"]
+    declaration = _bound_declaration(changed, "NO_MAP_IMPACT")
+    errors = MAP.evaluate_impact(
+        changed,
+        declaration,
+        surfaces=["docs/ops/specs/SOME_OTHER_LISTED_SPEC.md"],
+        surfaces_exhaustive=False,
+        source_changed=False,
+        derived_clean=True,
+    )
+    assert any("undeterminable impact" in error for error in errors)
+
+
+def test_docs_only_listed_candidate_no_map_impact_passes() -> None:
+    changed = ["docs/ops/specs/MV2_DECISION_PATH_BOUNDARY_V1.md"]
+    declaration = _bound_declaration(changed, "NO_MAP_IMPACT")
+    declaration["covered_candidate_paths"] = changed
+    errors = MAP.evaluate_impact(
+        changed,
+        declaration,
+        surfaces=changed,
+        surfaces_exhaustive=False,
+        source_changed=False,
+        derived_clean=True,
+    )
+    assert errors == []
+
+
+def test_map_update_required_passes_only_with_source_and_derived() -> None:
+    changed = ["docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"]
+    declaration = _bound_declaration(changed, "MAP_UPDATE_REQUIRED")
+    errors = MAP.evaluate_impact(
+        changed,
+        declaration,
+        surfaces=changed,
+        surfaces_exhaustive=False,
+        source_changed=True,
+        derived_clean=True,
+    )
+    assert errors == []
+
+
+def test_pr_diff_map_currency_gate_passes() -> None:
+    changed = MAP.git_changed_paths(REPO, "origin/main")
+    source = "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+    assert source not in changed
+    errors = MAP.validate_repository(REPO, "origin/main")
+    assert errors == []
+
+
 def test_stale_or_missing_evidence_ref_fails() -> None:
     assert MAP.evidence_ref_status(REPO, "does/not/exist.py") == "MISSING"
     assert (
