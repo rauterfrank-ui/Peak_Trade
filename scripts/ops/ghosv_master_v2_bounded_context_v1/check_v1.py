@@ -269,9 +269,9 @@ def run_ghosv_master_v2_bounded_context_v1(
     runtime_evidence: dict[str, Any] | None = None,
     foreign_findings: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    token = "ABSENT"
+    reference_label = "ABSENT"
     if isinstance(contract_reference, dict):
-        token = _contract_reference_token(contract_reference)
+        reference_label = _contract_reference_token(contract_reference)
     sha = current_sha or ""
     tree = current_tree or ""
     if (
@@ -286,7 +286,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="REQUIRED_INPUT_ABSENT",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
         )
     required_report = ("current_sha", "current_tree", "edges", "baseline_edge_digest_sha256")
     required_contract = (
@@ -314,7 +314,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="REQUIRED_FIELD_ABSENT",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
         )
     if not _hex40(current_sha) or not _hex40(current_tree):
         return _rejection(
@@ -322,7 +322,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="OBJECT_ID_MALFORMED",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
         )
     text = contract_reference.get("contract_text")
     supplied_hash = contract_reference.get("contract_text_sha256")
@@ -335,7 +335,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="CONTRACT_TEXT_HASH_MISMATCH",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             contract_text_sha256=supplied_hash if isinstance(supplied_hash, str) else None,
         )
     if (
@@ -349,7 +349,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="CONTRACT_PROVENANCE_MISMATCH",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             contract_text_sha256=text_hash,
         )
     if current_sha != CURRENT_CODE_PIN or adapter_report.get("current_sha") != current_sha:
@@ -358,7 +358,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="CURRENT_SHA_MISMATCH",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             contract_text_sha256=text_hash,
         )
     if current_tree != CURRENT_TREE_PIN or adapter_report.get("current_tree") != current_tree:
@@ -367,7 +367,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="CURRENT_TREE_MISMATCH",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             contract_text_sha256=text_hash,
         )
     baseline_edges = adapter_report["edges"]
@@ -378,7 +378,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="BASELINE_DIGEST_MISMATCH",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             contract_text_sha256=text_hash,
             baseline_digest=baseline_digest,
         )
@@ -388,7 +388,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="BASELINE_COUNT_MISMATCH",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             contract_text_sha256=text_hash,
             baseline_digest=baseline_digest,
         )
@@ -399,7 +399,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="GHV_PROJECTION_ABSENT",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             contract_text_sha256=text_hash,
             baseline_digest=baseline_digest,
         )
@@ -417,7 +417,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="PROJECTION_DIGEST_MISMATCH",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             contract_text_sha256=text_hash,
             baseline_digest=baseline_digest,
             projection_digest=projection_digest,
@@ -431,7 +431,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="PROJECTION_COUNT_MISMATCH",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             contract_text_sha256=text_hash,
             baseline_digest=baseline_digest,
             projection_digest=projection_digest,
@@ -442,7 +442,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="WRITE_NOT_PERFORMED",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             contract_text_sha256=text_hash,
             baseline_digest=baseline_digest,
             projection_digest=projection_digest,
@@ -453,7 +453,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="POST_NOT_PERFORMED",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             contract_text_sha256=text_hash,
             baseline_digest=baseline_digest,
             projection_digest=projection_digest,
@@ -464,7 +464,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="PRODUCTIVE_IMPORT_NOT_PERFORMED",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             contract_text_sha256=text_hash,
             baseline_digest=baseline_digest,
             projection_digest=projection_digest,
@@ -479,7 +479,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="AGGREGATE_PASS_KEY_PRESENT",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             contract_text_sha256=text_hash,
             baseline_digest=baseline_digest,
             projection_digest=projection_digest,
@@ -490,7 +490,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="AUTHORITY_GRANT_REJECTED",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             authority_effect="CLAIM_REJECTED",
             contract_text_sha256=text_hash,
             baseline_digest=baseline_digest,
@@ -505,7 +505,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="LOCK_LEVEL_3_HOLDS",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             contract_text_sha256=text_hash,
             baseline_digest=baseline_digest,
             projection_digest=projection_digest,
@@ -520,7 +520,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="PILOT_DEPTH_EXCEEDED",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             contract_text_sha256=text_hash,
             baseline_digest=baseline_digest,
             projection_digest=projection_digest,
@@ -538,7 +538,7 @@ def run_ghosv_master_v2_bounded_context_v1(
                 reaction_detail="ACTIVE_NOT_PROVEN",
                 current_sha=sha,
                 current_tree=tree,
-                contract_reference=token,
+                contract_reference=reference_label,
                 contract_text_sha256=text_hash,
                 baseline_digest=baseline_digest,
                 projection_digest=projection_digest,
@@ -549,7 +549,7 @@ def run_ghosv_master_v2_bounded_context_v1(
                 reaction_detail="GRAPH_NEIGHBORHOOD_IS_NOT_RUNTIME",
                 current_sha=sha,
                 current_tree=tree,
-                contract_reference=token,
+                contract_reference=reference_label,
                 authority_effect="CLAIM_REJECTED",
                 contract_text_sha256=text_hash,
                 baseline_digest=baseline_digest,
@@ -561,7 +561,7 @@ def run_ghosv_master_v2_bounded_context_v1(
                 reaction_detail="WRITER_ABSENT",
                 current_sha=sha,
                 current_tree=tree,
-                contract_reference=token,
+                contract_reference=reference_label,
                 contract_text_sha256=text_hash,
                 baseline_digest=baseline_digest,
                 projection_digest=projection_digest,
@@ -572,7 +572,7 @@ def run_ghosv_master_v2_bounded_context_v1(
                 reaction_detail="MEMBERSHIP_NOT_DERIVED",
                 current_sha=sha,
                 current_tree=tree,
-                contract_reference=token,
+                contract_reference=reference_label,
                 contract_text_sha256=text_hash,
                 baseline_digest=baseline_digest,
                 projection_digest=projection_digest,
@@ -585,7 +585,7 @@ def run_ghosv_master_v2_bounded_context_v1(
                     reaction_detail="DYNAMIC_BINDING_NOT_PROMOTED",
                     current_sha=sha,
                     current_tree=tree,
-                    contract_reference=token,
+                    contract_reference=reference_label,
                     contract_text_sha256=text_hash,
                     baseline_digest=baseline_digest,
                     projection_digest=projection_digest,
@@ -597,7 +597,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="DIRECT_CALL_ABSENT_OR_AMBIGUOUS",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             contract_text_sha256=text_hash,
             baseline_digest=baseline_digest,
             projection_digest=projection_digest,
@@ -612,7 +612,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="EDGE_PROVENANCE_MISMATCH",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             contract_text_sha256=text_hash,
             baseline_digest=baseline_digest,
             projection_digest=projection_digest,
@@ -626,7 +626,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="PROJECTION_AUTHORITY_OR_REACHABILITY_FLAG",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             authority_effect="CLAIM_REJECTED",
             contract_text_sha256=text_hash,
             baseline_digest=baseline_digest,
@@ -652,7 +652,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             current_sha=sha,
             current_tree=tree,
             source_reference=_source_reference(owner_edge),
-            contract_reference=token,
+            contract_reference=reference_label,
             check_id="MV2-01-DECISION-OWNER",
             evidence_status=owner_status,
             coverage_status="PARTIAL",
@@ -671,7 +671,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             current_sha=sha,
             current_tree=tree,
             source_reference="GHV_PROJECTION:max_depth=1",
-            contract_reference=token,
+            contract_reference=reference_label,
             check_id="MV2-09-GRAPH-NEIGHBORHOOD",
             evidence_status=graph_status,
             coverage_status="PARTIAL",
@@ -690,7 +690,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             current_sha=sha,
             current_tree=tree,
             source_reference="OUTPUT:AGGREGATE_PASS_ABSENT",
-            contract_reference=token,
+            contract_reference=reference_label,
             check_id="MV2-10-NO-OVERALL-PASS",
             evidence_status="PROVEN",
             coverage_status="PARTIAL",
@@ -703,7 +703,9 @@ def run_ghosv_master_v2_bounded_context_v1(
             conflict_status="NONE",
             owner_go_required=False,
         ),
-        *_not_tested_findings(current_sha=sha, current_tree=tree, contract_reference=token),
+        *_not_tested_findings(
+            current_sha=sha, current_tree=tree, contract_reference=reference_label
+        ),
     ]
     reaction = None
     reaction_detail = None
@@ -739,7 +741,7 @@ def run_ghosv_master_v2_bounded_context_v1(
                 current_sha=sha,
                 current_tree=tree,
                 source_reference="FOREIGN:CONTRADICTION",
-                contract_reference=token,
+                contract_reference=reference_label,
                 check_id="INPUT-CONFLICT-OPEN",
                 evidence_status="UNRESOLVED",
                 coverage_status="PARTIAL",
@@ -769,7 +771,7 @@ def run_ghosv_master_v2_bounded_context_v1(
             reaction_detail="OUTPUT_AGGREGATE_PASS",
             current_sha=sha,
             current_tree=tree,
-            contract_reference=token,
+            contract_reference=reference_label,
             contract_text_sha256=text_hash,
             baseline_digest=baseline_digest,
             projection_digest=projection_digest,
