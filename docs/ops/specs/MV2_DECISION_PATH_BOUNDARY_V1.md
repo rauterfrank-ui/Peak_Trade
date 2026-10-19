@@ -81,7 +81,7 @@ Dieser Vertrag verschiebt keine bestehende Autorität. Unverändert bleiben:
 - Reconciliation. `RECONCILIATION_AUTHORITY_TRANSFER=False` in `src/ops/productive_reconciliation_runtime_binding_v1/master_v2_entry_reconciliation_contract_v1.py`. Owner: `ops.productive_reconciliation_runtime_binding_v1`.
 - Market-Data-Provenance. `ProductiveCycleCanonicalPriceProvenanceV1` in `src/ops/full_core_live_path_composition_root_v1/current_productive_canonical_price_provenance_v1.py` bindet den kanonischen Market Context nicht innerhalb von Master V2.
 - Safety. Kill-Switch-Leser: `ops.hard_facts_system_closure_v1.durable_kill_switch_mv2_binding_v1`. Exit-Policy-Owner: `ops.exit_policy_producer_binding_v1`.
-- CRS. `_wire_simulated_economics_crs_boundary_onto_replay_input_v1` ist propagation-only.
+- CRS. HISTORICAL_AUTHORIZATION: `_wire_simulated_economics_crs_boundary_onto_replay_input_v1` war propagation-only. CURRENT_IMPLEMENTATION: diese automatische produktive Wire ist entfernt. Fehlender Capital Context bleibt fail-closed. Die Offline-Simulation bleibt im historischen Adapter und im Wallclock-Builder isoliert. CURRENT_AUTHORITY=NONE. Keine neue Kapitalautorität.
 - Risk.
 - Capital.
 - Order Intent.
