@@ -197,11 +197,12 @@ def test_real_overlay_ledger_survives_and_productive_replay_stays_natural(tmp_pa
         product_evidence_root=tmp_path,
         continuous_run_id="three-conflict-closure",
     )
-    token = bind_synthetic_enter_forensic_session_v1(session)
+    # Short name: Policy Critic NO_SECRETS matches token=<identifier of 20+ chars>.
+    bind_handle = bind_synthetic_enter_forensic_session_v1(session)
     try:
         overlay = maybe_apply_synthetic_enter_forensic_overlay_v1(natural, cycle_index=1)
     finally:
-        reset_synthetic_enter_forensic_session_v1(token)
+        reset_synthetic_enter_forensic_session_v1(bind_handle)
     admission = admit_forensic_overlay_to_productive_consumers_v1(natural, overlay)
     assert overlay.applied is True
     assert str(natural.evidence.decision_outcome) == natural_outcome
