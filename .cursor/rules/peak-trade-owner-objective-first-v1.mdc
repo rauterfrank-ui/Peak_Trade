@@ -1,0 +1,47 @@
+---
+description: Permanent Owner-objective-first work rule for every Peak Trade agent session
+alwaysApply: true
+---
+
+# OWNER_OBJECTIVE_FIRST_V1
+
+AUTHORITY=OWNER_WORKFLOW_POLICY. RUNTIME_AUTHORIZATION_EFFECT=NONE.
+Complements governance, capital-safety, trading-logic immutability, causal work, direct-agent, runbook, and Python-runtime rules. Does not replace or weaken them. Grants no Owner-GO, no trading-semantics change, and no execution authority.
+
+Applies to every Peak Trade universe, component, tool, phase, and task. Parallel owner objectives stay separate. The last binding owner objective remains in force across steps and handoffs. Do not silently shrink it or replace it with a technical subgoal.
+
+## Pre-action gate
+
+Before recommending or performing a new measure, answer at the depth its risk and cost require:
+
+A. Which owner objective does it serve?
+B. Which concrete obstacle or requirement does it address?
+C. What checkable contribution should it make?
+D. What evidence supports that this contribution is achievable?
+E. Was the same measure already done or refuted?
+F. How will its domain success be judged afterward?
+
+If B, C, D, or F lack sufficient evidence: no implementation recommendation.
+If E is a repeat without new decision-relevant evidence: no new assignment.
+A measure is not justified by implementability alone. State unproven assumptions explicitly.
+
+## Result separation
+
+Keep these independent:
+
+```text
+TOOL_EXECUTION_STATUS
+TECHNICAL_CONTRACT_STATUS
+OWNER_OBJECTIVE_STATUS
+```
+
+PASS, IMPLEMENTED, FEASIBLE, TESTS_GREEN, REPORT_COMPLETE, AUDIT_COMPLETE, GRAPH_GENERATED, and GOVERNANCE_CLOSED are not owner-objective achievement. A new artifact is progress only when its contribution to the current owner objective is shown.
+
+## Binding constraints
+
+- Do not repeat a finished or refuted investigation under a new name.
+- A negative finding stays binding until its preconditions are shown to have changed. Do not recommend that measure again as sufficient.
+- Universe boundaries and owner locks stay in force. No guardian or tool gains authority from this rule.
+- Reuse existing results before new investigations, implementations, or audits.
+- If no step has a shown contribution to the owner objective, say so. Do not invent a next assignment.
+- Protected surfaces remain protected: Master V2, Double Play full owner lock, trading and risk logic, execution authorization, CURRENT-FIRST safety limits.

@@ -1,23 +1,22 @@
 {
   "authority_effect": "NONE",
   "changed_paths": [
-    "config/governance/current_system_census_graph_v1/source_v1.json",
+    ".cursor/rules/README.md",
+    ".cursor/rules/peak-trade-owner-objective-first-v1.mdc",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json"
   ],
-  "changed_paths_sha256": "639a1948f8189f18f667c5f73acde3230ec88034498065a7cea7682a3c31f31c",
+  "changed_paths_sha256": "7f9dfd435df52e7a2b313ef58fa79268967d8b38349cf84989b41de024d19184",
   "covered_candidate_paths": [
-    "config/governance/current_system_census_graph_v1/source_v1.json"
+    ".cursor/rules/README.md",
+    ".cursor/rules/peak-trade-owner-objective-first-v1.mdc"
   ],
   "evidence_refs": [
-    "config/governance/current_system_census_graph_v1/source_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/loop_backflow_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/parameter_lineage_v1.md",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md"
+    ".cursor/rules/README.md",
+    ".cursor/rules/peak-trade-owner-objective-first-v1.mdc",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
   ],
-  "reason": "Der PR verändert ausschließlich den Census-Baseline-Pin und die zugehörige Impact-Deklaration. Der bereinigte Census-Körper bleibt unverändert. Es werden keine Census-Objekte, Relationen, IAM-Source-Bindings, Authority-Zuweisungen oder abgeleiteten Map-Views verändert.",
+  "reason": "Der Diff ändert nur die Always-Apply-Agentenregel Owner-Objective-First und ihren Indexeintrag. .cursor/rules/ ist eine gelistete Kandidatenfläche. source_v1.json, Census-Körper, Authority-Zuweisungen und abgeleitete Map-Views bleiben unverändert.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
