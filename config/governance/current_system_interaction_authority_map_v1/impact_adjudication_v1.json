@@ -1,31 +1,28 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "d3a1c1ae54b9dabc080379acd4565fabe75ba7eb",
-  "head_sha": "PENDING_PR_HEAD",
+  "base_sha": "b68252bd34ccae3e5bb782824360d17d189a4540",
+  "head_sha": "UNCOMMITTED_WORKTREE_COMMIT_GO_FALSE",
   "changed_paths": [
+    "config/governance/current_system_census_graph_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "config/governance/technical_canonical_wiring_authorization_v1.json",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "docs/ops/specs/MV2_DECISION_PATH_BOUNDARY_V1.md",
-    "scripts/ops/productive_historical_replay_adapter_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
-    "tests/ops/test_current_productive_mv2_crs_boundary_wiring_v1.py"
+    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+    "tests/ops/test_master_v2_three_conflict_closure_v1.py"
   ],
-  "changed_paths_sha256": "042cc43bbb200a5b59f1e394d72be0275ce6e1554b6a61774a8bc3a47f384d25",
+  "changed_paths_sha256": "07ef339c747cdcc3e9fa25a7bfcf3e8144e688baec8ff5a19579f7f9c9991559",
   "covered_candidate_paths": [
-    "config/governance/technical_canonical_wiring_authorization_v1.json",
-    "docs/ops/specs/MV2_DECISION_PATH_BOUNDARY_V1.md",
-    "scripts/ops/productive_historical_replay_adapter_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
-    "tests/ops/test_current_productive_mv2_crs_boundary_wiring_v1.py"
+    "config/governance/current_system_census_graph_v1/source_v1.json",
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+    "tests/ops/test_master_v2_three_conflict_closure_v1.py"
   ],
   "evidence_refs": [
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
-    "scripts/ops/current_system_interaction_authority_map_v1.py"
+    "config/governance/current_system_census_graph_v1/source_v1.json",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
+    "tests/ops/test_master_v2_three_conflict_closure_v1.py"
   ],
-  "reason": "The diff against origin/main updates source_v1.json and regenerates authority_view_v1.md because the automatic productive simulated CRS wire is removed. Derived views match the source. The same diff includes the wiring authorization, the MV2 decision-path spec, the historical replay adapter, the productive cycle, and the CRS boundary wiring test. Those paths are the candidate hits. MAP_UPDATE_REQUIRED. AUTHORITY=NONE. No new capital authority.",
+  "reason": "Declarative IAM split of Master-V2 decision owner and productive cycle entry, declarative Dynamic Scope state/cursor/binder roles in IAM and census, and the 29P join guard that keeps a forensic synthetic replay off productive capital, sizing, venue-plan, and execution. Derived landscape view regenerated. AUTHORITY=NONE. No new decision authority and no binder activation.",
   "verdict": "MAP_UPDATE_REQUIRED",
   "selector_used_as_map_impact_authority": false
 }
