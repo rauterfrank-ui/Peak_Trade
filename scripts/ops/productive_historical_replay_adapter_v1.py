@@ -17,7 +17,6 @@ from src.backtest.strategy_signal_binding_v1 import execute_configured_strategy_
 from src.core.config_simple import load_config
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
     _resolve_f1_m9_governed_seam_for_integrated_offline_replay_v1,
-    _wire_simulated_economics_crs_boundary_onto_replay_input_v1,
 )
 from trading.master_v2.canonical_market_context_v1 import CanonicalMarketContextV1, WarmupStatus
 from trading.master_v2.canonical_scope_initialization_v1 import ScopeInitializationPrerequisitesV1
@@ -220,6 +219,37 @@ def apply_productive_scope_prerequisites_v1(
     )
 
 
+def _wire_isolated_offline_simulated_economics_crs_boundary_v1(
+    replay_input: IntegratedOfflineReplayInputV1,
+    *,
+    instrument_id: str,
+) -> IntegratedOfflineReplayInputV1:
+    """Attach the existing simulated-economics CRS builder for offline replay only.
+
+    This function is not a productive capital source. It does not change the
+    builder calculation. Producer rejection leaves the replay input unchanged.
+    """
+    canonical_instrument_id = str(instrument_id or "").strip()
+    if not canonical_instrument_id:
+        return replay_input
+    from src.ops.wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1.simulated_economics_crs_boundary_binding_v1 import (
+        build_simulated_economics_crs_boundary_state_file_v1,
+    )
+
+    try:
+        boundary = build_simulated_economics_crs_boundary_state_file_v1(
+            instrument_id=canonical_instrument_id,
+        )
+    except ValueError:
+        return replay_input
+    if str(boundary.instrument_id or "").strip() != canonical_instrument_id:
+        return replay_input
+    return replace(
+        replay_input,
+        current_instrument_capital_risk_sizing_boundary_state_file=boundary,
+    )
+
+
 def apply_productive_historical_replay_bindings_v1(
     replay_input: IntegratedOfflineReplayInputV1,
     *,
@@ -227,7 +257,7 @@ def apply_productive_historical_replay_bindings_v1(
     instrument_id: str,
     context: CanonicalMarketContextV1,
 ) -> tuple[IntegratedOfflineReplayInputV1, ProductiveContextBindingReportV1]:
-    """Delegate CRS + G17/F1-M9 seam wiring to productive cycle authorities."""
+    """Bind offline simulated CRS locally. F1-M9 seam resolution stays on the cycle owner."""
     report = ProductiveContextBindingReportV1()
     typed_eligibility = evaluate_typed_volatility_binding_eligibility_v1(context)
     typed_blocks = collect_typed_volatility_binding_block_reasons_v1(context)
@@ -246,7 +276,7 @@ def apply_productive_historical_replay_bindings_v1(
     elif governed_seam is not None:
         report.g17_binding_complete = report.g17_binding_complete and True
 
-    wired = _wire_simulated_economics_crs_boundary_onto_replay_input_v1(
+    wired = _wire_isolated_offline_simulated_economics_crs_boundary_v1(
         replay_input,
         instrument_id=instrument_id,
     )
