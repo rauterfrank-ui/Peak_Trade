@@ -1,28 +1,23 @@
 {
   "authority_effect": "NONE",
-  "base_sha": "b68252bd34ccae3e5bb782824360d17d189a4540",
-  "head_sha": "UNCOMMITTED_WORKTREE_COMMIT_GO_FALSE",
   "changed_paths": [
     "config/governance/current_system_census_graph_v1/source_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
-    "tests/ops/test_master_v2_three_conflict_closure_v1.py"
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json"
   ],
-  "changed_paths_sha256": "07ef339c747cdcc3e9fa25a7bfcf3e8144e688baec8ff5a19579f7f9c9991559",
+  "changed_paths_sha256": "639a1948f8189f18f667c5f73acde3230ec88034498065a7cea7682a3c31f31c",
   "covered_candidate_paths": [
-    "config/governance/current_system_census_graph_v1/source_v1.json",
-    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
-    "tests/ops/test_master_v2_three_conflict_closure_v1.py"
+    "config/governance/current_system_census_graph_v1/source_v1.json"
   ],
   "evidence_refs": [
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "config/governance/current_system_census_graph_v1/source_v1.json",
-    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md",
-    "tests/ops/test_master_v2_three_conflict_closure_v1.py"
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/authority_view_v1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/interface_handoff_v1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/loop_backflow_v1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/parameter_lineage_v1.md",
+    "docs/governance/current_system_interaction_authority_map_v1/generated/system_landscape_v1.md"
   ],
-  "reason": "Declarative IAM split of Master-V2 decision owner and productive cycle entry, declarative Dynamic Scope state/cursor/binder roles in IAM and census, and the 29P join guard that keeps a forensic synthetic replay off productive capital, sizing, venue-plan, and execution. Derived landscape view regenerated. AUTHORITY=NONE. No new decision authority and no binder activation.",
-  "verdict": "MAP_UPDATE_REQUIRED",
-  "selector_used_as_map_impact_authority": false
+  "reason": "Der PR verändert ausschließlich den Census-Baseline-Pin und die zugehörige Impact-Deklaration. Der bereinigte Census-Körper bleibt unverändert. Es werden keine Census-Objekte, Relationen, IAM-Source-Bindings, Authority-Zuweisungen oder abgeleiteten Map-Views verändert.",
+  "selector_used_as_map_impact_authority": false,
+  "verdict": "NO_MAP_IMPACT"
 }
