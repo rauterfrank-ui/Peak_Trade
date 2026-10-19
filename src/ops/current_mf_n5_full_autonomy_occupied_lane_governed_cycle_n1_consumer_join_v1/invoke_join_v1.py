@@ -6,7 +6,7 @@ Does not bind Cap61, join a host, call V5, or POST.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from types import SimpleNamespace
@@ -321,6 +321,50 @@ def _s7_kwargs(
     }
 
 
+@dataclass(frozen=True)
+class ForensicOverlayProductiveAdmissionV1:
+    """Productive consumers stay on the pre-overlay replay.
+
+    A bound synthetic-enter overlay keeps its forensic record and does not
+    become the decision passed to 29P, capital, sizing, venue plan, or execution.
+    """
+
+    productive_replay: object
+    admits_synthetic_to_29p: bool
+    admits_synthetic_to_capital: bool
+    admits_synthetic_to_sizing: bool
+    admits_synthetic_to_venue_plan: bool
+    admits_synthetic_to_execution: bool
+    retains_forensic_record: bool
+
+
+def admit_forensic_overlay_to_productive_consumers_v1(
+    natural_replay: object,
+    overlay: object,
+) -> ForensicOverlayProductiveAdmissionV1:
+    applied = bool(getattr(overlay, "applied", False))
+    record = getattr(overlay, "record", None)
+    if applied:
+        return ForensicOverlayProductiveAdmissionV1(
+            productive_replay=natural_replay,
+            admits_synthetic_to_29p=False,
+            admits_synthetic_to_capital=False,
+            admits_synthetic_to_sizing=False,
+            admits_synthetic_to_venue_plan=False,
+            admits_synthetic_to_execution=False,
+            retains_forensic_record=record is not None,
+        )
+    return ForensicOverlayProductiveAdmissionV1(
+        productive_replay=getattr(overlay, "replay", natural_replay),
+        admits_synthetic_to_29p=False,
+        admits_synthetic_to_capital=False,
+        admits_synthetic_to_sizing=False,
+        admits_synthetic_to_venue_plan=False,
+        admits_synthetic_to_execution=False,
+        retains_forensic_record=False,
+    )
+
+
 def _finalize_portfolio_reservation_after_enter_join_v1(
     owner: PortfolioCapitalReservationBudgetOwnerV1 | None,
     *,
@@ -418,39 +462,42 @@ def _t2_from_s7(
 
         cycle_evidence_root = Path(str(s7_base.get("cycle_evidence_root") or ""))
         cycle_index = read_cycle_index_from_s5_evidence_root_v1(cycle_evidence_root)
+        natural_replay = replay
         overlay = maybe_apply_synthetic_enter_forensic_overlay_v1(
-            replay,
+            natural_replay,
             cycle_index=cycle_index,
             cycle_evidence_root=cycle_evidence_root if str(cycle_evidence_root) else None,
         )
-        replay = overlay.replay
+        # Cursor persist already happened inside compose, before this overlay.
+        # The admission below only selects the replay that productive consumers see.
+        admission = admit_forensic_overlay_to_productive_consumers_v1(natural_replay, overlay)
+        if overlay.applied and (
+            admission.admits_synthetic_to_29p
+            or admission.admits_synthetic_to_capital
+            or admission.admits_synthetic_to_sizing
+            or admission.admits_synthetic_to_venue_plan
+            or admission.admits_synthetic_to_execution
+            or admission.productive_replay is not natural_replay
+        ):
+            _fail(FAILURE_AUTHORITY, "synthetic_overlay_productive_admission")
+        productive_replay = admission.productive_replay
         if overlay.applied:
             flight_parent = (
                 append_flight_record_stage_v1(
                     stage="SYNTHETIC_OVERLAY_OUTPUT",
                     producer_symbol="maybe_apply_synthetic_enter_forensic_overlay_v1",
-                    consumer_symbol="join_current_productive_enter_live_29p_before_venue_plan_v1",
+                    consumer_symbol="forensic_synthetic_enter_evidence_ledger_v1",
                     parent_generation_id=flight_parent,
-                    replay=replay,
+                    replay=overlay.replay,
                     extra={
                         "natural_outcome_before_overlay": overlay.natural_outcome_before,
                         "synthetic_side": overlay.synthetic_side,
+                        "productive_decision_uses_natural_replay": True,
                     },
                 )
                 or flight_parent
             )
-        if overlay.applied:
-            evidence = getattr(replay, "evidence", None)
-            raw_outcome = getattr(evidence, "decision_outcome", "") if evidence is not None else ""
-            consumed_outcome = str(getattr(raw_outcome, "value", raw_outcome) or "").strip().lower()
-            invocation = replace(
-                invocation,
-                cycle_result=replace(
-                    invocation.cycle_result,
-                    replay=replay,
-                    decision_outcome=consumed_outcome,
-                ),
-            )
+        replay = productive_replay
         bound_epoch = str(common_epoch_decision_epoch or "").strip()
         epoch = bound_epoch if bound_epoch else _iso_utc(float(s7_base["observed_unix"]))
         portfolio_slot = None
@@ -465,7 +512,7 @@ def _t2_from_s7(
                 cycle_id=str(s7_base["cycle_id_prefix"]),
             )
         live_29p = join_current_productive_enter_live_29p_before_venue_plan_v1(
-            replay=replay,
+            replay=productive_replay,
             bound_instrument=bound,
             injected=live_29p_injected,
             decision_epoch=epoch,
@@ -501,12 +548,27 @@ def _t2_from_s7(
                 live_29p_first_blocker=str(live_29p.first_blocker or ""),
                 venue_plan_input_generation_id=live_29p_gen,
             )
-        # Classify from the post-overlay replay at the LIVE-29P join seam, not a stale
-        # pre-overlay cycle_result snapshot or a rebound artifact that may lag overlay.
-        decision_class = current_productive_decision_class_v1(replay)
+        # Classify the pre-overlay replay. A forensic synthetic replacement is evidence only.
+        decision_class = current_productive_decision_class_v1(productive_replay)
         master_decision = str(
-            getattr(getattr(replay, "evidence", None), "decision_outcome", "") or ""
+            getattr(getattr(productive_replay, "evidence", None), "decision_outcome", "") or ""
         )
+        if overlay.applied and decision_class == DECISION_ENTER:
+            result = SimpleNamespace(
+                runtime_cycle_count="1",
+                decision_result="OBSERVE_HOLD",
+                decision_execution_eligible=_FALSE,
+                master_v2_decision=master_decision or "observe",
+                venue_plan_status="DENY",
+                final_envelope_id="",
+                final_envelope_digest="",
+                permit_created=_FALSE,
+                post_count="0",
+                first_real_blocker="FORENSIC_SYNTHETIC_DECISION_NOT_PRODUCTIVE",
+                s7_invocation=invocation,
+            )
+            _dispatch.last_invocation = invocation  # type: ignore[attr-defined]
+            return result
         if decision_class == DECISION_ENTER:
             if str(live_29p.status or "") != STATUS_PASS:
                 result = SimpleNamespace(
@@ -525,17 +587,22 @@ def _t2_from_s7(
                 _dispatch.last_invocation = invocation  # type: ignore[attr-defined]
                 return result
             venue_plan_replay = live_29p.replay
-            if overlay.applied and venue_plan_replay is not None:
-                from src.ops.full_core_live_path_composition_root_v1.current_productive_synthetic_enter_forensic_v1 import (
-                    is_forensic_synthetic_enter_outcome_v1,
-                    reapply_forensic_synthetic_safety_reprojection_on_replay_v1,
+            if overlay.applied:
+                result = SimpleNamespace(
+                    runtime_cycle_count="1",
+                    decision_result="OBSERVE_HOLD",
+                    decision_execution_eligible=_FALSE,
+                    master_v2_decision=master_decision or "observe",
+                    venue_plan_status="DENY",
+                    final_envelope_id="",
+                    final_envelope_digest="",
+                    permit_created=_FALSE,
+                    post_count="0",
+                    first_real_blocker="FORENSIC_SYNTHETIC_DECISION_NOT_PRODUCTIVE",
+                    s7_invocation=invocation,
                 )
-
-                if is_forensic_synthetic_enter_outcome_v1(venue_plan_replay):
-                    venue_plan_replay = reapply_forensic_synthetic_safety_reprojection_on_replay_v1(
-                        venue_plan_replay,
-                        parent_generation_id=live_29p_gen,
-                    )
+                _dispatch.last_invocation = invocation  # type: ignore[attr-defined]
+                return result
             append_flight_record_stage_v1(
                 stage="VENUE_PLAN_INPUT",
                 producer_symbol="reapply_forensic_synthetic_safety_reprojection_on_replay_v1",

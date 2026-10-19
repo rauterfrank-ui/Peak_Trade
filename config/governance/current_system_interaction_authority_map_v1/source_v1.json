@@ -379,8 +379,8 @@
     {
       "id": "mv2_double_play",
       "tier": "FIRST_CLASS",
-      "role": "Semantic trading-decision universe (MV2+DP inseparable). Productive cycle calls integrated offline replay. Terminal outcomes include VALID_NO_TRADE_TERMINAL (NO_EXECUTABLE_DECISION/HOLD/observe; POST_COUNT=0; not execution failure) and EXECUTABLE_PRE_EXTERNAL (EXECUTABLE_VENUE_PLAN_BOUND with eligibility; still no POST in cycle).",
-      "canonical_owner_ref": "run_current_productive_master_v2_runtime_cycle_v1",
+      "role": "DECISION_OWNER=run_integrated_offline_trading_logic_replay_v1; PRODUCTIVE_CYCLE_ENTRY=run_current_productive_master_v2_runtime_cycle_v1; Semantic trading-decision universe (MV2+DP inseparable). Productive cycle calls integrated offline replay. Terminal outcomes include VALID_NO_TRADE_TERMINAL (NO_EXECUTABLE_DECISION/HOLD/observe; POST_COUNT=0; not execution failure) and EXECUTABLE_PRE_EXTERNAL (EXECUTABLE_VENUE_PLAN_BOUND with eligibility; still no POST in cycle). HISTORICAL_CANONICAL_OWNER_REF=run_current_productive_master_v2_runtime_cycle_v1.",
+      "canonical_owner_ref": "run_integrated_offline_trading_logic_replay_v1",
       "authority_class": "CANONICAL_AUTHORITY",
       "lifecycle": "CYCLE_CALLS_REPLAY_WITH_TERMINAL_OUTCOME_CLASSES",
       "status": "PARTIAL",
@@ -411,7 +411,8 @@
         "src/governance/master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1/__init__.py",
         "src/governance/master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1/__init__.py",
         "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/feature_regime_pipeline_v1.py",
-        "src/trading/master_v2/canonical_volatility_productive_runtime_cmc_typed_binding_v1.py"
+        "src/trading/master_v2/canonical_volatility_productive_runtime_cmc_typed_binding_v1.py",
+        "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
       ],
       "evidence_refs": [
         "src/ops/full_core_live_path_composition_root_v1/current_productive_f1_m9_canonical_durable_bootstrap_v1.py",
@@ -440,16 +441,17 @@
         "tests/governance/test_master_v2_double_play_evidence_input_plane_p4_l6_productive_seam_binding_v1.py",
         "tests/governance/test_master_v2_double_play_evidence_input_plane_p5_producer_productive_ingress_v1.py",
         "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/feature_regime_pipeline_v1.py",
-        "src/trading/master_v2/canonical_volatility_productive_runtime_cmc_typed_binding_v1.py"
+        "src/trading/master_v2/canonical_volatility_productive_runtime_cmc_typed_binding_v1.py",
+        "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
       ]
     },
     {
       "id": "dynamic_scope",
       "tier": "INTERMEDIATE",
-      "role": "REPRESENTATION=SUBDOMAIN; parent_domain=mv2_double_play. Distributed scope owners. Serialization adapter has no decision authority.",
-      "canonical_owner_ref": "ops.dynamic_scope_persistence_binding_v1",
+      "role": "REPRESENTATION=SUBDOMAIN; parent_domain=mv2_double_play; STATE_OWNER=trading.master_v2.double_play_state.RuntimeScopeState; PRODUCTIVE_RESTART_CARRIER=current_productive_sidestate_confirmation_cursor_v1; BINDER_ROLE=SERIALIZATION_CODEC_ADAPTER; BINDER_RUNTIME_ACTIVATED=false; CHECKPOINT_WRITER_NOT_ON_PRODUCTIVE_MASTER_V2_CYCLE=true. Distributed scope owners. Serialization adapter has no decision authority. HISTORICAL_CANONICAL_OWNER_REF=ops.dynamic_scope_persistence_binding_v1.",
+      "canonical_owner_ref": "trading.master_v2.double_play_state.RuntimeScopeState",
       "authority_class": "CANONICAL_AUTHORITY",
-      "lifecycle": "RESTART_PROVEN_DISTRIBUTED",
+      "lifecycle": "PRODUCTIVE_RESTART_CARRIER=current_productive_sidestate_confirmation_cursor_v1;BINDER_CHECKPOINT_WRITER_NOT_ON_PRODUCTIVE_CYCLE",
       "status": "PROVEN_CURRENT",
       "runbook_refs": [
         "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
@@ -457,11 +459,13 @@
       "contract_refs": [],
       "code_refs": [
         "src/ops/dynamic_scope_persistence_binding_v1/constants_v1.py",
-        "src/trading/master_v2/double_play_state.py"
+        "src/trading/master_v2/double_play_state.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py"
       ],
       "evidence_refs": [
         "src/ops/dynamic_scope_persistence_binding_v1/constants_v1.py",
-        "src/trading/master_v2/double_play_state.py"
+        "src/trading/master_v2/double_play_state.py",
+        "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py"
       ]
     },
     {
