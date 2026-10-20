@@ -141,6 +141,20 @@
       "record_surface_inside_source": "CHAT_ONLY",
       "architecture_ratified": false,
       "implemented": false
+    },
+    {
+      "source_id": "GUARDIAN_NETWORK_BLUEPRINT_V0_8_MARKDOWN",
+      "version": "V0.8",
+      "dated": "2026-10-20",
+      "provenance": "owner desktop original; stored with an extra .txt suffix so the bytes stay unedited; original filename retained in this field; nodewise supplement is inside this same file",
+      "original_filename": "Peak_Trade_Guardian_Network_Blueprint_V0_8_CURRENT_2026-10-20_NODEWISE_ERGAENZT.md",
+      "path": "docs/governance/gcc_architecture_preservation_v1/sources/Peak_Trade_Guardian_Network_Blueprint_V0_8_CURRENT_2026-10-20_NODEWISE_ERGAENZT.md.txt",
+      "sha256": "32c180b81488ec133214034265f588372854ea95e56c6ceee3dff8a16b1e6c07",
+      "byte_length": 101436,
+      "decision_status": "DRAFT / OWNER_REVIEW / NOT_RATIFIED",
+      "architecture_ratified": false,
+      "guardian_assignments": "NOT_RATIFIED",
+      "implemented": false
     }
   ],
   "preserved_concept_elements": [

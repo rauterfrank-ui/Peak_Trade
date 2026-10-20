@@ -1,0 +1,1576 @@
+# PEAK TRADE — GUARDIAN NETWORK
+## Konsolidierter Architektur-Blueprint V0.8 — CURRENT-Stand 20.10.2026
+
+**Dokumenttyp:** fortgeschriebener Architektur- und Umsetzungsfahrplan mit forensisch bewahrter V0.1–V0.6-Quelle.  
+**Status:** `DRAFT / OWNER_REVIEW`; **kein** neuer Architekturentscheid, keine Guardian-Ratifikation, kein Implementierungsauftrag.  
+**Technischer Bezug:** `origin/main` `60f0c0820396373ff77580fdf111626464436f2d` (PR #7153, Squash-Merge).  
+**Berichtsquelle:** vom Owner im Chat übergebener `SYSTEMWIDE_GUARDIAN_RESPONSIBILITY_AUDIT_V1` (READ_ONLY, keine Toolausführung); Aussagen daraus sind *berichtete Befunde*, keine hier unabhängig wiederholten CURRENT-Läufe.  
+**Gültigkeitsregel:** CURRENT-Code/Contracts/Runtime-Evidence + bindende Owner-Entscheidungen vor Maps, historischen Berichten und diesem Dokument. Bei Baseline-Drift: erneut prüfen.  
+
+> **Kurzfazit:** Das funktionale Zielbild einschließlich GCC ist bis zum konzeptionellen Fallablauf, Nachrichtentypen, Evidenzregeln, Schutzmodell und Negativtests weit entwickelt. **Nicht fertig** sind technische Systemgrenzen, Guardian-Zuordnungen, CURRENT-Werkzeug-Tripel, GCC-Vertragsratifikation, Transport/Authentisierung/Betrieb und Pilot/Implementierung. Die letzte Originalfassung V0.6 endet ausdrücklich mit `GCC_IMPLEMENTATION=NOT_STARTED`, `GUARDIAN_DOMAIN_RATIFICATION=NONE`. Die nachfolgenden READ_ONLY-Befunde ändern daran nichts.
+
+---
+
+## 0. Leseregeln, Quellenhierarchie und Änderungsprotokoll
+
+### 0.1 Was diese V0.8 leistet
+
+1. Stellt die **vollständige ursprüngliche PDF-Fassung V0.1–V0.6 (Kapitel 1–35)** als wortgetreue Text-Extraktion im Anhang bereit. Tabellen sind als extrahierter Layouttext erhalten; die PDF bleibt für exakte Seitengestaltung die visuelle Primärquelle.
+2. Übernimmt die **neue Untersuchungslage nach PR #7153** und dem systemweiten Guardian-Verantwortungsaudit, ohne aus offenen Fragen neue Gewissheiten zu machen.
+3. Definiert einen **konkreten, begrenzten nächsten Arbeitsablauf** mit Exit-Kriterien und separaten Owner-Entscheidungen.
+4. Entkoppelt vier verschiedene Dinge: **Untersuchungsbaseline ratifiziert** ≠ **fachliche Owner-Architektur gebunden** ≠ **technische Grenzen bewiesen** ≠ **Guardian-/GCC-Architektur ratifiziert**.
+
+### 0.2 Herkunft und Beweisstärke
+
+| Quelle | Verwendungszweck | Grenze |
+|---|---|---|
+| PDF „Guardian Network“, V0.1–V0.6, 21 Seiten, 18.–20.10.2026 | Primärquelle für Konzept und Kapitel 1–35 | Kein Runtime-/Tool-PASS; kein Repo-Nachweis |
+| PR #7153, Merge `60f0c082…` (Owner-Bericht) | Bewahrung von M1.5-Quellpaketen und Layer-1-Entscheidungen | Bewahrung/Untersuchungsbaseline, nicht technische Closure |
+| `SYSTEMWIDE_GUARDIAN_RESPONSIBILITY_AUDIT_V1`, Pin `60f0c082…` (Owner-Bericht) | Aktuelle Statusmatrix, offene Grenzen und Werkzeuglücken | Statisch; kein frischer GHV-/Graph-/GHOSV-Lauf; kein Datei-für-Datei-Fixpunkt |
+| Layer-1 Owner-Entscheidungen (laut Owner-Bericht auf main) | Verbindliche fachliche Klassifikationen und Schutzregeln | Keine automatische technische Grenz- oder Guardian-Ratifikation |
+| Ältere M1.5 A–G-Register, Nodewise und Map-Snapshots | Provenienz, Untersuchungsstand, offene Kandidaten | Historische Pins; niemals ohne Reproof zu CURRENT hochstufen |
+
+**PDF-SHA256:** `8d4ae7020b65d497b357c900dd7ec6aa8ae5cfdd4d3b56426772b39c6229b0dd`  
+**Neuer Blueprint-Status:** Redaktions-/Arbeitsentwurf; **nicht** in GitHub eingecheckt, nicht von Cursor geprüft, nicht Owner-ratifiziert.  
+**Abgrenzung:** Ein später erwähnter *V0.7-Entwurf* und sein abgelehnter Fünf-Guardian-Text gehören **nicht** zu der hier tatsächlich hochgeladenen V0.6-PDF. Die Ablehnung ist trotzdem als Owner-Entscheidung zu beachten.
+
+### 0.3 Vorrang bei älteren „Nächster Schritt“-Anweisungen
+
+Die Originalkapitel 15, 20.3, 23, 24 und 29 enthalten zeitgebundene Aufträge aus 18./19.10.2026. **Für den Arbeitsstand nach PR #7153 gilt Kapitel 8 dieses V0.8-Updates.** Historische Anweisungen bleiben im Anhang als Beweismaterial erhalten, sind aber keine aktuelle Arbeitsfreigabe. Die Konzeptvorgabe „ein Hauptwächter pro belegtem Universum“ ist ein **Zielprinzip**, keine Aussage über bereits existierende Wächter.
+
+---
+
+## 1. Status-Cockpit — wo stehen wir wirklich?
+
+| Achse | CURRENT-Status (gemäß übergebenem Audit) | Konsequenz |
+|---|---|---|
+| M1.5-Originalquellen | `INVENTORY_BASELINE_RATIFIED=true`; PR #7153 auf main | Quellbasis reproduzierbar bewahrt |
+| Systemweite technische Klassifikation | `M1.5_PARTIAL_UNRESOLVED` | Kein Vollständigkeits- oder Grenz-PASS |
+| Owner-feste Universumsidentitäten | **5**: Master V2, Execution, Self-Learning, Optimization, Market Intelligence | Fachlich fixiert, nicht technisch geschlossen |
+| Technisch geschlossene Universen | **0** | Membership, dynamische Pfade, Außenkanten offen |
+| Pre-Master-V2 | **1** gebundene Domänenzeile Cap21/22/23 | Nicht automatisch sechstes Universum |
+| Ursprüngliche Außenkandidaten | **14**, davon **0 bewiesen** | Kandidaten bleiben Kandidaten |
+| Weitere Owner-/Seam-Flächen | **22** im Audit | Nicht 22 zusätzliche Wächter |
+| Funktionale Unterbereiche | **36** identifiziert | Zähleinheit ≠ Guardian |
+| Inventargrenzen | **25** historische Kanten + **4** aktuell gelesene Kopplungen | Reachability/Activity überwiegend offen |
+| Guardian-Verantwortungszuweisungen | **0 nachgewiesen** | Kein ratifiziertes Guardian-Register |
+| Domänen-Tooltripel GHV/Graph/GHOSV | **0** vollständig CURRENT-geprüft | Kein fachliches Gesamt-PASS |
+| GCC | Zielbild/Prinzipien dokumentiert | `GCC_ARCHITECTURE_RATIFIED=false`, nicht implementiert |
+| Owner-Lock | `DOUBLE_PLAY_FULL_OWNER_LOCK=LEVEL_3` | Unverändert; technische Enforcement-Arbeit deferred |
+| Trading-/External-Effects | `POST_ALLOWED=false`, `EXTERNAL_EFFECT_AUTHORIZED=false` | Keine Ausführungserlaubnis |
+
+**Nicht verwechseln:** `N5_TARGET_STACK_COUNT=5` ist keine Guardian-Anzahl. Der **abgelehnte Fünf-Guardian-Entwurf** bleibt `REJECTED_BY_OWNER`. `FINAL_UNIVERSE_COUNT=NOT_EMITTED` trotz fünf fachlich fixierter Identitäten: das ist die noch nicht bewiesene *technische Gesamtklassifikation*, kein Widerspruch.
+
+### 1.1 Git-/Arbeitsmodell-Drift
+
+- `origin/main`: `60f0c0820396373ff77580fdf111626464436f2d`.
+- Lokaler Feature-HEAD laut Bericht: `ae25b0db8632890443a297253c32fbb5abe0f102`, **abweichend**.
+- 22 zusätzliche Runbook-Domänenzeilen im lokalen Arbeitsbaum; inhaltliche Layer-1-Entscheidungen auf main vorhanden, aber **lokaler Runbook-Stand nicht automatisch CURRENT**.
+- `scripts/ops/execution_guardian_binding_verifier_v1/` lokal untracked; **kein** origin/main-Beleg.
+- Kein Reset, Clean, Stash, Checkout oder ungefragtes Übernehmen lokaler Dateien.
+
+---
+
+## 2. Bindende fachliche Architektur — keine Guardian-Zuordnung
+
+| ID | Klassifikation | Was feststeht | Was offen bleibt |
+|---|---|---|---|
+| `U-MV2` | Owner-festes Architekturuniversum | Höchste systeminterne Instanz unter Human Owner | Vollständige technische Universumsgrenze, Guardian |
+| `U-EX` | Eigenständiges Architekturuniversum | Execution-only GHOSV vorhanden | Außengrenze, Wire-Send-/Host-/Send-Abgrenzung, Guardian |
+| `U-SL` | Eigenständiges Architekturuniversum | Learning-Trading-Authority `NONE` | Technische Membership, vollständige Toolchain, Guardian |
+| `U-OPT` | Eigenständiges Architekturuniversum | Von Self-Learning getrennt; produktive Authority `NONE` | Technische Envelope, Guardian |
+| `U-MI` | Eigenständiges Architekturuniversum | Trading-Authority `NONE` | Insbesondere technische Außengrenze `NOT_PROVEN` |
+| `D-PRE-MV2` | Gebundene Domäne vor Master V2 | Cap21 Governed Futures, Cap22 Ranking, Cap23 Selection | Kein eigener Universumsstatus festgelegt; Guardian offen |
+
+**Weitere bindende Klassen (keine eigenständigen Universen):**
+
+- `C-DP`: **Double Play — interner Funktionsbereich von Master V2**, gesamte CURRENT-Architektur und Handelslogik `LEVEL_3 / FULL OWNER LOCK`; Enforcement weiterhin aufgeschoben. `C-DS` liegt innerhalb Double Play.
+- `C-META`: Meta-Learning ist eine **Cross-Universe-Schnittstelle** Self-Learning ↔ Optimization, kein eigenständiges Universum.
+- `C-RC`: Research Corpus ist eine **vorläufige Layer-1-Offline-Fläche**; Zugehörigkeit ungeklärt.
+- `C-PB`: Portfolio-Budget ist ein **funktionaler Layer-1-Hauptbereich**, keine unabhängige Equity-Quelle und kein Universum.
+- `C-PERS`: Persistence ist eine **Cross-Universe-Single-Writer-/State-Invariante**, kein Universum.
+- `C-N5`: N5 ist eine **Five-Stack-Zielarchitektur**; `N5_ALL_FIVE_STACKS_ACTIVE=false`.
+- `C-FC`: Full-Core ist eine **technische Orchestrierungsfläche**, nicht das Gesamtsystem und nicht automatisch Decision-Owner.
+- Offline Backtest liegt außerhalb Master V2.
+
+**Schutzsemantik:** Owner-fest bedeutet nicht `GUARDIAN_ASSIGNED`; dokumentierte Code-/Runbook-Owner sind nicht automatisch Wächter. Cross-Universe-Schnittstellen dürfen keine fremde Fachsemantik erfinden.
+
+---
+
+## 3. Systemweite Bereichs- und Grenzinventur (Auditübernahme)
+
+### 3.1 Die 14 ursprünglichen Außenkandidaten
+
+| ID | Fläche / Anker | Auditlage |
+|---|---|---|
+| `ED-FULL-CORE` | Full-Core Live-Path-Komposition | technische Orchestrierung, keine POST-Autorität |
+| `ED-N5-HANDOFF` | N5 Handoff-Join | Decision-Consumer-Invokation deklariert verneint |
+| `ED-N5-ORCH` | Full-Autonomy-Orchestrator | keine Trading-Authority |
+| `ED-N5-COMPLETION` | N5 Completion | `FIVE_LANE_RUNTIME_CREATED`-Konflikt offen |
+| `ED-SELECTION-BINDING` | Cap24 Instrument-Binding | Cap23 bleibt Selection-Owner |
+| `ED-RECON` | Reconciliation-Admission | kein Authority-Transfer |
+| `ED-PRICE` | kanonische Preis-/Marktdatenprovenienz | eigener Owner vor Replay |
+| `ED-CURSOR` | SideState-/Confirmation-Cursor | kein Decision-Owner |
+| `ED-KILL-SWITCH` | Kill-Switch-Leser | nur eine Safety-Schicht |
+| `ED-CRS` | Capital Risk Sizing | eigener Runbook-Owner |
+| `ED-ORDER-INTENT` | Canonical Order Intent | Intent-Authority `NONE` im Außengrenzenvertrag |
+| `ED-SAFETY-KERNEL` | Safety-Kernel Replay-Bind | Authority-Effect `NONE` |
+| `ED-P5` | Layered-Core-Seam | Cutover `false` |
+| `ED-EXECUTION` | Execution / `src/execution` | deckt sich thematisch mit U-EX; keine geschlossene Grenze |
+
+**Gemeinsamer Status:** `PROVEN_EXTERNAL_DOMAINS=0`; kein Repository-eigenes abgeschlossenes ED-Register. Kandidat ist keine ratifizierte Primärzuständigkeit.
+
+### 3.2 22 zusätzliche Owner-/Seam-Flächen
+
+| ID | Fläche | Evidenz-/Zuordnungsnotiz |
+|---|---|---|
+| `A-CAP21` | Governed Futures | Pre-MV2 Producer |
+| `A-CAP22` | Productive Ranking | Pre-MV2 Ranking |
+| `A-CAP23` | Single Selected Future | `CAP23_SOLE_SELECTION_OWNER=true` |
+| `A-HOST` | Stateful No-Order Host-Join | Host-Grenze |
+| `A-SEND` | Send-capable Adapter | Send-Grenze |
+| `A-WIRE` | Wire-Send / `LIVE_EXECUTION_BOUNDARY` | Gegen Execution abgrenzen |
+| `A-S5` | Single-cycle Orchestration | Full-Core-Slice |
+| `A-S6` | Continuous Run | eigener GO für Aktivierung |
+| `A-PMD` | Public Market Data | Runbook-Owner vorhanden |
+| `A-PRIV` | Private Account State | Runbook-Owner vorhanden; private GETs nicht autorisiert |
+| `A-WPC` | Public/Private Convergence | Join-Slice |
+| `A-OBS` | Observability/Landscape | Read-only, Authority-Effect `NONE` |
+| `A-TRE` | Treasury | für Full Autonomy erforderlich; kein Decision-Owner |
+| `A-29M` | STEP29M | Offline-Bewertung nach Selection |
+| `A-META` | Meta-Learning | Cross-Universe-Dual-Router |
+| `A-RC` | Research Corpus | Zugehörigkeit offen |
+| `A-PB` | Portfolio-Budget | funktionaler Hauptbereich |
+| `A-PERS` | Persistence | Single-Writer-Invariante |
+| `A-K1` | Credential-Seam | Keychain-Zugriff nicht autorisiert |
+| `A-VENUE` | Venue tdMode Plan | Owner-Authority-Slice, Runtime-Effect `NONE` |
+| `A-F1M9` | F1/M9-Seam | Körper/Vertrag offen |
+| `A-G17` | typed volatility / G17 | Körper nicht neu gelesen |
+
+### 3.3 Funktionale Tiefe und Abdeckung
+
+Der Audit nennt **36 funktionale Unterbereiche**, gruppiert unter: Master V2 (Replay/Double Play/Scope/SideState/Confirmation/Entry-Exit), Pre-MV2 (Universe/Ranking/Selection/Binding/Future-Profile), N5 (Handoff/Orchestrator/Completion), Full-Core (Authority/S5/S6/PRE_EXTERNAL), Safety (Decision, Replay-Veto, Kill-Switch, KILL_ALL, Flatten, Post-Path), Daten (Price/Public/Private/Convergence/G17), Kapital und Intent (CRS/Intent/Host/Send/Wire/Venue/K1), Learning (DDO Capture/Export/Dauerstore), Optimization, Market Intelligence, Meta-Router sowie die übrigen Ownerflächen. **Die Zahl 36 ist der berichtete Inventarzähler; die aufgelisteten Gruppen sind keine neu erfundene 36-zeilige ratifizierte Taxonomie.**
+
+### 3.4 Kanten und konkrete Konfliktfälle
+
+- **Inventar:** `E-IN-01…11`, `E-N5-01`, `E-OUT-01…11`, `E-LEARN-OPT` (berichtete 25 Kanten). Historisches `WIRED` bedeutet nicht CURRENT `REACHABLE` oder `ACTIVE`.
+- `E-IN-10` Ranking → Cycle: `UNGEKLÄRT`.
+- `E-IN-11` Handoff → Decision: deklarierte Consumer-Invokation verneint.
+- `E-N5-01`: `CONFLICT_OPEN` um Five-Lane-Konstanten; beide Seiten `JOIN_TRADING_AUTHORITY=false`.
+- Runbook-Prozessfolge Universe → Ranking → Selection → Binding → C1 → Scope/SideState → Master V2/Double Play → CRS → Safety → Intent → Host/Send/Execution ist **keine** ratifizierte Guardian-Topologie und kein Beweis linearer Runtime-Kausalität.
+- Execution-GHOSV importiert Full-Core-Cycle- und Reconciliation-/Persistence-Elemente. **Lesekopplung ist nicht automatisch fremde fachliche Authority**, aber der execution-only-Grenzbeweis fehlt.
+- Full-Core hostet einen MV2-Cycle, ohne damit dessen Decision-Owner zu werden.
+- Safety besteht aus verschiedenen Schichten und Owners; **kein** ratifizierter Umbrella-Wächter.
+- Research/MI-/Learning-/Experiment-Pfade überlappen teilweise; semantische Ownership und Grenzen offen.
+
+### 3.5 Inventarlücken
+
+`GAP-01…GAP-18` aus M1.5 bleiben offen, darunter `GAP-06` zur Zweckbindung Execution-GHOSV. Unter **40 `src`-Wurzeln** bestehen unbekannte Datei-/Paketmitgliedschaften; dynamische Imports, Intent-Consumer und Runtime-Wirkung wurden nicht lückenlos neu geprüft. `GAP-MAP-ONLY`-Flächen wie Presentation/Observability und Research Corpus sind nicht automatisch geschlossen, auch wenn einzelne Runbook-Owner inzwischen vorhanden sind.
+
+---
+
+## 4. Guardian-Verantwortungsarchitektur: SOLL, IST und noch unzulässige Abkürzungen
+
+### 4.1 Zielprinzip
+
+**Für jedes nachweisbar abgegrenzte CURRENT-Universum genau ein fachlich verantwortlicher Hauptwächter**; bei belegter Komplexität können **interne Unterwächter** mit eigener, verpflichtender Toolchain vorgeschlagen werden. Die Anzahl ist nicht vorgegeben. Für eigenständige Funktionsbereiche außerhalb von Universen ist die passende Primär-/Unter-/Schnittstellen-Verantwortung erst zu entscheiden. Ein Hauptwächter darf Unterbefunde nicht fachlich umdeuten.
+
+**IST:** `GUARDIAN_ASSIGNMENTS_PROVEN=0`. Alle fünf Owner-Universen, Pre-MV2, die 14 Außenkandidaten, 22 weiteren Flächen und GCC sind hinsichtlich Guardian-Verantwortung **unzugeordnet**. „Kein Guardian nachgewiesen“ bedeutet nicht, dass es keinen technischen Checker gibt.
+
+### 4.2 Primärverantwortung vs. beidseitige Grenzprüfung
+
+Für jedes Element ist **eine primäre fachliche Mitgliedschaft oder `UNCLASSIFIED`** zu führen; mehrere *explizite* Schnittstellenreferenzen sind erlaubt. Für eine gerichtete Grenze sind Producer-/Consumer-Verantwortung, Contract, Daten/State, Authority, Safety und Prüfverantwortung **getrennt** auszuweisen. Beide Domänenseiten prüfen ihre eigene Semantik. **GCC führt die beiden signierten Befunde zusammen, erzeugt aber keine dritte Fachsemantik.**
+
+Ein technischer Cross-Cut (z. B. Persistence) wird nicht allein durch weite Reichweite zum eigenen Universum oder automatisch zu einem Hauptwächter. Ebenso erzwingt die Doppelbenennung `U-EX`/`ED-EXECUTION` keine zwei Guardians.
+
+### 4.3 Nicht ratifizierte Varianten — ausdrücklich nur Optionen
+
+| Variante | Möglicher Nutzen | Offene Beweis-/Entscheidungsfrage |
+|---|---|---|
+| Ein Hauptwächter für ein geschlossenes Universum | Klare Endverantwortung | Technische Mitgliedschaft/Scope fehlt |
+| Hauptwächter + interne Unterwächter | Prüftiefe bei komplexen Innenflächen | Nicht überlappende interne Boundaries und eigene Toolpflicht |
+| Eigenständiger Bereichswächter für externe Domäne | Klare Primärprüfung außerhalb der Universen | Ist die Fläche tatsächlich eigenständig und abgegrenzt? |
+| Zwei domänenseitige Boundary-Prüfungen via GCC | Kein fremder Semantiktransfer | Contract-/Owner-Aufteilung und Konfliktauflösung |
+
+**Keine Variante wird hier ausgewählt.** Insbesondere **keine Fünf-Guardian-Topologie** und keine 14+22 mechanisch erzeugten Wächter.
+
+---
+
+## 5. Werkzeugstandard: jede Position separat, niemals „GHOSV = Guardian“
+
+Für **jede** vorgeschlagene Domäne muss eine eigene, getrennt überprüfte Dreiergruppe ausgewiesen werden:
+
+1. `<DOMAIN> GHV` — Provenienz, CURRENT-Graph-/Governance-Verifikation in ihrem begrenzten Scope.
+2. `<DOMAIN> CURRENT CAUSAL GRAPH` — materialisierte oder anderweitig nachgewiesene aktuelle Knoten-/Kanten-/Authority-/Reachability-Sicht; **nicht** AST-Matcher allein.
+3. `<DOMAIN> GHOSV` — domänenspezifische Prüf-/Beobachtungsinstanz mit begrenztem Authority-Scope.
+
+**Einzelstatus pro Position:** `NAMED`, `EXISTS`, `IMPLEMENTED`, `APPLICABLE`, `VERIFIED`, `ACTIVE`, `OWNER_AUTHORIZED` getrennt; zusätzlich Baseline, Tool-Version, Ausführung, Prüftiefe, Evidence, Einschränkungen. `NOT_PRESENT` ist kein `NOT_APPLICABLE`, `NOT_TESTED` kein PASS. Der Owner-mandatierte Toolstandard hat laut Audit noch **keine Repository-Bindung**.
+
+| Bereich | Domain GHV | Domain CURRENT Graph | Domain GHOSV | Gesamtbefund |
+|---|---|---|---|---|
+| Master V2 | nur stale Whole-System-Artefakt, kein frischer Domain-Lauf | materialisierter CURRENT-Graph fehlt | Checker vorhanden, fremder Pin, `GUARDIAN_IDENTITY=false` | `NOT_PROVEN` |
+| Double Play (intern MV2) | Token-Verifier vorhanden, Pin `97c8c954` stale | AST-Call-Matcher, kein materialisierter Causal Graph | Observation-Adapter vorhanden, nicht current getestet | `NOT_PROVEN` |
+| Execution | Domain-GHV fehlt | Domain-Graph fehlt | GHOSV-Paket vorhanden, execution-only, nicht ausgeführt | `NOT_PROVEN` |
+| Self-Learning | fehlt | fehlt | fehlt | `NOT_PROVEN` |
+| Optimization | fehlt | fehlt | fehlt | `NOT_PROVEN` |
+| Market Intelligence | fehlt | fehlt | fehlt | `NOT_PROVEN` |
+| Meta-Learning-Schnittstelle | fehlt | fehlt | fehlt | Schnittstellenpflicht erst entscheiden |
+| Pre-MV2, Full-Core, N5, Safety, übrige ED-/A-Flächen | keine aktuellen Domain-Tripel | keine aktuellen Domain-Tripel | keine aktuellen Domain-Tripel | `NOT_PROVEN` |
+| GCC | kein Domänen-GHV | kein Domänen-Graph | kein Domänen-GHOSV | GCC ist **Koordinator**, nicht automatisch fachliche Guardian-Domäne |
+
+**Stale Evidence:** Forensischer Whole-System-Graph `302` Knoten / `67` Kanten, Pin `b6ffca1d`, `CAUSAL_CLOSURE_PROVEN=false`; `integrated_causal_graph.v1.json` fehlt auf `origin/main`. Ein altes `CURRENT_GRAPH_VERIFIED=true` auf fremdem Pin ist kein CURRENT-PASS. Der Master-V2-GHOSV-Pin `7628005ae` und Double-Play-Pin `97c8c954` sind nicht `60f0c082`.
+
+**Isolation:** GHOSV Execution wird weder als Whole-System-Checker ausgegeben noch umgebaut oder geklont. Seine Imports in Full-Core/Reconciliation sind als **Scope-Auditfinding** zu prüfen, ohne daraus automatisch einen Regelverstoß abzuleiten.
+
+---
+
+## 6. GCC — was schon konzipiert ist und was noch fehlt
+
+### 6.1 Das bereits ausgearbeitete fachliche Zielbild (Original V0.6, Kapitel 32–35)
+
+```text
+HUMAN OWNER
+    │ Frage / hypothetischer Änderungswunsch (KEIN GO)
+    ▼
+GCC — deterministische Koordination, kein Trading-/Safety-/Decision-Owner
+    │  Initialer, versionierter Broadcast NUR an ratifizierte Guardians
+    ├──► bestätigter Guardian A ── signierter Eigenbefund ──┐
+    ├──► bestätigter Guardian B ── signierter Eigenbefund ──┤
+    └──► ... (unbekannte Domänen = COVERAGE_GAP) ──────────┤
+                                                            ▼
+GCC — Provenienz / Konflikte / Nichtantworten / Coverage / Fixpunkt
+    │  Gezielte, deduplizierte Rückfragen über GCC
+    ▼
+HUMAN OWNER — Bericht, offene Fragen, Varianten, separate GO-Entscheide
+```
+
+GCC ist **kein KI-Agent** in der dokumentierten Zielarchitektur, sondern ein deterministischer Hub-and-Spoke-Koordinator. Keine freie Guardian-zu-Guardian-Kommunikation als regulärer Kanal. Keine fremde Fachinterpretation, kein automatisches PASS, keine autonome Lösungsauswahl, kein Code-Write und keine Order.
+
+**Bereits konzeptionell beschrieben:**
+- Typisierte Nachrichten (`CHANGE_PROPOSAL`, `IMPACT_QUERY`, `DOMAIN_FINDING`, `CONTRACT_CONFLICT`, `CLARIFICATION_REQUEST/RESPONSE`, `RESOLUTION_CANDIDATE`, `VERIFICATION_RESULT`, `COVERAGE_GAP`, `OWNER_DECISION`).
+- Fallidentität (`CASE_ID`, Version, Originalfrage, CURRENT-Commit/Tree, Contracts, Epoch/State, Schutzklasse, Registry und Empfänger).
+- Anfangsbroadcast an die **endliche bestätigte** Menge; danach gezieltes kausales Routing, Konfliktklärung, bounded Fixpoint, Owner-Bericht und separater Reproof.
+- Status `BETROFFEN`, `NICHT_BETROFFEN` (nur beweisbar innerhalb Scope), `UNGEKLÄRT`, `CONFLICT_OPEN`, `NOT_TESTED/TOOL_UNAVAILABLE`.
+- Endzustände `BOUNDED_VERIFIED`, `OPEN_UNCERTAINTY`, `CONFLICT_OPEN`, `BLOCKED_AUTHORITY`, `STALE_BASELINE`.
+- Fünf **vorläufige** Vertragsobjekte: Guardian Registry, Impact Request, Domain Finding, Cross-Boundary Reference, Case Aggregate.
+- Negativtests für stale Pins, fehlende Empfänger/Tools, doppelte/verspätete Nachrichten, manipulierte Provenienz, Zyklen, Semantik-Anreicherung und verbotene Writes.
+
+### 6.2 Was noch nicht entschieden, bewiesen oder gebaut ist
+
+| Dimension | Offen / fehlend |
+|---|---|
+| GCC-Architekturratifikation | `false`; Prinzipien dokumentiert, nicht gleich Gesamtvertrag ratifiziert |
+| Guardian Registry | keine ratifizierten Mitglieder, keine endgültige Domain-/Boundary-Liste |
+| Vertragsratifikation | Schemafelder, Statusmaschinen, Versionierung und negative Semantik nicht formal abgenommen |
+| Transport / Deployment | Datei, lokale Queue oder API nicht entschieden; kein Cloud-Zwang aus dem Namen „Cloud“ |
+| Identität / Signaturen | Signierverfahren, Schlüssel-/Trust-Modell, Authentisierung, Replay-Schutz offen |
+| Persistenz | Evidence-Store, Single-Writer, Append-only/Retention, Restart-/Crash-Verhalten offen |
+| Routing | in späteren Berichten genannte Varianten A/B nicht ratifiziert; genaue Algorithmik/Budgets offen |
+| Vier-ID-/Run-ID-Modell | im Audit als offene Owner-Frage genannt; nicht aus V0.6-PDF ratifizierbar |
+| Betrieb | Timeouts, Ressourcen-/Kostenkappen, Backpressure, Retry, Isolation, Monitoring offen |
+| Verifikation | kein GCC-Pilot, kein Integrations-/Negativtest, kein CURRENT-Lauf |
+| Aktivierung | keine Runtime-, POST-, Trading- oder Code-Autorisierung |
+
+**Wichtig:** Ein Initialbroadcast „an alle bestätigten Guardians“ wäre **heute an eine leere ratifizierte Menge** gerichtet. Das ist **kein** System-Coverage-Ergebnis. Bis Registry und Boundaries ratifiziert sind, kann GCC nur hypothetische Fälle/Gap-Berichte modellieren, nicht das Gesamtsystem als geprüft ausgeben.
+
+---
+
+## 7. Offene Findings und Owner-Entscheidungen
+
+### 7.1 Technische Findings — nicht opportunistisch beheben
+
+| ID | Finding | Erforderlicher Nachweis / Klärung |
+|---|---|---|
+| `F-01` | Alle Guardian-Zuordnungen unbewiesen | Registry-Entwurf aus belegten Boundaries, danach separater Owner-Entscheid |
+| `F-02` | 0 technisch geschlossene Universen | Endliche Membership/Ausschlüsse, Interfaces, Contracts, Runtime-Unsicherheit |
+| `F-03` | 14 ED-Kandidaten nicht bewiesen | Repository-ED-Register als späterer autorisierter Dokumentationsschritt |
+| `F-04` | CURRENT Domain-GHV/Graph/GHOSV-Tripel fehlen | Domain-Tool-Identitäten und Beweisstufen je Werkzeug |
+| `F-05` | Whole-System-GHV stale, Causal Graph fehlt | Frischer, separat autorisierter Prüflauf; kein alter Snapshot als Ersatz |
+| `F-06` | Execution-GHOSV liest Cycle/Reconciliation | Read-only Scope-/Import-/Authority-Analyse, keine Erweiterung |
+| `F-07` | Execution vs Wire/Host/Send überlappt | Schnittstellen-/Authority-/Ownership-Matrix |
+| `F-08` | N5 Five-Lane-Konstanten widersprüchlich | Beide Quellen und wirksame Runtime-/Contract-Bindung vergleichen |
+| `F-09` | Safety-Schichten ohne Umbrella-Owner | Layer-Verantwortung einzeln, nicht durch Sammelguardian ersetzen |
+| `F-10` | Master-V2/Double-Play-Prüfkatalog-Überlappung | Hierarchie-/Toolpositionen ohne Guardian-Ratifikation |
+| `F-11` | MI-Außengrenze offen | Market-Intelligence-Membership und Cross-Contracts belegen |
+| `F-12` | Research Corpus/Presentation-Zugehörigkeit offen | Layer-1-Zuordnung bzw. explizit `UNCLASSIFIED` |
+| `F-13` | F1/M9-/G17-Körper, Intent-Consumer, dynamische Imports offen | Gezielte, begrenzte CURRENT-Untersuchung |
+| `F-14` | `GAP-01…GAP-18` und 40 src-Wurzeln nicht geschlossen | Erhalten, deduplizieren, priorisieren, nicht wegzählen |
+| `F-15` | Arbeitsbaum vs origin/main divergiert | Strikte Pin-/Tree-Provenienz, kein lokaler Beweisimport |
+| `F-16` | GCC und Toolstandard nicht ratifiziert | Separate Owner-Architektur- und Vertragsentscheidung |
+
+### 7.2 Owner-Entscheidungsqueue (keine vorweggenommenen Antworten)
+
+1. Guardian-Identitäten überhaupt vergeben? Falls ja: **erst nach** belegten Primärgrenzen und Review.
+2. Nachweis- und Abnahmekriterien für technische Universumsgrenzen (insbesondere MI) festlegen.
+3. Pre-MV2 bleibt Cap21–Cap23-Domäne; ob irgendeine zusätzliche Wächterrolle nötig ist, offen.
+4. Research-Corpus-Zugehörigkeit entscheiden, ohne vorläufigen Status zu verschleiern.
+5. N5-Konflikt um `FIVE_LANE_RUNTIME_CREATED` fachlich auflösen lassen.
+6. GCC-Architekturprinzipien vs. acht im Audit erwähnte Vertragsentwürfe, Routing A/B, Vier-ID-/Run-ID-Modell **quellengetrennt** prüfen; V0.6-PDF nennt ausdrücklich **fünf** vorläufige Vertragsobjekte, nicht acht ratifizierte.
+7. Execution-GHOSV-Imports auf zulässige execution-only-Lesekopplung prüfen.
+8. Execution-/Wire-/Host-/Send-Verantwortung abgrenzen.
+9. Safety-Schichten ohne voreiligen Umbrella-Wächter zuordnen.
+10. Stale MV2-/Double-Play-Pins nicht als CURRENT-PASS behandeln; Vorgehen für Reproof entscheiden.
+11. Repository-eigenes ED-Register: Umfang und späteres Schreib-GO festlegen.
+12. GHV-/Causal-Graph-Reproof nur mit geeigneter, separater Autorisierung für ggf. erzeugte Artefakte.
+13. Abgelehnte Fünf-Guardian-Topologie bleibt verworfen; keine Ersatzanzahl vorgeben.
+
+---
+
+## 8. Aktualisierter Schlachtplan — ab jetzt, mit Exit-Kriterien
+
+**Leitlinie:** Bereits geleistete M1.5-Inventarisierung **wiederverwenden**; keine weitere pauschale „gesamtes System neu offenlegen“-Kampagne. Stattdessen die **konkret benannten offenen Zuständigkeiten und Grenzbelege** in begrenzten, priorisierten Slices bearbeiten. Discovery ist keine Reparaturphase. Der Ablauf enthält bewusste Owner-Gates; kein automatischer Übergang zu Implementierung.
+
+| Schritt | Modus | Auftrag / konkretes Ergebnis | Exit / Stop |
+|---|---|---|---|
+| **S0 — Quellen-Freeze** | Erledigt laut Bericht | PR #7153, M1.5-A–G-Quellen/Manifeste, Layer-1, GCC-Quelle auf `main` bewahrt | `INVENTORY_BASELINE_RATIFIED=true`; keine technische Ratifikation |
+| **S1 — Verantwortungsarchitektur-Entwurf** | **JETZT: READ_ONLY** | Alle fünf Owner-Universen, Pre-MV2, 14 ED, 22 weitere Flächen, 36 Unterbereiche, 25+4 Kanten gegen *eine* Responsibility-/Boundary-/Tool-Matrix mappen; Haupt-/Unter-/Boundary-Varianten **nur als Kandidaten** | Jede Fläche: `PROPOSED` oder `UNASSIGNED/UNKNOWN/OVERLAP`; kein Guardian-Ratifikationsclaim |
+| **S2 — priorisierte Boundary-Reproofs** | READ_ONLY je Slice; Toolausführung nur soweit autorisiert | Zuerst Execution↔Wire/Host/Send und GHOSV-Imports; N5-Konflikt; MV2↔Double Play; Safety/CRS; Pre-MV2; MI; SL↔Meta↔OPT; Research/State/Persistence | Belegter Pin/Tree, Membership, Ein-/Ausgänge, Authority, Gegenbelege; andernfalls `NOT_PROVEN` |
+| **S3 — Tool-Standard-Entwurf** | READ_ONLY | Für jede **vorgeschlagene** Domäne drei separat benannte Toolpositionen, Pflichtprüftiefe, Isolation, Abnahme und Aufwand | Kein vorgetäuschter Tool-PASS; Execution-GHOSV geschützt |
+| **S4 — Owner-Architekturentscheidungen** | Separater Owner-Entscheid | Welche Domänengrenzen/Guardian-Identitäten/Unterwächter/Boundary-Verantwortungen und Toolpflichten tatsächlich ratifiziert werden | Ohne Owner-Entscheid: `DRAFT_ONLY`; Guardian-Zahl weiter offen |
+| **S5 — GCC-Vertragsentwurf & Owner-Gate** | DESIGN_ONLY | Registry, Request, Finding, Cross-Boundary, Aggregate; Provenienz/Signatur, State-Machine, Timeout, Dedup, Unknown-Handling, Authority-Policy; offene Alternativen vergleichen | GCC-Ratifikation **separat** von Guardian-Domain-Ratifikation; keine Umsetzung |
+| **S6 — kleiner Offline-Pilot** | Nur nach passenden GOs | Ein echter CURRENT-Contract als **hypothetischer** Änderungsfall; begrenzte bestätigte Empfänger; deterministische Positiv-/Negativtests | `BOUNDED_VERIFIED` nur bei belegtem Scope; sonst `OPEN_UNCERTAINTY`/`CONFLICT_OPEN` |
+| **S7 — Implementierung/Integration** | Nur separate CODE_CHANGE-/weitere GOs | Minimaler lokaler, offline-isolierter Coordinator/Adapter; keine Trading-Kopplung | Tests, Isolation, Provenienz, Rückbau, Kostenbudget |
+| **S8 — Git-/Review-/Merge-Schritte** | Separate COMMIT/PUSH/PR/MERGE-GOs | Dokumentation/Code kontrolliert reviewen; neue CURRENT-Baseline nach Merge | Keine implizite GO-Kaskade |
+| **S9 — Reproof und Betriebskonzept** | Separat autorisiert | Domain-Reproof, Drift-/Schema-Watches, Bounded Coverage, SLO/Retention | Kein autonomer Live-/POST-Betrieb aus Guardian-Arbeit |
+
+**S1 sofortiger Output-Vertrag:**
+
+```text
+BASELINE_VALIDATION=
+SOURCE_PROVENANCE=
+SYSTEMWIDE_DOMAIN_REGISTER=
+FUNCTIONAL_SUBDOMAIN_REGISTER=
+CROSS_BOUNDARY_OWNERSHIP_MATRIX=
+GUARDIAN_RESPONSIBILITY_CANDIDATES=
+UNASSIGNED_AREAS=
+OVERLAPPING_RESPONSIBILITIES=
+UNKNOWN_BOUNDARIES=
+DOMAIN_GHV_MATRIX=
+DOMAIN_CURRENT_CAUSAL_GRAPH_MATRIX=
+DOMAIN_GHOSV_MATRIX=
+GCC_REGISTRY_REQUIREMENTS=
+OWNER_DECISION_QUEUE=
+BOUNDED_NEXT_SLICES=
+GUARDIAN_COUNT=NOT_PREDEFINED
+GUARDIAN_ASSIGNMENTS=NOT_RATIFIED
+REPORT_AND_STOP
+```
+
+### 8.1 Slice-Regeln und Kostenbremse
+
+- Immer `origin/main` + Commit/Tree/Contract/Epoch-Pin; lokales Feature-Material separat kennzeichnen.
+- Nur **eine konkrete Grenzfrage pro bounded Slice**, soweit mehrere offene Kanten nicht zwingend gemeinsam behandelt werden müssen; bestehende M1.5-Evidenz wiederverwenden.
+- Forward/Reverse/Transitiv sowie Data/Authority/Decision/Scope/Epoch/Persistence/Safety prüfen, **ohne** unbekannte Pfade zu schließen.
+- Bei breiter Funktionsdomäne nicht nur einen Funktionsknoten isoliert betrachten: domänenweite Landscape der **relevanten** Unterrubriken und Außengrenzen, ohne Innenalgorithmen zu verändern.
+- Keine opportunistischen Fixes während Excavation; Findings mit Belegen erfassen, koordiniertes Fixpaket erst nach Gesamtbewertung und GO.
+- Keine unbounded Runs, kein Cloud-/Paid-Service-Zwang; Laufzeit-/Kostenbudget vor Pilot konkretisieren.
+- STOP bei gemischten Pins, unklarer Authority, fehlender Toolpflicht, unerlaubtem Write/GET/POST, neuer Schutzlogik oder Owner-Lock-Konflikt.
+
+### 8.2 Abnahmegates, die nicht übersprungen werden dürfen
+
+**Gate A — Inventargrundlage:** M1.5-Originale reproduzierbar und gegen CURRENT-Pin sauber abgegrenzt. **Bereits dokumentarisch erreicht**, technische Coverage weiter offen.
+
+**Gate B — Responsibility Draft:** Jede bekannte Fläche hat eine **Kandidatenzuordnung oder ausdrücklich offene Klassifikation**; jede bekannte Kante beidseitige Verantwortungsfelder; Overlaps nicht kaschiert. *Kein* Guardian-GO.
+
+**Gate C — Boundary Evidence:** Für jede zur Ratifikation vorgeschlagene Domäne: Scope/Membership/Ausschlüsse, Contracts, direkte/reverse/transitive Außengrenzen, Owner-Authority, State, dynamische Unbekannte, Gegenbelege.
+
+**Gate D — Owner Ratification:** Guardian-/Unterwächter-Identitäten und Pflichttools **explizit** entschieden; keine stillschweigende Ableitung aus Namen oder Counts.
+
+**Gate E — GCC Contracts:** Registry-/Request-/Finding-/Boundary-/Aggregate-Verträge, Provenienz, Conflict/Unknown und Negativtests akzeptiert; **separates** GCC-Owner-GO.
+
+**Gate F — Offline Pilot:** Nur bounded, autorisiert, ohne Runtime-/Trading-Effekt; alle Pflichttool-Läufe tatsächlich nachgewiesen oder Fall bleibt offen.
+
+**Gate G — Change Lifecycle:** Separate Code/Test/Commit/Push/PR/Merge/Activation-GOs, danach neuer CURRENT-Reproof.
+
+---
+
+## 9. Sicherheits-, Authority- und Non-Goals
+
+```text
+DOUBLE_PLAY_FULL_OWNER_LOCK=LEVEL_3
+DOUBLE_PLAY_ENFORCEMENT=DEFERRED
+POST_ALLOWED=false
+EXTERNAL_EFFECT_AUTHORIZED=false
+REAL_VENUE_POST_ALLOWED=false
+GUARDIAN_ASSIGNMENTS_PROVEN=0
+GUARDIAN_COUNT=NOT_PREDEFINED
+FIVE_GUARDIAN_TOPOLOGY=REJECTED_BY_OWNER
+GCC_ARCHITECTURE_RATIFIED=false
+GCC_IMPLEMENTATION=NOT_STARTED_AS_OF_REPORTED_BASELINE
+TOOL_COVERAGE=NOT_PROVEN
+SYSTEMWIDE_COVERAGE_STATUS=NOT_PROVEN
+FINANCIAL_GUARANTEE=NONE
+```
+
+Kein Wächter, kein GCC, keine Map, kein GHV-/Graph-/GHOSV-Befund erzeugt neue Trading-, Sicherheits-, Owner- oder POST-Autorität. Kein produktiver GET, Credential-/Keychain-/Venue-Zugriff, Order, Kapitaltransfer, Margin-Änderung oder Runtime-Aktivierung ohne passende ausdrückliche Owner-Autorisierung. `LIVE_*`-/`SUBMISSION_AUTHORIZED`-Prädikate im Runbook sind **keine** allgemeine POST-Freigabe. Keine neue Live-Sperre aus alten Census-/Graph-Artefakten. Kein Codeumbau allein für Map-Currency-Grün. Keine Änderung geschützter Double-Play-/Master-V2-/Trading-Logik im Rahmen dieses Plans.
+
+---
+
+## 10. Was heißt „fertig“? — präzise Definition
+
+| Ergebnis | Heute | „Fertig“, wenn … |
+|---|---|---|
+| Konzeptuelle Guardian-Prinzipien | weitgehend ausgearbeitet | Owner-konform dokumentiert und widerspruchsfrei; **nicht** gleich Systemimplementierung |
+| M1.5-Untersuchungsbaseline | ratifiziert laut Owner-Bericht | Originale/Manifeste unverändert auffindbar (bereits erreicht) |
+| Technische Gesamtklassifikation | offen | Endlicher Scope, Membership, Ausschlüsse, offene dynamische Pfade und Unclassifed-Reste transparent; keine fingierte 100-%-Aussage |
+| Guardian-Responsibility-Architektur | Entwurf fehlt/jetzt S1 | Nachweisbare Primär-/Boundary-Zuständigkeiten und **separate Owner-Ratifikation** |
+| Tool-Tripel je Guardian | nicht current geprüft | Drei unabhängige, verpflichtende Positionen pro ratifizierter Domäne getestet/gebunden |
+| GCC-Architektur | detailliertes Zielbild, nicht ratifiziert | Verträge, Routing, Identität, Persistenz, Budget, Tests, Isolation und Owner-Gate entschieden |
+| GCC-Implementierung | nicht gestartet laut Bericht | Offline-Implementierung, reproduzierbarer Pilot, Negativtests und separate Freigaben |
+| Systemweite Änderungsfolgenprüfung | nicht betriebsbereit | Fallweise belegte bounded Fixpoints; offene Restunsicherheiten sichtbar; keine globale Allwissenheitsgarantie |
+
+**Gesamturteil:** **Blueprint als konzeptioneller Bauplan: fortgeschritten, aber nicht abschließend ratifiziert. Guardian Network als tatsächlich funktionsfähiges System: nicht fertig.** Die jetzt nötige Arbeit ist nicht „noch einmal alles von vorne inventarisieren“, sondern **gezielte Zuordnungs- und Boundary-Arbeit auf der bewahrten M1.5-Basis**, danach Entscheidungen, Werkzeugnachweise, GCC-Verträge und kleiner Offline-Pilot.
+
+---
+
+## 11. Historische Quellfassung — vollständige Textübernahme V0.1–V0.6
+
+**Bewahrungsregel:** Der folgende Block ist eine **unbearbeitete `pdftotext -layout`-Extraktion** aus der hochgeladenen 21-seitigen PDF. Seitenumbrüche und Tabellenlayout folgen dem Extraktor; die PDF bleibt bei visuellen Unterschieden maßgeblich. Alte Zeitbezüge/Anweisungen und damalige Statuswerte werden **nicht** als aktuelle Ratifikation ausgegeben. Die in diesem V0.8-Update vorangestellten Kapitel 0–10 sind die aktuelle Lesefassung.
+
+```text
+ PEAK TRADE | GUARDIAN NETWORK
+ Konzeptioneller Architektur-Blueprint | Version 0.1 | 18.10.2026
+
+ Status: Zielbild und schrittweiser Entwicklungsrahmen. KEIN Implementierungsauftrag, KEIN
+ Runtime-PASS, KEINE neue Trading-Autorität.
+
+ Leitidee: Jede definierte Fachdomäne erhält genau einen verantwortlichen
+ Wächter mit einer vom Owner verbindlich vorgeschriebenen Toolchain. Wächter
+ tauschen nur überprüfbare, klar typisierte Befunde aus und erarbeiten vor einer
+ möglichen Codeänderung gemeinsame, konfliktarme Lösungsoptionen. Ein
+ zentraler Punkt konsolidiert Evidenz und offene Widersprüche, ohne sie
+ umzudeuten.
+
+
+ 1 | Anlass, Problem und Ziel
+ Peak Trade bleibt ein fortlaufend entwickeltes System. Eine lokale Änderung an A kann einen weit
+ entfernten Bereich Z beeinflussen. Wiederholte manuelle Read-only-Untersuchungen, statische
+ Importlisten und unvollständige Graphabdeckung liefern derzeit keine verlässliche, durchgängige
+ End-to-End-Änderungsfolgenanalyse. Die jüngste Cursor-Bestandsaufnahme zum Pin 6e3143bdf zeigt
+ gerade die Grenzen: produktive Erreichbarkeit und dynamisches Wiring ungeklärt; GHV und GHOSV
+ nicht ausgeführt; Graph nicht als CURRENT-validiert.
+
+ Ziel ist ein reproduzierbarer, evidenzbasierter Prozess, der VOR der Umsetzung eine konkrete
+ Änderungsidee durch die betroffenen Domänen verfolgt, Konflikte auflöst oder sichtbar ungelöst lässt,
+ eine kleinste vertretbare koordinierte Änderungsmenge vorschlägt und alle Aussagen mit Baseline,
+ Contract und Beleg verbindet. Kein System kann unbekannte Abhängigkeiten oder sämtliche künftigen
+ Fehler garantiefrei ausschließen.
+
+
+ 2 | Verbindliche Architekturentscheidungen (konzeptionell)
+ • Ein definierter Fachbereich / ein Universum besitzt genau einen fest zugeordneten, verantwortlichen
+ Wächter. Die Domänengrenzen und der vollständige Katalog sind noch zu ermitteln.
+
+ • Der Owner legt pro Wächter die Pflichtwerkzeuge und deren erforderliche Prüftiefe fest. Kein Wächter
+ darf Tools nach Belieben auslassen oder ersetzen.
+
+ • Ein GHOSV ist ein domänenspezifisches Werkzeug des Wächters, nicht der Wächter selbst und nicht
+ das Gesamtsystem.
+
+ • GHOSV Execution bleibt unverändert, isoliert und ausschließlich für Execution. Ein möglicher GHOSV
+ CURRENT-Graph oder GHOSV Learning ist eine separate, erst zu prüfende Instanz.
+
+ • Wächterkommunikation ist zunächst hypothetisch und strikt ohne Code-/Runtime-Wirkung. Kein
+ automatischer Write, kein Order-POST, keine Freigabe.
+
+ • Zentrale Konsolidierung ist keine zentrale Entscheidungs-, Sicherheits- oder Handelsautorität.
+ Owner-GO bleibt für alle geschützten Aktionen erforderlich.
+
+
+
+
+PEAK TRADE | Guardian Network | Konzept - keine Ausführungsfreigabe                                 Seite 1
+ 3 | Striktes Verbot fremder Interpretation
+ KERNREGEL: Wächter A darf aus einer Ausgabe von Wächter B KEINE eigenständige fachliche
+ Bedeutung, Vermutung, Kausalfolge, Reparatur oder PASS-Aussage ableiten und diese als Erkenntnis
+ übernehmen. Auch ein plausibles „das könnte bedeuten ...“ ist keine zulässige Tatsachenfeststellung.
+
+ Zulässig sind ausschließlich (1) unveränderte Weitergabe von B-signierten, versionierten Befunden mit
+ Herkunft und Scope; (2) eigene Prüfung der im eigenen Bereich liegenden, explizit benannten
+ Schnittstelle gegen eigene Pflichtwerkzeuge und CURRENT-Belege; (3) formalisierte Rückfrage an B; (4)
+ klar als ungeprüfte HYPOTHESE markierter Prüfauftrag, niemals als Befund. Eine Hypothese wird erst
+ durch den fachlich zuständigen Wächter mit dessen Pflichtwerkzeugen und belegter CURRENT-Kette
+ zum Befund.
+
+ Bei unklarer Semantik: SEMANTIC_UNRESOLVED; keine implizite Ergänzung. Bei Konflikten:
+ CONFLICT_OPEN; beide Aussagen unverändert erhalten. Kein Konsenszwang und keine stillschweigende
+ Bedeutungsanreicherung.
+
+
+ 4 | Rollen und Ebenen
+   Ebene                  Aufgabe                                            Strikte Grenze
+
+
+   Fachdomäne             Definierter CURRENT-Verantwortungsbereich          Nicht aus Dateinamen allein ableiten
+                          mit Contracts und Schnittstellen
+
+
+   Domänenwächter         Prüft eigene Domäne; verantwortet Befunde;         Keine fremde fachliche Deutung
+                          beantwortet fremde Schnittstellenanfragen
+
+
+   Pflichtwerkzeuge       GHV, Graph und domänenspezifische                  Kein Tool-PASS ohne Ausführung
+                          Instrumente gemäß Owner-Matrix
+
+
+   Guardian               Transportiert typisierte, unveränderliche          Keine freie semantische Umformung
+   Exchange               Befunde, Anfragen und Antworten
+
+
+   Zentraler              Korrelierte Sicht auf Fälle, Baselines, Risiken,   Kein eigener Authority-Mint
+   Evidenzpunkt           Konflikte, Coverage
+
+
+   Owner                  Entscheidet Scope, Toolpflicht, Locks, GO,         Keine automatische Delegation
+                          Änderungen
+
+
+
+
+ 5 | Beispielhafte Domänen - ausdrücklich nicht abschließend
+   Wächter                   Mögliche Pflichtwerkzeuge                                        Stand
+
+
+   Execution                 GHOSV Execution + Owner-definierte weitere Prüfmittel            Execution-GHOSV vorhanden;
+                                                                                              geschützt
+
+
+   CURRENT-Graph             Eigenständiger Graph-GHOSV + GHV +                               Nur Konzept; nicht
+                             CURRENT-Causal-Graph                                             implementiert
+
+
+   Self-Learning             Eigenständiger Learning-GHOSV + noch zu bestimmende              Nur Kandidat
+                             Tools
+
+
+   Capital / Treasury        Separater Capital-GHOSV + noch zu bestimmende Tools              Nur Kandidat
+
+
+   Risk / Selection /        Je eigener Wächter nach belegter Domänenabgrenzung               Inventar und Toolmatrix offen
+   andere
+
+
+
+
+PEAK TRADE | Guardian Network | Konzept - keine Ausführungsfreigabe                                                           Seite 2
+ Die Domänen dürfen weder durch diese Beispieltabelle noch durch das heutige Treasury-Inventar
+ abschließend definiert werden. Treasury ist keine Wurzel des Gesamtsystems. Kapital-, Governance-,
+ Risk-, Universe-, Selection-, Slot- und Entscheidungsbeziehungen dürfen nicht zu einer erfundenen
+ linearen Kette vereinfacht werden.
+
+
+ 6 | Einheitlicher Änderungsfall statt freier Wächter-Chats
+ Jeder hypothetische Änderungsfall besitzt eine unveränderliche Fall-ID, CURRENT-Baseline mit
+ Provenienz, Owner-Ziel, exakt formulierte Änderungsannahme, bekannte/ungeklärte Einstiegspfade,
+ betroffene Contract-IDs, zuständige Wächter, Toolpflicht-Matrix, Scope-/Epoch-/Persistenzbezug,
+ Evidenzreferenzen, Versionen und Zeitstempel.
+
+ Die Kommunikation erfolgt über streng typisierte Nachrichten: CHANGE_PROPOSAL, IMPACT_QUERY,
+ DOMAIN_FINDING, CONTRACT_CONFLICT, CLARIFICATION_REQUEST, CLARIFICATION_RESPONSE,
+ RESOLUTION_CANDIDATE, VERIFICATION_RESULT, COVERAGE_GAP, OWNER_DECISION. Jede Nachricht
+ nennt Autor-Domäne, adressierte Domäne, Aussageart, Evidenz, Sicherheitswirkung und Status BELEGT
+ / WIDERLEGT / UNGEKLÄRT.
+
+ Verboten: Übernahme unversionierter Fließtext-Schlüsse als Tatsachen, Überschreiben fremder
+ Befunde, semantische „Verbesserung“ fremder Ausgaben, automatische Statushochstufung,
+ unmarkierte LLM-Schlussfolgerungen.
+
+
+ 7 | Präventive Konfliktlösung: End-to-End-Ablauf
+   Phase            Vorgang                                                  Abnahmekriterium
+
+
+   0. Intake        Owner beschreibt Ziel, nicht Reparaturmethode; alle      Scope und Autorisierung explizit
+                    Aktionen read-only
+
+
+   1. Pin           Gemeinsamer CURRENT-Stand und wirksame Contracts         Keine gemischten SHAs/Epochen
+                    fixieren
+
+
+   2. Lokale        Ursprungswächter nutzt ALLE Pflichtwerkzeuge             Tool-Einzelbefunde vorhanden
+   Analyse
+
+
+   3. Routing       Belegte direkte/indirekte Schnittstellen an zuständige   Kein unkontrolliertes Broadcast
+                    Wächter adressieren
+
+
+   4.               Jeder Empfänger prüft selbst; Fremdaussagen nicht        Eigene Evidence und Provenienz
+   Fachantwort      interpretieren
+
+
+   5. Fixpunkt      Forward, Reverse, Transitiv, Zyklen, Rückwirkungen;      Coverage oder explizite offene Grenze
+                    neue Betroffene nachladen
+
+
+   6. Konfliktar    Wächter liefern Varianten und Contracts; zentrale        Widersprüche erhalten
+   beit             Stelle konsolidiert nur
+
+
+   7. Vorschlag     Minimale koordinierte Änderungskandidaten,               Keine Implementierung
+                    Trade-offs, Risiken, Rollback
+
+
+   8.               Owner entscheidet gesondert über Änderung, Tests, PR     Kein implizites GO
+   Owner-Gate       und Merge
+
+
+   9.               Erst nach GO isoliert, klein, testbar; protected locks   Audit-Trail und deterministische Tests
+   Umsetzung        beachten
+
+
+   10. Reproof      Alle betroffenen Wächter erneut auf neuer                Keine behauptete Vollständigkeit ohne
+                    CURRENT-Baseline                                         Coverage
+
+
+
+
+PEAK TRADE | Guardian Network | Konzept - keine Ausführungsfreigabe                                                   Seite 3
+ 8 | Beispiel: Execution-Änderung mit Fernwirkung
+ HYPOTHETISCH: Ein Execution-Status-Contract soll verändert werden. Execution Guardian meldet
+ ausschließlich die eigenen nachgewiesenen Status- und Consumer-Kanten. Er fragt den Capital
+ Guardian mit der genauen Contract-Differenz an. Capital prüft eigenständig, ob eine
+ Reservierungs-/Reconciliation-Schnittstelle betroffen ist, und meldet nur eigene Befunde. Risk prüft
+ Exposure-Verwendung. Ein weiterer Wächter erhält eine Anfrage, falls ein belegter transitiver Pfad in
+ seine Domäne führt.
+
+ Falls ein Wächter die Antwort eines anderen nicht versteht, fordert er eine explizite Klärung an; er
+ ergänzt niemals selbst deren Bedeutung. Die zentrale Sicht führt die belegten Auswirkungen
+ zusammen, hält nicht belegte Fernwirkungen offen und zeigt koordinierte Lösungskandidaten. Ergebnis
+ kann ausdrücklich „keine sichere Empfehlung möglich“ sein.
+
+
+ 9 | Sicherheits-, Isolations- und Autoritätsmodell
+ • Analyse- und Austauschschicht: read-only gegenüber produktivem Repository, Trading-Runtime,
+ Venue und Credentials; getrennte, begrenzte Evidence-Ablage erst nach Owner-GO für nötige
+ Schreibartefakte.
+
+ • Keine produktiven Orders, POST, Kapitalmutation, Keychain-/Venue-Zugriffe oder Änderung von
+ Double Play, Master V2, Entry/Exit, Risk, Selection, Slot- und entscheidungsrelevanten Contracts ohne
+ separate Owner-Autorisierung.
+
+ • GHOSV Execution wird nicht geklont durch Umbau des bestehenden Werkzeugs; nur eine
+ unabhängige Implementierung nach Prüfung von Lizenz-/Code-/Contract-/State-Isolation.
+
+ • Keine neuen Live-Gates durch Audit, Graph, Wächter oder historische Census-Differenzen. Konkrete
+ CURRENT-Risiken können Owner-Live-Blocker sein, sind aber von technisch bewiesenen
+ Runtime-Blockern zu unterscheiden.
+
+ • Unbekannte Erreichbarkeit, fehlendes Pflichtwerkzeug oder widersprüchliche Evidenz führen zu
+ UNGEKLÄRT und verhindern einen vollständigen PASS. Relevante ungeklärte Risiken bleiben fail-closed.
+
+ • Vorgeschriebene Pflichttools sind für die jeweilige fachliche Abschlussantwort verbindlich. Wenn sie
+ nicht laufen, ist nur ein klar gekennzeichneter Teilbericht zulässig.
+
+
+ 10 | Nachweis- und Coverage-Modell
+ Jeder Befund benötigt: CURRENT-SHA/Tree-Provenienz, wirksamen Einstieg/Reachability oder explizit
+ UNKNOWN, Code-/Contract-/Owner-Regel, direkte und transitive Abhängigkeiten,
+ Sicherheits-/Kapital-/Autorisierungs-/Persistenzwirkung, Gegenbeleg, offene Unsicherheit und
+ betroffenen Wächter. Ein Import ist nicht automatisch Runtime-Reachability.
+
+ Coverage muss mehrdimensional ausgewiesen werden: Domäneninventar, Eintrittspunkte,
+ dynamisches Wiring, Contract-Abdeckung, Pfad-/Graphabdeckung, Runtime-Evidence, Toolausführung,
+ Epoch-/State-/Persistence-Grenzen. „100 %“ ist nur bei explizit definiertem endlichem Scope und
+ nachgewiesener Abdeckung zulässig.
+
+ Fixpunkt heißt: Für den konkret abgegrenzten Änderungsfall sind alle belegten erreichbaren relevanten
+ Domänen geprüft, offene Pfade separat ausgewiesen und keine unadressierten bekannten Wirkungen
+ übrig. Das ist kein globaler Vollständigkeitsbeweis.
+
+
+
+
+PEAK TRADE | Guardian Network | Konzept - keine Ausführungsfreigabe                                     Seite 4
+ 11 | Phasenplan zum Endziel - ohne vorweggenommene
+ Codierung
+   Stufe                  Ziel / konkrete Arbeit                                          Exit / Entscheidung
+
+
+   P0 | Leitplanken       Owner-Prinzipien, No-Interpretation-Regel, GO-Taxonomie und     Owner akzeptiert fachliche
+                          GHOSV-Execution-Schutz dokumentieren                            Regeln
+
+
+   P1 | CURRENT-Inv       Reale Domänen, Einstiegspfade, Contracts, dynamische            Coverage-Lücken und
+   entar                  Kopplungen, Runtime-Evidence gezielt ermitteln; GHV/Graph mit   Domänengrenzen offen
+                          sauberem Pin                                                    gelegt
+
+
+   P2 |                   Für jeden belegten Bereich genau einen verantwortlichen         Owner bestätigt
+   Wächterregister        Wächter und verbindliche Pflichttool-Matrix entwerfen           Register/Toolpflicht
+
+
+   P3 | Tool-Isolation    Eigenständigen CURRENT-Graph-GHOSV als ersten Kandidaten        Machbarkeit, Isolation,
+                          bewerten; GHOSV Execution unverändert lassen                    Aufwand, GO
+
+
+   P4 |                   Typisierte Messages, Provenienz, Fremdinterpretationsverbot,    Schema- und Negativtests
+   Befundprotokoll        Versionierung und Konfliktzustände spezifizieren                geplant
+
+
+   P5 | Offline-Pilot     Zwei Wächter an einem echten, aber rein hypothetischen          Keine Writes, keine
+                          CURRENT-Contract-Fall prüfen                                    semantische
+                                                                                          Fremddeutung
+
+
+   P6 | Kausales          Betroffene Wächter entlang belegter Kanten, inkl. Rückwirkung   Bounded Fixpoint + offene
+   Routing                und Zyklen, schrittweise einbeziehen                            Kanten sichtbar
+
+
+   P7 | Zentrale Sicht    Einheitlicher Evidence-/Konflikt-/Coverage-Punkt ohne neue      Provenienztreue
+                          Authority                                                       Konsolidierung
+
+
+   P8 | Skalierung        Weitere Wächter nur bei geklärten Domänengrenzen und            Interoperabilität und
+                          Owner-fixierter Toolchain anbinden                              Isolation getestet
+
+
+   P9 |                   Owner-Gates, kontrollierte Umsetzung, Reproof und               End-to-End Pilot verifiziert
+   Change-Workflow        Drift-Erkennung integrieren
+
+
+   P10 | Betrieb          Versionierte Toolchains, Regression, Drift-/Schema-Watches,     Messbare Qualität, Kosten
+                          regelmäßige Revalidierung                                       und Coverage
+
+
+
+
+ 12 | Qualitäts- und Negativtests
+ • Fehlendes Pflichtwerkzeug -> kein fachliches Gesamt-PASS.
+
+ • Fremder Befund ohne Provenienz -> nicht verwertbar.
+
+ • Wächter A ergänzt eigene Bedeutung in B-Befund -> hart zurückweisen und protokollieren.
+
+ • Uneinheitliche Baselines, Epochen oder Contract-Versionen -> keine Zusammenführung als eine
+ CURRENT-Wahrheit.
+
+ • Graphkante ohne aktive CURRENT-Relevanz -> keine automatische Live-Sperre.
+
+ • Dynamischer Pfad unbekannt -> COVERAGE_GAP, kein erfundener Null-Effekt.
+
+ • Zyklische oder transitive Wirkung -> erneute Zuständigkeitsanfrage, begrenzt und dedupliziert.
+
+ • Zwei widersprüchliche Fachbefunde -> beide bewahren; explizite Klärung durch zuständige Domäne.
+
+ • Unberechtigter Write-/POST-Versuch -> STOP, Audit-Ereignis, keine Wiederholung.
+
+
+
+
+PEAK TRADE | Guardian Network | Konzept - keine Ausführungsfreigabe                                                  Seite 5
+ • Änderung an geschützter Handelslogik ohne Owner-GO -> strikt blockiert.
+
+
+ 13 | Messgrößen und Erfolgskriterien
+ Vorgeschlagene KPIs: Anteil der Änderungsfälle mit vollständig ausgeführter Pflichttool-Matrix; Anteil
+ CURRENT-gepinnter Befunde; Anteil mit belegter produktiver Erreichbarkeit; Zahl offener, neu
+ entdeckter Transitivrelationen; Anteil rechtzeitig vor Implementierung erkannter Contract-Konflikte;
+ falsch-positive und falsch-negative Impact-Claims; Zeit bis zu einer begründeten Owner-Entscheidung;
+ Anzahl nach Umsetzung entdeckter, zuvor übersehener betroffener Domänen; Zahl verbotener
+ Fremdinterpretationen (Soll = 0). Ausgangswerte müssen erst erhoben werden.
+
+
+ 14 | Explizite Nicht-Ziele und offene Architekturfragen
+ • Keine heute festgelegte Gesamtzahl von Wächtern, Universen, GHOSV-Instanzen oder Interfaces.
+
+ • Keine vollständige CURRENT-Systemkarte aus der vorliegenden Cursor-Ausgabe ableitbar.
+
+ • Keine Entscheidung über Transport (Events/API/Dateien), Storage, Scheduling, Agenten-Framework
+ oder Programmierschnittstellen.
+
+ • Keine autonome Lösungsauswahl, Codegenerierung, Merge-Automation oder Runtime-Steuerung.
+
+ • Offen: Wie werden Domänengrenzen bei gemeinsamen Contracts gezogen? Wer bestätigt
+ Schemaänderungen? Welche dynamischen Pfade sind prüfbar? Welche Kosten-/Laufzeitbudgets gelten?
+ Wie werden Regression und Nicht-Erreichbarkeit nachgewiesen?
+
+ • Offen: Welche Pflichtwerkzeuge gelten je Wächter zusätzlich zu GHV/Graph, und wie ist ein
+ tool-unavailable Status fachlich zu behandeln?
+
+
+ 15 | Nächster sinnvoller, eng begrenzter Schritt
+ Zuerst keine Guardian-Implementierung. Stattdessen auf einem sauber gepinnten CURRENT-Stand eine
+ ergebnisoffene READ-ONLY-Abgrenzung der tatsächlich wirksamen Fachdomänen und ihrer
+ Schnittstellen beauftragen. GHV und CURRENT-Causal-Graph von Beginn an einsetzen; GHOSV
+ Execution nur für seinen Execution-Scope. Falls Werkzeuge temporäre Dateien benötigen, dafür
+ getrenntes Owner-GO mit strikt isolierter Ausgabe einholen. Die Untersuchung liefert ein erstes
+ Domänenregister, ein Coverage-/Uncertainty-Register und Kandidaten für die verpflichtende Toolmatrix
+ - ohne eine globale historische Census-Closure zu verlangen.
+
+ Danach erst den ersten unabhängigen Graph-GHOSV konzipieren und anhand
+ eines begrenzten hypothetischen Änderungsfalls prüfen. Die endgültige
+ Implementierungsarchitektur bleibt bewusst offen, bis CURRENT-Evidenz die
+ erforderlichen Grenzen belegt.
+
+
+ 16 | Grundlage, Evidenzstatus und Abgrenzung
+ Quelle A: vom Owner bereitgestellte „Peak Trade CURRENT-FIRST-Leitplanken ERWEITERT“, zwei
+ Seiten, Stand 17./18.10.2026, insbesondere Regeln 1-12. Quelle B: die im Chat wiedergegebene
+ Cursor-Bestandsaufnahme zu origin/main 6e3143bdf... (statischer Audit, kein unabhängiger Tool-Run).
+ Quelle C: Owner-Vorgaben in dieser Unterhaltung zu festen Wächtern, Pflichtwerkzeugen, isolierten
+ GHOSV und strengem Fremdinterpretationsverbot.
+
+ Die vorliegende Blueprint ist eine KONZEPTIONELLE Ableitung aus diesen Vorgaben. Sie behauptet
+ weder eine bereits implementierte Guardian-Architektur noch CURRENT-Validierung sämtlicher
+
+
+
+PEAK TRADE | Guardian Network | Konzept - keine Ausführungsfreigabe                                     Seite 6
+ fachlicher Abhängigkeiten. Für technische Tatsachen gelten weiterhin ausschließlich CURRENT-Code,
+ Contracts, nachgewiesene Runtime-Evidence und Owner-Autorisierung.
+
+
+
+
+PEAK TRADE | Guardian Network | Konzept - keine Ausführungsfreigabe                             Seite 7
+  17 | Verbindlicher Einstieg: CURRENT Map Baseline
+  Ergaenzung V0.2 vom 18.10.2026. Dieses Kapitel praezisiert den Einstieg in den bestehenden Phasenplan P0-P10
+  (Kapitel 11 und 15). Es ersetzt weder die Owner-Leitplanken noch die bisherigen Architekturentscheidungen. Kein
+  Implementierungsauftrag und keine Freigabe produktiver Aktionen.
+
+
+  17.1 | Zweck und Grenze
+  Vor dem Aufbau neuer Guardian-Werkzeuge wird der tatsaechlich sichtbare CURRENT-Systemstand als belegbare
+  Architekturgrundlage erfasst. Vorhandene Maps und der bestehende CURRENT-Causal-Graph werden nicht blind
+  aktualisiert: Zuerst werden Existenz, Aussage, Provenienz, Scope, fachliche Zustaendigkeit und Uebereinstimmung
+  mit CURRENT-Code und wirksamen Contracts festgestellt.
+
+  Historische Architekturen, alte Census-Baselines, retired Komponenten und Legacy-Kanten werden nicht rekonstruiert,
+  reaktiviert oder als CURRENT-Autoritaet uebernommen. Eine nachweislich heute wirksame Legacy-Abhaengigkeit ist
+  dagegen ein gezielt zu pruefender CURRENT-Sachverhalt. Fehlende historische Closure ist kein pauschales
+  Live-Gate.
+
+
+  17.2 | Vier getrennte Evidenzstufen
+
+    Status                       Exakte Bedeutung
+
+
+    EXISTS                       Artefakt/Modul ist auf gepinntem CURRENT-Tree vorhanden.
+
+
+    WIRED                        Aktuelle, belegte Bindung / Referenz / Aufrufkante existiert.
+
+
+    REACHABLE                    Von einem definierten CURRENT-Einstieg aus nachweislich erreichbar.
+
+
+    ACTIVE                       Im relevanten aktuellen Runtime-Kontext nachweislich wirksam.
+
+  Keine automatische Hochstufung: Datei, Import oder Graphkante belegt weder produktive Erreichbarkeit noch aktuelle
+  Runtime-Aktivitaet. Nicht nachweisbare Stufen erhalten UNGEKLAERT mit konkreter Evidenzluecke; sie werden weder
+  als aktiv noch als wirkungslos behauptet.
+
+
+  17.3 | Autoritaetsreihenfolge
+  Gepinnter CURRENT-Code, wirksame Contracts, aktuelle Bindings, belegte Runtime-Evidence und Owner-Regeln
+  bestimmen die fachliche Wahrheit. Maps, Runbooks, Graph-Snapshots und Werkzeugausgaben sind Navigations- oder
+  Pruefmittel, keine eigenstaendige Trading-Autoritaet. Code wird niemals angepasst, nur um eine Map gruen zu
+  machen.
+
+
+  18 | Inventar aller vorhandenen Maps
+  18.1 | Map Registry (Ermittlung, keine erfundene Soll-Liste)
+  Alle tatsaechlich vorhandenen Architektur-, System-Landscape-, Causal-, Authority-, Dependency-, Capital-, Decision-,
+  Execution-, Safety- und weiteren Map-/Graph-Artefakte werden ergebnisoffen erfasst. Diese Begriffe sind
+  Suchkategorien, keine Behauptung eigenstaendiger Artefakte. Es werden keine Maps allein zur Erfuellung einer
+  Kategorienliste erfunden.
+
+    Pflichtfeld je Artefakt                         Prueffrage
+
+
+    Identitaet / Pfad / Format                      Welches konkrete CURRENT-Artefakt ist vorhanden?
+
+
+
+
+PEAK TRADE | Guardian Network | Blueprint V0.2 - Ergaenzung                                                 Anhang Seite 1
+    Pflichtfeld je Artefakt                         Prueffrage
+
+
+    Baseline / Provenienz / Owner                   Welcher Tree, Contract-Stand und fachliche Verantwortungsbereich?
+
+
+    Behauptete Knoten und Kanten                    Welche Aussage trifft das Artefakt wirklich?
+
+
+    CURRENT-Beleg und Status                        EXISTS / WIRED / REACHABLE / ACTIVE / UNGEKLAERT?
+
+
+    Abweichung / Wirkung                            Welche belegte Differenz, welcher betroffene Pfad und welche Unsicherheit?
+
+
+    Aktualisierungsbedarf                           Korrektur, Abgrenzung, Beibehaltung oder keine Massnahme?
+
+
+
+  18.2 | Keine fremde Interpretation
+  Auch bei der Map-Pruefung gilt das Verbot aus Kapitel 3: Ein Tool- oder Waechterbefund wird nicht durch freie Deutung
+  zum Fakt. Zulaessig ist eine eindeutig markierte Pruefhypothese, die erst durch die zustaendige Domaene, ihre
+  Pflichtwerkzeuge und direkte CURRENT-Belege bestaetigt werden kann. Widersprueche bleiben sichtbar; keine
+  erzwungene Konsensbildung.
+
+
+  19 | Verbindlicher Startablauf M0-M3
+  Dieser vorgeschaltete Arbeitsstrang konkretisiert die CURRENT-Inventarisierung des bestehenden P1. Er aendert die
+  spaetere P0-P10-Guardian-Roadmap nicht und legt keine Implementierungstechnik fest.
+
+
+    Stufe                     Arbeit und Ergebnis                                                               Freigabegrenze
+
+
+    M0 - Inventar             Vorhandene Maps, Graphen, Werkzeuge, Baselines und Autoritaetsansprueche          READ_ONLY
+                              identifizieren. Ergebnis: Map Registry mit offenen Feldern.
+
+
+    M1 - CURRENT-A            Jede bestehende Map anhand aktiver Code-/Contract-/Binding-Belege,                READ_ONLY
+    bgleich                   Reachability und Gegenbelegen bewerten. Ergebnis: Evidenz- und
+                              Abweichungsmatrix.
+
+
+    M2 - Gezieltes            Nur belegte CURRENT-Korrekturen pro vorhandener Map planen, getrennt              SEPARATES OWNER
+    Update                    genehmigen und versioniert umsetzen. Keine Handelslogik-Korrektur fuer            CODE_CHANGE_GO
+                              Map-Konsistenz.
+
+
+    M3 - Cross-Map-R          Aktualisierte Maps auf gleiche Baseline, Widersprueche,                           Keine PASS-Aussage
+    eproof                    direkte/reverse/transitive Wirkung, offene dynamische Pfade und Provenienz        ohne Scope-Coverage
+                              pruefen.
+
+
+
+  19.1 | Statisch und dynamisch getrennt
+  Statische CURRENT-Wahrheit: Module, Imports, konkrete Aufrufstellen, Contracts, Konfigurationen, Daten- und
+  Autoritaetsgrenzen. Dynamische CURRENT-Wahrheit: belegte Prozess-/Session-Einstiege, Laufzeit-Wiring und
+  tatsaechlich beobachtete Pfade. Fuer dynamische Pruefungen gelten gesonderte Owner-Grenzen; keine privaten
+  GETs, Credentials, Keychain, Venue oder POST ohne ausdrueckliches GO.
+
+
+  19.2 | Werkzeugpflicht und Execution-Isolation
+  GHV und bestehender CURRENT-Causal-Graph werden von Beginn an als Pruefmittel eingesetzt. Der bestehende
+  GHOSV Execution bleibt unveraendert und ausschliesslich fuer Execution-Befunde zustaendig. Ist ein Pflichtwerkzeug
+  nicht ausfuehrbar, lautet der Teilbefund NICHT GEPRUEFT / NICHT BELEGT; kein fingiertes PASS. Fuer benoetigte
+  isolierte Schreibartefakte ist vorher eine getrennte Owner-Freigabe einzuholen.
+
+
+
+
+PEAK TRADE | Guardian Network | Blueprint V0.2 - Ergaenzung                                                                Anhang Seite 2
+  20 | Abnahme, Pflege und naechster Schritt
+  20.1 | Minimaler Abnahmenachweis
+  Jede aktualisierte Map benoetigt exakten CURRENT-Pin, eigene Identitaet und Version, gepruefte
+  Knoten-/Kantenquellen, betroffene Ein- und Ausgaenge, direkte/reverse/transitive Auswirkungen,
+  Sicherheit/Kapital/Authority/Persistenz, Gegenbelege, offene Reachability-Luecken, Werkzeug-Einzelbefunde und
+  benoetigte Owner-GOs. Ein Gesamt-PASS ist nur fuer einen definierten und belegten endlichen Scope moeglich.
+
+
+  20.2 | Kontinuierliche CURRENT-Pflege als spaeteres Ziel
+  Nach dem initialen Abgleich soll jede relevante spaetere Aenderung eine kontrollierte Impact-Pruefung und
+  erforderlichenfalls ein versioniertes Map-Update ausloesen. Diese Drift-/Aenderungskontrolle ist ein spaeterer
+  Guardian-Network-Baustein, keine heute behauptete Automatik. Unbekannte Fernwirkungen bleiben offen, statt
+  Null-Effekt zu fingieren.
+
+
+  20.3 | Unmittelbar naechster Auftrag
+  Nur M0 und M1, read-only: Sauberen CURRENT-Pin nachweisen; saemtliche tatsaechlich vorhandenen
+  Maps/Graphen registrieren; deren Aussagekraft und Aktualisierungsbedarf mit CURRENT-Belegen und
+  Werkzeug-Einzelbefunden dokumentieren. Keine vorgegebene Reparatur, kein Write, kein Commit/Push/PR/Merge,
+  keine produktive Aktion. Erst nach Ergebnisbewertung und Owner-Entscheidung folgt M2.
+
+  Entscheidungsregel: Erst belegte CURRENT-Architekturgrundlage, dann spezialisierte Guardian-Werkzeuge, danach
+  kontrollierte Vernetzung. Keine historische Vollstaendigkeitskampagne und keine neuen Live-Gates aus Maps.
+
+
+
+
+PEAK TRADE | Guardian Network | Blueprint V0.2 - Ergaenzung                                                   Anhang Seite 3
+ 21 | Domänentiefe statt bloßer Modulabdeckung
+ Ergänzung V0.3 vom 18.10.2026. Die ursprünglichen Seiten 1–10 (V0.1 plus V0.2-Anhang) bleiben unverändert.
+ Diese Ergänzung konkretisiert die Owner-Zielvorstellung; sie behauptet weder bestehende Wächter noch
+ nachgewiesene CURRENT-Vollständigkeit.
+
+
+ 21.1 | DOMAIN-COMPLETE, BOUNDARY-STRICT GUARDIAN
+ Verbindliches Ziel: Genau ein fachlich verantwortlicher Hauptwächter je belegtem CURRENT-Universum. Er
+ muss dessen gesamte wirksame Architektur verstehen und mit Owner-vorgeschriebenen Pflichtwerkzeugen
+ prüfen können – nicht nur Dateien oder Imports. Seine Bewertungszuständigkeit endet an der
+ Universumsgrenze; ein- und ausgehende Cross-Contracts werden vollständig erfasst, fremde interne Semantik
+ wird nicht interpretiert.
+
+   Prüfdimension                     Verpflichtende Sollkenntnis innerhalb der eigenen Domäne
+
+   Struktur / Kausalität             Komponenten, Funktionen, Knoten, Kanten, direkte/indirekte/transitive Beziehungen, Zyklen,
+                                     Forward- und Reverse-Pfade.
+
+   Verträge / Autorität              Wirksame Contracts, Policies, Owner-Regeln, Zuständigkeiten, Berechtigungen, Freigabe-
+                                     und Vetogrenzen.
+
+   Daten / Zustand                   Datenherkunft und Konsumenten, Transformationen, Konfigurationen, Epochen, State
+                                     Machines, Persistenz und Reconciliation.
+
+   Runtime / Schutz                  CURRENT-Einstiege, dynamisches Wiring, belegte Reachability/Aktivität, Failure Modes,
+                                     Safety, Kapital- und Decision-Wirkungen.
+
+   Außengrenzen                      Alle belegten Eingangs- und Ausgangsinterfaces mit Contract-ID, Gegenstelle, Evidenz und
+                                     ungeklärter Reichweite.
+
+
+ Jede Dimension führt einen getrennten Coverage- und Unsicherheitsstatus. Vollständigkeit ist nur für einen
+ ausdrücklich definierten, nachgewiesenen CURRENT-Scope zulässig; fehlende Belege bleiben UNGEKLÄRT.
+ Ein fachlicher Wächter ist kein autonomer Code-Editor.
+
+
+ 21.2 | Ein Hauptwächter, mehrere interne Unterwächter
+ Ein komplexes Universum darf und soll bei belegter Mehrschichtigkeit intern in klar abgegrenzte Ebenen
+ aufgeteilt werden. Der Hauptwächter bleibt alleiniger fachlicher Verantwortlicher des Universums.
+ Unterwächter sind fest zugeordnete interne Prüfrollen, keine eigenständigen Owner fremder Universen und keine
+ zusätzliche Handelsautorität. Ihre Zahl, Grenzen und Werkzeugpflicht werden erst anhand der aktualisierten
+ CURRENT-Maps festgelegt.
+
+ Jeder Unterwächter besitzt eine eigene, vom Owner verbindlich definierte Toolchain und prüft seine Ebene
+ einschließlich der inneren Übergänge und äußeren Schnittstellen. Der Hauptwächter darf deren Befunde nicht
+ umdeuten, sondern konsolidiert sie unverändert, prüft übergreifende Verträge anhand eigener zulässiger
+ Evidenz und fordert bei Widersprüchen Klärung an.
+
+
+ 21.3 | Self-Learning Stack als hypothetischer Pilot
+ Der Self-Learning Stack ist ein Kandidat für eine hierarchische Wächterstruktur, nicht bereits als vollständig
+ kartiertes Universum bestätigt. Beispielsweise könnten später getrennte Ebenen für Daten-/Feature-Eingang,
+ Training, Evaluation, Promotion/Policies und Feedback/Outcome entstehen. Ob diese Ebenen
+ CURRENT-relevant und wie sie verbunden sind, muss M0/M1 erst belegen.
+
+
+
+
+PEAK TRADE | Guardian Network | Blueprint V0.3 - Ergänzung                                                       Anhang Seite 1
+   Rolle                                 Zuständigkeit / Grenze
+
+   Self-Learning Hauptwächter            Gesamte interne Learning-Domäne; unveränderte Zusammenführung der Unterbefunde;
+                                         alle eigenen Außengrenzen.
+
+   Ebenen-Unterwächter (Kandidaten)      Vollständige Tiefe der jeweils belegten Ebene; Übergänge zu anderen Ebenen nur mit
+                                         überprüften Contracts.
+
+   Fremder Domänenwächter                Alleinige Bewertung der eigenen fremden Domäne; beantwortet formalisierte
+                                         Schnittstellenanfragen.
+
+
+
+
+ 21.4 | Striktes Verbot der Fremdinterpretation auf jeder Hierarchieebene
+ Das Verbot aus Kapitel 3 gilt ebenso Unterwächter ↔ Unterwächter, Unterwächter ↔ Hauptwächter und
+ Hauptwächter ↔ anderer Hauptwächter. Zulässig sind unveränderte, versionierte Befunde, konkrete eigene
+ Prüfungen und Rückfragen. Keine stillschweigende Kausaldeutung, keine automatische PASS-Hochstufung und
+ kein erfundener Null-Effekt.
+
+
+ 22 | Aufwand, Nutzen und Prioritätsbremse
+ Der Owner will keine monatelange Nebenbaustelle. Die Architektur wird deshalb wertorientiert und abbrechbar
+ entwickelt. Die Map-Aktualisierung M0–M3 liefert eigenständigen Nutzen, auch wenn das Guardian Network
+ anschließend zurückgestellt wird. Es besteht kein Automatismus von Map-Refresh zu Wächter-Implementierung.
+
+   Entscheidungspunkt                  Verbindliche Bewertung
+
+   Nach M0/M1                          Anzahl CURRENT-relevanter Maps, echte Differenzen, kritische Coverage-Lücken,
+                                       Aufwand für M2 und erwarteter Nutzen offenlegen.
+
+   Nach M2/M3                          Prüfen, ob aktualisierte Maps konkrete Änderungsfolgen bereits ausreichend zuverlässig
+                                       und effizient zeigen.
+
+   Bei geringem Zusatznutzen           Guardian Network auf niedrigere Priorität setzen; keine vorsorgliche Großimplementierung.
+
+   Bei nachgewiesener Lücke            Nur einen abgegrenzten Pilotbereich (ggf. Learning mit Unterwächtern) planen; Aufwand
+                                       und Nutzen messen.
+
+
+ Stop-/Repriorisierungsregel: Sobald Aufwand, Laufzeit oder neue Discovery gegenüber dem erwartbaren
+ Sicherheits- und Produktivitätsgewinn unverhältnismäßig werden, ist ein Owner-Entscheidungspunkt vorzulegen:
+ STOP, PAUSE, engerer Scope oder Weiterführung. Keine eigenmächtige Ausweitung. Bewertungskriterien:
+ Analysezeit je Änderungsfall, erkannte/übersehene Cross-Impacts, Coverage, falsche Alarme, Pflegekosten und
+ erforderliche Owner-GOs.
+
+
+ 23 | Präzisierter Start und Endziel
+ Jetzt: Nur M0/M1 read-only mit sauberem CURRENT-Pin, Registry aller vorhandenen Maps und expliziten
+ Lücken. Keine Historien-Rekonstruktion, keine erfundene Universumsgrenze, kein Code-Write. GHV und
+ CURRENT-Causal-Graph gemäß Leitplanken; GHOSV Execution ausschließlich für Execution. Fehlende
+ Pflichtläufe als NICHT GEPRÜFT ausweisen.
+
+ Danach: M2 nur nach separatem Owner-GO; M3 prüft Cross-Map-Konsistenz. Anschließend
+ Nutzen-/Aufwandentscheidung vor jeder Wächterimplementierung. Erst bei positivem Befund:
+ Universumsgrenzen, Hauptwächter, nötige interne Unterwächter und jeweils verpflichtende Toolchains
+ ergebnisoffen spezifizieren; einen kleinen hypothetischen Fall pilotieren.
+
+
+
+
+PEAK TRADE | Guardian Network | Blueprint V0.3 - Ergänzung                                                       Anhang Seite 2
+ Endziel: Tief prüfende, domänenstrikte Haupt- und Unterwächter tauschen ausschließlich belegte Befunde aus.
+ Ein zentraler Evidenzpunkt zeigt Auswirkungen von A bis Z, Konflikte und Lösungskandidaten vor einer
+ Änderung. Keine autonome Code-/Runtime-Wirkung; Owner-Locks und Owner-GO bleiben unverändert.
+
+ Status V0.3: Konzept- und Prioritätsregeln ergänzt. Keine CURRENT-Verifikation, keine Wächterimplementierung, keine
+ Repository- oder Runtime-Autorisierung.
+
+
+
+
+PEAK TRADE | Guardian Network | Blueprint V0.3 - Ergänzung                                                       Anhang Seite 3
+PEAK TRADE | GUARDIAN NETWORK | V0.4
+Verbindliche konsolidierende Ergänzung vom 18.10.2026
+CURRENT-Systemklassifikation vor M2 | Originalseiten 1–13 bleiben unverändert.
+
+24 | Vorrangregel und kohärente Reihenfolge
+Diese Ergänzung präzisiert und ersetzt ausschließlich widersprechende Zeit- und Reihenfolgeangaben der Kapitel
+11, 15, 19, 20.3, 21.2, 21.3, 22 und 23. Alle Sicherheits-, CURRENT-FIRST-, Owner-GO-,
+GHOSV-Execution-Isolations- und Fremdinterpretationsregeln gelten unverändert. Bei abweichenden Aussagen über
+den nächsten Schritt hat dieses Kapitel Vorrang.
+
+Verbindlicher Ablauf: M0/M1 (bisherige Map-Bestandsaufnahme, partiell) → M1.5 CURRENT-Systemklassifikation
+→ Owner-Bewertung des Klassifikationsergebnisses → M2 (nur nach separatem CODE_CHANGE_GO und belegter
+Notwendigkeit) → M3 (Cross-Map-Reproof) → Aufwand-/Nutzenentscheidung → optional Guardian-Pilot und P2–P10.
+M1.5 ist Bestandteil von P1, keine neue globale Closure und kein neues Live-Gate.
+
+Die Aussage „Jetzt nur M0/M1“ in Kapitel 23 und „unmittelbar nächster Auftrag M0/M1“ in Kapitel 20.3 ist durch Jetzt
+M1.5 abgelöst. Die spätere Festlegung von Universumsgrenzen in Kapitel 23 betrifft deren erneute Validierung und
+Wächterzuweisung, nicht die erstmalige Klassifikation. Kapitel 21.2: Unterwächter-Grenzen werden erst nach belegter
+Klassifikation und, soweit nötig, M2/M3 festgelegt.
+
+25 | M1.5: Vollständige CURRENT-Breitenklassifikation (READ_ONLY)
+Owner-Ziel: Vor jedem Map-Write sämtliche tatsächlich zum definierten CURRENT-Systemscope gehörenden
+Elemente inventarisieren, alle nachweisbaren fachlichen Universen und alle Bereiche außerhalb der Universen
+abgrenzen, ihre Anzahlen belegen und die bekannten Außenkanten erfassen. Die 14 Census-Topologien, 19
+Landscape-Surfaces, 75 IAM-Domänen und 829 Namensfunde sind nur Ausgangshinweise, weder Universumszahlen
+noch Vollständigkeitsnachweise.
+
+Das Inventar umfasst die im gepinnten Tree belegten relevanten Module, Pakete, Prozesseinstiege, Contracts,
+Konfigurationen, Daten-/State-/Persistenzflächen, Integrationspunkte, Werkzeuge und Maps; erforderliche außerhalb
+des Repositories liegende CURRENT-Runtime-Flächen werden separat als bekannt, unbekannt oder nicht autorisiert
+geführt. Suchmethodik und Ausschlüsse müssen reproduzierbar sein. Keine historische Rekonstruktion oder
+unbeschränkte Discovery.
+
+26 | Klassifikationsmodell und strikte Zählregeln
+UNIVERSE: fachlich nachgewiesenes CURRENT-Universum mit expliziter Grenze, Identität und Beleg.
+EXTERNAL_DOMAIN: CURRENT-Bereich außerhalb ratifizierter Universen mit eigener Verantwortungsgrenze;
+„außerhalb“ bedeutet nicht automatisch externes Netzwerk oder Venue. CROSS_BOUNDARY: belegte gerichtete
+Schnittstelle zwischen Bereichen, mit Contract, Producer/Consumer und ggf. Gegenrichtung. UNCLASSIFIED:
+CURRENT-Zugehörigkeit oder Grenze ungeklärt. RETIRED/HISTORICAL: nur mit Nachweis; keine
+CURRENT-Autorität.
+
+Jedes inventarisierte Element erhält eine stabile ID, genau eine primäre fachliche Zuordnung oder UNCLASSIFIED,
+daneben beliebig viele explizite Interface-Bezüge. Shared Services und gemeinsame Contracts nicht künstlich einem
+Universum zuschlagen. Universen, Außenbereiche, Surfaces, IAM-Domänen, Dateien und Graphknoten sind
+unterschiedliche Zähleinheiten; keine stillschweigende Gleichsetzung.
+
+27 | Nachweisstufen und Abnahme
+EXISTS, WIRED, REACHABLE und ACTIVE bleiben getrennt. Für jede Universums- oder Außenbereichsgrenze:
+CURRENT-Pin/Tree, fachliche Definition, Mitgliedschaft, Ausschlüsse, direkte und transitive Außenkanten, Contracts,
+zuständige Evidenzquelle, Gegenbelege, Unklarheiten und Coverage. Keine aus Maps abgeleitete
+Universumsratifikation ohne Prüfung an CURRENT-Code und wirksamen Contracts.
+
+100 % darf ausschließlich die lückenlose Klassifikation eines explizit endlichen und nachweislich vollständig erfassten
+Scopes bezeichnen. Sie ist kein Beweis, dass unbekannte dynamische Runtime-Abhängigkeiten nicht existieren. Eine
+endgültige Gesamtzahl wird nur ausgewiesen, wenn Inventargrenze, Zuordnung und Ausschlüsse belegt sind und
+keine relevanten UNCLASSIFIED-Reste verbleiben; andernfalls belegte Mindestzahl, Kandidaten und offene Differenz
+separat berichten.
+
+28 | M1.5-Ergebnisse und STOP/GO
+Pflichtausgabe: (A) Universe Registry samt belegter Anzahl; (B) External-Domain Registry samt belegter Anzahl; (C)
+vollständige Zuordnungsmatrix innerhalb des definierten Inventars; (D) Cross-Boundary Contract/Edge Registry mit
+Richtung; (E) Map-to-Domain-Zuordnung inkl. Multi-Domain/Unclassified/Retired; (F) Coverage-, Uncertainty- und
+Ausschlussregister; (G) Reproduktionsmethode, Aufwandsabschätzung und explizite Owner-Entscheidungspunkte.
+
+Fehlt die erforderliche Abdeckung, lautet der Status PARTIAL/UNGEKLÄRT, nicht 100 % PASS. M1.5 darf in
+begrenzten Slices erfolgen; bei unverhältnismäßigem Aufwand STOP/PAUSE/Scope-Entscheid vorlegen, ohne das
+100-%-Ziel stillschweigend abzuschwächen. Kein automatischer Übergang zu M2.
+
+29 | Toolpflicht, Schutz und unmittelbarer Auftrag
+GHV und bestehender CURRENT-Causal-Graph sind ab Beginn und während der Prüfung einzusetzen; die
+beigefügten CURRENT-FIRST-Leitplanken verlangen getrennte GHV-, GHOSV- und Graph-Befunde. GHOSV
+Execution ausschließlich für Execution; außerhalb davon ausdrücklich NICHT ANWENDBAR/NICHT GEPRÜFT mit
+Scope-Begründung, niemals als Whole-System-Prüfer. Fehlende Frischläufe: NICHT GEPRÜFT, kein PASS.
+Schreibende Tools, isolierte Checkouts oder Evidence-Dateien nur nach gesondertem Owner-GO. Keine produktiven
+GETs, Keychain, Venue, POST, Codeänderungen, Commit, Push, PR oder Merge ohne jeweilige Autorisierung.
+
+NÄCHSTER CURSOR-AUFTRAG: M1.5 READ_ONLY auf sauber gepinntem CURRENT-Stand planen und innerhalb
+autorisierter read-only Mittel durchführen; zuerst Umfang und Methode der vollständigen Breiteninventarisierung
+offenlegen, dann Universen, Außenbereiche und Außenkanten evidenzbasiert klassifizieren. Keine Lösung, Anzahl
+oder Domänengrenze vorgeben. Bei notwendigen schreibenden Hilfsmitteln vor deren Ausführung STOP und
+gesondertes GO einholen. M2 bleibt gesperrt bis zur Owner-Entscheidung.
+
+Status: V0.4 ist ein Architektur-Fahrplan, keine CURRENT-Verifikation, keine Wächterimplementierung und keine
+Trading-Autorisierung.
+ PEAK TRADE | GUARDIAN NETWORK | V0.5
+
+ Ergänzung vom 19.10.2026 | Originalseiten 1–15 bleiben unverändert.
+
+ 30 | Nodewise Excavation: wiedergefundene forensische Methode
+ Die im Oktober 2026 wiederaufgegriffene Nodewise Excavation ist eine Untersuchungsmethode, kein
+ eigenständiges, fertig implementiertes universelles Tool und keine Trading- oder Guardian-Autorität. Die historischen
+ Einzeluntersuchungen nutzten maßgeschneiderte Python-Auswertungen mit dem Launcher ./scripts/pt; der
+ Launcher selbst war nicht die fachliche Analysemethode.
+
+ 30.1 | Einsatz im M1.5-Rahmen
+ Die Methode darf für gepinnten CURRENT-Code fachliche Identitäten, Mitgliedschaftsbelege und Außengrenzen
+ nodeweise ermitteln. Für die unmittelbar geplante systemweite Klassifikation gilt nur Außengrenzen:
+ Universumsname, Eigenverantwortung, nachweisbare Zuordnung, Ausschlüsse und offene Grenzfragen. Keine
+ Vertiefung in interne Algorithmen, keine freie Cross-Universe-Semantik und keine automatische Erweiterung des
+ Untersuchungsumfangs.
+
+ 30.2 | Beweis- und Schutzregeln
+ • Jeder Befund verweist auf exakten CURRENT-Commit, Tree, Blob bzw. Code-/Contract-Stelle und klaren Scope. Dateiname oder
+ Import allein beweist keine fachliche Mitgliedschaft.
+
+ • Historische Archive, frühere Worktrees, untracked Dateien und frühere Evidence sind keine CURRENT-Mitgliedschaftsautorität.
+ Keine Wiederherstellung, Migration, Promotion oder Rekonstruktion historischer Komponenten.
+
+ • Klassifikation bleibt CONFIRMED / CANDIDATE / UNRESOLVED bzw. begründet NOT_INTERNAL; fehlende Belege erzeugen
+ kein PASS. EXISTS, WIRED, REACHABLE und ACTIVE bleiben getrennt.
+
+ • Produktives Repository, Runtime, Contracts, Parameter und Double Play bleiben unverändert. Isolierte neue Evidence-Ausgaben
+ nur mit ausdrücklich passendem Owner-GO; keine Orders, POST, Commit, Push, PR oder Merge.
+
+ • GHV und CURRENT-Causal-Graph bleiben gemäß Kapitel 29 Pflichtprüfmittel. Nodewise Excavation ersetzt keine
+ vorgeschriebene Tool-Ausführung. GHOSV Execution bleibt Execution-only.
+
+
+ 30.3 | Einordnung in die Roadmap
+ Die Methode ergänzt die M1.5 CURRENT-Systemklassifikation (Kapitel 24–29), ohne deren Scope, Reihenfolge,
+ Zählregeln oder Owner-Gates zu ersetzen. Als Ausgangspunkt dienen zuerst die bereits namentlich mit
+ CURRENT-Belegen identifizierten Universen; das Namensregister ist zu lokalisieren und am neuen CURRENT-Pin zu
+ prüfen, nicht aus Erinnerung zu erfinden. Erst nach dieser Liste ist eine begrenzte Lückenprüfung zulässig.
+
+
+
+
+PEAK TRADE | Guardian Network | Blueprint V0.5 - Ergänzung                                                            Anhang Seite 1
+ PEAK TRADE | GUARDIAN NETWORK | V0.5
+
+
+ 31 | Master V2 Internal Code Map: forensischer Referenzstand
+ Die MASTER_V2_INTERNAL_CODE_MAP_V1 ist ein konsolidiertes Evidence-Artefakt, kein neues
+ Softwarewerkzeug, kein Beweis einer vollständigen Systemarchitektur und keine neue Owner-Ratifizierung. Sie
+ entstand aus zwei begrenzten Nodewise-Untersuchungen und einem nachfolgenden Completeness Gate sowie
+ Closure WP1.
+
+ 31.1 | Reproduzierbare Baseline und bestätigter Umfang
+
+   Merkmal                                       Evidenzstand am 19.10.2026
+
+   origin/main Pin                               97c8c954204c15f9af5a48995b889ce3fb223c64
+
+   Tree                                          898ede79de7e527db3632b8a3b32daf8b9b098b8
+
+   Master-V2-Paket                               136 Dateien gelesen; 134 intern bestätigt; 2 offen
+
+   market_state                                  7 Dateien gelesen; 2 intern bestätigt; 5 offen
+
+   Gesamt                                        136 bestätigte interne Dateien; 7 offene Mitgliedschaften
+
+   Vollständiges Innenuniversum                  NOT_PROVEN
+
+   Historische Übernahmen /                      0/0
+   Codeänderungen
+
+
+ 31.2 | Gesicherte Einordnung und verbleibende Grenzen
+ Owner-Hierarchie: Human Owner > Master V2 > Double Play > Dynamic Scope. Double Play bleibt vollständig
+ unter Category 3 / FULL OWNER LOCK. Die CURRENT-Codebelege zu DynamicScopeRules,
+ RuntimeScopeState und CANONICAL_SCOPE_STATE_OWNER stützen die technische Zustandszuordnung. Eine
+ direkte Aufrufkante der Double-Play-Modellmodule zum L6-Generator bleibt NOT_PROVEN; sie darf nicht erfunden
+ werden.
+
+ Closure WP1 bewertete zehn Nachweisanforderungen: 1 PASS (eng begrenzte Hierarchiezuordnung), 9
+ NOT_PROVEN (7 Mitgliedschaften und 2 Coverage-Anforderungen). Die V2-Zusammenfassung meldete irrtümlich 6
+ offene Mitgliedschaften; die pfadbasierte Konsolidierung weist korrekt 7 aus. Originale Evidence blieb unverändert.
+
+ 31.3 | Verwendung und Vorrang
+ Diese Code Map ist nur ein punktuell gepinnter Innenreferenzstand. Sie darf weder zur vollständigen
+ Master-V2-Universumsgrenze noch zur Gesamtzahl aller Systemuniversen hochgestuft werden. Bei neuer
+ CURRENT-Baseline müssen betroffene Belege erneut zugeordnet werden. Für die nächste M1.5-Phase wird
+ zunächst das bestehende namentliche Universumsregister genutzt; die Außengrenzen werden separat belegt. Die
+ sieben offenen Innenmitgliedschaften blockieren nicht automatisch die begrenzte Außengrenzenklassifikation.
+
+ 31.4 | Evidence-Pfade (lokal, keine Repository-Änderung)
+ /Users/frnkhrz/Peak_Trade_forensic_evidence/master_v2_internal_nodewise_excavation_v1
+
+ /Users/frnkhrz/Peak_Trade_forensic_evidence/master_v2_internal_nodewise_excavation_v2
+
+ /Users/frnkhrz/Peak_Trade_forensic_evidence/master_v2_internal_code_map_v1
+
+ /Users/frnkhrz/Peak_Trade_forensic_evidence/master_v2_internal_completeness_gate_v1
+
+ /Users/frnkhrz/Peak_Trade_forensic_evidence/master_v2_internal_closure_wp1
+
+ Status V0.5: Methodik und forensischer CURRENT-Referenzstand ergänzt. Die Vorrangregel V0.4 (Kapitel 24), M1.5-STOP/GO und
+ sämtliche Sicherheits- und Owner-Gates bleiben unverändert. Keine Guardian-Implementierung, keine Trading-Autorisierung.
+
+
+
+
+PEAK TRADE | Guardian Network | Blueprint V0.5 - Ergänzung                                                      Anhang Seite 2
+ PEAK TRADE | GUARDIAN NETWORK | V0.6
+
+
+ 32 | Guardian Coordination Cloud (GCC): zentrale
+ Prüfkoordination
+ Ergänzung vom 20.10.2026. Die Originalseiten 1–17 (V0.1 bis V0.5) bleiben unverändert. Dieses Kapitel beschreibt
+ das fachliche Zielbild einer deterministischen Koordinationsinstanz; es dokumentiert keine bestehende
+ Implementierung, keinen durchgeführten Lauf und keine neue Owner-Ratifikation der offenen Domänen oder
+ Werkzeugverträge.
+
+
+ 32.1 | Zweck, Einordnung und Abgrenzung
+ Die Guardian Coordination Cloud (GCC) ist der einheitliche Eingang für Owner-Fragen, hypothetische
+ Änderungswünsche und Impact-Prüfungen sowie der einheitliche Rückkanal für unveränderte Guardian-Befunde und
+ einen nachvollziehbaren Gesamtbericht. Sie ersetzt ein frei vermaschtes Peer-to-Peer-Gespräch durch einen
+ koordinierten Anfrage-/Antwortprozess.
+
+ GCC ist eine Koordinations- und Evidenzschicht, keine übergeordnete fachliche oder produktive Instanz. Die
+ bestehende Owner-Architektur und ihre Autoritätsgrenzen bleiben unverändert. Insbesondere erhält GCC keine
+ Weisungs-, Entscheidungs-, Trading-, Freigabe-, Sicherheits- oder Änderungskompetenz gegenüber Master V2,
+ Double Play oder anderen Bereichen.
+
+ Eine KI ist kein Bestandteil dieses Architekturmodells. Anfragevalidierung, Routing, Vollständigkeitskontrolle,
+ Konfliktanzeige und Berichtserstellung sind als deterministische, überprüfbare Funktionen konzipiert.
+
+
+ 32.2 | Kommunikationsprinzip: Hub-and-Spoke statt Guardian-Mesh
+
+   Akteur / Kanal                Zulässiger Ablauf                                         Verbotene Wirkung
+
+
+   Owner → GCC                   Frage oder Änderungshypothese mit Scope, Baseline         Keine implizite GO-Erteilung durch bloße
+                                 und gewünschter Prüftiefe einreichen.                     Anfrage.
+
+
+   GCC → Guardians               Einheitliche, versionierte IMPACT_QUERY an alle im        Keine fachliche Deutung, kein
+                                 expliziten Register bestätigten Guardians; gezielte       Überschreiben von Domain-Contracts.
+                                 Rückfragen nach Bedarf.
+
+
+   Guardian → GCC                Eigener signierter/identitätsgebundener, versionierter    Keine fremde Domäneninterpretation;
+                                 Befund mit Scope, Toolstatus und Evidenz.                 keine unbelegte Nullwirkung.
+
+
+   GCC → Owner                   Vollständigkeits- und Konfliktstatus, betroffene Pfade,   Keine automatische Freigabe oder
+                                 offene Lücken, Änderungsoptionen als getrennte            Ausführung.
+                                 Vorschläge.
+
+ Das Zielmodell erlaubt keinen direkten Guardian-zu-Guardian-Transport als regulären Kommunikationsweg. Fachliche
+ Rückfragen laufen über GCC an die zuständige Domäne. Das bestehende strikte Fremdinterpretationsverbot aus
+ Kapitel 3 und 21.4 bleibt für jeden Befund uneingeschränkt gültig.
+
+
+
+
+PEAK TRADE | Guardian Network | Blueprint V0.6 - Ergänzung                                                                 Anhang Seite 1
+ PEAK TRADE | GUARDIAN NETWORK | V0.6
+
+
+ 33 | Anfragevertrag, Prüfstatus und Antwortdisziplin
+ 33.1 | Unveränderlicher Fall und deterministische Verteilung
+ Jede Anfrage besitzt CASE_ID, REQUEST_VERSION, OWNER_REQUEST_TYPE (QUESTION / CHANGE_HYPOTHESIS),
+ wörtliche Owner-Frage, expliziten Analyse-Scope, CURRENT_COMMIT, TREE, wirksame
+ Contract-/Konfigurationsversionen, Epoch-/State-Bezug, Schutzklasse, Registry-Version und erwartete
+ Guardian-Empfänger. Unbekannte Felder werden ausdrücklich als UNKNOWN markiert. Die GCC verändert die
+ Originalfrage nicht stillschweigend.
+
+ Ein initialer Broadcast an sämtliche bestätigten Guardians dient als breiter Negativ- und Impact-Abgleich. Die
+ Empfängerliste ist endlich, versioniert und im Fallbericht nachvollziehbar. Nicht ratifizierte, WITHHELD oder
+ unbekannte Bereiche werden als Coverage-Lücke geführt, nicht als befragte Guardians oder als nachgewiesen
+ unbetroffen. Nachfolgendes kausales Routing erfolgt anhand belegter Forward-/Reverse-/transitiver Kanten, Zyklen
+ und expliziter Schnittstellen.
+
+
+ 33.2 | Fachantworten und Evidenzanforderung
+
+   Status                             Verbindliche Bedeutung
+
+
+   BETROFFEN                          Eigene Domäne weist konkrete Auswirkung mit Contract-/Kanten-ID, CURRENT-Evidenz, Richtung
+                                      und Reichweite nach.
+
+
+   NICHT_BETROFFEN                    Eigene Domäne weist für den exakt abgegrenzten Fall und Scope nachvollziehbar aus, warum
+                                      keine relevante Wirkung vorliegt; kein bloßes Schweigen, keine Vermutung.
+
+
+   UNGEKLÄRT                          Relevanz kann wegen fehlender Daten, Toolausführung, unklarer Semantik, unbewiesener
+                                      Erreichbarkeit oder offener Kante nicht belegt oder ausgeschlossen werden.
+
+
+   CONFLICT_OPEN                      Zwei oder mehr versionierte Befunde widersprechen sich; Originalaussagen und zuständige
+                                      Klärungsadresse bleiben erhalten.
+
+
+   NOT_TESTED /                       Pflichtwerkzeug nicht ausgeführt oder nicht verfügbar; niemals als negativer Impact-Nachweis oder
+   TOOL_UNAVAILABLE                   PASS werten.
+
+ Jede Fachantwort führt unabhängig vom Impact-Status den Einzelstatus von <Domain> GHV, <Domain> Graph und
+ <Domain> GHOSV samt Owner-verbindlicher Prüftiefe, Ausführung, Evidenz und fünf Dimensionen nach Kapitel 21.1.
+ NAMED, EXISTS, IMPLEMENTED, APPLICABLE, VERIFIED, ACTIVE und OWNER_AUTHORIZED sind getrennt. Die
+ vorbereitete 20-Domänen-/60-Vertragsmatrix ist nicht ratifiziert; ihre Zahlen sind kein Vollständigkeitsbeweis.
+
+
+ 33.3 | Schutz vor falscher Entwarnung
+ Eine fehlende Antwort, eine nicht erreichbare Domäne, ein veralteter Graph, ein unbenannter Kantenbestand oder ein
+ Tool-Ausfall ergeben UNGEKLÄRT beziehungsweise COVERAGE_GAP. GCC darf keine fachlichen Befunde umdeuten,
+ keine eigenen kausalen Tatsachen erzeugen und keinen Gesamt-PASS aus Teilantworten hochrechnen. Ein
+ nachgewiesener Negativbefund gilt ausschließlich innerhalb seines ausdrücklich geprüften endlichen Scopes.
+
+
+
+
+PEAK TRADE | Guardian Network | Blueprint V0.6 - Ergänzung                                                                Anhang Seite 2
+ PEAK TRADE | GUARDIAN NETWORK | V0.6
+
+
+ 34 | Signallauf für Owner-Fragen und Änderungswünsche
+ 34.1 | Ablauf mit Reproof und Owner-Gates
+
+   Schritt                     Verantwortung / fachliches Ergebnis
+
+
+   0. Intake                   Owner formuliert Frage oder Änderungshypothese; GCC registriert Case, Schutzklasse, Prüfscope und
+                               fehlende Angaben. Kein GO wird angenommen.
+
+
+   1. Pin & Register           GCC prüft gemeinsame CURRENT-Baseline, Registry und Contract-Versionen; Mischstände werden nicht
+                               als eine CURRENT-Wahrheit zusammengeführt.
+
+
+   2. Initialverteilung        GCC adressiert alle bestätigten Guardians mit derselben unveränderten Fallversion; Zustellung, Timeout
+                               und Antworten werden einzeln quittiert.
+
+
+   3. Domänenprüfung           Jeder Guardian prüft seine eigenen Schnittstellen und Auswirkungen mit den für ihn tatsächlich
+                               autorisierten Pflichtwerkzeugen; liefert Eigenbefund oder explizite Lücke.
+
+
+   4. Kausal-Nachlauf          Belegte neue Pfade, Rückwirkungen, Zyklen und Cross-Contracts erzeugen deduplizierte Folgeanfragen
+                               an zuständige Guardians; keine frei erfundenen Kanten.
+
+
+   5. Konfliktklärung          GCC leitet CLARIFICATION_REQUEST an die zuständige Domäne; Originalbefunde bleiben unverändert.
+                               Kein erzwungener Konsens.
+
+
+   6. Bounded Fixpoint         Abschluss nur für einen expliziten endlichen, nachgewiesenen Scope, wenn keine unbeantworteten
+                               bekannten relevanten Pfade mehr existieren; andernfalls OPEN.
+
+
+   7. Owner-Bericht            GCC zeigt Betroffene, geprüfte Nicht-Betroffene, Ungeklärte, Konflikte, Evidenz, Schutzfolgen und
+                               mögliche koordinierte Optionen getrennt.
+
+
+   8. Owner-Entscheid          Owner entscheidet separat über Architektur, Codeänderung, Tests, Commit, Push, PR, Merge und ggf.
+                               produktive Aktivierung. Keine implizite Weitergabe.
+
+
+   9. Nach genehmigter         Neue CURRENT-Baseline, erneute Guardian-Prüfung und Drift-/Regression-Reproof als separater,
+   Änderung                    autorisierter Vorgang.
+
+
+
+ 34.2 | Endzustände eines Falls
+ BOUNDED_VERIFIED: Nur alle für den nachgewiesenen Fall erforderlichen Antworten, Toolnachweise und Kanten sind
+ vollständig und widerspruchsfrei. OPEN_UNCERTAINTY: mindestens eine relevante Unsicherheit bleibt.
+ CONFLICT_OPEN: widersprechende fachliche Aussagen bleiben. BLOCKED_AUTHORITY: erforderliches Owner-GO fehlt.
+ STALE_BASELINE: gemeinsamer CURRENT-Pin nicht mehr belastbar. Diese Zustände sind keine Freigaben für Trading
+ oder Implementierung.
+
+
+
+
+PEAK TRADE | Guardian Network | Blueprint V0.6 - Ergänzung                                                                 Anhang Seite 3
+ PEAK TRADE | GUARDIAN NETWORK | V0.6
+
+
+ 35 | Sicherheitsmodell, Testbarkeit und Einordnung in die
+ Roadmap
+ 35.1 | Zuständigkeiten und Unveränderlichkeitsgrenzen
+ GCC darf: Fallannahme, Empfängerbestimmung aus ratifiziertem Register, deterministisches Dispatching,
+ Empfangsbestätigung, Deduplizierung, Timeout-Erkennung, Provenienz-/Schema-/Baseline-Prüfung, Widerspruchs-
+ und Coverage-Darstellung sowie eine klar als Synthese gekennzeichnete Übersicht. Fachliche Behauptungen müssen
+ auf unveränderte Domain-Findings verweisen.
+
+ GCC darf nicht: Guardian-Autorität erzeugen, fachliche Fremdaussagen korrigieren, Sicherheits-Vetos überstimmen,
+ Schutzlogik verändern, Code editieren, Toolausführung fingieren, neue Live-Gates aus alten Maps ableiten,
+ produktive GET/POST, Credentials, Venue oder Trading-Runtime autonom nutzen oder einen Owner-GO ersetzen.
+ Double Play verbleibt unter Category 3 / FULL OWNER LOCK; GHOSV Execution bleibt unverändert und
+ Execution-only.
+
+
+ 35.2 | Vorläufige Architekturverträge (noch nicht ratifiziert)
+
+   Vertrag / Objekt                     Mindestinhalt
+
+
+   Guardian Registry                    Domänen-ID, fachlicher Owner, Boundary, Status der Ratifikation, Toolpositionen,
+                                        Contract-Version, offene Schnittstellen.
+
+
+   Impact Request                       CASE_ID, unveränderte Frage, CURRENT-Pin, Scope, Fallversion, erwartete Empfänger,
+                                        Schutzklasse, offene Voraussetzungen.
+
+
+   Domain Finding                       Guardian-ID, eigene Claim-ID, Impact-Status, fünf Prüfdimensionen, Tool-Einzelbefunde, Belege,
+                                        Gegenbelege, Uncertainty.
+
+
+   Cross-Boundary Reference             Gerichtete Contract-/Kanten-ID, Producer/Consumer, Zuständigkeit, belegte Reachability und
+                                        Scope; keine Semantik-Erfindung.
+
+
+   Case Aggregate                       Antwortmatrix, Nichtantworten, Widersprüche, Fixpunktstatus, unveränderte Findings,
+                                        Berichtsversion, Owner-Gates.
+
+
+
+ 35.3 | Abnahme- und Negativtests für einen späteren Pilot
+ Pflichtfälle: fehlender Guardian; unbekannte Domain; fehlende GHOSV-Position; Pflichttool nicht ausgeführt; zwei
+ abweichende SHAs; stale Graph; widersprechende Findings; nicht benannte Kantenmenge; unbekannte transitive
+ Wirkung; Zyklus mit erneutem Dispatch; verspätete/duplizierte Antwort; manipulierte Provenienz; fremde
+ Semantik-Anreicherung; Timeout; nicht autorisierte Änderungs- oder POST-Anfrage. Erwartung: explizite Lücke oder
+ STOP, unveränderte Befunde, keine erfundene Entwarnung, keine produktiven Effekte.
+
+
+ 35.4 | Vorrang und Implementierungsstatus
+ Diese V0.6-Ergänzung konkretisiert die zentrale Evidenzstelle aus Kapiteln 1, 4, 7 und P7 sowie das
+ Austauschprotokoll aus Kapitel 6. Das frühere Routingprinzip „kein unkontrolliertes Broadcast“ bleibt bestehen: Der
+ initiale Broadcast ist ausschließlich an die endliche, versionierte, bestätigte Guardian-Menge gerichtet. Spätere
+ Kausalnachfragen sind gezielt. Bei abweichenden Transportvorstellungen gilt dieses Hub-and-Spoke-Zielbild als neuer
+ Konzeptvorschlag; die technische Wahl (lokale Queue, Datei, API), Persistenz, Laufzeitbudgets und Authentisierung
+ sind nicht entschieden.
+
+ Entscheidungsstand: GCC_CONCEPT_DOCUMENTED; GCC_ARCHITECTURE_RATIFICATION=OPEN;
+ GUARDIAN_DOMAIN_RATIFICATION=NONE; TOOL_CONTRACT_RATIFICATION=NONE;
+ GCC_IMPLEMENTATION=NOT_STARTED; GCC_EXECUTION=NOT_AUTHORIZED; GCC_ACTIVATION=NOT_AUTHORIZED;
+ M2_AUTHORIZED=false; POST_ALLOWED=false; EXTERNAL_EFFECT_AUTHORIZED=false. Keine Repository-Änderung,
+ keine neuen Wächter, kein Runtime-PASS.
+
+
+
+
+PEAK TRADE | Guardian Network | Blueprint V0.6 - Ergänzung                                                                 Anhang Seite 4
+```
+
+---
+
+**Ende — Guardian Network Blueprint V0.8 (Arbeitsentwurf, 20.10.2026).**  
+**Nächster autorisierungsfreier Schritt:** S1 `GUARDIAN_RESPONSIBILITY_ARCHITECTURE_DRAFT_V1`, `STRICT_READ_ONLY`, `REPORT_AND_STOP`.
+
+---
+
+## Ergänzung zur Arbeitsmethode — Original Nodewise Excavation (20.10.2026)
+
+**Verbindliche Arbeitsanweisung für nachfolgende forensische Architektur- und Grenzprüfungen; keine Änderung oder Ratifikation der bestehenden Architektur.** Die in der unverändert bewahrten V0.5-Originalquelle dokumentierte **Nodewise Excavation** (Kapitel 30) und ihre **Master V2 Internal Code Map** (Kapitel 31) sind als wiederverwendbare Untersuchungsmethode zu berücksichtigen. Vor einer neuen einschlägigen CURRENT-Grenzuntersuchung ist die ursprüngliche Vorgehensweise anhand der in Kapitel 31.4 benannten fünf lokalen Evidence-Verzeichnisse zu rekonstruieren und ihre Anwendbarkeit auf den konkreten, begrenzten Scope zu prüfen. Die Originaluntersuchungen verwendeten maßgeschneiderte Python-Auswertungen; `./scripts/pt` war lediglich der Launcher, **kein eigenständiges universelles Analysetool**. Die Rekonstruktion selbst ist zunächst READ_ONLY und begründet weder einen neuen Tool-PASS noch eine neue System- oder Guardian-Zuordnung.
+
+**Verwendung in künftigen Arbeiten:** Bei einer konkret relevanten, noch ungeklärten fachlichen Identität, Mitgliedschaft oder Außenkante die rekonstruierte Nodewise-Prozedur **gezielt und bounded** auf gepinnten CURRENT-Code/Contracts anwenden: Untersuchungsfrage und Scope festlegen; Node-/Boundary-Belege mit Commit/Tree/Blob/Contract und Gegenbelegen dokumentieren; `EXISTS`, `WIRED`, `REACHABLE`, `ACTIVE` strikt trennen; `CONFIRMED`, `CANDIDATE`, `UNRESOLVED` bzw. begründet `NOT_INTERNAL` ausweisen. Bei größeren Funktionsbereichen die relevanten Unterrubriken und Schnittstellen im Zusammenhang betrachten. Historische Evidence dient ausschließlich der Methodenrekonstruktion und Provenienz, **nicht** als CURRENT-Architekturautorität. Die Methode ersetzt weder GHV noch CURRENT Causal Graph noch ein jeweils anwendbares, separat zu verifizierendes GHOSV; GHOSV Execution bleibt Execution-only.
+
+**Aufwands- und Schutzgrenze:** Keine erneute globale Inventur, keine flächendeckende Datei-für-Datei-Klassifikation und insbesondere keine automatische Prüfung aller bislang unzugeordneten Dateien. `UNASSIGNED` bedeutet nicht `OBSOLETE`. Docker und die entfernte Chrome-Browserintegration bleiben aus der aktiven funktionalen Architekturprüfung ausgeschlossen; verbliebene Tracked-Artefakte belegen keine Aktivität. Keine Code-/Contract-/Runtime-Änderung, kein Schreiben von Evidence ohne gesondertes GO, keine Guardian-Ratifikation, keine POST-/Venue-/Credential-Aktion. Befunde und offene Grenzen berichten, dann STOP.
+
+**Referenz:** Originalquelle Kapitel 30, 30.1–30.3 und 31, 31.1–31.4 in diesem Dokument; Original-Evidence-Pfade dort unverändert erhalten. `METHOD_RECOVERY=REQUIRED_BEFORE_REUSE`; `METHOD_RECOVERY_STATUS=NOT_YET_VERIFIED`; `GUARDIAN_ASSIGNMENTS=NOT_RATIFIED`; `POST_ALLOWED=false`; `EXTERNAL_EFFECT_AUTHORIZED=false`.
