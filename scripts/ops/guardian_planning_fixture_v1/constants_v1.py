@@ -1,0 +1,119 @@
+"""Guardian planning fixture constants. AUTHORITY=NONE. Planning labels only."""
+
+from __future__ import annotations
+
+from typing import Final
+
+from scripts.ops.guardian_domain_scope_manifest_v1.constants_v1 import TOOL_SLOT_NAMES
+from scripts.ops.pin_scope_binding_v1.constants_v1 import (
+    AUTHORITY,
+    EXECUTION_AUTHORITY,
+    RUNTIME_AUTHORIZATION_EFFECT,
+    SAFETY_AUTHORITY,
+    TRADING_AUTHORITY,
+)
+
+SCHEMA_ID: Final = "GUARDIAN_PLANNING_FIXTURE_V1"
+SCHEMA_VERSION: Final = 1
+
+STATUS_ACCEPTED: Final = "PLANNING_FIXTURE_ACCEPTED"
+STATUS_MISSING_RESPONSIBILITY_AREA: Final = "MISSING_RESPONSIBILITY_AREA"
+STATUS_DUPLICATE_IDENTIFIER: Final = "DUPLICATE_IDENTIFIER"
+STATUS_ILLEGAL_SEAT_ASSIGNMENT: Final = "ILLEGAL_SEAT_ASSIGNMENT"
+STATUS_UNKNOWN_TOOL_SLOT: Final = "UNKNOWN_TOOL_SLOT"
+STATUS_IMPLICIT_GUARDIAN_RATIFICATION: Final = "IMPLICIT_GUARDIAN_RATIFICATION"
+STATUS_CLAIMED_CURRENT_COVERAGE: Final = "CLAIMED_CURRENT_COVERAGE"
+STATUS_PRODUCTIVE_AUTHORITY: Final = "PRODUCTIVE_AUTHORITY"
+STATUS_COORDINATOR_COUNT_CONFLICT: Final = "COORDINATOR_COUNT_CONFLICT"
+STATUS_MISSING_UNASSIGNED_SURFACE: Final = "MISSING_UNASSIGNED_SURFACE"
+STATUS_INVALID_FIXTURE: Final = "INVALID_FIXTURE"
+
+COORDINATOR_COUNT: Final = 1
+COORDINATOR_ROLE: Final = "FINDING_AGGREGATION_ONLY"
+ARCHITECTURE_STATUS: Final = "PLANNING_ONLY"
+FINAL_GUARDIAN_COUNT: Final = "OPEN"
+PLANNING_SLOT_STATUS: Final = "PLANNING_UNBOUND"
+WP_B0_BINDABLE: Final = False
+
+# seat_id, subject, architecture_universe, is_architecture_universe
+SEAT_ROWS: Final[tuple[tuple[str, str, str | None, bool], ...]] = (
+    ("SG-01", "Master V2", "U-MV2", True),
+    ("SG-02", "Cap21–Cap23", None, False),
+    ("SG-03", "Execution", "U-EX", True),
+    ("SG-04", "Self-Learning", "U-SL", True),
+    ("SG-05", "Optimization", "U-OPT", True),
+    ("SG-06", "Market Intelligence", "U-MI", True),
+)
+
+# area_id, subject, retained_from
+UNASSIGNED_ROWS: Final[tuple[tuple[str, str, str], ...]] = (
+    ("GV-07", "Account Equity", "GV-07"),
+    ("GV-08", "Treasury observation", "GV-08"),
+    ("GV-09", "Portfolio-Budget", "GV-09"),
+    ("GV-10", "CRS / Sizing", "GV-10"),
+    ("GV-11", "Public Market Data", "GV-11"),
+    ("GV-12", "Private Account State", "GV-12"),
+    ("GV-13", "Reconciliation", "GV-13"),
+    ("GV-14", "Persistence invariant", "GV-14"),
+    ("GV-15", "Presentation", "GV-15"),
+    ("FULL_CORE", "Full-Core", "GV-16"),
+    ("N5", "N5", "GV-16"),
+    ("HOST", "Host", "GV-03"),
+    ("SEND", "Send", "GV-03"),
+    ("WIRE", "Wire", "GV-03"),
+    ("CAP24", "Cap24", "GV-02"),
+    ("ORDER_INTENT", "Order Intent", "GV-18"),
+    ("SAFETY_LAYERS", "Safety-Schichten", "GV-17"),
+    ("RESEARCH_CORPUS", "Research Corpus", "RESEARCH_CORPUS"),
+)
+
+RETAINED_SPLIT_SURFACES: Final[dict[str, tuple[str, ...]]] = {
+    "GV-16": ("FULL_CORE", "N5"),
+    "GV-17": ("SAFETY_LAYERS",),
+    "GV-18": ("ORDER_INTENT",),
+}
+
+FAULT_PRIORITY: Final[tuple[str, ...]] = (
+    STATUS_PRODUCTIVE_AUTHORITY,
+    STATUS_IMPLICIT_GUARDIAN_RATIFICATION,
+    STATUS_CLAIMED_CURRENT_COVERAGE,
+    STATUS_COORDINATOR_COUNT_CONFLICT,
+    STATUS_UNKNOWN_TOOL_SLOT,
+    STATUS_DUPLICATE_IDENTIFIER,
+    STATUS_ILLEGAL_SEAT_ASSIGNMENT,
+    STATUS_MISSING_UNASSIGNED_SURFACE,
+    STATUS_MISSING_RESPONSIBILITY_AREA,
+    STATUS_INVALID_FIXTURE,
+)
+
+__all__ = [
+    "ARCHITECTURE_STATUS",
+    "AUTHORITY",
+    "COORDINATOR_COUNT",
+    "COORDINATOR_ROLE",
+    "EXECUTION_AUTHORITY",
+    "FAULT_PRIORITY",
+    "FINAL_GUARDIAN_COUNT",
+    "PLANNING_SLOT_STATUS",
+    "RETAINED_SPLIT_SURFACES",
+    "RUNTIME_AUTHORIZATION_EFFECT",
+    "SAFETY_AUTHORITY",
+    "SCHEMA_ID",
+    "SCHEMA_VERSION",
+    "SEAT_ROWS",
+    "STATUS_ACCEPTED",
+    "STATUS_CLAIMED_CURRENT_COVERAGE",
+    "STATUS_COORDINATOR_COUNT_CONFLICT",
+    "STATUS_DUPLICATE_IDENTIFIER",
+    "STATUS_ILLEGAL_SEAT_ASSIGNMENT",
+    "STATUS_IMPLICIT_GUARDIAN_RATIFICATION",
+    "STATUS_INVALID_FIXTURE",
+    "STATUS_MISSING_RESPONSIBILITY_AREA",
+    "STATUS_MISSING_UNASSIGNED_SURFACE",
+    "STATUS_PRODUCTIVE_AUTHORITY",
+    "STATUS_UNKNOWN_TOOL_SLOT",
+    "TOOL_SLOT_NAMES",
+    "TRADING_AUTHORITY",
+    "UNASSIGNED_ROWS",
+    "WP_B0_BINDABLE",
+]

@@ -314,6 +314,7 @@
     "scripts/ops/ghv_forensic_source_provenance_v1/",
     "scripts/ops/ghv_master_v2_current_tree_adapter_v1/",
     "scripts/ops/guardian_domain_scope_manifest_v1/",
+    "scripts/ops/guardian_planning_fixture_v1/",
     "scripts/ops/kill_switch_ctl.sh",
     "scripts/ops/living_current_matrix_v1/",
     "scripts/ops/periodic_current_documentation_sync_v1.py",
