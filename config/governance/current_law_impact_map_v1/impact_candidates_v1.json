@@ -126,6 +126,7 @@
     "scripts/ops/ghv_forensic_whole_system_causal_ghv_adapter_v1/",
     "scripts/ops/ghv_forensic_whole_system_causal_integration_v1/",
     "scripts/ops/ghv_forensic_whole_system_crosswalk_v1/",
+    "scripts/ops/guardian_planning_fixture_v1/",
     "scripts/ops/living_current_matrix_v1/",
     "scripts/ops/periodic_current_documentation_sync_v1.py",
     "scripts/ops/ingest_okx_futures_public_market_data_canonical_dataset_staging_v1.py",

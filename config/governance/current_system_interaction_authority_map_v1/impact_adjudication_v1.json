@@ -1,25 +1,29 @@
 {
   "authority_effect": "NONE",
   "changed_paths": [
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "scripts/ops/guardian_domain_scope_manifest_v1/__init__.py",
-    "scripts/ops/guardian_domain_scope_manifest_v1/constants_v1.py",
-    "scripts/ops/guardian_domain_scope_manifest_v1/validate_v1.py",
-    "tests/ops/test_guardian_domain_scope_manifest_v1.py"
+    "scripts/ops/guardian_planning_fixture_v1/__init__.py",
+    "scripts/ops/guardian_planning_fixture_v1/constants_v1.py",
+    "scripts/ops/guardian_planning_fixture_v1/validate_v1.py",
+    "tests/ops/test_guardian_planning_fixture_v1.py"
   ],
-  "changed_paths_sha256": "d15e8a567196a59f91a84920066c4b5122199c67f6ebd4cbb0775855bf8a4854",
+  "changed_paths_sha256": "fc76643a55feaa8457d7c76ba98e110227601df87c54c1ed9c9f330655cdb319",
   "covered_candidate_paths": [
-    "scripts/ops/guardian_domain_scope_manifest_v1/__init__.py",
-    "scripts/ops/guardian_domain_scope_manifest_v1/constants_v1.py",
-    "scripts/ops/guardian_domain_scope_manifest_v1/validate_v1.py",
-    "tests/ops/test_guardian_domain_scope_manifest_v1.py"
+    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
+    "scripts/ops/guardian_planning_fixture_v1/__init__.py",
+    "scripts/ops/guardian_planning_fixture_v1/constants_v1.py",
+    "scripts/ops/guardian_planning_fixture_v1/validate_v1.py",
+    "tests/ops/test_guardian_planning_fixture_v1.py"
   ],
   "evidence_refs": [
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
   ],
-  "reason": "Change-bound receipt for the WP-B0 manifest diff against 1228f33f4f4bdd660afb2e59d7e20cbf8f25569c. The new package is registered only as a non-exhaustive candidate surface. The test path remains covered by the existing tests/ops/ surface. Interaction-authority source_v1.json is unchanged. NO_MAP_IMPACT. AUTHORITY=NONE.",
+  "reason": "Change-bound receipt for the working-tree content diff against 89d8230fddfd2e5b8af2da46b080f1db204fd4e5. The planning fixture is registered only as a non-exhaustive candidate. tests/ops/ already covers the test file. source_v1.json and derived views are unchanged. Fixture authority, trading, safety, and execution authority are NONE. guardian_ratification, domain_binding, current coverage, and productive activation are false. Slots remain PLANNING_UNBOUND and are not a WP-B0 bind. NO_MAP_IMPACT.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
