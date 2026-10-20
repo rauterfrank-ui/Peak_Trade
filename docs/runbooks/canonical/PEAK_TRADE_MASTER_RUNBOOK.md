@@ -319,6 +319,28 @@ current_productive_sidestate_confirmation_cursor_v1
 | STEP29M (offline economic evaluation) | Post-selection offline research binding; no selection authority |
 | Optimization Universe | First-class offline research domain; `OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE` |
 | Treasury | Required for full autonomy; not a trading-decision owner |
+| Market Intelligence | Independent architecture universe; `CURRENT_TRADING_AUTHORITY=NONE`; technical outer boundary `NOT_PROVEN` |
+| Meta-Learning | Cross-universe interface between Self-Learning and Optimization; not a separate universe |
+| Research Corpus | Provisional Layer-1 offline plane; not a universe; final belonging open; no trading authority |
+| Portfolio-Budget | Layer-1 functional main area; not a universe; ratified budget role unchanged; not an equity source |
+| N5 target architecture | Name of the intended five-stack architecture; not a runtime authorization |
+
+The rows above for Universe, Ranking, Selection, Binding, Decision, Safety,
+Risk, Order intent, Full-Core live-path authority, Persistence, Learning,
+STEP29M, Optimization, and Treasury keep their existing owner roles. Persistence
+stays "Durable single-writer state owners" and is classified as a
+cross-universe state invariant, not a separate universe. Full-Core live-path
+authority stays `full_core_live_path_authority_v1`; its architecture class is
+technical orchestration, and it is not the entire system.
+
+Owner classes, open boundaries, and the runtime separation are recorded in
+[`docs/governance/LAYER1_OWNER_ARCHITECTURE_DECISIONS_V1.md`](../../governance/LAYER1_OWNER_ARCHITECTURE_DECISIONS_V1.md).
+That record does not change capital, sizing, state owners, slot logic, or
+these standing pins: `MULTI_FUTURE_RUNTIME_AUTHORIZED=false`,
+`MAX_POSITIONS_EFFECTIVE=1`, `N_GT_1_ENABLED=false`.
+`INITIAL_INTENDED_SLOT=1` and
+`INITIAL_INTENDED_CAPITAL_EXPOSURE=VERY_SMALL` are architecture intent only.
+Slot 1 is not released. Slots 2–5 are not authorized.
 
 ### Authority chain
 

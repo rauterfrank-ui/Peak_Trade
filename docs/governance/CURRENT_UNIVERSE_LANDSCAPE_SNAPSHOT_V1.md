@@ -117,19 +117,42 @@ PRE_EXTERNAL_POST_ALLOWED=false
 
 - **GGE / Scope:** sole base-geometry owner on the MV2 path; classified **outside**
   authority universes (boundary subsystem), not Cap21–Cap23-style universes.
-- **Full-Core / GHV:** productive PRE_EXTERNAL convergence entry and GHV startability
-  evaluators are the CURRENT full-system **orchestration** carrier (`TD-FULL-CORE`).
+- **Full-Core / GHV (historical cartography wording at `6422bfde`):** productive
+  PRE_EXTERNAL convergence entry and GHV startability evaluators were described
+  here as the CURRENT full-system orchestration carrier (`TD-FULL-CORE`). That
+  wording is not updated in place. Owner class is now
+  `FULL_CORE_CLASS=TECHNICAL_ORCHESTRATION_AREA` and
+  `FULL_CORE_IS_ENTIRE_SYSTEM=false`. The pin
+  `FULL_CORE_GHV_CARRIER=TD-FULL-CORE orchestration plane (not a new authority universe)`
+  stays as historical cartography.
 - **Paper-Shadow-247:** separate governed lane; not modeled here as a CURRENT universe
   or primary system carrier.
-- **Learning / Optimization / MI:** remain non-universe planes (`TD-DDO-LEARNING`,
-  `TD-MI-OFFLINE`, research corpus); optimization export is offline-only on the DDO
-  surface — no productive trading authority.
+- **Learning / Optimization / MI (historical cartography wording at `6422bfde`):**
+  this refresh called them non-universe planes (`TD-DDO-LEARNING`,
+  `TD-MI-OFFLINE`, research corpus). That sentence is not the owner
+  classification. Market Intelligence is an independent architecture universe
+  with `CURRENT_TRADING_AUTHORITY=NONE` and technical outer boundary
+  `NOT_PROVEN`. Self-Learning and Optimization remain distinct universes.
+  Research Corpus is a provisional Layer-1 offline plane, not a universe.
+  JSON `domain_universe=false` on `SURFACE:TD-MI-OFFLINE` is an unrevised
+  historical pin.
+
+## Owner architecture record (navigation)
+
+Owner classes, open technical boundaries, and the runtime separation are
+recorded in
+[`LAYER1_OWNER_ARCHITECTURE_DECISIONS_V1.md`](LAYER1_OWNER_ARCHITECTURE_DECISIONS_V1.md).
+That record does not authorize runtime. Historical pins in this snapshot and
+in `source_v1.json`, including `EVIDENCE_BASELINE_TREE_SHA=6422bfde79fd5aa45d2939a821980abf9aa4e3df`
+and `not_a_universe_ratification=true`, are left unchanged.
 
 ### Distinct companion (do not merge taxonomies)
 
 [`docs/ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md`](../ops/evidence/CURRENT_WHOLE_SYSTEM_FUNCTIONAL_AND_CAUSAL_MODEL_V1.md)
 describes **productive causal machine order** and Q1–Q5 quality layers. This snapshot
 classifies **authority universes vs planes/boundaries**. Both must agree on Cap2.3
-sole selection, Cap2.4 bind-only, GGE non-universe status, Full-Core GHV carrier,
-PRE_EXTERNAL terminal, and Learning/OPT/MI `AUTHORITY=NONE`, but they serve different
-navigation purposes.
+sole selection, Cap2.4 bind-only, GGE non-universe status, the PRE_EXTERNAL
+terminal, and Learning/OPT/MI trading `AUTHORITY=NONE`. Full-Core remains a
+technical orchestration area, not the entire system. Market Intelligence's
+owner-universe class does not grant trading authority. The two documents serve
+different navigation purposes.
