@@ -1,0 +1,110 @@
+{
+  "schema": "ARCHITECTURE_SOURCE_MANIFEST_V1",
+  "authority_effect": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "financial_guarantee": "NONE",
+  "inventory_baseline_ratified": true,
+  "technical_boundary_closure": "NOT_PROVEN",
+  "guardian_topology": "NOT_PREDEFINED",
+  "guardian_count": "NOT_PREDEFINED",
+  "guardian_assignments": "NOT_RATIFIED",
+  "five_guardian_topology": "REJECTED_BY_OWNER",
+  "replacement_topology": "NONE",
+  "evidence_status_mutation": "NONE",
+  "open_findings_closed_by_this_manifest": false,
+  "hash_algorithm": "SHA-256",
+  "hash_scope": "exact UTF-8 bytes of the named source file; no BOM; no added header; no added trailing newline",
+  "investigation_pin": {
+    "head": "1007b31ab0d1aa27d557efb0ce0d922c1c6eafbd",
+    "tree": "87108b671cd132c1357d3184d9d239739913df8a",
+    "timezone": "Europe/Berlin"
+  },
+  "sources": [
+    {
+      "source_id": "M1_5_CURRENT_SYSTEM_CLASSIFICATION_A_TO_G",
+      "role": "ORIGINAL_REPORT",
+      "reported_at": "2026-10-19T16:29:00+02:00",
+      "session_id": "4877d2e0-7b11-4194-bf9b-537b6f52cfe8",
+      "transcript_line": 21,
+      "text_scope": "assistant report body only",
+      "path": "docs/governance/m1_5_architecture_investigation_baseline_v1/sources/m1_5_current_system_classification_a_to_g_20261019.txt",
+      "sha256": "688b40ed83696829ea422beb9bc6b43c74bd0e6f4d88bd1df0817644c71624f7",
+      "byte_length": 45953,
+      "preserved_status": {
+        "M1_5_STATUS": "PARTIAL_UNRESOLVED",
+        "RESULT": "NOT_PROVEN",
+        "PROVEN_UNIVERSES": 0,
+        "CANDIDATE_COUNT": 8,
+        "FINAL_UNIVERSE_COUNT": "NOT_EMITTED",
+        "CAPITAL_SAFETY_GATE": "OPEN"
+      }
+    },
+    {
+      "source_id": "CURRENT_SYSTEM_CLASSIFICATION_CONSOLIDATION_V1",
+      "role": "ORIGINAL_REPORT",
+      "reported_at": "2026-10-19T17:14:00+02:00",
+      "session_id": "fbbd3286-100c-4091-83c3-a6319545ab01",
+      "transcript_line": 50,
+      "text_scope": "assistant report body only",
+      "path": "docs/governance/m1_5_architecture_investigation_baseline_v1/sources/current_system_classification_consolidation_v1_20261019.txt",
+      "sha256": "29780ee0bec8edf637a61fcb100be84b5f57336f33bdd0785033051ff6baa030",
+      "byte_length": 13089,
+      "preserved_status": {
+        "M1_5_CONSOLIDATION_STATUS": "PARTIAL_UNRESOLVED",
+        "RESULT": "NOT_PROVEN",
+        "OWNER_FIXED_UNIVERSE_IDENTITIES": 1,
+        "TECHNICALLY_CLOSED_UNIVERSES": 0,
+        "NAMED_UNIVERSE_CANDIDATES": 7,
+        "EXTERNAL_DOMAIN_CANDIDATES": 14,
+        "PROVEN_EXTERNAL_DOMAINS": 0,
+        "FINAL_UNIVERSE_COUNT": "NOT_EMITTED",
+        "CAPITAL_SAFETY_GATE": "OPEN"
+      }
+    }
+  ],
+  "adopted_owner_decisions": {
+    "path": "docs/governance/LAYER1_OWNER_ARCHITECTURE_DECISIONS_V1.md",
+    "sha256": "3da6c0019b719af36d4ac8d298e77fbbc4f9c4f1d978a75f04554d4582fce3ed",
+    "byte_length": 4865,
+    "content_mutation_by_this_manifest": "NONE",
+    "recorded_origin_main_sha_inside_that_file": "5b90ede63db49ad0e252b2664c77a926a985656f",
+    "recorded_tree_inside_that_file": "d9be174f6e3ec79f642aa5fea3ddd59425ea11d7"
+  },
+  "rejected_non_sources": [
+    {
+      "id": "MASTER_V2_GUARDIAN_DRAFT",
+      "session_id": "d01217ce-10b0-4ae4-8dfa-28821d63fb8b",
+      "status": "REJECTED_BY_OWNER",
+      "adopted_as_architecture_basis": false,
+      "repository_artifact": false
+    },
+    {
+      "id": "EXECUTION_GUARDIAN_DRAFT",
+      "session_id": "d01217ce-10b0-4ae4-8dfa-28821d63fb8b",
+      "status": "REJECTED_BY_OWNER",
+      "adopted_as_architecture_basis": false,
+      "repository_artifact": false
+    },
+    {
+      "id": "SELF_LEARNING_GUARDIAN_DRAFT",
+      "session_id": "d01217ce-10b0-4ae4-8dfa-28821d63fb8b",
+      "status": "REJECTED_BY_OWNER",
+      "adopted_as_architecture_basis": false,
+      "repository_artifact": false
+    },
+    {
+      "id": "OPTIMIZATION_GUARDIAN_DRAFT",
+      "session_id": "ff63f31d-a187-45b1-8643-90e26fb14b2a",
+      "status": "REJECTED_BY_OWNER",
+      "adopted_as_architecture_basis": false,
+      "repository_artifact": false
+    },
+    {
+      "id": "MARKET_INTELLIGENCE_GUARDIAN_DRAFT",
+      "session_id": "a5504dc4-5edb-40a7-907d-09362b13a3ce",
+      "status": "REJECTED_BY_OWNER",
+      "adopted_as_architecture_basis": false,
+      "repository_artifact": false
+    }
+  ]
+}
