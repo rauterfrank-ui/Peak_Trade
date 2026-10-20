@@ -34,6 +34,7 @@ wording stays unedited. Its original filename is recorded in the manifest.
 | --- | --- | --- |
 | Blueprint V0.6, 21 pages, chapters 32–35 | `CONCEPT_DOCUMENTED`; implementation not started | [PDF](sources/Peak_Trade_Guardian_Network_Blueprint_V0_6_CURRENT_NODEWISE_CODE_MAP_20261020.pdf) |
 | Blueprint V0.7, including chapter 38 | `DRAFT_ONLY`; addenda ratification open | [markdown bytes](sources/Peak_Trade_Guardian_Network_Blueprint_V0_7_KONSOLIDIERT_20261020.md.txt) |
+| Blueprint V0.8, including nodewise supplement | `DRAFT &#47; OWNER_REVIEW &#47; NOT_RATIFIED` | [markdown bytes](sources/Peak_Trade_Guardian_Network_Blueprint_V0_8_CURRENT_2026-10-20_NODEWISE_ERGAENZT.md.txt) |
 | Contract design | `DRAFT_ONLY` | [design](sources/session_93cd48b7_line_025_gcc_deterministic_contract_design_v1.txt) |
 | Closure review | `DRAFT_ONLY` | [review](sources/session_93cd48b7_line_029_gcc_contract_closure_review_v1.txt) |
 | Consolidation | `DRAFT_ONLY` | [consolidation](sources/session_793c5ae2_line_017_gcc_contract_consolidation_v1.txt) |
