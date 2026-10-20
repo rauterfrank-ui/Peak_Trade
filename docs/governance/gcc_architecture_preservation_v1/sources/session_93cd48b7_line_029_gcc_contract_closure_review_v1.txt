@@ -1,0 +1,116 @@
+Die Baseline stimmt. Der Entwurf bleibt `DRAFT_ONLY`. Die drei Prüfungen ändern keine Datei und ratifizieren nichts.
+
+```text
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=97c8c954204c15f9af5a48995b889ce3fb223c64
+ORIGIN_MAIN_TREE=898ede79de7e527db3632b8a3b32daf8b9b098b8
+TREE_MATCH=true
+LOCAL_HEAD=ad4460956ea5e71543e81ddd54141d2d68674568
+DRAFT_STATUS=DRAFT_ONLY
+RATIFICATION_DERIVED=NONE
+IMPLEMENTATION_AUTHORIZED=false
+NEXT_SAFE_ACTION=REPORT_AND_STOP
+```
+
+## GCC_CASE_IDENTITY_REVIEW
+
+Der bisherige Entwurf bildet `CASE_ID` aus dem gesamten Request. Baseline, Registry und Contract-Versionen stecken damit im selben Hash wie der Owner-Text. Dieselbe Frage auf einem neuen Pin wird dadurch ein neuer Fall, die gemeinsame Inhaltsidentität und die Reproof-Verknüpfung entstehen aber nicht deterministisch.
+
+Vorschlag, vier getrennte IDs, kanonisches JSON, SHA-256:
+
+| ID | Eingabe | Stabil bei |
+| --- | --- | --- |
+| `REQUEST_CONTENT_ID` | Anfragetyp, wörtlicher Owner-Text, Analyse-Scope, vom Owner benannte Contract-IDs | neuer Baseline, neuer Registry, neuer Contract-Version |
+| `PIN_ID` | ein Commit, ein Tree, aufgelöste Contract-Versionen, Epoch-/State-Bezug; `UNKNOWN` bleibt Literal | unverändertem Pin |
+| `REGISTRY_BINDING_ID` | Registry-Version, Registry-Digest, sortierte ratifizierte Empfänger | unveränderter Registerbindung |
+| `CASE_ID` | `gcc-case-v1:` plus Hash aus den drei IDs | nur wenn Inhalt, Pin und Register gemeinsam gleich bleiben |
+
+| Situation | Ergebnis |
+| --- | --- |
+| Identische Anfrage, identische Baseline, gleiche Registry | Dieselbe `CASE_ID`. Erneute Einreichung ist idempotent und erzeugt keine neue Befundversion |
+| Identische Anfrage, neue Baseline | Neue `PIN_ID`, neue `CASE_ID`, gleiche `REQUEST_CONTENT_ID`. Grund `BASELINE_CHANGE` |
+| Geänderte Registry-Version oder geänderter Digest | Neue `REGISTRY_BINDING_ID`, neue `CASE_ID`. Grund `REGISTRY_CHANGE`. Der Git-Pin kann gleich bleiben |
+| Neue Contract-Version | Neue `PIN_ID`, neue `CASE_ID`. Grund `CONTRACT_VERSION_CHANGE` |
+| Erneute Prüfung nach Codeänderung | Neuer Commit oder Tree erzeugt eine neue `PIN_ID` und eine neue `CASE_ID`. Grund `CODE_CHANGE`. Ein Reproof ist ein neuer Fall |
+| Bestehende Befunde | Byte-fest an `(alte CASE_ID, guardian_id, response_version, claim_id)`. Eine neue Version hängt an; sie ersetzt die alte nicht |
+
+`GCC_REPROOF_LINK_V1` enthält `new_case_id`, sortierte `prior_case_ids` derselben `REQUEST_CONTENT_ID`, `reason_set`, `findings_inherited=false`, `prior_findings_currency=HISTORICAL_ONLY`, `automatic_action=NONE`. Mehrere Vorgänger bleiben nebeneinander. Ihre Befunde werden im neuen Fall nur referenziert. Der historische Report bleibt für seinen alten Pin lesbar. Ein neues Currency-Objekt darf ihn als `NOT_CURRENT_FOR_HEAD` kennzeichnen, ohne ihn umzuschreiben.
+
+## GCC_COVERAGE_CLOSURE_RULES
+
+Der Untersuchungsscope `U` ist die endliche Menge der Domänengrenzen, die der deklarierte Scope schneidet. `BOUNDED_VERIFIED` ist ausschließlich die Koordinationsvollständigkeit dieses `U`. Es ist keine globale Vollständigkeitsgarantie, kein fachliches Gesamt-PASS und keine Freigabe.
+
+`BOUNDED_VERIFIED` ist nur zulässig, wenn gleichzeitig gilt:
+
+1. `U` ist endlich und explizit aufgezählt. Ist die Grenze unbekannt, ist `U` nicht endlich.
+2. Jede Domäne in `U` hat `ratification_status=RATIFIED` und genau eine angenommene Antwort.
+3. `NOT_RATIFIED`, `WITHHELD` und `UNKNOWN_BOUNDARY` schneiden `U` nicht. Ausschlüsse stehen in `scope.exclusions` und sind disjunkt zu `U`.
+4. Pin, Contract-Versionen und Registry-Digest sind die eingefrorene Fallbindung und zum Prüfzeitpunkt nicht gedriftet.
+5. Für jede angenommene Antwort sind die drei Tool-Positionen GHV, Graph und GHOSV berichtet. `NOT_EXECUTED` und `TOOL_UNAVAILABLE` bleiben `UNGEKLÄRT`.
+6. Ein current-gebundener Kausalgraph trägt denselben Commit und Tree. `NOT_MATERIALIZED` und `STALE` blockieren den Zustand. Der vorhandene Kompositionsgraph bleibt an `b6ffca1d…` gebunden und erfüllt das nicht.
+7. Jede belegte direkte, reverse oder transitive Kante hat eine deduplizierte Folgeprüfung. Eine dynamische Abhängigkeit ohne Beleg steht als `UNKNOWN` und blockiert den Zustand.
+8. Kein `CONFLICT_OPEN`, keine fehlende Evidence, keine unbeantwortete Zustellung.
+9. Timeout und Attempt-Grenze sind gebunden. Solange sie `OWNER_PARAMETER_UNBOUND` sind, bleibt der Zustand unerreichbar.
+10. `release_authorization=false`.
+
+Die 20 vorbereiteten Domänen und 60 Einzelverträge bleiben `NOT_RATIFIED`. WITHHELD bleibt offen. Ein leeres ratifiziertes Register ist ein gültiger Initialversand und blockiert `BOUNDED_VERIFIED`.
+
+`NICHT_BETROFFEN` bleibt ein Guardian-Status mit Negativnachweis im exakten Scope. Eine fehlende Antwort, eine nicht ratifizierte Domäne, ein WITHHELD-Bereich, eine unbekannte Grenze, ein fehlender oder veralteter Graph und eine unbelegte dynamische Abhängigkeit erzeugen kein `NICHT_BETROFFEN`. Ein Fall erhält keinen negativen Sammelstatus. Nur wenn die zehn Voraussetzungen gelten und jede angenommene Antwort `NICHT_BETROFFEN` ist, darf der Report zusätzlich `ALL_RESPONDING_GUARDIANS_NICHT_BETROFFEN_IN_SCOPE` tragen. Auch das bleibt scope-gebunden und freigabelos.
+
+## GCC_FAILURE_RECOVERY_CONTRACT
+
+Jede Regel stoppt die Koordination fail-closed. Sie nimmt keine produktive Aktion wieder auf und vergibt keine Safety-Autorität.
+
+| Ereignis | Deterministische Reaktion |
+| --- | --- |
+| Timeout | Ein Attempt. Weitere Attempts nur bis zur gebundenen Grenze und nur für fehlende Quittung oder fehlende Antwort. Danach `UNANSWERED`, Impact `UNGEKLÄRT`. Ist die Grenze ungebunden, gibt es keinen Retry |
+| Doppelte Nachricht, gleicher Körper | Idempotentes Ack. Kein zweiter Befund |
+| Doppelte Nachricht, anderer Körper | Beide Körper quarantänisiert. Kein Gewinner. Validation fehlgeschlagen |
+| Verspätete Antwort nach `TIMEOUT` | `LATE_QUARANTINE`. Der abgeschlossene Validationstand bleibt. Ein `CLOSED`-Fall öffnet sich nicht wieder |
+| Manipulierte Provenienz | Hash-, ID- oder Pin-Abweichung wird `REJECTED_AS_FINDING`. Die Bytes bleiben auditierbar. Keine Reparatur und keine Umdeutung |
+| Unterbrochene Bearbeitung | Fortsetzung nur vor `CLOSED`, ab dem letzten übereinstimmenden Checkpoint, ohne erneutes fachliches Entscheiden. Fehlender oder widersprüchlicher Checkpoint: `INTERRUPTED_UNRECOVERABLE`, neuer Fall erforderlich |
+| Registry-Drift | Eingefrorene Empfängermenge bleibt. Neue Ratifikationen treten dem alten Fall nicht bei. Neue Dispatches stoppen. Ergebnis nicht `BOUNDED_VERIFIED`. Neue Registry ergibt eine neue `CASE_ID` |
+| Baseline-Drift | Der Fall arbeitet nur auf seinem eingefrorenen Pin. Er wird nicht als neuer `origin/main` berichtet. Für den neuen Head ist ein neuer Fall erforderlich. Befunde werden nicht über Pins gemischt |
+| Fehlende Guardian-Antwort | `UNGEKLÄRT`. Kein Ersatz durch einen anderen Guardian und keine GCC-Standardantwort |
+
+`CLOSED` ist für denselben Fall endgültig. Recovery koordinativer Checkpoints erzeugt keinen Write, keinen POST und keine Lock-Änderung.
+
+## GCC_CONTRACT_CONTRADICTIONS
+
+| Stelle im Entwurf | Konflikt | Draft-Korrektur |
+| --- | --- | --- |
+| Eine `CASE_ID` über den gesamten Request | Inhaltsgleichheit und Pin-Gleichheit sind nicht getrennt verknüpfbar | Vier IDs plus `GCC_REPROOF_LINK_V1` |
+| „`IMPACT_BOUNDED` gilt nach Tree-Wechsel nicht weiter“ | Kann als Umschreiben des historischen Reports gelesen werden | Historischer Report bleibt. Currency ist ein neues Objekt `NOT_CURRENT_FOR_HEAD` |
+| Erwartete Empfänger „sonst leer“ | Nicht ratifizierte oder WITHHELD Erwartungen könnten lautlos aus der Empfängerliste fallen | Jede ausgeschlossene Erwartung wird als Coverage-Gap gespeichert und blockiert `BOUNDED_VERIFIED` |
+| `validation_result=PASS` neben `overall_impact_pass=false` | `PASS` kann als fachliches Gesamt-PASS gelesen werden | Koordinationsergebnis heißt `COORDINATION_COMPLETE`, `COORDINATION_PARTIAL` oder `COORDINATION_FAIL` |
+| Retry bei `max_attempts=OWNER_PARAMETER_UNBOUND` | Eine ungebundene Grenze könnte als offene Wiederholung gelesen werden | Ungebunden heißt genau ein Attempt, danach `UNGEKLÄRT` |
+| `BOUNDED_VERIFIED` | Kann als „keine Wirkung“ oder als globale Vollständigkeit gelesen werden | Nur endliche Koordinationsvollständigkeit von `U`; negativer Scope-Zusatz ist ein separates Label |
+
+Blueprint Kapitel 32–35 bleibt eingehalten: Hub-and-Spoke, unveränderte Befunde, kein implizites GO, Category 3 unverändert. `GUARDIAN_TOOL_STANDARD_V1` bleibt die Owner-Vorgabe für die drei Tool-Positionen und ist weiterhin nicht repositorygebunden. Daraus folgt keine Domänen- oder Vertragsratifikation.
+
+## GCC_OWNER_DECISIONS_REQUIRED
+
+1. Die vier IDs und `GCC_REPROOF_LINK_V1` annehmen oder ändern.
+2. Die zehn Voraussetzungen für `BOUNDED_VERIFIED` annehmen oder enger fassen.
+3. Timeout und Attempt-Grenze zahlenmäßig binden. Bis dahin bleibt der Zustand unerreichbar.
+4. Die 20 Domänen, die 60 Verträge und die WITHHELD-Bereiche bleiben eigene Entscheidungen.
+5. Eine Repository-Bindung des Tool-Standards wäre eine weitere eigene Entscheidung.
+6. Jede Implementierung braucht ein separates Änderungs-GO.
+
+```text
+TOOL_EXECUTION_STATUS=READ_ONLY_COMPLETE
+TECHNICAL_CONTRACT_STATUS=DRAFT_ONLY
+OWNER_OBJECTIVE_STATUS=THREE_ARCHITECTURE_QUESTIONS_REVIEWED
+FILES_WRITTEN=NONE
+TESTS_EXECUTED=NONE
+GRAPH_REGENERATION=NONE
+GUARDIAN_DOMAIN_RATIFICATION=NONE
+CONTRACT_60_RATIFICATION=NONE
+WITHHELD_STATUS=OPEN
+CATEGORY_3_FULL_OWNER_LOCK=UNCHANGED
+POST_ALLOWED=false
+EXTERNAL_EFFECT_AUTHORIZED=false
+FINANCIAL_GUARANTEE=NONE
+CAPITAL_SAFETY_GATE=OPEN
+NEXT_SAFE_ACTION=REPORT_AND_STOP
+```

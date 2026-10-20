@@ -1,0 +1,255 @@
+Die Baseline stimmt. Der folgende Text ist ein unverbindlicher Vertragsentwurf. Er ist nicht ratifiziert, nicht repositorygebunden und ändert nichts.
+
+```text
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=97c8c954204c15f9af5a48995b889ce3fb223c64
+ORIGIN_MAIN_TREE=898ede79de7e527db3632b8a3b32daf8b9b098b8
+TREE_MATCH=true
+LOCAL_HEAD=ad4460956ea5e71543e81ddd54141d2d68674568
+WORKING_MODEL_DRIFT=COMMIT_IDENTITY_ONLY_PLUS_UNTRACKED_EXCLUDED
+GCC_CONTRACT_DRAFT_RATIFICATION=NOT_RATIFIED
+IMPLEMENTATION_AUTHORIZED=false
+GUARDIAN_DOMAIN_RATIFICATION=NONE
+CONTRACT_60_RATIFICATION=NONE
+GUARDIAN_TOOL_STANDARD_V1=OWNER_RATIFIED
+GUARDIAN_TOOL_STANDARD_REPOSITORY_BINDING=ABSENT
+WITHHELD_STATUS=OPEN
+NEXT_SAFE_ACTION=REPORT_AND_STOP
+```
+
+Heute gibt es auf diesem Tree keine GCC. Ein Lauf dieses Entwurfs hätte null ratifizierte Empfänger und endete offen. `NICHT_BETROFFEN` wäre daraus nicht ableitbar.
+
+## Gemeinsame Regeln
+
+Alle Objekte sind kanonisch serialisiert, versionsfest und nach dem ersten Commit unveränderlich. Neue Erkenntnis erzeugt ein neues Objekt mit neuer Version und Verweis auf das vorige. Unbekannte Werte stehen als `UNKNOWN`. Auslassen bedeutet nicht „falsch“ oder „unbetroffen“.
+
+`CASE_ID` ist `gcc-case-v1:` plus SHA-256 der kanonischen `GCC_REQUEST_V1` ohne `case_id`. Dieselbe Anfrage ergibt dieselbe ID. GCC vergibt keine zweite ID für denselben Inhalt.
+
+Es gibt keine KI-Funktion, keinen Hauptwächter-zu-Hauptwächter-Kanal und keine Trading-, Code-, Safety-Override- oder Owner-Approval-Autorität. Die 20 vorbereiteten Domänen und 60 Einzelverträge bleiben `NOT_RATIFIED` und sind keine Empfänger. WITHHELD bleibt eine Coverage-Lücke.
+
+## 1. GCC_REQUEST_V1
+
+| Feld | Typ | Invariante |
+| --- | --- | --- |
+| `schema` | const `GCC_REQUEST_V1` | Pflicht |
+| `case_id` | string | Deterministisch aus dem übrigen Objekt |
+| `request_version` | `1` | Neue Frage ist ein neuer Fall |
+| `owner_request_type` | `QUESTION` \| `CHANGE_HYPOTHESIS` | Beide durchlaufen denselben read-only Weg |
+| `owner_request_text` | string | Wörtlich, unverändert |
+| `owner_request_text_sha256` | hex | Muss zum Text passen |
+| `analysis_scope` | object | Endlicher Scope: Grenzen, Ausschlüsse, Prüftiefe |
+| `affected_contract_ids` | list | Leer ist zulässig und bedeutet „keine vorab benannt“, nicht „keine Wirkung“ |
+| `current_commit` | `97c8c954…` für diesen Pin | Ein Commit |
+| `current_tree` | `898ede79…` für diesen Pin | Ein Tree |
+| `contract_config_versions` | list | Unbekannt einzeln als `UNKNOWN` |
+| `epoch_state_ref` | string \| `UNKNOWN` | Nicht aus dem Dateinamen ableiten |
+| `protection_class` | enum | Enthält Category-3-Hinweis, wenn der Scope Master V2 oder Double Play berührt |
+| `registry_version` | string | Version des verwendeten Registers |
+| `expected_recipient_ids` | list | Nur IDs mit `RATIFIED`; sonst leer |
+| `change_authorization` | const `ABSENT` | Eine Hypothese enthält keine Freigabe |
+| `implicit_go` | const `false` | |
+
+**Invarianten.** `QUESTION` und `CHANGE_HYPOTHESIS` erzeugen keine Schreib-, Test-, Commit- oder POST-Erlaubnis. GCC normalisiert den Owner-Text nicht. Ein abweichender Text-Hash wird vor `PINNED` abgewiesen.
+
+## 2. GCC_DISPATCH_V1
+
+| Feld | Typ | Invariante |
+| --- | --- | --- |
+| `schema` | const `GCC_DISPATCH_V1` | Pflicht |
+| `case_id`, `request_version` | ref | Identisch zum Request |
+| `registry_version` | string | Dieselbe Version für den ganzen Fall |
+| `registry_digest` | hex | Digest der ratifizierten Empfängermenge |
+| `dispatch_kind` | `INITIAL` \| `CAUSAL_FOLLOWUP` | Initial an alle ratifizierten Guardians; Follow-up nur mit belegter Kante |
+| `causal_evidence_ref` | ref \| null | Bei `INITIAL` null. Bei Follow-up eine vorhandene Kanten- oder Contract-ID |
+| `recipient_guardian_id` | string | `ratification_status=RATIFIED` |
+| `dispatch_id` | string | Eindeutig je `(case_id, request_version, recipient, dispatch_kind, causal_evidence_ref)` |
+| `attempt` | int ≥ 1 | Wiederholung nur bei fehlender Quittung oder fehlender Antwort |
+| `dedup_key` | string | Gleicher Schlüssel wird nicht erneut fachlich zugestellt |
+| `ack` | `PENDING` \| `ACK` \| `TIMEOUT` \| `UNREACHABLE` | Pro Guardian ein eigener Status |
+| `max_attempts` | `OWNER_PARAMETER_UNBOUND` | Solange ungebunden, ist `IMPACT_BOUNDED` unerreichbar |
+
+**Invarianten.** Das Register ist endlich und versioniert. `NOT_RATIFIED`, `WITHHELD` und unbekannte Bereiche erscheinen nur unter `coverage_gaps`, nie als Empfänger. Eine neu belegte Forward-, Reverse-, transitive oder zyklische Kante erzeugt höchstens eine deduplizierte Folgeanfrage an den zuständigen ratifizierten Guardian. GCC erfindet keine Kante. Ein leeres ratifiziertes Register ist ein gültiger Initialversand und zugleich eine offene Lücke.
+
+## 3. GCC_GUARDIAN_RESPONSE_V1
+
+| Feld | Typ | Invariante |
+| --- | --- | --- |
+| `schema` | const `GCC_GUARDIAN_RESPONSE_V1` | Pflicht |
+| `case_id`, `request_version`, `dispatch_id` | ref | Muss zum Dispatch passen |
+| `guardian_id` | string | Nur der adressierte Guardian |
+| `response_version` | int | Monoton; alte Version bleibt lesbar |
+| `impact_status` | `BETROFFEN` \| `NICHT_BETROFFEN` \| `UNGEKLÄRT` | Genau einer |
+| `claim_id` | string | Eigene Claim-ID |
+| `scope_ref` | ref | Exakt der Request-Scope oder eine ausgewiesene Teilmenge |
+| `direction` | `FORWARD` \| `REVERSE` \| `TRANSITIVE` \| `NONE_IN_SCOPE` \| `UNKNOWN` | Bei `BETROFFEN` nicht `UNKNOWN` |
+| `reach` | `EXISTS` \| `WIRED` \| `REACHABLE` \| `ACTIVE` \| `UNKNOWN` | Stufen bleiben getrennt |
+| `contract_or_edge_ids` | list | Bei `BETROFFEN` nicht leer |
+| `tool_slots` | genau drei | `<DOMAIN> GHV`, `<DOMAIN> Graph`, `<DOMAIN> GHOSV` |
+| `dimensions` | genau fünf | Kapitel 21.1 |
+| `evidence_refs` | list | CURRENT-Commit, Tree, Pfad oder Contract |
+| `counterevidence_refs` | list | Darf leer sein, muss dann `NONE_FOUND_IN_SCOPE` sagen |
+| `uncertainty` | list | Bei `UNGEKLÄRT` nicht leer |
+| `negative_proof` | object \| null | Pflicht und nicht null bei `NICHT_BETROFFEN` |
+| `foreign_interpretation` | const `false` | |
+
+Jedes Tool-Slot trägt `position_name`, `execution_status` (`EXECUTED`, `NOT_EXECUTED`, `TOOL_UNAVAILABLE`, `NOT_APPLICABLE`), `evidence_ref`, `depth_status` und die getrennten Marker `NAMED`, `EXISTS`, `IMPLEMENTED`, `APPLICABLE`, `VERIFIED`, `ACTIVE`, `OWNER_AUTHORIZED`. `NOT_APPLICABLE` braucht eine Scope-Begründung. GHOSV Execution bleibt execution-only. Ein nicht ausgeführtes Pflichtwerkzeug ist kein Negativnachweis.
+
+Die fünf Dimensionen sind `STRUKTUR_KAUSALITAET`, `VERTRAEGE_AUTORITAET`, `DATEN_ZUSTAND`, `RUNTIME_SCHUTZ`, `AUSSENGRENZEN`. Jede hat `coverage_status` und `uncertainty_status`.
+
+**Statusregeln.**
+
+- `BETROFFEN`: eigene Contract- oder Kanten-ID, CURRENT-Beleg, Richtung und Reichweite.
+- `NICHT_BETROFFEN`: endlicher Scope, Prüfung der eigenen Schnittstellen, dokumentierte Abwesenheit der relevanten Wirkung, alle drei Tool-Slots berichtet, keine Dimension `UNGEKLÄRT`.
+- `UNGEKLÄRT`: fehlende Antwort, fehlende Daten, Toolausfall, unklare Semantik, unbewiesene Erreichbarkeit, offene Kante, veralteter Graph oder unbenannte Kantenmenge.
+- Eine Dimension `UNGEKLÄRT` oder ein Tool `NOT_EXECUTED` / `TOOL_UNAVAILABLE` erzwingt den Impact-Status `UNGEKLÄRT`.
+
+## 4. GCC_EVIDENCE_VALIDATION_V1
+
+| Feld | Typ | Invariante |
+| --- | --- | --- |
+| `schema` | const `GCC_EVIDENCE_VALIDATION_V1` | Pflicht |
+| `case_id`, `request_version` | ref | Ein Pin |
+| `baseline_match` | `PASS` \| `FAIL` | Commit, Tree und Registry-Version gleich |
+| `schema_match` | `PASS` \| `FAIL` | Request, Dispatch und Response |
+| `recipient_completeness` | object | Je ratifiziertem Guardian: Antwort, Timeout oder Unreachable |
+| `findings_preserved` | const `true` | Originalaussagen bleiben byte-stabil |
+| `contradictions` | list | Beide Seiten mit Claim-IDs; kein Konsensfeld |
+| `foreign_interpretation_findings` | list | Jeder Treffer ist `REJECTED_AS_FINDING` |
+| `missing_evidence_count` | int | Größer als 0 verbietet `PASS` |
+| `validation_result` | `PASS` \| `FAIL` \| `PARTIAL` | `PASS` nur bei vollständiger, passender, widerspruchsfreier Evidence im endlichen Scope |
+| `overall_impact_pass` | const `false` | Dieses Objekt vergibt kein fachliches Gesamt-PASS |
+
+**Invarianten.** Zwei SHAs werden nicht zusammengeführt. Ein veralteter Graph, eine fehlende Antwort und eine Antwort ohne Evidence bleiben `PARTIAL` oder `FAIL`. GCC bildet aus einem Befund keine neue kausale Tatsache. Widerspruch bleibt `CONFLICT_OPEN`.
+
+## 5. GCC_IMPACT_REPORT_V1
+
+| Abschnitt | Inhalt | Invariante |
+| --- | --- | --- |
+| `addressed_guardians` | ID, Registry-Status, Dispatch, Ack | Auch die leere ratifizierte Menge |
+| `responses` | unveränderte Response-Referenzen | Keine Umschreibung |
+| `nonresponses` | Timeout, Unreachable, fehlend | Status `UNGEKLÄRT` |
+| `effects` | nur aus Responses: direkt, reverse, transitiv | Keine GCC-eigene Kante |
+| `conflicts` | Claim-Paare | Beide Texte erhalten |
+| `coverage_gaps` | nicht ratifiziert, WITHHELD, fehlendes Register, fehlender Graph, ungebundene Parameter | Nicht als unbetroffen zählen |
+| `unknown` | explizite `UNKNOWN`-Felder | Sichtbar |
+| `change_candidates` | getrennte Liste | Quelle `OWNER_HYPOTHESIS` oder `GUARDIAN_PROPOSAL` |
+| `synthesis` | nur Verweise auf Claim-IDs | Als Synthese markiert |
+| `release_authorization` | const `false` | |
+| `report_result` | `OPEN_UNCERTAINTY` \| `CONFLICT_OPEN` \| `BOUNDED_VERIFIED` \| `BLOCKED_AUTHORITY` \| `STALE_BASELINE` | Keiner dieser Werte ist eine Freigabe |
+
+`BOUNDED_VERIFIED` ist nur zulässig, wenn für den explizit endlichen Scope jede erforderliche Antwort, jeder Toolnachweis und jede benannte relevante Kante vollständig und widerspruchsfrei ist. Ein heutiger Lauf auf diesem Tree kann diesen Wert nicht erreichen, weil kein ratifiziertes Guardian-Register und kein current-gebundener Kausalgraph vorliegen.
+
+## 6. GCC_CASE_LIFECYCLE_V1
+
+Normativ ist die Übergangstabelle. `CLOSED` ist Endzustand und bedeutet allein, dass der Fall nicht mehr fortschreitet.
+
+| Von | Nach | Bedingung |
+| --- | --- | --- |
+| `INTAKE` | `PINNED` | Schema gültig, Text-Hash gleich, `change_authorization=ABSENT` |
+| `PINNED` | `DISPATCHED` | Ein Commit, ein Tree, eine Registry-Version |
+| `DISPATCHED` | `COLLECTING` | Für jeden ratifizierten Empfänger ein Initial-Dispatch, Ack noch offen erlaubt |
+| `COLLECTING` | `VALIDATING` | Kein offener Erst- oder Folge-Dispatch innerhalb der Attempt-Grenze |
+| `VALIDATING` | `COLLECTING` | Neue belegte Kante ohne Folge-Dispatch |
+| `VALIDATING` | `IMPACT_OPEN` | Lücke, Timeout, Widerspruch, Toollücke, ungebundener Parameter oder leeres Register |
+| `VALIDATING` | `IMPACT_BOUNDED` | Validation `PASS` und Report `BOUNDED_VERIFIED` |
+| `IMPACT_OPEN` | `OWNER_REVIEW` | Report persistiert und als offen gekennzeichnet |
+| `IMPACT_BOUNDED` | `OWNER_REVIEW` | Report persistiert |
+| `OWNER_REVIEW` | `CLOSED` | Owner-Entscheid als externes Objekt gespeichert |
+| `INTAKE`…`OWNER_REVIEW` | `CLOSED` | Abbruchgrund gesetzt |
+
+Abbruchgründe: `REQUEST_MUTATED`, `BASELINE_MISMATCH`, `STALE_BASELINE`, `UNAUTHORIZED_WRITE_OR_POST`, `FOREIGN_INTERPRETATION`, `ATTEMPT_LIMIT_WITH_GAP`, `AUTHORITY_ESCALATION_ATTEMPT`, `OWNER_STOP`. Ein Abbruch löscht keine bereits gespeicherten Befunde.
+
+`IMPACT_OPEN` geht nicht nach `IMPACT_BOUNDED`, ohne erneut `VALIDATING` zu durchlaufen. `IMPACT_BOUNDED` geht nicht nach `CLOSED` unter Umgehung von `OWNER_REVIEW`.
+
+**Reproof.** Eine genehmigte Änderung ist ein anderes Owner-Objekt und kein GCC-Übergang. Danach entsteht ein neuer Fall mit neuem Pin, `reproof_of=alte case_id`. Alte Befunde werden referenziert und nicht als Befunde des neuen Trees übernommen. `IMPACT_BOUNDED` des alten Falls gilt nach dem ersten abweichenden Commit oder Tree nicht weiter. Category-3-Flächen bleiben auch im Reproof gesperrt, bis ein separates Owner-GO genau diese Änderung nennt.
+
+```mermaid
+stateDiagram-v2
+  [*] --> INTAKE
+  INTAKE --> PINNED
+  PINNED --> DISPATCHED
+  DISPATCHED --> COLLECTING
+  COLLECTING --> VALIDATING
+  VALIDATING --> COLLECTING
+  VALIDATING --> IMPACT_OPEN
+  VALIDATING --> IMPACT_BOUNDED
+  IMPACT_OPEN --> OWNER_REVIEW
+  IMPACT_BOUNDED --> OWNER_REVIEW
+  OWNER_REVIEW --> CLOSED
+  INTAKE --> CLOSED
+  PINNED --> CLOSED
+  DISPATCHED --> CLOSED
+  COLLECTING --> CLOSED
+  VALIDATING --> CLOSED
+  IMPACT_OPEN --> CLOSED
+  IMPACT_BOUNDED --> CLOSED
+  OWNER_REVIEW --> CLOSED
+```
+
+## 7. GCC_AUTHORITY_BOUNDARY_V1
+
+| Akteur | Darf | Darf nicht | CURRENT |
+| --- | --- | --- | --- |
+| Owner | Scope, Register, Toolpflicht, Locks, separates Änderungs-GO | Die Anfrage gilt nicht schon als GO | Oberste Autorität |
+| Master V2 | Entscheidungsowner unter dem Owner | Von GCC angewiesen werden | Unverändert |
+| Double Play | Category 3, `FULL OWNER LOCK` / Level 3 | Lock-Aufhebung durch GCC, GHOSV oder Bericht | `UNCHANGED` |
+| GCC | Annehmen, Pinnen, aus ratifiziertem Register adressieren, Quittieren, Deduplizieren, Timeout führen, Schema und Baseline prüfen, Widerspruch und Coverage zeigen, Synthese mit Claim-Verweis | Guardian erzeugen, Befunde korrigieren, Safety überstimmen, Code ändern, Toolausführung behaupten, Live-Gate aus alter Map ableiten, GET/POST, Credentials, Venue, Owner-GO ersetzen | Auf diesem Tree nicht vorhanden |
+| Guardian | Eigenen Befund mit den drei Tool-Positionen | Fremde Semantik deuten, direkt einen anderen Hauptwächter beliefern | Kein ratifizierter Guardian |
+| GHOSV Execution | Execution-Scope | Whole-System-Prüfung, GCC-Ersatz | `AUTHORITY=NONE` |
+
+`POST_ALLOWED=false`. `EXTERNAL_EFFECT_AUTHORIZED=false`. `release_authorization=false`.
+
+## 8. GCC_NEGATIVE_TEST_MATRIX_V1
+
+| Fall | Erwarteter Zustand | Verbotenes Ergebnis |
+| --- | --- | --- |
+| Guardian antwortet nicht | Ack-Timeout, Response fehlt, Impact `UNGEKLÄRT`, Report `OPEN_UNCERTAINTY` | `NICHT_BETROFFEN` oder `BOUNDED_VERIFIED` |
+| Antwort ohne Evidence | Validation `FAIL`/`PARTIAL`, Impact `UNGEKLÄRT` | `PASS`, `BETROFFEN`, `NICHT_BETROFFEN` |
+| Veraltete Baseline | `BASELINE_MISMATCH`, `CLOSED` mit `STALE_BASELINE` | Zusammenführung mit dem Fall-Pin |
+| Zwei Guardians widersprechen sich | Beide Claims bleiben, `CONFLICT_OPEN`, `IMPACT_OPEN` | Konsens, Überschreiben, Mittelwert |
+| Register unvollständig oder nur `NOT_RATIFIED`/`WITHHELD` | Empfänger leer, `coverage_gaps` gefüllt, `IMPACT_OPEN` | Diese Bereiche als unbetroffen werten |
+| CURRENT-Graph fehlt | Graph-Slot `TOOL_UNAVAILABLE` oder Fall `UNGEKLÄRT`; heutiger integrierter Graph ist `NOT_MATERIALIZED`, der vorhandene Kompositionsgraph ist `STALE` | Altgraph als CURRENT, fehlende Kante als Isolation |
+| Neue transitive Abhängigkeit | Eine deduplizierte Folgeanfrage, zurück nach `COLLECTING` | Stilles Beenden, erfundene Kante, direkte Guardian-Rückfrage |
+| Owner-Anfrage verändert | `REQUEST_MUTATED`, kein `PINNED` | „Bereinigter“ Fall |
+| Write- oder POST-Versuch | `UNAUTHORIZED_WRITE_OR_POST`, `CLOSED`, keine Wiederholung als fachlicher Schritt | Auftrag, Credential-Nutzung, Aktivierung |
+
+Weitere Pflichtfälle aus Blueprint 35.3 bleiben vorgemerkt: fehlende GHOSV-Position, zwei SHAs, Zyklus, verspätete oder duplizierte Antwort, manipulierte Provenienz, semantische Anreicherung, unautorisierte Änderungsanfrage. Solange `max_attempts` und Timeout `OWNER_PARAMETER_UNBOUND` sind, ist jeder dieser Tests nur spezifiziert, nicht ausgeführt.
+
+## Abgleich mit Blueprint V0.6
+
+| Entwurf | Kapitel | Übernommen | Offen gelassen |
+| --- | --- | --- | --- |
+| `GCC_REQUEST_V1` | 32.1, 33.1, 34.1 Schritte 0–1 | Beide Anfragetypen, unveränderte Frage, ein Pin, kein implizites GO | Epoch und Contract-Versionen bleiben je Fall `UNKNOWN`, bis belegt |
+| `GCC_DISPATCH_V1` | 32.2, 33.1, 34.1 Schritte 2 und 4, 35.4 | Hub-and-Spoke, initial nur an die endliche ratifizierte Menge, danach gezielte Kante | Transport, Persistenz, Authentisierung, Attempt-Zahl |
+| `GCC_GUARDIAN_RESPONSE_V1` | 21.1, 33.2, 33.3 | Drei Status, drei Tool-Positionen, fünf Dimensionen, Negativnachweis | Die 60 Verträge bleiben einzelne, nicht ratifizierte Tiefen |
+| `GCC_EVIDENCE_VALIDATION_V1` | 33.3, 35.1 | Keine Fremddeutung, Widerspruch bleibt, fehlende Evidence ist kein PASS | Kein Repository-Validator |
+| `GCC_IMPACT_REPORT_V1` | 34.1 Schritt 7, 34.2, 35.2 | Getrennte Kandidaten, Endzustände sind keine Freigabe | `BOUNDED_VERIFIED` ist auf diesem Pin nicht erreichbar |
+| `GCC_CASE_LIFECYCLE_V1` | 34.1 Schritte 0–9 | Pin, Dispatch, Fixpunkt, Owner-Entscheid, separater Reproof | `M2_AUTHORIZED=false` |
+| `GCC_AUTHORITY_BOUNDARY_V1` | 32.1, 35.1 | Koordination und Bericht; Owner > Master V2; Category 3 unverändert | Keine neue Autorität aus diesem Entwurf |
+| `GCC_NEGATIVE_TEST_MATRIX_V1` | 35.3 | Lücke oder Stop statt Entwarnung | Tests wurden nicht ausgeführt |
+
+## Offene Owner-Entscheidungen
+
+1. Diesen Entwurf ratifizieren oder ändern. Er ist derzeit `NOT_RATIFIED`.
+2. Die 20 Domänen einzeln ratifizieren, bevor sie Empfänger werden können.
+3. Die 60 Verträge einzeln ratifizieren. Der Tool-Standard ersetzt sie nicht.
+4. `GUARDIAN_TOOL_STANDARD_V1` repositorybinden oder ausdrücklich ungebunden lassen.
+5. WITHHELD-Bereiche benennen, ausschließen oder weiter offen halten.
+6. `max_attempts`, Timeout, Registry-Speicher, Signatur, Transport und Persistenz festlegen.
+7. Eine Implementierung wäre ein separates Änderungs-GO auf einer neuen Baseline, danach ein eigener Reproof.
+
+```text
+TOOL_EXECUTION_STATUS=READ_ONLY_COMPLETE
+TECHNICAL_CONTRACT_STATUS=DRAFT_ONLY
+OWNER_OBJECTIVE_STATUS=CONTRACT_DRAFT_REPORTED
+FILES_WRITTEN=NONE
+TESTS_EXECUTED=NONE
+GRAPH_REGENERATION=NONE
+IMPLEMENTATION_AUTHORIZED=false
+POST_ALLOWED=false
+EXTERNAL_EFFECT_AUTHORIZED=false
+CATEGORY_3_FULL_OWNER_LOCK=UNCHANGED
+FINANCIAL_GUARANTEE=NONE
+CAPITAL_SAFETY_GATE=OPEN
+NEXT_SAFE_ACTION=REPORT_AND_STOP
+```
