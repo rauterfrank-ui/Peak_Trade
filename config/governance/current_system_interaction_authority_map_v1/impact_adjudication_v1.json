@@ -1,22 +1,29 @@
 {
   "authority_effect": "NONE",
   "changed_paths": [
-    ".cursor/rules/README.md",
-    ".cursor/rules/peak-trade-owner-objective-first-v1.mdc",
-    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json"
+    "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "scripts/ops/double_play_guardian_readonly_projection_v1/__init__.py",
+    "scripts/ops/double_play_guardian_readonly_projection_v1/constants_v1.py",
+    "scripts/ops/double_play_guardian_readonly_projection_v1/extract_v1.py",
+    "scripts/ops/double_play_guardian_readonly_projection_v1/project_v1.py",
+    "tests/ops/test_double_play_guardian_readonly_projection_v1.py"
   ],
-  "changed_paths_sha256": "7f9dfd435df52e7a2b313ef58fa79268967d8b38349cf84989b41de024d19184",
+  "changed_paths_sha256": "dc7be471911d285d086d1da575a36ba89ffbfedc15f92cdb5b98a4ef73a43a05",
   "covered_candidate_paths": [
-    ".cursor/rules/README.md",
-    ".cursor/rules/peak-trade-owner-objective-first-v1.mdc"
+    "scripts/ops/double_play_guardian_readonly_projection_v1/__init__.py",
+    "scripts/ops/double_play_guardian_readonly_projection_v1/constants_v1.py",
+    "scripts/ops/double_play_guardian_readonly_projection_v1/extract_v1.py",
+    "scripts/ops/double_play_guardian_readonly_projection_v1/project_v1.py",
+    "tests/ops/test_double_play_guardian_readonly_projection_v1.py"
   ],
   "evidence_refs": [
-    ".cursor/rules/README.md",
-    ".cursor/rules/peak-trade-owner-objective-first-v1.mdc",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "scripts/ops/double_play_guardian_readonly_projection_v1/project_v1.py",
+    "tests/ops/test_double_play_guardian_readonly_projection_v1.py"
   ],
-  "reason": "Der Diff ändert nur die Always-Apply-Agentenregel Owner-Objective-First und ihren Indexeintrag. .cursor/rules/ ist eine gelistete Kandidatenfläche. source_v1.json, Census-Körper, Authority-Zuweisungen und abgeleitete Map-Views bleiben unverändert.",
+  "reason": "Der Diff ergänzt nur die lesende Double-Play-Lückenprojektion und ihren Test. Das Paket ist eine neue, nicht erschöpfende Kandidatenfläche. tests/ops/ war bereits gelistet. source_v1.json, Census-Körper, Authority-Zuweisungen und abgeleitete Map-Views bleiben unverändert.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
