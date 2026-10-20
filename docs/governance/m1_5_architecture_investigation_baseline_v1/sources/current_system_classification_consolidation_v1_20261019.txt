@@ -1,0 +1,208 @@
+Die Baseline stimmt. Die Konsolidierung übernimmt die vorhandene Klassifikation A–G und die abgeschlossene Master-V2-Korrektur. Es gibt keine neue Inventur und keine erneute Master-V2-Prüfung.
+
+```text
+BASELINE_VALIDATION=PASS
+HEAD=1007b31ab0d1aa27d557efb0ce0d922c1c6eafbd
+TREE=87108b671cd132c1357d3184d9d239739913df8a
+ORIGIN_MAIN=1007b31ab0d1aa27d557efb0ce0d922c1c6eafbd
+WORKING_TREE_PORCELAIN=EMPTY
+DEVIATION=NONE
+```
+
+## 2. GHV_BEFUND
+
+Frischlauf: `NICHT_GEPRUEFT`. Ein Lauf würde schreiben.
+
+Durable Graph unter `evidence/ops/wp_r2b_r4_presentation_retirement_v1/`: `STALE`, `git_head=b6ffca1d`, `snapshot_id=cc0d6099a96201fc195f0b18a53ae324`. Seine eigene Angabe `CURRENT_GRAPH_VERIFIED=true` gilt für jenen Pin. In der Klassifikation A–G ist er mit 302 Knoten und 67 Kanten geführt. Diese Zählung wird nicht mit anderen Graphen addiert.
+
+Das später gelesene externe Artefakt `snapshot_id=a1c29e25645cf06ea78343be9e98bb2f` trägt HEAD `1007b31`, `authority=NONE`, Governance-Baseline-Drift und keine Closure. Es ist keine Klassifikationsautorität und kein PASS.
+
+## 3. GHOSV_BEFUND
+
+Execution-GHOSV: `NICHT_ANWENDBAR` für diese Klassifikation. Nicht aufgerufen.
+
+Der Master-V2-Prüfer ist ein anderer Scope. Er wurde nicht ausgeführt: `NICHT_GEPRUEFT`. Kein PASS.
+
+## 4. CURRENT_GRAPH_BEFUND
+
+Im Repository: `NOT_MATERIALIZED`. Frischlauf: `NICHT_GEPRUEFT`.
+
+Das externe Artefakt derselben späteren Snapshot-ID hat null Overlay-Kanten und `GLOBAL_CAUSAL_CLOSURE_PROVEN=false`. Fehlende Closure ist eine Prüflücke. Sie ist keine belegte Architekturabweichung und kein Klassifikations-PASS.
+
+## 5. CONSOLIDATED_UNIVERSE_REGISTRY
+
+Zähleinheiten bleiben getrennt. Die frühere Kandidatenzahl 8 wird nicht fortgeschrieben und nicht mit der neuen Trennung addiert.
+
+| Klasse | Anzahl | Inhalt |
+|---|---|---|
+| Owner-festgelegte Universumsidentität | 1 | Master V2 |
+| Technisch geschlossene Universen | 0 | keine geschlossene Grenzabdeckung nachgewiesen |
+| Benannte Universumskandidaten | 7 | Cap21, Cap22, Cap23, Self-Learning, Optimization, Meta-Learning, Market Intelligence |
+| Ausgewiesene Endzahl | nicht ausweisbar | Kandidaten sind keine bewiesenen Universen; 8 war eine Untergrenze der damals benannten Namen |
+
+Master V2 ist aus der Kandidatenliste herausgenommen, weil seine Identität owner-festgelegt ist. Das ist eine Umklassifikation des vorhandenen Eintrags C-MV2, keine Neuentdeckung. Seine technische Grenzabdeckung bleibt unvollständig: der Decision-Pfad-Contract setzt `FULL_UNIVERSE_BOUNDARY_RATIFIED=false`, und die Dateimitgliedschaft jenseits der benannten Seams ist nicht geschlossen. Diese Lücke hebt die Identität nicht auf.
+
+Die sieben Kandidaten bleiben `UNIVERSE_CANDIDATE`. Landscape-Flags, Census-Zahl 12 und IAM-`PROVEN_CURRENT` ratifizieren sie nicht. Self-Learning und Optimization bleiben zwei Kandidaten. Der Full Autonomous Stack ist kein Universumseintrag.
+
+## 6. CONSOLIDATED_EXTERNAL_DOMAIN_REGISTRY
+
+Übernommen ohne neue Domäne.
+
+```text
+PROVEN_EXTERNAL_DOMAIN_COUNT=0
+EXTERNAL_DOMAIN_CANDIDATE_COUNT=14
+```
+
+Die 14 Kandidaten sind Full-Core-Komposition, N5-Handoff, Full-Autonomy-Orchestrator, N5-Completion, Binding, Reconciliation, Market-Data-Provenance, SideState-Cursor, Kill-Switch-Leser, Capital-Risk-Sizing, Order Intent, Safety-Kernel-Bind, Layered-Core-Seam und Execution.
+
+N5-Completion bleibt `CANDIDATE` mit dem bestehenden Konstantenkonflikt `FIVE_LANE_RUNTIME_CREATED`. Presentation, Treasury, Public Market Data, Private Account State und Research Corpus bleiben `GAP-MAP-ONLY`.
+
+## 7. CONSOLIDATED_ELEMENT_MATRIX
+
+Primärklasse der geführten Elemente bleibt `UNCLASSIFIED`, wo keine Mitgliedschaft belegt ist.
+
+| Zähleinheit | Stand | Bedeutung |
+|---|---|---|
+| 19 Landscape-Surfaces | alle primär `UNCLASSIFIED` | Kartenbezug ist keine Mitgliedschaft |
+| 4 Surfaces mit `domain_universe=true` | Cap21, Cap22, Cap23, TD-MV2-DP | daneben `not_a_universe_ratification=true` |
+| 10 benannte Anker | vorhanden | Funktions- und Konstantenbelege, keine Universumsratifikation |
+| 40 Paketwurzeln unter `src/` | alle `UNCLASSIFIED` | ein enthaltenes Modul macht das Paket nicht zum Universum |
+| 75 IAM-Domänen | eigene Einheit, Baseline `f91d2cf2` | 40 `PROVEN_CURRENT`, 29 `PARTIAL`, 3 `RESEARCH_ONLY`, 3 `UNKNOWN`; das ist Kartenstatus, nicht Pin-Ratifikation |
+
+Für Master V2 gilt nur die Korrektur: die Universumsidentität ist owner-festgelegt. Die Surface `TD-MV2-DP` und die einzelnen Module bleiben in der Elementmatrix `UNCLASSIFIED` als technische Mitgliedschaft. Double Play und Dynamic Scope werden nicht erneut untersucht. Ihre fachliche Innenlage ist bereits festgelegt und erzeugt hier keine neue Elementklasse.
+
+`REACHABLE` und `ACTIVE` bleiben `NICHT_GEPRUEFT`. Eine Konstante, die Aktivierung verneint, bleibt `DECLARED`.
+
+## 8. CONSOLIDATED_CROSS_BOUNDARY_EDGES
+
+Übernommen sind nur die bereits belegten gerichteten Zeilen: `E-IN-01` bis `E-IN-11`, `E-N5-01`, `E-OUT-01` bis `E-OUT-11`, `E-LEARN-OPT`.
+
+Nicht übernommen und nicht addiert: 919 Importkanten, 98 Census-Kanten, 90 IAM-Kanten, 67 beziehungsweise 81 Graphkanten. Das sind andere Zählungen.
+
+`E-N5-01` bleibt `CONFLICT_OPEN`: Topologie und Handoff setzen `FIVE_LANE_RUNTIME_CREATED=False`, das Completion-Modul setzt `True`. Beide setzen `JOIN_TRADING_AUTHORITY=False`. Das ist kein Runtime-`ACTIVE` und keine Universumsratifikation.
+
+`E-IN-10` bleibt `UNGEKLÄRT`. `E-IN-11` bleibt Deklaration ohne Invokation. Interne Master-V2-Aufrufe aus der späteren Lesung werden nicht als neue Kanten nachgetragen.
+
+## 9. CONSOLIDATED_MAP_MAPPING
+
+Alle geführten Maps bleiben ohne eigene Authority. Keine Map wurde geändert.
+
+| Map | Baseline | Konsolidierte Lage |
+|---|---|---|
+| Landscape | `e5d9296f` | Hinweisinventar, nicht HEAD, keine Ratifikation |
+| Census | `6216201d` | `canonical_universe_count_asserted=false`, Taxonomie offen |
+| IAM | `f91d2cf2` | andere Zähleinheit, `map_authority=NONE` |
+| Law-Map | `1bac0d93` | nicht als Domänenquelle verwendet |
+| Map of Truth | Navigation | keine Domänensemantik |
+| Runbook | Stempel `9971ad8b` | `STALE` gegenüber HEAD |
+| GHV durable | `b6ffca1d` | `STALE` |
+| Causal Graph im Repository | fehlt | `NOT_MATERIALIZED` |
+
+## 10. COVERAGE_AND_UNCERTAINTY
+
+Belegte Abdeckung ist die benannte Kandidatenlage, die 14 Außenkandidaten, die 19 Surfaces, die 10 Anker, die 40 Paketwurzeln und die geführten gerichteten Seams. Master V2 ist davon als Identitätsfrage getrennt und owner-festgelegt.
+
+Technische Nachweislücken, unverändert offen: Dateiebene unter den 40 Paketen, Master-V2-Dateimitgliedschaft jenseits der benannten Seams, GHV-Frischlauf, Causal-Graph-Materialisierung im Repository, GHOSV-Lauf, Runtime `REACHABLE`/`ACTIVE`, Adapterwirkung auf `decision_outcome`, Intent-Consumer, Kartenbindung an `1007b31`, dynamische Einstiege, Retirement-Vollständigkeit, Cap21–Cap23- und Meta-Learning-Mitgliedschaft.
+
+Tatsächliche Abweichung von der Master-V2-Owner-Architektur: keine nachgewiesen. Der Five-Lane-Konstantenwiderspruch bleibt ein eigener `CONFLICT_OPEN` und wird nicht zu einer Master-V2-Abweichung umgedeutet.
+
+Nicht untersucht in dieser Konsolidierung: Doppel Play, Dynamic Scope, Replay-Körper, die 136-Dateien-Liste, Level-3-Durchsetzung, andere Worktrees, Venue und produktive Aufrufe.
+
+Kosten einer weiteren Untersuchung: ein Frischlauf bleibt `NOT_MEASURED` und `BLOCKED_ENVIRONMENT`, solange der kanonische Interpreter fehlt und Bootstrap nicht genehmigt ist. Eine Datei-für-Datei-Klassifikation hätte keinen belegten Erkenntnisgewinn für die Universumsidentität von Master V2. Eine erneute Master-V2-Lesung ist untersagt.
+
+## 11. METHOD_AND_COST
+
+Diese Runde hat die vorhandene Ausgabe A–G und die abgeschlossene Master-V2-Korrektur gelesen und die Baseline geprüft. Kein Generator, keine neue AST-Inventur, keine neue Kantenübernahme.
+
+Bereits entstandener Aufwand bleibt derjenige der Klassifikation: statische Lesungen auf Pin `1007b31`, Übernahme eines früheren Importscans von 4965 Python-Dateien und der Außengrenzen-Call-Sites, ohne sie zu reproduzieren. Eine Stundenzahl wird nicht erfunden.
+
+Die frühere Eingangslage A–G war jeweils `PARTIALLY_SUPPORTED`. Daran ändert die Konsolidierung den Abdeckungsgrad nicht. Sie korrigiert nur die Einordnung von Master V2.
+
+## 12. BEREITS_GEKLAERTE_OWNER_ENTSCHEIDUNGEN
+
+- Master V2 ist ein eigenständiges Architekturuniversum und die höchste systeminterne Instanz unter dem Owner.
+- Double Play ist intern. Dynamic Scope ist Bestandteil von Double Play.
+- Category 3 Full Owner Lock schützt Double Play. Technisches Enforcement bleibt deferred.
+- Diese Punkte werden nicht erneut ratifiziert.
+- `FIVE_LANE_RUNTIME_CREATED=True` im Completion-Modul ist keine belegte Aktivierung.
+- Kartenstatus `PROVEN_CURRENT` ist keine Universumsratifikation auf diesem Pin.
+
+## 13. TATSAECHLICH_OFFENE_OWNER_ENTSCHEIDUNGEN
+
+Fachlich offen bleibt nur, was keine Owner-Entscheidung trägt:
+
+- Ob Cap21, Cap22, Cap23, Self-Learning, Optimization, Meta-Learning und Market Intelligence Universen sind. Sie sind Kandidaten.
+- Ob M1.5 in diesem `PARTIAL_UNRESOLVED` stehen bleibt.
+
+Nicht offen: Master-V2-Identität, Double Play, Dynamic Scope, Lock und deferred Enforcement.
+
+## 14. CURRENT_ABWEICHUNGEN_BELEGT
+
+```text
+CURRENT_ABWEICHUNGEN_BELEGT=NONE
+```
+
+Das gilt für die verbindliche Master-V2-Architektur. Der Five-Lane-Konflikt bleibt daneben `CONFLICT_OPEN` und ist nicht als Abweichung dieser Architektur nachgewiesen. Ungeprüfte Bereiche ergeben kein PASS.
+
+## 15. TATSAECHLICHE_BLOCKER
+
+Ein Blocker für die Owner-Identität von Master V2 besteht nicht.
+
+Ein Blocker für eine geschlossene M1.5-Gesamtklassifikation besteht: technisch geschlossene Universen sind 0, die Endzahl ist nicht ausweisbar, Runtime und Graph-Frischlauf fehlen, der Five-Lane-Konflikt ist offen. Kapitel 27 und 28 sind nicht erfüllt.
+
+## 16. OFFENE_RISIKEN
+
+Die frühere Kandidatenzahl 8 kann mit der owner-festen Identität addiert und als neun Universen gelesen werden. Census 12, vier Landscape-Flags und IAM-`PROVEN_CURRENT` können erneut als Ratifikation gelesen werden. Beides ist durch die getrennten Zähleinheiten ausgeschlossen.
+
+## 17. EMPFOHLENE_SICHERE_LOESUNG
+
+Die Konsolidierung als M1.5-Halt verwenden. Keine neue Inventur, keine Master-V2-Fortsetzung, kein Graph-Lauf und kein M2. Ein weiterer Slice ist mit der vorhandenen Evidenz nicht begründet: er würde entweder Master V2 erneut öffnen oder eine Kandidatenzahl erzeugen, die weiterhin keine Endzahl ist.
+
+## 18. VERIFIKATION
+
+HEAD, Tree und leerer Arbeitsbaum geprüft. Die Registry-Zahlen stammen aus der vorhandenen Klassifikation A–G. Die Master-V2-Einordnung stammt aus der abgeschlossenen Korrektur. GHV, GHOSV und Causal Graph wurden nicht ausgeführt.
+
+## 19. OWNER_GO_BEDARF
+
+```text
+OWNER_GO_BEDARF=NONE
+```
+
+Für die festgelegte Master-V2-Architektur und für diese Konsolidierung ist kein neues GO erforderlich. Ein GO wäre erst nötig, wenn der Owner einen neuen, eng benannten Slice ausdrücklich beauftragt. Schreib-, Runtime- und M2-GO bleiben nicht erteilt.
+
+## 20. M1_5_CONSOLIDATION_STATUS
+
+```text
+M1_5_CONSOLIDATION_STATUS=PARTIAL_UNRESOLVED
+OWNER_FIXED_UNIVERSE_IDENTITIES=1
+TECHNICALLY_CLOSED_UNIVERSES=0
+NAMED_UNIVERSE_CANDIDATES=7
+FINAL_UNIVERSE_COUNT=NOT_EMITTED
+EXTERNAL_DOMAIN_CANDIDATES=14
+PROVEN_EXTERNAL_DOMAINS=0
+```
+
+### Abschluss
+
+1. Verbindlich geklärt ist die Master-V2-Identität einschließlich der inneren Lage von Double Play und Dynamic Scope, des Category-3-Locks und des deferred Enforcement. Geklärt ist außerdem, dass Kartenstatus und die Five-Lane-Konstante `True` keine Ratifikation und keine Aktivierung sind.
+
+2. Technisch belegt sind die benannten Seams, Konstanten und Kandidatenanker der bestehenden Registry, darunter der Decision-Owner-Symbolname, die Non-Transfer-Flags und der Five-Lane-Konstantenwiderspruch. Belegt ist nicht eine geschlossene Universumsgrenze.
+
+3. Fachlich ungeklärt ist der Universumsstatus der sieben Kandidaten. Die Master-V2-Grundarchitektur ist nicht ungeklärt.
+
+4. Nachweislücken bleiben Dateimitgliedschaft, Runtime-Stufen, GHV-Frischlauf, repository-eigener Causal Graph, GHOSV-Lauf, Adapterwirkung und die Kartenbaselines vor HEAD.
+
+5. M1.5 ist als geschlossene Gesamtklassifikation nicht entscheidungsreif. Es ist entscheidungsreif als Halt in `PARTIAL_UNRESOLVED`.
+
+6. Der kleinste begründbare Schritt ist, bei diesem Halt zu bleiben. Ein weiterer Untersuchungsauftrag erzeugt mit der vorhandenen Evidenz keine Endzahl und würde abgeschlossene Master-V2-Festlegungen erneut öffnen.
+
+```text
+REPORT_AND_STOP
+EVIDENCE_INTEGRITY_V1=APPLIED
+CLAIM_EXACT=Die konsolidierte M1.5-Lage ist PARTIAL_UNRESOLVED: eine owner-feste Master-V2-Identität, null technisch geschlossene Universen, sieben Kandidaten, keine belegte Master-V2-Abweichung.
+SCOPE=Konsolidierung vorhandener M1.5-Ergebnisse, ohne neue Inventur
+RESULT=NOT_PROVEN
+FINANCIAL_GUARANTEE=NONE
+CAPITAL_SAFETY_GATE=OPEN
+STOP_REASON=CONSOLIDATION_COMPLETE_NO_FURTHER_SLICE
+```

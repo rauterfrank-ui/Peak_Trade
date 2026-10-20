@@ -1,0 +1,378 @@
+Die M1.5-Klassifikation am Pin `1007b31` bleibt **PARTIAL_UNRESOLVED**. Ratifizierte Universen: **0**. Eine Endzahl ist nicht ausweisbar. Es gibt keine Dateiänderung und keinen Übergang nach M2.
+
+```text
+BASELINE_VALIDATION=PASS
+WORKSPACE_REALPATH=/Users/frnkhrz/Peak_Trade_M1_5_CURRENT
+GIT_ROOT=/Users/frnkhrz/Peak_Trade_M1_5_CURRENT
+HEAD=1007b31ab0d1aa27d557efb0ce0d922c1c6eafbd
+TREE=87108b671cd132c1357d3184d9d239739913df8a
+DETACHED_HEAD=true
+WORKING_TREE=CLEAN
+ORIGIN_MAIN=1007b31ab0d1aa27d557efb0ce0d922c1c6eafbd
+ORIGIN_MAIN_TREE=87108b671cd132c1357d3184d9d239739913df8a
+REMOTE_CHECK=git_ls_remote_read_only
+AHEAD_BEHIND=0/0
+LEVEL3_WORKTREE_OPENED=false
+WORKING_MODEL_DRIFT=RUNBOOK_REVIEW_STAMP_STALE
+RUNBOOK_CURRENT_REVIEWED_AT_SHA=9971ad8bcef222c6200d476c823de89820add7aa
+MASTER_RUNBOOK_STATUS=READ_BOUNDARY_AND_STAMP_ONLY
+MAP_OF_TRUTH_STATUS=NAVIGATION_ONLY
+CURRENT_PHASE=M1.5
+LAST_CANONICALLY_CLOSED_STEP=NOT_REPROVEN_AT_THIS_PIN
+EARLIEST_UNRESOLVED_DEPENDENCY=M1_5_PARTIAL_UNRESOLVED
+REQUESTED_STEP=M1_5_A_TO_G_CONTINUATION
+REQUEST_MATCHES_CANONICAL_NEXT_STEP=true
+AUTHORIZATION_REQUIRED=READ_ONLY_ALREADY_GRANTED
+EXECUTION_SURFACE_TOUCHED=false
+HARD_STOP_REASONS=NONE_FOR_READ_ONLY
+PROPOSED_SAFE_ACTION=REPORT_AND_STOP
+CODE_CHANGE_GO=NOT_GRANTED
+```
+
+Der Stempelabstand blockiert eine Implementierung. Diese lesende Klassifikation bleibt zulässig.
+
+## M1_5_REUSED_EVIDENCE
+
+| Vorbefund | Provenienz | Pin | Diese Runde |
+|---|---|---|---|
+| Identitätsinventar, 19 Surfaces, 8 Kandidaten, Zahl 0 | [M1.5 Identitätsinventar](9b527f42-8c9c-4c8e-a813-e2fbf0fac883) | `1007b31` / `87108b67` | Census-, Landscape- und IAM-Kopf sowie die Decision-Path-Flags neu gelesen |
+| Master-V2-Außengrenze, Inbound/Outbound, Double Play intern | [Master-V2-Außengrenze](cf2aefe0-90de-4a00-a481-092b92ca12bf) | derselbe Pin | Vertrag und die N5-/Isolation-Konstanten neu gelesen; Call-Sites des Cycles nicht erneut zeilenweise gelesen |
+| Referenzmatrix | dieselbe Außengrenzen-Sitzung, zweiter Auftrag | derselbe Pin | Strukturentwurf, keine Klassifikationsautorität |
+| Instrumenten-Preflight | dieselbe Sitzung, dritter Auftrag | derselbe Pin | `FINAL_PREFLIGHT_STATUS=BLOCKED_ENVIRONMENT` übernommen; Generator nicht gestartet |
+| GHV-Artefakt | `evidence/ops/wp_r2b_r4_presentation_retirement_v1/20261016T043611Z_r4_final/composed_forensic_graph.v1.json` | `git_head=b6ffca1d`, `snapshot_id=cc0d6099a96201fc195f0b18a53ae324` | Kopfzeilen erneut gelesen; `CURRENT_GRAPH_VERIFIED=true` gilt für den alten Pin |
+| Causal Graph | Tree-Suche | — | `integrated_causal_graph.v1.json` weiterhin abwesend |
+| Master-V2-GHOSV | `scripts/ops/ghosv_master_v2_bounded_context_v1/constants_v1.py` | Code-Pin `7628005ae` | `FULL_UNIVERSE_BOUNDARY_RATIFIED=False`, MV2-02 bis MV2-08 fest `NOT_TESTED` |
+| Execution-GHOSV | Vorbefund | Execution-Scope | für diese Klassifikation `NICHT_ANWENDBAR`; kein Frischlauf |
+
+```text
+FRESH_RUN=NOT_EXECUTED
+FRESH_RUN_PROOF=NOT_VERIFIED
+VENV=ABSENT
+GHV_GRAPH_STATUS=STALE
+CURRENT_CAUSAL_GRAPH=NOT_MATERIALIZED
+```
+
+Eingangsunterstützung vor dieser Fortsetzung: A `PARTIALLY_SUPPORTED`, B `PARTIALLY_SUPPORTED`, C `PARTIALLY_SUPPORTED`, D `PARTIALLY_SUPPORTED`, E `PARTIALLY_SUPPORTED`, F `PARTIALLY_SUPPORTED`, G `PARTIALLY_SUPPORTED`. Keine Ausgabe war `NOT_SUPPORTED`. Keine Ausgabe war vollständig nach Kapitel 27 und 28.
+
+Neuer Gegenbefund dieser Runde: `FIVE_LANE_RUNTIME_CREATED` ist in der Topologie und im Handoff-Join `False`, im Modul `current_mf_n5_full_autonomy_runtime_n5_completion_v1` `True`. Das ist `CONFLICT_OPEN`. Es ist kein Runtime-`ACTIVE`.
+
+## A_UNIVERSE_REGISTRY
+
+```text
+PROVEN_UNIVERSES=0
+PROVEN_MINIMUM_COUNT=0
+CANDIDATE_COUNT=8
+UNCLASSIFIED_REMAINDER=OPEN
+FINAL_UNIVERSE_COUNT=NOT_EMITTED
+```
+
+Ratifiziertes Universum: keines. `MASTER_V2_INTENDED_UNIVERSE=true` in `docs/ops/specs/MV2_DECISION_PATH_BOUNDARY_V1.md` ist die Owner-Bezeichnung. Dieselbe Datei setzt `FULL_UNIVERSE_BOUNDARY_RATIFIED=false`, `CURRENT_BOUNDARY_IMPLEMENTATION_PROVEN=false`, `AUTHORITY=NONE`. Referenzbaseline des Vertrags: `6e3143bd`.
+
+Double Play bleibt interner Funktionsbereich: `DOUBLE_PLAY_INTERNAL_FUNCTIONAL_AREA=true`, `DOUBLE_PLAY_SEPARATE_UNIVERSE=false`, `DOUBLE_PLAY_SUB_UNIVERSE=false`, `DOUBLE_PLAY_ROLE=COMPOSITION_STATE_ENTRY_EXIT_WITHIN_JOINT_CORE` in `src/trading/master_v2/naked_mv2_double_play_core_authority_hardening_v1.py`. Kategorie 3 / Full Owner Lock ist deklarativ `LEVEL_3`. Eine technische Durchsetzung unter diesem Namen ist in dieser Runde nicht neu gesucht. Status aus dem Außengrenzenbefund: `DEFERRED / UNRESOLVED`.
+
+| UNIVERSE_ID | NAME | FACHLICHE_IDENTITÄT | CURRENT_SCOPE | BOUNDARY_DEFINITION | MEMBERSHIP_EVIDENCE | EXCLUSIONS | INBOUND | OUTBOUND | CONTRACTS | PROVENANCE | COUNTER_EVIDENCE | COVERAGE | UNCERTAINTY | CLASSIFICATION_STATUS |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| C-MV2 | Master V2 | Decision-Owner `run_integrated_offline_trading_logic_replay_v1`; Cycle-Host ruft ihn auf | `src/trading/master_v2` plus Cycle in `src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py` | vorgesehen, nicht geschlossen | Hot Path WIRED laut Außengrenzenbefund; 136 Python-Dateien im Paket | Double Play kein eigenes Universum; Paketpfad ist keine Mitgliedschaft | Price, Binding, Reconciliation, Cursor, Kill-Switch, G17, F1/M9, Feature-Regime, N5-Aufrufer | Result, fünf Policy-Adapter, konditionaler DDO-Export, konditionaler P5-Bind | `MV2_DECISION_PATH_BOUNDARY_V1` | Vertrag diese Runde; Kanten aus [Master-V2-Außengrenze](cf2aefe0-90de-4a00-a481-092b92ca12bf) | Ratifikationsflag false; 136 Dateien größer als der gelesene Hot Path | direkte Seams belegt; Mitgliedschaft offen | Nachfolger `NOT_DESIGNATED`; ACTIVE nicht belegt | UNIVERSE_CANDIDATE |
+| C-CAP21 | Governed Futures Universe | Producer `ops.governed_futures_universe_producer_v1` | Landscape `TD-CAP21-UNIVERSE`; IAM `universe_cap21` | nur Karte | Paketexistenz im früheren Inventar; IAM-Codepfad genannt | keine Mitgliedsliste am aktuellen Pin geprüft | UNGEKLÄRT | Handoff-Kette importiert Cap23/Cap24, nicht als Cap21-Grenze gelesen | IAM `authority_effect=NONE` | Landscape `domain_universe=true`, Baseline `e5d9296f` | `not_a_universe_ratification=true` | Kartenidentität | Grenze und Runtime offen | UNIVERSE_CANDIDATE |
+| C-CAP22 | Ranking | Producer `ops.productive_futures_ranking_producer_v1` | `TD-CAP22-RANKING`; IAM `ranking_cap22` | nur Karte | IAM-Status `PROVEN_CURRENT` ist Kartenstatus der Baseline `f91d2cf2` | direkte Ranking-Kante in den Cycle im Außengrenzenbefund nicht belegt | UNGEKLÄRT | deklarierter Consumer-Name zeigt auf den MV2-Cycle | Handoff-Contract nennt `FIRST_TRADING_DECISION_CONSUMER` | diese Runde: Consumer-String erneut gelesen | IAM-`PRODUCTIVE_RANKING_ACTIVE` ist keine Pin-Runtime | Kartenidentität | transitive Ranking-Wirkung offen | UNIVERSE_CANDIDATE |
+| C-CAP23 | Selection | `ops.single_selected_future_policy_v1` | `TD-CAP23-SELECTION`; IAM `selection_cap23` | Policy-Owner im N5-Join benannt | Join setzt `JOIN_CAP23_SELECTION_AUTHORITY=False` | Binding Cap24 ist getrennt | Membership/Ranking über Joins | `BoundInstrumentV1` wird vom Cycle konsumiert | `CURRENT_MF_N5_..._HANDOFF_JOIN_CONTRACT_V1` | Join-Konstanten diese Runde | Landscape-Flag ratifiziert nicht | Owner-String belegt, Körper nicht neu gelesen | Selection-Semantik nicht neu geprüft | UNIVERSE_CANDIDATE |
+| C-SELF-LEARNING | Self-Learning | `UNIVERSE_CLASS_SELF_LEARNING=SELF_LEARNING_UNIVERSE` | `src/learning/deterministic_decision_outcome_v0` | Klassenkonstante, keine geschlossene Grenze | Exportmodul existiert | Optimization ist getrennt | Decision-Capture am Replay | Export mit `PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=False` | Decision-Path Abschnitt D | Konstanten diese Runde erneut gefunden | Landscape stellt DDO außerhalb `domain_universe` | Klasse und Flag belegt | interne Learning-Ebenen nicht untersucht | UNIVERSE_CANDIDATE |
+| C-OPTIMIZATION | Optimization | `UNIVERSE_CLASS=OPTIMIZATION_UNIVERSE` | `src/experiments/canonical_optimization_universe_v1.py` | Klasse vorhanden, Envelope offen | `OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE`, `OPTIMIZABLE_ENVELOPE_DEFINED=False` | kein produktiver Join autorisiert | Learning-Export nennt Ack-Felder | Rückfluss nicht autorisiert | Export-Flag | diese Runde | keine Landscape-Surface | Klassenbeleg | Grenze offen | UNIVERSE_CANDIDATE |
+| C-META-LEARNING | Meta-Learning | Modul `src/experiments/canonical_meta_learning_v1.py` laut Inventar | IAM `meta_learning` als Research-only im Vorbefund | nicht neu geschlossen | Existenz im früheren Inventar | nicht mit Self-Learning zusammengelegt | UNGEKLÄRT | `OPTIMIZATION_PRODUCTIVE_AUTHORITY=NONE` in benachbarten Experiment-Modulen | IAM-Baseline fremd | Vorbefund, diese Runde nicht erneut gelesen | Research-only-Kartenstatus | dünn | Grenze `NICHT_GEPRUEFT` über den früheren Satz hinaus | UNIVERSE_CANDIDATE |
+| C-MI | Market Intelligence | `UNIVERSE_CLASS_MARKET_INTELLIGENCE=MARKET_INTELLIGENCE_UNIVERSE` | `src/learning/market_intelligence_forecast_calibration_offline_stack_v1` | Klassenkonstante | Offline-Stack | Landscape `TD-MI-OFFLINE` mit `domain_universe=false` | UNGEKLÄRT | Optimization-Authority im Stack `NONE` | Klassenkonstante | diese Runde | Karte verweigert die Universumsfläche | Klasse belegt | Grenze offen | UNIVERSE_CANDIDATE |
+
+Self-Learning und Optimization bleiben zwei Kandidaten. Der Full Autonomous Stack ist kein achter Universumseintrag. Er steht in B als Außenkandidat.
+
+## B_EXTERNAL_DOMAIN_REGISTRY
+
+```text
+PROVEN_EXTERNAL_DOMAIN_COUNT=0
+EXTERNAL_DOMAIN_CANDIDATE_COUNT=14
+```
+
+Ein ratifiziertes Universum fehlt. Deshalb ist kein Bereich als bewiesener Außenbereich eines ratifizierten Universums geschlossen. Die folgenden Einträge sind fachlich getrennte Verantwortungen mit Code- oder Vertragsbeleg neben dem Master-V2-Kandidaten.
+
+| DOMAIN_ID | NAME | FACHLICHE_VERANTWORTUNG | CURRENT_SCOPE | BOUNDARY | MEMBERSHIP_EVIDENCE | INTERFACES | CONTRACTS | PROVENANCE | COUNTER_EVIDENCE | UNCERTAINTY | STATUS |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| ED-FULL-CORE | Full-Core-Komposition | hostet den produktiven MV2-Cycle | `src/ops/full_core_live_path_composition_root_v1` | `POST_ALLOWED=False`, `EXTERNAL_EFFECT_AUTHORIZED=False` in `constants_v1.py` Zeilen 369 und 386 | Konstanten diese Runde | Cycle, DDO-Join, Price-Provenance | Decision-Path | diese Runde | stehende Live-Prädikate können anders gelesen werden; POST-Flag bleibt false | andere Sender außerhalb dieses Moduls | CANDIDATE |
+| ED-N5-HANDOFF | N5-Handoff | typisierte Lane-Komposition bis zum deklarierten MV2-Ingress | `current_mf_n5_full_autonomy_occupied_lane_mv2_dp_handoff_join_v1` | `JOIN_TRADING_AUTHORITY=False`, `THIS_SLICE_MAY_INVOKE_FIRST_TRADING_DECISION_CONSUMER=False`, `FIVE_LANE_RUNTIME_CREATED` aus Topologie `False` | Konstanten diese Runde | Cap23, Cap24, Topology, Consumer-Name | `...HANDOFF_JOIN_CONTRACT_V1` | diese Runde | Completion-Modul setzt ein anderes Five-Lane-Flag | Aufrufkörper nicht neu gelesen | CANDIDATE |
+| ED-N5-ORCH | Full-Autonomy-Orchestrator | benennt den Cycle als ersten Decision-Consumer | `current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1` | `AUTONOMY_TRADING_DECISION_AUTHORITY=False` | Konstanten diese Runde | Cycle-Name | Orchestrator-Contract laut Außengrenzenbefund | diese Runde plus Außengrenze | Hierarchie „unter Master V2“ ist Owner-Vorgabe; ein Enforcer ist unbelegt | ACTIVE nicht belegt | CANDIDATE |
+| ED-N5-COMPLETION | N5-Completion | eigene Kardinalitätskonstanten | `current_mf_n5_full_autonomy_runtime_n5_completion_v1` | `FIVE_LANE_RUNTIME_CREATED=True`, `HOST_JOIN=True`, zugleich `MAY_POST=False`, `JOIN_TRADING_AUTHORITY=False`, `POST_ALLOWED` an Full-Core gebunden | Konstanten diese Runde | Topologie, Readiness, Full-Core-Flags | Completion-Konstanten | diese Runde | widerspricht der Topologie-Konstante `False` | Konstante ist nicht ACTIVE | CANDIDATE, CONFLICT_OPEN |
+| ED-SELECTION-BINDING | Binding | trägt `BoundInstrumentV1`; Selection-Owner bleibt Cap23 | `single_selected_future_runtime_binding_v1` | `DIRECT_INSTRUMENT_OVERRIDE_ALLOWED=False` laut Vertrag | Vertragszeile | Cycle-Pflichtargument | Decision-Path D | Vertrag diese Runde | Cap23 ist zusätzlich Universumskandidat; Binding ist die Fläche daneben | Runtime-Bind nicht beobachtet | CANDIDATE |
+| ED-RECON | Reconciliation | Admission vor der Decision | `productive_reconciliation_runtime_binding_v1` | `RECONCILIATION_AUTHORITY_TRANSFER=False` | Vertragszeile und Außengrenzen-Assert | Cycle Zeile 617 im Vorbefund | `PRODUCTIVE_RECONCILIATION_SINGLE_CHECK_MASTER_V2_ENTRY_V1` | Vertrag diese Runde; Call-Site Vorbefund | späterer Unknown-Outcome-Adapter ist eine zweite Kante | REACHABLE offen | CANDIDATE |
+| ED-PRICE | Market-Data-Provenance | kanonische Preisprüfung vor dem Replay | `current_productive_canonical_price_provenance_v1.py` | bindet den Market Context nicht innerhalb von Master V2 | Vertrag | Cycle-Validierung im Vorbefund | Decision-Path D | Vertrag | Public-MD-Surface nur Karte | Körper nicht neu gelesen | CANDIDATE |
+| ED-CURSOR | SideState-Cursor | Restore vor Replay; Persistenz bei Nachbarmodulen | `current_productive_sidestate_confirmation_cursor_v1` | Epoch-Stale fail-closed laut Außengrenze | Vorbefund | Cycle und nachgelagerte Writer | Cursor-Modul | Außengrenzenbefund | aktiver Writer nicht beobachtet | ACTIVE offen | CANDIDATE |
+| ED-KILL-SWITCH | Kill-Switch-Leser | kann den Cycle vor der Decision sperren | `ops.hard_facts_system_closure_v1.durable_kill_switch_mv2_binding_v1` | Safety-Leser, nicht Decision-Owner | Vertrag | Cycle im Vorbefund | Decision-Path D | Vertrag | Körperwirkung `NOT_INTERPRETED` | Wirkung offen | CANDIDATE |
+| ED-CRS | Capital Risk Sizing | Sizing nach Entry/Exit über Adapter | `src/governance/capital_risk_sizing_v1` | Adapter verlangt `AUTHORITY_EFFECT_NONE` laut Außengrenze | dynamischer Import im Replay, Vorbefund | Replay nach Entry/Exit | Decision-Path D | Außengrenze | Evidence-Ersatz nicht vollständig widerlegt | `decision_outcome`-Stabilität offen | CANDIDATE |
+| ED-ORDER-INTENT | Order Intent | Intent-Objekt, Submit nicht im Cycle-Modul | `src/governance/canonical_order_intent_v1` | Intent-Authority-Feld `NONE` laut Außengrenze | dynamischer Import, Vorbefund | Replay; weitere Leser offen | Decision-Path D | Außengrenze | Consumer-Abschluss fehlt | POST aus diesem Feld hier nicht belegt | CANDIDATE |
+| ED-SAFETY-KERNEL | Safety-Kernel-Bind | Safety-Binding nach Entry/Exit | `safety_kernel_offline_replay_binding_adapter_v0` | `RUNTIME_AUTHORITY_EFFECT_NONE` laut Außengrenze | dynamischer Import, Vorbefund | Replay | Adapter-Vertrag im Vorbefund | Außengrenze | Evidence-Ersatz offen | Körper nicht neu gelesen | CANDIDATE |
+| ED-P5 | Layered-Core-Seam | optionaler Bind nach dem Replay | `p5_productive_layered_core_authority_seam_v1` | `P5_AUTHORITY_CUTOVER_AUTHORIZED=False`; Default `productive_layered_core_bind_requested=False` | Vertrag | Cycle | Decision-Path C | Vertrag | aktiver Bind kann `replay_pass` ändern | Default-Zweig nicht neu ausgeführt | CANDIDATE |
+| ED-EXECUTION | Execution | eigene GHOSV-Domäne | `src/execution` | Execution-GHOSV execution-begrenzt | Vorbefund: `live_session.py` importiert den Legacy-Guard | keine belegte Decision-Übernahme | Execution-GHOSV-Vertrag | Außengrenze | fremde GHOSV nicht als Systemprüfer verwendet | Execution-Körper `NICHT_GEPRUEFT` | CANDIDATE |
+
+Presentation, Treasury, Public Market Data, Private Account State und Research Corpus bleiben Karten- oder Runbook-Namen aus dem Identitätsinventar. Sie sind hier nicht als eigene geschlossene Domänen neu belegt und stehen in F als `GAP-MAP-ONLY`.
+
+## C_ELEMENT_ASSIGNMENT_MATRIX
+
+Inventarkorn dieser Fortsetzung:
+
+1. 19 Landscape-Surfaces, IDs am aktuellen JSON erneut gelesen.
+2. Benannte Master-V2-Anker und Nachbarmodule aus dem Außengrenzenbefund.
+3. 40 Paketwurzeln unter `src/`, diese Runde gezählt. `__init__.py` ist keine Paketwurzel.
+
+Dateiebene des Trees und die 75 IAM-Domänen sind eine andere Zähleinheit. Sie werden nicht in die 19 Surfaces umgerechnet.
+
+Nachweisstufen: ein vorhandener Pfad ist `EXISTS`. Ein belegter Aufruf oder eine belegte Konstante ist `WIRED`. `REACHABLE` und `ACTIVE` haben in dieser Runde keinen Runtime-Capture und stehen auf `NICHT_GEPRUEFT`, außer eine Konstante die Aktivierung ausdrücklich verneint. Eine solche Verneinung ist `DECLARED`, nicht ein beobachtetes Inaktiv-Sein.
+
+### Surfaces
+
+Primärklasse ist überall `UNCLASSIFIED`. Die Klammer nennt den Kandidatenbezug. `CROSS_BOUNDARY` ist keine Primärklasse.
+
+| ELEMENT_ID | SURFACE | PRIMARY_ASSIGNMENT | EXISTS | WIRED | REACHABLE | ACTIVE | CLASSIFICATION_STATUS |
+|---|---|---|---|---|---|---|---|
+| EL-SURF-01 | TD-CAP21-UNIVERSE | UNCLASSIFIED, Bezug C-CAP21 | Paket im Inventar | NICHT_GEPRUEFT | NICHT_GEPRUEFT | NICHT_GEPRUEFT | UNCLASSIFIED |
+| EL-SURF-02 | TD-CAP22-RANKING | UNCLASSIFIED, Bezug C-CAP22 | Paket im Inventar | NICHT_GEPRUEFT | NICHT_GEPRUEFT | NICHT_GEPRUEFT | UNCLASSIFIED |
+| EL-SURF-03 | TD-CAP23-SELECTION | UNCLASSIFIED, Bezug C-CAP23 | Owner-String im Join | Join-Authority false | NICHT_GEPRUEFT | NICHT_GEPRUEFT | UNCLASSIFIED |
+| EL-SURF-04 | TD-CAP24-BINDING-SEAM | UNCLASSIFIED, Bezug ED-SELECTION-BINDING | Vertragsreferenz | Override-Flag im Vertrag false | NICHT_GEPRUEFT | NICHT_GEPRUEFT | UNCLASSIFIED |
+| EL-SURF-05 | TD-PUBLIC-MD | UNCLASSIFIED | nur Karte | NICHT_GEPRUEFT | NICHT_GEPRUEFT | NICHT_GEPRUEFT | UNCLASSIFIED |
+| EL-SURF-06 | TD-PRIVATE-STATE | UNCLASSIFIED | nur Karte | NICHT_GEPRUEFT | NICHT_GEPRUEFT | NICHT_GEPRUEFT | UNCLASSIFIED |
+| EL-SURF-07 | TD-MD-CONVERGENCE | UNCLASSIFIED | nur Karte | NICHT_GEPRUEFT | NICHT_GEPRUEFT | NICHT_GEPRUEFT | UNCLASSIFIED |
+| EL-SURF-08 | TD-MV2-DP | UNCLASSIFIED, Bezug C-MV2; Double Play intern | Decision-Pfad | Cycle-Aufruf im Vorbefund | NICHT_GEPRUEFT | NICHT_GEPRUEFT | UNCLASSIFIED |
+| EL-SURF-09 | TD-MV2-GGE-SCOPE-GEOMETRY | UNCLASSIFIED | nur Karte | NICHT_GEPRUEFT | NICHT_GEPRUEFT | NICHT_GEPRUEFT | UNCLASSIFIED |
+| EL-SURF-10 | TD-FULL-CORE | UNCLASSIFIED, Bezug ED-FULL-CORE | Kompositionsroot | POST-Konstanten | NICHT_GEPRUEFT | NICHT_GEPRUEFT | UNCLASSIFIED |
+| EL-SURF-11 | TD-N5-ORCHESTRATION | UNCLASSIFIED, Bezug ED-N5-ORCH und ED-N5-HANDOFF | Join-Pakete | S2-Konstante true; Decision-Aufruf im Slice false | NICHT_GEPRUEFT | Topologie-Flag false; Completion-Flag true; Runtime NICHT_GEPRUEFT | UNCLASSIFIED |
+| EL-SURF-12 | TD-DDO-LEARNING | UNCLASSIFIED, Bezug C-SELF-LEARNING | Exportmodul | Join-Flag false | NICHT_GEPRUEFT | NICHT_GEPRUEFT | UNCLASSIFIED |
+| EL-SURF-13 | TD-MI-OFFLINE | UNCLASSIFIED, Bezug C-MI | Klasse im Offline-Stack | NICHT_GEPRUEFT | NICHT_GEPRUEFT | NICHT_GEPRUEFT | UNCLASSIFIED |
+| EL-SURF-14 | TD-RESEARCH-CORPUS | UNCLASSIFIED | nur Karte | NICHT_GEPRUEFT | NICHT_GEPRUEFT | NICHT_GEPRUEFT | UNCLASSIFIED |
+| EL-SURF-15 | TD-PRESENTATION | UNCLASSIFIED | Runbook-Hinweis im Inventar | NICHT_GEPRUEFT | NICHT_GEPRUEFT | NICHT_GEPRUEFT | UNCLASSIFIED |
+| EL-SURF-16 | TD-RECON-RUNTIME-BINDING | UNCLASSIFIED, Bezug ED-RECON | Contract-Modul | Authority-Transfer false | NICHT_GEPRUEFT | NICHT_GEPRUEFT | UNCLASSIFIED |
+| EL-SURF-17 | PR6974_RECONCILIATION_MV2_ADMISSION | UNCLASSIFIED, Bezug ED-RECON | dasselbe Contract-Modul | Konstante false | NICHT_GEPRUEFT | NICHT_GEPRUEFT | UNCLASSIFIED |
+| EL-SURF-18 | INTENT_TO_EXECUTION_BOUNDARY | UNCLASSIFIED, Bezug ED-ORDER-INTENT | Full-Core-Konstanten | NICHT_GEPRUEFT über die Flags hinaus | NICHT_GEPRUEFT | NICHT_GEPRUEFT | UNCLASSIFIED |
+| EL-SURF-19 | PRE_EXTERNAL_TERMINAL | UNCLASSIFIED, Bezug ED-FULL-CORE | POST- und External-Effect-Flags false | Gate-Konstanten | NICHT_GEPRUEFT | NICHT_GEPRUEFT | UNCLASSIFIED |
+
+`domain_universe=true` gilt im Landscape-JSON nur für EL-SURF-01, 02, 03 und 08. Das JSON setzt daneben `not_a_universe_ratification=true`.
+
+### Benannte Anker
+
+| ELEMENT_ID | TYPE | SOURCE | PRIMARY_ASSIGNMENT | INTERFACE_REFERENCES | EVIDENCE | CURRENT_STAGE | CLASSIFICATION_STATUS |
+|---|---|---|---|---|---|---|---|
+| EL-MOD-01 | Funktion | `run_integrated_offline_trading_logic_replay_v1` | C-MV2 Kandidat | E-OUT-01 bis E-OUT-07 | Decision-Path; Definition im Inventar | EXISTS, WIRED | UNCLASSIFIED als Universum |
+| EL-MOD-02 | Funktion | `run_current_productive_master_v2_runtime_cycle_v1` | ED-FULL-CORE, Interface zu C-MV2 | E-IN-01 bis E-IN-09 | Decision-Path | EXISTS, WIRED | UNCLASSIFIED |
+| EL-MOD-03 | Typ | `CurrentProductiveMasterV2CycleResultV1` | C-MV2 Ausgang | E-OUT-01 | Decision-Path C | EXISTS | UNCLASSIFIED |
+| EL-MOD-04 | Modul | `double_play_state.py` | intern zu C-MV2 | Transition und Dynamic Boundaries | Außengrenze | WIRED im Replay | kein Universum |
+| EL-MOD-05 | Modul | `naked_mv2_double_play_core_authority_hardening_v1.py` | intern, nicht Hot Path | Lock-Konstanten | diese Runde: Rolle gelesen | EXISTS; Hot-Path-Draht im Vorbefund verneint | kein Universum |
+| EL-MOD-06 | Modul | DDO-Export | C-SELF-LEARNING | E-OUT-08 | Flag false, diese Runde | EXISTS, konditional WIRED | UNCLASSIFIED |
+| EL-MOD-07 | Modul | `canonical_optimization_universe_v1.py` | C-OPTIMIZATION | getrennte Klasse | diese Runde | EXISTS | UNCLASSIFIED |
+| EL-MOD-08 | Konstante | Topologie `FIVE_LANE_RUNTIME_CREATED=False` | ED-N5-HANDOFF | E-N5-01 | diese Runde | DECLARED | UNCLASSIFIED |
+| EL-MOD-09 | Konstante | Completion `FIVE_LANE_RUNTIME_CREATED=True` | ED-N5-COMPLETION | E-N5-01 | diese Runde | DECLARED | CONFLICT_OPEN |
+| EL-MOD-10 | Pin | `governed_pin_v1.py` Cross-Universe-Flags | ED-SELECTION-BINDING | alle sechs Flags `False`, `MULTI_UNIVERSE_MERGE=False` | diese Runde | DECLARED | keine Universumsratifikation |
+
+### Paketwurzeln
+
+Alle 40 sind als Paket `UNCLASSIFIED`. Ein Paket, das einen Kandidaten enthält, wird dadurch kein Universum.
+
+`ai`, `ai_orchestration`, `aiops`, `analytics`, `backtest`, `core`, `data`, `evaluation`, `exchange`, `execution`, `execution_pipeline`, `experiments`, `features`, `governance`, `infra`, `ingress`, `knowledge`, `learning`, `levelup`, `live`, `live_eval`, `markets`, `meta`, `obs`, `observability`, `ops`, `orders`, `portfolio`, `r_and_d`, `regime`, `reporting`, `research`, `risk`, `risk_layer`, `scheduler`, `shadow_no_order_proof`, `sim`, `strategies`, `sweeps`, `trading`.
+
+Belegte Schnittstellenbezüge, ohne Primärumbuchung: `trading` enthält C-MV2; `learning` enthält C-SELF-LEARNING und C-MI; `experiments` enthält C-OPTIMIZATION; `ops` enthält ED-FULL-CORE und die N5-Joins; `governance` enthält ED-CRS und ED-ORDER-INTENT; `execution` ist ED-EXECUTION. Die übrigen 34 Paketwurzeln haben in diesem Inventar keinen geprüften Kandidatenbezug.
+
+IAM bleibt eigene Zähleinheit: 75 Domänen, Baseline `f91d2cf2`, `map_authority=NONE`, 90 Kanten, 88 offene epistemische Records. Statushistogramm dieser Runde: 40 `PROVEN_CURRENT`, 29 `PARTIAL`, 3 `RESEARCH_ONLY`, 3 `UNKNOWN`. `PROVEN_CURRENT` ist ein Kartenfeld, keine Universumsratifikation auf `1007b31`. `double_play_capital_slot` hat `canonical_owner_ref=NONE`, `authority_class=UNKNOWN`, `status=UNKNOWN`. `accounting_runtime_binding` und `intent_compatibility_firewall` haben Owner `UNKNOWN`.
+
+RETIRED/HISTORICAL mit Runbook-Kennung im früheren Inventar, ohne neue Retirement-Inventur: `STEP_29P`, `STEP_29Q`, `CAP_7_2`, `CAP_11_1`, `SECTION_11_13_5_*`, `SECTION_11_14_*`. Vollständigkeit dieser Retirement-Menge: `NICHT_GEPRUEFT`.
+
+## D_CROSS_BOUNDARY_REGISTRY
+
+Nur Kanten mit Beleg. Die 919 Importkanten, 98 Census-Kanten und 90 IAM-Kanten sind Zählungen. Sie sind nicht kantenweise übernommen. Fehlende dynamische Kanten sind keine Nullmenge.
+
+| EDGE_ID | SOURCE | TARGET | PRODUCER | CONSUMER | DIRECTION | CONTRACT | FLOW | CODE | REVERSE | TRANSITIVE | AUTHORITY | STATE | SAFETY | UNCERTAINTY | STATUS |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| E-IN-01 | ED-PRICE | EL-MOD-02 | Price-Provenance | Cycle | inbound | Decision-Path D | Mark/Index vor Replay | Vorbefund Zeile 605 | nicht belegt | Market-Data offen | fremder Owner | kein Decision-Write | Fail-closed vor Decision | Körper nicht neu gelesen | WIRED, ACTIVE NICHT_GEPRUEFT |
+| E-IN-02 | ED-SELECTION-BINDING | EL-MOD-02 | Binding | Cycle | inbound | `BoundInstrumentV1` | Instrument-Id | Vertrag; leere Id `BINDING_MISSING` | keine Reselection im Cycle-Modul | Cap22 offen | Selection bleibt upstream | Identität | Fail-closed | Runtime offen | WIRED |
+| E-IN-03 | ED-RECON | EL-MOD-02 | Reconciliation | Cycle | inbound | Authority-Transfer false | Admission | Vertrag plus Vorbefund-Assert | später E-OUT-05, getrennt | Restore offen | kein Transfer | State in den Input | Block vor Decision | REACHABLE offen | WIRED |
+| E-IN-04 | ED-CURSOR | EL-MOD-02 | Cursor | Cycle | inbound | SideState-Cursor | Restore | Vorbefund Zeile 626 | Writer liegt außerhalb, E-OUT-11 | Epoch offen | Cursor-Owner | SideState/Epoch | stale/mismatch fail-closed | aktiver Lauf offen | WIRED |
+| E-IN-05 | ED-KILL-SWITCH | EL-MOD-02 | Hard-Facts-Binding | Cycle | inbound | Decision-Path D | Lesart | Vorbefund Zeile 786 | Adapter E-OUT-06 getrennt | Digest-Modul | Safety-Leser | Sperre möglich | hoch | Körper `NOT_INTERPRETED` | WIRED |
+| E-IN-06 | G17/typed vol | CMC im Cycle | Scaffold | Cycle | inbound | Bind-Funktion | Volatility | Import im Vorbefund | nicht belegt | Feature-Fenster | Eingabe | Market Context | mittel | nicht neu gelesen | WIRED |
+| E-IN-07 | Governance F1/M9 | Replay-Input | Ledger-Pfade | Replay | inbound | Governance-Seam | Threshold/Apply | Vorbefund | nicht belegt | Ledger-Aktivität | Governance | Ablehnung möglich | hoch | produktive Ledger NICHT_GEPRUEFT | WIRED |
+| E-IN-08 | Feature-Regime-Bridge | Cycle | Wallclock-Bridge | Cycle | inbound | `compute_feature_regime_from_mid_prices_v1` | Preispfad | Vorbefund Zeile 654 | nicht belegt | Preise | Bridge außerhalb `trading.master_v2` | Merkmale | mittel | nicht neu gelesen | WIRED |
+| E-IN-09 | ED-N5-ORCH | EL-MOD-02 | Orchestrator | Cycle | inbound als Aufrufer | Consumer-String | Lane-Inputs | `FIRST_TRADING_DECISION_CONSUMER` diese Runde | Result ohne designierten Nachfolger | Send-Seam offen | Trading-Authority false | Komposition | hoch | ACTIVE offen; Hierarchie-Enforcer fehlt | WIRED als Name; Aufrufkörper Vorbefund |
+| E-IN-10 | C-CAP22 | EL-MOD-02 | Ranking | Cycle | deklariert, direkt nicht belegt | Handoff-Name | — | kein Call-Site im Cycle-Header laut Vorbefund | — | Cap23-Join | `JOIN_RANKING_AUTHORITY=False` | — | hoch | transitive Kante offen | UNGEKLÄRT |
+| E-IN-11 | ED-N5-HANDOFF | EL-MOD-02 | Handoff-Join | benannter Consumer | Deklaration ohne Invokation | Handoff-Contract | typisierte Lane-Paare | `THIS_SLICE_MAY_INVOKE_...=False` diese Runde | — | Completion-Modul | `AUTHORITY_EFFECT=NONE` | kein neuer Ingress-DTO | hoch | Join-Körper nicht ausgeführt | DECLARED, Invokation verneint |
+| E-N5-01 | ED-N5-COMPLETION | ED-N5-HANDOFF | zwei Konstantenmodule | — | Konflikt, keine Datenkante | beide Contracts | Flag `FIVE_LANE_RUNTIME_CREATED` | True gegen False, diese Runde | — | Host-Join ebenso gespalten | beide `JOIN_TRADING_AUTHORITY=False` | Completion `HOST_JOIN=True`, Topologie `False` | hoch | keine Runtime | CONFLICT_OPEN |
+| E-OUT-01 | EL-MOD-01 | EL-MOD-03 | Replay | unbestimmter Nachfolger | outbound | `SUCCESSOR_OWNER=NOT_DESIGNATED` | `decision_outcome` | Decision-Path C | Consumer unbekannt | Equity-Producer im Vorbefund nur als Aufruferliste | `CYCLE_OWNER` | Result | hoch | Consumer offen | WIRED, Consumer UNCLASSIFIED |
+| E-OUT-02 | EL-MOD-01 | ED-CRS | Replay | CRS-Adapter | outbound | dynamischer Import | Evidence-Ersatz | Vorbefund Zeile 2105 | nicht geschlossen | Budget-Owner offen | `AUTHORITY_EFFECT_NONE` verlangt | Sizing an Evidence | hoch | Outcome-Stabilität offen | WIRED |
+| E-OUT-03 | EL-MOD-01 | ED-SAFETY-KERNEL | Replay | Safety-Adapter | outbound | dynamischer Import | Evidence-Ersatz | Vorbefund Zeile 2151 | nicht geschlossen | Exit-Policy | `RUNTIME_AUTHORITY_EFFECT_NONE` | Safety-Binding | hoch | Körper offen | WIRED |
+| E-OUT-04 | EL-MOD-01 | ED-ORDER-INTENT | Replay | Intent-Adapter | outbound | dynamischer Import | Intent-Objekt | Vorbefund Zeile 2174 | Leser offen | Send-Seam | Intent-Authority `NONE` | Objekterzeugung | hoch | Submit im Cycle-Modul im Vorbefund ohne Treffer | WIRED |
+| E-OUT-05 | EL-MOD-01 | ED-RECON | Replay | Unknown-Outcome-Adapter | outbound | dynamischer Import | Evidence-Ersatz | Vorbefund Zeile 2191 | E-IN-03 ist die andere Richtung und ein anderer Vertrag | — | `NONE` | Admission bleibt getrennt | hoch | nicht neu gelesen | WIRED |
+| E-OUT-06 | EL-MOD-01 | Kill-Switch-Adapter | Replay | Boundary-Adapter | outbound | Import aus `src.meta.learning_loop...` | Boundary-Mode | Vorbefund Zeile 2210 | E-IN-05 getrennt | Learning-Loop-Name | `NONE` | Evidence-Ersatz | hoch | Name ist keine Learning-Mitgliedschaft | WIRED |
+| E-OUT-07 | EL-MOD-01 | C-SELF-LEARNING | Dekorator `observe_after_producer_v0` | Capture | outbound | Capture-Vertrag | Producer-Ergebnis zurück | Vorbefund Zeile 1418 | Optimization-Join false | Schreibziel nur bei aktivem Binding | Capture-Fehler lässt Decision unverändert laut Vertrag | observation-only | mittel | ACTIVE offen | WIRED |
+| E-OUT-08 | EL-MOD-02 | C-SELF-LEARNING | Cycle | DDO-Export | outbound, konditional | `PRODUCTIVE_OPTIMIZATION_JOIN_AUTHORIZED=False` | Learning-Handoff | Flag diese Runde; Aufruf Vorbefund Zeile 984 | C-OPTIMIZATION nicht autorisiert | Ack-Felder | observation-only | nur mit Ledger-Pfad | mittel | Ledger-Aktivität offen | CONDITIONAL WIRED |
+| E-OUT-09 | EL-MOD-02 | ED-P5 | Cycle | P5-Bind | outbound, konditional | Cutover false | kann Pass/Fail ändern, wenn angefordert | Vertrag | kein Nachfolge-Owner | — | keine neue Decision-Autorität | Default nicht angefordert | mittel | Default nicht ausgeführt | CONDITIONAL WIRED |
+| E-OUT-10 | EL-MOD-02 | Observability | Cycle | Appender | outbound | Forensic-Module | Beobachtung | Vorbefund Zeilen 1030, 1041, 1088 | — | — | nicht Decision-Owner | Schreibziel unbelegt | niedrig | ACTIVE offen | WIRED |
+| E-OUT-11 | Nachbarhosts | ED-CURSOR | Equity-Producer, Layered-Long, Addressing-Join | Cursor-Datei | outbound vom Host, nicht vom Cycle selbst | Persist-Funktion | JSON unter `store_root` | Vorbefund | E-IN-04 | mehrere Aufrufer | Writer außerhalb des Decision-Owners | Dateischreibfunktion | hoch | ACTIVE NICHT_GEPRUEFT | EXISTS, in den genannten Modulen WIRED |
+| E-LEARN-OPT | C-SELF-LEARNING | C-OPTIMIZATION | Export | Optimization-Universum | getrennt, Rückfluss aus | zwei `UNIVERSE_CLASS` | Join-Flag false | diese Runde | nicht autorisiert | Meta-Learning daneben | `NONE` | kein produktiver Join | mittel | Forschungsmodule können weitere Pfade haben | EXISTS, Join nicht autorisiert |
+
+Weitere Replay-Aufrufer aus dem Außengrenzenbefund, diese Runde nicht erneut geöffnet, Status WIRED laut jener Suche, ACTIVE `NICHT_GEPRUEFT`: `current_productive_master_v2_ddo_learning_capture_join_v1.py`, `decision_economics_cycle_bridge_v1.py`, `hardening_cycle_bridge_v2.py`, `src/backtest/mv2_research_wiring_v1.py`, `double_play_core_wiring_v1.py`, `canonical_core_runtime_integration_bridge_v0.py`, `canonical_core_runtime_integration_intent_pipeline_bridge_v0.py`, `productive_offline_economic_completion_v1.py`.
+
+`UNIVERSE_ISOLATION_ENFORCED=True` im N5-Join ist eine lokale Konstante neben `CROSS_UNIVERSE_*=False`. Das ist eine Isolationsdeklaration dieses Joins, keine Ratifikation von C-CAP21, C-CAP22, C-CAP23 oder C-MV2.
+
+## E_MAP_TO_DOMAIN_ASSIGNMENT
+
+Keine Map wurde geändert.
+
+| MAP_ID | VERSION | BASELINE | PRIMARY_DOMAIN_IF_PROVEN | MULTI_DOMAIN | UNCLASSIFIED | RETIRED | CURRENT_RELEVANCE | PROVENANCE | OPEN_DIFFERENCES |
+|---|---|---|---|---|---|---|---|---|---|
+| MAP-LANDSCAPE | `current_universe_landscape_snapshot_v1` | `e5d9296fb269208b06980518d410b4f2b616bf5b` | keine | 19 Surfaces, 4 mit `domain_universe=true` | alle 19 primär UNCLASSIFIED | nicht belegt | Hinweisinventar | JSON diese Runde; `authority_effect=NONE`; `not_a_universe_ratification=true` | Baseline ist nicht HEAD |
+| MAP-CENSUS | `current_system_census_graph_v1` | `6216201d7acbc771f84b6b6884eccc41359927cf` | keine | 12 als berichtete Zahl, nicht asserted | Taxonomie `OPEN_CURRENT` | Phase-1 `INCOMPLETE` | Navigation | JSON-Kopf diese Runde; `not_a_universe_ratification=true`; `canonical_universe_count_asserted=false` | `authority_map_currentness=NOT_ALIGNED_TO_IAM_BASELINE` |
+| MAP-IAM | `CURRENT_SYSTEM_INTERACTION_AUTHORITY_MAP_V1` | `f91d2cf2fed95af09376c464489f0ca19734e7f7` | keine | 75 Domänen, 90 Kanten | 88 epistemische Records; 3 Status UNKNOWN | nicht als Retirement belegt | andere Zähleinheit | JSON diese Runde; `map_authority=NONE` | `PROVEN_CURRENT` und `PRODUCTIVE_RANKING_ACTIVE` gelten für diese Baseline |
+| MAP-LAW | `current_law_impact_map_v1` | `1bac0d93302c6e589effafe46fccb055d82bd44e` | keine | verweist auf IAM und B05-Anker | nicht domänenweise zugeordnet | — | `map_authority=NONE` | Kopf diese Runde | nicht als Domänenquelle verwendet |
+| MAP-TRUTH | `docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md` | Navigation | keine | — | — | — | Pfadauflösung | Governance-Regel | keine Domänensemantik |
+| MAP-RUNBOOK | Master Runbook | Review-Stempel `9971ad8b` | keine | operative Semantik | — | historische Capability-Kennungen im Inventar | Stempel liegt vor HEAD | Stempel diese Runde | `STALE_IF_HEAD_DIFFERS` gegenüber `1007b31` |
+| MAP-GHV | composed forensic graph | `b6ffca1d` | keine | 302 Knoten, 67 Kanten im Vorbefund | — | fremder Worktree | STALE | Kopf diese Runde | `CURRENT_GRAPH_VERIFIED` nicht auf diesen Pin übertragbar |
+| MAP-CAUSAL | `integrated_causal_graph.v1` | fehlt | keine | — | ganze Kausalfläche | — | `NOT_MATERIALIZED` | Tree-Suche diese Runde | kein CURRENT-Graph |
+
+Die Referenzmatrix aus der vorherigen Sitzung ist ein analytischer Entwurf und keine Map dieser Registry.
+
+## F_COVERAGE_UNCERTAINTY_EXCLUSIONS
+
+| GAP_ID | DELIVERABLE | BETROFFEN | FEHLENDE EVIDENZ | WARUM RELEVANT | GEGENBELEG | KLASSIFIKATION | RUNTIME | NÄCHSTER BELEG | STATUS |
+|---|---|---|---|---|---|---|---|---|---|
+| GAP-01 | C | 40 Pakete unterhalb der Wurzel, Tree-Dateienebene | elementweise Mitgliedschaft | sonst bleibt die Inventargrenze offen | Paketwurzeln sind benannt | keine Endzahl | unbekannt | begrenzter Owner-Slice | OPEN |
+| GAP-02 | A, C-MV2 | 136 Dateien in `src/trading/master_v2` | Mitgliedschaft jenseits des Hot Path | Paketpfad ratifiziert nicht | Hot Path ist kleiner als das Paket | C-MV2 bleibt Kandidat | NICHT_GEPRUEFT | Dateiliste nur mit Auftrag | OPEN |
+| GAP-03 | D | GHV | Frischlauf auf `1007b31` | Whole-System-Kanten | liegender Graph ist `b6ffca1d` | keine Kantenübernahme | NICHT_GEPRUEFT | Schreib-GO plus Umgebung | NICHT_GEPRUEFT |
+| GAP-04 | D | Causal Graph | materialisierte Datei | transitive Wirkung | Datei abwesend | Fixpunkt OPEN | NICHT_GEPRUEFT | Schreib-GO plus Umgebung | NOT_MATERIALIZED |
+| GAP-05 | A | Master-V2-GHOSV | Lauf auf diesem Pin; MV2-02 bis MV2-08 | Domänenprüfer | Pin `7628005ae`; Katalog fest `NOT_TESTED` | keine Ratifikation | NICHT_GEPRUEFT | eigene Neubindung | NICHT_GEPRUEFT |
+| GAP-06 | alle | Execution-GHOSV | — | falscher Prüfer | Scope ist Execution | nicht verwendet | NICHT_ANWENDBAR | keiner für M1.5 | CLOSED_FOR_THIS_SCOPE |
+| GAP-07 | D, F | Runtime | Capture von REACHABLE/ACTIVE | Konstante ist nicht Betrieb | POST-Flags false | keine ACTIVE-Zeile | NICHT_GEPRUEFT | separates Runtime-GO, hier nicht erteilt | OPEN |
+| GAP-08 | A | Level-3-Lock | technischer Enforcer | Owner-Lock bleibt deklarativ | Vertrag sagt `LEVEL_3` | Durchsetzung DEFERRED | UNGEKLÄRT | späterer Auftrag; Worktree nicht öffnen | UNRESOLVED |
+| GAP-09 | D | E-N5-01 | welcher Five-Lane-Wert zur Laufzeit gilt | zwei Module widersprechen sich | beide Konstanten existieren; `MAY_POST=False` | CONFLICT_OPEN | NICHT_GEPRUEFT | Owner-Lesart, dann ggf. Code-GO | OPEN |
+| GAP-10 | D | E-OUT-02 bis E-OUT-06 | ob `decision_outcome` in jedem Adapterzweig gleich bleibt | Safety der Außengrenze | Authority-Felder verlangen `NONE` | Grenze nicht geschlossen | NICHT_GEPRUEFT | gezielte Adapter-Lesung | OPEN |
+| GAP-11 | D | Intent-Consumer | vollständige Leser von `canonical_order_intent` | Send-Pfad | Cycle-Modul ohne Submit-Treffer im Vorbefund | Consumer offen | NICHT_GEPRUEFT | begrenzte Consumer-Suche | OPEN |
+| GAP-12 | E | Census, IAM, Landscape, Law, Runbook | Bindung an `1007b31` | Karten-PROVEN ist fremde Baseline | Selbstausschluss der Ratifikation | keine Übernahme | — | M2 nur mit CODE_CHANGE_GO | OPEN |
+| GAP-13 | B | Presentation, Treasury, Public MD, Private State, Research Corpus | eigener CURRENT-Contract je Fläche | Kartenname reicht nicht | im Identitätsinventar nur als Kandidat | GAP-MAP-ONLY | NICHT_GEPRUEFT | späterer Slice | OPEN |
+| GAP-14 | D | dynamische Einstiege | `importlib`, String-Dispatch, Config-Entry | fünf Replay-Imports wurden früher gelesen | weitere können fehlen | keine Nullmenge | unbekannt | nur mit Graph oder gezielter Suche | OPEN |
+| GAP-15 | F | Runtime außerhalb des Repos | Venue, Credentials, produktive GET/POST | nicht autorisiert | dieser Auftrag verbietet sie | ausgeschlossen | nicht autorisiert | kein Zugriff | EXCLUDED |
+| GAP-16 | C | Retirement-Kennungen | vollständige Retired-Menge | historische Maps dürfen nicht CURRENT werden | einzelne Kennungen im Inventar | NICHT_GEPRUEFT | — | keine Historienrekonstruktion | OPEN |
+| GAP-17 | G | Interpreter | `.venv/bin/python` | Preflight blockiert | `VENV_ABSENT` | Frischlauf nicht startbar | BLOCKED_ENVIRONMENT | Bootstrap ist nicht autorisiert | OPEN |
+| GAP-18 | A | Cap21–Cap23, Meta-Learning | geschlossene Mitgliedschaft und Ausschlüsse | Kandidat ist keine Ratifikation | Landscape- und IAM-Flags | bleiben Kandidaten | NICHT_GEPRUEFT | eigener Slice nach Owner-Wahl | OPEN |
+
+Ausgeschlossen und nicht gelesen: andere Git-Worktrees, der pausierte Level-3-Worktree, sein Archiv, Venue, Keychain, Credentials, produktive GET/POST, Generatoren, Bootstrap.
+
+## G_REPRODUCTION_COST_OWNER_DECISIONS
+
+```text
+CURRENT_PIN=1007b31ab0d1aa27d557efb0ce0d922c1c6eafbd
+TREE=87108b671cd132c1357d3184d9d239739913df8a
+INVENTORY_SCOPE=19_LANDSCAPE_SURFACES + NAMED_MV2_SEAMS + 40_SRC_PACKAGE_ROOTS
+FILE_LEVEL_SCOPE=NOT_CLOSED
+```
+
+Verwendete Quellen dieser Runde: Git-Identität, `git ls-remote`, Blueprint-PDF Kapitel 24–29, Decision-Path-Vertrag, Landscape-, Census- und IAM-Kopf, Law-Map-Kopf, GHV-Graph-Kopf, GHOSV-Konstanten, N5-Handoff-, Topologie-, Completion- und Pin-Konstanten, Optimization- und Learning-Klassen, Full-Core-POST-Konstanten, Runbook-Stempel, Paketliste `src/`.
+
+Wiederverwendet ohne erneute AST-Inventur: der Importscan von 4965 Python-Dateien und die Call-Site-Zeilen der Außengrenze. Diese Zahlen sind gemessen in jener Sitzung, nicht in dieser. Diese Runde hat sie nicht reproduziert.
+
+Methode: gleiche Pin-Prüfung, dann Übernahme nur bei erneut gelesenem Anker oder bei ausdrücklich markiertem Vorbefund. Ein Element erhält eine Primärklasse. Kandidaten und Außenbereiche bleiben getrennt. Kartenstatus `PROVEN_CURRENT` wird nicht auf den Pin übertragen.
+
+Ausgeschlossen: historische Rekonstruktion, neue Guardian-Templates, neue 40-Dimensionen-Matrix, Generatoren, Schreibläufe.
+
+Erreicht: A und B auf Kandidatenebene mit Feldschema, C für 19 Surfaces, 10 Anker und 40 Paketwurzeln, D für die benannten gerichteten Seams plus den neuen Konstantenkonflikt, E für acht Map-Identitäten, F mit 18 konkreten Lücken.
+
+Nicht erreicht: lückenlose Klassifikation eines endlichen Gesamtscopes, Frischlauf von GHV, Causal Graph und GHOSV, Runtime-Stufen REACHABLE und ACTIVE, Dateimitgliedschaft, geschlossene Master-V2-Außengrenze.
+
+Aufwand: die zusätzlichen Prüfungen dieser Runde sind statische Lesungen. Eine Laufzeit ist nicht gemessen, weil kein Generator gestartet wurde. Der Restaufwand für eine Datei-für-Datei-Klassifikation und für einen Frischlauf ist `NOT_MEASURED`. Eine Stundenschätzung wird nicht erfunden.
+
+Owner-Entscheidungspunkte:
+
+1. Ob dieses `PARTIAL_UNRESOLVED` als M1.5-Stand akzeptiert wird. Eine Endzahl bleibt dann unausgewiesen.
+2. Ob der nächste lesende Slice C-MV2-Mitgliedschaft, Cap21–Cap23 oder der Five-Lane-Konflikt ist.
+3. Ob Self-Learning, Optimization, Meta-Learning und Market Intelligence vier getrennte Kandidaten bleiben.
+4. Ob ein späteres Schreib-GO für GHV und Causal Graph erwogen wird. Der Preflight bleibt `BLOCKED_ENVIRONMENT`, solange der kanonische Interpreter fehlt und Bootstrap nicht genehmigt ist.
+5. Ob die technische Level-3-Durchsetzung deferred bleibt.
+6. Ob `FIVE_LANE_RUNTIME_CREATED=True` im Completion-Modul als Aktivierung gelesen werden darf. Der vorliegende Beleg trägt diese Lesart nicht.
+
+## ADVERSARIAL_CLASSIFICATION_CHECK
+
+Stärkste Gegenannahme: Census-Zahl 12, vier Landscape-`domain_universe`-Flags, IAM-`PROVEN_CURRENT`, `UNIVERSE_ISOLATION_ENFORCED=True` und `FIVE_LANE_RUNTIME_CREATED=True` ratifizieren Universen und einen aktiven Fünf-Lane-Betrieb.
+
+Geprüft und nicht als Ratifikation übernommen:
+
+- Census: `not_a_universe_ratification=true`, `canonical_universe_count_asserted=false`, `taxonomy_status=OPEN_CURRENT`, Baseline `6216201d`.
+- Landscape: `not_a_universe_ratification=true`, Baseline `e5d9296f`.
+- Decision-Path: `FULL_UNIVERSE_BOUNDARY_RATIFIED=false` auf Referenz `6e3143bd`.
+- Isolation-Flag: lokale Join-Konstante; die sechs Cross-Universe-Flags und `MULTI_UNIVERSE_MERGE` sind `False`.
+- Five-Lane: Topologie und Handoff `False`, Completion `True`, `MAY_POST=False`, kein Runtime-Capture.
+- GHV stale, Causal Graph abwesend, GHOSV-Pin fremd, Frischlauf nicht ausgeführt.
+- Doppelzählung vermieden: Double Play kein Universum; Surfaces, Pakete, IAM-Domänen und Kanten bleiben verschiedene Einheiten; Learning und Optimization nicht zusammengelegt; N5 nicht als Universum eingestuft.
+
+Die Gegenannahme einer geschlossenen Ratifikation ist damit nicht haltbar. Ungelesene Dateien können weitere Klassenkonstanten enthalten. Deshalb bleibt auch die Kandidatenzahl 8 eine Untergrenze der bisher benannten Kandidaten, keine bewiesene Obergrenze.
+
+## M1_5_COMPLETENESS_STATUS
+
+Kapitel 27 und 28 sind nicht erfüllt. 100 % ist nicht ausweisbar. Der Status ist `PARTIAL_UNRESOLVED`.
+
+Ausgaben nach dieser Fortsetzung: A bis G liegen vor, jeweils mit belegtem Kern und benannter Restlücke. Keine Ausgabe ist abnahmefähig als vollständige Breitenklassifikation.
+
+## EXACT_NEXT_OWNER_DECISION
+
+Ob der Owner dieses `PARTIAL_UNRESOLVED` als M1.5-Halt akzeptiert und den nächsten einzelnen Slice benennt, oder ob die Klassifikation hier stehen bleibt. M2, Map-Write, Code, Commit, Push, PR, Merge, Generator und Runtime bleiben gesperrt, bis ein eigener Auftrag sie nennt.
+
+## FINAL_STATUS
+
+```text
+M1_5_STATUS=PARTIAL_UNRESOLVED
+PROVEN_MINIMUM_COUNT=0
+CANDIDATE_COUNT=8
+UNCLASSIFIED_REMAINDER=OPEN
+FRESH_RUN=NOT_EXECUTED
+FRESH_RUN_PROOF=NOT_VERIFIED
+FINAL_PREFLIGHT_STATUS=BLOCKED_ENVIRONMENT
+AUTOMATIC_UNIVERSE_RATIFICATION=FALSE
+M2_TRANSITION=NOT_AUTHORIZED
+CODE_CHANGE=NONE
+MAP_CHANGE=NONE
+GUARDIAN_IMPLEMENTATION=NONE
+TRADING_ACTIVATION=NONE
+```
+
+```text
+CAUSAL_MODE=true
+CURRENT_ORIGIN_MAIN_SHA=1007b31ab0d1aa27d557efb0ce0d922c1c6eafbd
+LOCAL_HEAD=1007b31ab0d1aa27d557efb0ce0d922c1c6eafbd
+WORKING_MODEL_DRIFT=RUNBOOK_REVIEW_STAMP_STALE
+GHV_ARTIFACT_PATH=evidence/ops/wp_r2b_r4_presentation_retirement_v1/20261016T043611Z_r4_final/composed_forensic_graph.v1.json
+GHV_SNAPSHOT_ID=cc0d6099a96201fc195f0b18a53ae324
+GHV_GRAPH_STATUS=STALE
+NODES_EDGES_EXAMINED=REUSED_SRC_AST_4965_AND_MV2_136;THIS_TURN_19_SURFACES_75_IAM_DOMAINS_90_IAM_EDGES_40_PACKAGES_NAMED_SEAMS
+COVERAGE=PARTIAL_IDENTITY_AND_MV2_SEAM_SLICE
+FIXPOINT_STATUS=OPEN
+CONFIRMED_EFFECTS=MV2_CONTRACT_DENIES_RATIFICATION;POST_AND_EXTERNAL_EFFECT_FLAGS_FALSE;N5_HANDOFF_DOES_NOT_INVOKE_DECISION;CROSS_UNIVERSE_FLAGS_FALSE
+CONDITIONAL_EFFECTS=FIVE_LANE_CONSTANT_CONFLICT;DDO_EXPORT_IF_LEDGER;P5_BIND_IF_REQUESTED
+OPEN_EVIDENCE_GAPS=GAP-01..GAP-18
+ISOLATION=NOT_PROVEN
+STOP_TRIGGERS=PARTIAL_CLASSIFICATION;NO_CODE_GO;ENVIRONMENT_BLOCKED
+NEXT_SAFE_ACTION=WAIT_FOR_OWNER_DECISION
+```
+
+```text
+EVIDENCE_INTEGRITY_V1=APPLIED
+CLAIM_EXACT=Am Pin 1007b31 und Tree 87108b67 ist im Scope aus 19 Landscape-Surfaces, benannten Master-V2-Seams und 40 src-Paketwurzeln kein Universum ratifiziert; Mindestzahl 0; acht Kandidaten bleiben unratifiziert; der Five-Lane-Konstantenkonflikt ist offen.
+SCOPE=Dieser Identitäts- und Seam-Slice. Nicht der ganze Tree und nicht die Runtime.
+POSITIVE_EVIDENCE=Decision-Path-Flags, Landscape- und Census-Selbstausschluss, IAM-Baseline, N5-Konstanten, Learning- und Optimization-Klassen, GHV-Kopf, fehlender Causal Graph.
+ADVERSARIAL_COUNTERCHECK=Census-Zahl 12, Landscape-Flags, IAM-PROVEN_CURRENT, Isolationsflag und Completion-Five-Lane-True wurden gelesen und nicht als Ratifikation oder ACTIVE übernommen.
+REMAINING_UNCERTAINTIES=GAP-01 bis GAP-18, insbesondere ungelesene Dateien, fehlende Frischläufe und der Five-Lane-Konflikt.
+RESULT=NOT_PROVEN
+FINANCIAL_GUARANTEE=NONE
+CAPITAL_SAFETY_GATE=OPEN
+STOP_REASON=M1_5_PARTIAL_UNRESOLVED_AWAITING_OWNER
+```
+
+### Changed files
+- keine
+
+### Tests executed
+- keine
+
+### Verification note
+- Baseline, Remote-`main`, die genannten Verträge, Kartenköpfe und Konstanten wurden gelesen. GHV, Causal Graph und GHOSV wurden nicht ausgeführt.
+
+### Risk note
+- Die Klassifikation autorisiert keine Map-Änderung, keine Universumszahl, keinen Betrieb und keinen Übergang nach M2.
+
+STOP. Ich warte auf die Owner-Entscheidung.

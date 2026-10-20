@@ -107,7 +107,22 @@ rebuild one from chat history or from an older pin.
 
 ## Guardian preparation
 
-No guardian is ratified. Surfaces that remain unassigned: Master V2,
-Execution, Self-Learning, Optimization, and Market Intelligence. Meta-Learning,
-Research Corpus, Portfolio-Budget, Persistence, and N5 do not receive a
-guardian identity from this record.
+```text
+GUARDIAN_TOPOLOGY=NOT_PREDEFINED
+GUARDIAN_COUNT=NOT_PREDEFINED
+GUARDIAN_ASSIGNMENTS=NOT_RATIFIED
+ORIGINAL_M1_5_INVENTORY=PRESERVED
+```
+
+This note does not predefine a guardian topology, a guardian count, or a
+responsibility matrix, and it is not a basis for later guardian planning.
+No guardian identity is assigned here. `GUARDIAN_RATIFICATION=NONE` in the
+closed owner bindings above is unchanged.
+
+The preserved investigation inventory is the M1.5 classification of
+19 October 2026:
+
+- 16:29 — A–G classification, chat `4877d2e0-7b11-4194-bf9b-537b6f52cfe8`
+- 17:14 — `CURRENT_SYSTEM_CLASSIFICATION_CONSOLIDATION_V1`, chat `fbbd3286-100c-4091-83c3-a6319545ab01`
+
+Those reports are not replaced by this note.
