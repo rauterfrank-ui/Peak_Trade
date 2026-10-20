@@ -1,0 +1,40 @@
+"""Generic GHOSV kernel constants. AUTHORITY=NONE. No guardian identity."""
+
+from __future__ import annotations
+
+from typing import Final
+
+SCHEMA_ID: Final = "GENERIC_GHOSV_KERNEL_V1"
+SCHEMA_VERSION: Final = 1
+
+AUTHORITY: Final = "NONE"
+TRADING_AUTHORITY: Final = "NONE"
+SAFETY_AUTHORITY: Final = "NONE"
+EXECUTION_AUTHORITY: Final = "NONE"
+RUNTIME_AUTHORIZATION_EFFECT: Final = "NONE"
+GUARDIAN_IDENTITY: Final = False
+SAFETY_ESCALATION_ENABLED: Final = False
+GRAPH_ENGINE: Final = False
+NETWORK_ACCESS: Final = False
+REPOSITORY_EVIDENCE_WRITE: Final = False
+IMPLICIT_RELEASE: Final = False
+OBSERVATION_PROOF: Final = False
+COVERAGE_PROOF: Final = False
+
+STATUS_MISSING_EVIDENCE: Final = "MISSING_EVIDENCE"
+STATUS_UNKNOWN_FINDING_TYPE: Final = "UNKNOWN_FINDING_TYPE"
+STATUS_INVALID_FINDING: Final = "INVALID_FINDING"
+
+FINDING_FIELDS: Final = (
+    "finding_id",
+    "category",
+    "observed_state",
+    "evidence_ref",
+    "affected_scope",
+    "status",
+)
+FINDING_CATEGORIES: Final = ("ABSENCE", "BOUNDARY", "CONTRADICTION", "PRESENCE")
+FINDING_STATUSES: Final = ("OBSERVED", "UNASSIGNED", "UNKNOWN")
+OBSERVED_STATUS: Final = "OBSERVED"
+UNASSIGNED_STATUS: Final = "UNASSIGNED"
+UNKNOWN_STATUS: Final = "UNKNOWN"
