@@ -320,7 +320,7 @@ _EDGE_ROWS: Final[tuple[tuple[str, str, str, str, str, str, str, str], ...]] = (
     ),
     (
         "EX-22",
-        "Token FULL_AUTONOMOUS_STACK",
+        "Token-FULL_AUTONOMOUS_STACK",
         "Execution",
         "keine Identität",
         "Token fehlt",
