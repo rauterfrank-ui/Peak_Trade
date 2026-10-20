@@ -15,9 +15,9 @@ INSPECTED_ENFORCEMENT_MODULE = (
 )
 HIERARCHY_OWNER = "OWNER > MASTER V2 > FULL AUTONOMOUS STACK"
 HIERARCHY_DOUBLE_PLAY = "MASTER V2 > DOUBLE PLAY > DYNAMIC SCOPE"
-LOCK_TOKEN = "DOUBLE_PLAY_FULL_OWNER_LOCK=LEVEL_3"
-INTERNAL_AREA_TOKEN = "DOUBLE_PLAY_INTERNAL_FUNCTIONAL_AREA=true"
-SEPARATE_UNIVERSE_TOKEN = "DOUBLE_PLAY_SEPARATE_UNIVERSE=false"
+OWNER_LOCK_MARK = "DOUBLE_PLAY_FULL_OWNER_LOCK=LEVEL_3"
+INTERNAL_AREA_MARK = "DOUBLE_PLAY_INTERNAL_FUNCTIONAL_AREA=true"
+SEPARATE_UNIVERSE_MARK = "DOUBLE_PLAY_SEPARATE_UNIVERSE=false"
 AUTHORITY_CONSTANT_NAMES = (
     "DOWNSTREAM_REDECISION_AUTHORITY",
     "LEARNING_TRADING_DECISION_AUTHORITY",
@@ -101,14 +101,14 @@ def _hierarchy(contract: str, missing: bool) -> dict[str, Any]:
 def _internal_role(decision: str, missing: bool) -> dict[str, Any]:
     if missing or not decision:
         return _finding("INTERNAL_ROLE", "UNKNOWN")
-    matched = INTERNAL_AREA_TOKEN in decision and SEPARATE_UNIVERSE_TOKEN in decision
+    matched = INTERNAL_AREA_MARK in decision and SEPARATE_UNIVERSE_MARK in decision
     return _finding("INTERNAL_ROLE", "TOKEN_MATCH" if matched else "TOKEN_MISMATCH")
 
 
 def _lock_tokens(contract: str, decision: str, missing: bool) -> dict[str, Any]:
     if missing or not contract or not decision:
         return _finding("LOCK_TOKEN", "UNKNOWN")
-    matched = LOCK_TOKEN in contract and LOCK_TOKEN in decision
+    matched = OWNER_LOCK_MARK in contract and OWNER_LOCK_MARK in decision
     return _finding("LOCK_TOKEN", "TOKEN_MATCH" if matched else "TOKEN_MISMATCH")
 
 

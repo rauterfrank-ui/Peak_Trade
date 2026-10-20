@@ -11,9 +11,9 @@ DOMAIN = "DOUBLE_PLAY"
 EXPECTED_BASELINE_SHA = "97c8c954204c15f9af5a48995b889ce3fb223c64"
 EXPECTED_BASELINE_TREE = "898ede79de7e527db3632b8a3b32daf8b9b098b8"
 EXISTING_GHOSV_CODE_PIN = "7628005ae495c115ff341d32fa932b7f4642f456"
-LOCK_TOKEN = "DOUBLE_PLAY_FULL_OWNER_LOCK=LEVEL_3"
-INTERNAL_AREA_TOKEN = "DOUBLE_PLAY_INTERNAL_FUNCTIONAL_AREA=true"
-SEPARATE_UNIVERSE_TOKEN = "DOUBLE_PLAY_SEPARATE_UNIVERSE=false"
+OWNER_LOCK_MARK = "DOUBLE_PLAY_FULL_OWNER_LOCK=LEVEL_3"
+INTERNAL_AREA_MARK = "DOUBLE_PLAY_INTERNAL_FUNCTIONAL_AREA=true"
+SEPARATE_UNIVERSE_MARK = "DOUBLE_PLAY_SEPARATE_UNIVERSE=false"
 REQUIREMENT_IDS = ("MV2-04", "MV2-05", "MV2-06", "MV2-08")
 STATE_IMPORTS = ("transition_state", "update_dynamic_boundaries")
 INSPECTED_ENFORCEMENT_MODULE = (
@@ -112,7 +112,7 @@ def _mv2_04(
     claims: Mapping[str, Any],
     reasons: list[str],
 ) -> dict[str, Any]:
-    flags = INTERNAL_AREA_TOKEN in decision and SEPARATE_UNIVERSE_TOKEN in decision
+    flags = INTERNAL_AREA_MARK in decision and SEPARATE_UNIVERSE_MARK in decision
     imports = _state_imports(replay_source)
     violation = (
         claims.get("separate_universe_claimed") is True
@@ -145,7 +145,9 @@ def _mv2_05(
     claims: Mapping[str, Any],
     reasons: list[str],
 ) -> dict[str, Any]:
-    tokens = bool(contract and decision and LOCK_TOKEN in contract and LOCK_TOKEN in decision)
+    tokens = bool(
+        contract and decision and OWNER_LOCK_MARK in contract and OWNER_LOCK_MARK in decision
+    )
     enforced = _lock_assigned(hardening_source)
     violation = (
         claims.get("lock_mutation_requested") is True
