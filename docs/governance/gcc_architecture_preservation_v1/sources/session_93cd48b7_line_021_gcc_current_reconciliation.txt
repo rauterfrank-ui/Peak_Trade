@@ -1,0 +1,158 @@
+Die Guardian Coordination Cloud ist auf dem geprüften `origin/main` nicht vorhanden. Owner-Frage und Änderungsanfrage können darüber ohne eine neue Systemkomponente nicht verarbeitet werden. Es gibt keinen bestätigten Guardian, keine Antwort und keinen konsolidierten GCC-Bericht.
+
+```text
+BASELINE_VALIDATION=PASS
+CURRENT_ORIGIN_MAIN_SHA=97c8c954204c15f9af5a48995b889ce3fb223c64
+EXPECTED_TREE=898ede79de7e527db3632b8a3b32daf8b9b098b8
+ORIGIN_MAIN_TREE=898ede79de7e527db3632b8a3b32daf8b9b098b8
+TREE_MATCH=true
+LOCAL_HEAD=ad4460956ea5e71543e81ddd54141d2d68674568
+LOCAL_TREE=898ede79de7e527db3632b8a3b32daf8b9b098b8
+WORKING_MODEL_DRIFT=COMMIT_IDENTITY_ONLY_PLUS_UNTRACKED_EXCLUDED
+UNTRACKED_EXCLUDED=scripts/ops/master_v2_boundary_projection_v1/; tests/ops/test_master_v2_boundary_projection_v1.py
+MASTER_RUNBOOK_STATUS=READ_FOR_AUTHORITY_BOUNDARY; REVIEW_PIN=9971ad8bcef222c6200d476c823de89820add7aa; NO_GCC_ENTRY
+MAP_OF_TRUTH_STATUS=NAVIGATION_ONLY; AUTHORITY=NONE; NO_GCC_ENTRY
+CURRENT_PHASE=NOT_ADVANCED
+LAST_CANONICALLY_CLOSED_STEP=NOT_REDEFINED_BY_THIS_AUDIT
+EARLIEST_UNRESOLVED_DEPENDENCY=GCC_HAS_NO_CURRENT_IMPLEMENTATION
+REQUESTED_STEP=GCC_CURRENT_ARCHITECTURE_RECONCILIATION_READ_ONLY
+REQUEST_MATCHES_CANONICAL_NEXT_STEP=false
+AUTHORIZATION_REQUIRED=SEPARATE_GO_FOR_ANY_IMPLEMENTATION
+EXECUTION_SURFACE_TOUCHED=NONE
+HARD_STOP_REASONS=NONE_FOR_READ_ONLY_REPORT
+PROPOSED_SAFE_ACTION=REPORT_AND_STOP
+```
+
+Der lokale Commit liegt einen Merge hinter `origin/main`, der Tree ist identisch. Die zwei untracked Dateien sind nicht CURRENT und wurden nicht als GCC-Beleg verwendet.
+
+## GCC_BLUEPRINT_CONTRACT_MATRIX
+
+Blueprint V0.6, Kapitel 32–35, beschreibt die vier Funktionen als deterministisches Zielbild. `GCC_IMPLEMENTATION=NOT_STARTED` steht im Blueprint selbst. Auf Tree `898ede79` gibt es keinen Treffer für `Guardian Coordination`, `Request Gateway`, `Guardian Dispatcher`, `Impact Aggregator`, `GCC_`, `IMPACT_QUERY`, `DOMAIN_FINDING` oder `CHANGE_HYPOTHESIS`.
+
+| Blueprint-Funktion | Auftrag-Name | Vertrag | CURRENT auf `origin/main` | Wirkung |
+| --- | --- | --- | --- | --- |
+| Intake, Kapitel 32.1 und 34 Schritt 0 | Request Gateway | `QUESTION` und `CHANGE_HYPOTHESIS`, unveränderte Frage, Baseline, Registry-Version | `NOT_PRESENT` | Kein Fall, kein GO |
+| Dispatch, Kapitel 32.2, 33.1, 35.1 | Guardian Dispatcher | Endliche, versionierte Empfängerliste; danach nur belegte Kanten | `NOT_PRESENT` | Kein Versand, keine Quittung |
+| Provenienz-, Schema- und Baseline-Prüfung, Kapitel 35.1 | Evidence Validator | Mischstände nicht als eine CURRENT-Wahrheit | `NOT_PRESENT` als GCC | Keine GCC-Prüfung |
+| Case Aggregate, Kapitel 34 Schritt 7 und 35.2 | Impact Aggregator | Antwortmatrix, Lücken, Konflikte, getrennte Optionen | `NOT_PRESENT` | Kein Owner-Bericht |
+
+Der CI-Job `evidence-validator` in `.github/workflows/ci.yml` prüft Evidence-Packs aus Fixtures. Das ist kein GCC Evidence Validator. `scripts/ops/ghv_forensic_whole_system_crosswalk_v1/impact_v1.py` propagiert Impact über einen forensischen Graphen mit `AUTHORITY=NONE`. Das ist kein Impact Aggregator.
+
+## GCC_CURRENT_COMPONENT_CROSSWALK
+
+Diese Flächen können später technisch benachbart sein. Sie sind nicht die GCC.
+
+| CURRENT-Fläche | Stand gegen `97c8c954` | Autorität | Anknüpfung, ausdrücklich nicht GCC |
+| --- | --- | --- | --- |
+| `scripts/ops/ghv_forensic_whole_system_crosswalk_v1` | Code vorhanden | `NONE` | Forensische Komposition, kein Dispatcher |
+| `scripts/ops/ghv_forensic_whole_system_causal_integration_v1` | Schreibt `integrated_causal_graph.v1.json` nur in ein Ausgabeverzeichnis | `NONE` | Kein Artefakt im Tree |
+| `scripts/ops/ghv_forensic_whole_system_causal_ghv_adapter_v1` | Code vorhanden | `NONE` | Adapter, kein Guardian-Register |
+| `config/governance/current_system_census_graph_v1/source_v1.json` | 301 Objekte, 98 semantische Kanten; Pin `6216201d…`, vier Commits vor `origin/main`; Körper seit dem Pin nur im Baseline-Feld geändert | `NONE`; keine Universumsratifikation | Navigationsindex |
+| `config/governance/current_system_interaction_authority_map_v1/source_v1.json` | 75 Domänen, 90 Kanten, 88 offene Epistemik-Einträge; Baseline `f91d2cf2…`, 24 Commits zurück | `authority_effect=NONE` | Kein 20er-Guardian-Register |
+| `impact_adjudication_v1.json` | Verdict `NO_MAP_IMPACT` für den Rule-Diff | `NONE` | Map-Währung, kein Fallaggregat |
+| `config/governance/current_law_impact_map_v1` | Vorhanden, älter als dieser Pin | Navigation | Kein GCC-Aggregator |
+| `scripts/ops/ghosv_master_v2_bounded_context_v1` | Auf `origin/main` vorhanden | `AUTHORITY=NONE`, `TRADING_AUTHORITY=NONE` | Nur Master-V2-/Execution-Kontext |
+| Master Runbook, Map of Truth | Kein GCC-Eintrag | Runbook ist operative SSOT, erzeugt aber keine Runtime-Freigabe | Keine Koordinationsinstanz |
+
+Census-Universenzahl 12 und IAM-Domänenzahl 75 sind andere Zähleinheiten als die vorbereitete 20er-Matrix. Sie ratifizieren keine Guardians.
+
+## GCC_SIGNAL_FLOW_AND_AUTHORITY_MATRIX
+
+| Schritt | Soll nach V0.6 | CURRENT | Status |
+| --- | --- | --- | --- |
+| Owner → GCC | Frage oder Änderungshypothese, kein implizites GO | Kein Gateway | `ABSENT` |
+| GCC → bestätigte Guardians | Dieselbe Fallversion an das endliche Register | Bestätigtes Register im Tree: 0 | `UNGEKLÄRT` |
+| Guardian → GCC | `BETROFFEN`, `NICHT_BETROFFEN` oder `UNGEKLÄRT` mit Eigenbeleg | Antworten: 0 | Fehlende Antwort = `UNGEKLÄRT` |
+| GCC → Owner | Getrennter Bericht | Kein Aggregator | `ABSENT` |
+
+`NICHT_BETROFFEN` wird für keine Domäne vergeben. Dafür fehlt jeder Negativnachweis.
+
+| Grenze | Soll | CURRENT-Befund |
+| --- | --- | --- |
+| Koordinieren und berichten | Zulässig nur als GCC-Konzept | Keine Instanz, die das tut |
+| Fachbefunde überschreiben | Verboten, Kapitel 3, 21.4, 35.1 | Kein Überschreibpfad vorhanden |
+| Änderung genehmigen | Verboten; Owner-Entscheid bleibt getrennt | Kein Genehmigungspfad |
+| Trading-Authority | Verboten | Kein Mint; `POST_ALLOWED=false` |
+| Master V2 / Double Play | Owner > Master V2; Category 3 bleibt `FULL OWNER LOCK` | `DOUBLE_PLAY_FULL_OWNER_LOCK=LEVEL_3` in `docs/ops/specs/MV2_DECISION_PATH_BOUNDARY_V1.md`; GHOSV-Konstanten `AUTHORITY_TRANSFER=false` |
+
+Eine Owner-Frage und eine Änderungsanfrage sind im Blueprint beide nur Intake. CURRENT kann keine von beiden als GCC-Fall annehmen, verteilen, prüfen oder zurückmelden. Diese Prüfung ist kein solcher Fall.
+
+## GCC_IMPACT_COMPLETENESS_GAPS
+
+| Prüfpunkt | Ergebnis |
+| --- | --- |
+| Guardian-Register | Im Tree fehlend. Nicht ratifizierte, WITHHELD und unbekannte Bereiche bleiben Coverage-Lücken, keine Empfänger |
+| Baseline dieses Auftrags | Commit und Tree stimmen |
+| Graphabdeckung der GCC | `UNKNOWN` |
+| Antwortanzahl | 0 von 0 bestätigten Guardians |
+| Widerspruch | Der alte Graph trägt `CURRENT_GRAPH_VERIFIED=true` nur für Snapshot `cc0d6099a96201fc195f0b18a53ae324`, `git_head=b6ffca1d…`, 20 Commits und ein anderes Worktree. Das ist nicht dieser Pin |
+| Offene Kausalpfade | Forward, Reverse und transitiv für GCC: `OPEN`. Eine fehlende Kante im Altgraph ist kein Isolationsbeweis |
+
+```text
+CAUSAL_MODE=true
+CURRENT_ORIGIN_MAIN_SHA=97c8c954204c15f9af5a48995b889ce3fb223c64
+LOCAL_HEAD=ad4460956ea5e71543e81ddd54141d2d68674568
+WORKING_MODEL_DRIFT=COMMIT_IDENTITY_ONLY_PLUS_UNTRACKED_EXCLUDED
+GHV_ARTIFACT_PATH=evidence/ops/wp_r2b_r4_presentation_retirement_v1/20261016T043611Z_r4_final/composed_forensic_graph.v1.json
+GHV_SNAPSHOT_ID=cc0d6099a96201fc195f0b18a53ae324
+GHV_GRAPH_STATUS=STALE
+INTEGRATED_CAUSAL_GRAPH=NOT_MATERIALIZED
+NODES_EDGES_EXAMINED=PROVENANCE_COVERAGE_MANIFEST_ONLY; SEMANTIC_TRAVERSAL_AS_CURRENT=NOT_PERFORMED
+COVERAGE=GCC_NODE_COVERAGE_UNKNOWN
+FIXPOINT_STATUS=OPEN
+CONFIRMED_EFFECTS=NONE_OBSERVED_FOR_NAMED_GCC_COMPONENTS
+CONDITIONAL_EFFECTS=UNNAMED_FUNCTIONAL_EQUIVALENT_NOT_EXCLUDED
+OPEN_EVIDENCE_GAPS=NO_CURRENT_CAUSAL_GRAPH; NO_GUARDIAN_REGISTER; NO_DOMAIN_ANSWERS; WITHHELD_SET_NOT_IN_TREE
+ISOLATION=A:NOT_PROVEN
+STOP_TRIGGERS=READ_ONLY_COMPLETE
+NEXT_SAFE_ACTION=REPORT_AND_STOP
+```
+
+Änderungslebenszyklus nach Kapitel 34: Vorabfrage, Impact-Analyse, Owner-Entscheidung, separate Änderungsfreigabe und erneute Verifikation sind Konzeptschritte. Keiner ist als GCC-Maschine implementiert. Bestehende Owner-GO-Regeln bleiben außerhalb dieser Cloud.
+
+Ratifikationsgrenzen, ohne weitere Ableitung:
+
+| Gegenstand | Status |
+| --- | --- |
+| 20 vorbereitete Domänen | `NOT_RATIFIED`. Kein Register auf `origin/main` |
+| 60 Einzelverträge | `NOT_RATIFIED`. Blueprint 33.2: die Matrix ist kein Vollständigkeitsbeweis |
+| WITHHELD-Bereiche | Offen. Die konkrete Menge liegt nicht im Tree; Identität dort `UNKNOWN` |
+| `GUARDIAN_TOOL_STANDARD_V1` | Owner-Vorgabe dieses Auftrags: `OWNER_RATIFIED`. Repository-Bindung: fehlend. Daraus folgt keine Domänen-, Vertrags-, Implementierungs- oder Aktivierungsratifikation |
+
+## GCC_OWNER_DECISIONS_REQUIRED
+
+1. Ob eine GCC überhaupt gebaut werden soll. Transport, Persistenz, Laufzeitbudget und Authentisierung sind in V0.6 offen.
+2. Ob die 20 Domänen ratifiziert werden. Bis dahin sind sie keine Empfänger.
+3. Ob die 60 Verträge einzeln ratifiziert werden.
+4. Wie WITHHELD-Bereiche geschlossen oder ausdrücklich ausgeschlossen werden.
+5. Jede Implementierung braucht ein separates Änderungs-GO und danach eine neue Baseline-Prüfung.
+
+```text
+EVIDENCE_INTEGRITY_V1=APPLIED
+CLAIM_EXACT=Die vier benannten GCC-Funktionen haben auf origin/main 97c8c954, Tree 898ede79, keinen Implementierungspfad. Der Owner-GCC-Signalweg ist nicht betriebsfähig.
+SCOPE=READ_ONLY_RECONCILIATION; NO_RUNTIME; NO_GRAPH_REGENERATION
+POSITIVE_EVIDENCE=Blueprint V0.6 Kapitel 32-35; git grep auf origin/main ohne GCC-Vertragstypen; Graph-Header und Coverage-Report des Snapshots cc0d6099; Census- und IAM-Header
+ADVERSARIAL_COUNTERCHECK=CI-Job Evidence Validator und impact_v1.py sind andere Komponenten. Der Altgraph ist nicht CURRENT. Ein unbenannter funktionaler Ersatz ist nicht ausgeschlossen. Fehlende Graphkante beweist keine Isolation.
+REMAINING_UNCERTAINTIES=Integrierter Kausalgraph fehlt. GCC-Graphabdeckung UNKNOWN. WITHHELD-Menge nicht im Tree. Tool-Standard ohne Repository-Artefakt.
+RESULT=NOT_PROVEN
+FINANCIAL_GUARANTEE=NONE
+CAPITAL_SAFETY_GATE=OPEN
+STOP_REASON=AUFTRAG_END_REPORT_AND_STOP
+```
+
+```text
+TOOL_EXECUTION_STATUS=READ_ONLY_COMPLETE
+TECHNICAL_CONTRACT_STATUS=GCC_NOT_IMPLEMENTED
+OWNER_OBJECTIVE_STATUS=RECONCILIATION_REPORTED
+TRADING_LOGIC_CODE_DELTA=ZERO
+TRADING_DECISION_SEMANTICS_DELTA=ZERO
+NEW_TRADING_FILTERS=ZERO
+SAFETY_INVARIANTS_PRESERVED=true
+DOUBLE_PLAY_SEMANTICS_CHANGED=false
+CATEGORY_3_FULL_OWNER_LOCK=UNCHANGED
+POST_ALLOWED=false
+EXTERNAL_EFFECT_AUTHORIZED=false
+NEXT_SAFE_ACTION=REPORT_AND_STOP
+```
+
+Es wurde nichts geändert, nichts ausgeführt und nichts regeneriert.
