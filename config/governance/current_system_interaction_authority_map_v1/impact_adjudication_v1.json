@@ -3,27 +3,29 @@
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "scripts/ops/double_play_guardian_readonly_projection_v1/__init__.py",
-    "scripts/ops/double_play_guardian_readonly_projection_v1/constants_v1.py",
-    "scripts/ops/double_play_guardian_readonly_projection_v1/extract_v1.py",
-    "scripts/ops/double_play_guardian_readonly_projection_v1/project_v1.py",
-    "tests/ops/test_double_play_guardian_readonly_projection_v1.py"
+    "scripts/ops/double_play_ghosv_observation_adapter_v1/__init__.py",
+    "scripts/ops/double_play_ghosv_observation_adapter_v1/constants_v1.py",
+    "scripts/ops/double_play_ghosv_observation_adapter_v1/observe_v1.py",
+    "scripts/ops/double_play_guardian_readonly_projection_v1/symbol_presence_v1.py",
+    "tests/ops/test_double_play_ghosv_observation_adapter_v1.py",
+    "tests/ops/test_double_play_guardian_frozen_graph_symbol_presence_v1.py"
   ],
-  "changed_paths_sha256": "dc7be471911d285d086d1da575a36ba89ffbfedc15f92cdb5b98a4ef73a43a05",
+  "changed_paths_sha256": "5ecd0794f4c822ed91059870969026efe4536aa1b2ca2679daa050ed52179b6b",
   "covered_candidate_paths": [
-    "scripts/ops/double_play_guardian_readonly_projection_v1/__init__.py",
-    "scripts/ops/double_play_guardian_readonly_projection_v1/constants_v1.py",
-    "scripts/ops/double_play_guardian_readonly_projection_v1/extract_v1.py",
-    "scripts/ops/double_play_guardian_readonly_projection_v1/project_v1.py",
-    "tests/ops/test_double_play_guardian_readonly_projection_v1.py"
+    "scripts/ops/double_play_ghosv_observation_adapter_v1/__init__.py",
+    "scripts/ops/double_play_ghosv_observation_adapter_v1/constants_v1.py",
+    "scripts/ops/double_play_ghosv_observation_adapter_v1/observe_v1.py",
+    "scripts/ops/double_play_guardian_readonly_projection_v1/symbol_presence_v1.py",
+    "tests/ops/test_double_play_ghosv_observation_adapter_v1.py",
+    "tests/ops/test_double_play_guardian_frozen_graph_symbol_presence_v1.py"
   ],
   "evidence_refs": [
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "scripts/ops/double_play_guardian_readonly_projection_v1/project_v1.py",
-    "tests/ops/test_double_play_guardian_readonly_projection_v1.py"
+    "scripts/ops/double_play_ghosv_observation_adapter_v1/observe_v1.py",
+    "scripts/ops/double_play_guardian_readonly_projection_v1/symbol_presence_v1.py"
   ],
-  "reason": "Der Diff ergänzt nur die lesende Double-Play-Lückenprojektion und ihren Test. Das Paket ist eine neue, nicht erschöpfende Kandidatenfläche. tests/ops/ war bereits gelistet. source_v1.json, Census-Körper, Authority-Zuweisungen und abgeleitete Map-Views bleiben unverändert.",
+  "reason": "Der Diff ergänzt die lesende Symbolpräsenz im eingefrorenen Graphen und einen GHOSV-Beobachtungsadapter außerhalb des bestehenden Checkers. Beide Pakete sind nicht erschöpfende Kandidatenflächen. source_v1.json, Census-Körper, Authority-Zuweisungen und abgeleitete Map-Views bleiben unverändert. Eine Causal-Traversal wird nicht hinzugefügt.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
