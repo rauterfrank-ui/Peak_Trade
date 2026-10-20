@@ -3,9 +3,11 @@
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
+    "config/governance/current_law_impact_map_v1/source_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "docs/governance/CURRENT_UNIVERSE_LANDSCAPE_SNAPSHOT_V1.md",
+    "docs/governance/current_law_impact_map_v1/generated/law_reference_index_v1.md",
     "docs/governance/gcc_architecture_preservation_v1/GCC_ARCHITECTURE_PRESERVATION_V1.md",
     "docs/governance/gcc_architecture_preservation_v1/GCC_ARCHITECTURE_SOURCE_MANIFEST_V1.json",
     "docs/governance/gcc_architecture_preservation_v1/sources/Peak_Trade_Guardian_Network_Blueprint_V0_8_CURRENT_2026-10-20_NODEWISE_ERGAENZT.md.txt",
@@ -20,7 +22,7 @@
     "scripts/ops/execution_guardian_binding_verifier_v1/projection_v1.py",
     "tests/ops/test_execution_guardian_binding_verifier_v1.py"
   ],
-  "changed_paths_sha256": "b3445a06528b76872de11580b186a65cbf25528a3e7978a7ae452265b543e006",
+  "changed_paths_sha256": "13fb5cca78504519e06838b3d6d6923fed25c496d5aaf2342bbff58633587de0",
   "covered_candidate_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
@@ -43,7 +45,7 @@
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_law_impact_map_v1/source_v1.json"
   ],
-  "reason": "Change-bound receipt for the preservation merge diff. source_v1.json is unchanged. NO_LAW_IMPACT.",
+  "reason": "Change-bound receipt for the preservation diff after refreshing the runbook file pin. Law authority fields are unchanged. LAW_MAP_UPDATE_REQUIRED.",
   "selector_used_as_law_impact_authority": false,
-  "verdict": "NO_LAW_IMPACT"
+  "verdict": "LAW_MAP_UPDATE_REQUIRED"
 }
