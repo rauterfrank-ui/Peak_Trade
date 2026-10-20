@@ -3,29 +3,37 @@
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "scripts/ops/double_play_ghosv_observation_adapter_v1/__init__.py",
-    "scripts/ops/double_play_ghosv_observation_adapter_v1/constants_v1.py",
-    "scripts/ops/double_play_ghosv_observation_adapter_v1/observe_v1.py",
-    "scripts/ops/double_play_guardian_readonly_projection_v1/symbol_presence_v1.py",
-    "tests/ops/test_double_play_ghosv_observation_adapter_v1.py",
-    "tests/ops/test_double_play_guardian_frozen_graph_symbol_presence_v1.py"
+    "scripts/ops/double_play_guardian_binding_verifier_v1/__init__.py",
+    "scripts/ops/double_play_guardian_binding_verifier_v1/ghosv_track_v1.py",
+    "scripts/ops/double_play_guardian_binding_verifier_v1/ghv_track_v1.py",
+    "scripts/ops/double_play_guardian_binding_verifier_v1/graph_track_v1.py",
+    "scripts/ops/master_v2_boundary_projection_v1/__init__.py",
+    "scripts/ops/master_v2_boundary_projection_v1/project_v1.py",
+    "tests/ops/test_double_play_guardian_ghosv_track_v1.py",
+    "tests/ops/test_double_play_guardian_ghv_track_v1.py",
+    "tests/ops/test_double_play_guardian_graph_track_v1.py",
+    "tests/ops/test_master_v2_boundary_projection_v1.py"
   ],
-  "changed_paths_sha256": "5ecd0794f4c822ed91059870969026efe4536aa1b2ca2679daa050ed52179b6b",
+  "changed_paths_sha256": "f14349e3325ceed06d8c813cb799f1b6e7abb8f631da2d1b084037524e7b72cc",
   "covered_candidate_paths": [
-    "scripts/ops/double_play_ghosv_observation_adapter_v1/__init__.py",
-    "scripts/ops/double_play_ghosv_observation_adapter_v1/constants_v1.py",
-    "scripts/ops/double_play_ghosv_observation_adapter_v1/observe_v1.py",
-    "scripts/ops/double_play_guardian_readonly_projection_v1/symbol_presence_v1.py",
-    "tests/ops/test_double_play_ghosv_observation_adapter_v1.py",
-    "tests/ops/test_double_play_guardian_frozen_graph_symbol_presence_v1.py"
+    "scripts/ops/double_play_guardian_binding_verifier_v1/__init__.py",
+    "scripts/ops/double_play_guardian_binding_verifier_v1/ghosv_track_v1.py",
+    "scripts/ops/double_play_guardian_binding_verifier_v1/ghv_track_v1.py",
+    "scripts/ops/double_play_guardian_binding_verifier_v1/graph_track_v1.py",
+    "scripts/ops/master_v2_boundary_projection_v1/__init__.py",
+    "scripts/ops/master_v2_boundary_projection_v1/project_v1.py",
+    "tests/ops/test_double_play_guardian_ghosv_track_v1.py",
+    "tests/ops/test_double_play_guardian_ghv_track_v1.py",
+    "tests/ops/test_double_play_guardian_graph_track_v1.py",
+    "tests/ops/test_master_v2_boundary_projection_v1.py"
   ],
   "evidence_refs": [
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "scripts/ops/double_play_ghosv_observation_adapter_v1/observe_v1.py",
-    "scripts/ops/double_play_guardian_readonly_projection_v1/symbol_presence_v1.py"
+    "scripts/ops/double_play_guardian_binding_verifier_v1/__init__.py",
+    "scripts/ops/master_v2_boundary_projection_v1/project_v1.py"
   ],
-  "reason": "Der Diff ergänzt die lesende Symbolpräsenz im eingefrorenen Graphen und einen GHOSV-Beobachtungsadapter außerhalb des bestehenden Checkers. Beide Pakete sind nicht erschöpfende Kandidatenflächen. source_v1.json, Census-Körper, Authority-Zuweisungen und abgeleitete Map-Views bleiben unverändert. Eine Causal-Traversal wird nicht hinzugefügt.",
+  "reason": "Der Diff ergänzt den lesenden Double-Play-Binding-Verifier mit drei getrennten Tracks und die lesende Master-V2-Grenzprojektion. Beide Pakete sind neue, nicht erschöpfende Kandidatenflächen. source_v1.json, Census-Körper, Authority-Zuweisungen und abgeleitete Map-Views bleiben unverändert.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
