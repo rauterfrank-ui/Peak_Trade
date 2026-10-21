@@ -1,28 +1,28 @@
 {
   "authority_effect": "NONE",
   "changed_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
-    "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
-    "tests/ops/test_h1_get_evidence_admission_v1.py",
-    "tests/ops/test_h1_get_evidence_bundle_v1.py"
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "scripts/ops/h1_evidence_scope_observation_v1/__init__.py",
+    "scripts/ops/h1_evidence_scope_observation_v1/constants_v1.py",
+    "scripts/ops/h1_evidence_scope_observation_v1/observe_v1.py",
+    "tests/ops/test_h1_evidence_scope_observation_v1.py"
   ],
-  "changed_paths_sha256": "5844566d94a11e2e9d276cbec5f4a727c734f1fd32ff0335acd26afa3cd6b922",
+  "changed_paths_sha256": "e6ba1ee9cba6d187345e233599724bf1efacfa479ccdc33ec6954824740b2c95",
   "covered_candidate_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
-    "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
-    "tests/ops/test_h1_get_evidence_admission_v1.py",
-    "tests/ops/test_h1_get_evidence_bundle_v1.py"
+    "scripts/ops/h1_evidence_scope_observation_v1/__init__.py",
+    "scripts/ops/h1_evidence_scope_observation_v1/constants_v1.py",
+    "scripts/ops/h1_evidence_scope_observation_v1/observe_v1.py",
+    "tests/ops/test_h1_evidence_scope_observation_v1.py"
   ],
   "evidence_refs": [
-    "config/ops/okx_captured_at_freshness_policy_ratification_v1.json",
-    "src/ops/full_core_live_path_composition_root_v1/fresh_pretrade_runtime_get_v1.py",
-    "src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py",
-    "src/ops/h1_get_evidence_admission_v1/provenance_v1.py"
+    "scripts/ops/generic_ghosv_kernel_v1/observe_v1.py",
+    "scripts/ops/guardian_domain_scope_manifest_v1/validate_v1.py",
+    "scripts/ops/h1_evidence_scope_observation_v1/observe_v1.py",
+    "scripts/ops/pin_scope_binding_v1/bind_v1.py",
+    "scripts/ops/scoped_ghv_crosswalk_adapter_v1/adapt_v1.py"
   ],
-  "reason": "Change-bound receipt for H1 positions pagination alignment B_LIMITED. The existing admission validator classifies positions as non-paginated within the request filter. No interaction-map node was added. source_v1.json and derived views are unchanged. AUTHORITY_EFFECT=NONE. NO_MAP_IMPACT.",
+  "reason": "Change-bound receipt for the read-only H1 evidence scope observer. The package calls the existing Phase-A pin, manifest, GHV, and GHOSV functions and adds no interaction-map node. The new package is a candidate surface, matching the other Phase-A packages. source_v1.json and derived views are unchanged. AUTHORITY_EFFECT=NONE. NO_MAP_IMPACT.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
