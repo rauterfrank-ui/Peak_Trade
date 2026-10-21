@@ -7,7 +7,10 @@ from collections import defaultdict
 from typing import Any
 
 from scripts.ops.current_full_stack_semantic_explorer_v1.budget_v1 import BudgetTrackerV1
-from scripts.ops.current_full_stack_semantic_explorer_v1.evidence_v1 import append_claim_v1
+from scripts.ops.current_full_stack_semantic_explorer_v1.evidence_v1 import (
+    append_claim_v1,
+    append_unbudgeted_claim_v1,
+)
 
 
 def _proven_pairs(claims: list[dict[str, Any]], predicate: str) -> list[tuple[str, str]]:
@@ -192,6 +195,19 @@ def discover_layers_v1(
             continue
         seen_links.add((left, right))
         if not tracker.allow_edge():
+            reason = "TIME_BUDGET" if tracker.time_closed else "EDGE_BUDGET"
+            append_unbudgeted_claim_v1(
+                claims,
+                commit_sha=commit_sha,
+                scope="call_group",
+                subject=left,
+                predicate="CALL_GROUP_LINK",
+                object_=right,
+                evidence_refs=[source, target],
+                evidence_class="STATIC",
+                status="UNPROVEN",
+                unknowns=[reason, "INCOMPLETE", "TECHNICAL_CALL_GROUP"],
+            )
             break
         append_claim_v1(
             claims,

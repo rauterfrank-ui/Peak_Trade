@@ -303,6 +303,7 @@
     "scripts/ops/ci_test_selection_v1.py",
     "scripts/ops/complete_okx_inst_eth_usdt_perp_v3_raw_staging_funding_archive_v1.py",
     "scripts/ops/current_full_stack_semantic_explorer_v1/__init__.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/batch_controller_v1.py",
     "scripts/ops/current_full_stack_semantic_explorer_v1/budget_v1.py",
     "scripts/ops/current_full_stack_semantic_explorer_v1/cache_v1.py",
     "scripts/ops/current_full_stack_semantic_explorer_v1/constants_v1.py",

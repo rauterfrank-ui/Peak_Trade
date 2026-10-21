@@ -41,14 +41,26 @@ def discover_physical_v1(
     entries: list[GitEntryV1],
     *,
     cache_dir: Path | None = None,
-) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+) -> tuple[dict[str, Any], list[dict[str, Any]], dict[str, Any]]:
     claims: list[dict[str, Any]] = []
     modules: dict[str, Any] = {}
     contracts: dict[str, Any] = {}
     module_index: dict[str, str] = {}
+    admitted: list[str] = []
+    partial: list[dict[str, str]] = []
+    not_started: list[dict[str, str]] = []
 
-    for entry in entries:
+    for index, entry in enumerate(entries):
+        if tracker.time_closed or tracker.node_closed:
+            not_started.extend(_pending(entries[index:]))
+            break
+        snap = tracker.snapshot()
+        mark = len(claims)
+        module_keys = set(modules)
+        contract_keys = set(contracts)
+        index_keys = set(module_index)
         if not tracker.allow_file():
+            not_started.extend(_pending(entries[index:]))
             break
         if not append_claim_v1(
             claims,
@@ -62,7 +74,22 @@ def discover_physical_v1(
             evidence_class="STATIC",
             status="PROVEN",
         ):
+            break_file = True
+        else:
+            break_file = False
+        if break_file or tracker.node_closed or tracker.time_closed:
+            reason = _fresh_reason(snap, tracker)
+            tracker.restore(snap)
+            _drop_new(modules, module_keys)
+            _drop_new(contracts, contract_keys)
+            _drop_new(module_index, index_keys)
+            del claims[mark:]
+            partial.append(
+                {"path": entry.path, "blob_sha": entry.object_sha, "stop_reason": reason}
+            )
+            not_started.extend(_pending(entries[index + 1 :]))
             break
+        handled = False
         if entry.object_type == "commit" or entry.mode == "160000":
             append_claim_v1(
                 claims,
@@ -77,36 +104,51 @@ def discover_physical_v1(
                 status="PROVEN",
                 unknowns=["NOT_TRAVERSED"],
             )
-            continue
-        if entry.object_type != "blob":
-            continue
-        blob = read_blob_v1(repo, entry.object_sha)
-        if len(blob) > MAX_BLOB_BYTES:
-            append_claim_v1(
-                claims,
-                tracker,
-                commit_sha=commit_sha,
-                scope="physical",
-                subject=entry.path,
-                predicate="PARSED",
-                object_="",
-                evidence_refs=[f"git:{entry.object_sha}"],
-                evidence_class="STATIC",
-                status="UNPROVEN",
-                unknowns=["BLOB_TOO_LARGE"],
+            handled = True
+        elif entry.object_type != "blob":
+            handled = True
+        else:
+            blob = read_blob_v1(repo, entry.object_sha)
+            if len(blob) > MAX_BLOB_BYTES:
+                append_claim_v1(
+                    claims,
+                    tracker,
+                    commit_sha=commit_sha,
+                    scope="physical",
+                    subject=entry.path,
+                    predicate="PARSED",
+                    object_="",
+                    evidence_refs=[f"git:{entry.object_sha}"],
+                    evidence_class="STATIC",
+                    status="UNPROVEN",
+                    unknowns=["BLOB_TOO_LARGE"],
+                )
+                handled = True
+            elif entry.path.endswith(".json"):
+                _take_contract(commit_sha, entry, blob, contracts, claims, tracker)
+                handled = True
+            elif not entry.path.endswith(".py"):
+                handled = True
+            else:
+                parsed = _parse_python(entry, blob, cache_dir, claims, tracker, commit_sha)
+                if parsed is not None:
+                    modules[entry.path] = parsed
+                    module_index[_dotted(entry.path)] = entry.path
+                    _emit_structure(commit_sha, entry.path, parsed, claims, tracker)
+                handled = True
+        if not handled or tracker.node_closed or tracker.time_closed:
+            reason = _fresh_reason(snap, tracker)
+            tracker.restore(snap)
+            _drop_new(modules, module_keys)
+            _drop_new(contracts, contract_keys)
+            _drop_new(module_index, index_keys)
+            del claims[mark:]
+            partial.append(
+                {"path": entry.path, "blob_sha": entry.object_sha, "stop_reason": reason}
             )
-            continue
-        if entry.path.endswith(".json"):
-            _take_contract(commit_sha, entry, blob, contracts, claims, tracker)
-            continue
-        if not entry.path.endswith(".py"):
-            continue
-        parsed = _parse_python(entry, blob, cache_dir, claims, tracker, commit_sha)
-        if parsed is None:
-            continue
-        modules[entry.path] = parsed
-        module_index[_dotted(entry.path)] = entry.path
-        _emit_structure(commit_sha, entry.path, parsed, claims, tracker)
+            not_started.extend(_pending(entries[index + 1 :]))
+            break
+        admitted.append(entry.path)
 
     census = {
         "commit_sha": commit_sha,
@@ -114,7 +156,29 @@ def discover_physical_v1(
         "contracts": contracts,
         "module_index": module_index,
     }
-    return census, claims
+    return census, claims, {"admitted": admitted, "partial": partial, "not_started": not_started}
+
+
+def _pending(entries: list[GitEntryV1]) -> list[dict[str, str]]:
+    return [{"path": entry.path, "blob_sha": entry.object_sha} for entry in entries]
+
+
+def _drop_new(mapping: dict[str, Any], before: set[str]) -> None:
+    for key in list(mapping):
+        if key not in before:
+            del mapping[key]
+
+
+def _fresh_reason(snap: Any, tracker: BudgetTrackerV1) -> str:
+    previous = set(snap.stop_reasons)
+    for reason in tracker.stop_reasons:
+        if reason not in previous:
+            return reason
+    if tracker.time_closed:
+        return "TIME_BUDGET"
+    if tracker.node_closed:
+        return "NODE_BUDGET"
+    return "NODE_BUDGET"
 
 
 def _parse_python(
