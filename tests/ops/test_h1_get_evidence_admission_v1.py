@@ -20,6 +20,8 @@ from src.ops.h1_get_evidence_admission_v1.constants_v1 import (
     ENDPOINT_FILLS,
     ENDPOINT_ORDERS_HISTORY,
     ENDPOINT_ORDERS_PENDING,
+    ACCOUNT_FLAT_UNPROVEN,
+    EXCHANGE_TRUTH_UNPROVEN,
     EXTERNAL_EFFECT_AUTHORIZED,
     INVENTORY_ATTESTED_ROWS,
     INVENTORY_ATTESTED_ZERO,
@@ -39,6 +41,7 @@ from src.ops.h1_get_evidence_admission_v1.constants_v1 import (
     REASON_DIGEST_MISMATCH,
     REASON_DUPLICATE_FILL_CONFLICT,
     REASON_EMPTY_POSITIONS_WITHOUT_COMPLETENESS,
+    REASON_FRESHNESS_THRESHOLD_UNRATIFIED,
     REASON_FRESHNESS_WINDOW_ABSENT,
     REASON_INPUT_ABSENT,
     REASON_INPUT_MALFORMED,
@@ -47,10 +50,12 @@ from src.ops.h1_get_evidence_admission_v1.constants_v1 import (
     REASON_INSTRUMENT_PARAMETER_ABSENT,
     REASON_LATE_FILL_OUTSIDE_WINDOW,
     REASON_PAGINATION_TERMINAL_ABSENT,
+    REASON_PAGINATION_TERMINAL_NOT_CONTRACT_WITNESS,
     REASON_PAGINATION_TERMINAL_SOURCE_ABSENT,
     REASON_STALE_EVIDENCE,
     REASON_TEMPORAL_INCONSISTENCY,
     REASON_VENUE_TIMESTAMP_ABSENT,
+    REST_WS_CONSISTENCY_UNPROVEN,
     STATUS_ADMITTED,
     STATUS_UNKNOWN_BLOCKED,
     WRITER_HANDOFF,
@@ -77,35 +82,39 @@ TERMINAL_SOURCE = "synthetic_owner_terminal_marker"
 
 CHANGED_PATHS = [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "src/ops/h1_get_evidence_admission_v1/__init__.py",
     "src/ops/h1_get_evidence_admission_v1/bundle_v1.py",
-    "src/ops/okx_eea_private_account_state_runtime_v1/rest_baseline_v1.py",
+    "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
+    "src/ops/h1_get_evidence_admission_v1/provenance_v1.py",
+    "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
     "tests/ops/test_h1_get_evidence_admission_v1.py",
     "tests/ops/test_h1_get_evidence_bundle_v1.py",
-    "tests/ops/test_okx_eea_private_account_state_runtime_v1.py",
+    "tests/ops/test_h1_get_evidence_provenance_v1.py",
 ]
 
 INTERACTION_CANDIDATE_PATHS = [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "src/ops/h1_get_evidence_admission_v1/__init__.py",
     "src/ops/h1_get_evidence_admission_v1/bundle_v1.py",
-    "src/ops/okx_eea_private_account_state_runtime_v1/rest_baseline_v1.py",
+    "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
+    "src/ops/h1_get_evidence_admission_v1/provenance_v1.py",
+    "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
     "tests/ops/test_h1_get_evidence_admission_v1.py",
     "tests/ops/test_h1_get_evidence_bundle_v1.py",
-    "tests/ops/test_okx_eea_private_account_state_runtime_v1.py",
+    "tests/ops/test_h1_get_evidence_provenance_v1.py",
 ]
 
 LAW_CANDIDATE_PATHS = [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "src/ops/h1_get_evidence_admission_v1/__init__.py",
     "src/ops/h1_get_evidence_admission_v1/bundle_v1.py",
-    "src/ops/okx_eea_private_account_state_runtime_v1/rest_baseline_v1.py",
+    "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
+    "src/ops/h1_get_evidence_admission_v1/provenance_v1.py",
+    "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
     "tests/ops/test_h1_get_evidence_admission_v1.py",
     "tests/ops/test_h1_get_evidence_bundle_v1.py",
-    "tests/ops/test_okx_eea_private_account_state_runtime_v1.py",
+    "tests/ops/test_h1_get_evidence_provenance_v1.py",
 ]
 
 FORBIDDEN_IMPORT_PREFIXES = (
@@ -164,6 +173,7 @@ def _response(
         venue_timestamp_ms=venue_timestamp_ms,
         pagination_terminal=terminal,
         pagination_terminal_source=source,
+        pagination_chain_status=None,
         admission_window_id=admission_window_id,
     )
 
@@ -204,19 +214,27 @@ def _load_script(name: str):
     return module
 
 
-def test_valid_evidence_is_admitted_without_trading_authority() -> None:
+def test_synthetic_complete_evidence_stays_unknown_blocked() -> None:
     result = validate_get_evidence_admission_v1(_valid_responses(), _params())
-    assert result.status == STATUS_ADMITTED
-    assert result.reason_codes == POSITIVE_REASON_CODES
-    assert result.position_inventory == INVENTORY_ATTESTED_ROWS
-    assert result.fill_fact_count == 1
+    assert result.status == STATUS_UNKNOWN_BLOCKED
+    assert result.status != STATUS_ADMITTED
+    assert REASON_FRESHNESS_THRESHOLD_UNRATIFIED in result.reason_codes
+    assert REASON_PAGINATION_TERMINAL_NOT_CONTRACT_WITNESS in result.reason_codes
+    assert "FRESHNESS" not in result.satisfied_proofs
+    assert "PAGINATION_COMPLETENESS" not in result.satisfied_proofs
+    assert result.position_inventory == INVENTORY_UNPROVEN
+    assert result.fill_fact_count == 0
     assert result.writer_handoff == WRITER_HANDOFF
     assert result.flat_emitted is False
+    assert result.account_flat == ACCOUNT_FLAT_UNPROVEN
+    assert result.rest_ws_consistency == REST_WS_CONSISTENCY_UNPROVEN
+    assert result.exchange_truth == EXCHANGE_TRUTH_UNPROVEN
     assert result.authority_effect == AUTHORITY_EFFECT == "NONE"
     assert result.post_allowed is POST_ALLOWED is False
     assert result.external_effect_authorized is EXTERNAL_EFFECT_AUTHORIZED is False
     assert result.productive_completeness is PRODUCTIVE_COMPLETENESS is False
     assert result.productive_activation is PRODUCTIVE_ACTIVATION is False
+    assert POSITIVE_REASON_CODES != result.reason_codes
 
 
 def test_missing_account_identity_blocks() -> None:
@@ -263,7 +281,8 @@ def test_stale_evidence_blocks() -> None:
     )
     result = validate_get_evidence_admission_v1(responses, parameters)
     assert result.status == STATUS_UNKNOWN_BLOCKED
-    assert REASON_STALE_EVIDENCE in result.reason_codes
+    assert REASON_STALE_EVIDENCE not in result.reason_codes
+    assert REASON_FRESHNESS_THRESHOLD_UNRATIFIED in result.reason_codes
     assert REASON_TEMPORAL_INCONSISTENCY not in result.reason_codes
 
 
@@ -318,15 +337,17 @@ def test_empty_positions_without_completeness_block() -> None:
     assert result.flat_emitted is False
 
 
-def test_fully_proven_empty_positions_are_attested_zero_not_flat() -> None:
+def test_empty_positions_are_not_attested_zero_or_flat() -> None:
     result = validate_get_evidence_admission_v1(
         _valid_responses(position_rows=[], fill_rows=[]),
         _params(),
     )
-    assert result.status == STATUS_ADMITTED
-    assert result.position_inventory == INVENTORY_ATTESTED_ZERO
+    assert result.status == STATUS_UNKNOWN_BLOCKED
+    assert result.position_inventory == INVENTORY_UNPROVEN
+    assert result.position_inventory != INVENTORY_ATTESTED_ZERO
     assert result.writer_handoff == "NONE"
     assert result.flat_emitted is False
+    assert result.account_flat == ACCOUNT_FLAT_UNPROVEN
     assert result.productive_activation is False
 
 
@@ -341,14 +362,15 @@ def test_duplicate_fill_conflict_blocks() -> None:
     assert result.fill_fact_count == 0
 
 
-def test_identical_duplicate_fill_is_one_fact() -> None:
+def test_identical_duplicate_fill_does_not_raise_a_conflict() -> None:
     row = {"instId": INSTRUMENT_ID, "tradeId": "T1", "fillSz": "1", "fillPx": "2"}
     result = validate_get_evidence_admission_v1(
         _valid_responses(fill_rows=[row, dict(row)]),
         _params(),
     )
-    assert result.status == STATUS_ADMITTED
-    assert result.fill_fact_count == 1
+    assert result.status == STATUS_UNKNOWN_BLOCKED
+    assert REASON_DUPLICATE_FILL_CONFLICT not in result.reason_codes
+    assert result.fill_fact_count == 0
 
 
 def test_late_fill_outside_admission_window_blocks() -> None:
@@ -489,7 +511,7 @@ def test_admission_digest_is_deterministic() -> None:
         for item in responses
     )
     changed = validate_get_evidence_admission_v1(shifted, parameters)
-    assert changed.status == STATUS_ADMITTED
+    assert changed.status == STATUS_UNKNOWN_BLOCKED
     assert changed.admission_digest != first.admission_digest
 
 
@@ -498,9 +520,11 @@ def test_zero_position_string_is_not_attested_zero_or_flat() -> None:
         _valid_responses(position_rows=[{"instId": INSTRUMENT_ID, "pos": "0"}]),
         _params(),
     )
-    assert result.status == STATUS_ADMITTED
-    assert result.position_inventory == INVENTORY_ATTESTED_ROWS
+    assert result.status == STATUS_UNKNOWN_BLOCKED
+    assert result.position_inventory == INVENTORY_UNPROVEN
+    assert result.position_inventory != INVENTORY_ATTESTED_ZERO
     assert result.flat_emitted is False
+    assert result.account_flat == ACCOUNT_FLAT_UNPROVEN
     assert result.writer_handoff == "NONE"
 
 

@@ -37,7 +37,12 @@ from src.ops.h1_get_evidence_admission_v1.constants_v1 import (
     REASON_EMPTY_POSITIONS_WITHOUT_COMPLETENESS,
     REASON_INSTRUMENT_MISMATCH,
     REASON_LATE_FILL_OUTSIDE_WINDOW,
+    REASON_FRESHNESS_THRESHOLD_UNRATIFIED,
+    REASON_PAGINATION_CONTRADICTORY_PAGES,
+    REASON_PAGINATION_PAGE_BUDGET_EXCEEDED,
+    REASON_PAGINATION_REPEATED_CURSOR,
     REASON_PAGINATION_TERMINAL_ABSENT,
+    REASON_PAGINATION_TERMINAL_NOT_CONTRACT_WITNESS,
     REASON_STALE_EVIDENCE,
     REASON_VENUE_TIMESTAMP_ABSENT,
     STATUS_ADMITTED,
@@ -163,6 +168,7 @@ def _synthetic(
         venue_timestamp_ms=venue_timestamp_ms,
         pagination_terminal=terminal,
         pagination_terminal_source=source,
+        pagination_chain_status=None,
         admission_window_id=WINDOW_ID,
     )
 
@@ -210,9 +216,13 @@ def test_eea_fixture_capture_stays_unknown_blocked() -> None:
     assert result.productive_completeness is False
 
 
-def test_synthetic_evidence_can_be_admitted_offline_without_productive_truth() -> None:
+def test_synthetic_evidence_is_not_admitted_as_exchange_truth() -> None:
     result = admit_offline_get_evidence_v1(None, _params(), synthetic_responses=_synthetic_set())
-    assert result.status == STATUS_ADMITTED
+    assert result.status == STATUS_UNKNOWN_BLOCKED
+    assert result.status != STATUS_ADMITTED
+    assert REASON_PAGINATION_TERMINAL_NOT_CONTRACT_WITNESS in result.reason_codes
+    assert REASON_FRESHNESS_THRESHOLD_UNRATIFIED in result.reason_codes
+    assert result.exchange_truth == "UNPROVEN"
     assert result.productive_completeness is PRODUCTIVE_COMPLETENESS is False
     assert result.productive_activation is PRODUCTIVE_ACTIVATION is False
     assert result.authority_effect == AUTHORITY_EFFECT == "NONE"
@@ -232,7 +242,7 @@ def test_missing_config_uid_blocks() -> None:
     assert REASON_ACCOUNT_IDENTITY_ABSENT in result.reason_codes
 
 
-def test_missing_balance_uid_blocks_without_projection() -> None:
+def test_missing_balance_uid_is_not_projected_and_is_not_identity_absence() -> None:
     records = (
         _scoped(ENDPOINT_ACCOUNT_CONFIG, [{"uid": ACCOUNT_UID, "acctLv": "2"}]),
         _scoped(ENDPOINT_ACCOUNT_BALANCE, [{"totalEq": "1"}]),
@@ -241,7 +251,8 @@ def test_missing_balance_uid_blocks_without_projection() -> None:
     balance = next(item for item in records if item.endpoint == ENDPOINT_ACCOUNT_BALANCE)
     assert "uid" not in balance.payload["data"][0]
     assert result.status == STATUS_UNKNOWN_BLOCKED
-    assert REASON_ACCOUNT_IDENTITY_ABSENT in result.reason_codes
+    assert REASON_ACCOUNT_IDENTITY_ABSENT not in result.reason_codes
+    assert "ACCOUNT_IDENTITY" in result.satisfied_proofs
 
 
 def test_uid_mismatch_blocks() -> None:
@@ -281,7 +292,8 @@ def test_missing_venue_timestamp_blocks() -> None:
         captured_at_ms=NOW_MS,
     )
     blocked = admit_offline_get_evidence_v1(records, _params())
-    assert result.status == STATUS_ADMITTED
+    assert result.status == STATUS_UNKNOWN_BLOCKED
+    assert REASON_VENUE_TIMESTAMP_ABSENT in result.reason_codes
     assert REASON_VENUE_TIMESTAMP_ABSENT in blocked.reason_codes
     assert blocked.status == STATUS_UNKNOWN_BLOCKED
 
@@ -308,13 +320,15 @@ def test_stale_evidence_blocks() -> None:
             venue_timestamp_ms=NOW_MS + 50_000,
             pagination_terminal=item.pagination_terminal,
             pagination_terminal_source=item.pagination_terminal_source,
+            pagination_chain_status=item.pagination_chain_status,
             admission_window_id=item.admission_window_id,
         )
         for item in _synthetic_set()
     )
     result = admit_offline_get_evidence_v1(None, _params(), synthetic_responses=stale)
     assert result.status == STATUS_UNKNOWN_BLOCKED
-    assert REASON_STALE_EVIDENCE in result.reason_codes
+    assert REASON_STALE_EVIDENCE not in result.reason_codes
+    assert REASON_FRESHNESS_THRESHOLD_UNRATIFIED in result.reason_codes
 
 
 def test_missing_pagination_terminal_blocks() -> None:
@@ -342,6 +356,7 @@ def test_repeated_cursor_blocks_without_merge() -> None:
     assert assessment.status == STATUS_REPEATED_CURSOR
     result = admit_offline_get_evidence_v1((first, second), _params())
     assert result.status == STATUS_UNKNOWN_BLOCKED
+    assert REASON_PAGINATION_REPEATED_CURSOR in result.reason_codes
     assert result.fill_fact_count == 0
 
 
@@ -360,6 +375,7 @@ def test_contradictory_pages_block() -> None:
     assert assessment.status == STATUS_CONTRADICTORY_PAGES
     result = admit_offline_get_evidence_v1((first, second), _params())
     assert result.status == STATUS_UNKNOWN_BLOCKED
+    assert REASON_PAGINATION_CONTRADICTORY_PAGES in result.reason_codes
 
 
 def test_page_budget_blocks() -> None:
@@ -375,6 +391,7 @@ def test_page_budget_blocks() -> None:
     assert assessment.status == STATUS_PAGE_BUDGET_EXCEEDED
     result = admit_offline_get_evidence_v1(pages, _params())
     assert result.status == STATUS_UNKNOWN_BLOCKED
+    assert REASON_PAGINATION_PAGE_BUDGET_EXCEEDED in result.reason_codes
 
 
 def test_empty_positions_without_terminal_stay_unproven() -> None:
@@ -392,9 +409,11 @@ def test_synthetic_zero_inventory_does_not_emit_flat() -> None:
         _params(),
         synthetic_responses=_synthetic_set(position_rows=[]),
     )
-    assert result.status == STATUS_ADMITTED
-    assert result.position_inventory == INVENTORY_ATTESTED_ZERO
+    assert result.status == STATUS_UNKNOWN_BLOCKED
+    assert result.position_inventory == INVENTORY_UNPROVEN
+    assert result.position_inventory != INVENTORY_ATTESTED_ZERO
     assert result.flat_emitted is False
+    assert result.account_flat == "UNPROVEN"
     assert result.writer_handoff == "NONE"
 
 
