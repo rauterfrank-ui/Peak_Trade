@@ -3,27 +3,23 @@
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "docs/governance/current_architecture_discovery_register_v1/DISCOVERY_INDEX.md",
-    "docs/governance/current_architecture_discovery_register_v1/EVIDENCE_SOURCE_INDEX.md",
-    "docs/governance/current_architecture_discovery_register_v1/FINDING_REGISTER.md",
-    "docs/governance/current_architecture_discovery_register_v1/FUNCTIONAL_AREA_REGISTER.md",
-    "docs/governance/current_architecture_discovery_register_v1/OPEN_DEPENDENCIES.md",
-    "docs/governance/current_architecture_discovery_register_v1/OWNER_DECISION_REFERENCES.md"
+    "src/ops/h1_decision_publication_consumer_v1/__init__.py",
+    "src/ops/h1_decision_publication_consumer_v1/constants_v1.py",
+    "src/ops/h1_decision_publication_consumer_v1/read_v1.py",
+    "tests/ops/test_h1_decision_publication_consumer_v1.py"
   ],
-  "changed_paths_sha256": "3396891fe660218366451e19e9c842ba54e26ecb3c60d7f9376ab193bbf4c372",
+  "changed_paths_sha256": "eca5a89ed3b7a18e434cb76195d40f7df30e9f78178e6964cea4bf3c54c96cc5",
   "covered_candidate_paths": [
-    "docs/governance/current_architecture_discovery_register_v1/DISCOVERY_INDEX.md",
-    "docs/governance/current_architecture_discovery_register_v1/EVIDENCE_SOURCE_INDEX.md",
-    "docs/governance/current_architecture_discovery_register_v1/FINDING_REGISTER.md",
-    "docs/governance/current_architecture_discovery_register_v1/FUNCTIONAL_AREA_REGISTER.md",
-    "docs/governance/current_architecture_discovery_register_v1/OPEN_DEPENDENCIES.md",
-    "docs/governance/current_architecture_discovery_register_v1/OWNER_DECISION_REFERENCES.md"
+    "src/ops/h1_decision_publication_consumer_v1/__init__.py",
+    "src/ops/h1_decision_publication_consumer_v1/constants_v1.py",
+    "src/ops/h1_decision_publication_consumer_v1/read_v1.py",
+    "tests/ops/test_h1_decision_publication_consumer_v1.py"
   ],
   "evidence_refs": [
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "docs/governance/current_architecture_discovery_register_v1/DISCOVERY_INDEX.md"
+    "src/ops/h1_decision_publication_consumer_v1/constants_v1.py",
+    "src/trading/master_v2/canonical_trading_decision_evidence_v1.py"
   ],
-  "reason": "Change-bound receipt for the discovery register against origin/main. The six files under docs/governance/current_architecture_discovery_register_v1/ are an unratified draft, DRAFT_ONLY, AUTHORITY=NONE. The directory is one non-exhaustive candidate surface. source_v1.json and derived views are unchanged. NO_MAP_IMPACT.",
+  "reason": "Change-bound receipt for WP-H1-FOUNDATION-01. The read-only decision publication consumer and its offline test are non-exhaustive candidate surfaces. AUTHORITY_EFFECT=NONE. source_v1.json and derived views are unchanged. The package is not a map node and has no productive cycle binding. NO_MAP_IMPACT.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
