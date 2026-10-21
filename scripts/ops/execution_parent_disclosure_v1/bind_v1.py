@@ -17,9 +17,8 @@ from scripts.ops.execution_parent_disclosure_v1.constants_v1 import (
     AUTHORITY,
     CLASSIFICATION_OBSERVED,
     CLASSIFICATION_UNKNOWN,
+    BASELINE_CURRENCY_CURRENT,
     DOUBLE_PLAY_FULL_OWNER_LOCK,
-    EXPECTED_BASELINE_SHA,
-    EXPECTED_BASELINE_TREE,
     GIT_READ_COMMANDS,
     INSTRUMENT_IDS,
     OBSERVED_FIELDS,
@@ -28,6 +27,7 @@ from scripts.ops.execution_parent_disclosure_v1.constants_v1 import (
     SCHEMA_VERSION,
     STATUS_ADMITTED,
     STATUS_DISCLOSURE_SCOPE_ABSENT,
+    STATUS_FAIL_CLOSED,
     STATUS_LOADER_REJECT,
     STATUS_REJECTED,
     STATUS_UNEXPECTED_MEMBERSHIP_ACCEPTED,
@@ -53,6 +53,7 @@ def bind_execution_disclosure_v1(
     declared_tree_sha: str,
     provenance: Mapping[str, Any],
     disclosure_subjects: list[Any] | None,
+    baseline_currency: str,
     authority: str = AUTHORITY,
     activation: str = ACTIVATION,
     membership_ratified: bool = False,
@@ -69,10 +70,19 @@ def bind_execution_disclosure_v1(
     )
     if control_reasons:
         return _envelope(STATUS_REJECTED, reasons=control_reasons)
+    if baseline_currency != BASELINE_CURRENCY_CURRENT:
+        return _envelope(STATUS_FAIL_CLOSED, reasons=["historical_baseline_rejected"])
+    if not _full_sha(authoritative_commit_sha) or not _full_sha(authoritative_tree_sha):
+        return _envelope(STATUS_FAIL_CLOSED, reasons=["baseline_absent"])
 
-    mismatches = _baseline_mismatches(authoritative_commit_sha, authoritative_tree_sha)
-    if mismatches:
-        return _envelope(STATUS_PIN_MISMATCH, reasons=[], mismatches=mismatches)
+    root = _REPO_ROOT if repo_root is None else repo_root
+    actual_tree = _git_read(root, ["show", "-s", "--format=%T", authoritative_commit_sha])
+    if actual_tree is None or actual_tree.strip() != authoritative_tree_sha:
+        return _envelope(
+            STATUS_FAIL_CLOSED,
+            reasons=["commit_tree_mismatch"],
+            mismatches=["baseline_tree"],
+        )
 
     loaded = load_parent_slots_v1(registry_path)
     if loaded["status"] != STATUS_ACCEPTED:
@@ -92,7 +102,6 @@ def bind_execution_disclosure_v1(
         return _envelope(STATUS_REJECTED, reasons=identity_reasons)
 
     scope = {field: list(slot["scope"][field]) for field in SCOPE_FIELDS}
-    root = _REPO_ROOT if repo_root is None else repo_root
     binding = bind_pin_and_scope_v1(
         authoritative_commit_sha=authoritative_commit_sha,
         authoritative_tree_sha=authoritative_tree_sha,
@@ -146,6 +155,8 @@ def bind_execution_disclosure_v1(
         historical_sources=historical,
         observed_subjects=observed,
         unknown_subjects=unknown,
+        baseline_commit=authoritative_commit_sha,
+        baseline_tree=authoritative_tree_sha,
     )
 
 
@@ -168,13 +179,8 @@ def _control_reasons(
     return reasons
 
 
-def _baseline_mismatches(commit_sha: str, tree_sha: str) -> list[str]:
-    mismatches: list[str] = []
-    if commit_sha != EXPECTED_BASELINE_SHA:
-        mismatches.append("baseline_commit")
-    if tree_sha != EXPECTED_BASELINE_TREE:
-        mismatches.append("baseline_tree")
-    return mismatches
+def _full_sha(value: str) -> bool:
+    return len(value) == 40 and all(character in "0123456789abcdef" for character in value)
 
 
 def _identity_reasons(slot: Mapping[str, Any]) -> list[str]:
@@ -333,6 +339,8 @@ def _envelope(
     loader_reasons: list[str] | None = None,
     observed_subjects: list[dict[str, Any]] | None = None,
     unknown_subjects: list[dict[str, Any]] | None = None,
+    baseline_commit: str = "",
+    baseline_tree: str = "",
 ) -> dict[str, Any]:
     return {
         "schema_id": SCHEMA_ID,
@@ -368,4 +376,6 @@ def _envelope(
         "loader_reasons": list(loader_reasons or []),
         "mismatches": list(mismatches or []),
         "reasons": list(reasons),
+        "baseline_commit": baseline_commit,
+        "baseline_tree": baseline_tree,
     }

@@ -74,6 +74,7 @@ def derive_execution_readiness_v1(
         "fixture_only": False,
         "productive_runtime_evidence": False,
         "evidence_mode": "PIN_BOUND_SOURCE_NOT_PRODUCTIVE_RUNTIME",
+        "coverage_status": "PARTIAL" if ghv.get("coverage_gap") else "COMPLETE",
     }
 
 

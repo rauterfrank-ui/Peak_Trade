@@ -23,14 +23,14 @@ from scripts.ops.scoped_ghv_crosswalk_adapter_v1.adapt_v1 import (
     integration_edge_rejection_v1,
 )
 
-_EVIDENCE_REVISION = "37e51e3c7988026d2caa8c9a83ff46a056e416a8"
+_EVIDENCE_REVISION_KEY = "baseline_commit"
 
 
 def run_execution_ghv_disclosure_v1(
     *,
     admission: Mapping[str, Any],
     call_edges: list[dict[str, Any]],
-    unknown_edge: Mapping[str, Any],
+    unknown_edges: list[Mapping[str, Any]],
 ) -> dict[str, Any]:
     """Compose and walk only subjects the admission already accepted."""
     if admission.get("status") != STATUS_ADMITTED:
@@ -42,6 +42,9 @@ def run_execution_ghv_disclosure_v1(
     ]
     if not allowed:
         return _envelope("DISCLOSURE_SCOPE_ABSENT", composition_invoked=False)
+    revision = str(admission.get(_EVIDENCE_REVISION_KEY) or "")
+    if not revision:
+        return _envelope("FAIL_CLOSED", composition_invoked=False)
     ready_edges: list[dict[str, Any]] = []
     rejected_edges: list[dict[str, str]] = []
     for edge in call_edges:
@@ -55,14 +58,14 @@ def run_execution_ghv_disclosure_v1(
             rejected_edges.append({"edge_id": str(edge["edge_id"]), "reason": reason})
             continue
         ready_edges.append(edge)
-    nodes = [_node(subject_id) for subject_id in allowed]
+    nodes = [_node(subject_id, revision) for subject_id in allowed]
     composed = compose_scoped_candidate_v1(
         candidate_nodes=nodes,
         candidate_edges=ready_edges,
         allowed_nodes=allowed,
         exclusions=[],
         unassigned=[],
-        evidence_revision=_EVIDENCE_REVISION,
+        evidence_revision=revision,
     )
     forward = _walk(composed, FORWARD_ORIGIN, "FORWARD", DIRECT_DEPTH)
     reverse = _walk(composed, REVERSE_ORIGIN, "REVERSE", DIRECT_DEPTH)
@@ -73,7 +76,7 @@ def run_execution_ghv_disclosure_v1(
     coverage_gap = bool(
         forward["coverage_gap"] or reverse["coverage_gap"] or transitive["coverage_gap"]
     )
-    coverage_gap = coverage_gap or bool(rejected_edges) or bool(unknown_edge)
+    coverage_gap = coverage_gap or bool(rejected_edges) or bool(unknown_edges)
     return _envelope(
         "ACCEPTED",
         composition_invoked=True,
@@ -86,17 +89,20 @@ def run_execution_ghv_disclosure_v1(
         reverse=reverse,
         transitive=transitive,
         impact=impact,
-        unknown_edges=[dict(unknown_edge), *rejected_edges],
+        unknown_edges=[dict(edge) for edge in unknown_edges] + rejected_edges,
         coverage_gap=coverage_gap,
+        coverage_status="PARTIAL" if coverage_gap else "COMPLETE",
+        baseline_commit=revision,
+        baseline_tree=str(admission.get("baseline_tree") or ""),
     )
 
 
-def _node(subject_id: str) -> dict[str, Any]:
+def _node(subject_id: str, revision: str) -> dict[str, Any]:
     return {
         "object_id": subject_id,
         "evidence_plane": "DOMAIN_CODE_REFERENCE",
         "reachability": "UNKNOWN",
-        "evidence_revision": _EVIDENCE_REVISION,
+        "evidence_revision": revision,
     }
 
 

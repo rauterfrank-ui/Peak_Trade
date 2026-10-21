@@ -7,8 +7,8 @@ from typing import Any
 
 from scripts.ops.execution_parent_disclosure_v1.bind_v1 import bind_execution_disclosure_v1
 from scripts.ops.execution_parent_disclosure_v1.constants_v1 import (
-    EXPECTED_BASELINE_SHA,
-    EXPECTED_BASELINE_TREE,
+    BASELINE_CURRENCY_CURRENT,
+    STATUS_FAIL_CLOSED,
 )
 from scripts.ops.execution_parent_instruments_v1.ghosv_v1 import (
     findings_for_inventory_v1,
@@ -25,29 +25,46 @@ from scripts.ops.execution_parent_instruments_v1.verify_v1 import (
 _REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
-def run_execution_parent_toolchain_v1(repo_root: Path | None = None) -> dict[str, Any]:
-    """One bounded pin observation. Historical sources stay historical."""
+def run_execution_parent_toolchain_v1(
+    *,
+    current_commit_sha: str,
+    current_tree_sha: str,
+    baseline_currency: str,
+    repo_root: Path | None = None,
+) -> dict[str, Any]:
+    """One explicit current-pin observation. No historical fallback."""
+    if baseline_currency != BASELINE_CURRENCY_CURRENT:
+        return {"status": STATUS_FAIL_CLOSED, "reasons": ["historical_baseline_rejected"]}
     root = _REPO_ROOT if repo_root is None else repo_root
-    inventory, reason = load_verified_inventory_v1(root)
+    inventory, reason = load_verified_inventory_v1(
+        root,
+        commit_sha=current_commit_sha,
+        tree_sha=current_tree_sha,
+    )
     if inventory is None:
         return {"status": "REJECTED", "reasons": [reason or "inventory_failed"]}
-    provenance = execution_provenance_v1(root)
+    provenance = execution_provenance_v1(
+        commit_sha=current_commit_sha,
+        tree_sha=current_tree_sha,
+        repo_root=root,
+    )
     admission = bind_execution_disclosure_v1(
-        authoritative_commit_sha=EXPECTED_BASELINE_SHA,
-        authoritative_tree_sha=EXPECTED_BASELINE_TREE,
-        declared_commit_sha=EXPECTED_BASELINE_SHA,
-        declared_tree_sha=EXPECTED_BASELINE_TREE,
+        authoritative_commit_sha=current_commit_sha,
+        authoritative_tree_sha=current_tree_sha,
+        declared_commit_sha=current_commit_sha,
+        declared_tree_sha=current_tree_sha,
         provenance=provenance,
         disclosure_subjects=list(inventory["disclosure_subjects"]),
+        baseline_currency=baseline_currency,
         repo_root=root,
     )
     ghv = run_execution_ghv_disclosure_v1(
         admission=admission,
         call_edges=list(inventory["call_edges"]),
-        unknown_edge=inventory["unknown_edge"],
+        unknown_edges=list(inventory["unknown_edges"]),
     )
     graph = run_execution_graph_memory_v1(ghv=ghv)
-    findings, refs = findings_for_inventory_v1(inventory)
+    findings, refs = findings_for_inventory_v1(inventory, commit_sha=current_commit_sha)
     ghosv = run_execution_ghosv_disclosure_v1(
         admission=admission,
         findings=findings,

@@ -12,10 +12,9 @@ from scripts.ops.execution_parent_disclosure_v1.bind_v1 import bind_execution_di
 from scripts.ops.execution_parent_disclosure_v1.constants_v1 import (
     ACTIVATION,
     AUTHORITY,
-    EXPECTED_BASELINE_SHA,
-    EXPECTED_BASELINE_TREE,
     STATUS_ADMITTED,
     STATUS_DISCLOSURE_SCOPE_ABSENT,
+    STATUS_FAIL_CLOSED,
     STATUS_LOADER_REJECT,
     STATUS_REJECTED,
     STATUS_UNEXPECTED_MEMBERSHIP_ACCEPTED,
@@ -35,6 +34,10 @@ from tests.ops.guardian_framework_fixtures_v1 import (
 
 _PACKAGE = Path("scripts/ops/execution_parent_disclosure_v1")
 _OBSERVED_PATH = "scripts/ops/guardian_parent_slot_loader_v1/load_v1.py"
+_CURRENT_COMMIT = "4f41e55c911b663097b092be4fce2dfc630671f3"
+_CURRENT_TREE = "0f999ff806d64232432bbe1613dc2977a56df830"
+_OTHER_COMMIT = "37e51e3c7988026d2caa8c9a83ff46a056e416a8"
+_OTHER_TREE = "4619907408f709ba6781377b853d7efb682bc49d"
 _FORBIDDEN_IMPORT_PREFIXES = (
     "trading",
     "src.trading",
@@ -49,11 +52,14 @@ _FORBIDDEN_IMPORT_PREFIXES = (
 )
 
 
-def _provenance() -> dict[str, dict[str, str]]:
+def _provenance(
+    commit_sha: str = _CURRENT_COMMIT,
+    tree_sha: str = _CURRENT_TREE,
+) -> dict[str, dict[str, str]]:
     body = honest_provenance()
     body["domain_evidence"] = {
-        "commit_pin": EXPECTED_BASELINE_SHA,
-        "tree_pin": EXPECTED_BASELINE_TREE,
+        "commit_pin": commit_sha,
+        "tree_pin": tree_sha,
     }
     return body
 
@@ -79,12 +85,13 @@ def _unknown() -> dict[str, object]:
 
 def _bind(**overrides: object) -> dict[str, object]:
     payload: dict[str, object] = {
-        "authoritative_commit_sha": EXPECTED_BASELINE_SHA,
-        "authoritative_tree_sha": EXPECTED_BASELINE_TREE,
-        "declared_commit_sha": EXPECTED_BASELINE_SHA,
-        "declared_tree_sha": EXPECTED_BASELINE_TREE,
+        "authoritative_commit_sha": _CURRENT_COMMIT,
+        "authoritative_tree_sha": _CURRENT_TREE,
+        "declared_commit_sha": _CURRENT_COMMIT,
+        "declared_tree_sha": _CURRENT_TREE,
         "provenance": _provenance(),
         "disclosure_subjects": [_observed()],
+        "baseline_currency": "CURRENT",
     }
     payload.update(overrides)
     return bind_execution_disclosure_v1(**payload)
@@ -182,10 +189,10 @@ def test_wrong_declared_commit_is_pin_mismatch() -> None:
     _assert_locked(result)
 
 
-def test_wrong_authoritative_tree_is_baseline_mismatch() -> None:
+def test_wrong_authoritative_tree_is_fail_closed() -> None:
     result = _bind(authoritative_tree_sha=LANDSCAPE_EMBEDDED_TREE)
 
-    assert result["status"] == STATUS_PIN_MISMATCH
+    assert result["status"] == STATUS_FAIL_CLOSED
     assert result["mismatches"] == ["baseline_tree"]
     _assert_locked(result)
 
@@ -213,7 +220,7 @@ def test_observed_subject_requires_path_symbol_and_lines() -> None:
             "symbol": "load_parent_slots_v1",
             "start_line": 34,
             "end_line": 34,
-            "tree_sha": EXPECTED_BASELINE_TREE,
+            "tree_sha": _CURRENT_TREE,
             "functional_membership": False,
         }
     ]
@@ -311,8 +318,31 @@ def test_historical_pins_are_not_relabeled_current() -> None:
     result = _bind()
 
     assert result["current_validated"] is False
-    assert CENSUS_EMBEDDED_PIN != EXPECTED_BASELINE_SHA
-    assert LANDSCAPE_EMBEDDED_COMMIT != EXPECTED_BASELINE_SHA
-    assert LANDSCAPE_EMBEDDED_TREE != EXPECTED_BASELINE_TREE
+    assert CENSUS_EMBEDDED_PIN != _CURRENT_COMMIT
+    assert LANDSCAPE_EMBEDDED_COMMIT != _CURRENT_COMMIT
+    assert LANDSCAPE_EMBEDDED_TREE != _CURRENT_TREE
     assert "census" in result["historical_sources"]
     assert "landscape_commit" in result["historical_sources"]
+
+
+def test_historical_currency_is_fail_closed() -> None:
+    result = _bind(baseline_currency="HISTORICAL")
+
+    assert result["status"] == STATUS_FAIL_CLOSED
+    assert result["reasons"] == ["historical_baseline_rejected"]
+    _assert_locked(result)
+
+
+def test_other_git_valid_mainline_pin_is_admitted_without_code_change() -> None:
+    result = _bind(
+        authoritative_commit_sha=_OTHER_COMMIT,
+        authoritative_tree_sha=_OTHER_TREE,
+        declared_commit_sha=_OTHER_COMMIT,
+        declared_tree_sha=_OTHER_TREE,
+        provenance=_provenance(_OTHER_COMMIT, _OTHER_TREE),
+    )
+
+    assert result["status"] == STATUS_ADMITTED
+    assert result["baseline_commit"] == _OTHER_COMMIT
+    assert result["baseline_tree"] == _OTHER_TREE
+    _assert_locked(result)
