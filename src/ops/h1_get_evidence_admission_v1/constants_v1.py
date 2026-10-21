@@ -91,7 +91,7 @@ PAGINATION_CHAIN_STATUSES = frozenset(
     }
 )
 
-# No CURRENT contract names a positive terminal witness for the six admission GETs.
+# No CURRENT contract names a positive terminal witness for the paginated trade GETs.
 CONTRACT_PAGINATION_TERMINAL_SOURCES: frozenset[str] = frozenset()
 # Ratified freshness thresholds do not include private account, position, order, or fill GETs.
 PRIVATE_GET_FRESHNESS_SOURCE_TYPE = "private_account_state_get"
@@ -229,10 +229,22 @@ ACCOUNT_ENDPOINTS = (
 )
 # POS_MODE and ACCOUNT_MODE in the CURRENT live-account binding both read this path.
 UID_SOURCE_ENDPOINTS = (ENDPOINT_ACCOUNT_CONFIG,)
+# REST config, balance, and positions have no before/after/limit contract.
+# A non-paginated response is scoped to its request filter. It is not
+# account-wide, account-flat, fresh, or exchange truth.
+NON_PAGINATED_ENDPOINTS = (
+    ENDPOINT_ACCOUNT_CONFIG,
+    ENDPOINT_ACCOUNT_BALANCE,
+    ENDPOINT_ACCOUNT_POSITIONS,
+)
 PAGINATED_ENDPOINTS = (
+    ENDPOINT_ORDERS_PENDING,
+    ENDPOINT_ORDERS_HISTORY,
+    ENDPOINT_FILLS,
+)
+INSTRUMENT_SCOPED_ENDPOINTS = (
     ENDPOINT_ACCOUNT_POSITIONS,
     ENDPOINT_ORDERS_PENDING,
     ENDPOINT_ORDERS_HISTORY,
     ENDPOINT_FILLS,
 )
-INSTRUMENT_SCOPED_ENDPOINTS = PAGINATED_ENDPOINTS
