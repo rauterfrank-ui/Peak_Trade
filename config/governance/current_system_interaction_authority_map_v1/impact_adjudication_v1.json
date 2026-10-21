@@ -2,13 +2,12 @@
   "authority_effect": "NONE",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "scripts/ops/h1_evidence_scope_observation_v1/__init__.py",
     "scripts/ops/h1_evidence_scope_observation_v1/constants_v1.py",
     "scripts/ops/h1_evidence_scope_observation_v1/observe_v1.py",
     "tests/ops/test_h1_evidence_scope_observation_v1.py"
   ],
-  "changed_paths_sha256": "e6ba1ee9cba6d187345e233599724bf1efacfa479ccdc33ec6954824740b2c95",
+  "changed_paths_sha256": "4a93ac9430986bed6553ed30cdc3b368f64d8a921d9816a3594f4ddf3eaff452",
   "covered_candidate_paths": [
     "scripts/ops/h1_evidence_scope_observation_v1/__init__.py",
     "scripts/ops/h1_evidence_scope_observation_v1/constants_v1.py",
@@ -16,13 +15,13 @@
     "tests/ops/test_h1_evidence_scope_observation_v1.py"
   ],
   "evidence_refs": [
+    "scripts/ops/current_system_interaction_authority_map_v1.py",
     "scripts/ops/generic_ghosv_kernel_v1/observe_v1.py",
     "scripts/ops/guardian_domain_scope_manifest_v1/validate_v1.py",
-    "scripts/ops/h1_evidence_scope_observation_v1/observe_v1.py",
     "scripts/ops/pin_scope_binding_v1/bind_v1.py",
     "scripts/ops/scoped_ghv_crosswalk_adapter_v1/adapt_v1.py"
   ],
-  "reason": "Change-bound receipt for the read-only H1 evidence scope observer. The package calls the existing Phase-A pin, manifest, GHV, and GHOSV functions and adds no interaction-map node. The new package is a candidate surface, matching the other Phase-A packages. source_v1.json and derived views are unchanged. AUTHORITY_EFFECT=NONE. NO_MAP_IMPACT.",
+  "reason": "Change-bound receipt for removal of the read-only H1 evidence scope observer. The four observer files are deleted. The candidate prefix scripts/ops/h1_evidence_scope_observation_v1/ remains, so those deleted paths stay CANDIDATE. source_v1.json and derived views are unchanged. AUTHORITY_EFFECT=NONE. NO_MAP_IMPACT.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
