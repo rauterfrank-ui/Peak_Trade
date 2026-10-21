@@ -23,7 +23,12 @@ from src.ops.h1_get_evidence_admission_v1.constants_v1 import (
     ENDPOINT_ORDERS_HISTORY,
     ENDPOINT_ORDERS_PENDING,
     PAGINATED_ENDPOINTS,
+    PAGINATION_STATUS_CONTRADICTORY_PAGES,
+    PAGINATION_STATUS_PAGE_BUDGET_EXCEEDED,
+    PAGINATION_STATUS_REPEATED_CURSOR,
+    PAGINATION_STATUS_UNPROVEN,
 )
+from src.ops.h1_get_evidence_admission_v1.provenance_v1 import venue_timestamp_from_payload_v1
 from src.ops.h1_get_evidence_admission_v1.validate_v1 import (
     AdmissionParametersV1,
     AdmissionResultV1,
@@ -40,13 +45,12 @@ from src.ops.okx_eea_private_account_state_runtime_v1.rest_baseline_v1 import (
 )
 
 OFFLINE_PAGE_BUDGET_V1 = 3
-PAGINATION_TERMINAL_UNPROVEN = "UNPROVEN"
-STATUS_UNPROVEN = PAGINATION_TERMINAL_UNPROVEN
-STATUS_REPEATED_CURSOR = "REPEATED_CURSOR"
-STATUS_CONTRADICTORY_PAGES = "CONTRADICTORY_PAGES"
-STATUS_PAGE_BUDGET_EXCEEDED = "PAGE_BUDGET_EXCEEDED"
+PAGINATION_TERMINAL_UNPROVEN = PAGINATION_STATUS_UNPROVEN
+STATUS_UNPROVEN = PAGINATION_STATUS_UNPROVEN
+STATUS_REPEATED_CURSOR = PAGINATION_STATUS_REPEATED_CURSOR
+STATUS_CONTRADICTORY_PAGES = PAGINATION_STATUS_CONTRADICTORY_PAGES
+STATUS_PAGE_BUDGET_EXCEEDED = PAGINATION_STATUS_PAGE_BUDGET_EXCEEDED
 
-_TIME_FIELDS = ("uTime", "cTime")
 _ROW_IDENTITY = {
     ENDPOINT_ACCOUNT_POSITIONS: "instId",
     ENDPOINT_ORDERS_PENDING: "ordId",
@@ -70,37 +74,6 @@ class PaginationAssessmentV1:
 def current_contract_next_cursor_v1(payload: Mapping[str, Any]) -> str | None:
     """No CURRENT six-GET contract exposes a positive next-cursor field."""
     del payload
-    return None
-
-
-def _positive_ms(value: object) -> int | None:
-    if isinstance(value, bool) or isinstance(value, float):
-        return None
-    if isinstance(value, int):
-        return value if value > 0 else None
-    if isinstance(value, str) and value.isdigit():
-        parsed = int(value)
-        return parsed if parsed > 0 else None
-    return None
-
-
-def venue_timestamp_from_payload_v1(payload: Mapping[str, Any]) -> int | None:
-    """Return one positive uTime/cTime. Zero, absent, or disagreeing values stay unset."""
-    found: set[int] = set()
-    data = payload.get("data")
-    if not isinstance(data, list):
-        return None
-    for row in data:
-        if not isinstance(row, Mapping):
-            continue
-        for key in _TIME_FIELDS:
-            if key not in row:
-                continue
-            parsed = _positive_ms(row.get(key))
-            if parsed is not None:
-                found.add(parsed)
-    if len(found) == 1:
-        return next(iter(found))
     return None
 
 
@@ -233,6 +206,7 @@ def _response_from_pages(
         venue_timestamp_ms=venue,
         pagination_terminal=terminal,
         pagination_terminal_source=source,
+        pagination_chain_status=assessment.status if endpoint in PAGINATED_ENDPOINTS else None,
         admission_window_id=None,
     )
 

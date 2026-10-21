@@ -1,27 +1,35 @@
 """Read-only admission of already captured GET evidence.
 
 The validator never calls a venue, writes portfolio state, or emits a flat
-authorization. ADMITTED requires six positive proofs. Anything missing or
-contradictory is UNKNOWN_BLOCKED.
+authorization. ADMITTED requires six positive proofs. Freshness and pagination
+count only when a CURRENT contract witnesses them. Anything missing or
+contradictory is UNKNOWN_BLOCKED, and UNKNOWN_BLOCKED is never rewritten to
+ADMITTED.
 """
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass
 from typing import Any, Mapping
 
 from src.ops.h1_get_evidence_admission_v1.constants_v1 import (
-    ACCOUNT_ENDPOINTS,
+    ACCOUNT_FLAT_UNPROVEN,
     AUTHORITY_EFFECT,
+    ENDPOINT_ACCOUNT_CONFIG,
     ENDPOINT_ACCOUNT_POSITIONS,
     ENDPOINT_FILLS,
+    EXCHANGE_TRUTH_UNPROVEN,
     EXTERNAL_EFFECT_AUTHORIZED,
     FLAT_EMITTED,
     INSTRUMENT_SCOPED_ENDPOINTS,
+    PAGINATED_ENDPOINTS,
     INVENTORY_ATTESTED_ROWS,
     INVENTORY_ATTESTED_ZERO,
     INVENTORY_UNPROVEN,
+    PAGINATION_CHAIN_STATUSES,
+    PAGINATION_STATUS_CONTRADICTORY_PAGES,
+    PAGINATION_STATUS_PAGE_BUDGET_EXCEEDED,
+    PAGINATION_STATUS_REPEATED_CURSOR,
     POSITIVE_REASON_CODES,
     POST_ALLOWED,
     PRODUCTIVE_ACTIVATION,
@@ -35,11 +43,9 @@ from src.ops.h1_get_evidence_admission_v1.constants_v1 import (
     REASON_CAPTURED_AT_ABSENT,
     REASON_DIGEST_ABSENT,
     REASON_DIGEST_MISMATCH,
-    REASON_DUPLICATE_FILL_CONFLICT,
     REASON_DUPLICATE_RESPONSE,
     REASON_EMPTY_POSITIONS_WITHOUT_COMPLETENESS,
-    REASON_FILL_TIMESTAMP_MALFORMED,
-    REASON_FILL_TRADE_ID_ABSENT,
+    REASON_FRESHNESS_THRESHOLD_UNRATIFIED,
     REASON_FRESHNESS_WINDOW_ABSENT,
     REASON_INPUT_ABSENT,
     REASON_INPUT_MALFORMED,
@@ -47,19 +53,36 @@ from src.ops.h1_get_evidence_admission_v1.constants_v1 import (
     REASON_INSTRUMENT_MALFORMED,
     REASON_INSTRUMENT_MISMATCH,
     REASON_INSTRUMENT_PARAMETER_ABSENT,
-    REASON_LATE_FILL_OUTSIDE_WINDOW,
     REASON_MISSING_RESPONSE,
+    REASON_PAGINATION_CONTRADICTORY_PAGES,
+    REASON_PAGINATION_PAGE_BUDGET_EXCEEDED,
+    REASON_PAGINATION_REPEATED_CURSOR,
     REASON_PAGINATION_TERMINAL_ABSENT,
+    REASON_PAGINATION_TERMINAL_NOT_CONTRACT_WITNESS,
     REASON_PAGINATION_TERMINAL_SOURCE_ABSENT,
     REASON_RESPONSE_MALFORMED,
+    REASON_REST_WS_CONSISTENCY_UNPROVEN,
     REASON_STALE_EVIDENCE,
     REASON_TEMPORAL_INCONSISTENCY,
     REASON_VENUE_TIMESTAMP_ABSENT,
+    REASON_VENUE_TIMESTAMP_CONTRADICTION,
+    REASON_VENUE_TIMESTAMP_NOT_PAYLOAD_WITNESS,
     REQUIRED_ENDPOINTS,
+    REST_WS_CONSISTENCY_UNPROVEN,
     STATUS_ADMITTED,
     STATUS_UNKNOWN_BLOCKED,
     WRITER_HANDOFF,
     extract_identity_fields_from_payload_v1,
+)
+from src.ops.h1_get_evidence_admission_v1.provenance_v1 import (
+    account_wide_position_completeness_proven_v1,
+    bind_venue_and_capture_clocks_v1,
+    classify_fills_v1,
+    foreign_uid_reasons_v1,
+    observed_config_uid_v1,
+    pagination_contract_witness_v1,
+    payload_claims_private_ws_v1,
+    private_get_freshness_ratified_v1,
 )
 from src.ops.okx_eea_private_account_state_runtime_v1.state_contracts_v1 import body_digest
 
@@ -74,6 +97,7 @@ class CapturedGetResponseV1:
     venue_timestamp_ms: int | None
     pagination_terminal: bool | None
     pagination_terminal_source: str | None
+    pagination_chain_status: str | None
     admission_window_id: str | None
 
 
@@ -102,6 +126,10 @@ class AdmissionResultV1:
     external_effect_authorized: bool
     productive_completeness: bool
     productive_activation: bool
+    satisfied_proofs: tuple[str, ...]
+    account_flat: str
+    rest_ws_consistency: str
+    exchange_truth: str
 
 
 def _is_int(value: object) -> bool:
@@ -135,10 +163,6 @@ def _checked_params(params: object) -> tuple[dict[str, str] | None, bool]:
     return checked, False
 
 
-def _canonical_row(row: Mapping[str, Any]) -> str:
-    return json.dumps(dict(row), sort_keys=True, separators=(",", ":"), ensure_ascii=True)
-
-
 def _response_material(response: CapturedGetResponseV1) -> dict[str, Any]:
     params, malformed = _checked_params(response.request_params)
     payload_digest = None
@@ -149,6 +173,7 @@ def _response_material(response: CapturedGetResponseV1) -> dict[str, Any]:
         "body_digest": _json_scalar(response.body_digest),
         "captured_at_ms": _json_scalar(response.captured_at_ms),
         "endpoint": _json_scalar(response.endpoint),
+        "pagination_chain_status": _json_scalar(response.pagination_chain_status),
         "pagination_terminal": _json_scalar(response.pagination_terminal),
         "pagination_terminal_source": _json_scalar(response.pagination_terminal_source),
         "payload_digest": payload_digest,
@@ -163,6 +188,7 @@ def _admission_digest(
     reason_codes: tuple[str, ...],
     position_inventory: str,
     fill_fact_count: int,
+    satisfied_proofs: tuple[str, ...],
     parameters: AdmissionParametersV1 | None,
     responses: tuple[object, ...] | None,
 ) -> str:
@@ -185,7 +211,9 @@ def _admission_digest(
             "freshness_window_ms": _json_scalar(parameters.freshness_window_ms),
         }
     material = {
+        "account_flat": ACCOUNT_FLAT_UNPROVEN,
         "authority_effect": AUTHORITY_EFFECT,
+        "exchange_truth": EXCHANGE_TRUTH_UNPROVEN,
         "external_effect_authorized": EXTERNAL_EFFECT_AUTHORIZED,
         "fill_fact_count": fill_fact_count,
         "flat_emitted": FLAT_EMITTED,
@@ -196,6 +224,8 @@ def _admission_digest(
         "productive_completeness": PRODUCTIVE_COMPLETENESS,
         "reason_codes": list(reason_codes),
         "responses": response_material,
+        "rest_ws_consistency": REST_WS_CONSISTENCY_UNPROVEN,
+        "satisfied_proofs": list(satisfied_proofs),
         "status": status,
         "writer_handoff": WRITER_HANDOFF,
     }
@@ -208,9 +238,16 @@ def _finish(
     positions_empty: bool,
     positions_rows: bool,
     fill_fact_count: int,
+    satisfied_proofs: tuple[str, ...],
     parameters: AdmissionParametersV1 | None,
     responses: tuple[object, ...] | None,
 ) -> AdmissionResultV1:
+    account_wide = account_wide_position_completeness_proven_v1()
+    if not reasons and positions_empty and not account_wide:
+        reasons = {REASON_EMPTY_POSITIONS_WITHOUT_COMPLETENESS}
+        satisfied_proofs = tuple(
+            proof for proof in satisfied_proofs if proof != "PAGINATION_COMPLETENESS"
+        )
     if reasons:
         status = STATUS_UNKNOWN_BLOCKED
         reason_codes = tuple(sorted(reasons))
@@ -219,7 +256,7 @@ def _finish(
     else:
         status = STATUS_ADMITTED
         reason_codes = POSITIVE_REASON_CODES
-        if positions_empty:
+        if positions_empty and account_wide:
             inventory = INVENTORY_ATTESTED_ZERO
         elif positions_rows:
             inventory = INVENTORY_ATTESTED_ROWS
@@ -236,6 +273,7 @@ def _finish(
             reason_codes=reason_codes,
             position_inventory=inventory,
             fill_fact_count=admitted_fills,
+            satisfied_proofs=satisfied_proofs,
             parameters=parameters,
             responses=responses,
         ),
@@ -248,6 +286,10 @@ def _finish(
         external_effect_authorized=EXTERNAL_EFFECT_AUTHORIZED,
         productive_completeness=PRODUCTIVE_COMPLETENESS,
         productive_activation=PRODUCTIVE_ACTIVATION,
+        satisfied_proofs=satisfied_proofs,
+        account_flat=ACCOUNT_FLAT_UNPROVEN,
+        rest_ws_consistency=REST_WS_CONSISTENCY_UNPROVEN,
+        exchange_truth=EXCHANGE_TRUTH_UNPROVEN,
     )
 
 
@@ -277,30 +319,44 @@ def _account_identity(
     bound_account: str | None,
     reasons: set[str],
 ) -> None:
-    collected: list[str] = []
-    for endpoint in ACCOUNT_ENDPOINTS:
-        response = indexed.get(endpoint)
-        if response is None:
-            reasons.add(REASON_ACCOUNT_IDENTITY_ABSENT)
+    config = indexed.get(ENDPOINT_ACCOUNT_CONFIG)
+    config_uid: str | None = None
+    if config is None:
+        reasons.add(REASON_ACCOUNT_IDENTITY_ABSENT)
+    else:
+        config_uid, config_reasons = observed_config_uid_v1(config.payload)
+        reasons.update(config_reasons)
+        if bound_account is not None and config_uid is not None and bound_account != config_uid:
+            reasons.add(REASON_ACCOUNT_IDENTITY_MISMATCH)
+    for endpoint, response in indexed.items():
+        if endpoint == ENDPOINT_ACCOUNT_CONFIG:
             continue
-        payload = response.payload
-        if not isinstance(payload, Mapping):
-            reasons.add(REASON_RESPONSE_MALFORMED)
-            reasons.add(REASON_ACCOUNT_IDENTITY_ABSENT)
-            continue
-        uids, _inst_ids, _modes, malformed = extract_identity_fields_from_payload_v1(payload)
-        if malformed:
-            reasons.add(REASON_ACCOUNT_IDENTITY_MALFORMED)
-        data = payload.get("data")
-        if not isinstance(data, list):
-            reasons.add(REASON_RESPONSE_MALFORMED)
-            reasons.add(REASON_ACCOUNT_IDENTITY_ABSENT)
-            continue
-        if not uids:
-            reasons.add(REASON_ACCOUNT_IDENTITY_ABSENT)
-        collected.extend(uids)
-    if bound_account is not None and collected and set(collected) != {bound_account}:
-        reasons.add(REASON_ACCOUNT_IDENTITY_MISMATCH)
+        reasons.update(foreign_uid_reasons_v1(response.payload, config_uid))
+
+
+def _pagination_chain(response: CapturedGetResponseV1, reasons: set[str]) -> bool:
+    chain = response.pagination_chain_status
+    if chain is not None and chain not in PAGINATION_CHAIN_STATUSES:
+        reasons.add(REASON_RESPONSE_MALFORMED)
+    if chain == PAGINATION_STATUS_REPEATED_CURSOR:
+        reasons.add(REASON_PAGINATION_REPEATED_CURSOR)
+    elif chain == PAGINATION_STATUS_PAGE_BUDGET_EXCEEDED:
+        reasons.add(REASON_PAGINATION_PAGE_BUDGET_EXCEEDED)
+    elif chain == PAGINATION_STATUS_CONTRADICTORY_PAGES:
+        reasons.add(REASON_PAGINATION_CONTRADICTORY_PAGES)
+    witness = pagination_contract_witness_v1(
+        response.pagination_terminal,
+        response.pagination_terminal_source,
+    )
+    if witness:
+        return True
+    if response.pagination_terminal is True:
+        reasons.add(REASON_PAGINATION_TERMINAL_NOT_CONTRACT_WITNESS)
+        if _clean_text(response.pagination_terminal_source) is None:
+            reasons.add(REASON_PAGINATION_TERMINAL_SOURCE_ABSENT)
+    else:
+        reasons.add(REASON_PAGINATION_TERMINAL_ABSENT)
+    return False
 
 
 def _instrument_and_pagination(
@@ -323,10 +379,7 @@ def _instrument_and_pagination(
             reasons.add(REASON_INSTRUMENT_ABSENT)
         elif bound_instrument is not None and params["instId"] != bound_instrument:
             reasons.add(REASON_INSTRUMENT_MISMATCH)
-        if response.pagination_terminal is not True:
-            reasons.add(REASON_PAGINATION_TERMINAL_ABSENT)
-        elif _clean_text(response.pagination_terminal_source) is None:
-            reasons.add(REASON_PAGINATION_TERMINAL_SOURCE_ABSENT)
+        witness = _pagination_chain(response, reasons)
         payload = response.payload
         if not isinstance(payload, Mapping):
             reasons.add(REASON_RESPONSE_MALFORMED)
@@ -341,7 +394,7 @@ def _instrument_and_pagination(
         if endpoint == ENDPOINT_ACCOUNT_POSITIONS:
             positions_empty = data == []
             positions_rows = len(data) > 0
-            if data == [] and response.pagination_terminal is not True:
+            if data == [] and not witness:
                 reasons.add(REASON_EMPTY_POSITIONS_WITHOUT_COMPLETENESS)
         for row in data:
             if not isinstance(row, Mapping) or "instId" not in row:
@@ -360,24 +413,29 @@ def _freshness_and_time(
     parameters: AdmissionParametersV1,
     *,
     freshness_ok: bool,
+    freshness_ratified: bool,
     admission_time_ok: bool,
     bounds_ok: bool,
     window_id: str | None,
     reasons: set[str],
 ) -> None:
-    venue = response.venue_timestamp_ms
+    venue, venue_reasons = bind_venue_and_capture_clocks_v1(
+        response.payload,
+        response.venue_timestamp_ms,
+    )
+    reasons.update(venue_reasons)
     captured = response.captured_at_ms
-    if not _is_int(venue):
-        reasons.add(REASON_VENUE_TIMESTAMP_ABSENT)
     if not _is_int(captured):
         reasons.add(REASON_CAPTURED_AT_ABSENT)
-    if freshness_ok and admission_time_ok and _is_int(venue):
+    if payload_claims_private_ws_v1(response.payload):
+        reasons.add(REASON_REST_WS_CONSISTENCY_UNPROVEN)
+    if freshness_ratified and freshness_ok and admission_time_ok and venue is not None:
         if abs(venue - parameters.admission_time_ms) > parameters.freshness_window_ms:
             reasons.add(REASON_STALE_EVIDENCE)
-    if freshness_ok and admission_time_ok and _is_int(captured):
+    if freshness_ratified and freshness_ok and admission_time_ok and _is_int(captured):
         if abs(captured - parameters.admission_time_ms) > parameters.freshness_window_ms:
             reasons.add(REASON_STALE_EVIDENCE)
-    if bounds_ok and _is_int(venue):
+    if bounds_ok and venue is not None:
         if (
             venue < parameters.admission_window_start_ms
             or venue > parameters.admission_window_end_ms
@@ -410,52 +468,105 @@ def _fills(
     indexed: dict[str, CapturedGetResponseV1],
     parameters: AdmissionParametersV1,
     *,
-    freshness_ok: bool,
-    admission_time_ok: bool,
     bounds_ok: bool,
     reasons: set[str],
 ) -> int:
     response = indexed.get(ENDPOINT_FILLS)
     if response is None or not isinstance(response.payload, Mapping):
         return 0
-    data = response.payload.get("data")
-    if not isinstance(data, list):
-        return 0
-    unique: dict[str, str] = {}
-    for row in data:
-        if not isinstance(row, Mapping):
-            reasons.add(REASON_RESPONSE_MALFORMED)
-            continue
-        trade_id = row.get("tradeId")
-        if not isinstance(trade_id, str) or trade_id == "" or trade_id != trade_id.strip():
-            reasons.add(REASON_FILL_TRADE_ID_ABSENT)
-            continue
-        if "fillTime" in row:
-            fill_time = row.get("fillTime")
-            if not _is_int(fill_time):
-                reasons.add(REASON_FILL_TIMESTAMP_MALFORMED)
-            elif bounds_ok and (
-                fill_time < parameters.admission_window_start_ms
-                or fill_time > parameters.admission_window_end_ms
-            ):
-                reasons.add(REASON_LATE_FILL_OUTSIDE_WINDOW)
-            elif (
-                freshness_ok
-                and admission_time_ok
-                and abs(fill_time - parameters.admission_time_ms) > parameters.freshness_window_ms
-            ):
-                reasons.add(REASON_STALE_EVIDENCE)
-        try:
-            canonical = _canonical_row(row)
-        except TypeError:
-            reasons.add(REASON_RESPONSE_MALFORMED)
-            continue
-        previous = unique.get(trade_id)
-        if previous is None:
-            unique[trade_id] = canonical
-        elif previous != canonical:
-            reasons.add(REASON_DUPLICATE_FILL_CONFLICT)
-    return len(unique)
+    count, fill_reasons = classify_fills_v1(
+        response.payload.get("data"),
+        window_start_ms=parameters.admission_window_start_ms,
+        window_end_ms=parameters.admission_window_end_ms,
+        bounds_ok=bounds_ok,
+    )
+    reasons.update(fill_reasons)
+    return count
+
+
+_ACCOUNT_BLOCKS = frozenset(
+    {
+        REASON_ACCOUNT_IDENTITY_ABSENT,
+        REASON_ACCOUNT_IDENTITY_MALFORMED,
+        REASON_ACCOUNT_IDENTITY_MISMATCH,
+        REASON_ACCOUNT_PARAMETER_ABSENT,
+    }
+)
+_DIGEST_BLOCKS = frozenset({REASON_DIGEST_ABSENT, REASON_DIGEST_MISMATCH})
+_INSTRUMENT_BLOCKS = frozenset(
+    {
+        REASON_INSTRUMENT_ABSENT,
+        REASON_INSTRUMENT_MALFORMED,
+        REASON_INSTRUMENT_MISMATCH,
+        REASON_INSTRUMENT_PARAMETER_ABSENT,
+    }
+)
+_TEMPORAL_BLOCKS = frozenset(
+    {
+        REASON_ADMISSION_TIME_ABSENT,
+        REASON_ADMISSION_WINDOW_ABSENT,
+        REASON_CAPTURED_AT_ABSENT,
+        REASON_TEMPORAL_INCONSISTENCY,
+        REASON_VENUE_TIMESTAMP_ABSENT,
+        REASON_VENUE_TIMESTAMP_CONTRADICTION,
+        REASON_VENUE_TIMESTAMP_NOT_PAYLOAD_WITNESS,
+    }
+)
+_FRESHNESS_BLOCKS = frozenset(
+    {
+        REASON_FRESHNESS_THRESHOLD_UNRATIFIED,
+        REASON_FRESHNESS_WINDOW_ABSENT,
+        REASON_STALE_EVIDENCE,
+    }
+)
+_PAGINATION_BLOCKS = frozenset(
+    {
+        REASON_EMPTY_POSITIONS_WITHOUT_COMPLETENESS,
+        REASON_PAGINATION_CONTRADICTORY_PAGES,
+        REASON_PAGINATION_PAGE_BUDGET_EXCEEDED,
+        REASON_PAGINATION_REPEATED_CURSOR,
+        REASON_PAGINATION_TERMINAL_ABSENT,
+        REASON_PAGINATION_TERMINAL_NOT_CONTRACT_WITNESS,
+        REASON_PAGINATION_TERMINAL_SOURCE_ABSENT,
+    }
+)
+
+
+def _pagination_proven(indexed: dict[str, CapturedGetResponseV1]) -> bool:
+    for endpoint in PAGINATED_ENDPOINTS:
+        response = indexed.get(endpoint)
+        if response is None or not pagination_contract_witness_v1(
+            response.pagination_terminal,
+            response.pagination_terminal_source,
+        ):
+            return False
+    return True
+
+
+def _satisfied_proofs(
+    reasons: set[str],
+    *,
+    pagination_proven: bool,
+    freshness_ratified: bool,
+) -> tuple[str, ...]:
+    selected: set[str] = set()
+    if not (reasons & _ACCOUNT_BLOCKS):
+        selected.add("ACCOUNT_IDENTITY")
+    if (
+        REASON_MISSING_RESPONSE not in reasons
+        and REASON_RESPONSE_MALFORMED not in reasons
+        and not (reasons & _DIGEST_BLOCKS)
+    ):
+        selected.add("DIGEST_INTEGRITY")
+    if not (reasons & _INSTRUMENT_BLOCKS):
+        selected.add("INSTRUMENT_IDENTITY")
+    if freshness_ratified and not (reasons & _FRESHNESS_BLOCKS):
+        selected.add("FRESHNESS")
+    if pagination_proven and not (reasons & _PAGINATION_BLOCKS):
+        selected.add("PAGINATION_COMPLETENESS")
+    if not (reasons & _TEMPORAL_BLOCKS):
+        selected.add("TEMPORAL_CONSISTENCY")
+    return tuple(code for code in POSITIVE_REASON_CODES if code in selected)
 
 
 def validate_get_evidence_admission_v1(
@@ -471,6 +582,7 @@ def validate_get_evidence_admission_v1(
             positions_empty=False,
             positions_rows=False,
             fill_fact_count=0,
+            satisfied_proofs=(),
             parameters=parameters if isinstance(parameters, AdmissionParametersV1) else None,
             responses=responses if isinstance(responses, tuple) else None,
         )
@@ -481,6 +593,7 @@ def validate_get_evidence_admission_v1(
             positions_empty=False,
             positions_rows=False,
             fill_fact_count=0,
+            satisfied_proofs=(),
             parameters=parameters if isinstance(parameters, AdmissionParametersV1) else None,
             responses=responses if isinstance(responses, tuple) else None,
         )
@@ -494,6 +607,9 @@ def validate_get_evidence_admission_v1(
     freshness_ok = _is_int(parameters.freshness_window_ms) and parameters.freshness_window_ms > 0
     if not freshness_ok:
         reasons.add(REASON_FRESHNESS_WINDOW_ABSENT)
+    freshness_ratified = private_get_freshness_ratified_v1()
+    if not freshness_ratified:
+        reasons.add(REASON_FRESHNESS_THRESHOLD_UNRATIFIED)
     admission_time_ok = _is_int(parameters.admission_time_ms)
     if not admission_time_ok:
         reasons.add(REASON_ADMISSION_TIME_ABSENT)
@@ -517,6 +633,7 @@ def validate_get_evidence_admission_v1(
             response,
             parameters,
             freshness_ok=freshness_ok,
+            freshness_ratified=freshness_ratified,
             admission_time_ok=admission_time_ok,
             bounds_ok=bounds_ok,
             window_id=window_id,
@@ -526,8 +643,6 @@ def validate_get_evidence_admission_v1(
     fill_fact_count = _fills(
         indexed,
         parameters,
-        freshness_ok=freshness_ok,
-        admission_time_ok=admission_time_ok,
         bounds_ok=bounds_ok,
         reasons=reasons,
     )
@@ -536,6 +651,11 @@ def validate_get_evidence_admission_v1(
         positions_empty=positions_empty,
         positions_rows=positions_rows,
         fill_fact_count=fill_fact_count,
+        satisfied_proofs=_satisfied_proofs(
+            reasons,
+            pagination_proven=_pagination_proven(indexed),
+            freshness_ratified=freshness_ratified,
+        ),
         parameters=parameters,
         responses=responses,
     )
