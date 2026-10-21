@@ -116,7 +116,7 @@ STATUS=SCOPE_NARROWED_NOT_AUTO_RESOLVED
 OPEN_DEPENDENCY=Research-Zugehörigkeit
 ```
 
-S4: Research-Mitgliedschaft ohne Vertrag, Importisolation nicht belegt. S16: `src/knowledge` statisch isoliert, Mitgliedschaft bleibt `PROVISIONAL`. Die spätere Verengung löscht die Ursprungs-ID nicht.
+S4: Research-Mitgliedschaft ohne Vertrag, Importisolation nicht belegt. S16: `src/knowledge/` statisch isoliert, Mitgliedschaft bleibt `PROVISIONAL`. Die spätere Verengung löscht die Ursprungs-ID nicht.
 
 ### Research Corpus
 

@@ -93,7 +93,7 @@ Das Transkript liegt lokal vor. Es ist weder auf dem Discovery-Commit `20e271f3e
 | Im Abschluss genannter Name | Abschluss | Was der Abschluss dazu sagt | STATUS |
 |---|---|---|---|
 | `peak_trade_public_market_data_runtime_v1` | S19 | kein direkter Import des Master-V2-Cycle, der Provenance und des Reference-Producers | NAMED_IN_CLOSER |
-| `src/data`, `src/markets` | S19 | kein `reference_price`-Treffer. OF-S4-05 unverändert | NAMED_IN_CLOSER |
+| `src/data/`, `src/markets/` | S19 | kein `reference_price`-Treffer. OF-S4-05 unverändert | NAMED_IN_CLOSER |
 | `ops.governed_productive_reference_price_authority_producer_v1` | S19 | Reference-Price-Owner | NAMED_IN_CLOSER |
 | `produce_current_productive_reference_price_from_mv2_mark_v1` | S19 | löst einen gelieferten Mark auf | NAMED_IN_CLOSER |
 | `current_productive_canonical_price_provenance_v1` | S19 | anderes Modul als der Reference-Owner | NAMED_IN_CLOSER |

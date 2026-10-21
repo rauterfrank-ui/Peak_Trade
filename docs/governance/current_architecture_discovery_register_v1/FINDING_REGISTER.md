@@ -27,10 +27,10 @@ Nachbarregister: [Discovery-Index](DISCOVERY_INDEX.md), [Funktionsflächen](FUNC
 | OF-S4-02 | Landscape-Producer- und Consumer-Listen leer. PROVEN_CURRENT nicht übernommen. | S4-Abschluss | OPEN | Landscape-Listen |
 | OF-S4-03 | Equity-Paket mischt Truth, C08, Cap21–Cap24, Credentials und Send-Seam. Mitgliedschaft ungeschlossen. | S4-Ursprung. S9 bestätigt die Mischung. S17 lässt die Einzelrolle offen. | OPEN | Einzelrolle, [Owner-Referenzen](OWNER_DECISION_REFERENCES.md) |
 | OF-S4-04 | WP-A ist nicht der direkte Master-V2-Import. Preisherkunft und Reference-Price-Owner sind getrennt. | S4-Ursprung. S19/S20: Verengung, Ursprungssatz bleibt. | NARROWED | Formelblock darunter |
-| OF-S4-05 | `src/data` und `src/markets` waren Public Market Data nicht zugeordnet. | S4-Ursprung. S15: statisch unabhängig, Universum UNASSIGNED. | NARROWED | Universum UNASSIGNED |
+| OF-S4-05 | `src/data/` und `src/markets/` waren Public Market Data nicht zugeordnet. | S4-Ursprung. S15: statisch unabhängig, Universum UNASSIGNED. | NARROWED | Universum UNASSIGNED |
 | OF-S4-06 | Runbook-WebUI-Pfad auf dieser Baseline abwesend. | S4-Abschluss, danach nicht erneut gelesen | OPEN | Pfad |
 | OF-S4-07 | Rückkonsum der Presentation durch Decision-Owner nicht erschöpfend ausgeschlossen. | S4-Ursprung. S13/S14: acht Projektionen ohne produktiven Decision-Leser. Readmodel ist simulierte Identitätsmarke. Full-Core-Feedback NOT_PROVEN. | NARROWED | PRODUCTIVE_FULL_CORE_FEEDBACK=NOT_PROVEN |
-| OF-S4-08 | Research-Mitgliedschaft ohne Vertrag. S4: Importisolation nicht belegt. | S16: `src/knowledge` statisch isoliert, Mitgliedschaft PROVISIONAL. Nicht automatisch aufgelöst. | NARROWED | Zugehörigkeit |
+| OF-S4-08 | Research-Mitgliedschaft ohne Vertrag. S4: Importisolation nicht belegt. | S16: `src/knowledge/` statisch isoliert, Mitgliedschaft PROVISIONAL. Nicht automatisch aufgelöst. | NARROWED | Zugehörigkeit |
 | OF-S4-09 | GHV-Graphen vom 2026-10-16 nicht gegen den Pin geprüft. | S15/S16: Snapshot `cc0d6099` ist nicht der Pin und keine CURRENT-Autorität. | OPEN | Graph bleibt stale für diesen Pin |
 | OF-S4-10 | S1, S2, S3, S3B bleiben OPEN. Keine Reparatur. | S4-Abschluss | OPEN | S1, S2, S3, S3B |
 

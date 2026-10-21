@@ -56,7 +56,7 @@ Nachbarregister: [Discovery-Index](DISCOVERY_INDEX.md), [Finding-Register](FINDI
 | S1, S2 | Technische Außengrenze. | S1, S2, S7 | OPEN | NOT_PROVEN |
 | S3 | Aktivierung. | S3 | OPEN | GAP-18 |
 | S3B | Witness-Epoch und Bypass-Konstruktoren. | S3B, S8 | OPEN | Existenz der Konstruktoren bleibt |
-| S15 | Universum von `src/data` und `src/markets`. | S15 | UNASSIGNED | OF-S4-05 |
+| S15 | Universum von `src/data/` und `src/markets/`. | S15 | UNASSIGNED | OF-S4-05 |
 | S16 | Research-Zugehörigkeit. | S16 | PROVISIONAL | OF-S4-08 |
 | Guardian | Keine Zuordnung und keine Ratifikation. | dieser Entwurf | OPEN | separates Owner-GO, hier nicht erteilt |
 
