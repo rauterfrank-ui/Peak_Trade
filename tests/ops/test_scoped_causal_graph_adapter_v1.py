@@ -8,9 +8,16 @@ from typing import Any
 
 from scripts.ops.pin_scope_binding_v1.constants_v1 import (
     STATUS_ACCEPTED,
-    STATUS_INPUT_SOURCE_STALE,
+    STATUS_FORGED_PROVENANCE,
     STATUS_PIN_MISMATCH,
     STATUS_SCOPE_EMPTY,
+)
+from tests.ops.guardian_framework_fixtures_v1 import (
+    AUTHORIZED_COMMIT,
+    AUTHORIZED_TREE,
+    chain_scope,
+    honest_provenance,
+    scope_of,
 )
 from scripts.ops.scoped_causal_graph_adapter_v1.adapt_v1 import run_scoped_causal_graph_v1
 from scripts.ops.scoped_causal_graph_adapter_v1.constants_v1 import (
@@ -19,22 +26,15 @@ from scripts.ops.scoped_causal_graph_adapter_v1.constants_v1 import (
 )
 from scripts.ops.scoped_ghv_crosswalk_adapter_v1.adapt_v1 import run_scoped_ghv_v1
 
-CURRENT_COMMIT = "e1059ebea40399ca02ee1f303874f8e09b9d54b1"
-CURRENT_TREE = "fb5bea3e2760a25b47efe05038821e1d1180e1bb"
+CURRENT_COMMIT = AUTHORIZED_COMMIT
+CURRENT_TREE = AUTHORIZED_TREE
 CENSUS_LEGACY_PIN = "6216201d7acbc771f84b6b6884eccc41359927cf"
 LANDSCAPE_LEGACY_TREE = "6422bfde79fd5aa45d2939a821980abf9aa4e3df"
 GRAPH_LEGACY_PIN = "b6ffca1d3b39b3dd8814c7c795a8aa6e04bc177a"
 
 
 def _provenance(**overrides: str) -> dict[str, dict[str, str]]:
-    body = {
-        "census": {"pin": CURRENT_COMMIT},
-        "landscape": {"commit_pin": CURRENT_COMMIT, "tree_pin": CURRENT_TREE},
-        "graph": {"pin": CURRENT_COMMIT},
-    }
-    if "graph_pin" in overrides:
-        body["graph"]["pin"] = overrides["graph_pin"]
-    return body
+    return honest_provenance(**overrides)
 
 
 def _node(native_id: str) -> dict[str, str]:
@@ -81,11 +81,7 @@ def _wp_a1(**overrides: Any) -> dict[str, Any]:
         "declared_commit_sha": CURRENT_COMMIT,
         "declared_tree_sha": CURRENT_TREE,
         "provenance": _provenance(),
-        "scope": {
-            "allowed_nodes": ["node-a", "node-b", "node-c", "node-d"],
-            "exclusions": [],
-            "unassigned": [],
-        },
+        "scope": chain_scope(),
         "candidate_nodes": nodes,
         "candidate_edges": edges,
         "origin_native_id": "node-a",
@@ -115,11 +111,7 @@ def _run(tmp_path: Path, **overrides: Any) -> dict[str, Any]:
         "declared_commit_sha": CURRENT_COMMIT,
         "declared_tree_sha": CURRENT_TREE,
         "provenance": _provenance(),
-        "scope": {
-            "allowed_nodes": ["node-a", "node-b", "node-c", "node-d"],
-            "exclusions": [],
-            "unassigned": [],
-        },
+        "scope": chain_scope(),
         "wp_a1_result": result,
         "output_dir": tmp_path / "graph-out",
     }
@@ -174,19 +166,20 @@ def test_wrong_tree_does_not_integrate(tmp_path: Path) -> None:
     assert result["integrator_invoked"] is False
 
 
-def test_stale_graph_pin_does_not_integrate(tmp_path: Path) -> None:
+def test_forged_graph_pin_does_not_integrate(tmp_path: Path) -> None:
     result = _run(tmp_path, provenance=_provenance(graph_pin=GRAPH_LEGACY_PIN))
 
-    assert result["status"] == STATUS_INPUT_SOURCE_STALE
+    assert result["status"] == STATUS_FORGED_PROVENANCE
     assert result["integrator_invoked"] is False
     assert result["coverage_proof"] is False
 
 
 def test_empty_scope_does_not_integrate(tmp_path: Path) -> None:
+    empty = scope_of(members=[])
     result = _run(
         tmp_path,
-        scope={"allowed_nodes": [], "exclusions": [], "unassigned": []},
-        wp_a1_overrides={"scope": {"allowed_nodes": [], "exclusions": [], "unassigned": []}},
+        scope=empty,
+        wp_a1_overrides={"scope": empty},
     )
 
     assert result["status"] == STATUS_SCOPE_EMPTY
@@ -195,7 +188,7 @@ def test_empty_scope_does_not_integrate(tmp_path: Path) -> None:
 
 
 def test_exclusions_only_does_not_integrate_as_coverage(tmp_path: Path) -> None:
-    scope = {"allowed_nodes": [], "exclusions": ["node-x"], "unassigned": []}
+    scope = scope_of(members=[], excluded=["node-x"])
     result = _run(tmp_path, scope=scope, wp_a1_overrides={"scope": scope})
 
     assert result["status"] == STATUS_ACCEPTED
@@ -224,7 +217,7 @@ def test_missing_graph_evidence_is_a_graph_gap(tmp_path: Path) -> None:
 
 
 def test_unassigned_only_stays_unassigned(tmp_path: Path) -> None:
-    scope = {"allowed_nodes": [], "exclusions": [], "unassigned": ["node-a"]}
+    scope = scope_of(members=[], unresolved=["node-a"])
     result = _run(tmp_path, scope=scope, wp_a1_overrides={"scope": scope})
 
     assert result["status"] == STATUS_ACCEPTED
@@ -238,11 +231,7 @@ def test_unknown_and_excluded_nodes_are_omitted(tmp_path: Path) -> None:
     nodes, edges = _chain()
     nodes.extend([_node("node-x"), _node("node-y")])
     edges.append(_edge("e-ax", "node-a", "node-x"))
-    scope = {
-        "allowed_nodes": ["node-a", "node-b", "node-c", "node-d"],
-        "exclusions": ["node-x"],
-        "unassigned": [],
-    }
+    scope = scope_of(["node-a", "node-b", "node-c", "node-d"], excluded=["node-x"])
     result = _run(
         tmp_path,
         scope=scope,
@@ -311,16 +300,12 @@ def test_divergent_result_tree_is_pin_mismatch(tmp_path: Path) -> None:
 def test_scope_identity_conflict_does_not_integrate(tmp_path: Path) -> None:
     result = _run(
         tmp_path,
-        scope={
-            "allowed_nodes": ["node-a"],
-            "exclusions": [],
-            "unassigned": [],
-        },
+        scope=scope_of(["node-a"]),
     )
 
     assert result["status"] == "SCOPE_CONFLICT"
     assert result["integrator_invoked"] is False
-    assert "scope_identity_mismatch:allowed_nodes" in result["reasons"]
+    assert "scope_identity_mismatch:domain_functional_members" in result["reasons"]
     assert result["integrated_node_ids"] == []
     assert result["coverage_proof"] is False
 

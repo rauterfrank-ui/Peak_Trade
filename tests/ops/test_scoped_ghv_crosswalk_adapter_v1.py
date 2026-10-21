@@ -6,35 +6,32 @@ from typing import Any
 
 from scripts.ops.pin_scope_binding_v1.constants_v1 import (
     STATUS_ACCEPTED,
-    STATUS_INPUT_SOURCE_STALE,
+    STATUS_FORGED_PROVENANCE,
     STATUS_PIN_MISMATCH,
     STATUS_SCOPE_EMPTY,
 )
 from scripts.ops.scoped_ghv_crosswalk_adapter_v1.adapt_v1 import run_scoped_ghv_v1
+from tests.ops.guardian_framework_fixtures_v1 import (
+    AUTHORIZED_COMMIT,
+    AUTHORIZED_TREE,
+    CENSUS_EMBEDDED_PIN,
+    GRAPH_LEGACY_PIN,
+    LANDSCAPE_EMBEDDED_COMMIT,
+    LANDSCAPE_EMBEDDED_TREE,
+    chain_scope,
+    honest_provenance,
+    scope_of,
+)
 
-CURRENT_COMMIT = "e1059ebea40399ca02ee1f303874f8e09b9d54b1"
-CURRENT_TREE = "fb5bea3e2760a25b47efe05038821e1d1180e1bb"
-CENSUS_LEGACY_PIN = "6216201d7acbc771f84b6b6884eccc41359927cf"
-LANDSCAPE_LEGACY_COMMIT = "e5d9296fb269208b06980518d410b4f2b616bf5b"
-LANDSCAPE_LEGACY_TREE = "6422bfde79fd5aa45d2939a821980abf9aa4e3df"
-GRAPH_LEGACY_PIN = "b6ffca1d3b39b3dd8814c7c795a8aa6e04bc177a"
+CURRENT_COMMIT = AUTHORIZED_COMMIT
+CURRENT_TREE = AUTHORIZED_TREE
+CENSUS_LEGACY_PIN = CENSUS_EMBEDDED_PIN
+LANDSCAPE_LEGACY_COMMIT = LANDSCAPE_EMBEDDED_COMMIT
+LANDSCAPE_LEGACY_TREE = LANDSCAPE_EMBEDDED_TREE
 
 
 def _provenance(**overrides: str) -> dict[str, dict[str, str]]:
-    body = {
-        "census": {"pin": CURRENT_COMMIT},
-        "landscape": {"commit_pin": CURRENT_COMMIT, "tree_pin": CURRENT_TREE},
-        "graph": {"pin": CURRENT_COMMIT},
-    }
-    if "census_pin" in overrides:
-        body["census"]["pin"] = overrides["census_pin"]
-    if "landscape_commit" in overrides:
-        body["landscape"]["commit_pin"] = overrides["landscape_commit"]
-    if "landscape_tree" in overrides:
-        body["landscape"]["tree_pin"] = overrides["landscape_tree"]
-    if "graph_pin" in overrides:
-        body["graph"]["pin"] = overrides["graph_pin"]
-    return body
+    return honest_provenance(**overrides)
 
 
 def _node(native_id: str, *, epistemic: str = "PROVEN_CURRENT") -> dict[str, str]:
@@ -75,11 +72,7 @@ def _run(**overrides: Any) -> dict[str, Any]:
         "declared_commit_sha": CURRENT_COMMIT,
         "declared_tree_sha": CURRENT_TREE,
         "provenance": _provenance(),
-        "scope": {
-            "allowed_nodes": ["node-a", "node-b", "node-c", "node-d"],
-            "exclusions": [],
-            "unassigned": [],
-        },
+        "scope": chain_scope(),
         "candidate_nodes": nodes,
         "candidate_edges": edges,
         "origin_native_id": "node-a",
@@ -115,13 +108,9 @@ def test_valid_fixture_traverses_without_coverage_pass() -> None:
     assert result["coverage_gap"] is True
     assert result["result_pin"] == CURRENT_COMMIT
     assert result["result_tree"] == CURRENT_TREE
-    assert result["scope_identity"] == {
-        "allowed_nodes": ["node-a", "node-b", "node-c", "node-d"],
-        "exclusions": [],
-        "unassigned": [],
-    }
-    assert result["checked_provenance"]["census"]["pin"] == CURRENT_COMMIT
-    assert result["checked_provenance"]["landscape"]["tree_pin"] == CURRENT_TREE
+    assert result["scope_identity"] == chain_scope()
+    assert result["checked_provenance"]["census"]["pin"] == CENSUS_LEGACY_PIN
+    assert result["checked_provenance"]["landscape"]["tree_pin"] == LANDSCAPE_LEGACY_TREE
     assert result["coverage_gaps"]["coverage_gap"] is result["coverage_gap"]
     assert [edge["edge_id"] for edge in result["candidate_edges"]] == [
         "e-ab",
@@ -210,40 +199,33 @@ def test_authority_implied_edge_is_not_handed_off() -> None:
     assert result["coverage_proof"] is False
 
 
-def test_stale_census_does_not_compose() -> None:
-    result = _run(provenance=_provenance(census_pin=CENSUS_LEGACY_PIN))
+def test_forged_census_does_not_compose() -> None:
+    result = _run(provenance=_provenance(census_pin=CURRENT_COMMIT, census_currency="CURRENT"))
 
-    assert result["status"] == STATUS_INPUT_SOURCE_STALE
+    assert result["status"] == STATUS_FORGED_PROVENANCE
     assert result["composition_invoked"] is False
     assert result["coverage_proof"] is False
     assert result["evaluated_nodes"] == []
 
 
-def test_stale_landscape_does_not_compose() -> None:
-    result = _run(
-        provenance=_provenance(
-            landscape_commit=LANDSCAPE_LEGACY_COMMIT,
-            landscape_tree=LANDSCAPE_LEGACY_TREE,
-        )
-    )
+def test_forged_landscape_does_not_compose() -> None:
+    result = _run(provenance=_provenance(landscape_currency="CURRENT"))
 
-    assert result["status"] == STATUS_INPUT_SOURCE_STALE
+    assert result["status"] == STATUS_FORGED_PROVENANCE
     assert result["composition_invoked"] is False
     assert result["coverage_proof"] is False
 
 
-def test_stale_graph_does_not_compose() -> None:
+def test_forged_graph_does_not_compose() -> None:
     result = _run(provenance=_provenance(graph_pin=GRAPH_LEGACY_PIN))
 
-    assert result["status"] == STATUS_INPUT_SOURCE_STALE
+    assert result["status"] == STATUS_FORGED_PROVENANCE
     assert result["composition_invoked"] is False
     assert result["graph_materialized"] is False
 
 
 def test_empty_scope_does_not_compose() -> None:
-    result = _run(
-        scope={"allowed_nodes": [], "exclusions": [], "unassigned": []},
-    )
+    result = _run(scope=scope_of(members=[]))
 
     assert result["status"] == STATUS_SCOPE_EMPTY
     assert result["composition_invoked"] is False
@@ -252,7 +234,7 @@ def test_empty_scope_does_not_compose() -> None:
 
 
 def test_exclusions_only_does_not_compose_or_prove_coverage() -> None:
-    result = _run(scope={"allowed_nodes": [], "exclusions": ["node-x"], "unassigned": []})
+    result = _run(scope=scope_of(members=[], excluded=["node-x"]))
 
     assert result["status"] == STATUS_ACCEPTED
     assert result["composition_invoked"] is False
@@ -282,9 +264,7 @@ def test_unknown_node_remains_a_graph_gap() -> None:
 
 
 def test_unassigned_only_is_not_auto_assigned() -> None:
-    result = _run(
-        scope={"allowed_nodes": [], "exclusions": [], "unassigned": ["node-a"]},
-    )
+    result = _run(scope=scope_of(members=[], unresolved=["node-a"]))
 
     assert result["status"] == STATUS_ACCEPTED
     assert result["composition_invoked"] is False
@@ -300,11 +280,10 @@ def test_excluded_and_unknown_nodes_stay_outside_scope() -> None:
     result = _run(
         candidate_nodes=nodes,
         candidate_edges=edges,
-        scope={
-            "allowed_nodes": ["node-a", "node-b", "node-c", "node-d", "node-z"],
-            "exclusions": ["node-x"],
-            "unassigned": [],
-        },
+        scope=scope_of(
+            ["node-a", "node-b", "node-c", "node-d", "node-z"],
+            excluded=["node-x"],
+        ),
     )
 
     assert "node-x" in result["excluded_nodes"]
@@ -317,6 +296,24 @@ def test_excluded_and_unknown_nodes_stay_outside_scope() -> None:
     assert "node-z" not in result["evaluated_nodes"]
     assert result["coverage_proof"] is False
     assert result["coverage_gap"] is True
+
+
+def test_completed_traversal_does_not_prove_coverage_or_closure() -> None:
+    nodes, edges = _chain()
+    for node in nodes:
+        node["reachability"] = "EXISTS"
+    for edge in edges:
+        edge["typed_edge"] = _produces()
+    result = _run(candidate_nodes=nodes, candidate_edges=edges)
+
+    assert result["forward"]["traversal_completed"] is True
+    assert result["forward"]["additional_traversable_edge_found"] is True
+    assert result["forward"]["reachability_proven"] is True
+    assert result["forward"]["coverage_proven"] is False
+    assert result["forward"]["causal_closure_proven"] is False
+    assert result["forward"]["coverage_gap"] is False
+    assert result["coverage_proof"] is False
+    assert result["reverse"]["causal_closure_proven"] is False
 
 
 def test_invalid_pin_does_not_call_composer() -> None:

@@ -22,7 +22,11 @@ from scripts.ops.ghv_forensic_whole_system_crosswalk_v1.traversal_v1 import (
     traverse_forensic_graph_v1,
 )
 from scripts.ops.pin_scope_binding_v1.bind_v1 import bind_pin_and_scope_v1
-from scripts.ops.pin_scope_binding_v1.constants_v1 import STATUS_ACCEPTED
+from scripts.ops.pin_scope_binding_v1.constants_v1 import (
+    SCOPE_FIELDS,
+    STATUS_ACCEPTED,
+    STATUS_POLICY_CONFLICT,
+)
 from scripts.ops.scoped_ghv_crosswalk_adapter_v1.constants_v1 import (
     AUTHORITY,
     COVERAGE_PROOF,
@@ -58,6 +62,8 @@ def run_scoped_ghv_v1(
     origin_native_id: str | None = None,
     reverse_origin_native_id: str | None = None,
     max_depth: int = DEFAULT_MAX_DEPTH,
+    policies: list[Mapping[str, Any]] | None = None,
+    evidence_prelude: Mapping[str, Any] | None = None,
     composer: Composer | None = None,
 ) -> dict[str, Any]:
     """Gate pins and scope, then evaluate only the allowed candidate subset."""
@@ -70,7 +76,7 @@ def run_scoped_ghv_v1(
         scope=scope,
     )
     status = str(binding["status"])
-    allowed = list(binding["allowed_nodes"])
+    allowed = list(binding["in_scope_nodes"])
     if status != STATUS_ACCEPTED or not allowed:
         return _result(
             status=status,
@@ -88,6 +94,27 @@ def run_scoped_ghv_v1(
             coverage_gap=True,
             reasons=["max_depth_rejected"],
         )
+    prelude_reasons = _prelude_reasons(evidence_prelude, declared_commit_sha)
+    if prelude_reasons:
+        return _result(
+            status="FORGED_PROVENANCE",
+            binding=binding,
+            provenance=provenance,
+            composition_invoked=False,
+            coverage_gap=True,
+            reasons=prelude_reasons,
+        )
+    policy_conflict = _policy_conflict(policies)
+    if policy_conflict:
+        return _result(
+            status=STATUS_POLICY_CONFLICT,
+            binding=binding,
+            provenance=provenance,
+            composition_invoked=False,
+            coverage_gap=True,
+            observation_coverage_gap=True,
+            reasons=policy_conflict,
+        )
 
     checked_nodes = [_snapshot_record(node) for node in (candidate_nodes or [])]
     checked_edges = [_snapshot_record(edge) for edge in (candidate_edges or [])]
@@ -96,13 +123,14 @@ def run_scoped_ghv_v1(
         candidate_nodes=checked_nodes,
         candidate_edges=checked_edges,
         allowed_nodes=allowed,
-        exclusions=list(binding["exclusions"]),
-        unassigned=list(binding["unassigned"]),
+        exclusions=list(binding["explicitly_out_of_scope"]),
+        unassigned=list(binding["unresolved"]),
         evidence_revision=declared_commit_sha,
     )
     scope_coverage_gap = bool(binding.get("scope_coverage_gap"))
     graph_coverage_gap = _has_gap(composed)
-    observation_coverage_gap = False
+    observation_reasons = _observation_reasons(composed, policies)
+    observation_coverage_gap = bool(observation_reasons)
     forward = _walk(
         composed,
         origin_native_id,
@@ -146,6 +174,8 @@ def run_scoped_ghv_v1(
         graph_coverage_gap=graph_coverage_gap,
         observation_coverage_gap=observation_coverage_gap,
         composed=handoff,
+        reasons=observation_reasons,
+        evidence_prelude=evidence_prelude,
         checked_nodes=checked_nodes,
         checked_edges=checked_edges,
         forward=forward,
@@ -192,6 +222,9 @@ def compose_scoped_candidate_v1(
         if native_id not in allowed:
             unknown_nodes.append(native_id)
             continue
+        if obj.get("evidence_plane") == "DOMAIN_CODE_REFERENCE":
+            included.append(dict(obj))
+            continue
         if not verdict_includable_in_graph(verdict):
             filtered_non_current_nodes.append(native_id)
             continue
@@ -208,6 +241,9 @@ def compose_scoped_candidate_v1(
         if source not in included_ids or target not in included_ids:
             if edge_id:
                 dropped_edge_ids.append(edge_id)
+            continue
+        if edge.get("evidence_plane") == "DOMAIN_CODE_REFERENCE":
+            kept_edges.append(dict(edge))
             continue
         edge_verdict = classify_census_edge(
             edge,
@@ -289,6 +325,55 @@ def _traversal_edge(edge: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
+_PROVEN_REACHABILITY = frozenset({"EXISTS", "WIRED", "REACHABLE", "ACTIVE"})
+
+
+def _unproven_reachability_ids(
+    composed: Mapping[str, Any],
+    native_ids: list[str],
+) -> list[str]:
+    """UNKNOWN reachability is not causal closure, even when the walk finishes."""
+    by_id: dict[str, Mapping[str, Any]] = {}
+    for node in composed.get("census_objects") or []:
+        if isinstance(node, Mapping):
+            by_id[str(node.get("object_id") or "")] = node
+    unproven: list[str] = []
+    for native_id in native_ids:
+        node = by_id.get(native_id)
+        if node is None:
+            continue
+        reachability = node.get("reachability")
+        relevance = node.get("current_relevance")
+        relevance_state = (
+            relevance.get("CURRENT_RELEVANCE_STATE") if isinstance(relevance, Mapping) else None
+        )
+        domain = node.get("evidence_plane") == "DOMAIN_CODE_REFERENCE"
+        if reachability == "UNKNOWN" or relevance_state == "UNKNOWN":
+            unproven.append(native_id)
+            continue
+        if domain and reachability not in _PROVEN_REACHABILITY:
+            unproven.append(native_id)
+    return unproven
+
+
+def _traversal_view(
+    *,
+    completed: bool,
+    reachable: list[str],
+    unproven: list[str],
+) -> dict[str, Any]:
+    reachability_proven = completed and not unproven
+    return {
+        "traversal_completed": completed,
+        "additional_traversable_edge_found": bool(reachable),
+        "reachability_proven": reachability_proven,
+        "coverage_proven": False,
+        "causal_closure_proven": False,
+        "unproven_reachability": unproven,
+        "coverage_gap": (not completed) or bool(unproven),
+    }
+
+
 def _walk(
     composed: Mapping[str, Any],
     origin: str | None,
@@ -302,7 +387,7 @@ def _walk(
             "direction": direction,
             "max_depth": max_depth,
             "reachable": [],
-            "coverage_gap": True,
+            **_traversal_view(completed=False, reachable=[], unproven=[]),
         }
     walked = traverse_forensic_graph_v1(
         nodes=list(composed["traversal_nodes"]),
@@ -312,12 +397,15 @@ def _walk(
         causal_only=True,
         max_depth=max_depth,
     )
+    reachable = list(walked.reachable_native_ids)
+    completed = not walked.unknown_endpoints
+    unproven = _unproven_reachability_ids(composed, [origin, *reachable])
     return {
         "origin": origin,
         "direction": direction,
         "max_depth": max_depth,
-        "reachable": list(walked.reachable_native_ids),
-        "coverage_gap": bool(walked.unknown_endpoints),
+        "reachable": reachable,
+        **_traversal_view(completed=completed, reachable=reachable, unproven=unproven),
     }
 
 
@@ -332,7 +420,7 @@ def _impact(
             "seed": origin,
             "propagation_status": "NOT_RUN",
             "impacted_native_ids": [],
-            "coverage_gap": True,
+            **_traversal_view(completed=False, reachable=[], unproven=[]),
         }
     propagated = propagate_change_impact_v1(
         nodes=list(composed["traversal_nodes"]),
@@ -342,11 +430,16 @@ def _impact(
         causal_only=True,
         max_depth=max_depth,
     )
+    impacted = list(propagated.impacted_native_ids)
+    completed = propagated.propagation_status == "IMPACT_PROPAGATED"
+    others = [native_id for native_id in impacted if native_id != origin]
+    unproven = _unproven_reachability_ids(composed, [origin, *impacted])
+    view = _traversal_view(completed=completed, reachable=others, unproven=unproven)
     return {
         "seed": origin,
         "propagation_status": propagated.propagation_status,
-        "impacted_native_ids": list(propagated.impacted_native_ids),
-        "coverage_gap": propagated.propagation_status != "IMPACT_PROPAGATED",
+        "impacted_native_ids": impacted,
+        **view,
     }
 
 
@@ -387,11 +480,7 @@ def _checked_handoff(
         "result_tree": binding["declared_tree_sha"],
         "candidate_nodes": list(checked_nodes or []),
         "candidate_edges": list(checked_edges or []),
-        "scope_identity": {
-            "allowed_nodes": list(binding["allowed_nodes"]),
-            "exclusions": list(binding["exclusions"]),
-            "unassigned": list(binding["unassigned"]),
-        },
+        "scope_identity": {field: list(binding[field]) for field in SCOPE_FIELDS},
         "checked_provenance": _copy_provenance(provenance),
         "coverage_gaps": {
             "coverage_gap": coverage_gap,
@@ -407,6 +496,96 @@ def _checked_handoff(
             "edge_contract_rejections": list(composed.get("edge_contract_rejections") or []),
         },
     }
+
+
+def _copy_prelude(prelude: Mapping[str, Any] | None) -> dict[str, Any] | None:
+    if prelude is None:
+        return None
+    return json_copy(prelude)
+
+
+def json_copy(value: Mapping[str, Any]) -> dict[str, Any]:
+    copied: dict[str, Any] = {}
+    for key, item in value.items():
+        if isinstance(item, Mapping):
+            copied[str(key)] = json_copy(item)
+        elif isinstance(item, list):
+            copied[str(key)] = list(item)
+        else:
+            copied[str(key)] = item
+    return copied
+
+
+def _prelude_reasons(
+    prelude: Mapping[str, Any] | None,
+    declared_commit_sha: str,
+) -> list[str]:
+    if prelude is None:
+        return []
+    reasons: list[str] = []
+    if prelude.get("current_verified") is not False:
+        reasons.append("prelude_current_verified_forged")
+    if prelude.get("reachability") != "UNKNOWN":
+        reasons.append("prelude_reachability_not_unknown")
+    if prelude.get("declared_commit_sha") != declared_commit_sha:
+        reasons.append("prelude_pin_mismatch")
+    return reasons
+
+
+def _policy_conflict(policies: list[Mapping[str, Any]] | None) -> list[str]:
+    if policies is None:
+        return []
+    reasons: list[str] = []
+    if not policies:
+        return ["policies_empty"]
+    for index, policy in enumerate(policies):
+        label = f"policies[{index}]"
+        if not isinstance(policy, Mapping):
+            reasons.append(f"{label}_not_object")
+            continue
+        for field in (
+            "policy_id",
+            "subject_node",
+            "attribute",
+            "expected",
+            "observed",
+            "evidence_ref",
+        ):
+            if (
+                field not in policy
+                or not isinstance(policy[field], str)
+                or policy[field].strip() == ""
+            ):
+                reasons.append(f"{label}_missing:{field}")
+        if reasons:
+            continue
+        if policy["observed"] != policy["expected"]:
+            reasons.append(f"policy_conflict:{policy['policy_id']}:{policy['attribute']}")
+    return reasons
+
+
+def _observation_reasons(
+    composed: Mapping[str, Any],
+    policies: list[Mapping[str, Any]] | None,
+) -> list[str]:
+    reasons: list[str] = []
+    if policies is not None and not policies:
+        reasons.append("policies_empty")
+    for node in composed.get("census_objects") or []:
+        if not isinstance(node, Mapping):
+            continue
+        reachability = node.get("reachability")
+        native_id = str(node.get("object_id") or "")
+        if reachability == "UNKNOWN":
+            reasons.append(f"reachability_unknown:{native_id}")
+        elif node.get("evidence_plane") == "DOMAIN_CODE_REFERENCE" and reachability not in {
+            "EXISTS",
+            "WIRED",
+            "REACHABLE",
+            "ACTIVE",
+        }:
+            reasons.append(f"reachability_unknown:{native_id}")
+    return reasons
 
 
 def _has_gap(composed: Mapping[str, Any]) -> bool:
@@ -437,6 +616,7 @@ def _result(
     transitive: Mapping[str, Any] | None = None,
     impact: Mapping[str, Any] | None = None,
     reasons: list[str] | None = None,
+    evidence_prelude: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     body = composed or {}
     if scope_coverage_gap is None:
@@ -478,6 +658,7 @@ def _result(
         "reverse": dict(reverse or {}),
         "transitive": dict(transitive or {}),
         "impact": dict(impact or {}),
+        "evidence_prelude": _copy_prelude(evidence_prelude),
     }
     if status == STATUS_ACCEPTED and provenance is not None:
         result.update(

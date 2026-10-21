@@ -15,7 +15,10 @@ from scripts.ops.generic_ghosv_kernel_v1.constants_v1 import (
     EXECUTION_AUTHORITY,
     FINDING_CATEGORIES,
     FINDING_FIELDS,
+    FINDING_KINDS,
+    FINDING_OPTIONAL_FIELDS,
     FINDING_STATUSES,
+    REACHABILITY_STATES,
     GRAPH_ENGINE,
     GUARDIAN_IDENTITY,
     IMPLICIT_RELEASE,
@@ -40,6 +43,9 @@ from scripts.ops.pin_scope_binding_v1.constants_v1 import STATUS_ACCEPTED
 
 _KNOWN_CATEGORIES = frozenset(FINDING_CATEGORIES)
 _KNOWN_STATUSES = frozenset(FINDING_STATUSES)
+_KNOWN_KINDS = frozenset(FINDING_KINDS)
+_KNOWN_REACHABILITY = frozenset(REACHABILITY_STATES)
+_OPTIONAL_FIELDS = frozenset(FINDING_OPTIONAL_FIELDS)
 
 
 def run_generic_ghosv_v1(
@@ -132,7 +138,7 @@ def _parse_findings(
         if not isinstance(finding, Mapping):
             structural.append(f"{label}_not_object")
             continue
-        extra = sorted(set(finding) - set(FINDING_FIELDS))
+        extra = sorted(set(finding) - set(FINDING_FIELDS) - _OPTIONAL_FIELDS)
         structural.extend(f"{label}_extra:{field}" for field in extra)
         body, field_reasons = _finding_fields(finding, label)
         structural.extend(field_reasons)
@@ -145,6 +151,11 @@ def _parse_findings(
         if body["category"] not in _KNOWN_CATEGORIES or body["status"] not in _KNOWN_STATUSES:
             unknown_types.append(body["finding_id"])
             continue
+        optional_reason = _optional_reason(finding, body["finding_id"])
+        if optional_reason is not None:
+            unknown_types.append(body["finding_id"])
+            continue
+        body.update(_optional_values(finding))
         if body["evidence_ref"] not in evidence_set:
             missing_evidence.append(body["finding_id"])
             continue
@@ -163,6 +174,24 @@ def _parse_findings(
         )
     parsed.sort(key=lambda item: item["finding_id"])
     return parsed, None
+
+
+def _optional_reason(finding: Mapping[str, Any], finding_id: str) -> str | None:
+    kind = finding.get("finding_kind")
+    if kind is not None and kind not in _KNOWN_KINDS:
+        return finding_id
+    reachability = finding.get("reachability")
+    if reachability is not None and reachability not in _KNOWN_REACHABILITY:
+        return finding_id
+    return None
+
+
+def _optional_values(finding: Mapping[str, Any]) -> dict[str, str]:
+    values: dict[str, str] = {}
+    for field in FINDING_OPTIONAL_FIELDS:
+        if field in finding and isinstance(finding[field], str):
+            values[field] = finding[field]
+    return values
 
 
 def _finding_fields(
@@ -189,18 +218,24 @@ def _scope_failure(
     findings: list[dict[str, str]],
     binding: Mapping[str, Any],
 ) -> tuple[str, list[str]] | None:
-    allowed = set(binding["allowed_nodes"])
-    excluded = set(binding["exclusions"])
-    unassigned = set(binding["unassigned"])
+    allowed = set(binding["domain_functional_members"]) | set(
+        binding["external_interfaces_under_observation"]
+    )
+    excluded = set(binding["explicitly_out_of_scope"])
+    unassigned = set(binding["unresolved"])
+    references = set(binding["external_references_only"])
     conflicts: list[str] = []
     unknown_nodes: list[str] = []
     for finding in findings:
         node = finding["affected_scope"]
         finding_status = finding["status"]
+        if node in references and finding_status == OBSERVED_STATUS:
+            conflicts.append(f"reference_not_member:{finding['finding_id']}:{node}")
+            continue
         if node in excluded or (node in unassigned and finding_status != UNASSIGNED_STATUS):
             conflicts.append(f"scope_conflict:{finding['finding_id']}:{node}")
             continue
-        if node not in allowed and node not in unassigned:
+        if node not in allowed and node not in unassigned and node not in references:
             unknown_nodes.append(f"unknown_scope:{finding['finding_id']}:{node}")
     if conflicts:
         return "SCOPE_CONFLICT", conflicts
@@ -215,7 +250,9 @@ def _accepted(
     provenance: Mapping[str, Any],
     findings: list[dict[str, str]],
 ) -> dict[str, Any]:
-    allowed = list(binding["allowed_nodes"])
+    allowed = list(binding["domain_functional_members"]) + list(
+        binding["external_interfaces_under_observation"]
+    )
     observed_nodes = {
         finding["affected_scope"]
         for finding in findings
@@ -234,17 +271,22 @@ def _accepted(
             uncertainties.append(
                 f"unassigned_status:{finding['finding_id']}:{finding['affected_scope']}"
             )
+        if finding.get("reachability") == "UNKNOWN":
+            coverage_gaps.append(_gap("REACHABILITY_UNKNOWN", finding))
+            uncertainties.append(
+                f"reachability_unknown:{finding['finding_id']}:{finding['affected_scope']}"
+            )
     for node in allowed:
         if node not in observed_nodes:
             coverage_gaps.append({"kind": "ALLOWED_WITHOUT_FINDING", "affected_scope": node})
             uncertainties.append(f"allowed_without_finding:{node}")
     observation_coverage_gap = bool(coverage_gaps)
     scope_coverage_gap = bool(binding.get("scope_coverage_gap"))
-    for node in list(binding.get("unassigned") or []):
-        coverage_gaps.append({"kind": "UNASSIGNED_SCOPE", "affected_scope": str(node)})
+    for node in list(binding.get("unresolved") or []):
+        coverage_gaps.append({"kind": "UNRESOLVED_SCOPE", "affected_scope": str(node)})
         uncertainties.append(f"unassigned_scope:{node}")
-    if scope_coverage_gap and not allowed:
-        for node in list(binding.get("exclusions") or []):
+    if scope_coverage_gap and not binding["domain_functional_members"]:
+        for node in list(binding.get("explicitly_out_of_scope") or []):
             coverage_gaps.append({"kind": "EXCLUSION_NOT_COVERAGE", "affected_scope": str(node)})
             uncertainties.append(f"exclusion_not_coverage:{node}")
     coverage_gaps.sort(
@@ -260,6 +302,7 @@ def _accepted(
             "affected_scope": finding["affected_scope"],
             "status": finding["status"],
             "counts_as_proof": False,
+            **{key: finding[key] for key in FINDING_OPTIONAL_FIELDS if key in finding},
         }
         for finding in findings
     ]

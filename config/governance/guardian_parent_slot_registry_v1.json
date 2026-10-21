@@ -1,0 +1,236 @@
+{
+  "schema_id": "GUARDIAN_PARENT_SLOT_REGISTRY_V1",
+  "schema_version": 1,
+  "authority": "NONE",
+  "gcc": {
+    "role": "COORDINATION_ONLY",
+    "guardian": false,
+    "parent_count": 0
+  },
+  "slots": [
+    {
+      "parent_id": "PARENT_MASTER_V2",
+      "label": "Master V2 including Double Play",
+      "ghv_id": "PARENT_MASTER_V2_GHV",
+      "causal_graph_id": "PARENT_MASTER_V2_CURRENT_CAUSAL_GRAPH",
+      "ghosv_id": "PARENT_MASTER_V2_GHOSV",
+      "authority": "NONE",
+      "activation": "DISABLED",
+      "guardian_ratified": false,
+      "membership_ratified": false,
+      "runtime_connection": false,
+      "calibration_status": "UNCALIBRATED",
+      "scope": {
+        "domain_functional_members": [],
+        "external_interfaces_under_observation": [],
+        "external_references_only": [],
+        "explicitly_out_of_scope": [],
+        "unresolved": []
+      }
+    },
+    {
+      "parent_id": "PARENT_EXECUTION",
+      "label": "Execution",
+      "ghv_id": "PARENT_EXECUTION_GHV",
+      "causal_graph_id": "PARENT_EXECUTION_CURRENT_CAUSAL_GRAPH",
+      "ghosv_id": "PARENT_EXECUTION_GHOSV",
+      "authority": "NONE",
+      "activation": "DISABLED",
+      "guardian_ratified": false,
+      "membership_ratified": false,
+      "runtime_connection": false,
+      "calibration_status": "UNCALIBRATED",
+      "scope": {
+        "domain_functional_members": [],
+        "external_interfaces_under_observation": [],
+        "external_references_only": [],
+        "explicitly_out_of_scope": [],
+        "unresolved": []
+      }
+    },
+    {
+      "parent_id": "PARENT_SELF_LEARNING",
+      "label": "Self-Learning",
+      "ghv_id": "PARENT_SELF_LEARNING_GHV",
+      "causal_graph_id": "PARENT_SELF_LEARNING_CURRENT_CAUSAL_GRAPH",
+      "ghosv_id": "PARENT_SELF_LEARNING_GHOSV",
+      "authority": "NONE",
+      "activation": "DISABLED",
+      "guardian_ratified": false,
+      "membership_ratified": false,
+      "runtime_connection": false,
+      "calibration_status": "UNCALIBRATED",
+      "scope": {
+        "domain_functional_members": [],
+        "external_interfaces_under_observation": [],
+        "external_references_only": [],
+        "explicitly_out_of_scope": [],
+        "unresolved": []
+      }
+    },
+    {
+      "parent_id": "PARENT_OPTIMIZATION",
+      "label": "Optimization",
+      "ghv_id": "PARENT_OPTIMIZATION_GHV",
+      "causal_graph_id": "PARENT_OPTIMIZATION_CURRENT_CAUSAL_GRAPH",
+      "ghosv_id": "PARENT_OPTIMIZATION_GHOSV",
+      "authority": "NONE",
+      "activation": "DISABLED",
+      "guardian_ratified": false,
+      "membership_ratified": false,
+      "runtime_connection": false,
+      "calibration_status": "PROVISIONAL_BOUND",
+      "scope": {
+        "domain_functional_members": [
+          "peak_trade.canonical_optimization_universe.v1",
+          "peak_trade.canonical_optimization_universe_learning_input.v1",
+          "peak_trade.canonical_optimization_universe_experiment_plane.v1",
+          "peak_trade.governance.optimization_proposal_ingress.v1"
+        ],
+        "external_interfaces_under_observation": [
+          "VOLATILITY_NUMERIC_MAX_AGE_RESEARCH_OPTIMIZATION_V1",
+          "RESEARCH_BACKTEST_COST_GRID_FEE_SLIPPAGE_OPTIMIZATION_V1",
+          "F5_FRESH_FUTURES_INPUT_FRESHNESS_MAX_AGE_SHADOW_RESEARCH_V1"
+        ],
+        "external_references_only": [
+          "peak_trade.governance.productive_target.m9_volatility_numeric_max_age_seconds/v1",
+          "optimization_provenance_eligibility_v1",
+          "full_core_learning_input_ack_reference",
+          "canonical_advanced_search_v1",
+          "canonical_champion_challenger_v1",
+          "canonical_comparison_ssot_v1",
+          "canonical_experiment_identity_v1",
+          "canonical_experiment_memory_v1",
+          "canonical_robustness_suite_v1",
+          "peak_trade.canonical_optimizable_envelope.v1"
+        ],
+        "explicitly_out_of_scope": [
+          "f1_m9_threshold_enforcement_to_trading_order_effect_closure_v1"
+        ],
+        "unresolved": [
+          "canonical_optimization_experiment_evidence_v1"
+        ]
+      }
+    },
+    {
+      "parent_id": "PARENT_MARKET_INTELLIGENCE",
+      "label": "Market Intelligence",
+      "ghv_id": "PARENT_MARKET_INTELLIGENCE_GHV",
+      "causal_graph_id": "PARENT_MARKET_INTELLIGENCE_CURRENT_CAUSAL_GRAPH",
+      "ghosv_id": "PARENT_MARKET_INTELLIGENCE_GHOSV",
+      "authority": "NONE",
+      "activation": "DISABLED",
+      "guardian_ratified": false,
+      "membership_ratified": false,
+      "runtime_connection": false,
+      "calibration_status": "UNCALIBRATED",
+      "scope": {
+        "domain_functional_members": [],
+        "external_interfaces_under_observation": [],
+        "external_references_only": [],
+        "explicitly_out_of_scope": [],
+        "unresolved": []
+      }
+    },
+    {
+      "parent_id": "PARENT_SELECTION",
+      "label": "Selection",
+      "ghv_id": "PARENT_SELECTION_GHV",
+      "causal_graph_id": "PARENT_SELECTION_CURRENT_CAUSAL_GRAPH",
+      "ghosv_id": "PARENT_SELECTION_GHOSV",
+      "authority": "NONE",
+      "activation": "DISABLED",
+      "guardian_ratified": false,
+      "membership_ratified": false,
+      "runtime_connection": false,
+      "calibration_status": "UNCALIBRATED",
+      "scope": {
+        "domain_functional_members": [],
+        "external_interfaces_under_observation": [],
+        "external_references_only": [],
+        "explicitly_out_of_scope": [],
+        "unresolved": []
+      }
+    },
+    {
+      "parent_id": "PARENT_MARKET_OBSERVATION",
+      "label": "Market Observation",
+      "ghv_id": "PARENT_MARKET_OBSERVATION_GHV",
+      "causal_graph_id": "PARENT_MARKET_OBSERVATION_CURRENT_CAUSAL_GRAPH",
+      "ghosv_id": "PARENT_MARKET_OBSERVATION_GHOSV",
+      "authority": "NONE",
+      "activation": "DISABLED",
+      "guardian_ratified": false,
+      "membership_ratified": false,
+      "runtime_connection": false,
+      "calibration_status": "UNCALIBRATED",
+      "scope": {
+        "domain_functional_members": [],
+        "external_interfaces_under_observation": [],
+        "external_references_only": [],
+        "explicitly_out_of_scope": [],
+        "unresolved": []
+      }
+    },
+    {
+      "parent_id": "PARENT_CAPITAL",
+      "label": "Capital",
+      "ghv_id": "PARENT_CAPITAL_GHV",
+      "causal_graph_id": "PARENT_CAPITAL_CURRENT_CAUSAL_GRAPH",
+      "ghosv_id": "PARENT_CAPITAL_GHOSV",
+      "authority": "NONE",
+      "activation": "DISABLED",
+      "guardian_ratified": false,
+      "membership_ratified": false,
+      "runtime_connection": false,
+      "calibration_status": "UNCALIBRATED",
+      "scope": {
+        "domain_functional_members": [],
+        "external_interfaces_under_observation": [],
+        "external_references_only": [],
+        "explicitly_out_of_scope": [],
+        "unresolved": []
+      }
+    },
+    {
+      "parent_id": "PARENT_SAFETY",
+      "label": "Safety",
+      "ghv_id": "PARENT_SAFETY_GHV",
+      "causal_graph_id": "PARENT_SAFETY_CURRENT_CAUSAL_GRAPH",
+      "ghosv_id": "PARENT_SAFETY_GHOSV",
+      "authority": "NONE",
+      "activation": "DISABLED",
+      "guardian_ratified": false,
+      "membership_ratified": false,
+      "runtime_connection": false,
+      "calibration_status": "UNCALIBRATED",
+      "scope": {
+        "domain_functional_members": [],
+        "external_interfaces_under_observation": [],
+        "external_references_only": [],
+        "explicitly_out_of_scope": [],
+        "unresolved": []
+      }
+    },
+    {
+      "parent_id": "PARENT_ORCHESTRATION",
+      "label": "Orchestration / Full-Core",
+      "ghv_id": "PARENT_ORCHESTRATION_GHV",
+      "causal_graph_id": "PARENT_ORCHESTRATION_CURRENT_CAUSAL_GRAPH",
+      "ghosv_id": "PARENT_ORCHESTRATION_GHOSV",
+      "authority": "NONE",
+      "activation": "DISABLED",
+      "guardian_ratified": false,
+      "membership_ratified": false,
+      "runtime_connection": false,
+      "calibration_status": "UNCALIBRATED",
+      "scope": {
+        "domain_functional_members": [],
+        "external_interfaces_under_observation": [],
+        "external_references_only": [],
+        "explicitly_out_of_scope": [],
+        "unresolved": []
+      }
+    }
+  ]
+}
