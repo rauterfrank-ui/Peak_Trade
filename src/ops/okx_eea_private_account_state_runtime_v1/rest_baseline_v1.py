@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 from dataclasses import dataclass, field
 from typing import Any, Callable, Mapping
 
@@ -269,3 +270,96 @@ def collect_rest_baseline_v1(
 
 def cached_state_may_not_substitute_fresh_pretrade_get_v1(path: str) -> bool:
     return path in FRESH_PRETRADE_ONLY_GET_PATHS
+
+
+@dataclass(frozen=True)
+class AdmissionRawCaptureV1:
+    """One observed GET body. Pagination terminal stays unset here."""
+
+    endpoint: str
+    request_params: Mapping[str, str]
+    payload: Mapping[str, Any]
+    body_digest: str
+    captured_at_ms: int | None
+    page_row_count: int | None = None
+    request_limit: int | None = None
+    observed_cursor: str | None = None
+    next_cursor: str | None = None
+
+
+def explicit_captured_at_ms_v1(value: object) -> int | None:
+    if isinstance(value, int) and not isinstance(value, bool):
+        return value
+    return None
+
+
+def _string_params(params: Mapping[str, str]) -> dict[str, str]:
+    checked: dict[str, str] = {}
+    for key, raw in params.items():
+        if not isinstance(key, str) or not isinstance(raw, str):
+            raise PrivateRestBaselineError("ADMISSION_CAPTURE_PARAMS_MALFORMED")
+        checked[key] = raw
+    return checked
+
+
+def admission_capture_record_v1(
+    path: str,
+    params: Mapping[str, str],
+    payload: Mapping[str, Any],
+    *,
+    captured_at_ms: int | None,
+) -> AdmissionRawCaptureV1:
+    frozen_params = _string_params(params)
+    frozen_payload = copy.deepcopy(dict(payload))
+    data = frozen_payload.get("data")
+    row_count = len(data) if isinstance(data, list) else None
+    limit_text = frozen_params.get("limit")
+    request_limit = (
+        int(limit_text) if isinstance(limit_text, str) and limit_text.isdigit() else None
+    )
+    cursor = frozen_params.get("after")
+    observed = cursor if isinstance(cursor, str) and cursor != "" else None
+    return AdmissionRawCaptureV1(
+        endpoint=path,
+        request_params=frozen_params,
+        payload=frozen_payload,
+        body_digest=body_digest(frozen_payload),
+        captured_at_ms=captured_at_ms,
+        page_row_count=row_count,
+        request_limit=request_limit,
+        observed_cursor=observed,
+        next_cursor=None,
+    )
+
+
+def collect_optional_admission_capture_v1(
+    fetch_json: RestGetJson,
+    *,
+    inst_id: str,
+    inst_type: str,
+    captured_at_ms: object = None,
+) -> tuple[AdmissionRawCaptureV1, ...]:
+    """Retain the six baseline GET bodies. Not called by the runtime orchestrator.
+
+    ``captured_at_ms`` is stored only when the caller passes an int. No clock is read.
+    """
+    explicit_ms = explicit_captured_at_ms_v1(captured_at_ms)
+    queries: tuple[tuple[str, dict[str, str]], ...] = (
+        ("/api/v5/account/config", {}),
+        ("/api/v5/account/balance", {}),
+        ("/api/v5/account/positions", {"instType": inst_type, "instId": inst_id}),
+        ("/api/v5/trade/orders-pending", {"instType": inst_type, "instId": inst_id}),
+        ("/api/v5/trade/orders-history", {"instType": inst_type, "instId": inst_id}),
+        ("/api/v5/trade/fills", {"instType": inst_type, "instId": inst_id}),
+    )
+    records: list[AdmissionRawCaptureV1] = []
+    for path, params in queries:
+        assert_get_path_allowlisted_v1(path)
+        assert_no_rest_post_v1("GET")
+        payload = fetch_json(path, dict(params))
+        if not isinstance(payload, Mapping):
+            raise PrivateRestBaselineError("ADMISSION_CAPTURE_PAYLOAD_MALFORMED")
+        records.append(
+            admission_capture_record_v1(path, params, payload, captured_at_ms=explicit_ms)
+        )
+    return tuple(records)

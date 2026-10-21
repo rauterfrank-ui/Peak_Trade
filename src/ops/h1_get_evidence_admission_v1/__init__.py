@@ -1,5 +1,9 @@
 """Offline GET-evidence admission. AUTHORITY_EFFECT=NONE."""
 
+from src.ops.h1_get_evidence_admission_v1.bundle_v1 import (
+    PAGINATION_TERMINAL_UNPROVEN,
+    admit_offline_get_evidence_v1,
+)
 from src.ops.h1_get_evidence_admission_v1.constants_v1 import (
     AUTHORITY_EFFECT,
     EXTERNAL_EFFECT_AUTHORIZED,
@@ -22,8 +26,10 @@ __all__ = [
     "CapturedGetResponseV1",
     "EXTERNAL_EFFECT_AUTHORIZED",
     "PACKAGE_ID",
+    "PAGINATION_TERMINAL_UNPROVEN",
     "POST_ALLOWED",
     "PRODUCTIVE_ACTIVATION",
     "WRITER_HANDOFF",
+    "admit_offline_get_evidence_v1",
     "validate_get_evidence_admission_v1",
 ]
