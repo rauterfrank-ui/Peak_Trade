@@ -8,8 +8,6 @@ from scripts.ops.execution_parent_disclosure_v1.constants_v1 import (
     ACTIVATION,
     AUTHORITY,
     DOUBLE_PLAY_FULL_OWNER_LOCK,
-    EXPECTED_BASELINE_SHA,
-    EXPECTED_BASELINE_TREE,
 )
 from scripts.ops.execution_parent_instruments_v1.inventory_v1 import (
     DIRECT_DEPTH,
@@ -30,13 +28,13 @@ def run_execution_graph_memory_v1(*, ghv: Mapping[str, Any]) -> dict[str, Any]:
         "evaluated_edges": list(ghv.get("evaluated_edges") or []),
         "candidate_nodes": list(ghv.get("candidate_nodes") or []),
         "candidate_edges": list(ghv.get("candidate_edges") or []),
-        "result_pin": EXPECTED_BASELINE_SHA,
+        "result_pin": str(ghv.get("baseline_commit") or ""),
         "coverage_gap": bool(ghv.get("coverage_gap")),
     }
     projected, reason = _project_wp1(
         wp_a1_result=handoff,
-        declared_commit_sha=EXPECTED_BASELINE_SHA,
-        declared_tree_sha=EXPECTED_BASELINE_TREE,
+        declared_commit_sha=str(ghv.get("baseline_commit") or ""),
+        declared_tree_sha=str(ghv.get("baseline_tree") or ""),
     )
     if projected is None:
         return _envelope("NOT_PROJECTED", projected=False, reasons=[reason or "projection_failed"])
@@ -64,7 +62,8 @@ def run_execution_graph_memory_v1(*, ghv: Mapping[str, Any]) -> dict[str, Any]:
         reverse=reverse,
         transitive=transitive,
         unknown_edges=unknown_edges,
-        coverage_gap=True,
+        coverage_gap=bool(ghv.get("coverage_gap")),
+        coverage_status="PARTIAL" if ghv.get("coverage_gap") else "COMPLETE",
         current_verified=bool(projected["current_verified"]),
         reasons=[],
     )

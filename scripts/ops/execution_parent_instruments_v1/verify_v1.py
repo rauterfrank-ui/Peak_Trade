@@ -9,16 +9,10 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-from scripts.ops.execution_parent_disclosure_v1.constants_v1 import (
-    EXPECTED_BASELINE_SHA,
-    EXPECTED_BASELINE_TREE,
-)
 from scripts.ops.execution_parent_instruments_v1.inventory_v1 import (
     CALL_EDGES,
     OBSERVED_SUBJECTS,
-    PIN,
-    TREE,
-    UNKNOWN_EDGE,
+    UNKNOWN_EDGES,
     UNKNOWN_SUBJECT,
 )
 from scripts.ops.pin_scope_binding_v1.constants_v1 import (
@@ -35,7 +29,12 @@ from scripts.ops.pin_scope_binding_v1.constants_v1 import (
 _REPO_ROOT = Path(__file__).resolve().parents[3]
 
 
-def execution_provenance_v1(repo_root: Path | None = None) -> dict[str, Any]:
+def execution_provenance_v1(
+    *,
+    commit_sha: str,
+    tree_sha: str,
+    repo_root: Path | None = None,
+) -> dict[str, Any]:
     """Label embedded census and landscape pins as historical."""
     root = _REPO_ROOT if repo_root is None else repo_root
     census = json.loads((root / CENSUS_RELATIVE_PATH).read_text(encoding="utf-8"))
@@ -52,33 +51,37 @@ def execution_provenance_v1(repo_root: Path | None = None) -> dict[str, Any]:
         },
         "graph": {"pin": GRAPH_ABSENT_PIN, "currency": CURRENCY_ABSENT},
         "domain_evidence": {
-            "commit_pin": EXPECTED_BASELINE_SHA,
-            "tree_pin": EXPECTED_BASELINE_TREE,
+            "commit_pin": commit_sha,
+            "tree_pin": tree_sha,
         },
     }
 
 
 def load_verified_inventory_v1(
     repo_root: Path | None = None,
+    *,
+    commit_sha: str,
+    tree_sha: str,
 ) -> tuple[dict[str, Any] | None, str | None]:
     """Return admission subjects and evidenced edges, or one failure reason."""
-    if PIN != EXPECTED_BASELINE_SHA or TREE != EXPECTED_BASELINE_TREE:
-        return None, "inventory_pin_mismatch"
     root = _REPO_ROOT if repo_root is None else repo_root
-    blob = _git_show(root, f"{TREE}:{OBSERVED_SUBJECTS[0]['path']}")
-    if blob is None:
-        return None, "inventory_blob_unreadable"
-    lines = blob.splitlines()
+    blobs: dict[str, list[str]] = {}
     subjects: list[dict[str, Any]] = []
     by_id: dict[str, dict[str, Any]] = {}
     for record in OBSERVED_SUBJECTS:
-        reason = _subject_reason(lines, record)
+        path = str(record["path"])
+        if path not in blobs:
+            blob = _git_show(root, f"{tree_sha}:{path}")
+            if blob is None:
+                return None, "inventory_blob_unreadable"
+            blobs[path] = blob.splitlines()
+        reason = _subject_reason(blobs[path], record)
         if reason is not None:
             return None, reason
         admitted = {
             "subject_id": record["subject_id"],
             "classification": "OBSERVED",
-            "path": record["path"],
+            "path": path,
             "symbol": record["symbol"],
             "start_line": record["start_line"],
             "end_line": record["end_line"],
@@ -101,15 +104,19 @@ def load_verified_inventory_v1(
         line_no = int(edge["evidence_line"])
         if not source["start_line"] <= line_no <= source["end_line"]:
             return None, f"edge_line_outside_source:{edge['edge_id']}"
-        if re.search(rf"\b{re.escape(str(edge['callee_symbol']))}\b", lines[line_no - 1]) is None:
+        source_lines = blobs[str(source["path"])]
+        if (
+            re.search(rf"\b{re.escape(str(edge['callee_symbol']))}\b", source_lines[line_no - 1])
+            is None
+        ):
             return None, f"edge_call_absent:{edge['edge_id']}"
         edges.append(_call_edge(edge))
     return {
-        "pin": PIN,
-        "tree": TREE,
+        "pin": commit_sha,
+        "tree": tree_sha,
         "disclosure_subjects": subjects,
         "call_edges": edges,
-        "unknown_edge": dict(UNKNOWN_EDGE),
+        "unknown_edges": [dict(edge) for edge in UNKNOWN_EDGES],
         "productive_runtime_evidence": False,
         "functional_membership": False,
     }, None
@@ -142,6 +149,7 @@ def _call_edge(edge: dict[str, Any]) -> dict[str, Any]:
             "edge_type": "CALLS",
             "trading_authority_implied": False,
         },
+        "boundary_reference": bool(edge.get("boundary_reference")),
     }
 
 

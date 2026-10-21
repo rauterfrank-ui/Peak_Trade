@@ -10,7 +10,6 @@ from scripts.ops.execution_parent_disclosure_v1.constants_v1 import (
     DOUBLE_PLAY_FULL_OWNER_LOCK,
     STATUS_ADMITTED,
 )
-from scripts.ops.execution_parent_instruments_v1.inventory_v1 import PIN
 from scripts.ops.generic_ghosv_kernel_v1.constants_v1 import (
     OBSERVATION_PROOF,
     SAFETY_ESCALATION_ENABLED,
@@ -68,6 +67,8 @@ def run_execution_ghosv_disclosure_v1(
 
 def findings_for_inventory_v1(
     inventory: Mapping[str, Any],
+    *,
+    commit_sha: str,
 ) -> tuple[list[dict[str, str]], list[str]]:
     """Build findings only for subjects and edges the inventory actually verified."""
     findings: list[dict[str, str]] = []
@@ -75,7 +76,7 @@ def findings_for_inventory_v1(
     for subject in inventory["disclosure_subjects"]:
         if subject["classification"] != "OBSERVED":
             continue
-        ref = _ref(subject["subject_id"])
+        ref = _ref(commit_sha, subject["subject_id"])
         refs.append(ref)
         findings.append(
             {
@@ -94,7 +95,7 @@ def findings_for_inventory_v1(
         for subject in inventory["disclosure_subjects"]
         if subject["classification"] == "UNKNOWN"
     )
-    unknown_ref = _ref(unknown["subject_id"])
+    unknown_ref = _ref(commit_sha, unknown["subject_id"])
     refs.append(unknown_ref)
     findings.append(
         {
@@ -111,8 +112,8 @@ def findings_for_inventory_v1(
     return findings, refs
 
 
-def _ref(subject_id: str) -> str:
-    return f"pin:{PIN}/subject:{subject_id}"
+def _ref(commit_sha: str, subject_id: str) -> str:
+    return f"pin:{commit_sha}/subject:{subject_id}"
 
 
 def _scope_reasons(

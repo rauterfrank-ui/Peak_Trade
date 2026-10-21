@@ -2,11 +2,8 @@
   "authority_effect": "NONE",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "scripts/ops/execution_parent_disclosure_v1/__init__.py",
     "scripts/ops/execution_parent_disclosure_v1/bind_v1.py",
     "scripts/ops/execution_parent_disclosure_v1/constants_v1.py",
-    "scripts/ops/execution_parent_instruments_v1/__init__.py",
     "scripts/ops/execution_parent_instruments_v1/ghosv_v1.py",
     "scripts/ops/execution_parent_instruments_v1/ghv_v1.py",
     "scripts/ops/execution_parent_instruments_v1/graph_v1.py",
@@ -17,12 +14,10 @@
     "tests/ops/test_execution_parent_disclosure_admission_v1.py",
     "tests/ops/test_execution_parent_instruments_v1.py"
   ],
-  "changed_paths_sha256": "621111fee4cec82f33cece3a75b200dd3c15faa9a709db66c95c61ccddd68620",
+  "changed_paths_sha256": "a29c7e2c9041cb5da527067a0fdc9376f75d0ccae045891a8d6ee651d7dae645",
   "covered_candidate_paths": [
-    "scripts/ops/execution_parent_disclosure_v1/__init__.py",
     "scripts/ops/execution_parent_disclosure_v1/bind_v1.py",
     "scripts/ops/execution_parent_disclosure_v1/constants_v1.py",
-    "scripts/ops/execution_parent_instruments_v1/__init__.py",
     "scripts/ops/execution_parent_instruments_v1/ghosv_v1.py",
     "scripts/ops/execution_parent_instruments_v1/ghv_v1.py",
     "scripts/ops/execution_parent_instruments_v1/graph_v1.py",
@@ -35,10 +30,10 @@
   ],
   "evidence_refs": [
     "scripts/ops/execution_parent_disclosure_v1/bind_v1.py",
-    "scripts/ops/execution_parent_instruments_v1/readiness_v1.py",
+    "scripts/ops/execution_parent_instruments_v1/inventory_v1.py",
     "scripts/ops/current_system_interaction_authority_map_v1.py"
   ],
-  "reason": "Change-bound receipt for the read-only execution parent disclosure packages. The two package directories are registered as non-exhaustive candidate surfaces. The eleven script paths are candidates only after that registration. The two tests were already covered by tests/ops/. source_v1.json and derived views are unchanged. test_or_script_only_diff_authority_edge stays UNKNOWN. AUTHORITY_EFFECT=NONE. NO_MAP_IMPACT.",
+  "reason": "Change-bound receipt for the current-pin execution disclosure rebind. Package and test paths stay on already registered candidate surfaces. The adjudication file is a map surface and is excluded from covered candidates. source_v1.json and derived views are unchanged. test_or_script_only_diff_authority_edge stays UNKNOWN. AUTHORITY_EFFECT=NONE. NO_MAP_IMPACT.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
