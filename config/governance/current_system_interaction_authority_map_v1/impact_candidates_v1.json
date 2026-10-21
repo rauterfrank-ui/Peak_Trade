@@ -307,6 +307,8 @@
     "scripts/ops/double_play_guardian_binding_verifier_v1/",
     "scripts/ops/double_play_guardian_readonly_projection_v1/",
     "scripts/ops/execution_guardian_binding_verifier_v1/",
+    "scripts/ops/execution_parent_disclosure_v1/",
+    "scripts/ops/execution_parent_instruments_v1/",
     "scripts/ops/fast_reference_replay_v1.py",
     "scripts/ops/generic_ghosv_kernel_v1/",
     "scripts/ops/ghosv_master_v2_bounded_context_v1/",
