@@ -370,7 +370,8 @@ def _instrument_and_pagination(
         response = indexed.get(endpoint)
         if response is None:
             reasons.add(REASON_INSTRUMENT_ABSENT)
-            reasons.add(REASON_PAGINATION_TERMINAL_ABSENT)
+            if endpoint in PAGINATED_ENDPOINTS:
+                reasons.add(REASON_PAGINATION_TERMINAL_ABSENT)
             continue
         params, malformed_params = _checked_params(response.request_params)
         if malformed_params:
@@ -379,7 +380,12 @@ def _instrument_and_pagination(
             reasons.add(REASON_INSTRUMENT_ABSENT)
         elif bound_instrument is not None and params["instId"] != bound_instrument:
             reasons.add(REASON_INSTRUMENT_MISMATCH)
-        witness = _pagination_chain(response, reasons)
+        if endpoint in PAGINATED_ENDPOINTS:
+            witness = _pagination_chain(response, reasons)
+        else:
+            witness = False
+            if response.pagination_terminal is True:
+                reasons.add(REASON_PAGINATION_TERMINAL_NOT_CONTRACT_WITNESS)
         payload = response.payload
         if not isinstance(payload, Mapping):
             reasons.add(REASON_RESPONSE_MALFORMED)

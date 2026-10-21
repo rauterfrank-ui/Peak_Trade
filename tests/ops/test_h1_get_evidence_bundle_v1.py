@@ -13,6 +13,7 @@ from src.ops.h1_get_evidence_admission_v1.bundle_v1 import (
     STATUS_UNPROVEN,
     admit_offline_get_evidence_v1,
     assess_pagination_v1,
+    map_captures_to_responses_v1,
     collect_bounded_pagination_capture_v1,
     venue_timestamp_from_payload_v1,
 )
@@ -27,6 +28,7 @@ from src.ops.h1_get_evidence_admission_v1.constants_v1 import (
     EXTERNAL_EFFECT_AUTHORIZED,
     INVENTORY_ATTESTED_ZERO,
     INVENTORY_UNPROVEN,
+    PAGINATED_ENDPOINTS,
     POST_ALLOWED,
     PRODUCTIVE_ACTIVATION,
     PRODUCTIVE_COMPLETENESS,
@@ -154,7 +156,7 @@ def _synthetic(
         if endpoint in {ENDPOINT_ACCOUNT_CONFIG, ENDPOINT_ACCOUNT_BALANCE}
         else {"instId": inst_id}
     )
-    if endpoint not in {ENDPOINT_ACCOUNT_CONFIG, ENDPOINT_ACCOUNT_BALANCE}:
+    if endpoint in PAGINATED_ENDPOINTS:
         if terminal is None:
             terminal = True
         if source is None and terminal is True:
@@ -339,6 +341,21 @@ def test_missing_pagination_terminal_blocks() -> None:
     result = admit_offline_get_evidence_v1(records, _params())
     assert result.status == STATUS_UNKNOWN_BLOCKED
     assert REASON_PAGINATION_TERMINAL_ABSENT in result.reason_codes
+
+
+def test_positions_capture_has_no_pagination_chain() -> None:
+    records = (_scoped(ENDPOINT_ACCOUNT_POSITIONS, [{"instId": INSTRUMENT_ID, "pos": "1"}]),)
+    mapped = map_captures_to_responses_v1(records)
+    assert mapped[0].endpoint == ENDPOINT_ACCOUNT_POSITIONS
+    assert mapped[0].pagination_chain_status is None
+    assert mapped[0].pagination_terminal is None
+    result = admit_offline_get_evidence_v1(records, _params())
+    assert result.status == STATUS_UNKNOWN_BLOCKED
+    assert REASON_FRESHNESS_THRESHOLD_UNRATIFIED in result.reason_codes
+    assert "PAGINATION_COMPLETENESS" not in result.satisfied_proofs
+    assert result.account_flat == "UNPROVEN"
+    assert result.rest_ws_consistency == "UNPROVEN"
+    assert result.exchange_truth == "UNPROVEN"
 
 
 def test_repeated_cursor_blocks_without_merge() -> None:

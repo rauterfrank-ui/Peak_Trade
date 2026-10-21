@@ -3,26 +3,18 @@
   "changed_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "src/ops/h1_get_evidence_admission_v1/__init__.py",
-    "src/ops/h1_get_evidence_admission_v1/bundle_v1.py",
     "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
-    "src/ops/h1_get_evidence_admission_v1/provenance_v1.py",
     "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
     "tests/ops/test_h1_get_evidence_admission_v1.py",
-    "tests/ops/test_h1_get_evidence_bundle_v1.py",
-    "tests/ops/test_h1_get_evidence_provenance_v1.py"
+    "tests/ops/test_h1_get_evidence_bundle_v1.py"
   ],
-  "changed_paths_sha256": "bd6565cbd0be12b96e1971bdd003f58deb867fde99fd87e9e08cc9b49af7c04e",
+  "changed_paths_sha256": "5844566d94a11e2e9d276cbec5f4a727c734f1fd32ff0335acd26afa3cd6b922",
   "covered_candidate_paths": [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "src/ops/h1_get_evidence_admission_v1/__init__.py",
-    "src/ops/h1_get_evidence_admission_v1/bundle_v1.py",
     "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
-    "src/ops/h1_get_evidence_admission_v1/provenance_v1.py",
     "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
     "tests/ops/test_h1_get_evidence_admission_v1.py",
-    "tests/ops/test_h1_get_evidence_bundle_v1.py",
-    "tests/ops/test_h1_get_evidence_provenance_v1.py"
+    "tests/ops/test_h1_get_evidence_bundle_v1.py"
   ],
   "evidence_refs": [
     "config/ops/okx_captured_at_freshness_policy_ratification_v1.json",
@@ -30,7 +22,7 @@
     "src/ops/full_core_live_path_composition_root_v1/live_account_bound_v1.py",
     "src/ops/h1_get_evidence_admission_v1/provenance_v1.py"
   ],
-  "reason": "Change-bound receipt for WP-H1-FOUNDATION-02C. Provenance classification reuses the existing offline admission validator. No interaction-map node was added. source_v1.json and derived views are unchanged. AUTHORITY_EFFECT=NONE. NO_MAP_IMPACT.",
+  "reason": "Change-bound receipt for H1 positions pagination alignment B_LIMITED. The existing admission validator classifies positions as non-paginated within the request filter. No interaction-map node was added. source_v1.json and derived views are unchanged. AUTHORITY_EFFECT=NONE. NO_MAP_IMPACT.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

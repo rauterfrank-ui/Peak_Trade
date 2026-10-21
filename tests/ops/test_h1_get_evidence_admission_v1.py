@@ -26,6 +26,7 @@ from src.ops.h1_get_evidence_admission_v1.constants_v1 import (
     INVENTORY_ATTESTED_ROWS,
     INVENTORY_ATTESTED_ZERO,
     INVENTORY_UNPROVEN,
+    NON_PAGINATED_ENDPOINTS,
     PAGINATED_ENDPOINTS,
     POSITIVE_REASON_CODES,
     POST_ALLOWED,
@@ -83,38 +84,26 @@ TERMINAL_SOURCE = "synthetic_owner_terminal_marker"
 CHANGED_PATHS = [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "src/ops/h1_get_evidence_admission_v1/__init__.py",
-    "src/ops/h1_get_evidence_admission_v1/bundle_v1.py",
     "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
-    "src/ops/h1_get_evidence_admission_v1/provenance_v1.py",
     "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
     "tests/ops/test_h1_get_evidence_admission_v1.py",
     "tests/ops/test_h1_get_evidence_bundle_v1.py",
-    "tests/ops/test_h1_get_evidence_provenance_v1.py",
 ]
 
 INTERACTION_CANDIDATE_PATHS = [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "src/ops/h1_get_evidence_admission_v1/__init__.py",
-    "src/ops/h1_get_evidence_admission_v1/bundle_v1.py",
     "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
-    "src/ops/h1_get_evidence_admission_v1/provenance_v1.py",
     "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
     "tests/ops/test_h1_get_evidence_admission_v1.py",
     "tests/ops/test_h1_get_evidence_bundle_v1.py",
-    "tests/ops/test_h1_get_evidence_provenance_v1.py",
 ]
 
 LAW_CANDIDATE_PATHS = [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "src/ops/h1_get_evidence_admission_v1/__init__.py",
-    "src/ops/h1_get_evidence_admission_v1/bundle_v1.py",
     "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
-    "src/ops/h1_get_evidence_admission_v1/provenance_v1.py",
     "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
     "tests/ops/test_h1_get_evidence_admission_v1.py",
     "tests/ops/test_h1_get_evidence_bundle_v1.py",
-    "tests/ops/test_h1_get_evidence_provenance_v1.py",
 ]
 
 FORBIDDEN_IMPORT_PREFIXES = (
@@ -287,17 +276,16 @@ def test_stale_evidence_blocks() -> None:
 
 
 def test_missing_pagination_terminal_blocks() -> None:
-    current = next(
-        item for item in _valid_responses() if item.endpoint == ENDPOINT_ACCOUNT_POSITIONS
-    )
+    current = next(item for item in _valid_responses() if item.endpoint == ENDPOINT_ORDERS_PENDING)
     responses = _replace_endpoint(
         _valid_responses(),
-        ENDPOINT_ACCOUNT_POSITIONS,
+        ENDPOINT_ORDERS_PENDING,
         replace(current, pagination_terminal=None, pagination_terminal_source=None),
     )
     result = validate_get_evidence_admission_v1(responses, _params())
     assert result.status == STATUS_UNKNOWN_BLOCKED
     assert REASON_PAGINATION_TERMINAL_ABSENT in result.reason_codes
+    assert "PAGINATION_COMPLETENESS" not in result.satisfied_proofs
 
 
 def test_contradictory_admission_window_blocks() -> None:
@@ -484,12 +472,10 @@ def test_missing_captured_at_blocks() -> None:
 
 
 def test_pagination_terminal_without_source_is_not_productive_completeness() -> None:
-    current = next(
-        item for item in _valid_responses() if item.endpoint == ENDPOINT_ACCOUNT_POSITIONS
-    )
+    current = next(item for item in _valid_responses() if item.endpoint == ENDPOINT_ORDERS_PENDING)
     responses = _replace_endpoint(
         _valid_responses(),
-        ENDPOINT_ACCOUNT_POSITIONS,
+        ENDPOINT_ORDERS_PENDING,
         replace(current, pagination_terminal=True, pagination_terminal_source=None),
     )
     result = validate_get_evidence_admission_v1(responses, _params())
@@ -513,6 +499,73 @@ def test_admission_digest_is_deterministic() -> None:
     changed = validate_get_evidence_admission_v1(shifted, parameters)
     assert changed.status == STATUS_UNKNOWN_BLOCKED
     assert changed.admission_digest != first.admission_digest
+
+
+def test_positions_are_non_paginated_inside_the_request_filter() -> None:
+    assert NON_PAGINATED_ENDPOINTS == (
+        ENDPOINT_ACCOUNT_CONFIG,
+        ENDPOINT_ACCOUNT_BALANCE,
+        ENDPOINT_ACCOUNT_POSITIONS,
+    )
+    assert PAGINATED_ENDPOINTS == (
+        ENDPOINT_ORDERS_PENDING,
+        ENDPOINT_ORDERS_HISTORY,
+        ENDPOINT_FILLS,
+    )
+    responses = _valid_responses()
+    positions = next(item for item in responses if item.endpoint == ENDPOINT_ACCOUNT_POSITIONS)
+    assert positions.pagination_terminal is None
+    assert positions.request_params == {"instId": INSTRUMENT_ID}
+    result = validate_get_evidence_admission_v1(responses, _params())
+    assert result.status == STATUS_UNKNOWN_BLOCKED
+    assert REASON_FRESHNESS_THRESHOLD_UNRATIFIED in result.reason_codes
+    assert REASON_PAGINATION_TERMINAL_NOT_CONTRACT_WITNESS in result.reason_codes
+    assert "FRESHNESS" not in result.satisfied_proofs
+    assert "PAGINATION_COMPLETENESS" not in result.satisfied_proofs
+    assert result.account_flat == ACCOUNT_FLAT_UNPROVEN
+    assert result.rest_ws_consistency == REST_WS_CONSISTENCY_UNPROVEN
+    assert result.exchange_truth == EXCHANGE_TRUTH_UNPROVEN
+    assert result.productive_completeness is False
+    assert result.flat_emitted is False
+
+
+def test_positions_synthetic_terminal_is_not_authority() -> None:
+    current = next(
+        item for item in _valid_responses() if item.endpoint == ENDPOINT_ACCOUNT_POSITIONS
+    )
+    responses = _replace_endpoint(
+        _valid_responses(),
+        ENDPOINT_ACCOUNT_POSITIONS,
+        replace(
+            current,
+            pagination_terminal=True,
+            pagination_terminal_source=TERMINAL_SOURCE,
+        ),
+    )
+    result = validate_get_evidence_admission_v1(responses, _params())
+    assert result.status == STATUS_UNKNOWN_BLOCKED
+    assert result.status != STATUS_ADMITTED
+    assert REASON_PAGINATION_TERMINAL_NOT_CONTRACT_WITNESS in result.reason_codes
+    assert "PAGINATION_COMPLETENESS" not in result.satisfied_proofs
+    assert result.account_flat == ACCOUNT_FLAT_UNPROVEN
+    assert result.exchange_truth == EXCHANGE_TRUTH_UNPROVEN
+
+
+def test_inst_type_only_positions_filter_is_not_account_flat() -> None:
+    responses = _replace_endpoint(
+        _valid_responses(position_rows=[]),
+        ENDPOINT_ACCOUNT_POSITIONS,
+        _response(ENDPOINT_ACCOUNT_POSITIONS, [], request_params={"instType": "SWAP"}),
+    )
+    result = validate_get_evidence_admission_v1(responses, _params())
+    assert result.status == STATUS_UNKNOWN_BLOCKED
+    assert REASON_INSTRUMENT_ABSENT in result.reason_codes
+    assert REASON_EMPTY_POSITIONS_WITHOUT_COMPLETENESS in result.reason_codes
+    assert result.position_inventory == INVENTORY_UNPROVEN
+    assert result.position_inventory != INVENTORY_ATTESTED_ZERO
+    assert result.account_flat == ACCOUNT_FLAT_UNPROVEN
+    assert result.exchange_truth == EXCHANGE_TRUTH_UNPROVEN
+    assert result.rest_ws_consistency == REST_WS_CONSISTENCY_UNPROVEN
 
 
 def test_zero_position_string_is_not_attested_zero_or_flat() -> None:
