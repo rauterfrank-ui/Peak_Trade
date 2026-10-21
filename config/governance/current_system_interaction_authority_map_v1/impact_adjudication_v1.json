@@ -2,32 +2,22 @@
   "authority_effect": "NONE",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "scripts/ops/execution_parent_instruments_v1/ghosv_v1.py",
-    "scripts/ops/execution_parent_instruments_v1/ghv_v1.py",
-    "scripts/ops/execution_parent_instruments_v1/graph_v1.py",
-    "scripts/ops/execution_parent_instruments_v1/inventory_v1.py",
-    "scripts/ops/execution_parent_instruments_v1/readiness_v1.py",
+    "scripts/ops/execution_parent_instruments_v1/boundary_inspector_v1.py",
     "scripts/ops/execution_parent_instruments_v1/run_v1.py",
-    "scripts/ops/execution_parent_instruments_v1/verify_v1.py",
-    "tests/ops/test_execution_parent_instruments_v1.py"
+    "tests/ops/test_execution_boundary_inspector_v1.py"
   ],
-  "changed_paths_sha256": "685bc0210038eca33719819c33536158c48e66881fa6f7e6ecd1d3b1d5561281",
+  "changed_paths_sha256": "e3a62b19b0a229c3d08c32a365aec3c780583883bb0326c3fabd0aacc1a29bf4",
   "covered_candidate_paths": [
-    "scripts/ops/execution_parent_instruments_v1/ghosv_v1.py",
-    "scripts/ops/execution_parent_instruments_v1/ghv_v1.py",
-    "scripts/ops/execution_parent_instruments_v1/graph_v1.py",
-    "scripts/ops/execution_parent_instruments_v1/inventory_v1.py",
-    "scripts/ops/execution_parent_instruments_v1/readiness_v1.py",
+    "scripts/ops/execution_parent_instruments_v1/boundary_inspector_v1.py",
     "scripts/ops/execution_parent_instruments_v1/run_v1.py",
-    "scripts/ops/execution_parent_instruments_v1/verify_v1.py",
-    "tests/ops/test_execution_parent_instruments_v1.py"
+    "tests/ops/test_execution_boundary_inspector_v1.py"
   ],
   "evidence_refs": [
-    "scripts/ops/execution_parent_instruments_v1/inventory_v1.py",
-    "scripts/ops/execution_parent_instruments_v1/verify_v1.py",
-    "scripts/ops/current_system_interaction_authority_map_v1.py"
+    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
+    "scripts/ops/current_system_interaction_authority_map_v1.py",
+    "scripts/ops/execution_parent_instruments_v1/boundary_inspector_v1.py"
   ],
-  "reason": "Change-bound receipt for the execution mission-evidence read-only instrument extension. Package and test paths stay on already registered candidate surfaces. The adjudication file is a map surface and is excluded from covered candidates. source_v1.json and derived views are unchanged. No trading or safety authority is added. AUTHORITY_EFFECT=NONE. NO_MAP_IMPACT.",
+  "reason": "Change-bound receipt for the read-only execution boundary inspector. The inspector package path and the ops test path are already registered candidate surfaces. The adjudication file is a map surface and is excluded from covered candidates. source_v1.json is unchanged, so MAP_UPDATE_REQUIRED is not admissible. Derived views are unchanged. No trading or safety authority is added. AUTHORITY_EFFECT=NONE. NO_MAP_IMPACT.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
