@@ -5,25 +5,25 @@
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "scripts/ops/guardian_planning_fixture_v1/__init__.py",
-    "scripts/ops/guardian_planning_fixture_v1/constants_v1.py",
-    "scripts/ops/guardian_planning_fixture_v1/validate_v1.py",
-    "tests/ops/test_guardian_planning_fixture_v1.py"
+    "src/ops/h1_get_evidence_admission_v1/__init__.py",
+    "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
+    "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
+    "tests/ops/test_h1_get_evidence_admission_v1.py"
   ],
-  "changed_paths_sha256": "fc76643a55feaa8457d7c76ba98e110227601df87c54c1ed9c9f330655cdb319",
+  "changed_paths_sha256": "df1086e8edc1aefe4a958c26cb4bbb6dbf20c3806b39fa11d78f27ddae62e239",
   "covered_candidate_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "scripts/ops/guardian_planning_fixture_v1/__init__.py",
-    "scripts/ops/guardian_planning_fixture_v1/constants_v1.py",
-    "scripts/ops/guardian_planning_fixture_v1/validate_v1.py",
-    "tests/ops/test_guardian_planning_fixture_v1.py"
+    "src/ops/h1_get_evidence_admission_v1/__init__.py",
+    "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
+    "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
+    "tests/ops/test_h1_get_evidence_admission_v1.py"
   ],
   "evidence_refs": [
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "config/governance/current_law_impact_map_v1/source_v1.json"
+    "config/governance/current_law_impact_map_v1/source_v1.json",
+    "src/ops/h1_get_evidence_admission_v1/constants_v1.py"
   ],
-  "reason": "Change-bound receipt for the working-tree content diff against 89d8230fddfd2e5b8af2da46b080f1db204fd4e5. Law source_v1.json and derived views are unchanged. The fixture adds no law reference, no guardian ratification, and no domain membership. The new package is classified by the added non-exhaustive candidate prefix; tests/ops/ already covers the test. NO_LAW_IMPACT.",
+  "reason": "Change-bound receipt for WP-H1-FOUNDATION-02A. Law source_v1.json and derived views are unchanged. The new package adds no law reference and no domain membership. It is classified by the added non-exhaustive candidate prefix. tests/ops/ already covers the test. AUTHORITY_EFFECT=NONE. NO_LAW_IMPACT.",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT"
 }
