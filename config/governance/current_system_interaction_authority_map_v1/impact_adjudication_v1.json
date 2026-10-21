@@ -1,29 +1,29 @@
 {
   "authority_effect": "NONE",
   "changed_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "scripts/ops/guardian_planning_fixture_v1/__init__.py",
-    "scripts/ops/guardian_planning_fixture_v1/constants_v1.py",
-    "scripts/ops/guardian_planning_fixture_v1/validate_v1.py",
-    "tests/ops/test_guardian_planning_fixture_v1.py"
+    "docs/governance/current_architecture_discovery_register_v1/DISCOVERY_INDEX.md",
+    "docs/governance/current_architecture_discovery_register_v1/EVIDENCE_SOURCE_INDEX.md",
+    "docs/governance/current_architecture_discovery_register_v1/FINDING_REGISTER.md",
+    "docs/governance/current_architecture_discovery_register_v1/FUNCTIONAL_AREA_REGISTER.md",
+    "docs/governance/current_architecture_discovery_register_v1/OPEN_DEPENDENCIES.md",
+    "docs/governance/current_architecture_discovery_register_v1/OWNER_DECISION_REFERENCES.md"
   ],
-  "changed_paths_sha256": "fc76643a55feaa8457d7c76ba98e110227601df87c54c1ed9c9f330655cdb319",
+  "changed_paths_sha256": "3396891fe660218366451e19e9c842ba54e26ecb3c60d7f9376ab193bbf4c372",
   "covered_candidate_paths": [
-    "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
-    "scripts/ops/guardian_planning_fixture_v1/__init__.py",
-    "scripts/ops/guardian_planning_fixture_v1/constants_v1.py",
-    "scripts/ops/guardian_planning_fixture_v1/validate_v1.py",
-    "tests/ops/test_guardian_planning_fixture_v1.py"
+    "docs/governance/current_architecture_discovery_register_v1/DISCOVERY_INDEX.md",
+    "docs/governance/current_architecture_discovery_register_v1/EVIDENCE_SOURCE_INDEX.md",
+    "docs/governance/current_architecture_discovery_register_v1/FINDING_REGISTER.md",
+    "docs/governance/current_architecture_discovery_register_v1/FUNCTIONAL_AREA_REGISTER.md",
+    "docs/governance/current_architecture_discovery_register_v1/OPEN_DEPENDENCIES.md",
+    "docs/governance/current_architecture_discovery_register_v1/OWNER_DECISION_REFERENCES.md"
   ],
   "evidence_refs": [
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/source_v1.json"
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "docs/governance/current_architecture_discovery_register_v1/DISCOVERY_INDEX.md"
   ],
-  "reason": "Change-bound receipt for the working-tree content diff against 89d8230fddfd2e5b8af2da46b080f1db204fd4e5. The planning fixture is registered only as a non-exhaustive candidate. tests/ops/ already covers the test file. source_v1.json and derived views are unchanged. Fixture authority, trading, safety, and execution authority are NONE. guardian_ratification, domain_binding, current coverage, and productive activation are false. Slots remain PLANNING_UNBOUND and are not a WP-B0 bind. NO_MAP_IMPACT.",
+  "reason": "Change-bound receipt for the discovery register against origin/main. The six files under docs/governance/current_architecture_discovery_register_v1/ are an unratified draft, DRAFT_ONLY, AUTHORITY=NONE. The directory is one non-exhaustive candidate surface. source_v1.json and derived views are unchanged. NO_MAP_IMPACT.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
