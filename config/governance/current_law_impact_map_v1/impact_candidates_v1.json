@@ -225,6 +225,7 @@
     "src/ops/integrated_paper_shadow_observation_session_v1/simulated_economics_round_trip_ledger_v1.py",
     "src/ops/n1_standing_pre_external_runtime_supervisor_v1/",
     "src/ops/n1_whole_system_hard_facts_integration_wp_v1/",
+    "src/ops/okx_eea_private_account_state_runtime_v1/rest_baseline_v1.py",
     "src/ops/owner_scoped_get_budget_enforcement_v1/",
     "src/ops/p5_10_productive_activation_and_binding_v1/",
     "src/ops/p5_2_productive_cycle_seam_invoke_and_authority_bind_v1/",

@@ -356,3 +356,22 @@ def test_safety_boundary_and_equity_mint_forbidden() -> None:
 
 def test_dedicated_fills_ws_not_required() -> None:
     assert DEDICATED_FILLS_WS_REQUIRED is False
+
+
+def test_optional_admission_capture_is_outside_the_baseline_orchestrator(tmp_path: Path) -> None:
+    calls: list[str] = []
+
+    def fetch(path: str, params: Mapping[str, str]) -> dict[str, Any]:
+        calls.append(path)
+        return _fixture_rest(path, params)
+
+    snap = collect_rest_baseline_v1(fetch, captured_at="t0", inst_id="ETH-USDT-SWAP")
+    assert snap.account_config is not None
+    assert snap.account_config.acct_lv == "2"
+    assert snap.balance is not None
+    assert snap.balance.total_eq == "100"
+    baseline_calls = list(calls)
+    calls.clear()
+    runtime = OkxEeaPrivateAccountStateRuntimeV1(store_root=tmp_path, rest_fetch_json=fetch)
+    runtime.run_rest_baseline_v1(captured_at="t0")
+    assert calls == baseline_calls

@@ -79,29 +79,33 @@ CHANGED_PATHS = [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "src/ops/h1_get_evidence_admission_v1/__init__.py",
-    "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
-    "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
+    "src/ops/h1_get_evidence_admission_v1/bundle_v1.py",
+    "src/ops/okx_eea_private_account_state_runtime_v1/rest_baseline_v1.py",
     "tests/ops/test_h1_get_evidence_admission_v1.py",
+    "tests/ops/test_h1_get_evidence_bundle_v1.py",
+    "tests/ops/test_okx_eea_private_account_state_runtime_v1.py",
 ]
 
 INTERACTION_CANDIDATE_PATHS = [
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "src/ops/h1_get_evidence_admission_v1/__init__.py",
-    "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
-    "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
+    "src/ops/h1_get_evidence_admission_v1/bundle_v1.py",
+    "src/ops/okx_eea_private_account_state_runtime_v1/rest_baseline_v1.py",
     "tests/ops/test_h1_get_evidence_admission_v1.py",
+    "tests/ops/test_h1_get_evidence_bundle_v1.py",
+    "tests/ops/test_okx_eea_private_account_state_runtime_v1.py",
 ]
 
 LAW_CANDIDATE_PATHS = [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "src/ops/h1_get_evidence_admission_v1/__init__.py",
-    "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
-    "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
+    "src/ops/h1_get_evidence_admission_v1/bundle_v1.py",
+    "src/ops/okx_eea_private_account_state_runtime_v1/rest_baseline_v1.py",
     "tests/ops/test_h1_get_evidence_admission_v1.py",
+    "tests/ops/test_h1_get_evidence_bundle_v1.py",
+    "tests/ops/test_okx_eea_private_account_state_runtime_v1.py",
 ]
 
 FORBIDDEN_IMPORT_PREFIXES = (

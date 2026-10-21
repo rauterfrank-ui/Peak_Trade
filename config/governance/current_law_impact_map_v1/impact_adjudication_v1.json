@@ -4,26 +4,29 @@
     "config/governance/current_law_impact_map_v1/impact_adjudication_v1.json",
     "config/governance/current_law_impact_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "src/ops/h1_get_evidence_admission_v1/__init__.py",
-    "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
-    "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
-    "tests/ops/test_h1_get_evidence_admission_v1.py"
+    "src/ops/h1_get_evidence_admission_v1/bundle_v1.py",
+    "src/ops/okx_eea_private_account_state_runtime_v1/rest_baseline_v1.py",
+    "tests/ops/test_h1_get_evidence_admission_v1.py",
+    "tests/ops/test_h1_get_evidence_bundle_v1.py",
+    "tests/ops/test_okx_eea_private_account_state_runtime_v1.py"
   ],
-  "changed_paths_sha256": "df1086e8edc1aefe4a958c26cb4bbb6dbf20c3806b39fa11d78f27ddae62e239",
+  "changed_paths_sha256": "56bce9e5fdeb261864f31d1d23eba53f0c809957cb2d2e0f9f2dfa617221d64b",
   "covered_candidate_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "src/ops/h1_get_evidence_admission_v1/__init__.py",
-    "src/ops/h1_get_evidence_admission_v1/constants_v1.py",
-    "src/ops/h1_get_evidence_admission_v1/validate_v1.py",
-    "tests/ops/test_h1_get_evidence_admission_v1.py"
+    "src/ops/h1_get_evidence_admission_v1/bundle_v1.py",
+    "src/ops/okx_eea_private_account_state_runtime_v1/rest_baseline_v1.py",
+    "tests/ops/test_h1_get_evidence_admission_v1.py",
+    "tests/ops/test_h1_get_evidence_bundle_v1.py",
+    "tests/ops/test_okx_eea_private_account_state_runtime_v1.py"
   ],
   "evidence_refs": [
     "config/governance/current_law_impact_map_v1/source_v1.json",
-    "src/ops/h1_get_evidence_admission_v1/constants_v1.py"
+    "src/ops/h1_get_evidence_admission_v1/bundle_v1.py",
+    "src/ops/okx_eea_private_account_state_runtime_v1/rest_baseline_v1.py"
   ],
-  "reason": "Change-bound receipt for WP-H1-FOUNDATION-02A. Law source_v1.json and derived views are unchanged. The new package adds no law reference and no domain membership. It is classified by the added non-exhaustive candidate prefix. tests/ops/ already covers the test. AUTHORITY_EFFECT=NONE. NO_LAW_IMPACT.",
+  "reason": "Change-bound receipt for WP-H1-FOUNDATION-02B. Offline capture retention and the admission bundle add no law reference and no domain membership. source_v1.json and derived views are unchanged. The REST baseline file is classified by one added non-exhaustive candidate path. AUTHORITY_EFFECT=NONE. NO_LAW_IMPACT.",
   "selector_used_as_law_impact_authority": false,
   "verdict": "NO_LAW_IMPACT"
 }
