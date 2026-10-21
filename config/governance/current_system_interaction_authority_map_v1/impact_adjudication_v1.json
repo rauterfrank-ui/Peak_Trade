@@ -3,26 +3,47 @@
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "src/notifications/__init__.py",
-    "src/notifications/base.py",
-    "src/notifications/slack.py",
-    "tests/notifications/test_slack_notifier.py",
-    "tests/notifications/test_test_health_slack_adapter_offline_v1.py"
+    "scripts/ops/current_full_stack_semantic_explorer_v1/__init__.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/budget_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/cache_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/constants_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/evidence_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/git_objects_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/parse_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/run_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/s1_physical_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/s2_semantic_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/s3_causal_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/s4_runtime_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/s5_layers_v1.py",
+    "tests/ops/test_current_full_stack_semantic_explorer_v1.py",
+    "tests/ops/test_semantic_explorer_reality_remediation_v1.py"
   ],
-  "changed_paths_sha256": "fe2af5eb59736cdfdd1f95917be1b94b8b90201497acd95bc3d311995d137915",
+  "changed_paths_sha256": "57c4130258ae2c7ed6c17ee1e8e9f0ae4ec235e95121eb2f2692f50652353236",
   "covered_candidate_paths": [
-    "src/notifications/__init__.py",
-    "src/notifications/base.py",
-    "src/notifications/slack.py",
-    "tests/notifications/test_slack_notifier.py",
-    "tests/notifications/test_test_health_slack_adapter_offline_v1.py"
+    "scripts/ops/current_full_stack_semantic_explorer_v1/__init__.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/budget_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/cache_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/constants_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/evidence_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/git_objects_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/parse_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/run_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/s1_physical_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/s2_semantic_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/s3_causal_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/s4_runtime_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/s5_layers_v1.py",
+    "tests/ops/test_current_full_stack_semantic_explorer_v1.py",
+    "tests/ops/test_semantic_explorer_reality_remediation_v1.py"
   ],
   "evidence_refs": [
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "src/notifications/slack.py"
+    "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/constants_v1.py",
+    "scripts/ops/current_system_interaction_authority_map_v1.py"
   ],
-  "reason": "Change-bound receipt for the fail-closed test-health Slack adapter. The five Slack paths were outside the candidate catalog, so NO_MAP_IMPACT was illegal while they remained undetermined. They are registered as exact file surfaces, not as a directory. source_v1.json is unchanged, so MAP_UPDATE_REQUIRED is not admissible. The adapter does not import trading, risk, execution, or live workflows, does not perform an HTTP POST, and does not add or remove a domain, edge, loop, or parameter. The adjudication and candidate files are map surfaces and are excluded from covered candidates. Derived views are unchanged. AUTHORITY_EFFECT=NONE. NO_MAP_IMPACT.",
+  "reason": "Change-bound receipt for the offline current full-stack semantic explorer. The thirteen scripts/ops/current_full_stack_semantic_explorer_v1 modules were outside the candidate catalog, so NO_MAP_IMPACT was illegal while they remained undetermined. They are registered as exact file surfaces, not as a directory. The two tests/ops files were already covered by the tests/ops/ directory surface and are additionally registered as exact files. source_v1.json is unchanged, so MAP_UPDATE_REQUIRED is not admissible. The explorer declares TOOL_AUTHORITY=NONE and EXTERNAL_EFFECTS_PERFORMED=0. It reads git objects and emits claims. It does not add or remove a domain, edge, loop, parameter, or productive authority binding. The adjudication and candidate files are map surfaces and are excluded from covered candidates. Derived views are unchanged. AUTHORITY_EFFECT=NONE. NO_MAP_IMPACT.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
