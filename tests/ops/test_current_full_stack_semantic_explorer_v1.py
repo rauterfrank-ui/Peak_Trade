@@ -312,7 +312,11 @@ def test_budget_abort_is_incomplete(tmp_path: Path) -> None:
     result = run_explorer_v1(repo, sha, budget=BudgetV1(max_files=1, max_seconds=20))
     assert result["run_status"] == "INCOMPLETE"
     assert result["run_status"] != "PASS"
-    assert all(item["status"] == "INCOMPLETE" for item in result["slices"])
+    assert result["slices"][0]["status"] == "INCOMPLETE"
+    assert any(row["status"] == "NOT_STARTED" for row in result["file_outcomes"])
+    admitted = [row for row in result["file_outcomes"] if row["slice_coverage"]["S1"] == "PASS"]
+    assert admitted
+    assert result["slices"][1]["status"] == "PASS"
 
 
 def test_determinism_ignores_uncommitted_worktree_edits(tmp_path: Path) -> None:

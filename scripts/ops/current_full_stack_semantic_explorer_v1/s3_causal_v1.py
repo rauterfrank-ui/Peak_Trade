@@ -7,7 +7,10 @@ from typing import Any
 
 from scripts.ops.current_full_stack_semantic_explorer_v1.budget_v1 import BudgetTrackerV1
 from scripts.ops.current_full_stack_semantic_explorer_v1.constants_v1 import AUTHORITY_FIELDS
-from scripts.ops.current_full_stack_semantic_explorer_v1.evidence_v1 import append_claim_v1
+from scripts.ops.current_full_stack_semantic_explorer_v1.evidence_v1 import (
+    append_claim_v1,
+    append_unbudgeted_claim_v1,
+)
 
 
 def _proven(claims: list[dict[str, Any]], predicate: str) -> list[dict[str, Any]]:
@@ -22,6 +25,13 @@ def _add_edge(
     **kwargs: Any,
 ) -> bool:
     if not tracker.allow_edge():
+        reason = "TIME_BUDGET" if tracker.time_closed else "EDGE_BUDGET"
+        blocked = dict(kwargs)
+        blocked["status"] = "UNPROVEN"
+        unknowns = list(blocked.get("unknowns", []))
+        unknowns.extend([reason, "INCOMPLETE"])
+        blocked["unknowns"] = unknowns
+        append_unbudgeted_claim_v1(claims, **blocked)
         return False
     return append_claim_v1(claims, tracker, **kwargs)
 
@@ -30,11 +40,12 @@ def reconstruct_causal_v1(
     census: dict[str, Any],
     prior: list[dict[str, Any]],
     tracker: BudgetTrackerV1,
-) -> list[dict[str, Any]]:
+) -> tuple[list[dict[str, Any]], dict[str, bool]]:
     commit_sha = str(census["commit_sha"])
     claims: list[dict[str, Any]] = []
     calls = [(claim["subject"], claim["object"]) for claim in _proven(prior, "CALLS")]
     imports = [(claim["subject"], claim["object"]) for claim in _proven(prior, "IMPORT_TARGET")]
+    edge_stopped = False
     for source, target in sorted(set(calls + imports)):
         if not _add_edge(
             claims,
@@ -48,11 +59,18 @@ def reconstruct_causal_v1(
             evidence_class="STATIC",
             status="PROVEN",
         ):
-            return claims
-    _transitive(commit_sha, calls, tracker.budget.max_depth, claims, tracker, prior)
-    _effect_chains(commit_sha, calls, prior, claims, tracker)
+            edge_stopped = True
+            break
+    depth_truncated = False
+    if not edge_stopped:
+        depth_truncated = _transitive(
+            commit_sha, calls, tracker.budget.max_depth, claims, tracker, prior
+        )
+        _effect_chains(commit_sha, calls, prior, claims, tracker)
+    if tracker.edge_closed:
+        edge_stopped = True
     _authority(commit_sha, census, claims, tracker)
-    return claims
+    return claims, {"depth_truncated": depth_truncated, "edge_stopped": edge_stopped}
 
 
 def claim_ref(prior: list[dict[str, Any]], source: str, target: str) -> str:
@@ -71,7 +89,8 @@ def _transitive(
     claims: list[dict[str, Any]],
     tracker: BudgetTrackerV1,
     prior: list[dict[str, Any]],
-) -> None:
+) -> bool:
+    truncated = False
     succ: dict[str, list[str]] = defaultdict(list)
     for source, target in calls:
         succ[source].append(target)
@@ -83,6 +102,23 @@ def _transitive(
         while queue:
             node, path = queue.pop(0)
             if len(path) - 1 >= max_depth:
+                for nxt in succ.get(node, []):
+                    if nxt in seen:
+                        continue
+                    seen.add(nxt)
+                    append_unbudgeted_claim_v1(
+                        claims,
+                        commit_sha=commit_sha,
+                        scope="causal",
+                        subject=origin,
+                        predicate="TRANSITIVE_DEPENDS_ON",
+                        object_=nxt,
+                        evidence_refs=[">".join([*path, nxt])],
+                        evidence_class="STATIC",
+                        status="UNPROVEN",
+                        unknowns=["DEPTH_LIMIT", "INCOMPLETE"],
+                    )
+                    truncated = True
                 continue
             for nxt in succ.get(node, []):
                 if nxt in seen:
@@ -102,7 +138,7 @@ def _transitive(
                         evidence_class="STATIC",
                         status="PROVEN",
                     ):
-                        return
+                        return truncated
                     if not _add_edge(
                         claims,
                         tracker,
@@ -115,8 +151,9 @@ def _transitive(
                         evidence_class="STATIC",
                         status="PROVEN",
                     ):
-                        return
+                        return truncated
                 queue.append((nxt, extended))
+    return truncated
 
 
 def _effect_chains(

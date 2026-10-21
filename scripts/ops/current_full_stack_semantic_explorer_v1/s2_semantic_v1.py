@@ -8,6 +8,12 @@ from scripts.ops.current_full_stack_semantic_explorer_v1.budget_v1 import Budget
 from scripts.ops.current_full_stack_semantic_explorer_v1.evidence_v1 import append_claim_v1
 
 
+def _closed_reason(tracker: BudgetTrackerV1) -> str:
+    if tracker.time_closed:
+        return "TIME_BUDGET"
+    return "NODE_BUDGET"
+
+
 def _ref(path: str, lineno: int) -> str:
     return f"{path}:{lineno}"
 
@@ -64,7 +70,7 @@ def _aliases(
 def extract_semantic_v1(
     census: dict[str, Any],
     tracker: BudgetTrackerV1,
-) -> list[dict[str, Any]]:
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     commit_sha = str(census["commit_sha"])
     modules: dict[str, Any] = census["modules"]
     module_index: dict[str, str] = census["module_index"]
@@ -74,7 +80,17 @@ def extract_semantic_v1(
         for item in parsed["functions"]
     }
     claims: list[dict[str, Any]] = []
-    for path in sorted(modules):
+    done: list[str] = []
+    partial: list[dict[str, str]] = []
+    skipped: list[dict[str, str]] = []
+    ordered = sorted(modules)
+    for index, path in enumerate(ordered):
+        if tracker.node_closed or tracker.time_closed:
+            reason = _closed_reason(tracker)
+            skipped.extend({"path": item, "stop_reason": reason} for item in ordered[index:])
+            break
+        snap = tracker.snapshot()
+        mark = len(claims)
         parsed = modules[path]
         alias_map = _aliases(path, parsed, module_index, functions)
         _resolved_imports(commit_sha, path, parsed, module_index, claims, tracker)
@@ -203,7 +219,15 @@ def extract_semantic_v1(
                 status="UNPROVEN",
                 unknowns=["NO_AGREED_MEANING"],
             )
-    return claims
+        if tracker.node_closed or tracker.time_closed:
+            reason = _closed_reason(tracker)
+            tracker.restore(snap)
+            del claims[mark:]
+            partial.append({"path": path, "stop_reason": reason})
+            skipped.extend({"path": item, "stop_reason": reason} for item in ordered[index + 1 :])
+            break
+        done.append(path)
+    return claims, {"done": done, "partial": partial, "skipped": skipped}
 
 
 def _calls(
