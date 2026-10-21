@@ -43,6 +43,8 @@ Feldregel für jede Zeile: `SOURCE=CHAT_TRANSCRIPT_EVIDENCE`. `BASELINE` ist der
 | S15 | `6c5e952f-1278-477f-a198-dd266318904c` | `src/data` und `src/markets` sind statisch unabhängig vom PMD-Runtime. Eine Universumszugehörigkeit folgt daraus nicht. | S15-Abschluss, 43 Dateien, Importgrenze | NARROWED | Universum UNASSIGNED |
 | S16 | `6c5e952f-1278-477f-a198-dd266318904c` | `src/knowledge` ist eine isolierte Offline-Bibliothek. Die Mitgliedschaft bleibt vorläufig. | S16-Abschluss, fünf Modultexte | NARROWED | Zugehörigkeit offen |
 | S17 | `6c5e952f-1278-477f-a198-dd266318904c` | OF-S4-03 bleibt die bestätigte Mischung. B05 benennt den Track-Owner und lässt die Implementierung aus. | S17-Abschluss, S9-Bericht plus Stichprobe | OPEN | Owner-Entscheidung, siehe [Owner-Referenzen](OWNER_DECISION_REFERENCES.md) |
+| S19 | `c2843bb3-22e0-4d9d-a67e-c52067c8c8e6` | WP-A ist kein direkter Import des Master-V2-Cycle. Der Reference-Price-Owner löst einen bereits gelieferten Mark auf. Die produktive Herkunft bleibt unbelegt. | S19-Abschluss | NARROWED | OF-S4-04=NARROWED_OPEN |
+| S20 | `c2843bb3-22e0-4d9d-a67e-c52067c8c8e6` | Kein belegter produktiver Caller übergibt `mark_px` an `run_current_productive_master_v2_runtime_cycle_v1`. Die Herkunft bleibt `SOURCE_NOT_PROVEN`. | S20-Abschluss | STOP | PRODUCTIVE_CALLER=SOURCE_NOT_PROVEN |
 
 ## Abdeckung
 
@@ -50,8 +52,12 @@ Feldregel für jede Zeile: `SOURCE=CHAT_TRANSCRIPT_EVIDENCE`. `BASELINE` ist der
 S1_TO_S17_COVERAGE=CLOSERS_PRESENT
 S3B_COVERAGE=CLOSER_PRESENT
 DISCOVERY_COUNT=18
+S19_S20_COUNT=2
+DISCOVERY_BRANCH_STATUS=STOP
 ON_ORIGIN_MAIN_BEFORE_THIS_DRAFT=NONE
 FULL_TRANSCRIPT_DUMP=NOT_CLAIMED
 ```
 
 S18 ist die Vorbereitungsrunde dieses Registers und keine zusätzliche Architektur-Discovery. Ihr Abschluss liegt im selben Transkript `6c5e952f-1278-477f-a198-dd266318904c`.
+
+S19 und S20 liegen im Transkript `c2843bb3-22e0-4d9d-a67e-c52067c8c8e6`. `DISCOVERY_COUNT=18` zählt weiterhin nur S1–S17 einschließlich S3B. Dieser Schreibdurchgang ist keine zusätzliche Architektur-Discovery. `DISCOVERY_BRANCH_STATUS=STOP`.

@@ -86,6 +86,15 @@ CLAIM=src/data und src/markets sind statisch unabhängig von src/ops/peak_trade_
 
 Zusätzliche Tokens aus dem S15-Abschluss, ohne neue Untersuchung: `NF-S15-01` bis `NF-S15-06` im [Finding-Register](FINDING_REGISTER.md).
 
+S19 ergänzt diese Fläche. OF-S4-05 bleibt unverändert.
+
+```text
+PROOF_SCOPE=S19-Abschluss, NF-S19-01, NF-S19-04
+STATUS=NARROWED
+OPEN_DEPENDENCY=Universum UNASSIGNED
+CLAIM=WP-A ist nicht als direkter Reference-Price-Lieferant belegt. Universumsmitgliedschaft bleibt UNASSIGNED.
+```
+
 ## Private Account
 
 ```text
@@ -177,4 +186,13 @@ PROOF_SCOPE=Grenzaussagen aus S3, S3B, S5, S8, S14 und S16
 STATUS=BOUNDARY_ONLY
 OPEN_DEPENDENCY=keine Interna-Untersuchung in S1–S17
 CLAIM=Master V2 erscheint als Grenze der Selection-, Handoff- und Readmodel-Ketten. S16 findet keine Importkante von src/knowledge dorthin. Eine Mitgliedschaft oder eine Interna-Freigabe folgt daraus nicht.
+```
+
+S19 und S20 ergänzen dieselbe Grenze. Es entsteht kein neues Universum.
+
+```text
+PROOF_SCOPE=S19- und S20-Abschluss
+STATUS=BOUNDARY_ONLY
+OPEN_DEPENDENCY=PRODUCTIVE_CALLER=SOURCE_NOT_PROVEN
+CLAIM=Provenance, Reference-Price-Owner und Capital-Consumer sind funktional getrennt. Produktiver Cycle-Caller: SOURCE_NOT_PROVEN. Double-Play-Interna: NOT_EXAMINED.
 ```

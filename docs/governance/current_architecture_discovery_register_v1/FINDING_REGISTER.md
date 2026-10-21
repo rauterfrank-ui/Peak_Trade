@@ -26,7 +26,7 @@ Nachbarregister: [Discovery-Index](DISCOVERY_INDEX.md), [Funktionsflächen](FUNC
 | OF-S4-01 | GAP-13 bleibt offen. Kartennamen sind keine geschlossenen Domänen. | S4-Abschluss | OPEN | GAP-13 |
 | OF-S4-02 | Landscape-Producer- und Consumer-Listen leer. PROVEN_CURRENT nicht übernommen. | S4-Abschluss | OPEN | Landscape-Listen |
 | OF-S4-03 | Equity-Paket mischt Truth, C08, Cap21–Cap24, Credentials und Send-Seam. Mitgliedschaft ungeschlossen. | S4-Ursprung. S9 bestätigt die Mischung. S17 lässt die Einzelrolle offen. | OPEN | Einzelrolle, [Owner-Referenzen](OWNER_DECISION_REFERENCES.md) |
-| OF-S4-04 | WP-A ist nicht der direkte Master-V2-Import. Preisherkunft und Reference-Price-Owner sind getrennt. | S4-Abschluss | OPEN | beide Owner getrennt |
+| OF-S4-04 | WP-A ist nicht der direkte Master-V2-Import. Preisherkunft und Reference-Price-Owner sind getrennt. | S4-Ursprung. S19/S20: Verengung, Ursprungssatz bleibt. | NARROWED | Formelblock darunter |
 | OF-S4-05 | `src/data` und `src/markets` waren Public Market Data nicht zugeordnet. | S4-Ursprung. S15: statisch unabhängig, Universum UNASSIGNED. | NARROWED | Universum UNASSIGNED |
 | OF-S4-06 | Runbook-WebUI-Pfad auf dieser Baseline abwesend. | S4-Abschluss, danach nicht erneut gelesen | OPEN | Pfad |
 | OF-S4-07 | Rückkonsum der Presentation durch Decision-Owner nicht erschöpfend ausgeschlossen. | S4-Ursprung. S13/S14: acht Projektionen ohne produktiven Decision-Leser. Readmodel ist simulierte Identitätsmarke. Full-Core-Feedback NOT_PROVEN. | NARROWED | PRODUCTIVE_FULL_CORE_FEEDBACK=NOT_PROVEN |
@@ -50,6 +50,20 @@ UNIVERSE_MEMBERSHIP=UNASSIGNED
 CCXT_PRIVATE_ACCOUNT_READS=SEPARATE_FUNCTIONAL_BOUNDARY
 QUALITY_MONITOR_IMPORT_MISMATCH=DOCUMENTED_NOT_REPAIRED
 ```
+
+OF-S4-04 behält diese Formeln aus S19 und S20:
+
+```text
+OF-S4-04=NARROWED_OPEN
+PRODUCTIVE_CALLER=SOURCE_NOT_PROVEN
+VALUE_CONTINUITY=CONDITIONAL
+INSTRUMENT_IDENTITY=NOT_PROVEN
+MARK_FRESHNESS=NOT_PROVEN
+PRODUCTIVE_RUNTIME_EFFECT=NOT_PROVEN
+DISCOVERY_BRANCH_STATUS=STOP
+```
+
+Bedingte Wertkontinuität ist kein produktiver Laufzeitnachweis. Ein produktiver Caller, eine produktive Preisquelle, eine Trading-Autorität und ein produktiver Runtime-Effekt sind nicht belegt.
 
 ## NF-S5-01 bis NF-S5-07
 
@@ -106,6 +120,31 @@ Tokens aus dem S16-Abschluss. Ebenfalls nicht in der S18-Tabelle ausformuliert u
 |---|---|---|---|---|
 | NF-S17-01 | S9 nennt 49 Nicht-Test-Referenzen. Eine frische String-Zählung ergibt 51. Die Differenz ist nicht klassifiziert. | S17-Abschluss | OPEN | 49er-Dateiliste `EVIDENCE_NOT_RECOVERED` |
 | NF-S17-02 | Runbook-B05 setzt `GOVERNED_PRODUCER_CREATED=true`. `constants_v1.py` Zeile 56 setzt dasselbe Flag auf `False`. Die Implementierung bleibt in beiden Quellen `false`. | S17-Abschluss und Pin-Zeilen | OPEN | keine Auflösung |
+
+## NF-S19-01 bis NF-S19-07
+
+Sätze aus dem S19-Abschluss. Die Klasse steht in `STATUS`. Keine neue Schlussfolgerung.
+
+| ID | CLAIM | PROOF_SCOPE | STATUS | OPEN_DEPENDENCY |
+|---|---|---|---|---|
+| NF-S19-01 | Direkter WP-A-Import in Cycle, Provenance und Reference-Producer abwesend. | S19-Abschluss | PROVEN | Importabwesenheit |
+| NF-S19-02 | Reference-Producer resolved einen gelieferten Mark und ist nicht der Markt-Fact-Producer. | S19-Abschluss | PROVEN | Resolver-Körper |
+| NF-S19-03 | Provenance und Reference-Owner sind getrennte Module. Der Join verkettet sie erst über CMC.mark_price. | S19-Abschluss | PROVEN | getrennte Module und Join-Kette |
+| NF-S19-04 | WP-A-Ticker-Normalizer kann last in ein Mark-Fact schreiben. Kein belegter Übergang in den Reference-Owner. | S19-Abschluss | PROVEN | Normalizer-Verhalten und fehlende Kante |
+| NF-S19-05 | USDT-Reference kann über eine Index-Kante nach USDC skaliert werden. Die Semantikklasse bleibt mark_price. | S19-Abschluss | PROVEN | Codepfad belegt. Produktiver Effekt NOT_PROVEN |
+| NF-S19-06 | Runbook-Historienflag `PRODUCER_IMPLEMENTATION_PRESENT=false` steht gegen Code und JSON true. Runtime-Effekt der Ratifikation bleibt NONE. | S19-Abschluss | PROVEN | Flag-Differenz. Keine Auflösung. Getrennt von NF-S17-02 |
+| NF-S19-07 | Produktive Herkunft von mark_px bleibt NOT_PROVEN. | S19-Abschluss | NOT_PROVEN | PRODUCTIVE_CALLER=SOURCE_NOT_PROVEN |
+
+## NF-S20-01 bis NF-S20-04
+
+Sätze aus dem S20-Abschluss. Die Klasse steht in `STATUS`. Keine neue Schlussfolgerung.
+
+| ID | CLAIM | PROOF_SCOPE | STATUS | OPEN_DEPENDENCY |
+|---|---|---|---|---|
+| NF-S20-01 | Direkte Cycle-Caller sind Addressing-Pass-through, synthetischer Offline-Helfer, sieben SHA- oder netzgegatete Execute-Funktionen und ein GHV-Fixture-Replay. | S20-Abschluss | CONDITIONAL | Addressing bleibt UNRESOLVED. NF-S5-05 und NF-S5-06 nicht geschlossen |
+| NF-S20-02 | Die Execute-Familie liest markPx aus `acquisition_result.mark_price_payload`. Der Acquisition-Producer ist GET `/api/v5/public/mark-price` auf `eea.okx.com`. | S20-Abschluss | CONDITIONAL | Öffentlicher GET-Code vorhanden. Lauf nicht belegt |
+| NF-S20-03 | Diese Execute-Funktionen haben auf diesem Pin keinen produktiven Außenaufrufer. Sechs verlangen einen älteren `origin_main_sha`. | S20-Abschluss | NOT_PROVEN | PRODUCTIVE_CALLER=SOURCE_NOT_PROVEN |
+| NF-S20-04 | `CMC.mark_price` und `replay.intermediate.market_context.mark_price` sind bei erreichtem Replay derselbe Mark-Float. Der Reference-Producer macht daraus ein Decimal. | S20-Abschluss | CONDITIONAL | VALUE_CONTINUITY=CONDITIONAL. Kein produktiver Laufzeitnachweis |
 
 ## E-IN-10, E-IN-11, E-N5-01
 

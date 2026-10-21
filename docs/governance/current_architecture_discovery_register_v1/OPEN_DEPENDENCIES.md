@@ -26,7 +26,7 @@ Nachbarregister: [Discovery-Index](DISCOVERY_INDEX.md), [Finding-Register](FINDI
 | OF-S4-01 | GAP-13 bleibt offen. Kartennamen sind keine geschlossenen Domänen. | S4 | OPEN | GAP-13 |
 | OF-S4-02 | Leere Landscape-Listen. PROVEN_CURRENT nicht übernommen. | S4 | OPEN | Landscape-Listen |
 | OF-S4-03 | Mischung bestätigt, Einzelrolle offen. | S9, S17 | OPEN | Owner-Entscheidung Trackname gegen leeren Slot |
-| OF-S4-04 | WP-A ist nicht der direkte Master-V2-Import. | S4 | OPEN | Preisherkunft und Reference-Price-Owner |
+| OF-S4-04 | WP-A ist nicht der direkte Master-V2-Import. | S4, S19, S20 | NARROWED | Preisherkunft und Reference-Price-Owner. PRODUCTIVE_CALLER=SOURCE_NOT_PROVEN. VALUE_CONTINUITY=CONDITIONAL. INSTRUMENT_IDENTITY=NOT_PROVEN. MARK_FRESHNESS=NOT_PROVEN. PRODUCTIVE_RUNTIME_EFFECT=NOT_PROVEN |
 | OF-S4-05 | Paketgrenze belegt, Universum nicht. | S15 | NARROWED | Universum UNASSIGNED |
 | OF-S4-06 | Runbook-WebUI-Pfad auf dieser Baseline abwesend. Nach S4 nicht erneut gelesen. | S4 | OPEN | Pfad bleibt abwesend, bis neu gelesen |
 | OF-S4-07 | Full-Core-Feedback nicht belegt. | S13, S14 | NARROWED | PRODUCTIVE_FULL_CORE_FEEDBACK=NOT_PROVEN |
@@ -49,6 +49,8 @@ Nachbarregister: [Discovery-Index](DISCOVERY_INDEX.md), [Finding-Register](FINDI
 | NF-S9-04 | Aktivierung der Standing-Gate-Setter nicht belegt. | S9, S10 | OPEN | Aktivierung NOT_PROVEN |
 | NF-S17-01 | 49 gegen 51 unklassifiziert. | S17 | OPEN | Dateiliste `EVIDENCE_NOT_RECOVERED` |
 | NF-S17-02 | Runbook-B05 `GOVERNED_PRODUCER_CREATED=true` gegen Code `False`. | S17 und Pin-Zeilen | OPEN | keine Auflösung in diesem Register |
+| NF-S19-07 | Produktive Herkunft von mark_px bleibt NOT_PROVEN. | S19 | OPEN | PRODUCTIVE_CALLER=SOURCE_NOT_PROVEN |
+| NF-S20-03 | Execute-Funktionen ohne produktiven Außenaufrufer auf diesem Pin. Sechs verlangen einen älteren origin_main_sha. | S20 | OPEN | PRODUCTIVE_CALLER=SOURCE_NOT_PROVEN |
 | F1–F12 | Von S7 offen gelassen. | Execution-Abschluss, S7 | OPEN | F2, F3, F4, F5, F7, F9 Satz `EVIDENCE_NOT_RECOVERED` |
 | EX-OPEN-01 bis EX-OPEN-05 | Von F12 als offen benannt. Einzelclaims nicht gehoben. | F12-Einzeiler | OPEN | `EVIDENCE_NOT_RECOVERED` für den Einzelsatz |
 | S1, S2 | Technische Außengrenze. | S1, S2, S7 | OPEN | NOT_PROVEN |
@@ -61,3 +63,9 @@ Nachbarregister: [Discovery-Index](DISCOVERY_INDEX.md), [Finding-Register](FINDI
 NF-S5-07 ist im [Finding-Register](FINDING_REGISTER.md) erhalten. S8 hat die fehlende Quellkante zum Cycle-Parameter festgehalten. Die Existenz alternativer Konstruktoren bleibt. NF-S9-01, NF-S9-02 und NF-S9-03 sind dort als erhaltene Pins geführt und in dieser Offen-Liste nicht erneut als ungelöste Sachfrage aufgeführt. NF-S9-03 wurde in S17 nicht neu gelesen.
 
 Eine nächste Architektur-Discovery ist aus diesem Register nicht abgeleitet. Die nächste sichere Handlung nach dem Schreibdurchgang ist die Owner-Sichtung des Entwurfs, ohne Commit.
+
+S20 hat NF-S5-05 und NF-S5-06 nicht geschlossen. Diese beiden Zeilen bleiben unverändert.
+
+```text
+DISCOVERY_BRANCH_STATUS=STOP
+```

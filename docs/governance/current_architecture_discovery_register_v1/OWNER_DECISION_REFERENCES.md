@@ -142,6 +142,26 @@ GUARDIAN_ASSIGNMENTS=OPEN
 GUARDIAN_RATIFICATION=NONE
 ```
 
+## OF-S4-04 — S19/S20
+
+```text
+SOURCE=CHAT_TRANSCRIPT_EVIDENCE
+BASELINE=ff7985e3c5dd9c1823a7dfd0ad5924d72a0c09a4
+PROOF_SCOPE=S19- und S20-Abschluss
+STATUS=NARROWED_OPEN
+OPEN_DEPENDENCY=keine neue Owner-Entscheidung
+OWNER_DECISION=NONE
+ARCHITECTURE_RATIFICATION=NONE
+GUARDIAN_RATIFICATION=NONE
+NF-S19-06=SEPARATE_FROM_NF-S17-02
+HISTORICAL_FLAG_DIFFERENCE=UNRESOLVED
+AUTHORITY_EFFECT=NONE
+RUNTIME_AUTHORIZATION_EFFECT=NONE
+DISCOVERY_BRANCH_STATUS=STOP
+```
+
+S19 und S20 treffen keine neue Owner-Entscheidung. Sie ratifizieren keine Architektur und keine Guardian-Rolle. NF-S19-06 bleibt getrennt von NF-S17-02. Die historische Flag-Differenz `PRODUCER_IMPLEMENTATION_PRESENT=false` im Runbook gegen `true` in Code und JSON bleibt ungelöst. Die Equity-Flag-Tabelle oben bleibt unverändert. `AUTHORITY_EFFECT=NONE`. `RUNTIME_AUTHORIZATION_EFFECT=NONE`.
+
 ## Was dieses Dokument nicht entscheidet
 
-Eine Owner-Entscheidung über Trackname gegen leeren Slot, über die beiden `GOVERNED_PRODUCER_CREATED`-Werte und über die Research-Zugehörigkeit bleibt außerhalb dieses Entwurfs. Commit, Push, PR und Merge sind durch den Schreibauftrag nicht gedeckt.
+Eine Owner-Entscheidung über Trackname gegen leeren Slot, über die beiden `GOVERNED_PRODUCER_CREATED`-Werte und über die Research-Zugehörigkeit bleibt außerhalb dieses Entwurfs. S19 und S20 entscheiden diese Paare ebenfalls nicht. Commit, Push, PR und Merge sind durch den Schreibauftrag nicht gedeckt.
