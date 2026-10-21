@@ -11,8 +11,14 @@ from scripts.ops.execution_parent_disclosure_v1.constants_v1 import (
     STATUS_ADMITTED,
 )
 from scripts.ops.execution_parent_instruments_v1.inventory_v1 import (
+    AUTHORITY_READ_EDGE,
     DIRECT_DEPTH,
     FORWARD_ORIGIN,
+    MISSION_END,
+    MISSION_ID,
+    MISSION_START,
+    ONE_SHOT_CALL_EDGE,
+    PRE_EXTERNAL_CALL_EDGE,
     REVERSE_ORIGIN,
     TRANSITIVE_DEPTH,
 )
@@ -31,6 +37,7 @@ def run_execution_ghv_disclosure_v1(
     admission: Mapping[str, Any],
     call_edges: list[dict[str, Any]],
     unknown_edges: list[Mapping[str, Any]],
+    policy_guards: list[Mapping[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Compose and walk only subjects the admission already accepted."""
     if admission.get("status") != STATUS_ADMITTED:
@@ -71,12 +78,24 @@ def run_execution_ghv_disclosure_v1(
     reverse = _walk(composed, REVERSE_ORIGIN, "REVERSE", DIRECT_DEPTH)
     transitive = _walk(composed, FORWARD_ORIGIN, "FORWARD", TRANSITIVE_DEPTH)
     impact = _impact(composed, FORWARD_ORIGIN, TRANSITIVE_DEPTH)
+    submission_reverse = _walk(composed, MISSION_END, "REVERSE", DIRECT_DEPTH)
+    submission_forward = _walk(composed, MISSION_END, "FORWARD", DIRECT_DEPTH)
+    submission_transitive = _walk(composed, MISSION_END, "REVERSE", TRANSITIVE_DEPTH)
     kept = set(composed["evaluated_edges"])
     candidate_edges = [edge for edge in ready_edges if edge["edge_id"] in kept]
     coverage_gap = bool(
         forward["coverage_gap"] or reverse["coverage_gap"] or transitive["coverage_gap"]
     )
     coverage_gap = coverage_gap or bool(rejected_edges) or bool(unknown_edges)
+    mission = _mission(
+        evaluated_edges=kept,
+        unknown_edges=unknown_edges,
+        policy_guards=list(policy_guards or []),
+        forward=forward,
+        submission_reverse=submission_reverse,
+        submission_forward=submission_forward,
+        submission_transitive=submission_transitive,
+    )
     return _envelope(
         "ACCEPTED",
         composition_invoked=True,
@@ -94,7 +113,47 @@ def run_execution_ghv_disclosure_v1(
         coverage_status="PARTIAL" if coverage_gap else "COMPLETE",
         baseline_commit=revision,
         baseline_tree=str(admission.get("baseline_tree") or ""),
+        mission=mission,
     )
+
+
+def _mission(
+    *,
+    evaluated_edges: set[str],
+    unknown_edges: list[Mapping[str, Any]],
+    policy_guards: list[Mapping[str, Any]],
+    forward: Mapping[str, Any],
+    submission_reverse: Mapping[str, Any],
+    submission_forward: Mapping[str, Any],
+    submission_transitive: Mapping[str, Any],
+) -> dict[str, Any]:
+    reached = set(forward.get("reachable") or [])
+    decision_to_submission = "PROVEN" if MISSION_END in reached else "UNKNOWN"
+    return {
+        "mission_id": MISSION_ID,
+        "start": MISSION_START,
+        "end": MISSION_END,
+        "forward_from_decision": list(forward.get("reachable") or []),
+        "reverse_from_submission": list(submission_reverse.get("reachable") or []),
+        "forward_from_submission": list(submission_forward.get("reachable") or []),
+        "transitive_reverse_from_submission": list(submission_transitive.get("reachable") or []),
+        "decision_to_submission": decision_to_submission,
+        "pre_external_calls_decision": (
+            "PROVEN" if PRE_EXTERNAL_CALL_EDGE in evaluated_edges else "UNKNOWN"
+        ),
+        "one_shot_calls_submission": (
+            "PROVEN" if ONE_SHOT_CALL_EDGE in evaluated_edges else "UNKNOWN"
+        ),
+        "submission_reads_external_effect_authority": (
+            "PROVEN" if AUTHORITY_READ_EDGE in evaluated_edges else "UNKNOWN"
+        ),
+        "policy_guards": [dict(guard) for guard in policy_guards],
+        "unknown_edge_ids": [str(edge.get("edge_id") or "") for edge in unknown_edges],
+        "coverage": "PARTIAL"
+        if unknown_edges or decision_to_submission != "PROVEN"
+        else "COMPLETE",
+        "productive_runtime_evidence": False,
+    }
 
 
 def _node(subject_id: str, revision: str) -> dict[str, Any]:

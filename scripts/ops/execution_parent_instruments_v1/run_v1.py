@@ -62,6 +62,7 @@ def run_execution_parent_toolchain_v1(
         admission=admission,
         call_edges=list(inventory["call_edges"]),
         unknown_edges=list(inventory["unknown_edges"]),
+        policy_guards=list(inventory.get("policy_guards") or []),
     )
     graph = run_execution_graph_memory_v1(ghv=ghv)
     findings, refs = findings_for_inventory_v1(inventory, commit_sha=current_commit_sha)

@@ -10,8 +10,14 @@ from scripts.ops.execution_parent_disclosure_v1.constants_v1 import (
     DOUBLE_PLAY_FULL_OWNER_LOCK,
 )
 from scripts.ops.execution_parent_instruments_v1.inventory_v1 import (
+    AUTHORITY_READ_EDGE,
     DIRECT_DEPTH,
     FORWARD_ORIGIN,
+    MISSION_END,
+    MISSION_ID,
+    MISSION_START,
+    ONE_SHOT_CALL_EDGE,
+    PRE_EXTERNAL_CALL_EDGE,
     REVERSE_ORIGIN,
     TRANSITIVE_DEPTH,
 )
@@ -49,9 +55,38 @@ def run_execution_graph_memory_v1(*, ghv: Mapping[str, Any]) -> dict[str, Any]:
     forward = _walk(composed, FORWARD_ORIGIN, "FORWARD", DIRECT_DEPTH)
     reverse = _walk(composed, REVERSE_ORIGIN, "REVERSE", DIRECT_DEPTH)
     transitive = _walk(composed, FORWARD_ORIGIN, "FORWARD", TRANSITIVE_DEPTH)
+    submission_reverse = _walk(composed, MISSION_END, "REVERSE", DIRECT_DEPTH)
+    submission_forward = _walk(composed, MISSION_END, "FORWARD", DIRECT_DEPTH)
+    submission_transitive = _walk(composed, MISSION_END, "REVERSE", TRANSITIVE_DEPTH)
     unknown_edges = list(ghv.get("unknown_edges") or [])
     node_ids = [str(node["canonical_id"]) for node in projected["nodes"]]
     edge_ids = [str(edge["edge_id"]) for edge in projected["edges"]]
+    evaluated = set(edge_ids)
+    reached = set(forward.get("reachable") or [])
+    decision_to_submission = "PROVEN" if MISSION_END in reached else "UNKNOWN"
+    mission = {
+        "mission_id": MISSION_ID,
+        "start": MISSION_START,
+        "end": MISSION_END,
+        "forward_from_decision": list(forward.get("reachable") or []),
+        "reverse_from_submission": list(submission_reverse.get("reachable") or []),
+        "forward_from_submission": list(submission_forward.get("reachable") or []),
+        "transitive_reverse_from_submission": list(submission_transitive.get("reachable") or []),
+        "decision_to_submission": decision_to_submission,
+        "pre_external_calls_decision": (
+            "PROVEN" if PRE_EXTERNAL_CALL_EDGE in evaluated else "UNKNOWN"
+        ),
+        "one_shot_calls_submission": "PROVEN" if ONE_SHOT_CALL_EDGE in evaluated else "UNKNOWN",
+        "submission_reads_external_effect_authority": (
+            "PROVEN" if AUTHORITY_READ_EDGE in evaluated else "UNKNOWN"
+        ),
+        "unknown_edge_ids": [str(edge.get("edge_id") or "") for edge in unknown_edges],
+        "coverage": "PARTIAL"
+        if unknown_edges or decision_to_submission != "PROVEN"
+        else "COMPLETE",
+        "productive_runtime_evidence": False,
+        "current_verified": False,
+    }
     return _envelope(
         "ACCEPTED",
         projected=True,
@@ -65,6 +100,7 @@ def run_execution_graph_memory_v1(*, ghv: Mapping[str, Any]) -> dict[str, Any]:
         coverage_gap=bool(ghv.get("coverage_gap")),
         coverage_status="PARTIAL" if ghv.get("coverage_gap") else "COMPLETE",
         current_verified=bool(projected["current_verified"]),
+        mission=mission,
         reasons=[],
     )
 
