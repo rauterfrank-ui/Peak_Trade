@@ -10,8 +10,10 @@ from pathlib import Path
 from typing import Any
 
 from scripts.ops.execution_parent_instruments_v1.inventory_v1 import (
+    ABSENCE_CHECKS,
     CALL_EDGES,
     OBSERVED_SUBJECTS,
+    POLICY_GUARDS,
     UNKNOWN_EDGES,
     UNKNOWN_SUBJECT,
 )
@@ -105,18 +107,38 @@ def load_verified_inventory_v1(
         if not source["start_line"] <= line_no <= source["end_line"]:
             return None, f"edge_line_outside_source:{edge['edge_id']}"
         source_lines = blobs[str(source["path"])]
-        if (
-            re.search(rf"\b{re.escape(str(edge['callee_symbol']))}\b", source_lines[line_no - 1])
-            is None
-        ):
-            return None, f"edge_call_absent:{edge['edge_id']}"
-        edges.append(_call_edge(edge))
+        edge_type = str(edge.get("edge_type") or "CALLS")
+        if edge_type == "CALLS":
+            if (
+                re.search(
+                    rf"\b{re.escape(str(edge['callee_symbol']))}\b",
+                    source_lines[line_no - 1],
+                )
+                is None
+            ):
+                return None, f"edge_call_absent:{edge['edge_id']}"
+        elif edge_type == "READS_STATE":
+            token = str(edge.get("line_token") or "")
+            if token == "" or token not in source_lines[line_no - 1]:
+                return None, f"edge_token_absent:{edge['edge_id']}"
+        else:
+            return None, f"edge_type_unsupported:{edge['edge_id']}"
+        recorded = dict(edge)
+        recorded["source_path"] = str(source["path"])
+        edges.append(_call_edge(recorded))
+    absence_reason = _absence_reason(blobs, by_id)
+    if absence_reason is not None:
+        return None, absence_reason
+    guards, guard_reason = _policy_guards(blobs, by_id)
+    if guard_reason is not None:
+        return None, guard_reason
     return {
         "pin": commit_sha,
         "tree": tree_sha,
         "disclosure_subjects": subjects,
         "call_edges": edges,
         "unknown_edges": [dict(edge) for edge in UNKNOWN_EDGES],
+        "policy_guards": guards,
         "productive_runtime_evidence": False,
         "functional_membership": False,
     }, None
@@ -137,7 +159,43 @@ def _subject_reason(lines: list[str], record: dict[str, Any]) -> str | None:
     return None
 
 
+def _absence_reason(
+    blobs: dict[str, list[str]],
+    by_id: dict[str, dict[str, Any]],
+) -> str | None:
+    for check in ABSENCE_CHECKS:
+        subject = by_id.get(str(check["subject_id"]))
+        if subject is None:
+            return f"absence_subject_missing:{check['check_id']}"
+        start = int(subject["start_line"])
+        end = int(subject["end_line"])
+        window = "\n".join(blobs[str(subject["path"])][start - 1 : end])
+        if re.search(rf"\b{re.escape(str(check['absent_symbol']))}\b", window) is not None:
+            return f"absence_now_present:{check['check_id']}"
+    return None
+
+
+def _policy_guards(
+    blobs: dict[str, list[str]],
+    by_id: dict[str, dict[str, Any]],
+) -> tuple[list[dict[str, Any]], str | None]:
+    guards: list[dict[str, Any]] = []
+    for guard in POLICY_GUARDS:
+        subject = by_id.get(str(guard["subject_id"]))
+        if subject is None:
+            return [], f"policy_subject_missing:{guard['guard_id']}"
+        line_no = int(guard["evidence_line"])
+        if not int(subject["start_line"]) <= line_no <= int(subject["end_line"]):
+            return [], f"policy_line_outside:{guard['guard_id']}"
+        line = blobs[str(subject["path"])][line_no - 1]
+        if str(guard["token"]) not in line:
+            return [], f"policy_token_absent:{guard['guard_id']}"
+        guards.append(dict(guard))
+    return guards, None
+
+
 def _call_edge(edge: dict[str, Any]) -> dict[str, Any]:
+    edge_type = str(edge.get("edge_type") or "CALLS")
     return {
         "edge_id": edge["edge_id"],
         "source_native_id": edge["source_subject_id"],
@@ -145,9 +203,11 @@ def _call_edge(edge: dict[str, Any]) -> dict[str, Any]:
         "evidence_plane": "DOMAIN_CODE_REFERENCE",
         "causal_traversal_eligible": True,
         "evidence_line": edge["evidence_line"],
+        "evidence_path": edge.get("source_path", ""),
         "typed_edge": {
-            "edge_type": "CALLS",
+            "edge_type": edge_type,
             "trading_authority_implied": False,
+            "evidence_line": edge["evidence_line"],
         },
         "boundary_reference": bool(edge.get("boundary_reference")),
     }

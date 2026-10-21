@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import ast
 import re
+import subprocess
 from pathlib import Path
 
 from scripts.ops.execution_parent_instruments_v1.ghosv_v1 import run_execution_ghosv_disclosure_v1
@@ -11,6 +12,9 @@ from scripts.ops.execution_parent_instruments_v1.graph_v1 import run_execution_g
 from scripts.ops.execution_parent_instruments_v1.ghv_v1 import run_execution_ghv_disclosure_v1
 from scripts.ops.execution_parent_instruments_v1.inventory_v1 import (
     FORWARD_ORIGIN,
+    MISSION_END,
+    ONE_SHOT_CALL_EDGE,
+    PRE_EXTERNAL_CALL_EDGE,
     UNKNOWN_EDGES,
 )
 from scripts.ops.execution_parent_instruments_v1.readiness_v1 import derive_execution_readiness_v1
@@ -23,6 +27,10 @@ _OTHER_COMMIT = "37e51e3c7988026d2caa8c9a83ff46a056e416a8"
 _OTHER_TREE = "4619907408f709ba6781377b853d7efb682bc49d"
 _REPLAY = "execution.boundary.trading_replay"
 _SUBMISSION_UNKNOWN = "execution.decision.runtime_cycle.edge.submission.unknown"
+_REPO = Path(__file__).resolve().parents[2]
+_ONE_SHOT = "execution.submission.one_shot_join"
+_HOST_SEND = "execution.host_send.test_transport_seam"
+_AUTHORITY = "execution.authority.external_effect_authorized"
 _PACKAGES = (
     Path("scripts/ops/execution_parent_instruments_v1"),
     Path("scripts/ops/execution_parent_disclosure_v1"),
@@ -213,6 +221,90 @@ def test_ghosv_missing_evidence_is_rejected() -> None:
     assert readiness["GHOSV_READ_ONLY_READY"] is False
     assert readiness["TOOLCHAIN_READ_ONLY_READY"] is False
     assert readiness["GUARDIAN_ACTIVE"] is False
+
+
+def _git(*args: str) -> str:
+    return subprocess.check_output(["git", "-C", str(_REPO), *args], text=True).strip()
+
+
+def test_mission_queries_keep_decision_to_submission_unknown() -> None:
+    result = _run()
+    ghv_mission = result["ghv"]["mission"]
+    graph_mission = result["graph"]["mission"]
+
+    assert ghv_mission["decision_to_submission"] == "UNKNOWN"
+    assert graph_mission["decision_to_submission"] == "UNKNOWN"
+    assert ghv_mission["pre_external_calls_decision"] == "PROVEN"
+    assert graph_mission["pre_external_calls_decision"] == "PROVEN"
+    assert ghv_mission["one_shot_calls_submission"] == "PROVEN"
+    assert graph_mission["one_shot_calls_submission"] == "PROVEN"
+    assert ghv_mission["submission_reads_external_effect_authority"] == "PROVEN"
+    assert graph_mission["submission_reads_external_effect_authority"] == "PROVEN"
+    assert ghv_mission["forward_from_decision"] == [_REPLAY]
+    assert set(ghv_mission["reverse_from_submission"]) == {_ONE_SHOT, _HOST_SEND}
+    assert set(graph_mission["reverse_from_submission"]) == {_ONE_SHOT, _HOST_SEND}
+    assert ghv_mission["forward_from_submission"] == [_AUTHORITY]
+    assert graph_mission["forward_from_submission"] == [_AUTHORITY]
+    assert ghv_mission["coverage"] == "PARTIAL"
+    assert graph_mission["current_verified"] is False
+    assert result["graph"]["current_verified"] is False
+    assert PRE_EXTERNAL_CALL_EDGE in result["ghv"]["evaluated_edges"]
+    assert ONE_SHOT_CALL_EDGE in result["graph"]["edge_ids"]
+    assert MISSION_END not in ghv_mission["forward_from_decision"]
+    ghosv = result["ghosv"]
+    policy = [
+        finding
+        for finding in ghosv["findings"]
+        if finding["finding_kind"] == "POLICY" and finding["status"] == "OBSERVED"
+    ]
+    state = [finding for finding in ghosv["findings"] if finding["finding_kind"] == "STATE"]
+    reachability = [
+        finding
+        for finding in ghosv["findings"]
+        if finding["finding_kind"] == "REACHABILITY" and finding["status"] == "UNKNOWN"
+    ]
+    assert {finding["observed_state"] for finding in policy} >= {
+        "STANDING_EXTERNAL_EFFECT_MUST_REMAIN_FALSE",
+        "STANDING_REAL_VENUE_POST_FORBIDDEN",
+        "HALT_REQUIRES_EXTERNAL_EFFECT_AUTHORIZED_FALSE",
+    }
+    assert any(finding["observed_state"] == "HARD_STOP_BEFORE_WIRE" for finding in state)
+    assert reachability
+    assert ghosv["counts_as_proof"] is False
+    readiness = result["readiness"]
+    assert readiness["MISSION_PATH_COVERAGE"] == "PARTIAL"
+    assert readiness["DECISION_TO_SUBMISSION"] == "UNKNOWN"
+    assert readiness["MISSION_SCOPE_COVERED"] is False
+    assert readiness["MISSION_CONFLICT"] is False
+    assert readiness["GHOSV_POLICY_OBSERVED"] is True
+    assert readiness["GHV_MISSION_INVESTIGATED"] is True
+    assert readiness["GRAPH_MISSION_INVESTIGATED"] is True
+    assert readiness["GUARDIAN_RATIFIED"] is False
+    assert readiness["CURRENT_VALIDATED"] is False
+
+
+def test_checkout_head_rebinds_without_embedded_baseline() -> None:
+    commit = _git("rev-parse", "HEAD")
+    tree = _git("rev-parse", f"{commit}^{{tree}}")
+    result = _run(current_commit_sha=commit, current_tree_sha=tree)
+
+    assert result["status"] == "ACCEPTED"
+    assert result["admission"]["baseline_commit"] == commit
+    assert result["admission"]["baseline_tree"] == tree
+    assert result["ghv"]["mission"]["decision_to_submission"] == "UNKNOWN"
+    assert result["graph"]["mission"]["one_shot_calls_submission"] == "PROVEN"
+    assert all(commit in item for item in result["graph"]["node_ids"])
+
+
+def test_toolchain_run_does_not_change_the_worktree() -> None:
+    before = _git("status", "--porcelain")
+    result = _run()
+    after = _git("status", "--porcelain")
+
+    assert result["ghv"]["files_written"] is False
+    assert result["graph"]["writer_invoked"] is False
+    assert result["ghosv"]["repository_evidence_write"] is False
+    assert before == after
 
 
 def test_package_does_not_import_writers_or_trading_or_store_a_baseline() -> None:

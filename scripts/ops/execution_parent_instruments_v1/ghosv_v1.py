@@ -105,11 +105,53 @@ def findings_for_inventory_v1(
             "evidence_ref": unknown_ref,
             "affected_scope": unknown["subject_id"],
             "status": UNKNOWN_STATUS,
-            "finding_kind": "OBSERVATION",
+            "finding_kind": "REACHABILITY",
             "reachability": "UNKNOWN",
         }
     )
+    for guard in inventory.get("policy_guards") or []:
+        ref = _ref(commit_sha, str(guard["guard_id"]))
+        refs.append(ref)
+        findings.append(
+            {
+                "finding_id": f"guard:{guard['guard_id']}",
+                "category": str(guard["category"]),
+                "observed_state": str(guard["observed_state"]),
+                "evidence_ref": ref,
+                "affected_scope": str(guard["subject_id"]),
+                "status": "OBSERVED",
+                "finding_kind": str(guard["finding_kind"]),
+                "reachability": "UNKNOWN",
+            }
+        )
+    for edge in inventory.get("unknown_edges") or []:
+        scope = _unknown_scope(str(edge.get("edge_id") or ""), inventory)
+        ref = _ref(commit_sha, str(edge.get("edge_id") or "unknown-edge"))
+        refs.append(ref)
+        findings.append(
+            {
+                "finding_id": f"reachability:{edge['edge_id']}",
+                "category": "ABSENCE",
+                "observed_state": "CALL_NOT_PROVEN",
+                "evidence_ref": ref,
+                "affected_scope": scope,
+                "status": UNKNOWN_STATUS,
+                "finding_kind": "REACHABILITY",
+                "reachability": "UNKNOWN",
+            }
+        )
     return findings, refs
+
+
+def _unknown_scope(edge_id: str, inventory: Mapping[str, Any]) -> str:
+    if edge_id.startswith("execution.pre_external.fresh_runtime_applicability"):
+        return "execution.pre_external.fresh_runtime_applicability"
+    unknown = next(
+        subject["subject_id"]
+        for subject in inventory["disclosure_subjects"]
+        if subject["classification"] == "UNKNOWN"
+    )
+    return str(unknown)
 
 
 def _ref(commit_sha: str, subject_id: str) -> str:

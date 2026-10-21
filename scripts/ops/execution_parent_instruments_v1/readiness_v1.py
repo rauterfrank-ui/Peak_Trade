@@ -52,6 +52,24 @@ def derive_execution_readiness_v1(
         and ghosv.get("counts_as_proof") is False
     )
     toolchain_ready = admission_ready and ghv_ready and graph_ready and ghosv_ready
+    ghv_mission = ghv.get("mission") if isinstance(ghv.get("mission"), Mapping) else {}
+    graph_mission = graph.get("mission") if isinstance(graph.get("mission"), Mapping) else {}
+    ghv_link = ghv_mission.get("decision_to_submission")
+    graph_link = graph_mission.get("decision_to_submission")
+    policy_observed = any(
+        isinstance(finding, Mapping)
+        and finding.get("finding_kind") == "POLICY"
+        and finding.get("status") == "OBSERVED"
+        for finding in ghosv.get("findings") or []
+    )
+    mission_conflict = bool(ghv_link) and bool(graph_link) and ghv_link != graph_link
+    mission_covered = (
+        ghv_link == "PROVEN"
+        and graph_link == "PROVEN"
+        and ghv_mission.get("coverage") == "COMPLETE"
+        and graph_mission.get("coverage") == "COMPLETE"
+        and not mission_conflict
+    )
     return {
         "ADMISSION_READY": admission_ready,
         "GHV_READ_ONLY_READY": ghv_ready,
@@ -75,6 +93,14 @@ def derive_execution_readiness_v1(
         "productive_runtime_evidence": False,
         "evidence_mode": "PIN_BOUND_SOURCE_NOT_PRODUCTIVE_RUNTIME",
         "coverage_status": "PARTIAL" if ghv.get("coverage_gap") else "COMPLETE",
+        "MISSION_PATH_COVERAGE": "COMPLETE" if mission_covered else "PARTIAL",
+        "DECISION_TO_SUBMISSION": ghv_link if not mission_conflict else "CONFLICT",
+        "GHV_MISSION_INVESTIGATED": bool(ghv_mission),
+        "GRAPH_MISSION_INVESTIGATED": bool(graph_mission),
+        "GHOSV_POLICY_OBSERVED": policy_observed,
+        "MISSION_CONFLICT": mission_conflict,
+        "MISSION_SCOPE_COVERED": mission_covered,
+        "GUARDIAN_RATIFIED": False,
     }
 
 
