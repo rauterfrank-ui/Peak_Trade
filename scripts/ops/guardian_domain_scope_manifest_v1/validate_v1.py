@@ -43,6 +43,7 @@ from scripts.ops.pin_scope_binding_v1.constants_v1 import (
 )
 
 Binder = Callable[..., Any]
+_LEGACY_SCOPE_FIELDS = ("allowed_nodes", "exclusions", "unassigned")
 
 _PASSTHROUGH_STATUSES = frozenset(
     {
@@ -212,6 +213,13 @@ def _parse_tool_slots(raw: Any) -> tuple[list[str], dict[str, str]]:
     return reasons, parsed
 
 
+def _contract_fields(scope: Mapping[str, Any]) -> tuple[str, ...]:
+    """Compare the scope contract the manifest actually declared."""
+    if set(scope) & set(SCOPE_FIELDS):
+        return SCOPE_FIELDS
+    return _LEGACY_SCOPE_FIELDS
+
+
 def _binder_reasons(
     result: Mapping[str, Any],
     manifest: Mapping[str, Any],
@@ -254,7 +262,7 @@ def _binder_reasons(
     if not isinstance(scope, Mapping):
         reasons.append("binder_scope_rejected")
         return sorted(reasons)
-    for field in SCOPE_FIELDS:
+    for field in _contract_fields(scope):
         if result.get(field) != scope.get(field):
             reasons.append(f"binder_scope_rejected:{field}")
     allowed = result.get("allowed_nodes")

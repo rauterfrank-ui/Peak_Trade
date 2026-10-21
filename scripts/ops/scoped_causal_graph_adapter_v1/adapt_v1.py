@@ -35,6 +35,7 @@ from scripts.ops.pin_scope_binding_v1.constants_v1 import (
     NETWORK_ACCESS,
     RUNTIME_AUTHORIZATION_EFFECT,
     SAFETY_AUTHORITY,
+    SCOPE_FIELDS,
     STATUS_ACCEPTED,
     STATUS_INVALID_PROVENANCE,
     TRADING_AUTHORITY,
@@ -94,7 +95,7 @@ def run_scoped_causal_graph_v1(
             binding=binding,
             graph_coverage_gap=True,
         )
-    if not wp_a1_result.get("composition_invoked") or not binding["allowed_nodes"]:
+    if not wp_a1_result.get("composition_invoked") or not binding["in_scope_nodes"]:
         return _closed(STATUS_ACCEPTED, integrator_invoked=False, binding=binding)
 
     evidence_reasons = _evidence_reasons(
@@ -102,9 +103,7 @@ def run_scoped_causal_graph_v1(
         declared_commit_sha=declared_commit_sha,
         declared_tree_sha=declared_tree_sha,
         provenance=provenance,
-        allowed_nodes=list(binding["allowed_nodes"]),
-        exclusions=list(binding["exclusions"]),
-        unassigned=list(binding["unassigned"]),
+        binding=binding,
     )
     if evidence_reasons:
         closed_status = STATUS_MISSING_CURRENT_EVIDENCE
@@ -135,6 +134,16 @@ def run_scoped_causal_graph_v1(
             reasons=[safe_reason],
         )
 
+    prelude_reason = _domain_prelude_reason(wp_a1_result)
+    if prelude_reason is not None:
+        return _closed(
+            STATUS_MISSING_CURRENT_EVIDENCE,
+            integrator_invoked=False,
+            binding=binding,
+            graph_coverage_gap=True,
+            reasons=[prelude_reason],
+        )
+
     projected, projection_reason = _project_wp1(
         wp_a1_result=wp_a1_result,
         declared_commit_sha=declared_commit_sha,
@@ -161,6 +170,7 @@ def run_scoped_causal_graph_v1(
             binding=binding,
             graph_coverage_gap=True,
             reasons=list(integrated.errors),
+            output_dir=str(wp1_dir),
         )
 
     _write_provenance_manifest(
@@ -170,8 +180,8 @@ def run_scoped_causal_graph_v1(
         result_pin=str(wp_a1_result["result_pin"]),
         result_tree=str(wp_a1_result["result_tree"]),
         projected=projected,
-        unassigned=list(binding["unassigned"]),
-        exclusions=list(binding["exclusions"]),
+        unassigned=list(binding["unresolved"]),
+        exclusions=list(binding["explicitly_out_of_scope"]),
         unknown_nodes=list(wp_a1_result.get("unknown_nodes") or []),
     )
     inspect = inspector or run_offline_graph_inspection_v1
@@ -238,9 +248,7 @@ def _evidence_reasons(
     declared_commit_sha: str,
     declared_tree_sha: str,
     provenance: Mapping[str, Any],
-    allowed_nodes: list[str],
-    exclusions: list[str],
-    unassigned: list[str],
+    binding: Mapping[str, Any],
 ) -> list[str]:
     reasons: list[str] = []
     result_pin = wp_a1_result.get("result_pin")
@@ -258,11 +266,7 @@ def _evidence_reasons(
     elif not _provenance_equal(checked_provenance, provenance):
         reasons.append("provenance_mismatch")
     scope_identity = wp_a1_result.get("scope_identity")
-    expected_scope = {
-        "allowed_nodes": allowed_nodes,
-        "exclusions": exclusions,
-        "unassigned": unassigned,
-    }
+    expected_scope = {field: list(binding[field]) for field in SCOPE_FIELDS}
     if not isinstance(scope_identity, Mapping):
         reasons.append("scope_identity_missing")
     else:
@@ -277,7 +281,7 @@ def _evidence_reasons(
         reasons.append("coverage_gaps_missing")
     elif coverage_gaps["coverage_gap"] != bool(wp_a1_result.get("coverage_gap")):
         reasons.append("coverage_gaps_contradict_result")
-    caller_scope_gap = not allowed_nodes or bool(unassigned)
+    caller_scope_gap = bool(binding.get("scope_coverage_gap"))
     if not isinstance(wp_a1_result.get("scope_coverage_gap"), bool):
         reasons.append("coverage_dimension_missing:scope_coverage_gap")
     elif caller_scope_gap and not wp_a1_result["scope_coverage_gap"]:
@@ -295,9 +299,9 @@ def _evidence_reasons(
         reasons.append("candidate_graph_missing")
     if not isinstance(evaluated, list):
         return reasons
-    allowed = set(allowed_nodes)
-    excluded = set(exclusions)
-    open_nodes = set(unassigned)
+    allowed = set(binding["in_scope_nodes"])
+    excluded = set(binding["explicitly_out_of_scope"])
+    open_nodes = set(binding["unresolved"])
     unknown = set(wp_a1_result.get("unknown_nodes") or [])
     for native_id in evaluated:
         if native_id not in allowed or native_id in excluded or native_id in open_nodes:
@@ -333,7 +337,7 @@ def _project_wp1(
         native_id = str(candidate.get("object_id") or "")
         if native_id not in evaluated:
             continue
-        nodes.append(_projected_node(native_id, declared_commit_sha))
+        nodes.append(_projected_node(candidate, native_id, declared_commit_sha))
     node_ids = {str(node["source_native_id"]) for node in nodes}
     if node_ids != evaluated:
         return None, "projection_missing_current_edge_type"
@@ -364,22 +368,20 @@ def _project_wp1(
     }, None
 
 
-def _projected_node(native_id: str, commit_sha: str) -> dict[str, Any]:
-    canonical_id = f"CFI/v1/COMPONENT/{commit_sha}/{SOURCE_SYSTEM}/{native_id}"
+def _projected_node(
+    candidate: Mapping[str, Any],
+    native_id: str,
+    commit_sha: str,
+) -> dict[str, Any]:
+    source_system = _source_system(candidate)
+    canonical_id = f"CFI/v1/COMPONENT/{commit_sha}/{source_system}/{native_id}"
     return {
         "canonical_id": canonical_id,
         "entity_type": "COMPONENT",
-        "source_system": SOURCE_SYSTEM,
+        "source_system": source_system,
         "source_native_id": native_id,
-        "metadata": {},
-        "current_relevance": {
-            "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
-            "CURRENT_RELEVANCE_EVIDENCE": "wp_a1_evaluated_node",
-            "EVIDENCE_SOURCE": SCHEMA_ID,
-            "EVIDENCE_REVISION": commit_sha,
-            "VALIDATION_STATUS": "PASS",
-            "ACTIVATION_CONDITION": None,
-        },
+        "metadata": {"reachability": candidate.get("reachability", "UNKNOWN")},
+        "current_relevance": _relevance(candidate, commit_sha, "wp_a1_evaluated_node"),
         "provenance": _provenance(native_id, canonical_id, commit_sha),
     }
 
@@ -392,17 +394,10 @@ def _projected_edge(candidate: Mapping[str, Any], commit_sha: str) -> dict[str, 
         "edge_id": edge_id,
         "source_native_id": str(candidate.get("source_native_id") or ""),
         "target_native_id": str(candidate.get("target_native_id") or ""),
-        "source_system": SOURCE_SYSTEM,
+        "source_system": _source_system(candidate),
         "typed_edge": typed,
         "causal_traversal_eligible": bool(candidate.get("causal_traversal_eligible")),
-        "current_relevance": {
-            "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
-            "CURRENT_RELEVANCE_EVIDENCE": "wp_a1_evaluated_edge",
-            "EVIDENCE_SOURCE": SCHEMA_ID,
-            "EVIDENCE_REVISION": commit_sha,
-            "VALIDATION_STATUS": "PASS",
-            "ACTIVATION_CONDITION": None,
-        },
+        "current_relevance": _relevance(candidate, commit_sha, "wp_a1_evaluated_edge"),
         "provenance": _provenance(edge_id, f"CFI/v1/EDGE/{commit_sha}/{edge_id}", commit_sha),
     }
 
@@ -547,6 +542,7 @@ def _closed(
     observation_coverage_gap: bool = False,
     coverage_gap: bool = True,
     reasons: list[str] | None = None,
+    output_dir: str | None = None,
 ) -> dict[str, Any]:
     scope_coverage_gap = bool((binding or {}).get("scope_coverage_gap"))
     coverage_gap = (
@@ -578,6 +574,56 @@ def _closed(
         "integrated_edge_ids": [],
         "overlay_edge_count": 0,
         "global_causal_closure_proven": False,
-        "output_dir": None,
+        "output_dir": output_dir,
         "reasons": list(reasons or []),
     }
+
+
+def _source_system(record: Mapping[str, Any]) -> str:
+    if record.get("evidence_plane") == "DOMAIN_CODE_REFERENCE":
+        return "DOMAIN_EVIDENCE"
+    return SOURCE_SYSTEM
+
+
+def _relevance(record: Mapping[str, Any], commit_sha: str, evidence: str) -> dict[str, Any]:
+    domain = record.get("evidence_plane") == "DOMAIN_CODE_REFERENCE"
+    unknown = domain or record.get("reachability") == "UNKNOWN"
+    if unknown:
+        return {
+            "CURRENT_RELEVANCE_STATE": "UNKNOWN",
+            "CURRENT_RELEVANCE_EVIDENCE": "reachability_unknown",
+            "EVIDENCE_SOURCE": SCHEMA_ID,
+            "EVIDENCE_REVISION": commit_sha,
+            "VALIDATION_STATUS": "UNKNOWN",
+            "ACTIVATION_CONDITION": None,
+        }
+    return {
+        "CURRENT_RELEVANCE_STATE": "CURRENT_VERIFIED",
+        "CURRENT_RELEVANCE_EVIDENCE": evidence,
+        "EVIDENCE_SOURCE": SCHEMA_ID,
+        "EVIDENCE_REVISION": commit_sha,
+        "VALIDATION_STATUS": "PASS",
+        "ACTIVATION_CONDITION": None,
+    }
+
+
+def _domain_prelude_reason(wp_a1_result: Mapping[str, Any]) -> str | None:
+    candidates = list(wp_a1_result.get("candidate_nodes") or [])
+    domain = any(
+        isinstance(node, Mapping) and node.get("evidence_plane") == "DOMAIN_CODE_REFERENCE"
+        for node in candidates
+    )
+    prelude = wp_a1_result.get("evidence_prelude")
+    if not domain:
+        if prelude is None:
+            return None
+        if not isinstance(prelude, Mapping) or prelude.get("current_verified") is not False:
+            return "prelude_current_verified_forged"
+        return None
+    if not isinstance(prelude, Mapping):
+        return "evidence_prelude_missing"
+    if prelude.get("current_verified") is not False:
+        return "prelude_current_verified_forged"
+    if prelude.get("reachability") != "UNKNOWN":
+        return "prelude_reachability_not_unknown"
+    return None

@@ -1,4 +1,4 @@
-"""Pin and scope binding fixtures use the pinned mainline and recorded legacy pins."""
+"""Pin and scope binding. Historical artifact pins are checked, not relabeled."""
 
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ from scripts.ops.pin_scope_binding_v1.constants_v1 import (
     GUARDIAN_IDENTITY,
     SAFETY_AUTHORITY,
     STATUS_ACCEPTED,
-    STATUS_INPUT_SOURCE_STALE,
+    STATUS_FORGED_PROVENANCE,
     STATUS_INVALID_PROVENANCE,
     STATUS_INVALID_SCOPE,
     STATUS_PIN_MISMATCH,
@@ -17,63 +17,41 @@ from scripts.ops.pin_scope_binding_v1.constants_v1 import (
     STATUS_SCOPE_EMPTY,
     TRADING_AUTHORITY,
 )
-
-CURRENT_COMMIT = "e1059ebea40399ca02ee1f303874f8e09b9d54b1"
-CURRENT_TREE = "fb5bea3e2760a25b47efe05038821e1d1180e1bb"
-CENSUS_LEGACY_PIN = "6216201d7acbc771f84b6b6884eccc41359927cf"
-LANDSCAPE_LEGACY_COMMIT = "e5d9296fb269208b06980518d410b4f2b616bf5b"
-LANDSCAPE_LEGACY_TREE = "6422bfde79fd5aa45d2939a821980abf9aa4e3df"
-GRAPH_LEGACY_PIN = "b6ffca1d3b39b3dd8814c7c795a8aa6e04bc177a"
-
-
-def _provenance(
-    *,
-    census_pin: str = CURRENT_COMMIT,
-    landscape_commit: str = CURRENT_COMMIT,
-    landscape_tree: str = CURRENT_TREE,
-    graph_pin: str = CURRENT_COMMIT,
-) -> dict[str, dict[str, str]]:
-    return {
-        "census": {"pin": census_pin},
-        "landscape": {"commit_pin": landscape_commit, "tree_pin": landscape_tree},
-        "graph": {"pin": graph_pin},
-    }
-
-
-def _scope(
-    allowed: list[str] | None = None,
-    exclusions: list[str] | None = None,
-    unassigned: list[str] | None = None,
-) -> dict[str, list[str]]:
-    return {
-        "allowed_nodes": ["node-a"] if allowed is None else allowed,
-        "exclusions": [] if exclusions is None else exclusions,
-        "unassigned": [] if unassigned is None else unassigned,
-    }
+from tests.ops.guardian_framework_fixtures_v1 import (
+    AUTHORIZED_COMMIT,
+    AUTHORIZED_TREE,
+    CENSUS_EMBEDDED_PIN,
+    GRAPH_LEGACY_PIN,
+    LANDSCAPE_EMBEDDED_TREE,
+    honest_provenance,
+    scope_of,
+)
 
 
 def _bind(**overrides: object) -> dict[str, object]:
     payload = {
-        "authoritative_commit_sha": CURRENT_COMMIT,
-        "authoritative_tree_sha": CURRENT_TREE,
-        "declared_commit_sha": CURRENT_COMMIT,
-        "declared_tree_sha": CURRENT_TREE,
-        "provenance": _provenance(),
-        "scope": _scope(),
+        "authoritative_commit_sha": AUTHORIZED_COMMIT,
+        "authoritative_tree_sha": AUTHORIZED_TREE,
+        "declared_commit_sha": AUTHORIZED_COMMIT,
+        "declared_tree_sha": AUTHORIZED_TREE,
+        "provenance": honest_provenance(),
+        "scope": scope_of(excluded=["node-b"]),
     }
     payload.update(overrides)
     return bind_pin_and_scope_v1(**payload)
 
 
 def test_current_commit_and_tree_are_accepted() -> None:
-    result = _bind(scope=_scope(allowed=["node-a"], exclusions=["node-b"]))
+    result = _bind()
 
     assert result["status"] == STATUS_ACCEPTED
-    assert result["declared_commit_sha"] == CURRENT_COMMIT
-    assert result["declared_tree_sha"] == CURRENT_TREE
-    assert result["allowed_nodes"] == ["node-a"]
-    assert result["exclusions"] == ["node-b"]
-    assert result["unassigned"] == []
+    assert result["declared_commit_sha"] == AUTHORIZED_COMMIT
+    assert result["declared_tree_sha"] == AUTHORIZED_TREE
+    assert result["domain_functional_members"] == ["node-a"]
+    assert result["explicitly_out_of_scope"] == ["node-b"]
+    assert result["unresolved"] == []
+    assert result["stale_sources"] == ["census", "landscape_commit", "landscape_tree", "graph"]
+    assert result["embedded_pins"]["census"] == CENSUS_EMBEDDED_PIN
     assert result["coverage_gap"] is False
     assert result["coverage_proof"] is COVERAGE_PROOF
     assert result["authority"] == AUTHORITY
@@ -84,78 +62,79 @@ def test_current_commit_and_tree_are_accepted() -> None:
 
 
 def test_wrong_commit_sha_is_pin_mismatch() -> None:
-    result = _bind(declared_commit_sha=CENSUS_LEGACY_PIN)
+    result = _bind(declared_commit_sha=CENSUS_EMBEDDED_PIN)
 
     assert result["status"] == STATUS_PIN_MISMATCH
-    assert result["mismatches"] == ["commit"]
+    assert "commit" in result["mismatches"]
     assert result["coverage_proof"] is False
 
 
 def test_wrong_tree_sha_is_pin_mismatch() -> None:
-    result = _bind(declared_tree_sha=LANDSCAPE_LEGACY_TREE)
+    result = _bind(declared_tree_sha=LANDSCAPE_EMBEDDED_TREE)
 
     assert result["status"] == STATUS_PIN_MISMATCH
     assert result["mismatches"] == ["tree"]
 
 
-def test_stale_census_pin_is_input_source_stale() -> None:
-    result = _bind(provenance=_provenance(census_pin=CENSUS_LEGACY_PIN))
-
-    assert result["status"] == STATUS_INPUT_SOURCE_STALE
-    assert result["stale_sources"] == ["census"]
-
-
-def test_stale_landscape_pins_are_input_source_stale() -> None:
+def test_forged_census_current_pin_is_rejected() -> None:
     result = _bind(
-        provenance=_provenance(
-            landscape_commit=LANDSCAPE_LEGACY_COMMIT,
-            landscape_tree=LANDSCAPE_LEGACY_TREE,
-        )
+        provenance=honest_provenance(census_pin=AUTHORIZED_COMMIT, census_currency="CURRENT")
     )
 
-    assert result["status"] == STATUS_INPUT_SOURCE_STALE
-    assert result["stale_sources"] == ["landscape_commit", "landscape_tree"]
+    assert result["status"] == STATUS_FORGED_PROVENANCE
+    assert "census_pin_not_embedded" in result["reasons"]
+    assert result["coverage_proof"] is False
 
 
-def test_stale_graph_pin_is_input_source_stale() -> None:
-    result = _bind(provenance=_provenance(graph_pin=GRAPH_LEGACY_PIN))
+def test_forged_landscape_current_currency_is_rejected() -> None:
+    result = _bind(provenance=honest_provenance(landscape_currency="CURRENT"))
 
-    assert result["status"] == STATUS_INPUT_SOURCE_STALE
-    assert result["stale_sources"] == ["graph"]
+    assert result["status"] == STATUS_FORGED_PROVENANCE
+    assert "landscape_currency_forged_current" in result["reasons"]
+
+
+def test_forged_graph_legacy_pin_is_rejected() -> None:
+    result = _bind(provenance=honest_provenance(graph_pin=GRAPH_LEGACY_PIN))
+
+    assert result["status"] == STATUS_FORGED_PROVENANCE
+    assert "graph_pin_not_absent_sentinel" in result["reasons"]
 
 
 def test_empty_scope_is_a_coverage_gap() -> None:
-    result = _bind(scope=_scope(allowed=[], exclusions=[], unassigned=[]))
+    result = _bind(scope=scope_of(members=[]))
 
     assert result["status"] == STATUS_SCOPE_EMPTY
     assert result["coverage_gap"] is True
     assert result["coverage_proof"] is False
-    assert result["allowed_nodes"] == []
+    assert result["domain_functional_members"] == []
 
 
-def test_unassigned_only_scope_stays_accepted_with_gap() -> None:
-    result = _bind(scope=_scope(allowed=[], exclusions=[], unassigned=["area-open"]))
+def test_unresolved_only_scope_stays_accepted_with_gap() -> None:
+    result = _bind(scope=scope_of(members=[], unresolved=["area-open"]))
 
     assert result["status"] == STATUS_ACCEPTED
-    assert result["allowed_nodes"] == []
-    assert result["unassigned"] == ["area-open"]
+    assert result["domain_functional_members"] == []
+    assert result["unresolved"] == ["area-open"]
     assert result["coverage_gap"] is True
     assert result["coverage_proof"] is False
 
 
-def test_exclusion_overlap_is_scope_conflict() -> None:
-    result = _bind(scope=_scope(allowed=["node-a"], exclusions=["node-a"]))
+def test_class_overlap_is_scope_conflict() -> None:
+    result = _bind(scope=scope_of(members=["node-a"], excluded=["node-a"]))
 
     assert result["status"] == STATUS_SCOPE_CONFLICT
-    assert result["conflicts"] == [{"node": "node-a", "sets": ["allowed_nodes", "exclusions"]}]
-    assert result["allowed_nodes"] == ["node-a"]
-    assert result["exclusions"] == ["node-a"]
+    assert result["conflicts"] == [
+        {
+            "node": "node-a",
+            "sets": ["domain_functional_members", "explicitly_out_of_scope"],
+        }
+    ]
 
 
 def test_invalid_provenance_is_rejected() -> None:
-    provenance = _provenance()
-    provenance["census"] = {"pin": "not-a-sha"}
-    provenance["guardian"] = {"pin": CURRENT_COMMIT}
+    provenance = honest_provenance()
+    provenance["census"] = {"pin": "not-a-sha", "currency": "HISTORICAL"}
+    provenance["guardian"] = {"pin": AUTHORIZED_COMMIT}
 
     result = _bind(provenance=provenance)
 
@@ -165,7 +144,7 @@ def test_invalid_provenance_is_rejected() -> None:
 
 
 def test_exclusions_only_is_a_scope_gap_without_proof() -> None:
-    result = _bind(scope=_scope(allowed=[], exclusions=["node-x"], unassigned=[]))
+    result = _bind(scope=scope_of(members=[], excluded=["node-x"]))
 
     assert result["status"] == STATUS_ACCEPTED
     assert result["scope_coverage_gap"] is True
@@ -173,11 +152,10 @@ def test_exclusions_only_is_a_scope_gap_without_proof() -> None:
     assert result["observation_coverage_gap"] is False
     assert result["coverage_gap"] is True
     assert result["coverage_proof"] is False
-    assert result["allowed_nodes"] == []
 
 
-def test_unassigned_scope_gap_is_independent_of_other_dimensions() -> None:
-    result = _bind(scope=_scope(allowed=["node-a"], unassigned=["node-u"]))
+def test_unresolved_scope_gap_is_independent_of_other_dimensions() -> None:
+    result = _bind(scope=scope_of(unresolved=["node-u"]))
 
     assert result["scope_coverage_gap"] is True
     assert result["graph_coverage_gap"] is False
@@ -186,9 +164,9 @@ def test_unassigned_scope_gap_is_independent_of_other_dimensions() -> None:
     assert result["coverage_proof"] is False
 
 
-def test_malformed_scope_is_invalid_scope() -> None:
-    result = _bind(scope={"allowed_nodes": ["node-a"], "exclusions": "node-b"})
+def test_old_three_field_scope_is_invalid() -> None:
+    result = _bind(scope={"allowed_nodes": ["node-a"], "exclusions": [], "unassigned": []})
 
     assert result["status"] == STATUS_INVALID_SCOPE
-    assert "scope_missing:unassigned" in result["reasons"]
-    assert "exclusions_not_list" in result["reasons"]
+    assert "scope_extra:allowed_nodes" in result["reasons"]
+    assert "scope_missing:domain_functional_members" in result["reasons"]

@@ -12,16 +12,22 @@ from scripts.ops.generic_ghosv_kernel_v1.constants_v1 import (
 from scripts.ops.generic_ghosv_kernel_v1.observe_v1 import run_generic_ghosv_v1
 from scripts.ops.pin_scope_binding_v1.constants_v1 import (
     STATUS_ACCEPTED,
-    STATUS_INPUT_SOURCE_STALE,
+    STATUS_FORGED_PROVENANCE,
     STATUS_PIN_MISMATCH,
     STATUS_SCOPE_EMPTY,
 )
+from tests.ops.guardian_framework_fixtures_v1 import (
+    AUTHORIZED_COMMIT,
+    AUTHORIZED_TREE,
+    GRAPH_LEGACY_PIN,
+    honest_provenance,
+    scope_of,
+)
 
-CURRENT_COMMIT = "e1059ebea40399ca02ee1f303874f8e09b9d54b1"
-CURRENT_TREE = "fb5bea3e2760a25b47efe05038821e1d1180e1bb"
+CURRENT_COMMIT = AUTHORIZED_COMMIT
+CURRENT_TREE = AUTHORIZED_TREE
 OTHER_COMMIT = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
 OTHER_TREE = "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
-GRAPH_LEGACY_PIN = "b6ffca1d3b39b3dd8814c7c795a8aa6e04bc177a"
 KERNEL_DIR = Path(__file__).resolve().parents[2] / "scripts/ops/generic_ghosv_kernel_v1"
 FORBIDDEN_IMPORTS = (
     "ghosv_bounded_context",
@@ -41,14 +47,7 @@ FORBIDDEN_PASS_KEYS = (
 
 
 def _provenance(**overrides: str) -> dict[str, dict[str, str]]:
-    body = {
-        "census": {"pin": CURRENT_COMMIT},
-        "landscape": {"commit_pin": CURRENT_COMMIT, "tree_pin": CURRENT_TREE},
-        "graph": {"pin": CURRENT_COMMIT},
-    }
-    if "graph_pin" in overrides:
-        body["graph"]["pin"] = overrides["graph_pin"]
-    return body
+    return honest_provenance(**overrides)
 
 
 def _finding(
@@ -71,11 +70,7 @@ def _run(**overrides: Any) -> dict[str, Any]:
         "declared_commit_sha": CURRENT_COMMIT,
         "declared_tree_sha": CURRENT_TREE,
         "provenance": _provenance(),
-        "scope": {
-            "allowed_nodes": ["node-a"],
-            "exclusions": [],
-            "unassigned": [],
-        },
+        "scope": scope_of(),
         "findings": [_finding("f-1", "node-a")],
         "evidence_refs": ["ev-1"],
     }
@@ -94,7 +89,7 @@ def _assert_no_release(result: dict[str, Any]) -> None:
 
 def test_valid_findings_stay_unproven() -> None:
     result = _run(
-        scope={"allowed_nodes": ["node-a", "node-b"], "exclusions": [], "unassigned": []},
+        scope=scope_of(["node-a", "node-b"]),
         findings=[_finding("f-b", "node-b", category="ABSENCE"), _finding("f-a", "node-a")],
     )
     assert result["status"] == STATUS_ACCEPTED
@@ -126,16 +121,15 @@ def test_wrong_tree_does_not_emit_findings() -> None:
     _assert_no_release(result)
 
 
-def test_stale_graph_pin_does_not_emit_findings() -> None:
+def test_forged_graph_pin_does_not_emit_findings() -> None:
     result = _run(provenance=_provenance(graph_pin=GRAPH_LEGACY_PIN))
-    assert result["status"] == STATUS_INPUT_SOURCE_STALE
-    assert result["pin_scope"]["stale_sources"] == ["graph"]
+    assert result["status"] == STATUS_FORGED_PROVENANCE
     assert result["findings"] == []
     _assert_no_release(result)
 
 
 def test_empty_scope_is_a_coverage_gap() -> None:
-    result = _run(scope={"allowed_nodes": [], "exclusions": [], "unassigned": []})
+    result = _run(scope=scope_of(members=[]))
     assert result["status"] == STATUS_SCOPE_EMPTY
     assert result["coverage_gap"] is True
     assert result["observation_proof"] is False
@@ -159,7 +153,7 @@ def test_unknown_finding_is_not_observed_proof() -> None:
 
 def test_observed_findings_do_not_clear_unassigned_scope_gap() -> None:
     result = _run(
-        scope={"allowed_nodes": ["node-a"], "exclusions": [], "unassigned": ["node-u"]},
+        scope=scope_of(unresolved=["node-u"]),
         findings=[_finding("f-a", "node-a")],
     )
 
@@ -169,7 +163,7 @@ def test_observed_findings_do_not_clear_unassigned_scope_gap() -> None:
     assert result["observation_coverage_gap"] is False
     assert result["graph_coverage_gap"] is False
     assert result["coverage_gap"] is True
-    assert {"kind": "UNASSIGNED_SCOPE", "affected_scope": "node-u"} in result["coverage_gaps"]
+    assert {"kind": "UNRESOLVED_SCOPE", "affected_scope": "node-u"} in result["coverage_gaps"]
     assert result["observation_proof"] is False
     assert result["coverage_proof"] is False
     assert result["pin_scope"]["scope_coverage_gap"] is True
@@ -177,7 +171,7 @@ def test_observed_findings_do_not_clear_unassigned_scope_gap() -> None:
 
 def test_exclusions_only_is_not_positive_observation_coverage() -> None:
     result = _run(
-        scope={"allowed_nodes": [], "exclusions": ["node-x"], "unassigned": []},
+        scope=scope_of(members=[], excluded=["node-x"]),
         findings=[],
         evidence_refs=[],
     )
@@ -194,7 +188,7 @@ def test_exclusions_only_is_not_positive_observation_coverage() -> None:
 
 
 def test_coverage_fields_are_deterministic() -> None:
-    scope = {"allowed_nodes": ["node-a"], "exclusions": ["node-x"], "unassigned": ["node-u"]}
+    scope = scope_of(excluded=["node-x"], unresolved=["node-u"])
     findings = [
         _finding("f-b", "node-a", status="UNKNOWN"),
         _finding("f-a", "node-a"),
@@ -210,7 +204,7 @@ def test_coverage_fields_are_deterministic() -> None:
 
 def test_unassigned_only_is_not_proof() -> None:
     result = _run(
-        scope={"allowed_nodes": [], "exclusions": [], "unassigned": ["node-u"]},
+        scope=scope_of(members=[], unresolved=["node-u"]),
         findings=[_finding("f-u", "node-u", status="UNASSIGNED")],
     )
     assert result["status"] == STATUS_ACCEPTED
