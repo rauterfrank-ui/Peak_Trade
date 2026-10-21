@@ -37,7 +37,7 @@ _DECISION = FORWARD_ORIGIN
 _SEND = MISSION_END
 _REPLAY = "execution.boundary.trading_replay"
 _ONE_SHOT = "execution.submission.one_shot_join"
-_PROBE_TOKEN = "REAL_VENUE_POST_FORBIDDEN_IN_THIS_SLICE"
+_FORBIDDEN_POST_MARKER = "REAL_VENUE_POST_FORBIDDEN_IN_THIS_SLICE"
 _SEND_SYMBOL = "attempt_envelope_bound_external_effect_send_v1"
 _REFERENCE_ROLES = {
     _DECISION: "DECISION_CYCLE",
@@ -479,7 +479,7 @@ def _relations(
         probe_line = caller["probe_line"]
         if probe_line is None:
             continue
-        if _PROBE_TOKEN not in "\n".join(window):
+        if _FORBIDDEN_POST_MARKER not in "\n".join(window):
             reasons.append(f"probe_token_absent:{caller['subject_id']}")
             continue
         if _symbol_in([lines[int(probe_line) - 1]], "post_trade_order") is False:
