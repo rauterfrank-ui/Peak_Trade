@@ -1,4 +1,4 @@
-"""Run admission, GHV, graph, GHOSV, and readiness. No writers and no activation."""
+"""Run admission, GHV, graph, GHOSV, the boundary inspector, and readiness."""
 
 from __future__ import annotations
 
@@ -9,6 +9,9 @@ from scripts.ops.execution_parent_disclosure_v1.bind_v1 import bind_execution_di
 from scripts.ops.execution_parent_disclosure_v1.constants_v1 import (
     BASELINE_CURRENCY_CURRENT,
     STATUS_FAIL_CLOSED,
+)
+from scripts.ops.execution_parent_instruments_v1.boundary_inspector_v1 import (
+    run_execution_boundary_inspector_v1,
 )
 from scripts.ops.execution_parent_instruments_v1.ghosv_v1 import (
     findings_for_inventory_v1,
@@ -77,6 +80,11 @@ def run_execution_parent_toolchain_v1(
         graph=graph,
         ghosv=ghosv,
     )
+    inspector = run_execution_boundary_inspector_v1(
+        current_commit_sha=current_commit_sha,
+        current_tree_sha=current_tree_sha,
+        repo_root=root,
+    )
     return {
         "status": "ACCEPTED" if readiness["TOOLCHAIN_READ_ONLY_READY"] else "NOT_READY",
         "inventory": inventory,
@@ -84,6 +92,7 @@ def run_execution_parent_toolchain_v1(
         "ghv": ghv,
         "graph": graph,
         "ghosv": ghosv,
+        "boundary_inspector": inspector,
         "readiness": readiness,
         "historical_sources": list(admission.get("historical_sources") or []),
         "productive_runtime_evidence": False,
