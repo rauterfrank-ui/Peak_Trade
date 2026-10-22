@@ -2,37 +2,22 @@
   "authority_effect": "NONE",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "scripts/ops/current_full_stack_semantic_explorer_v1/batch_controller_v1.py",
-    "scripts/ops/current_full_stack_semantic_explorer_v1/budget_v1.py",
     "scripts/ops/current_full_stack_semantic_explorer_v1/run_v1.py",
-    "scripts/ops/current_full_stack_semantic_explorer_v1/s1_physical_v1.py",
-    "scripts/ops/current_full_stack_semantic_explorer_v1/s2_semantic_v1.py",
-    "scripts/ops/current_full_stack_semantic_explorer_v1/s3_causal_v1.py",
-    "scripts/ops/current_full_stack_semantic_explorer_v1/s5_layers_v1.py",
-    "tests/ops/test_current_full_stack_semantic_explorer_v1.py",
     "tests/ops/test_discovery_agent_batch_execution_v1.py"
   ],
-  "changed_paths_sha256": "487e832c2f929f89c1d5add85a022d9946ae1623da99bc7dd5fa8b58b2429f0c",
+  "changed_paths_sha256": "9497d4c3d1e5cd9242e38414a43a3591f7ae37ca6ef4086459d458cb12c8e527",
   "covered_candidate_paths": [
-    "scripts/ops/current_full_stack_semantic_explorer_v1/batch_controller_v1.py",
-    "scripts/ops/current_full_stack_semantic_explorer_v1/budget_v1.py",
     "scripts/ops/current_full_stack_semantic_explorer_v1/run_v1.py",
-    "scripts/ops/current_full_stack_semantic_explorer_v1/s1_physical_v1.py",
-    "scripts/ops/current_full_stack_semantic_explorer_v1/s2_semantic_v1.py",
-    "scripts/ops/current_full_stack_semantic_explorer_v1/s3_causal_v1.py",
-    "scripts/ops/current_full_stack_semantic_explorer_v1/s5_layers_v1.py",
-    "tests/ops/test_current_full_stack_semantic_explorer_v1.py",
     "tests/ops/test_discovery_agent_batch_execution_v1.py"
   ],
   "evidence_refs": [
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "scripts/ops/current_full_stack_semantic_explorer_v1/batch_controller_v1.py",
     "scripts/ops/current_full_stack_semantic_explorer_v1/constants_v1.py",
+    "scripts/ops/current_full_stack_semantic_explorer_v1/run_v1.py",
     "scripts/ops/current_system_interaction_authority_map_v1.py"
   ],
-  "reason": "Change-bound receipt for resumable bounded discovery batches on the offline current full-stack semantic explorer. batch_controller_v1.py was outside the candidate catalog, so NO_MAP_IMPACT was illegal while it remained undetermined. It is registered as an exact file surface, not as a directory. The touched explorer modules and tests/ops files are candidate surfaces. source_v1.json is unchanged, so MAP_UPDATE_REQUIRED is not admissible. The controller schedules bounded offline explorer runs, writes checkpoints outside the repository, and merges claim identities. It does not add or remove a domain, edge, loop, parameter, or productive authority binding. TOOL_AUTHORITY remains NONE and EXTERNAL_EFFECTS_PERFORMED remains 0. The adjudication and candidate files are map surfaces and are excluded from covered candidates. Derived views are unchanged. AUTHORITY_EFFECT=NONE. NO_MAP_IMPACT.",
+  "reason": "Change-bound receipt for isolating admitted non-Python file outcomes from a sibling Python NODE_BUDGET rollback. run_v1.py no longer copies the S2 slice status onto a non-Python file. Those files stay INCOMPLETE with S2_NOT_APPLICABLE and are not marked semantically complete. Python NODE_BUDGET rollback, budgets, claim identity, and checkpoint refusal of false COMPLETE are unchanged. source_v1.json is unchanged, so MAP_UPDATE_REQUIRED is not admissible. The touched explorer module and tests/ops file are already candidate surfaces. The adjudication file is a map surface and is excluded from covered candidates. Derived views are unchanged. TOOL_AUTHORITY remains NONE. AUTHORITY_EFFECT=NONE. NO_MAP_IMPACT.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }

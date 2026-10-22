@@ -214,6 +214,23 @@ def _file_outcomes(
                 }
             )
             continue
+        if not path.endswith(".py"):
+            rows.append(
+                {
+                    "path": path,
+                    "blob_sha": blob,
+                    "status": "INCOMPLETE",
+                    "slice_coverage": {
+                        "S1": "PASS",
+                        "S2": "NOT_RUN",
+                        "S3": "NOT_RUN",
+                        "S4": "NOT_RUN",
+                        "S5": "NOT_RUN",
+                    },
+                    "stop_reasons": ["S2_NOT_APPLICABLE"],
+                }
+            )
+            continue
         semantic_done = path in s2_done or statuses["S2"] == "PASS"
         coverage = {
             "S1": "PASS",
