@@ -328,6 +328,79 @@ def test_merge_keeps_every_claim_and_separates_coverage() -> None:
     assert merged["authority"] == "NONE"
 
 
+def test_non_module_status_is_isolated_from_sibling_node_budget(tmp_path: Path) -> None:
+    huge = "\n".join(f"def h{index}():\n    return {index}\n" for index in range(200))
+    repo, sha, tree = _repo(
+        tmp_path,
+        {
+            "notes.txt": "note\n",
+            "pkg/a.py": "def a():\n    return 1\n",
+            "pkg/z_huge.py": huge,
+            "readme.md": "# readme\n",
+        },
+    )
+    names = ["notes.txt", "pkg/a.py", "pkg/z_huge.py", "readme.md"]
+    files = _files(repo, sha, names)
+    standing = BudgetV1()
+    assert (standing.max_files, standing.max_nodes, standing.max_edges, standing.max_depth) == (
+        40,
+        400,
+        800,
+        6,
+    )
+    assert standing.max_seconds == 20.0
+    destination = tmp_path / "cp"
+    result = execute_worklist(repo, sha, tree, "01", "wl", files, destination)
+    by_path = {item["path"]: item for item in result["files"]}
+    isolated = {
+        "S1": "PASS",
+        "S2": "NOT_RUN",
+        "S3": "NOT_RUN",
+        "S4": "NOT_RUN",
+        "S5": "NOT_RUN",
+    }
+    for path in ("notes.txt", "readme.md"):
+        assert by_path[path]["status"] == "INCOMPLETE"
+        assert by_path[path]["stop_reasons"] == ["S2_NOT_APPLICABLE"]
+        assert by_path[path]["slice_coverage"] == isolated
+    assert by_path["pkg/z_huge.py"]["status"] == "INCOMPLETE"
+    assert by_path["pkg/z_huge.py"]["stop_reasons"] == ["NODE_BUDGET"]
+    assert by_path["pkg/z_huge.py"]["slice_coverage"]["S1"] == "PASS"
+    assert by_path["pkg/z_huge.py"]["slice_coverage"]["S2"] == "INCOMPLETE"
+    assert by_path["pkg/a.py"]["status"] == "COMPLETE"
+    assert by_path["pkg/a.py"]["slice_coverage"] == {
+        name: "PASS" for name in ("S1", "S2", "S3", "S4", "S5")
+    }
+    assert all(item["stop_reasons"] for item in result["files"] if item["status"] == "INCOMPLETE")
+    direct = run_explorer_v1(repo, sha, path_prefixes=tuple(names))
+    repeated = run_explorer_v1(repo, sha, path_prefixes=tuple(names))
+    assert [claim["claim_id"] for claim in _claims(direct)] == [
+        claim["claim_id"] for claim in _claims(repeated)
+    ]
+    assert not any(
+        claim["scope"] == "semantic"
+        and str(claim["subject"]).startswith(("notes.txt", "readme.md"))
+        for claim in _claims(direct)
+    )
+    before = {
+        path.name: path.read_bytes()
+        for path in (destination / "files").glob("*.json")
+        if json.loads(path.read_text(encoding="utf-8"))["path"] == "pkg/a.py"
+    }
+    resumed = execute_worklist(repo, sha, tree, "01", "wl", files, destination, resume=True)
+    after = {
+        path.name: path.read_bytes()
+        for path in (destination / "files").glob("*.json")
+        if json.loads(path.read_text(encoding="utf-8"))["path"] == "pkg/a.py"
+    }
+    assert before == after
+    resumed_by = {item["path"]: item for item in resumed["files"]}
+    assert resumed_by["notes.txt"]["stop_reasons"] == ["S2_NOT_APPLICABLE"]
+    assert resumed_by["readme.md"]["stop_reasons"] == ["S2_NOT_APPLICABLE"]
+    assert resumed_by["pkg/z_huge.py"]["stop_reasons"] == ["NODE_BUDGET"]
+    assert resumed_by["pkg/a.py"]["status"] == "COMPLETE"
+
+
 def test_reality_check_current_files_survive_node_abort() -> None:
     repo = Path(__file__).resolve().parents[2]
     files = []
