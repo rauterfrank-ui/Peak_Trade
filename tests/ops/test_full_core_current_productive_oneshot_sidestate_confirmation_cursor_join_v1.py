@@ -17,8 +17,8 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v
 from tests.ops._current_productive_canonical_price_test_helpers_v1 import (
     provenance_for_bound_v1,
 )
-from tests.ops._current_productive_reconciliation_admission_test_helpers_v1 import (
-    non_productive_test_master_v2_reconciliation_admission_v1,
+from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
+    build_productive_lane_reconciliation_admission_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_sidestate_confirmation_cursor_v1 import (
     CURSOR_LINEAGE_ID,
@@ -53,12 +53,8 @@ from trading.master_v2.canonical_volatility_typed_runtime_producer_scaffold_v1 i
     CanonicalVolatilityTypedRuntimeProducerScaffoldV1,
     TypedRuntimeProducerOutcomeV1,
 )
-from trading.master_v2.capital_risk_sizing_historical_default_deauthorization_v1 import (
-    REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED,
-)
 from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
     CAPITAL_RISK_MODE_LIVE_ACCOUNT_BOUND,
-    CAPITAL_RISK_MODE_OFFLINE_ALGEBRA,
 )
 from trading.master_v2.double_play_entry_exit_policy_v0 import ExistingPositionSide
 from trading.master_v2.double_play_state import SideState
@@ -163,6 +159,17 @@ def _produced_g17_producer(
     return created.producer
 
 
+def _productive_flat_admission_v1(bound: BoundInstrumentV1):
+    """Verified-empty book. The oneshot enter fixture tests flat reconciled entry."""
+    with tempfile.TemporaryDirectory(prefix="pt-oneshot-recon-") as raw:
+        return build_productive_lane_reconciliation_admission_v1(
+            bound=bound,
+            occupancy_payloads={"POSITIONS": {"code": "0", "data": []}},
+            state_root=Path(raw),
+            repository_sha="fixture-oneshot-productive-flat-v1",
+        )
+
+
 def _cycle(
     *,
     cycle_id: str,
@@ -208,10 +215,7 @@ def _cycle(
             mark_px=last,
             index_px=index_px,
         ),
-        master_v2_reconciliation_admission=non_productive_test_master_v2_reconciliation_admission_v1(
-            bound=resolved_bound,
-            session_id=cycle_id,
-        ),
+        master_v2_reconciliation_admission=_productive_flat_admission_v1(resolved_bound),
         **_f1_m9_cycle_ledger_kwargs_v1(),
     )
 
@@ -317,10 +321,8 @@ def test_cycle_b_downstream_enter_29p_29q_venue_plan_envelope_without_permit() -
     )
     assert cycle_b.decision_outcome == "enter_long"
     assert cycle_b.replay is not None
-    # MV2 host wires simulated-economics CRS boundary before integrated replay.
-    assert cycle_b.replay.intermediate.capital_risk_sizing_decision is not None
-    assert str(cycle_b.replay.intermediate.capital_risk_mode) == CAPITAL_RISK_MODE_OFFLINE_ALGEBRA
-    assert REASON_CAPITAL_RISK_CONTEXT_UNRESOLVED not in cycle_b.replay.evidence.reason_codes
+    # Productive replay does not invent offline-algebra equity. Sizing binds at 29P.
+    assert cycle_b.replay.intermediate.capital_risk_sizing_decision is None
 
     join = join_current_productive_enter_live_29p_before_venue_plan_v1(
         replay=cycle_b.replay,

@@ -12,6 +12,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
+from urllib.parse import parse_qs, urlparse
 
 from src.ops.current_productive_eea_universe_inventory_acquisition_v1.transport_v1 import (
     EeaPublicUniverseGetPortV1,
@@ -19,8 +20,15 @@ from src.ops.current_productive_eea_universe_inventory_acquisition_v1.transport_
 from src.ops.current_productive_eea_universe_inventory_acquisition_v1.acquire_v1 import (
     EeaUniverseAcquisitionResultV1,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_canonical_price_provenance_v1 import (
+    build_cmc_mark_provenance_from_okx_mark_price_payload_v1,
+)
 from src.ops.full_core_live_path_composition_root_v1.current_productive_controlled_external_market_observation_v1 import (
     governed_c1_candles_payload_from_closes_v1,
+)
+from src.ops.full_core_live_path_composition_root_v1.current_productive_stored_market_evidence_bind_v1 import (
+    StoredMarketEvidenceBindError,
+    assess_stored_market_evidence_directory_v1,
 )
 from src.ops.full_core_live_path_composition_root_v1.current_productive_governed_cycle_orchestrator_v1 import (
     DISPOSITION_PRE_EXTERNAL_EFFECT,
@@ -112,6 +120,83 @@ def _session_id_v1() -> str:
     return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
 
 
+def _stored_endpoint_payload_v1(
+    store: Mapping[str, Any],
+    *,
+    path: str,
+    native_id: str,
+) -> Any:
+    """Resolve a stored GET body by bare path, instId key, or query string.
+
+    Matches the injected transport lookup. Does not call get().
+    """
+
+    wanted = str(native_id or "").strip()
+    for key in (path, f"{path}#instId={wanted}", f"{path}?instId={wanted}"):
+        if key in store:
+            return store[key]
+    for key, value in store.items():
+        text = str(key)
+        if not text.startswith(f"{path}?"):
+            continue
+        inst_ids = parse_qs(urlparse(text).query).get("instId") or []
+        if wanted in inst_ids:
+            return value
+    return None
+
+
+def bind_native_full_cycle_volume_oi_funding_v1(
+    *,
+    transport: Any,
+    native_id: str,
+) -> tuple[float, float, float]:
+    """Read volume, open interest, and funding from injected transport payloads.
+
+    Does not perform a GET and does not invent missing fields.
+    """
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+        ENDPOINT_MARKET_TICKER,
+        ENDPOINT_PUBLIC_FUNDING_RATE,
+        ENDPOINT_PUBLIC_OPEN_INTEREST,
+        extract_funding_rate_v1,
+        extract_open_interest_v1,
+        extract_ticker_fields_v1,
+    )
+
+    wanted = str(native_id or "").strip()
+    store = getattr(transport, "payloads", None)
+    if not isinstance(store, Mapping):
+        store = getattr(transport, "payloads_by_path", None)
+    if not isinstance(store, Mapping):
+        raise CurrentProductiveNativeFullCycleHostError(
+            "MARKET_FIELD_PROVENANCE_FAIL_CLOSED:transport_payloads_missing"
+        )
+    ticker = _stored_endpoint_payload_v1(store, path=ENDPOINT_MARKET_TICKER, native_id=wanted)
+    open_interest_payload = _stored_endpoint_payload_v1(
+        store, path=ENDPOINT_PUBLIC_OPEN_INTEREST, native_id=wanted
+    )
+    funding_payload = _stored_endpoint_payload_v1(
+        store, path=ENDPOINT_PUBLIC_FUNDING_RATE, native_id=wanted
+    )
+    volume = None if ticker is None else extract_ticker_fields_v1(ticker, native_id=wanted)[2]
+    open_interest = (
+        None
+        if open_interest_payload is None
+        else extract_open_interest_v1(open_interest_payload, native_id=wanted)
+    )
+    funding_rate = (
+        None
+        if funding_payload is None
+        else extract_funding_rate_v1(funding_payload, native_id=wanted)
+    )
+    if volume is None or open_interest is None or funding_rate is None:
+        raise CurrentProductiveNativeFullCycleHostError(
+            "MARKET_FIELD_PROVENANCE_FAIL_CLOSED:"
+            f"volume={volume} oi={open_interest} funding={funding_rate}"
+        )
+    return float(volume), float(open_interest), float(funding_rate)
+
+
 def execute_current_productive_native_full_cycle_host_v1(
     *,
     owner_go: str,
@@ -126,6 +211,7 @@ def execute_current_productive_native_full_cycle_host_v1(
     vault_file: Path | str | None = None,
     producer_observed_at_unix: float | None = None,
     execution_integrity_backend: CurrentProductive29PRuntimeIntegrityBackendV1 | None = None,
+    stored_market_evidence_dir: Path | None = None,
 ) -> CurrentProductiveNativeFullCycleHostResultV1:
     """One-shot composition: EEA→Cap24 typed bound→MV2 advance→PRE_EXTERNAL."""
     if owner_go not in ALLOWED_OWNER_GOS:
@@ -193,30 +279,71 @@ def execute_current_productive_native_full_cycle_host_v1(
         last_event_ts_unix=mv2_advance.enter_event_ts_unix,
     )
     mark_px = float(mv2_advance.enter_mark_px)
-    market_kwargs: Mapping[str, Any] = {
-        "cycle_id_prefix": "native-full-cycle-enter",
-        "mark_px": mark_px,
-        "index_px": mark_px * 0.995,
-        "bid_px": mark_px - 0.5,
-        "ask_px": mark_px + 0.5,
-        "finalized_closes": mv2_advance.enter_closes,
-        "last_finalized_event_ts_unix": mv2_advance.enter_event_ts_unix,
-        "observed_unix": mv2_advance.enter_event_ts_unix + 100.0,
-        "venue_flat": True,
-        "existing_position_side": ExistingPositionSide.NONE,
-        "volume": 10.0,
-        "open_interest": 20.0,
-        "funding_rate": 0.0001,
-        "canonical_price_provenance": build_provenance_from_governed_synthetic_close_mark_and_index_v1(
-            venue_native_id=str(bound.venue_native_id),
-            mark_px=mark_px,
-            index_px=mark_px * 0.995,
-        ),
-    }
-
     preext_transport = pre_external_fresh_get_transport or fresh_get_transport
     if preext_transport is None:
         raise CurrentProductiveNativeFullCycleHostError("PRE_EXTERNAL_FRESH_GET_TRANSPORT_REQUIRED")
+    if stored_market_evidence_dir is not None:
+        try:
+            stored = assess_stored_market_evidence_directory_v1(
+                evidence_dir=Path(stored_market_evidence_dir),
+                native_id=str(bound.venue_native_id),
+            )
+        except StoredMarketEvidenceBindError as exc:
+            raise CurrentProductiveNativeFullCycleHostError(str(exc)) from exc
+        if not stored.complete or stored.mark_payload is None:
+            raise CurrentProductiveNativeFullCycleHostError(
+                "STORED_MARKET_EVIDENCE_INCOMPLETE:" + ",".join(stored.missing_fields)
+            )
+        candles = governed_c1_candles_payload_from_closes_v1(
+            closes=stored.finalized_closes,
+            last_event_ts_unix=float(stored.last_finalized_event_ts_unix or 0.0),
+        )
+        market_kwargs = {
+            "cycle_id_prefix": "native-full-cycle-enter",
+            "mark_px": stored.mark_px,
+            "index_px": stored.index_px,
+            "bid_px": stored.bid_px,
+            "ask_px": stored.ask_px,
+            "finalized_closes": stored.finalized_closes,
+            "last_finalized_event_ts_unix": stored.last_finalized_event_ts_unix,
+            "observed_unix": stored.observed_unix,
+            "venue_flat": True,
+            "existing_position_side": ExistingPositionSide.NONE,
+            "volume": stored.volume,
+            "open_interest": stored.open_interest,
+            "funding_rate": stored.funding_rate,
+            "canonical_price_provenance": build_cmc_mark_provenance_from_okx_mark_price_payload_v1(
+                mark_price_payload=stored.mark_payload,
+                venue_native_id=str(bound.venue_native_id),
+                index_from_ticker=stored.ticker_payload,
+                index_from_index_tickers=stored.index_tickers_payload,
+            ),
+        }
+    else:
+        volume, open_interest, funding_rate = bind_native_full_cycle_volume_oi_funding_v1(
+            transport=preext_transport,
+            native_id=str(bound.venue_native_id),
+        )
+        market_kwargs = {
+            "cycle_id_prefix": "native-full-cycle-enter",
+            "mark_px": mark_px,
+            "index_px": mark_px * 0.995,
+            "bid_px": mark_px - 0.5,
+            "ask_px": mark_px + 0.5,
+            "finalized_closes": mv2_advance.enter_closes,
+            "last_finalized_event_ts_unix": mv2_advance.enter_event_ts_unix,
+            "observed_unix": mv2_advance.enter_event_ts_unix + 100.0,
+            "venue_flat": True,
+            "existing_position_side": ExistingPositionSide.NONE,
+            "volume": volume,
+            "open_interest": open_interest,
+            "funding_rate": funding_rate,
+            "canonical_price_provenance": build_provenance_from_governed_synthetic_close_mark_and_index_v1(
+                venue_native_id=str(bound.venue_native_id),
+                mark_px=mark_px,
+                index_px=mark_px * 0.995,
+            ),
+        }
 
     try:
         preext = execute_current_productive_full_core_pre_external_closure_v1(

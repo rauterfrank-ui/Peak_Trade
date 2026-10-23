@@ -11,6 +11,11 @@ from src.ops.full_core_live_path_composition_root_v1.current_productive_governed
     DISPOSITION_HOLD,
     DISPOSITION_PRE_EXTERNAL_EFFECT,
 )
+from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
+    ENDPOINT_MARKET_TICKER,
+    ENDPOINT_PUBLIC_FUNDING_RATE,
+    ENDPOINT_PUBLIC_OPEN_INTEREST,
+)
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
     ENDPOINT_PUBLIC_INSTRUMENTS,
 )
@@ -25,6 +30,7 @@ from src.ops.governed_productive_account_equity_authority_producer_v1.current_pr
     SELECTION_AUTHORITY,
     TRADING_DECISION_AUTHORITY,
     CurrentProductiveNativeFullCycleHostError,
+    bind_native_full_cycle_volume_oi_funding_v1,
     execute_current_productive_native_full_cycle_host_v1,
 )
 from tests.ops._current_productive_29p_chain_integrity_test_helpers_v1 import (
@@ -51,12 +57,31 @@ AVAIL_EQ_10K = "10000.00"
 _TEST_INST = "ADA-USDT-SWAP"
 
 
+def attach_explicit_synthetic_market_fields_v1(payloads: dict, *, native_id: str) -> dict:
+    """Explicit synthetic ticker, open interest, and funding. Not venue evidence."""
+    payloads[ENDPOINT_MARKET_TICKER] = {
+        "code": "0",
+        "data": [{"instId": native_id, "vol24h": "1234.5", "bidPx": "1", "askPx": "2"}],
+    }
+    payloads[ENDPOINT_PUBLIC_OPEN_INTEREST] = {
+        "code": "0",
+        "data": [{"instId": native_id, "oi": "5678"}],
+    }
+    payloads[ENDPOINT_PUBLIC_FUNDING_RATE] = {
+        "code": "0",
+        "data": [{"instId": native_id, "fundingRate": "0.00015"}],
+    }
+    payloads["/api/v5/trade/orders-pending"] = {"code": "0", "data": []}
+    return payloads
+
+
 def _fresh_get_10k_transport() -> ProductiveClassFreshGetTransportV1:
     payloads = dict(_identity_payloads(instrument_id=_TEST_INST, avail_eq=AVAIL_EQ_10K))
     payloads[ENDPOINT_PUBLIC_INSTRUMENTS] = {
         "code": "0",
         "data": [_productive_instruments_row_for_enter_metadata_v1(instrument_id=_TEST_INST)],
     }
+    attach_explicit_synthetic_market_fields_v1(payloads, native_id=_TEST_INST)
     return ProductiveClassFreshGetTransportV1(payloads=payloads)
 
 
@@ -118,6 +143,74 @@ def test_pre_external_result_does_not_imply_permit_or_post(tmp_path: Path) -> No
     assert pre.post_count == 0
 
 
+def test_market_fields_resolve_transport_query_keys_without_get() -> None:
+    """Contract: stored bodies keyed like a transport GET are readable offline."""
+
+    class _NoGet:
+        def __init__(self, payloads: dict) -> None:
+            self.payloads = payloads
+
+        def get(self, **_kwargs: object) -> None:
+            raise AssertionError("GET_FORBIDDEN")
+
+    native = _TEST_INST
+    transport = _NoGet(
+        {
+            f"{ENDPOINT_MARKET_TICKER}?instId={native}": {
+                "code": "0",
+                "data": [{"instId": native, "vol24h": "2500", "bidPx": "1", "askPx": "2"}],
+            },
+            f"{ENDPOINT_PUBLIC_OPEN_INTEREST}?instId={native}&instType=SWAP": {
+                "code": "0",
+                "data": [{"instId": native, "oi": "8800"}],
+            },
+            f"{ENDPOINT_PUBLIC_FUNDING_RATE}#instId={native}": {
+                "code": "0",
+                "data": [{"instId": native, "fundingRate": "0.0002"}],
+            },
+        }
+    )
+    volume, open_interest, funding_rate = bind_native_full_cycle_volume_oi_funding_v1(
+        transport=transport,
+        native_id=native,
+    )
+    assert volume == 2500.0
+    assert open_interest == 8800.0
+    assert funding_rate == pytest.approx(0.0002)
+
+
+def test_market_fields_do_not_read_another_instrument_query() -> None:
+    class _Store:
+        payloads = {
+            f"{ENDPOINT_MARKET_TICKER}?instId=BTC-USDT-SWAP": {
+                "code": "0",
+                "data": [{"instId": "BTC-USDT-SWAP", "vol24h": "9", "bidPx": "1", "askPx": "2"}],
+            }
+        }
+
+    with pytest.raises(
+        CurrentProductiveNativeFullCycleHostError,
+        match="MARKET_FIELD_PROVENANCE_FAIL_CLOSED",
+    ):
+        bind_native_full_cycle_volume_oi_funding_v1(
+            transport=_Store(),
+            native_id=_TEST_INST,
+        )
+
+
+def test_market_fields_fail_closed_when_payloads_absent() -> None:
+    transport = _fresh_get_10k_transport()
+    transport.payloads.pop(ENDPOINT_PUBLIC_FUNDING_RATE, None)
+    with pytest.raises(
+        CurrentProductiveNativeFullCycleHostError,
+        match="MARKET_FIELD_PROVENANCE_FAIL_CLOSED",
+    ):
+        bind_native_full_cycle_volume_oi_funding_v1(
+            transport=transport,
+            native_id=_TEST_INST,
+        )
+
+
 def test_owner_go_mismatch_raises() -> None:
     with pytest.raises(CurrentProductiveNativeFullCycleHostError, match="OWNER_GO"):
         execute_current_productive_native_full_cycle_host_v1(
@@ -151,6 +244,13 @@ def test_native_full_cycle_host_reaches_pre_external_or_hold_without_driver_slic
     assert result.pre_armed_mv2_fixture_used == "false"
     assert result.eea_result.bound_instrument is not None
     assert result.eea_result.bound_instrument.venue_native_id == _TEST_INST
+    assert str(result.eea_result.cap22_ranking_id).strip()
+    assert str(result.eea_result.cap23_selection_decision_id).strip()
+    assert result.eea_result.master_v2_reconciliation_admission is not None
+    assert (
+        result.eea_result.master_v2_reconciliation_admission.is_productive_upstream_provenance_v1()
+        is True
+    )
     assert result.pre_external_result.post_count == 0
     assert result.pre_external_result.permit_created is False
     assert result.pre_external_result.external_effect_occurred is False
