@@ -4,7 +4,9 @@ from __future__ import annotations
 
 import ast
 import subprocess
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from subprocess import CompletedProcess
 
 import pytest
 
@@ -13,6 +15,9 @@ from src.ops.current_read_only_observation_get_path_v1.constants_v1 import (
     CREDENTIAL_CLASS,
     FORBIDDEN_TRADE_CREDENTIAL_CLASS,
     FORBIDDEN_TRADE_SECRETREF_URI,
+    K1_GET_KEYCHAIN_ACCESS_CONSUMER,
+    K1_GET_KEYCHAIN_ACCESS_OWNER_AUTHORIZATION,
+    K1_KEYCHAIN_ACCESS_STANDING_AUTHORIZED,
     K1_KEYCHAIN_ACCOUNT,
     K1_KEYCHAIN_SERVICE,
     K1_SOURCE_CREDENTIAL_CLASS,
@@ -28,6 +33,8 @@ from src.ops.current_read_only_observation_get_path_v1.handle_v1 import (
 )
 from src.ops.current_read_only_observation_get_path_v1.k1_source_admission_v1 import (
     admit_k1_keychain_get_source_v1,
+    issue_k1_get_keychain_access_permit_v1,
+    load_admitted_k1_get_handle_v1,
     read_named_k1_keychain_opaque_v1,
 )
 from src.ops.current_read_only_observation_get_path_v1.signer_v1 import (
@@ -208,3 +215,114 @@ def test_named_reader_argv_is_exact_and_has_no_secret_dump() -> None:
     assert "-w" in values
     assert "-g" not in values
     assert "urlopen" not in source
+
+
+_NOW = datetime(2026, 10, 24, 0, 0, tzinfo=timezone.utc)
+
+
+def _forbid_subprocess(monkeypatch: pytest.MonkeyPatch) -> None:
+    def fail_run(*_args, **_kwargs):
+        raise AssertionError("subprocess must not run")
+
+    monkeypatch.setattr(subprocess, "run", fail_run)
+
+
+def _issue(*, now: datetime = _NOW, **overrides):
+    fields = {
+        "owner_authorization": K1_GET_KEYCHAIN_ACCESS_OWNER_AUTHORIZATION,
+        "consumer_id": K1_GET_KEYCHAIN_ACCESS_CONSUMER,
+        "keychain_service": K1_KEYCHAIN_SERVICE,
+        "keychain_account": K1_KEYCHAIN_ACCOUNT,
+        "now": now,
+    }
+    fields.update(overrides)
+    return issue_k1_get_keychain_access_permit_v1(**fields)
+
+
+def test_missing_authorization_does_not_read(monkeypatch: pytest.MonkeyPatch) -> None:
+    _forbid_subprocess(monkeypatch)
+    assert K1_KEYCHAIN_ACCESS_STANDING_AUTHORIZED is False
+    with pytest.raises(ReadOnlyObservationGetError, match="KEYCHAIN_ACCESS_AUTHORIZATION_MISSING"):
+        _issue(owner_authorization="")
+    with pytest.raises(ReadOnlyObservationGetError, match="KEYCHAIN_ACCESS_AUTHORIZATION_MISSING"):
+        load_admitted_k1_get_handle_v1(
+            keychain_service=K1_KEYCHAIN_SERVICE,
+            keychain_account=K1_KEYCHAIN_ACCOUNT,
+            credential_class=K1_SOURCE_CREDENTIAL_CLASS,
+        )
+
+
+def test_expired_authorization_does_not_read(monkeypatch: pytest.MonkeyPatch) -> None:
+    _forbid_subprocess(monkeypatch)
+    permit = _issue()
+    with pytest.raises(ReadOnlyObservationGetError, match="KEYCHAIN_ACCESS_EXPIRED"):
+        read_named_k1_keychain_opaque_v1(
+            K1_KEYCHAIN_SERVICE,
+            K1_KEYCHAIN_ACCOUNT,
+            permit=permit,
+            now=_NOW + timedelta(seconds=31),
+        )
+
+
+def test_reused_authorization_reads_once(monkeypatch: pytest.MonkeyPatch) -> None:
+    calls: list[list[str]] = []
+
+    def fake_run(argv, **_kwargs):
+        calls.append(list(argv))
+        return CompletedProcess(argv, 0, stdout=_FIXTURE + b"\n", stderr=b"")
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    permit = _issue()
+    first = read_named_k1_keychain_opaque_v1(
+        K1_KEYCHAIN_SERVICE,
+        K1_KEYCHAIN_ACCOUNT,
+        permit=permit,
+        now=_NOW,
+    )
+    assert first == _FIXTURE
+    with pytest.raises(ReadOnlyObservationGetError, match="KEYCHAIN_ACCESS_REUSED"):
+        read_named_k1_keychain_opaque_v1(
+            K1_KEYCHAIN_SERVICE,
+            K1_KEYCHAIN_ACCOUNT,
+            permit=permit,
+            now=_NOW,
+        )
+    assert len(calls) == 1
+
+
+def test_wrong_service_account_and_consumer_do_not_read(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _forbid_subprocess(monkeypatch)
+    with pytest.raises(ReadOnlyObservationGetError, match="KEYCHAIN_SERVICE_FORBIDDEN"):
+        _issue(keychain_service="other.service")
+    with pytest.raises(ReadOnlyObservationGetError, match="KEYCHAIN_ACCOUNT_FORBIDDEN"):
+        _issue(keychain_account="other.account")
+    with pytest.raises(ReadOnlyObservationGetError, match="KEYCHAIN_ACCESS_CONSUMER_FORBIDDEN"):
+        _issue(consumer_id="PRODUCTIVE_K1_SIGNER")
+
+
+def test_direct_reader_call_without_permit_does_not_read(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    _forbid_subprocess(monkeypatch)
+    with pytest.raises(ReadOnlyObservationGetError, match="KEYCHAIN_ACCESS_AUTHORIZATION_MISSING"):
+        read_named_k1_keychain_opaque_v1(K1_KEYCHAIN_SERVICE, K1_KEYCHAIN_ACCOUNT)
+
+
+def test_permit_repr_and_post_stay_closed() -> None:
+    permit = _issue()
+    assert "fixture-secret-key" not in repr(permit)
+    assert K1_GET_KEYCHAIN_ACCESS_OWNER_AUTHORIZATION not in repr(permit)
+    assert POST_ALLOWED is False
+    assert NETWORK_SEND_AUTHORIZED is False
+    handle = _admit()
+    try:
+        with pytest.raises(ReadOnlyObservationGetError, match="METHOD_FORBIDDEN"):
+            prepare_read_only_observation_get_v1(
+                handle=handle,
+                endpoint="/api/v5/trade/order",
+                method="POST",
+            )
+    finally:
+        release_read_only_observation_session_v1(handle)
