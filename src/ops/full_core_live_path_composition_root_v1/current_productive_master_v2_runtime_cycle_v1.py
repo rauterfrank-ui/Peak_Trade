@@ -837,9 +837,16 @@ def run_current_productive_master_v2_runtime_cycle_v1(
         confirmation_state = restored.scope_confirmation
         directional_last_evaluated = int(confirmation_state.last_evaluated_trading_epoch)
         directional_count = int(confirmation_state.candidate_count)
-    position_state = (
-        PositionState.FLAT_RECONCILED if venue_flat is True else PositionState.OPEN_FULL
-    )
+    if replay_reconciliation_state is not ReconciliationState.RECONCILED or (
+        master_v2_reconciliation_admission.is_productive_upstream_provenance_v1() is not True
+    ):
+        position_state = PositionState.RECONCILIATION_REQUIRED
+    elif bool(venue_flat) and existing_position_side is ExistingPositionSide.NONE:
+        position_state = PositionState.FLAT_RECONCILED
+    elif existing_position_side in (ExistingPositionSide.LONG, ExistingPositionSide.SHORT):
+        position_state = PositionState.OPEN_FULL
+    else:
+        position_state = PositionState.RECONCILIATION_REQUIRED
     durable_kill = resolve_durable_kill_switch_for_mv2_host_v1(
         kill_switch_state_path=kill_switch_state_path,
         explicit_active=bool(explicit_killstate_active),

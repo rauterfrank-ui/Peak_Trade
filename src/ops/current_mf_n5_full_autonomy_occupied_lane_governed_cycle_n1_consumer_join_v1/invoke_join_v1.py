@@ -836,13 +836,19 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         lane_s7["last_finalized_event_ts_unix"] = ingress.last_finalized_event_ts_unix
         lane_s7["venue_flat"] = ingress.position.venue_flat
         lane_s7["existing_position_side"] = ingress.position.existing_position_side
+        from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.position_truth_v1 import (
+            combine_position_snapshots_v1,
+        )
+
+        lane_portfolio = combine_position_snapshots_v1(occupancy, observed_portfolio)
         lane_s7["master_v2_reconciliation_admission"] = (
             build_master_v2_reconciliation_admission_for_lane_v1(
                 identity=ingress.identity,
                 per_lane=ingress.reconciliation,
                 session_id=prefix,
                 repository_sha=str(origin_main_sha),
-                portfolio=observed_portfolio,
+                portfolio=lane_portfolio,
+                state_root=Path(cursor_store_root),
             )
         )
         lane_candles = dict(ingress.candles_payload)

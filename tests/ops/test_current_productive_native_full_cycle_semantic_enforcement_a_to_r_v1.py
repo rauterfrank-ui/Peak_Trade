@@ -49,6 +49,9 @@ from tests.ops.test_full_core_current_productive_29p_common_epoch_handoff_v1 imp
 from tests.ops.test_full_core_current_productive_eea_universe_inventory_to_cap24_and_29p_v1 import (
     _eligible_transport,
 )
+from tests.ops.test_current_productive_native_full_cycle_host_v1 import (
+    attach_explicit_synthetic_market_fields_v1,
+)
 from tests.ops.test_full_core_current_productive_pre_external_closure_v1 import (
     ProductiveClassFreshGetTransportV1,
     _productive_instruments_row_for_enter_metadata_v1,
@@ -79,6 +82,7 @@ def _transports(*, instrument_id: str = _INST, avail_eq: str = AVAIL_EQ):
         "code": "0",
         "data": [_productive_instruments_row_for_enter_metadata_v1(instrument_id=instrument_id)],
     }
+    attach_explicit_synthetic_market_fields_v1(payloads, native_id=instrument_id)
     a = ProductiveClassFreshGetTransportV1(payloads=payloads)
     b = ProductiveClassFreshGetTransportV1(payloads=dict(payloads))
     return a, b
@@ -217,8 +221,8 @@ def test_O_fail_closed_missing_selected_market_observation(tmp_path: Path) -> No
             origin_main_sha=TRUSTED_TEST_ORIGIN_MAIN_SHA,
             evidence_root=tmp_path / "o",
             acquisition_transport=_eligible_transport(),
-            fresh_get_transport=empty,
-            pre_external_fresh_get_transport=get_b,
+            fresh_get_transport=get_a,
+            pre_external_fresh_get_transport=empty,
             producer_observed_at_unix=1_700_000_100.0,
             execution_integrity_backend=_integrity(),
         )
@@ -231,8 +235,10 @@ def test_P_fail_closed_stale_observation(tmp_path: Path) -> None:
 
 def test_Q_fail_closed_instrument_mismatch(tmp_path: Path) -> None:
     get_a, _ = _transports()
+    mismatch_payloads = dict(_identity_payloads(instrument_id=_INST, avail_eq=AVAIL_EQ))
+    attach_explicit_synthetic_market_fields_v1(mismatch_payloads, native_id=_INST)
     mismatch = MismatchInstrumentTransportV1(
-        payloads=dict(_identity_payloads(instrument_id=_INST, avail_eq=AVAIL_EQ)),
+        payloads=mismatch_payloads,
         wrong_inst="ETH-USDT-SWAP",
     )
     result = execute_current_productive_native_full_cycle_host_v1(

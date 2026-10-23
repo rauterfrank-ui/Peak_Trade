@@ -70,10 +70,12 @@ from src.ops.full_core_live_path_composition_root_v1.final_order_envelope_v1 imp
     FinalOrderEnvelopeV1,
 )
 from src.ops.full_core_live_path_composition_root_v1.fresh_pretrade_runtime_get_v1 import (
+    ENDPOINT_ACCOUNT_CONFIG,
     ENDPOINT_ACCOUNT_POSITIONS,
     FullCoreFreshPretradeGetTransportV1,
     TRANSPORT_CLASS_PRODUCTIVE_READ_ONLY_GET,
 )
+from src.ops.h1_get_evidence_admission_v1.constants_v1 import ENDPOINT_ORDERS_PENDING
 from src.ops.full_core_live_path_composition_root_v1.productive_read_only_get_transport_v1 import (
     FullCoreProductiveReadOnlyGetTransportV1,
 )
@@ -675,9 +677,25 @@ def execute_current_productive_full_core_pre_external_closure_v1(
             mk.setdefault("index_px", 100.0)
             mk.setdefault("bid_px", 99.5)
             mk.setdefault("ask_px", 100.5)
-            mk.setdefault("volume", 10.0)
-            mk.setdefault("open_interest", 20.0)
-            mk.setdefault("funding_rate", 0.0001)
+            missing_market = [
+                name
+                for name, key in (
+                    ("VOLUME", "volume"),
+                    ("OPEN_INTEREST", "open_interest"),
+                    ("FUNDING_RATE", "funding_rate"),
+                )
+                if key not in mk or mk.get(key) is None
+            ]
+            if missing_market:
+                return _fail(
+                    wp1="PASS",
+                    wp2="FAIL",
+                    blocker="MARKET_FIELD_PROVENANCE_FAIL_CLOSED:" + ",".join(missing_market),
+                    status_fields={
+                        "COMMON_EPOCH_STATUS": "PASS",
+                        "29P_ADMISSIBILITY_STATUS": TRUE_TOKEN,
+                    },
+                )
             mk.setdefault("finalized_closes", (98.0, 99.0, 100.0))
             mk.setdefault("last_finalized_event_ts_unix", mk["observed_unix"] - 60.0)
             mk.setdefault("venue_flat", True)
@@ -748,6 +766,32 @@ def execute_current_productive_full_core_pre_external_closure_v1(
                 )
             )
 
+        position_store = getattr(transport, "payloads", None)
+        if not isinstance(position_store, Mapping):
+            position_store = getattr(transport, "payloads_by_path", None)
+        def _stored(key: str) -> Any:
+            if not isinstance(position_store, Mapping):
+                return None
+            return position_store.get(key)
+
+        positions_payload = _stored(ENDPOINT_ACCOUNT_POSITIONS)
+        pending_payload = _stored(ENDPOINT_ORDERS_PENDING)
+        config_payload = _stored(ENDPOINT_ACCOUNT_CONFIG)
+        if positions_payload is None or pending_payload is None or config_payload is None:
+            return _fail(
+                wp1="PASS",
+                wp2="FAIL",
+                blocker="POSITION_PAYLOAD_FAIL_CLOSED",
+                status_fields={
+                    "COMMON_EPOCH_STATUS": "PASS",
+                    "29P_ADMISSIBILITY_STATUS": TRUE_TOKEN,
+                },
+            )
+        invoke_kwargs["occupancy_payloads"] = {
+            "POSITIONS": positions_payload,
+            "PENDING": pending_payload,
+            "CONFIG": config_payload,
+        }
         results = invoke_occupied_lane_governed_cycle_n1_consumer_v1(
             pairs,
             live_29p_injected=live_29p_injected,

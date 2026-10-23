@@ -118,6 +118,11 @@ def _observation_from_closes(
     mark_payload, index_payload = observation_mark_payloads_for_bound_v1(
         bound=b, mark_px=mark_px, index_px=index_px
     )
+    # Explicit synthetic observation fields. Not venue tape and not runtime proof.
+    row = mark_payload["data"][0]
+    row["vol24h"] = "1234.5"
+    row["oi"] = "5678"
+    row["fundingRate"] = "0.00015"
     return InjectedContinuousObservationV1(
         candles_payload=candles,
         occupancy_payloads=_occupancy_absent(),
@@ -213,6 +218,7 @@ def test_n1_bootstrap_uses_injected_c1_closes_not_stale_market_kwargs(tmp_path: 
             index_px=index_px,
         )
     )
+    kwargs["occupancy_payloads"] = _occupancy_absent()
     results = invoke_occupied_lane_governed_cycle_n1_consumer_v1(pairs, **kwargs)
     assert results["LANE_1"].governed_cycle_result.post_count == 0
     assert (Path(pairs["LANE_1"][0].lane_state_root) / CURSOR_FILENAME).is_file()
@@ -534,4 +540,178 @@ def test_cursor_store_mismatch_fail_closed(tmp_path: Path) -> None:
             lock_root=tmp_path / "lock",
             evidence_root=tmp_path / "ev",
             candles_payload={"code": "0", "data": []},
+        )
+
+
+def test_market_field_provenance_fail_closed_without_explicit_fields() -> None:
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
+        _market_kwargs_from_observation_v1,
+    )
+
+    bound = _bound_lane_1()
+    closes = strong_uptrend_closes_v1(count=12)
+    event_ts = governed_productive_c1_event_ts_unix_v1(offset_seconds=180.0)
+    candles = governed_c1_candles_payload_from_enter_closes_v1(
+        enter_closes=closes,
+        last_event_ts_unix=event_ts,
+    )
+    mark_px = float(closes[-1]) + 1.0
+    mark_payload, index_payload = observation_mark_payloads_for_bound_v1(
+        bound=bound,
+        mark_px=mark_px,
+        index_px=mark_px * 0.995,
+    )
+    with pytest.raises(
+        PersistentNaturalEnterConvergenceError, match="MARKET_FIELD_PROVENANCE_FAIL_CLOSED"
+    ):
+        _market_kwargs_from_observation_v1(
+            candles_payload=candles,
+            mark_price_payload=mark_payload,
+            venue_native_id=str(bound.venue_native_id),
+            index_tickers_payload=index_payload,
+            cycle_id_prefix="missing-fields",
+            origin_main_sha=ORIGIN_SHA,
+            g17_producers={},
+            occupancy_payloads=_occupancy_absent(),
+        )
+
+
+def test_flat_synthetic_decision_sequence_unchanged_with_productive_gate(tmp_path: Path) -> None:
+    """Labeled synthetic tape. Not a venue observation and not runtime proof."""
+    import src.ops.current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1.invoke_join_v1 as join
+    import src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 as natural
+
+    outcomes: list[str] = []
+    real = natural.compose_occupied_lane_mv2_dp_durable_cycle_v1
+
+    def _record(*args: object, **kwargs: object) -> object:
+        admission = kwargs.get("master_v2_reconciliation_admission")
+        assert admission is not None
+        assert admission.is_productive_upstream_provenance_v1() is True
+        result = real(*args, **kwargs)
+        for item in result.values():
+            outcomes.append(str(item.cycle_result.decision_outcome))
+        return result
+
+    natural.compose_occupied_lane_mv2_dp_durable_cycle_v1 = _record
+    join.compose_occupied_lane_mv2_dp_durable_cycle_v1 = _record
+    try:
+        bound = _bound_lane_1()
+        lane_root = tmp_path / "lane_state"
+        pairs = build_s8_occupied_lane_pairs_v1(lane_state_root=lane_root, bound=bound)
+        g17 = _lane_g17(pairs)
+        path = strong_uptrend_closes_v1()
+        t0 = governed_productive_c1_event_ts_unix_v1(offset_seconds=300.0)
+        steps = [
+            _observation_from_closes(
+                closes=path[: 18 + index],
+                event_ts=t0 + (index * 60.0),
+                bound=bound,
+            )
+            for index in range(4)
+        ]
+        bootstrap_s8_lane_via_s7_compose_v1(
+            composed_pairs=pairs,
+            origin_main_sha=ORIGIN_SHA,
+            g17_producers=g17,
+            candles_payload=steps[0].candles_payload,
+            mark_price_payload=steps[0].mark_price_payload,
+            venue_native_id=str(bound.venue_native_id),
+            index_tickers_payload=steps[0].index_tickers_payload,
+            occupancy_payloads=steps[0].occupancy_payloads,
+        )
+        cursor_root = Path(pairs["LANE_1"][0].lane_state_root)
+        floor = _cursor_floor_or_zero(cursor_root)
+        auth = _continuous_auth(native_id=str(bound.venue_native_id), max_cycles=3)
+        auth = CurrentProductiveGovernedContinuousCycleRunAuthorizationV1(
+            continuous_owner_go=auth.continuous_owner_go,
+            native_id=auth.native_id,
+            bar=auth.bar,
+            expected_cursor_floor=float(floor),
+            max_cycles_per_run=3,
+            max_run_duration_seconds=auth.max_run_duration_seconds,
+            wait_interval_seconds=auth.wait_interval_seconds,
+            max_wait_for_next_c1_seconds=auth.max_wait_for_next_c1_seconds,
+            stall_seconds=auth.stall_seconds,
+        )
+        result = run_offline_persistent_natural_enter_convergence_v1(
+            authorization=auth,
+            origin_main_sha=ORIGIN_SHA,
+            lane_state_root=lane_root,
+            bound=bound,
+            g17_producers=g17,
+            observation_source=ScriptedContinuousObservationSourceV1(steps[1:]),
+            evidence_root=tmp_path / "evidence",
+            time_fn=_FakeClock().time,
+            sleep_fn=lambda _s: None,
+        )
+    finally:
+        natural.compose_occupied_lane_mv2_dp_durable_cycle_v1 = real
+        join.compose_occupied_lane_mv2_dp_durable_cycle_v1 = real
+    assert outcomes == ["reduce", "observe", "enter_long", "enter_long"]
+    assert result.cycles_completed == 3
+    assert result.post_count == 0
+    assert result.permit_created is False
+    assert result.disposition == DISPOSITION_MAX_CYCLES
+    assert CONTINUOUS_RUN_AUTHORIZED is False
+
+
+def test_open_position_against_empty_book_fail_closed_before_decision(tmp_path: Path) -> None:
+    bound = _bound_lane_1()
+    native_id = str(bound.venue_native_id)
+    lane_root = tmp_path / "lane_state"
+    pairs = build_s8_occupied_lane_pairs_v1(lane_state_root=lane_root, bound=bound)
+    obs = _observation_from_closes(
+        closes=strong_uptrend_closes_v1(count=18),
+        event_ts=governed_productive_c1_event_ts_unix_v1(offset_seconds=300.0),
+        bound=bound,
+    )
+    occupancy = _occupancy_absent()
+    occupancy["POSITIONS"] = {
+        "code": "0",
+        "data": [{"instId": native_id, "pos": "1", "posSide": "long"}],
+    }
+    with pytest.raises(
+        PersistentNaturalEnterConvergenceError,
+        match="PRODUCTIVE_RECONCILIATION_GATE_FAIL_CLOSED",
+    ):
+        bootstrap_s8_lane_via_s7_compose_v1(
+            composed_pairs=pairs,
+            origin_main_sha=ORIGIN_SHA,
+            g17_producers=_lane_g17(pairs),
+            candles_payload=obs.candles_payload,
+            mark_price_payload=obs.mark_price_payload,
+            venue_native_id=native_id,
+            index_tickers_payload=obs.index_tickers_payload,
+            occupancy_payloads=occupancy,
+        )
+
+
+def test_foreign_position_evidence_fail_closed(tmp_path: Path) -> None:
+    bound = _bound_lane_1()
+    lane_root = tmp_path / "lane_state"
+    pairs = build_s8_occupied_lane_pairs_v1(lane_state_root=lane_root, bound=bound)
+    obs = _observation_from_closes(
+        closes=strong_uptrend_closes_v1(count=18),
+        event_ts=governed_productive_c1_event_ts_unix_v1(offset_seconds=300.0),
+        bound=bound,
+    )
+    occupancy = _occupancy_absent()
+    occupancy["POSITIONS"] = {
+        "code": "0",
+        "data": [{"instId": "OTHER-USDT-SWAP", "pos": "1", "posSide": "long"}],
+    }
+    with pytest.raises(
+        PersistentNaturalEnterConvergenceError,
+        match="POSITION_EVIDENCE_FAIL_CLOSED",
+    ):
+        bootstrap_s8_lane_via_s7_compose_v1(
+            composed_pairs=pairs,
+            origin_main_sha=ORIGIN_SHA,
+            g17_producers=_lane_g17(pairs),
+            candles_payload=obs.candles_payload,
+            mark_price_payload=obs.mark_price_payload,
+            venue_native_id=str(bound.venue_native_id),
+            index_tickers_payload=obs.index_tickers_payload,
+            occupancy_payloads=occupancy,
         )

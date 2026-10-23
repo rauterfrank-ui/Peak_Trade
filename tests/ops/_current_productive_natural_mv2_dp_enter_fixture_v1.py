@@ -514,7 +514,17 @@ def _compose_layered_lane_cycle_v1(
     cycle_id_prefix: str,
 ) -> Any:
     index_px = float(mark_px) * 0.995
-    bound = pair[1]
+    slot, bound = pair
+    from src.ops.full_core_live_path_composition_root_v1.current_productive_persistent_natural_enter_convergence_v1 import (
+        build_productive_lane_reconciliation_admission_v1,
+    )
+
+    admission = build_productive_lane_reconciliation_admission_v1(
+        bound=bound,
+        occupancy_payloads={"POSITIONS": {"code": "0", "data": []}},
+        state_root=Path(slot.lane_state_root),
+        repository_sha="fixture-natural-enter-productive-flat-v1",
+    )
     return compose_occupied_lane_mv2_dp_durable_cycle_v1(
         {"LANE_1": pair},
         cycle_id_prefix=cycle_id_prefix,
@@ -536,6 +546,7 @@ def _compose_layered_lane_cycle_v1(
             mark_px=float(mark_px),
             index_px=index_px,
         ),
+        master_v2_reconciliation_admission=admission,
     )["LANE_1"].cycle_result
 
 
