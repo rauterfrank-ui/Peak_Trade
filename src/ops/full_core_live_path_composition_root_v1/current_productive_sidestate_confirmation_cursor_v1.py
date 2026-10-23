@@ -345,13 +345,6 @@ def restore_current_productive_sidestate_confirmation_cursor_v1(
             reason_code="CURSOR_MISSING",
             fail_closed=False,
         )
-    if venue_flat is not True:
-        return CurrentProductiveCursorRestoreResultV1(
-            disposition=CursorRestoreDispositionV1.NOT_APPLICABLE_OCCUPIED,
-            cursor=None,
-            reason_code="CURSOR_NOT_APPLICABLE_OCCUPIED",
-            fail_closed=False,
-        )
     try:
         if isinstance(payload, CurrentProductiveSideStateConfirmationCursorV1):
             cursor = payload
@@ -391,7 +384,7 @@ def restore_current_productive_sidestate_confirmation_cursor_v1(
     if cursor.cap61_confirmation_state is not None:
         if _text(cursor.cap61_confirmation_state.instrument_id) != expected_instrument:
             return _mismatch_result("CURSOR_CAP61_INSTRUMENT_MISMATCH")
-    if cursor.side_state in ACTIVE_FLAT_INCOMPATIBLE_SIDESTATES:
+    if venue_flat is True and cursor.side_state in ACTIVE_FLAT_INCOMPATIBLE_SIDESTATES:
         return _stale_result("CURSOR_ACTIVE_SIDESTATE_WHILE_FLAT")
     if cursor.trading_epoch < 1 or cursor.last_evaluated_trading_epoch < 0:
         return _stale_result("CURSOR_EPOCH_STALE")

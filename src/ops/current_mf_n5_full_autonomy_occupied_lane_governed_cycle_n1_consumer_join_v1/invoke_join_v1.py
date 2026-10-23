@@ -761,7 +761,7 @@ def invoke_occupied_lane_governed_cycle_n1_consumer_v1(
         if slot.occupancy != OCCUPANCY_OCCUPIED:
             _fail(FAILURE_OCCUPANCY, lane_id)
     addressed = bind_occupied_lane_governed_cycle_store_roots_v1(composed_pairs)
-    occupancy = dict(occupancy_payloads) if occupancy_payloads is not None else _occupancy_absent()
+    occupancy = dict(occupancy_payloads) if occupancy_payloads is not None else None
     try:
         per_lane_ingress, _ownership = compose_per_lane_n5_identity_closure_v1(
             composed_pairs,

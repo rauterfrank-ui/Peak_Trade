@@ -474,4 +474,5 @@ def test_n1_regression_single_lane_shared_c1(tmp_path: Path) -> None:
             venue_native_id="VENUE-LANE_1", mark_px=mark, index_px=99.5
         ),
         g17_typed_vol_producers={"LANE_1": _g17("INST-LANE_1", "VENUE-LANE_1")},
+        occupancy_payloads=_occupancy_absent(),
     )

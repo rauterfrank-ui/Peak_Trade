@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from decimal import Decimal
 from typing import Any, Mapping
 
 from src.ops.full_core_live_path_composition_root_v1.current_productive_master_v2_runtime_cycle_v1 import (
@@ -65,6 +66,9 @@ class PerLanePositionTruthV1:
     venue_flat: bool
     existing_position_side: ExistingPositionSide
     position_status_source: str
+    signed_quantity: Decimal | None = None
+    matched_instrument_id: str = ""
+    evidence_class: str = ""
 
 
 @dataclass(frozen=True)
