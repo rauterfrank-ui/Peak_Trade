@@ -769,6 +769,7 @@ def execute_current_productive_full_core_pre_external_closure_v1(
         position_store = getattr(transport, "payloads", None)
         if not isinstance(position_store, Mapping):
             position_store = getattr(transport, "payloads_by_path", None)
+
         def _stored(key: str) -> Any:
             if not isinstance(position_store, Mapping):
                 return None
