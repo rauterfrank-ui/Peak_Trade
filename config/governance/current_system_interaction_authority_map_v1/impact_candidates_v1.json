@@ -530,6 +530,7 @@
     "src/ops/current_mf_n5_staged_productive_runtime_admission_recovery_audit_v1/",
     "src/ops/current_productive_eea_universe_inventory_acquisition_v1/transport_v1.py",
     "src/ops/current_productive_universe_refresh_orchestrator_v1.py",
+    "src/ops/current_read_only_observation_get_path_v1/",
     "src/ops/current_wp02_default_productive_universe_handoff_v1/",
     "src/ops/current_wp03_live_scoped_observation_golden_convergence_v1/",
     "src/ops/current_wp04_standing_pre_external_admission_endgame_done_gate_v1/",
