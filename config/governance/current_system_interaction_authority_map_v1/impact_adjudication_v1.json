@@ -2,26 +2,47 @@
   "authority_effect": "NONE",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
-    "src/ops/current_productive_universe_refresh_orchestrator_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
-    "tests/ops/test_current_productive_universe_refresh_orchestrator_v1.py"
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+    "src/ops/current_mf_n5_instrument_runtime_identity_closure_v1/reconciliation_admission_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_public_market_snapshot_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_stored_market_evidence_bind_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_native_full_cycle_host_v1.py",
+    "tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py",
+    "tests/ops/test_current_productive_native_full_cycle_host_v1.py",
+    "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py",
+    "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py",
+    "tests/ops/test_current_productive_public_market_snapshot_v1.py",
+    "tests/ops/test_current_productive_stored_market_evidence_bind_v1.py",
+    "tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py"
   ],
-  "changed_paths_sha256": "62030dfd3f7dc7866efd2e6522510d27ff2405d4f366b9ab368bdf1672baee45",
+  "changed_paths_sha256": "da6813a8c44dd70b393522558054ab9add8327e296e4bc2d18c6282fdd221d8a",
   "covered_candidate_paths": [
-    "src/ops/current_productive_universe_refresh_orchestrator_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
-    "tests/ops/test_current_productive_universe_refresh_orchestrator_v1.py"
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+    "src/ops/current_mf_n5_instrument_runtime_identity_closure_v1/reconciliation_admission_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_public_market_snapshot_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_stored_market_evidence_bind_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_full_core_pre_external_closure_v1.py",
+    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_native_full_cycle_host_v1.py",
+    "tests/ops/_current_productive_natural_mv2_dp_enter_fixture_v1.py",
+    "tests/ops/test_current_productive_native_full_cycle_host_v1.py",
+    "tests/ops/test_current_productive_native_full_cycle_semantic_enforcement_a_to_r_v1.py",
+    "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py",
+    "tests/ops/test_current_productive_public_market_snapshot_v1.py",
+    "tests/ops/test_current_productive_stored_market_evidence_bind_v1.py",
+    "tests/ops/test_full_core_current_productive_oneshot_sidestate_confirmation_cursor_join_v1.py"
   ],
   "evidence_refs": [
-    "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
     "scripts/ops/current_system_interaction_authority_map_v1.py",
-    "src/ops/current_productive_universe_refresh_orchestrator_v1.py",
-    "src/ops/governed_productive_account_equity_authority_producer_v1/current_productive_cap21_to_cap23_productive_persistence_v1.py",
-    "tests/ops/test_current_productive_universe_refresh_orchestrator_v1.py"
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_public_market_snapshot_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_stored_market_evidence_bind_v1.py"
   ],
-  "reason": "Change-bound receipt for the disabled universe refresh orchestration contracts. The new orchestrator, the backwards-compatible Cap 2.1 to Cap 2.3 previous-selection parameters, and the offline tests leave source_v1.json unchanged, so MAP_UPDATE_REQUIRED is not admissible. The orchestrator path is registered as a non-exhaustive candidate surface, so its impact is determinable. The Cap 2.1 persistence module and the tests/ops path were already candidate surfaces and are covered exactly. The adjudication file and the candidate catalog are map surfaces and are excluded from covered candidates. Derived views are unchanged. Refresh stays disabled. No selection, trading, residency, or execution authority is added. AUTHORITY_EFFECT=NONE. NO_MAP_IMPACT.",
+  "reason": "Change-bound receipt for the public market-field bind and productive reconciliation repair. source_v1.json is unchanged, so MAP_UPDATE_REQUIRED is not admissible. Every touched module and test is an existing non-exhaustive candidate surface and is covered exactly. The adjudication file is a map surface and is excluded from covered candidates. Derived views are unchanged. Missing volume, open interest, and funding stay fail-closed. No trading, selection, residency, or execution authority is added. Double Play is unchanged. AUTHORITY_EFFECT=NONE. NO_MAP_IMPACT.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
