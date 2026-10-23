@@ -175,6 +175,9 @@ def run_cap21_to_cap23_persist_productive_v1(
     | None = None,
     cap21_coalesce_repo_root: Path | None = None,
     selection_budget: SelectionNetworkBudgetV1 | None = None,
+    previous_selection: Mapping[str, Any] | None = None,
+    load_previous_from_state: bool = False,
+    open_position_instrument_id: str | None = None,
 ) -> CurrentProductiveCap21ToCap23PersistResultV1:
     """Run Cap-2.1→2.3 producers into ``store/runtime_state/*`` (persisted)."""
 
@@ -323,9 +326,9 @@ def run_cap21_to_cap23_persist_productive_v1(
         repository_sha=repository_sha,
         producer_observed_at_unix=observed_unix + 2.0,
         session_id=f"{session_id_prefix}-selection",
-        previous_selection=None,
-        load_previous_from_state=False,
-        open_position_instrument_id=None,
+        previous_selection=previous_selection,
+        load_previous_from_state=load_previous_from_state,
+        open_position_instrument_id=open_position_instrument_id,
         dashboard_payload=None,
         allowlist_payload=None,
         manual_override_payload=None,
