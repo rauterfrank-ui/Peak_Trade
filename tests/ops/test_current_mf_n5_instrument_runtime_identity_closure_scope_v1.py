@@ -270,6 +270,11 @@ def test_i12_pre_external_evidence_lineage_per_lane(tmp_path: Path) -> None:
             venue_native_id="VENUE-A", mark_px=mark, index_px=99.5
         ),
         g17_typed_vol_producers={"LANE_1": _g17("INST-LANE_1", "VENUE-A")},
+        occupancy_payloads={
+            "POSITIONS": {"code": "0", "data": []},
+            "PENDING": {"code": "0", "data": []},
+            "CONFIG": {"code": "0", "data": [{"acctLv": "2", "posMode": "net_mode"}]},
+        },
     )
     record = results["LANE_1"]
     ledger = Path(record.evidence_root) / LEDGER_FILENAME

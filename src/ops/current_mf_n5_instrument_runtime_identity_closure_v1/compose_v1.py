@@ -6,6 +6,8 @@ from typing import Any, Mapping
 
 from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.constants_v1 import (
     FAILURE_POSITION_SHARED_FORBIDDEN,
+    FAILURE_RECONCILIATION_GLOBAL,
+    FAILURE_RECONCILIATION_INSTRUMENT,
 )
 from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.c1_fanout_v1 import (
     C1FanoutError,
@@ -23,6 +25,7 @@ from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.ownership_v1 i
 )
 from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.position_truth_v1 import (
     PerLanePositionTruthError,
+    combine_position_snapshots_v1,
     resolve_all_lane_position_truths_v1,
 )
 from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.reconciliation_admission_v1 import (
@@ -52,7 +55,7 @@ def compose_per_lane_n5_identity_closure_v1(
     *,
     candles_payload: Mapping[str, Any] | None,
     candles_payload_by_lane: Mapping[str, Mapping[str, Any]] | None,
-    occupancy_payloads: Mapping[str, Any],
+    occupancy_payloads: Mapping[str, Any] | None,
     observed_portfolio: PortfolioTruthSnapshotV1 | None,
     venue_flat: bool,
     existing_position_side: ExistingPositionSide,
@@ -76,13 +79,26 @@ def compose_per_lane_n5_identity_closure_v1(
             candles_payload_by_lane=candles_payload_by_lane,
         )
         multi_lane = len(identities) > 1
+        snapshot = combine_position_snapshots_v1(occupancy_payloads, observed_portfolio)
         positions = resolve_all_lane_position_truths_v1(
             identities=identities,
             occupancy_payloads=occupancy_payloads,
             global_venue_flat=venue_flat,
             global_existing_position_side=existing_position_side,
             multi_lane=multi_lane,
+            snapshot=snapshot,
         )
+        for lane_id, pos in positions.items():
+            if pos.evidence_class not in {"VERIFIED_EMPTY", "VERIFIED_NET"}:
+                code = (
+                    FAILURE_RECONCILIATION_GLOBAL
+                    if pos.evidence_class in {"MISSING", "DUPLICATE"}
+                    else FAILURE_RECONCILIATION_INSTRUMENT
+                )
+                raise InstrumentRuntimeIdentityClosureError(
+                    code,
+                    f"{lane_id}:{pos.evidence_class}",
+                )
     except (C1FanoutError, LaneOwnershipError, PerLanePositionTruthError) as exc:
         raise InstrumentRuntimeIdentityClosureError(exc.failure_code, exc.detail) from exc
 
@@ -94,7 +110,7 @@ def compose_per_lane_n5_identity_closure_v1(
         event_ts = float(last_ts if last_ts is not None else last_finalized_event_ts_unix)
         recon = build_per_lane_reconciliation_admission_v1(
             identity=identity,
-            portfolio=observed_portfolio,
+            portfolio=snapshot,
         )
         if require_reconciliation_admission:
             try:

@@ -476,6 +476,7 @@ def _market_kwargs_from_observation_v1(
     cycle_id_prefix: str,
     origin_main_sha: str,
     g17_producers: Mapping[str, object],
+    occupancy_payloads: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     extracted, last_ts = extract_finalized_candle_closes_v1(candles_payload)
     if not extracted or last_ts is None:
@@ -494,6 +495,18 @@ def _market_kwargs_from_observation_v1(
     index_px = float(provenance.index_px)
     event_ts = float(last_ts)
     bid_px, ask_px = _bid_ask_from_finalized_candles_v1(candles_payload, mark_px=mark_px)
+    from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.position_truth_v1 import (
+        combine_position_snapshots_v1,
+        evidence_for_instrument_ids_v1,
+    )
+
+    snapshot = combine_position_snapshots_v1(occupancy_payloads, None)
+    evidence = evidence_for_instrument_ids_v1(snapshot, {str(venue_native_id).strip()})
+    if evidence.evidence_class not in {"VERIFIED_EMPTY", "VERIFIED_NET"}:
+        raise PersistentNaturalEnterConvergenceError(
+            "POSITION_EVIDENCE_FAIL_CLOSED",
+            evidence.evidence_class or evidence.status,
+        )
     return {
         "origin_main_sha": origin_main_sha,
         "cycle_id_prefix": cycle_id_prefix,
@@ -507,8 +520,8 @@ def _market_kwargs_from_observation_v1(
         "funding_rate": 0.0001,
         "finalized_closes": extracted,
         "last_finalized_event_ts_unix": event_ts,
-        "venue_flat": True,
-        "existing_position_side": ExistingPositionSide.NONE,
+        "venue_flat": evidence.venue_flat,
+        "existing_position_side": evidence.existing_position_side,
         "g17_typed_vol_producers": dict(g17_producers),
         "canonical_price_provenance": provenance,
     }
@@ -646,6 +659,7 @@ def make_n1_occupied_lane_s5_runner_v1(
             cycle_id_prefix=prefix,
             origin_main_sha=origin_main_sha,
             g17_producers=g17_producers,
+            occupancy_payloads=occupancy_payloads,
         )
         lane_pairs = {LANE_ID: composed_pairs[LANE_ID]}
         s7_base = {
@@ -723,6 +737,7 @@ def bootstrap_s8_lane_via_s7_compose_v1(
     mark_price_payload: Mapping[str, Any],
     venue_native_id: str,
     index_tickers_payload: Mapping[str, Any] | None = None,
+    occupancy_payloads: Mapping[str, Any] | None = None,
     cycle_id_prefix: str = "persistent-natural-enter-bootstrap",
 ) -> None:
     """Cold-lane S7 compose only (cursor persist) without S5 governed-cycle ledger."""
@@ -736,6 +751,7 @@ def bootstrap_s8_lane_via_s7_compose_v1(
         cycle_id_prefix=cycle_id_prefix,
         origin_main_sha=origin_main_sha,
         g17_producers=g17_producers,
+        occupancy_payloads=occupancy_payloads,
     )
     s7 = {
         key: value
@@ -799,6 +815,7 @@ def run_offline_persistent_natural_enter_convergence_v1(
             mark_price_payload=first_obs.mark_price_payload,
             venue_native_id=str(bound.venue_native_id or "").strip(),
             index_tickers_payload=first_obs.index_tickers_payload,
+            occupancy_payloads=first_obs.occupancy_payloads,
         )
     runner = make_n1_occupied_lane_s5_runner_v1(
         composed_pairs=pairs,
@@ -1034,6 +1051,7 @@ def run_policy_governed_persistent_natural_enter_live_c1_continuous_run_v1(
             mark_price_payload=first_obs.mark_price_payload,
             venue_native_id=str(bound.venue_native_id or "").strip(),
             index_tickers_payload=first_obs.index_tickers_payload,
+            occupancy_payloads=first_obs.occupancy_payloads,
         )
 
     cursor_floor = _cursor_floor_or_zero(cursor_store_root)

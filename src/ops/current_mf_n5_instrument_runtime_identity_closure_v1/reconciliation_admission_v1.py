@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from decimal import Decimal
-
 from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.constants_v1 import (
     FAILURE_RECONCILIATION_GLOBAL,
     FAILURE_RECONCILIATION_INSTRUMENT,
@@ -30,22 +28,10 @@ class ReconciliationAdmissionError(ValueError):
 
 def _global_portfolio_healthy(portfolio: PortfolioTruthSnapshotV1 | None) -> bool:
     if portfolio is None:
-        return True
+        return False
     if portfolio.missing or portfolio.stale or portfolio.duplicate or portfolio.writer_conflict:
         return False
     return True
-
-
-def _instrument_position_side(
-    portfolio: PortfolioTruthSnapshotV1,
-    instrument_id: str,
-) -> str | None:
-    for pos in portfolio.positions:
-        if str(pos.instrument_id) == instrument_id:
-            if pos.signed_quantity == Decimal("0"):
-                return "FLAT"
-            return str(pos.side or "").upper() or "UNKNOWN"
-    return None
 
 
 def build_per_lane_reconciliation_admission_v1(
@@ -64,30 +50,38 @@ def build_per_lane_reconciliation_admission_v1(
         )
     if portfolio is None:
         return PerLaneReconciliationAdmissionV1(
-            admitted=True,
-            reason_code="NO_PORTFOLIO_HARNESS",
-            instrument_reconciled=True,
-            global_portfolio_healthy=True,
+            admitted=False,
+            reason_code=FAILURE_RECONCILIATION_GLOBAL,
+            instrument_reconciled=False,
+            global_portfolio_healthy=False,
         )
-    side = _instrument_position_side(portfolio, identity.canonical_instrument_id)
-    if side is None:
+    from src.ops.current_mf_n5_instrument_runtime_identity_closure_v1.position_truth_v1 import (
+        evidence_for_instrument_ids_v1,
+    )
+
+    evidence = evidence_for_instrument_ids_v1(
+        portfolio,
+        {identity.canonical_instrument_id, identity.venue_native_id},
+    )
+    if evidence.evidence_class == "VERIFIED_EMPTY":
         return PerLaneReconciliationAdmissionV1(
             admitted=True,
-            reason_code="INSTRUMENT_FLAT_ABSENT",
+            reason_code="NO_POSITION_CLEAN",
             instrument_reconciled=True,
             global_portfolio_healthy=global_ok,
         )
-    if side == "UNKNOWN":
+    if evidence.evidence_class == "VERIFIED_NET":
+        side = evidence.existing_position_side.value.upper()
         return PerLaneReconciliationAdmissionV1(
-            admitted=False,
-            reason_code=FAILURE_RECONCILIATION_INSTRUMENT,
-            instrument_reconciled=False,
+            admitted=True,
+            reason_code=f"INSTRUMENT_{side}",
+            instrument_reconciled=True,
             global_portfolio_healthy=global_ok,
         )
     return PerLaneReconciliationAdmissionV1(
-        admitted=True,
-        reason_code=f"INSTRUMENT_{side}",
-        instrument_reconciled=True,
+        admitted=False,
+        reason_code=FAILURE_RECONCILIATION_INSTRUMENT,
+        instrument_reconciled=False,
         global_portfolio_healthy=global_ok,
     )
 

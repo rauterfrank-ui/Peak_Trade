@@ -300,6 +300,7 @@ def test_max_cycles_bound_enforced(tmp_path: Path) -> None:
         mark_price_payload=obs_boot.mark_price_payload,
         venue_native_id=native_id,
         index_tickers_payload=obs_boot.index_tickers_payload,
+        occupancy_payloads=obs_boot.occupancy_payloads,
     )
     floor = _cursor_floor_or_zero(Path(pairs["LANE_1"][0].lane_state_root))
     obs = ScriptedContinuousObservationSourceV1(
@@ -414,6 +415,7 @@ def test_cap24_writer_not_reinvoked_per_s6_cycle(tmp_path: Path) -> None:
         mark_price_payload=obs_boot.mark_price_payload,
         venue_native_id=native_id,
         index_tickers_payload=obs_boot.index_tickers_payload,
+        occupancy_payloads=obs_boot.occupancy_payloads,
     )
     with patch(
         "src.ops.governed_productive_account_equity_authority_producer_v1."

@@ -459,6 +459,63 @@ def extract_position_truth_v1(
     return "FLAT", True, ExistingPositionSide.NONE
 
 
+def okx_positions_payload_to_portfolio_snapshot_v1(payload: Any):
+    """Parse an OKX positions payload into the existing portfolio snapshot.
+
+    This parser is not a second position authority. Missing or invalid
+    payloads stay missing. An explicit data list is a present snapshot.
+    """
+    from decimal import Decimal
+
+    from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import (
+        PortfolioTruthSnapshotV1,
+        PositionTruthV1,
+    )
+
+    if not isinstance(payload, Mapping):
+        return PortfolioTruthSnapshotV1(missing=True, source_id="okx_positions_payload")
+    data = payload.get("data")
+    if not isinstance(data, list):
+        return PortfolioTruthSnapshotV1(missing=True, source_id="okx_positions_payload")
+    positions: list[PositionTruthV1] = []
+    seen_open: set[str] = set()
+    duplicate = False
+    for row in data:
+        if not isinstance(row, Mapping):
+            return PortfolioTruthSnapshotV1(missing=True, source_id="okx_positions_payload")
+        inst = str(row.get("instId") or "").strip()
+        raw_pos = row.get("pos")
+        number = _finite_number(raw_pos)
+        if inst == "" or number is None:
+            return PortfolioTruthSnapshotV1(missing=True, source_id="okx_positions_payload")
+        if number == 0.0:
+            continue
+        token = str(row.get("posSide") or "").strip().lower()
+        side = "LONG" if number > 0 else "SHORT"
+        if token == "long" and side != "LONG":
+            duplicate = True
+        elif token == "short" and side != "SHORT":
+            duplicate = True
+        if inst in seen_open:
+            duplicate = True
+        seen_open.add(inst)
+        qty_text = str(raw_pos) if isinstance(raw_pos, str) else str(number)
+        positions.append(
+            PositionTruthV1(
+                instrument_id=inst,
+                signed_quantity=Decimal(qty_text),
+                side=side,
+                source_id="okx_positions_payload",
+            )
+        )
+    return PortfolioTruthSnapshotV1(
+        positions=tuple(positions),
+        missing=False,
+        duplicate=duplicate,
+        source_id="okx_positions_payload",
+    )
+
+
 def resolve_host_market_sample_venue_event_time_unix_v1(
     *,
     last_finalized_event_ts_unix: float,
