@@ -52,9 +52,7 @@ def combine_position_snapshots_v1(
     observed_portfolio: PortfolioTruthSnapshotV1 | None,
 ) -> PortfolioTruthSnapshotV1:
     """One snapshot. A caller boolean is not an input."""
-    parsed = okx_positions_payload_to_portfolio_snapshot_v1(
-        _positions_payload(occupancy_payloads)
-    )
+    parsed = okx_positions_payload_to_portfolio_snapshot_v1(_positions_payload(occupancy_payloads))
     if observed_portfolio is None:
         return parsed
     if (
@@ -141,11 +139,7 @@ def evidence_for_instrument_ids_v1(
     matched = [pos for pos in nonzero if pos.instrument_id in instrument_ids]
     if len(matched) == 1 and len(nonzero) == 1 and matched[0].side in {"LONG", "SHORT"}:
         pos = matched[0]
-        side = (
-            ExistingPositionSide.LONG
-            if pos.side == "LONG"
-            else ExistingPositionSide.SHORT
-        )
+        side = ExistingPositionSide.LONG if pos.side == "LONG" else ExistingPositionSide.SHORT
         return PerLanePositionTruthV1(
             status="BOUND_INSTRUMENT_OPEN",
             venue_flat=False,

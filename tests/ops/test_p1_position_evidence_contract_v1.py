@@ -114,7 +114,9 @@ def test_duplicate_rows_fail_closed() -> None:
 def test_foreign_instrument_does_not_become_flat() -> None:
     snapshot = PortfolioTruthSnapshotV1(
         positions=(
-            PositionTruthV1.from_signed(instrument_id="ETH-USDT-SWAP", signed_quantity=Decimal("2")),
+            PositionTruthV1.from_signed(
+                instrument_id="ETH-USDT-SWAP", signed_quantity=Decimal("2")
+            ),
         )
     )
     evidence = evidence_for_instrument_ids_v1(snapshot, {"BTC-USDT-SWAP", "INST-BTC"})

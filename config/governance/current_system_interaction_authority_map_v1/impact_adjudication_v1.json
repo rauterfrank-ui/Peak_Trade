@@ -2,22 +2,44 @@
   "authority_effect": "NONE",
   "changed_paths": [
     "config/governance/current_system_interaction_authority_map_v1/impact_adjudication_v1.json",
-    "scripts/ops/current_full_stack_semantic_explorer_v1/run_v1.py",
-    "tests/ops/test_discovery_agent_batch_execution_v1.py"
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+    "src/ops/current_mf_n5_instrument_runtime_identity_closure_v1/compose_v1.py",
+    "src/ops/current_mf_n5_instrument_runtime_identity_closure_v1/models_v1.py",
+    "src/ops/current_mf_n5_instrument_runtime_identity_closure_v1/position_truth_v1.py",
+    "src/ops/current_mf_n5_instrument_runtime_identity_closure_v1/reconciliation_admission_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py",
+    "tests/ops/test_current_mf_n5_instrument_runtime_identity_closure_scope_v1.py",
+    "tests/ops/test_current_mf_n5_instrument_runtime_identity_closure_v1.py",
+    "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py",
+    "tests/ops/test_p1_position_evidence_contract_v1.py",
+    "tests/ops/test_p2_occupied_cursor_restore_v1.py"
   ],
-  "changed_paths_sha256": "9497d4c3d1e5cd9242e38414a43a3591f7ae37ca6ef4086459d458cb12c8e527",
+  "changed_paths_sha256": "c4465afc5b462ee36bd852d5275e9eebf80e68eac509256fb0703e7fd4a20ce8",
   "covered_candidate_paths": [
-    "scripts/ops/current_full_stack_semantic_explorer_v1/run_v1.py",
-    "tests/ops/test_discovery_agent_batch_execution_v1.py"
+    "src/ops/current_mf_n5_full_autonomy_occupied_lane_governed_cycle_n1_consumer_join_v1/invoke_join_v1.py",
+    "src/ops/current_mf_n5_instrument_runtime_identity_closure_v1/compose_v1.py",
+    "src/ops/current_mf_n5_instrument_runtime_identity_closure_v1/models_v1.py",
+    "src/ops/current_mf_n5_instrument_runtime_identity_closure_v1/position_truth_v1.py",
+    "src/ops/current_mf_n5_instrument_runtime_identity_closure_v1/reconciliation_admission_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_master_v2_runtime_cycle_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_persistent_natural_enter_convergence_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py",
+    "tests/ops/test_current_mf_n5_instrument_runtime_identity_closure_scope_v1.py",
+    "tests/ops/test_current_mf_n5_instrument_runtime_identity_closure_v1.py",
+    "tests/ops/test_current_productive_persistent_natural_enter_convergence_v1.py",
+    "tests/ops/test_p1_position_evidence_contract_v1.py",
+    "tests/ops/test_p2_occupied_cursor_restore_v1.py"
   ],
   "evidence_refs": [
     "config/governance/current_system_interaction_authority_map_v1/impact_candidates_v1.json",
     "config/governance/current_system_interaction_authority_map_v1/source_v1.json",
-    "scripts/ops/current_full_stack_semantic_explorer_v1/constants_v1.py",
-    "scripts/ops/current_full_stack_semantic_explorer_v1/run_v1.py",
-    "scripts/ops/current_system_interaction_authority_map_v1.py"
+    "scripts/ops/current_system_interaction_authority_map_v1.py",
+    "src/ops/current_mf_n5_instrument_runtime_identity_closure_v1/position_truth_v1.py",
+    "src/ops/full_core_live_path_composition_root_v1/current_productive_sidestate_confirmation_cursor_v1.py"
   ],
-  "reason": "Change-bound receipt for isolating admitted non-Python file outcomes from a sibling Python NODE_BUDGET rollback. run_v1.py no longer copies the S2 slice status onto a non-Python file. Those files stay INCOMPLETE with S2_NOT_APPLICABLE and are not marked semantically complete. Python NODE_BUDGET rollback, budgets, claim identity, and checkpoint refusal of false COMPLETE are unchanged. source_v1.json is unchanged, so MAP_UPDATE_REQUIRED is not admissible. The touched explorer module and tests/ops file are already candidate surfaces. The adjudication file is a map surface and is excluded from covered candidates. Derived views are unchanged. TOOL_AUTHORITY remains NONE. AUTHORITY_EFFECT=NONE. NO_MAP_IMPACT.",
+  "reason": "Change-bound receipt for the P1 venue-position evidence pass-through and the P2 occupied cursor restore. Missing occupancy stays fail-closed. A valid same-instrument cursor restores epoch, runtime scope, and C3. source_v1.json is unchanged, so MAP_UPDATE_REQUIRED is not admissible. The touched modules and tests are already candidate surfaces. The adjudication file is a map surface and is excluded from covered candidates. Derived views are unchanged. Double Play formulas, scope thresholds, and execution authority are unchanged. TOOL_AUTHORITY remains NONE. AUTHORITY_EFFECT=NONE. NO_MAP_IMPACT.",
   "selector_used_as_map_impact_authority": false,
   "verdict": "NO_MAP_IMPACT"
 }
