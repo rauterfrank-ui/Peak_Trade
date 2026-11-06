@@ -205,7 +205,9 @@ def test_rw_e23_pre_external_admission_bundle(tmp_path: Path) -> None:
         golden=golden,
         pre_external_reached=True,
     )
-    assert admission.ok is True
+    # A successful observation/sample bundle cannot prove actual financial restart.
+    assert admission.unified_restart_safe is False
+    assert admission.ok is False
     assert admission.post_count == 0
     assert admission.post_allowed is False
     rows = initial_backlog_rows_v1()
@@ -227,7 +229,8 @@ def test_rw_e23_pre_external_admission_bundle(tmp_path: Path) -> None:
     )
     assert path.is_file()
     payload = json.loads(path.read_text(encoding="utf-8"))
-    assert payload["admission"]["ok"] is True
+    assert payload["admission"]["ok"] is False
+    assert payload["admission"]["unified_restart_safe"] is False
 
 
 def test_composed_safety_chain() -> None:

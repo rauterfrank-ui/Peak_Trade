@@ -289,7 +289,7 @@ def test_supervisor_reports_policy_stop_and_does_not_render_failure_ok(
     monkeypatch.setattr(
         supervisor,
         "_run_unified_recovery_v1",
-        lambda **_: SimpleNamespace(ok=True, steps_completed=[]),
+        lambda **_: supervisor.UnifiedRecoveryOrchestrationResultV1(ok=True),
     )
     monkeypatch.setattr(supervisor, "_refresh_public_supply_v1", lambda **_: 100)
     monkeypatch.setattr(supervisor, "_refresh_pretrade_truth_v1", lambda **_: "FRESH")

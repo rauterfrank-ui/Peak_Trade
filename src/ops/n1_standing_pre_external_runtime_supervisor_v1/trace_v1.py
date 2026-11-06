@@ -13,6 +13,7 @@ class StandingSupervisorTraceV1:
     bound_instrument_id: str = ""
     venue_native_id: str = ""
     recovery_completed: bool = False
+    observation_recovery_completed: bool = False
     recovery_steps: list[str] = field(default_factory=list)
     public_supply_refreshed: bool = False
     public_marks_count: int = 0

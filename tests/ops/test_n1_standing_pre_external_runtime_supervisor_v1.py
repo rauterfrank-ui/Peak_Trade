@@ -237,7 +237,9 @@ def test_t_plus_01_supervisor_single_cycle(tmp_path: Path) -> None:
     assert result.trace.accepted_c1_count == result.trace.governed_cycle_count
     assert result.trace.post_count == 0
     assert result.owner_go_consumed is True
-    assert result.trace.recovery_completed is True
+    assert result.trace.observation_recovery_completed is True
+    assert result.trace.recovery_completed is False
+    assert result.recovery.contract_checks["simulated_order_lifecycle"]
     assert result.trace.public_supply_refreshed is True
     assert result.trace.public_marks_count >= MINIMUM_FINALIZED_PT1M_MARKS
 

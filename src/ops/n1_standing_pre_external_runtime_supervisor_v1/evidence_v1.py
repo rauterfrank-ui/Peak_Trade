@@ -59,6 +59,7 @@ def write_standing_supervisor_closure_evidence_v1(
         "continuous_admission_granted": continuous_admission_granted,
         "owner_go_consumed": owner_go_consumed,
         "recovery_before_cycle": trace.recovery_completed,
+        "observation_recovery_before_cycle": trace.observation_recovery_completed,
         "public_supply_refreshed": trace.public_supply_refreshed,
         "pretrade_truth_refreshed": trace.pretrade_truth_refreshed,
         "transport_scope": transport_scope,

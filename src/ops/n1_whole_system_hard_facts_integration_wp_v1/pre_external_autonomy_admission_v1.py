@@ -88,7 +88,7 @@ def prove_pre_external_autonomy_admission_v1(
         private_observation_reconciled=private.private_observation_productive_join,
         reservation_restart_safe=execution.reservation_restart_safe,
         treasury_feedback_closed=execution.treasury_feedback_closed,
-        unified_restart_safe=recovery.ok,
+        unified_restart_safe=recovery.ok and recovery.runtime_owner_recovery_complete,
         supervisor_standing=supervisor.supervisor_standing,
         natural_long_proven=golden.natural_long.ok,
         natural_short_proven=golden.natural_short.ok,
