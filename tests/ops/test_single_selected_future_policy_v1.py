@@ -322,7 +322,7 @@ def test_deterministic_tie() -> None:
 
 
 def test_no_candidates() -> None:
-    ranking = _ranking([_perp(inst_id="BTC-USDT-SWAP", base="BTC", ct_val_ccy="BTC")])
+    ranking = _ranking([_perp(state="suspend")])
     result = produce_single_selected_future_v1(
         ranking_snapshot=ranking,
         repository_sha=REPO_SHA,

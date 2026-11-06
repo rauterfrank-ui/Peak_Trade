@@ -92,6 +92,24 @@ While a position is open on the selected instrument:
 - risk / safety / exit / reconciliation remain bound to the open instrument
 - replacement is persisted only as `REPLACEMENT_PENDING`
 
+## Selection validity and instrument holding time
+
+The original instrument entry time in `selected_at_event_time` remains the
+minimum-holding anchor when the same instrument is retained. A new validated
+ranking supports a separate validity window: `valid_until` is its event time
+plus the existing maximum of refresh cadence and minimum holding period.
+The original `valid_from` and holding anchor are preserved on retention.
+Reobserving one ranking does not move its validity deadline with wall time.
+
+Future ranking event times are invalid; stale or corrupted rankings cannot
+renew a selection. Without an eligible candidate, the existing exit-only path
+does not receive a new eligibility window. Open-position custody, pending
+replacement, minimum holding, hysteresis and alpha/activation boundaries still
+apply. Previously persisted receipts are not rewritten by this correction.
+
+The [bounded N1 verification](../evidence/N1_SELECTION_FRESHNESS_2026_11_06.md)
+follows the original writer and Cap24 gate through the next actual Core call.
+
 ## Explicit non-claims
 
 - Runtime binding / Cap 2.4 is owned separately (`CAPABILITY_2_4_SINGLE_SELECTED_FUTURE_RUNTIME_BINDING_V1`).

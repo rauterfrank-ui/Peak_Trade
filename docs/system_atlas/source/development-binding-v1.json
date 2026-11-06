@@ -3,8 +3,8 @@
   "authority": "NONE",
   "runtime_authorization_effect": "NONE",
   "frozen_source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
-  "development_parent_commit": "9397d04a37d527a8316b3e44ef4f80b4ef44db7a",
-  "scope": "Explicit N1 continuation and CI repair delta; immutable frozen catalog, byte-protected originals and runtime state retained.",
+  "development_parent_commit": "fe0b1659fb5ea8cf5c353cfaebc9ffad1d3caf97",
+  "scope": "Explicit N1 continuation, selection freshness and CI repair delta; frozen inventory, byte-protected originals and runtime state retained.",
   "files": [
     {
       "path": ".github/workflows/lint_gate.yml",
@@ -25,6 +25,16 @@
       "path": "docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json",
       "before_sha256": "6b17fa9863f3446049e989c097003dd8200e833ac21c5a8b0466f37a1fa9aafe",
       "sha256": "3b22ddf21347a6fc53b927e9194295e067dae4261a3204890846b88d6ba23a4a"
+    },
+    {
+      "path": "docs/ops/evidence/N1_SELECTION_FRESHNESS_2026_11_06.json",
+      "before_sha256": null,
+      "sha256": "30f0075fca74dbe5e9760ddaaa3a1d38f03cd97139157b2336fb9c072617363e"
+    },
+    {
+      "path": "docs/ops/evidence/N1_SELECTION_FRESHNESS_2026_11_06.md",
+      "before_sha256": null,
+      "sha256": "23fbd6add90519d07136db25e74cc96078eb26b4fbf95674e1c5c70adf2cfddb"
     },
     {
       "path": "docs/ops/evidence/OUTER_RING_PACKAGE_A_SEMANTIC_BASELINE_2026_11_06.json",
@@ -57,9 +67,14 @@
       "sha256": "e325a87a9b64377e93c85f9d50a26b383bbaf28fe5e55631013ec20b4f7ffa16"
     },
     {
+      "path": "docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md",
+      "before_sha256": "37fcf50ade80e9de14f7f201219f40a8e963cefd6dc1267e614718d6d9846ccc",
+      "sha256": "1d4cfa0dc200056e219243826faf6901e06b8d4113cda543bb38dbfe3698d300"
+    },
+    {
       "path": "docs/ops/specs/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_V1.md",
       "before_sha256": null,
-      "sha256": "a642486daea329a606690aed67d6a22782bb85225875e706ef10f4fbee52a04e"
+      "sha256": "4e32e098461acd6fa46a4b9a78beaaa82268cf4991d7ba1be7cee01b07fbd5e3"
     },
     {
       "path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
@@ -84,7 +99,7 @@
     {
       "path": "docs/system_atlas/policy_projection.py",
       "before_sha256": "b5ff5f54be5d0318df986e8569f233f8b09149822fe9c4e1f2fdaa922f2163ac",
-      "sha256": "2a0fba0cae22aba75eec04c04b5fb6aa1dded247afa098efaba3255075a472c9"
+      "sha256": "119fdb3605d6d9a815e0965585cdd16fe200cf155ac62831c3321ba808350535"
     },
     {
       "path": "docs/system_atlas/tests/test_development_binding.py",
@@ -94,7 +109,7 @@
     {
       "path": "docs/system_atlas/tests/test_policy_projection.py",
       "before_sha256": "8dce1dbc5c440a8f35308915dae313a65030ea8aad5e8ecb6d813cde764c220d",
-      "sha256": "0cfdb83757e5e07670f3c28f2cec29c80eab49802f1dfb4d283890fa510cb5b1"
+      "sha256": "0bb8f2d17e7308d01acd4feec3059afd6c44943bfdb29da357a7492dcf54d41b"
     },
     {
       "path": "scripts/ci/check_ruff_frozen_format_v1.py",
@@ -352,6 +367,11 @@
       "sha256": "4198f78b1f0b4d8e9a12ff9cb6d14a93f2a27b0015d6f3023415a19152b446cf"
     },
     {
+      "path": "src/ops/single_selected_future_policy_v1/selection_v1.py",
+      "before_sha256": "059b877032955079a3d84d46cd55113cd510c1e7922cc24953fabd284245f5ad",
+      "sha256": "d5969770a35b93d2182afc560d4edb6bef8c025e4e12e189fa50e5e9b4233f1f"
+    },
+    {
       "path": "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1/ddo_learning_outcome_evidence_ingest_host_binding_v1.py",
       "before_sha256": "b2c2add38316dffdd1ea5b5d02d658a8dcee58d32303d3e5c0ff39b628adbe05",
       "sha256": "ed7d86770ece226928941e1e465b7cc477f55a56084fec2618e218bbadfe2a11"
@@ -564,7 +584,17 @@
     {
       "path": "tests/ops/test_productive_n1_post_close_continuation_v1.py",
       "before_sha256": null,
-      "sha256": "9e60b419cbc81b1745a54fd4fe3153ce021a5df73bae60c61f24aeee1b8166e6"
+      "sha256": "93bc521c07d9dd43604eeaafbdd9dce888cb96f713ae4d4cac394bf7bcdfea7c"
+    },
+    {
+      "path": "tests/ops/test_single_selected_future_policy_v1.py",
+      "before_sha256": "b6051876089a31b1071be09f701e29f3f9e4648da0659e6e79ee95f797304df5",
+      "sha256": "b951b39e570611dd25d85b4d384fecbc8e503b2bf02b509ec40159dbfc0346ff"
+    },
+    {
+      "path": "tests/ops/test_single_selected_future_selection_freshness_v1.py",
+      "before_sha256": null,
+      "sha256": "80a8628b5c08b97ae6ec0e7afaf5aeff7cc6ae90c2f1e29a35d4a57fd5ea556a"
     },
     {
       "path": "tests/ops/test_treasury_budget_owner_start_contract_v1.py",

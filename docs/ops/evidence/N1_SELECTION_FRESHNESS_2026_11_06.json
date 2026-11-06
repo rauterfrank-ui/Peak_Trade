@@ -1,0 +1,169 @@
+{
+  "schema": "peaktrade.n1_selection_freshness_evidence.v1",
+  "observed_at_utc": "2026-11-06T22:26:11.989931+00:00",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "base_commit": "fe0b1659fb5ea8cf5c353cfaebc9ffad1d3caf97",
+  "status": "BOUNDED_OFFLINE_VERIFIED",
+  "cause": "Retained selected_at_event_time was reused for valid_until, so a newly reviewed Keep selection could already be expired at Cap24.",
+  "clock_contract": {
+    "holding_anchor": "Original selected_at_event_time retained with the same instrument; original valid_from retained.",
+    "validity_anchor": "New validated ranking.event_time plus existing max(refresh_cadence_seconds,min_holding_period_seconds).",
+    "reobservation": "One ranking event cannot gain a later deadline from a later wall-clock observation.",
+    "future_ranking": "RANKING_SNAPSHOT_INVALID before it can support a new or renewed selection.",
+    "no_eligible_candidate": "Existing exit-only branch retains its prior validity behavior; no new eligibility granted."
+  },
+  "source_bindings": [
+    {
+      "path": "src/ops/single_selected_future_policy_v1/selection_v1.py",
+      "before_sha256": "059b877032955079a3d84d46cd55113cd510c1e7922cc24953fabd284245f5ad",
+      "after_sha256": "d5969770a35b93d2182afc560d4edb6bef8c025e4e12e189fa50e5e9b4233f1f"
+    },
+    {
+      "path": "tests/ops/test_single_selected_future_selection_freshness_v1.py",
+      "before_sha256": null,
+      "after_sha256": "80a8628b5c08b97ae6ec0e7afaf5aeff7cc6ae90c2f1e29a35d4a57fd5ea556a"
+    },
+    {
+      "path": "tests/ops/test_productive_n1_post_close_continuation_v1.py",
+      "before_sha256": "9e60b419cbc81b1745a54fd4fe3153ce021a5df73bae60c61f24aeee1b8166e6",
+      "after_sha256": "93bc521c07d9dd43604eeaafbdd9dce888cb96f713ae4d4cac394bf7bcdfea7c"
+    },
+    {
+      "path": "tests/ops/test_single_selected_future_policy_v1.py",
+      "before_sha256": "b6051876089a31b1071be09f701e29f3f9e4648da0659e6e79ee95f797304df5",
+      "after_sha256": "b951b39e570611dd25d85b4d384fecbc8e503b2bf02b509ec40159dbfc0346ff"
+    },
+    {
+      "path": "docs/ops/specs/MASTER_V2_CAPABILITY_2_3_SINGLE_SELECTED_FUTURE_POLICY_V1.md",
+      "before_sha256": "37fcf50ade80e9de14f7f201219f40a8e963cefd6dc1267e614718d6d9846ccc",
+      "after_sha256": "1d4cfa0dc200056e219243826faf6901e06b8d4113cda543bb38dbfe3698d300"
+    },
+    {
+      "path": "docs/ops/specs/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_V1.md",
+      "before_sha256": "a642486daea329a606690aed67d6a22782bb85225875e706ef10f4fbee52a04e",
+      "after_sha256": "4e32e098461acd6fa46a4b9a78beaaa82268cf4991d7ba1be7cee01b07fbd5e3"
+    },
+    {
+      "path": "docs/system_atlas/policy_projection.py",
+      "before_sha256": "2a0fba0cae22aba75eec04c04b5fb6aa1dded247afa098efaba3255075a472c9",
+      "after_sha256": "119fdb3605d6d9a815e0965585cdd16fe200cf155ac62831c3321ba808350535"
+    },
+    {
+      "path": "docs/system_atlas/tests/test_policy_projection.py",
+      "before_sha256": "0cfdb83757e5e07670f3c28f2cec29c80eab49802f1dfb4d283890fa510cb5b1",
+      "after_sha256": "0bb8f2d17e7308d01acd4feec3059afd6c44943bfdb29da357a7492dcf54d41b"
+    }
+  ],
+  "consumer_chain": [
+    "Original ranking validation",
+    "Cap23 original selection/held writer/atomic publication/readback",
+    "Original Cap24 gate and instrument binding",
+    "Original durable portfolio budget recovery",
+    "Actual next S7/Core call",
+    "Durable ACK and idempotent replay"
+  ],
+  "observed_effect": {
+    "unreviewed_old_selection": "Original Cap24 returns SELECTION_EXPIRED.",
+    "fresh_review": "Same ETH instrument, original holding anchor, renewed validity, actual next Core invocation, ACKED receipt.",
+    "replay": "Same receipt, selection unchanged, one actual consumer composition call.",
+    "capital_value": "75 is injected canonical test input, not account profit.",
+    "external_effect_authorized": false,
+    "post_allowed": false
+  },
+  "tests": {
+    "red_unit_findings": {
+      "failed_new_unit_cases": 5,
+      "passed_negative_unit_cases": 2,
+      "causes": [
+        "old validity deadline",
+        "future ranking not rejected"
+      ]
+    },
+    "red_integration": {
+      "failed": 1,
+      "cause": "Original cardinality failure after expired Cap24 selection; reproduced after correcting the new test helper keyword call."
+    },
+    "test_harness_correction": "The first combined red run included a positional call to keyword-only lane_state_root_for; this was fixed before recording the causal integration failure.",
+    "initial_owner_run": {
+      "passed": 88,
+      "failed": 1,
+      "cause": "Preexisting no_candidates fixture assumed BTC exclusion."
+    },
+    "preexisting_fixture_baseline": {
+      "base": "fe0b1659fb5ea8cf5c353cfaebc9ffad1d3caf97",
+      "test": "tests/ops/test_single_selected_future_policy_v1.py::test_no_candidates",
+      "baseline_result": "FAIL",
+      "cause": "BTC candidate is eligible under the existing accepted empty forbidden-asset set; no_candidates fixture still assumes an obsolete exclusion."
+    },
+    "fixture_repair": "Use a genuinely suspended instrument; preserve the original NO_SELECTION/no-candidate/alpha-blocked assertions. Asset policy unchanged.",
+    "owner_suite": {
+      "passed": 89,
+      "duration_seconds": 4.71,
+      "files": 4
+    },
+    "final_owner_and_integration_suite": {
+      "passed": 173,
+      "duration_seconds": 11.52,
+      "files": 9,
+      "selection": [
+        "single-selected-future policy/freshness/Cap24",
+        "post-close N1 continuation",
+        "governed pin adapter",
+        "checked occupied-lane selection publication",
+        "occupied-lane Cap24 binding",
+        "original post-close feedback",
+        "productive autonomy orchestrator"
+      ],
+      "includes_owner_suite": true
+    },
+    "ruff": {
+      "version": "0.15.22",
+      "changed_python_files_checked": 4,
+      "lint": "PASS",
+      "format": "PASS"
+    },
+    "population": "Injected offline fixtures, temporary stores, original production writers/recovery/Core; no natural venue or whole-suite claim.",
+    "policy_binding_regressions": {
+      "passed": 37,
+      "files": 2,
+      "cases": "Exact before/after hashes, unbound bytes, named result reporting, other policy source rejection, and existing frozen/development validation."
+    }
+  },
+  "unchanged": {
+    "verified_paths": [
+      "src/trading/master_v2",
+      "runtime",
+      "src/ops/single_selected_future_policy_v1/constants_v1.py",
+      "src/ops/single_selected_future_runtime_binding_v1",
+      "config/governance/clean_core_seal_manifest_v1.json"
+    ],
+    "numeric_defaults": true,
+    "core_seal_manifest": true,
+    "freeze_tags_and_catalog": true,
+    "activation_and_authority_flags": true,
+    "historical_research_remains_deferred": true,
+    "financial_configuration": true
+  },
+  "limits": [
+    "Persisted original receipts are not rewritten; automatic migration of pre-fix failed checkpoints is not implemented.",
+    "CONSUMING without ACK still requires original consumer/ledger reconciliation.",
+    "Active Scope/SideState carry across changed binding generations is not newly proved.",
+    "Natural operation, economic improvement, N5 and physical power failure are not established.",
+    "Previously recorded unrelated historical document/import/YAML-source failures are not claimed fixed by this change."
+  ],
+  "policy_binding": {
+    "changed_policy": "src/ops/single_selected_future_policy_v1/selection_v1.py",
+    "method": "Explicit named policy development source with exact frozen before/current after hash checks; frozen original policy Git objects stay verified.",
+    "original_check_result": "POLICY_SOURCE_DRIFT before the explicit policy delta binding; not treated as a functional test failure.",
+    "unrelated_policy_sources": "Still rejected, even if somebody adds an otherwise correctly hashed development row.",
+    "frozen_inventory_updated": false,
+    "no_impact_claim": false,
+    "reviewed_effect": "Validity time anchoring and future ranking rejection; minimum holding, input rank order, all numerical parameters and financial authority unchanged."
+  },
+  "local_source_checks": {
+    "clean_core_seal": "PASS: 20 members; manifest unchanged",
+    "frozen_format": "PASS: 31 exact frozen byte pins, 9878 remaining Python files formatted",
+    "law_impact": "LAW_REVIEW_REQUIRED; declared policy effect, not NO_LAW_IMPACT"
+  }
+}
