@@ -1,0 +1,516 @@
+{
+  "created_at": "2026-11-06T20:15:01.367469+01:00",
+  "kind": "bounded_package_A_investigation_evidence",
+  "authority": "NONE",
+  "runtime_authorization_effect": "NONE",
+  "source_commit": "9397d04a37d527a8316b3e44ef4f80b4ef44db7a",
+  "source_tree": "9364d79f787b72ece2691e213e92d28e40a9a927",
+  "branch": "work/aussenring-paket-a-2026-11-06",
+  "runbook": {
+    "path": "/Users/frnkhrz/Downloads/PeakTrade_Aussenring_Fertigstellung_Runbook_2026-11-06.md",
+    "sha256": "974a7187643363bec89aaf9950a5a66b41d9d716e718028141f195830ca6b8f5",
+    "version": "1.0"
+  },
+  "current_sources": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "85e70e04bc7b34825ae3f691a51a40c825d11c6df07e8c5f9fd86168e1c017e2",
+      "bytes": 1619,
+      "equals_source_commit": true
+    },
+    {
+      "path": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "sha256": "cb4bb31b6e968fc1bcb879fc6eac353625babe4e5da65482e7535466d179ac76",
+      "bytes": 18952,
+      "equals_source_commit": true
+    },
+    {
+      "path": "docs/runtime/PEAK_TRADE_PYTHON_RUNTIME_CONTRACT_V1.md",
+      "sha256": "4ec8556d920f100277b152d5a7b0dc280d2b9e221b27d8ceb25fa6f68fe8cea3",
+      "bytes": 3108,
+      "equals_source_commit": true
+    },
+    {
+      "path": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md",
+      "sha256": "61d97c7ee33dc16ac7664cd64bec7212085d78aab1e3c69c683b65d23c568b82",
+      "bytes": 25155,
+      "equals_source_commit": true
+    },
+    {
+      "path": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_CAPITAL_SLOT_RATCHET_RELEASE_CONTRACT_V0.md",
+      "sha256": "9e4490123b7c2dfc68d42134ca59efbdea80972e30b7738f5a59e0a7731cb5ae",
+      "bytes": 9949,
+      "equals_source_commit": true
+    },
+    {
+      "path": "docs/ops/specs/FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT_V0.md",
+      "sha256": "b361dcea21517300a7c8a52a130ddfce3a1330f741f1bfe714c64b1179538367",
+      "bytes": 20245,
+      "equals_source_commit": true
+    },
+    {
+      "path": "docs/ops/specs/GGE_ONLY_FUTURES_AND_COMMON_ASSET_ADMISSION_V3.md",
+      "sha256": "4045274e17ae0d14a1e2da5943d135237f3b4c14ba714062add54634b0ba0897",
+      "bytes": 6683,
+      "equals_source_commit": true
+    },
+    {
+      "path": "docs/ops/specs/META_LEARNING_OPTIMIZATION_UNIVERSE_FOUNDATION_NORMATIVE_V1.md",
+      "sha256": "d869d0be8a7ddfe52f3ac8dacaab4fcf20cbfe119d6258433d0e16b9e3ee81dd",
+      "bytes": 2947,
+      "equals_source_commit": true
+    },
+    {
+      "path": "docs/ops/specs/SELF_LEARNING_M6_META_LEARNING_INGEST_AND_EVIDENCE_NORMATIVE_V1.md",
+      "sha256": "5a45612b388e887686103bb766de27877323a0a793f04237edf9871890d3e452",
+      "bytes": 1067,
+      "equals_source_commit": true
+    },
+    {
+      "path": "docs/ops/evidence/self_learning_original_layers_restoration_v1_2026_11_04/originals/self_learning_master_base.original.txt",
+      "sha256": "119e27952c8174c9e800f772402d6b325d0ed823d062811d2dcaaea11ba35d94",
+      "bytes": 27371,
+      "equals_source_commit": true
+    },
+    {
+      "path": "docs/ops/evidence/BOUNDED_OFFLINE_STAGE_E6_ACCEPTANCE_2026_11_05.md",
+      "sha256": "3d21b6868173e9a9eb191a0ceb83143506a5ccd7c2a5cad9309956006a533b54",
+      "bytes": 7788,
+      "equals_source_commit": true
+    },
+    {
+      "path": "docs/ops/evidence/IU_SL_OPT_UNDERSTANDING_RESOLUTION_2026_11_05.md",
+      "sha256": "2207afeb2b6ace25b10eae892ed11782ba56014b988ff5419bfc691009ad924f",
+      "bytes": 11775,
+      "equals_source_commit": true
+    },
+    {
+      "path": "src/ops/single_selected_future_policy_v1/constants_v1.py",
+      "sha256": "92f9e96ea03392771f990c4f37a500bb5094af155e15ed04088863b88f7930ff",
+      "bytes": 3888,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "src/ops/single_selected_future_policy_v1/selection_v1.py",
+      "sha256": "059b877032955079a3d84d46cd55113cd510c1e7922cc24953fabd284245f5ad",
+      "bytes": 39294,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "src/ops/mf_membership_context_artifact_contract_v1.py",
+      "sha256": "8dda221cd46158140531e0a1cebce689ffe135ee821975fb5d712bf5380ef2be",
+      "bytes": 25806,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "src/ops/mf_membership_selector_and_rotation_runtime_contract_v1.py",
+      "sha256": "976131456817f30d0c8c6df37b6a986644ca0ddadfe14aa11918eef9901f808c",
+      "bytes": 16310,
+      "equals_source_commit": true,
+      "relevant_symbols": [
+        {
+          "name": "select_membership_v1",
+          "line": 311,
+          "end_line": 379
+        },
+        {
+          "name": "persist_selector_result_v1",
+          "line": 382,
+          "end_line": 408
+        }
+      ]
+    },
+    {
+      "path": "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py",
+      "sha256": "9171863c923ed85ea7a394ffef580ba1d16bf314d5b9b45adc026c61457490f1",
+      "bytes": 13819,
+      "equals_source_commit": true,
+      "relevant_symbols": [
+        {
+          "name": "publish_checked_lane_selections_v1",
+          "line": 90,
+          "end_line": 249
+        }
+      ]
+    },
+    {
+      "path": "src/ops/current_mf_n5_instrument_runtime_identity_closure_v1/lifecycle_v1.py",
+      "sha256": "8a6f9735784d0f6dbce43ab8f18ebbcb3ede5ad8a3a15563be66950c1f879165",
+      "bytes": 3959,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "src/ops/hard_facts_system_closure_v1/position_aware_rotation_v1.py",
+      "sha256": "db636db491869c5dac9f4b8db6b475898311c9209b548c5fc7aea88be6c5ef60",
+      "bytes": 2068,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "src/trading/master_v2/golden_geometry_engine_v1.py",
+      "sha256": "30a4f2b9baf47cc8faa1c99d62f9021e51318b4dee7229ed87e8a6ff1db03ffc",
+      "bytes": 8360,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l6_dynamic_scope_generator_v1.py",
+      "sha256": "9ea2a9978d902b6b962c40ec14f92e3c927a59684c78e6b53a5f38857602dac3",
+      "bytes": 1905,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/l10_bull_bear_switch_v1.py",
+      "sha256": "2322f04c0030739c60e884fb79eeef858da7d3bdb25ad6cc139c05d47a5bf14f",
+      "bytes": 1427,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
+      "sha256": "15fb8967ac153cdbc85ea1e4f3d09a9cf315f2fa97b2742e9d427df5938d1150",
+      "bytes": 36437,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/contract_v1.py",
+      "sha256": "3330055b974797294c089908e33602d0232f794a6149e9e93fc920830f45ed7b",
+      "bytes": 70282,
+      "equals_source_commit": true,
+      "relevant_symbols": [
+        {
+          "name": "recover_automatically_v1",
+          "line": 360,
+          "end_line": 426
+        },
+        {
+          "name": "refresh_after_reconciled_flat_v1",
+          "line": 600,
+          "end_line": 684
+        }
+      ]
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/recovery_v1.py",
+      "sha256": "b4aa7efa12ea78b488fda6c47bccbc6a3305207e275283e7f04443ce2fd2335e",
+      "bytes": 7613,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "src/ops/portfolio_capital_reservation_budget_v1/durable_store_v1.py",
+      "sha256": "a4f7d2168c10be5aa9bf4394a5d23ef7a54d041875f03c97be627dd6b48a95c3",
+      "bytes": 6449,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_post_close_feedback_v1.py",
+      "sha256": "dbd8f6ae734aff189e25b0fb3fffe0256b6fe98459950aecc456fa094b34cb52",
+      "bytes": 18074,
+      "equals_source_commit": true,
+      "relevant_symbols": [
+        {
+          "name": "compose_post_close_feedback_v1",
+          "line": 107,
+          "end_line": 411
+        }
+      ]
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/full_core_post_submit_exchange_reconciliation_lifecycle_join_v1.py",
+      "sha256": "ef4bdbff542bfddff66439eadb69f277b55e77fd4f1d555ae24d351b2b696d62",
+      "bytes": 13627,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
+      "sha256": "d09816ba7fc2ab06f05e9d0668cc090aff8d8c6b0f16d1589d28d108c765f56e",
+      "bytes": 16512,
+      "equals_source_commit": true,
+      "relevant_symbols": [
+        {
+          "name": "run_productive_full_autonomy_n5_runtime_orchestrator_v1",
+          "line": 311,
+          "end_line": 430
+        }
+      ]
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/constants_v1.py",
+      "sha256": "536e4827dfea87bcdcfee11234a38d0fb3589f6dd7ae2b073461ed0383c88664",
+      "bytes": 5187,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "src/ops/current_mf_n5_full_autonomy_runtime_n5_completion_v1/completion_join_v1.py",
+      "sha256": "559a8267bb4c57c198c3e3146b980b4208837bb4eb863d5c715be26e800437ea",
+      "bytes": 21109,
+      "equals_source_commit": true,
+      "relevant_symbols": [
+        {
+          "name": "complete_occupied_lane_runtime_n5_from_readiness_v1",
+          "line": 454,
+          "end_line": 511
+        }
+      ]
+    },
+    {
+      "path": "src/ops/bounded_peaktrade_system_composition_v1/session_v1.py",
+      "sha256": "fd6896fe501a13532891ea9934caf25cb49fee28590b00d705b2b99a2f7a7cc9",
+      "bytes": 31339,
+      "equals_source_commit": true,
+      "relevant_symbols": [
+        {
+          "name": "run_occupied_cycle_v1",
+          "line": 386,
+          "end_line": 532
+        },
+        {
+          "name": "seal_flat_episode_v1",
+          "line": 606,
+          "end_line": 674
+        }
+      ]
+    },
+    {
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_governed_continuous_cycle_orchestrator_v1.py",
+      "sha256": "5047f4320a9152aa101c7ae703d16213336a64be6bd78f6786ea26e812b623bc",
+      "bytes": 53174,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/market_ols_next_forecast_v1.py",
+      "sha256": "285467dbb06cbfce852cc3102083f27f7d73f54682a622810a3bd67ccb6df23e",
+      "bytes": 27143,
+      "equals_source_commit": true,
+      "relevant_symbols": [
+        {
+          "name": "train_market_ols_model_v1",
+          "line": 387,
+          "end_line": 479
+        },
+        {
+          "name": "forecast_from_market_ols_model_v1",
+          "line": 482,
+          "end_line": 601
+        }
+      ]
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/loop_a_conditioned_learning_evidence_v1.py",
+      "sha256": "9c5e66d4fc9d6a1a48797c4d6fe890dbebbddc169702f39d6521496923ce63b3",
+      "bytes": 14861,
+      "equals_source_commit": true,
+      "relevant_symbols": [
+        {
+          "name": "compose_conditioned_mi_learning_evidence_v1",
+          "line": 121,
+          "end_line": 208
+        }
+      ]
+    },
+    {
+      "path": "src/learning/market_intelligence_forecast_calibration_offline_stack_v1/mi_to_learning_evidence_bridge_v1.py",
+      "sha256": "f26c985bd3d2fac37ac1a8413bb4b03488f3d1b9654ae1d720014cbbc19a99c5",
+      "bytes": 10993,
+      "equals_source_commit": true,
+      "relevant_symbols": [
+        {
+          "name": "compose_mi_to_learning_evidence_v1",
+          "line": 95,
+          "end_line": 246
+        }
+      ]
+    },
+    {
+      "path": "scripts/ops/system_atlas_v1/load_v1.py",
+      "sha256": "c2741d7488f0f54dd37ea90edb1d722fd7e9e96b7229daba75ef495982526287",
+      "bytes": 6313,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "tests/ops/test_current_productive_post_close_feedback_v1.py",
+      "sha256": "c6f6ef23d4ada0bb48952e836e82956f7f771f76878598f929ae260da767a391",
+      "bytes": 19097,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "tests/ops/test_treasury_durable_post_close_chain_v1.py",
+      "sha256": "d5712d858e1063c503b47ad5abed5454f0188cac484c393941c20e797e9aad72",
+      "bytes": 5429,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "tests/ops/test_post_close_ranking_and_reduce_continuation_v1.py",
+      "sha256": "dcc0b10218cb53ac5925483bcdb5da23f318be97d998127c48e79231d3b82dd1",
+      "bytes": 2461,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "tests/ops/test_durable_portfolio_budget_recovery_v1.py",
+      "sha256": "12e0f4d576927d96d761a125ead6b982ee73eb0ade9f941b03df778637167a76",
+      "bytes": 14392,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "tests/ops/test_current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.py",
+      "sha256": "eaf1518c4254c85200c045126d46f124acc1545d72f4dd4bfb83d348ed4d61e3",
+      "bytes": 19054,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "tests/trading/master_v2/test_double_play_entry_exit_policy_v0.py",
+      "sha256": "ca99e040a47e2bc818f515b9a1a28608d469accdbebe95d6e467d613d7849e24",
+      "bytes": 31463,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "tests/learning/test_market_ols_next_forecast_v1.py",
+      "sha256": "17396e2f481f75d201dad9675ca1f9b74290dcdf562dec512b2474a1c4ba7856",
+      "bytes": 16695,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    },
+    {
+      "path": "tests/ops/test_system_atlas_v1.py",
+      "sha256": "035096c4006ed1179f89e7cbedb86ba652cd1053e3b028179dd098a80aaae95d",
+      "bytes": 26122,
+      "equals_source_commit": true,
+      "relevant_symbols": []
+    }
+  ],
+  "historical_sources": [
+    {
+      "id": "H01",
+      "kind": "historical_user_request_not_current_authorization",
+      "chat_id": "ea05daa0-f273-44c1-b907-eb2111342c89",
+      "source_path_before_archival": "/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/ea05daa0-f273-44c1-b907-eb2111342c89/ea05daa0-f273-44c1-b907-eb2111342c89.jsonl",
+      "current_path": "/Volumes/M2DATA/Cursor_Archiv_2026-11-06_192934/Cursor/Users/frnkhrz/.cursor/projects/Users-frnkhrz-Peak-Trade/agent-transcripts/ea05daa0-f273-44c1-b907-eb2111342c89/ea05daa0-f273-44c1-b907-eb2111342c89.jsonl",
+      "line": 30,
+      "timestamp_in_source": "2026-09-19T10:07:00+02:00",
+      "declared_baseline": "12c1e2eb3e7c095b47eddeeaa694b085227cd96c",
+      "raw_line_sha256": "135b8b97ed0c64ed543b6d622c7bca25147f416dc224f02e5f7d58e9e3b5da9e",
+      "matches_indexed_body": true
+    },
+    {
+      "id": "H02",
+      "git_archive": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/git-history-access.git",
+      "commit": "60f0c0820396373ff77580fdf111626464436f2d",
+      "path": "docs/governance/LAYER1_OWNER_ARCHITECTURE_DECISIONS_V1.md",
+      "sha256": "3da6c0019b719af36d4ac8d298e77fbbc4f9c4f1d978a75f04554d4582fce3ed",
+      "comparison_path": "/Users/frnkhrz/PEAK_TRADE_SYSTEM_AKTUELL/.belege/Punkt8/layer1-owner-2026-10-20.original.txt",
+      "exact_bytes_equal": true,
+      "runtime_effect_inferred": false
+    },
+    {
+      "id": "H03",
+      "git_archive": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/git-history-access.git",
+      "commit": "0808d2eed72edc9c4677f01da48cb5a8b11110dc",
+      "path": "src/ops/full_core_live_path_composition_root_v1/current_productive_post_close_feedback_v1.py",
+      "sha256": "dbd8f6ae734aff189e25b0fb3fffe0256b6fe98459950aecc456fa094b34cb52",
+      "comparison_path": "/Users/frnkhrz/Peak_Trade/src/ops/full_core_live_path_composition_root_v1/current_productive_post_close_feedback_v1.py",
+      "exact_bytes_equal": true,
+      "runtime_effect_inferred": false
+    },
+    {
+      "id": "H04",
+      "git_archive": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/git-history-access.git",
+      "commit": "28f0115fbc69a3bd1e8f5ad87f5f45492cf8dc44",
+      "path": "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
+      "sha256": "d09816ba7fc2ab06f05e9d0668cc090aff8d8c6b0f16d1589d28d108c765f56e",
+      "comparison_path": "/Users/frnkhrz/Peak_Trade/src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
+      "exact_bytes_equal": true,
+      "runtime_effect_inferred": false
+    }
+  ],
+  "checks": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt runtime-check",
+      "exit_code": 0,
+      "result": "PASS",
+      "python": "3.11.14",
+      "uv_lock_sha256": "2d92f8ab66a07e293b27f171dc80a4632ef52c7ccbf54f1e89bc17df6b03b8f2"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt docs/system_atlas/current_atlas.py check",
+      "exit_code": 0,
+      "result": "PASS",
+      "frozen_files": 22459,
+      "meaning": "declared current source/policy projection; no semantic runtime acceptance"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt docs/system_atlas/obsidian_projection.py check",
+      "exit_code": 0,
+      "result": "PASS",
+      "projected_files": 56
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt -m pytest -q -p no:cacheprovider tests/ops/test_current_productive_post_close_feedback_v1.py tests/ops/test_treasury_durable_post_close_chain_v1.py tests/ops/test_post_close_ranking_and_reduce_continuation_v1.py tests/ops/test_durable_portfolio_budget_recovery_v1.py tests/ops/test_current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1.py",
+      "exit_code": 0,
+      "passed": 77,
+      "duration_seconds": 22.91,
+      "scope": "injected offline close, budget, custody and N5 orchestration; no actual venue execution"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt -m pytest -q -p no:cacheprovider tests/trading/master_v2/test_double_play_entry_exit_policy_v0.py tests/learning/test_market_ols_next_forecast_v1.py",
+      "exit_code": 0,
+      "passed": 54,
+      "duration_seconds": 2.82,
+      "scope": "pure Double Play policy and bounded numeric OLS pipeline under generated test inputs"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt -m pytest -q -p no:cacheprovider tests/ops/test_system_atlas_v1.py::test_atlas_loads_and_validates",
+      "exit_code": 1,
+      "result": "ERROR",
+      "errors": 1,
+      "duration_seconds": 0.17,
+      "stage": "fixture setup",
+      "error": "FileNotFoundError: ATLAS_SOURCE_MISSING:census/census_meta.yaml",
+      "origin": "existing YAML loader source list requires missing historical source",
+      "resolution": "OPEN; current projection PASS does not supersede this failed contract"
+    }
+  ],
+  "first_implementation": {
+    "status": "specified_not_implemented",
+    "scope": "existing N1 post-close feedback through original durable membership/publication/recovery to one next PRE_EXTERNAL core consumer",
+    "new_sizing_or_selection_owner": false,
+    "N5_activation": false,
+    "venue_send": false,
+    "blocked_policy_changes": "D1-D6 in companion report"
+  },
+  "product_source_changes": false,
+  "freeze_tags_changed": false,
+  "new_live_or_testnet_authorization": false,
+  "limits": [
+    "Selected corridor only; no complete reconstruction of all historical variants or universe technical boundaries.",
+    "131 disjoint selected passing tests; one separately reproduced existing integration setup error.",
+    "No natural live/testnet execution, private credentials, economic advantage, five-position operation or physical powerloss claim.",
+    "N1 capital refresh and bounded E6 hold retention have different prerequisites.",
+    "P14 review proposal persistence and actual next-host consumer remain a specified implementation task.",
+    "Unselected full-suite and remote CI results remain unknown."
+  ],
+  "document_validation": {
+    "token_policy": "PASS",
+    "reference_targets": "PASS",
+    "references_checked": 27,
+    "method": "existing DocsTokenPolicyValidator and shared docs_reference_targets_common via canonical scripts/pt; scoped to the added report",
+    "full_repository_docs_gates": "not claimed"
+  }
+}
