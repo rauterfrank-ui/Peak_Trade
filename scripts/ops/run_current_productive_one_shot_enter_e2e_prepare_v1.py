@@ -32,6 +32,7 @@ def _main() -> int:
         load_startup_portfolio_args_v1,
         startup_observation_now_v1,
     )
+
     add_startup_portfolio_arguments_v1(parser)
     args = parser.parse_args()
     observed_portfolio = load_startup_portfolio_args_v1(args)

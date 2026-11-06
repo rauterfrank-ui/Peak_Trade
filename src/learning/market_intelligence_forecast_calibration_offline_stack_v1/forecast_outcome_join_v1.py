@@ -64,7 +64,9 @@ def join_forecast_to_n_bars_outcome_v1(
         horizon_start_time_utc=observation["horizon_start_time_utc"],
         bar_close_times_utc=observation["bar_close_times_utc"],
     )
-    forecast_end_instant = datetime.fromisoformat(forecast["outcome_horizon_end_utc"].replace("Z", "+00:00"))
+    forecast_end_instant = datetime.fromisoformat(
+        forecast["outcome_horizon_end_utc"].replace("Z", "+00:00")
+    )
     outcome_end_instant = datetime.fromisoformat(outcome_end.replace("Z", "+00:00"))
     if forecast_end_instant != outcome_end_instant:
         raise ForecastOutcomeJoinError("FORECAST_OUTCOME_HORIZON_END_MISMATCH")

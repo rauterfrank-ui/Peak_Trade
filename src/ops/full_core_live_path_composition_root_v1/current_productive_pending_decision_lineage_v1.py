@@ -1,4 +1,5 @@
 """Read existing DDO owner records before admitting context-bound Pending work."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -6,7 +7,8 @@ from pathlib import Path
 from typing import Mapping
 
 from src.learning.deterministic_decision_outcome_v0.capture_v0 import (
-    SEAM_DOUBLE_PLAY_ENTRY_EXIT, SEAM_SPECS_V0,
+    SEAM_DOUBLE_PLAY_ENTRY_EXIT,
+    SEAM_SPECS_V0,
 )
 from src.learning.deterministic_decision_outcome_v0.double_play_observation_projection_v1 import (
     generic_decision_result_for_producer_outcome_v1,
@@ -15,7 +17,8 @@ from src.learning.deterministic_decision_outcome_v0.double_play_observation_proj
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoError
 from src.learning.deterministic_decision_outcome_v0.ledger_v0 import AppendOnlyDdoLedgerV0
 from src.ops.full_core_live_path_composition_root_v1.current_productive_pending_decision_context_v1 import (
-    PendingDecisionContextV1, canonical_payload_json_v1,
+    PendingDecisionContextV1,
+    canonical_payload_json_v1,
 )
 
 
@@ -26,7 +29,10 @@ class PendingBoundDecisionIdentityV1:
 
 
 def load_bound_pending_decision_identity_v1(
-    *, ledger_path: Path, context: PendingDecisionContextV1, dpo: Mapping[str, str],
+    *,
+    ledger_path: Path,
+    context: PendingDecisionContextV1,
+    dpo: Mapping[str, str],
 ) -> PendingBoundDecisionIdentityV1 | None:
     """Validate stored DPO and its DecisionEvent using the existing ledger reader.
 
@@ -60,14 +66,21 @@ def load_bound_pending_decision_identity_v1(
         if observation[key] != parent[key]:
             return None
     spec = SEAM_SPECS_V0[SEAM_DOUBLE_PLAY_ENTRY_EXIT]
-    if parent["producer_id"] != spec.producer_id or parent["authority_owner"] != spec.authority_owner:
+    if (
+        parent["producer_id"] != spec.producer_id
+        or parent["authority_owner"] != spec.authority_owner
+    ):
         return None
     expected_codes = list(producer["reason_codes"]) or ["UNKNOWN"]
     if [item["code"] for item in parent["reason_codes"]] != expected_codes:
         return None
-    if any(item["source_taxonomy_ref"] != spec.source_taxonomy_ref for item in parent["reason_codes"]):
+    if any(
+        item["source_taxonomy_ref"] != spec.source_taxonomy_ref for item in parent["reason_codes"]
+    ):
         # The existing capture uses no source ref for its explicit empty-code UNKNOWN.
-        if producer["reason_codes"] or any(item["source_taxonomy_ref"] is not None for item in parent["reason_codes"]):
+        if producer["reason_codes"] or any(
+            item["source_taxonomy_ref"] is not None for item in parent["reason_codes"]
+        ):
             return None
     if parent["hard_block_reasons"]:
         return None
@@ -83,8 +96,16 @@ def load_bound_pending_decision_identity_v1(
 
 
 def pending_decision_lineage_is_bound_v1(
-    *, ledger_path: Path, context: PendingDecisionContextV1, dpo: Mapping[str, str],
+    *,
+    ledger_path: Path,
+    context: PendingDecisionContextV1,
+    dpo: Mapping[str, str],
 ) -> bool:
-    return load_bound_pending_decision_identity_v1(
-        ledger_path=ledger_path, context=context, dpo=dpo,
-    ) is not None
+    return (
+        load_bound_pending_decision_identity_v1(
+            ledger_path=ledger_path,
+            context=context,
+            dpo=dpo,
+        )
+        is not None
+    )

@@ -360,7 +360,10 @@ def run_incremental_stage_research_v1(
     if supplied_predecessor is not None:
         if predecessor is None:
             raise Phase22IncrementalResearchError("BASELINE_PREDECESSOR_FORBIDDEN")
-        if not isinstance(supplied_predecessor, Mapping) or supplied_predecessor.get("stage_id") != predecessor:
+        if (
+            not isinstance(supplied_predecessor, Mapping)
+            or supplied_predecessor.get("stage_id") != predecessor
+        ):
             raise Phase22IncrementalResearchError("PREDECESSOR_STAGE_MISMATCH")
 
     missing_family: str | None = None

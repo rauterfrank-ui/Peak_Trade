@@ -20,6 +20,7 @@ from src.ops.current_mf_n5_durable_lane_assignment_persistence_v1.persistence_v1
     topology_integrity_digest_v1,
     validate_pending_publication_source_v1,
     load_pending_selection_publication_v1,
+    load_completed_selection_publication_v1,
     checkpoint_root_for,
 )
 from src.ops.current_mf_n5_isolated_lane_instance_topology_v1.topology_v1 import (
@@ -35,6 +36,9 @@ from src.ops.hard_facts_system_closure_v1.position_aware_rotation_v1 import (
 )
 from src.ops.productive_reconciliation_runtime_binding_v1.models_v1 import PortfolioTruthSnapshotV1
 from src.ops.single_selected_future_policy_v1.models_v1 import SingleSelectedFutureSelectionV1
+from src.ops.mf_membership_context_artifact_contract_v1 import (
+    validate_membership_context_artifact_v1,
+)
 from src.ops.single_selected_future_policy_v1.persistence_v1 import load_and_validate_selection_v1
 from src.ops.single_selected_future_policy_v1.producer_v1 import (
     commit_prepared_lane_selection_v1,
@@ -121,6 +125,43 @@ def publish_checked_lane_selections_v1(
         recovery_mode=RECOVERY_MODE_BOOTSTRAP if membership.bootstrap else RECOVERY_MODE_RESTART,
         expected_universe_snapshot_id=ranking_snapshot["universe_snapshot_id"],
     )
+    if prior is not None and prior.membership_instance_id == membership.instance_id:
+        from src.ops.productive_futures_ranking_producer_v1.models_v1 import (
+            ProductiveFuturesRankingSnapshotV1,
+        )
+        from src.ops.productive_futures_ranking_producer_v1.persistence_v1 import (
+            validate_ranking_snapshot_bindings_v1,
+        )
+
+        validate_membership_context_artifact_v1(membership)
+        valid = validate_ranking_snapshot_bindings_v1(
+            ProductiveFuturesRankingSnapshotV1.from_dict(ranking_snapshot)
+        )
+        receipt = load_completed_selection_publication_v1(topology_state_root_base)
+        if (
+            not valid.ok
+            or receipt is None
+            or receipt["topology_digest"] != topology_integrity_digest_v1(prior.to_dict())
+            or prior.ranking_snapshot_id != ranking_snapshot["ranking_snapshot_id"]
+            or prior.ranking_integrity_digest != ranking_snapshot["integrity_digest"]
+            or set(prior.instrument_to_lane()) != set(membership.ordered_instrument_ids)
+        ):
+            _fail("LANE_COMPLETED_PUBLICATION_REPLAY_MISMATCH")
+        selections = {}
+        for slot in prior.occupied_slots():
+            loaded = load_and_validate_selection_v1(Path(slot.lane_state_root))
+            selection = loaded.selection
+            if (
+                not loaded.ok
+                or selection is None
+                or selection.instrument_id != slot.canonical_instrument_id
+                or selection.ranking_snapshot_id != prior.ranking_snapshot_id
+                or selection.ranking_integrity_digest != prior.ranking_integrity_digest
+                or selection.integrity_digest != receipt["selection_digests"].get(slot.lane_id)
+            ):
+                _fail("LANE_COMPLETED_PUBLICATION_SELECTION_MISMATCH", slot.lane_id)
+            selections[slot.lane_id] = selection
+        return CheckedLanePublicationV1(prior, selections, resumed=True)
     if prior is not None and membership.prior_membership_reference != prior.membership_instance_id:
         _fail("LANE_MEMBERSHIP_CONTINUITY_UNPROVEN")
     proposed = apply_isolated_lane_topology_v1(

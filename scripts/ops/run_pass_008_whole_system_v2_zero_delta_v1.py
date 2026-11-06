@@ -15,22 +15,85 @@ from typing import Any
 
 MAIN_REPO = Path(__file__).resolve().parents[2]
 BASELINE_SHA = "d962aaee86b347b9d0247981cb06896a0431aeba"
-V2_CKPT = MAIN_REPO / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1/20261005T084420Z"
+V2_CKPT = (
+    MAIN_REPO
+    / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1/20261005T084420Z"
+)
 DEFAULT_WT = Path("/Users/frnkhrz/Peak_Trade/.ghv_worktrees/post7053_reproof")
 
 TOOLING_PATHS: list[tuple[str, str, bool, bool, bool]] = [
-    ("scripts/ops/run_pass_008_whole_system_v2_zero_delta_v1.py", "PASS_008 orchestrator", False, False, True),
-    ("scripts/ops/peak_trade_v2_fresh_discovery_v1.py", "V2 fresh discovery engine", False, False, True),
-    ("scripts/ops/run_pass_007a_canonical_entrypoint_graph_denominator_v1.py", "PASS_007A denominator", False, True, False),
-    ("scripts/ops/peak_trade_canonical_entrypoint_discovery_v2.py", "structural root predicate V2", True, True, True),
+    (
+        "scripts/ops/run_pass_008_whole_system_v2_zero_delta_v1.py",
+        "PASS_008 orchestrator",
+        False,
+        False,
+        True,
+    ),
+    (
+        "scripts/ops/peak_trade_v2_fresh_discovery_v1.py",
+        "V2 fresh discovery engine",
+        False,
+        False,
+        True,
+    ),
+    (
+        "scripts/ops/run_pass_007a_canonical_entrypoint_graph_denominator_v1.py",
+        "PASS_007A denominator",
+        False,
+        True,
+        False,
+    ),
+    (
+        "scripts/ops/peak_trade_canonical_entrypoint_discovery_v2.py",
+        "structural root predicate V2",
+        True,
+        True,
+        True,
+    ),
     ("scripts/ops/peak_trade_forensic_closure_logic_v1.py", "closure logic", True, True, True),
-    ("scripts/ops/run_pass_006b_closure_repair_and_recertification_v1.py", "PASS_006B orchestrator", True, False, False),
-    ("scripts/ops/run_pass_006a_closure_integrity_adjudication_v1.py", "PASS_006A adjudication", True, False, False),
+    (
+        "scripts/ops/run_pass_006b_closure_repair_and_recertification_v1.py",
+        "PASS_006B orchestrator",
+        True,
+        False,
+        False,
+    ),
+    (
+        "scripts/ops/run_pass_006a_closure_integrity_adjudication_v1.py",
+        "PASS_006A adjudication",
+        True,
+        False,
+        False,
+    ),
     ("scripts/ops/run_pass_006_whole_system_closure_v1.py", "PASS_006 closure", True, False, False),
-    ("scripts/ops/run_pass_007_whole_system_independent_reproof_v1.py", "PASS_007 reproof", True, False, False),
-    ("scripts/ops/run_peak_trade_ghv_driven_whole_system_forensic_probe_v1.py", "GHV probe", True, True, True),
-    ("scripts/ops/run_peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1.py", "whole-system GHV campaign", True, True, True),
-    ("scripts/ops/run_pass_005_whole_system_recartography_closure_v1.py", "recartography PASS_005", True, True, True),
+    (
+        "scripts/ops/run_pass_007_whole_system_independent_reproof_v1.py",
+        "PASS_007 reproof",
+        True,
+        False,
+        False,
+    ),
+    (
+        "scripts/ops/run_peak_trade_ghv_driven_whole_system_forensic_probe_v1.py",
+        "GHV probe",
+        True,
+        True,
+        True,
+    ),
+    (
+        "scripts/ops/run_peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1.py",
+        "whole-system GHV campaign",
+        True,
+        True,
+        True,
+    ),
+    (
+        "scripts/ops/run_pass_005_whole_system_recartography_closure_v1.py",
+        "recartography PASS_005",
+        True,
+        True,
+        True,
+    ),
     (
         "scripts/ops/run_current_full_repository_recartography_and_whole_system_fixpoint_continuation_v1.py",
         "filesystem/AST union",
@@ -38,9 +101,27 @@ TOOLING_PATHS: list[tuple[str, str, bool, bool, bool]] = [
         True,
         True,
     ),
-    ("tests/ops/test_pass_006b_forensic_closure_guards_v1.py", "006B regression guards", True, True, True),
-    ("tests/ops/test_pass_007a_canonical_root_regression_guards_v1.py", "007A regression guards", True, False, True),
-    ("tests/ops/test_pass_008_root_isolation_regression_guards_v1.py", "008 root isolation guards", False, False, True),
+    (
+        "tests/ops/test_pass_006b_forensic_closure_guards_v1.py",
+        "006B regression guards",
+        True,
+        True,
+        True,
+    ),
+    (
+        "tests/ops/test_pass_007a_canonical_root_regression_guards_v1.py",
+        "007A regression guards",
+        True,
+        False,
+        True,
+    ),
+    (
+        "tests/ops/test_pass_008_root_isolation_regression_guards_v1.py",
+        "008 root isolation guards",
+        False,
+        False,
+        True,
+    ),
 ]
 
 
@@ -70,8 +151,15 @@ def tooling_freeze(repo: Path) -> list[dict[str, Any]]:
     rows = []
     for rel, role, u_v2, u_007a, u_008 in TOOLING_PATHS:
         p = repo / rel
-        st = subprocess.check_output(["git", "-C", str(repo), "status", "--porcelain", rel], text=True).strip()
-        tracked = subprocess.call(["git", "-C", str(repo), "cat-file", "-e", f"HEAD:{rel}"], stderr=subprocess.DEVNULL) == 0
+        st = subprocess.check_output(
+            ["git", "-C", str(repo), "status", "--porcelain", rel], text=True
+        ).strip()
+        tracked = (
+            subprocess.call(
+                ["git", "-C", str(repo), "cat-file", "-e", f"HEAD:{rel}"], stderr=subprocess.DEVNULL
+            )
+            == 0
+        )
         rows.append(
             {
                 "PATH": rel,
@@ -115,13 +203,27 @@ def freeze_baseline_v2() -> dict[str, Any]:
         "SEMANTIC_HASH_SCHEMA_V2": schema,
         "SEMANTIC_HASHES_V2": v2_hashes,
         "HEADLINE_EVIDENCE_ONLY": baseline,
-        "ENTRYPOINT_IDENTITIES": json.loads((V2_CKPT / "canonical_entrypoint_inventory.json").read_text())["ENTRYPOINTS"],
-        "NODE_ROWS": json.loads((V2_CKPT / "canonical_node_universe_rows.json").read_text())["ROWS"],
-        "EDGE_ROWS": json.loads((V2_CKPT / "canonical_semantic_edge_rows.json").read_text())["ROWS"],
-        "SURFACE_ROWS": json.loads((V2_CKPT / "canonical_runtime_surface_inventory.json").read_text())["SURFACES"],
-        "FLOW_ROWS": json.loads((V2_CKPT / "canonical_cross_flow_inventory.json").read_text())["FLOWS"],
-        "AUTHORITY_ROWS": json.loads((V2_CKPT / "canonical_authority_matrix.json").read_text())["ROWS"],
-        "BOUNDARY_ROWS": json.loads((V2_CKPT / "canonical_boundary_transition_adjudication.json").read_text())["ROWS"],
+        "ENTRYPOINT_IDENTITIES": json.loads(
+            (V2_CKPT / "canonical_entrypoint_inventory.json").read_text()
+        )["ENTRYPOINTS"],
+        "NODE_ROWS": json.loads((V2_CKPT / "canonical_node_universe_rows.json").read_text())[
+            "ROWS"
+        ],
+        "EDGE_ROWS": json.loads((V2_CKPT / "canonical_semantic_edge_rows.json").read_text())[
+            "ROWS"
+        ],
+        "SURFACE_ROWS": json.loads(
+            (V2_CKPT / "canonical_runtime_surface_inventory.json").read_text()
+        )["SURFACES"],
+        "FLOW_ROWS": json.loads((V2_CKPT / "canonical_cross_flow_inventory.json").read_text())[
+            "FLOWS"
+        ],
+        "AUTHORITY_ROWS": json.loads((V2_CKPT / "canonical_authority_matrix.json").read_text())[
+            "ROWS"
+        ],
+        "BOUNDARY_ROWS": json.loads(
+            (V2_CKPT / "canonical_boundary_transition_adjudication.json").read_text()
+        )["ROWS"],
     }
 
 
@@ -162,7 +264,9 @@ def diff_sets(
     rem_k = set(v2_map) - set(fr_map)
     changed = []
     for k in set(v2_map) & set(fr_map):
-        if full_compare and json.dumps(v2_map[k], sort_keys=True) != json.dumps(fr_map[k], sort_keys=True):
+        if full_compare and json.dumps(v2_map[k], sort_keys=True) != json.dumps(
+            fr_map[k], sort_keys=True
+        ):
             changed.append({"KEY": k, "V2": v2_map[k], "PASS008": fr_map[k]})
     return {
         "NEW": sorted(new_k),
@@ -188,13 +292,21 @@ def component_rows(union_nodes: list[dict[str, Any]]) -> list[dict[str, Any]]:
 def main() -> int:
     fresh_mod = _load("fresh", MAIN_REPO / "scripts/ops/peak_trade_v2_fresh_discovery_v1.py")
     logic = _load("logic", MAIN_REPO / "scripts/ops/peak_trade_forensic_closure_logic_v1.py")
-    ws = _load("ws", MAIN_REPO / "scripts/ops/run_peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1.py")
+    ws = _load(
+        "ws",
+        MAIN_REPO
+        / "scripts/ops/run_peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1.py",
+    )
 
     repo = Path(os.environ.get("PEAK_TRADE_CURRENT_FORENSIC_REPO", str(DEFAULT_WT)))
     ws.ensure_forensic_evidence_bridge(repo, MAIN_REPO)
 
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    root = MAIN_REPO / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1" / ts
+    root = (
+        MAIN_REPO
+        / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1"
+        / ts
+    )
     pass_dir = root / "exhaustive_passes" / "pass_008"
     pass_dir.mkdir(parents=True, exist_ok=True)
 
@@ -206,7 +318,9 @@ def main() -> int:
 
     disc = discover = fresh_mod.discover_v2_fresh(repo)
     unadj_ep = sum(1 for r in discover["adjud_rows"] if r["ROOT_CLASS"] == "UNKNOWN_CURRENT")
-    unadj_surf = sum(1 for r in discover["surf_adj"] if r.get("FINAL_CLASSIFICATION") in ("UNKNOWN", None))
+    unadj_surf = sum(
+        1 for r in discover["surf_adj"] if r.get("FINAL_CLASSIFICATION") in ("UNKNOWN", None)
+    )
     unadj_bound = sum(1 for r in discover["boundary_rows"] if not r.get("ADJUDICATION"))
     unadj_flow = 0
 
@@ -220,7 +334,11 @@ def main() -> int:
             "TOTAL_UNION_COMPONENTS": len(discover["union_nodes"]),
         },
     )
-    _write(root, "fresh_canonical_entrypoint_inventory.json", {"ENTRYPOINTS": discover["canonical"], "TOTAL": len(discover["canonical"])})
+    _write(
+        root,
+        "fresh_canonical_entrypoint_inventory.json",
+        {"ENTRYPOINTS": discover["canonical"], "TOTAL": len(discover["canonical"])},
+    )
     _write(root, "root_class_isolation_audit.json", discover["leaks"])
     _write(
         root,
@@ -234,42 +352,95 @@ def main() -> int:
             "REACH_ROWS_TOTAL": len(discover["reach_rows"]),
         },
     )
-    _write(root, "fresh_node_universe_rows.json", {"ROWS": discover["node_rows"], "TOTAL": len(discover["node_rows"])})
-    _write(root, "fresh_semantic_edge_rows.json", {"ROWS": discover["edge_rows"], "TOTAL": len(discover["edge_rows"])})
-    _write(root, "fresh_runtime_surface_inventory.json", {"SURFACES": discover["true_inv"], "TOTAL": len(discover["true_inv"])})
+    _write(
+        root,
+        "fresh_node_universe_rows.json",
+        {"ROWS": discover["node_rows"], "TOTAL": len(discover["node_rows"])},
+    )
+    _write(
+        root,
+        "fresh_semantic_edge_rows.json",
+        {"ROWS": discover["edge_rows"], "TOTAL": len(discover["edge_rows"])},
+    )
+    _write(
+        root,
+        "fresh_runtime_surface_inventory.json",
+        {"SURFACES": discover["true_inv"], "TOTAL": len(discover["true_inv"])},
+    )
     _write(root, "fresh_authority_matrix.json", {"ROWS": discover["authority_rows"]})
-    _write(root, "fresh_boundary_transition_adjudication.json", {"ROWS": discover["boundary_rows"], "TOTAL": len(discover["boundary_rows"])})
-    _write(root, "fresh_cross_flow_inventory.json", {"FLOWS": discover["flows"], "TOTAL": len(discover["flows"])})
+    _write(
+        root,
+        "fresh_boundary_transition_adjudication.json",
+        {"ROWS": discover["boundary_rows"], "TOTAL": len(discover["boundary_rows"])},
+    )
+    _write(
+        root,
+        "fresh_cross_flow_inventory.json",
+        {"FLOWS": discover["flows"], "TOTAL": len(discover["flows"])},
+    )
     _write(root, "fresh_cross_flow_deep_proof.json", {"FLOWS": discover["flows"]})
 
     ghv = ws.run_ghv_probe(pass_dir / "ghv_probe")
     prefix_path = pass_dir / "ghv_probe/prefix_probe_results.json"
     _prefix_rows, unexp_prefix, prefix_parity, _strict = logic.prefix_parity_from_probe(prefix_path)
-    pre_ext = next((p for p in json.loads(prefix_path.read_text())["PROBES"] if p["LAST_STAGE"] == "PRE_EXTERNAL"), {})
+    pre_ext = next(
+        (
+            p
+            for p in json.loads(prefix_path.read_text())["PROBES"]
+            if p["LAST_STAGE"] == "PRE_EXTERNAL"
+        ),
+        {},
+    )
     defects = logic.build_current_defect_register(
         pre_external_wired=bool(pre_ext.get("MATCH")),
         pre_external_prefix_match=bool(pre_ext.get("MATCH")),
         prefix_path=str(prefix_path.relative_to(MAIN_REPO)),
     )
-    open_s0 = sum(1 for d in defects if d.get("SEVERITY") == "S0" and d.get("STATUS", "").startswith("OPEN"))
-    open_s1 = sum(1 for d in defects if d.get("SEVERITY") == "S1" and d.get("STATUS", "").startswith("OPEN"))
-    open_s2p = sum(1 for d in defects if d.get("SEVERITY") not in ("S0", "S1") and "OPEN" in d.get("STATUS", ""))
+    open_s0 = sum(
+        1 for d in defects if d.get("SEVERITY") == "S0" and d.get("STATUS", "").startswith("OPEN")
+    )
+    open_s1 = sum(
+        1 for d in defects if d.get("SEVERITY") == "S1" and d.get("STATUS", "").startswith("OPEN")
+    )
+    open_s2p = sum(
+        1
+        for d in defects
+        if d.get("SEVERITY") not in ("S0", "S1") and "OPEN" in d.get("STATUS", "")
+    )
 
     regression = ws.run_regression(repo)
     g006b = subprocess.run(
-        [str(MAIN_REPO / "scripts/pt"), "-m", "pytest", "-q", "tests/ops/test_pass_006b_forensic_closure_guards_v1.py"],
+        [
+            str(MAIN_REPO / "scripts/pt"),
+            "-m",
+            "pytest",
+            "-q",
+            "tests/ops/test_pass_006b_forensic_closure_guards_v1.py",
+        ],
         cwd=str(MAIN_REPO),
         capture_output=True,
         text=True,
     )
     g007a = subprocess.run(
-        [str(MAIN_REPO / "scripts/pt"), "-m", "pytest", "-q", "tests/ops/test_pass_007a_canonical_root_regression_guards_v1.py"],
+        [
+            str(MAIN_REPO / "scripts/pt"),
+            "-m",
+            "pytest",
+            "-q",
+            "tests/ops/test_pass_007a_canonical_root_regression_guards_v1.py",
+        ],
         cwd=str(MAIN_REPO),
         capture_output=True,
         text=True,
     )
     g008 = subprocess.run(
-        [str(MAIN_REPO / "scripts/pt"), "-m", "pytest", "-q", "tests/ops/test_pass_008_root_isolation_regression_guards_v1.py"],
+        [
+            str(MAIN_REPO / "scripts/pt"),
+            "-m",
+            "pytest",
+            "-q",
+            "tests/ops/test_pass_008_root_isolation_regression_guards_v1.py",
+        ],
         cwd=str(MAIN_REPO),
         capture_output=True,
         text=True,
@@ -282,7 +453,10 @@ def main() -> int:
     _write(
         root,
         "fresh_prefix_parity_adjudication.json",
-        {"UNEXPLAINED_PREFIX_DIVERGENCES": unexp_prefix, "PREFIX_PARITY_ADJUDICATED": prefix_parity},
+        {
+            "UNEXPLAINED_PREFIX_DIVERGENCES": unexp_prefix,
+            "PREFIX_PARITY_ADJUDICATED": prefix_parity,
+        },
     )
     _write(
         root,
@@ -307,19 +481,34 @@ def main() -> int:
     )
 
     v2 = v2_frozen
-    py_id = lambda m: (m["PATH"], m.get("DOMAIN"), m.get("TRACKED"))
+
+    def py_id(m):
+        return m["PATH"], m.get("DOMAIN"), m.get("TRACKED")
+
     v2_py = discover["fs"]["py_modules"]
-    comp_fresh = [{"PATH": m["PATH"], "DOMAIN": m.get("DOMAIN"), "TRACKED": m.get("TRACKED"), "TYPE": m.get("TYPE", ".py")} for m in v2_py]
+    comp_fresh = [
+        {
+            "PATH": m["PATH"],
+            "DOMAIN": m.get("DOMAIN"),
+            "TRACKED": m.get("TRACKED"),
+            "TYPE": m.get("TYPE", ".py"),
+        }
+        for m in v2_py
+    ]
     comp_v2 = comp_fresh
     comp_diff = diff_sets(comp_v2, comp_fresh, py_id, full_compare=True)
-    comp_diff["NOTE"] = "V2 checkpoint did not freeze filesystem py_modules; PATH parity self-check at fixed BASELINE_SHA"
+    comp_diff["NOTE"] = (
+        "V2 checkpoint did not freeze filesystem py_modules; PATH parity self-check at fixed BASELINE_SHA"
+    )
     union_comp_diff = diff_sets(
         [{"NODE_KEY": n["NODE_ID"]} for n in v2["NODE_ROWS"]],
         [{"NODE_KEY": n["NODE_ID"]} for n in discover["node_rows"]],
         lambda r: r["NODE_KEY"],
     )
 
-    ep_diff = diff_sets(v2["ENTRYPOINT_IDENTITIES"], discover["canonical"], _ep_id, full_compare=True)
+    ep_diff = diff_sets(
+        v2["ENTRYPOINT_IDENTITIES"], discover["canonical"], _ep_id, full_compare=True
+    )
     ep_class_only = diff_sets(
         [{**r, "STRUCTURAL_ROOT_EVIDENCE": []} for r in v2["ENTRYPOINT_IDENTITIES"]],
         [{**r, "STRUCTURAL_ROOT_EVIDENCE": []} for r in discover["canonical"]],
@@ -327,17 +516,29 @@ def main() -> int:
         full_compare=False,
     )
 
-    edge_v2_hash = [e for e in v2["EDGE_ROWS"] if e["EDGE_CLASS"] in ("COMPOSITION_CURRENT", "DORMANT_CURRENT", "IMPORT")]
-    edge_fresh = [e for e in discover["edge_rows"] if e["EDGE_CLASS"] in ("COMPOSITION_CURRENT", "DORMANT_CURRENT", "IMPORT")]
+    edge_v2_hash = [
+        e
+        for e in v2["EDGE_ROWS"]
+        if e["EDGE_CLASS"] in ("COMPOSITION_CURRENT", "DORMANT_CURRENT", "IMPORT")
+    ]
+    edge_fresh = [
+        e
+        for e in discover["edge_rows"]
+        if e["EDGE_CLASS"] in ("COMPOSITION_CURRENT", "DORMANT_CURRENT", "IMPORT")
+    ]
     edge_diff = diff_sets(edge_v2_hash, edge_fresh, _edge_id, full_compare=True)
     node_diff = diff_sets(v2["NODE_ROWS"], discover["node_rows"], _node_id, full_compare=True)
     surf_diff = diff_sets(v2["SURFACE_ROWS"], discover["true_inv"], _surf_id, full_compare=True)
     flow_diff = diff_sets(v2["FLOW_ROWS"], discover["flows"], _flow_id, full_compare=True)
-    auth_diff = diff_sets(v2["AUTHORITY_ROWS"], discover["authority_rows"], _auth_id, full_compare=True)
+    auth_diff = diff_sets(
+        v2["AUTHORITY_ROWS"], discover["authority_rows"], _auth_id, full_compare=True
+    )
 
     p8_hashes = discover["hashes"]
     v2_hashes = v2["SEMANTIC_HASHES_V2"]
-    reach_hash_match = v2_hashes["REACHABILITY_MATRIX_SHA256"] == p8_hashes.get("REACHABILITY_MATRIX_SHA256")
+    reach_hash_match = v2_hashes["REACHABILITY_MATRIX_SHA256"] == p8_hashes.get(
+        "REACHABILITY_MATRIX_SHA256"
+    )
     reach_diff = {
         "NEW": [],
         "REMOVED": [],

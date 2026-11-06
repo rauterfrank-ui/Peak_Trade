@@ -21,7 +21,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, Callable, Mapping, Sequence
 
-from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import require_startup_portfolio_v1
+from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import (
+    require_startup_portfolio_v1,
+)
 
 if TYPE_CHECKING:
     from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import (
@@ -733,6 +735,7 @@ def make_n1_occupied_lane_s5_runner_v1(
         from src.ops.full_core_live_path_composition_root_v1.current_productive_pending_decision_context_v1 import (
             pending_decision_context_from_invocation_v1,
         )
+
         context = pending_decision_context_from_invocation_v1(
             getattr(t2_dispatch, "last_invocation", None)
         )

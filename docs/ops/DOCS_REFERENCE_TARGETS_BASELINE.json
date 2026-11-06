@@ -1,14 +1,14 @@
 {
-  "generated_at_utc": "2026-09-26T05:06:21.197237+00:00",
-  "git_sha": "f33000f8909c4fad45a2050bcdcd0e1afa884e2c",
-  "tool_version": "1.0.0",
+  "generated_at_utc": "2026-11-06T21:11:30.144926+00:00",
+  "git_sha": "9397d04a37d527a8316b3e44ef4f80b4ef44db7a",
+  "tool_version": "1.1.0",
   "scan_stats": {
-    "total_markdown_files": 3179,
-    "ignored_files": 458,
-    "scanned_files": 2721,
-    "total_references": 15401
+    "total_markdown_files": 3450,
+    "ignored_files": 449,
+    "scanned_files": 3001,
+    "total_references": 19679
   },
-  "missing_count": 243,
+  "missing_count": 469,
   "missing_items": [
     {
       "source_file": "docs/AUTONOMOUS_AI_WORKFLOW.md",
@@ -26,6 +26,12 @@
       "source_file": "docs/AUTONOMOUS_AI_WORKFLOW.md",
       "line_number": 75,
       "target": "src/autonomous/monitors.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/FEHLENDE_FEATURES_PEAK_TRADE.md",
+      "line_number": 6,
+      "target": "docs/governance/feature_state_map_v1.md",
       "link_text": null
     },
     {
@@ -119,6 +125,12 @@
       "link_text": null
     },
     {
+      "source_file": "docs/TECH_DEBT_BACKLOG.md",
+      "line_number": 226,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
       "source_file": "docs/WORKFLOW_FRONTDOOR.md",
       "line_number": 69,
       "target": "./ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md",
@@ -143,39 +155,39 @@
       "link_text": null
     },
     {
+      "source_file": "docs/ai/EVIDENCE_PACK_CI_GATE.md",
+      "line_number": 642,
+      "target": "docs/architecture/ai_autonomy_layer_map_v1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/architecture/INTEGRATION_SUMMARY.md",
+      "line_number": 16,
+      "target": "docs/architecture/ai_autonomy_layer_map_v1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/architecture/INTEGRATION_SUMMARY.md",
+      "line_number": 17,
+      "target": "docs/architecture/ai_autonomy_layer_map_gap_analysis.md",
+      "link_text": null
+    },
+    {
       "source_file": "docs/architecture/INTEGRATION_SUMMARY.md",
       "line_number": 89,
       "target": "src/market_sentinel/v0_daily_outlook.py",
       "link_text": null
     },
     {
-      "source_file": "docs/architecture/ai_autonomy_layer_map_gap_analysis.md",
-      "line_number": 74,
-      "target": "src/market_sentinel/v0_daily_outlook.py",
+      "source_file": "docs/architecture/INTEGRATION_SUMMARY.md",
+      "line_number": 204,
+      "target": "docs/architecture/ai_autonomy_layer_map_v1.md",
       "link_text": null
     },
     {
-      "source_file": "docs/architecture/ai_autonomy_layer_map_gap_analysis.md",
-      "line_number": 150,
-      "target": "src/market_sentinel/v0_daily_outlook.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/architecture/ai_autonomy_layer_map_gap_analysis.md",
-      "line_number": 212,
-      "target": "src/market_sentinel/v0_daily_outlook.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/architecture/ai_autonomy_layer_map_gap_analysis.md",
-      "line_number": 217,
-      "target": "src/market_sentinel/v0_daily_outlook.py",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/architecture/ai_autonomy_layer_map_gap_analysis.md",
-      "line_number": 356,
-      "target": "src/market_sentinel/v0_daily_outlook.py",
+      "source_file": "docs/architecture/INTEGRATION_SUMMARY.md",
+      "line_number": 205,
+      "target": "docs/architecture/ai_autonomy_layer_map_gap_analysis.md",
       "link_text": null
     },
     {
@@ -188,6 +200,12 @@
       "source_file": "docs/audit/GOVERNANCE_DATAFLOW_REPORT.md",
       "line_number": 172,
       "target": "src/observability/policy/policy_v0.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/audit/REPO_AUDIT_REPORT.md",
+      "line_number": 4,
+      "target": "../governance/feature_state_map_v1.md",
       "link_text": null
     },
     {
@@ -276,6 +294,24 @@
     },
     {
       "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 57,
+      "target": "docs/governance/feature_state_map_v1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 64,
+      "target": "docs/mindmap/10_STRATEGY_IDEAS.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 65,
+      "target": "docs/mindmap/template/IDEA_TEMPLATE.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
       "line_number": 75,
       "target": "docs/ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md",
       "link_text": null
@@ -288,8 +324,80 @@
     },
     {
       "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 82,
+      "target": "docs/ops/graphs/REMEDIATION_WAVE5_2026-01-14.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 83,
+      "target": "docs/ops/graphs/docs_graph_snapshot_wave3_after.txt",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 84,
+      "target": "docs/ops/graphs/docs_graph_snapshot_wave3_before.txt",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 85,
+      "target": "docs/ops/graphs/docs_graph_snapshot_wave4_after.txt",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 86,
+      "target": "docs/ops/graphs/docs_graph_snapshot_wave4_before.txt",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 87,
+      "target": "docs/ops/graphs/docs_graph_snapshot_wave5_before.txt",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 88,
+      "target": "docs/ops/graphs/snapshots/2026-01-13/docs_graph_snapshot.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 89,
+      "target": "docs/ops/graphs/snapshots/2026-01-13/docs_graph_snapshot_wave1_after.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 90,
+      "target": "docs/ops/graphs/snapshots/2026-01-13/docs_graph_snapshot_wave2_after.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 91,
+      "target": "docs/ops/graphs/snapshots/2026-01-13/orphans.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 94,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
       "line_number": 95,
       "target": "docs/ops/runbooks/RUNBOOK_PHASE6_STRATEGY_SWITCH_SANITY_CHECK_CURSOR_MULTI_AGENT.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/armstrong_inventory.md",
+      "line_number": 98,
+      "target": "docs/ops/specs/MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md",
       "link_text": null
     },
     {
@@ -468,6 +576,12 @@
     },
     {
       "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 49,
+      "target": "docs/governance/feature_state_map_v1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
       "line_number": 64,
       "target": "docs/ops/_archive/installation_roadmap/2026-01-12/INSTALLATION_UND_ROADMAP_BIS_FINISH_2026-01-12_ORIGINAL.md",
       "link_text": null
@@ -476,6 +590,78 @@
       "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
       "line_number": 65,
       "target": "docs/ops/_archive/workflow_docs_integration/2026-01-12/BACKTICK_AUDIT.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 71,
+      "target": "docs/ops/graphs/REMEDIATION_WAVE5_2026-01-14.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 72,
+      "target": "docs/ops/graphs/docs_graph_snapshot_wave3_after.txt",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 73,
+      "target": "docs/ops/graphs/docs_graph_snapshot_wave3_before.txt",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 74,
+      "target": "docs/ops/graphs/docs_graph_snapshot_wave4_after.txt",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 75,
+      "target": "docs/ops/graphs/docs_graph_snapshot_wave4_before.txt",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 76,
+      "target": "docs/ops/graphs/docs_graph_snapshot_wave5_before.txt",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 77,
+      "target": "docs/ops/graphs/snapshots/2026-01-13/docs_graph_snapshot.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 78,
+      "target": "docs/ops/graphs/snapshots/2026-01-13/docs_graph_snapshot_wave1_after.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 79,
+      "target": "docs/ops/graphs/snapshots/2026-01-13/docs_graph_snapshot_wave2_after.json",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 80,
+      "target": "docs/ops/graphs/snapshots/2026-01-13/orphans.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 83,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/evidence/el_karoui_armstrong_system_integration_audit_v1/el_karoui_inventory.md",
+      "line_number": 85,
+      "target": "docs/ops/specs/MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md",
       "link_text": null
     },
     {
@@ -606,6 +792,12 @@
     },
     {
       "source_file": "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
+      "line_number": 4,
+      "target": "../governance/feature_state_map_v1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md",
       "line_number": 21,
       "target": "src/docs/trading_bot_notes.md",
       "link_text": null
@@ -677,15 +869,33 @@
       "link_text": null
     },
     {
-      "source_file": "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md",
-      "line_number": 812,
-      "target": "config/research/armstrong_cycle_v1_versioned_research_binding_v0.json",
+      "source_file": "docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md",
+      "line_number": 309,
+      "target": "docs/governance/feature_state_map_v1.md",
       "link_text": null
     },
     {
-      "source_file": "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md",
-      "line_number": 813,
-      "target": "config/research/armstrong_cycle_v1_offline_economic_evaluation_scope_ratification_v0.json",
+      "source_file": "docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md",
+      "line_number": 430,
+      "target": "docs/governance/feature_state_map_v1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md",
+      "line_number": 437,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/PEAK_TRADE_CANONICAL_RUNTIME_TRUTH_MAP_V1.md",
+      "line_number": 440,
+      "target": "docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md",
+      "line_number": 48,
+      "target": "../../src/learning/deterministic_decision_outcome_v0",
       "link_text": null
     },
     {
@@ -695,9 +905,267 @@
       "link_text": null
     },
     {
+      "source_file": "docs/governance/ai_autonomy/PHASE1_COMPLETION_REPORT.md",
+      "line_number": 38,
+      "target": "docs/architecture/ai_autonomy_layer_map_v1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/ai_autonomy/PHASE1_COMPLETION_REPORT.md",
+      "line_number": 39,
+      "target": "docs/architecture/ai_autonomy_layer_map_gap_analysis.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/ai_autonomy/QUICKSTART.md",
+      "line_number": 204,
+      "target": "docs/architecture/ai_autonomy_layer_map_gap_analysis.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/authority_conflict_matrix_v1.md",
+      "line_number": 512,
+      "target": "../ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/authority_resolution_synthesis_v1.md",
+      "line_number": 394,
+      "target": "../ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
+      "line_number": 190,
+      "target": "docs/architecture/ai_autonomy_layer_map_v1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/matrix/AI_AUTONOMY_LAYER_MAP_MODEL_MATRIX.md",
+      "line_number": 191,
+      "target": "docs/architecture/ai_autonomy_layer_map_gap_analysis.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md",
+      "line_number": 79,
+      "target": "docs/architecture/ai_autonomy_layer_map_v1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/governance/templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE_V2.md",
+      "line_number": 219,
+      "target": "docs/architecture/ai_autonomy_layer_map_v1.md",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/BOUNDED_ACCEPTANCE_INDEX.md",
       "line_number": 24,
       "target": "docs/ops/templates/ACCEPTED_AND_FILLED_CLOSEOUT_TEMPLATE.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 36,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 72,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 114,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 166,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 195,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 227,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 259,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 308,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 378,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 430,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 485,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 548,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 611,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 668,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 726,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 794,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 853,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 961,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 1082,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 1149,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 1221,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 1291,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 1301,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 1387,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 1469,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 1538,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 1611,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 1679,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 1755,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 1834,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 1914,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 1993,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 2072,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 2147,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
       "link_text": null
     },
     {
@@ -710,6 +1178,66 @@
       "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
       "line_number": 3498,
       "target": "src/ops/p72/run_shadowloop_pack_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 3502,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 3947,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 3980,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 4013,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 4204,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 4509,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 7649,
+      "target": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_RUNTIME_PRODUCER_DASHBOARD_PREREQUISITE_PARKING_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/CI_AUDIT_KNOWN_ISSUES.md",
+      "line_number": 7650,
+      "target": "docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PHASE3_MISSION_BRIEF.md",
+      "line_number": 198,
+      "target": "docs/architecture/ai_autonomy_layer_map_v1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/PHASE3_PR_DESCRIPTION.md",
+      "line_number": 219,
+      "target": "docs/architecture/ai_autonomy_layer_map_v1.md",
       "link_text": null
     },
     {
@@ -752,6 +1280,18 @@
       "source_file": "docs/ops/architecture/LOCAL_BOUNDED_SECRET_LAUNCH_PATH_PROPOSAL.md",
       "line_number": 109,
       "target": "scripts/ops/run_bounded_pilot_with_local_secrets.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/blueprints/PEAKTRADE_SYSTEM_RECONFIGURATION_BLUEPRINT_2026_11_03.md",
+      "line_number": 2048,
+      "target": "../evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/README.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/control_center/CONTROL_CENTER_NAV.md",
+      "line_number": 20,
+      "target": "docs/architecture/ai_autonomy_layer_map_gap_analysis.md",
       "link_text": null
     },
     {
@@ -806,6 +1346,18 @@
       "source_file": "docs/ops/evidence/FOURTH_BOUNDED_LIVE_TRIAL_CLOSEOUT.md",
       "line_number": 31,
       "target": "src/exchange/kraken_live.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/GHV_COMPLETE_SYSTEM_FIXPOINT_CLOSURE_V1.md",
+      "line_number": 324,
+      "target": "../../system_atlas/provenance/changes.yaml",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/GHV_COMPLETE_SYSTEM_FIXPOINT_CLOSURE_V1.md",
+      "line_number": 324,
+      "target": "docs/system_atlas/provenance/changes.yaml",
       "link_text": null
     },
     {
@@ -866,6 +1418,18 @@
       "source_file": "docs/ops/evidence/THIRD_BOUNDED_LIVE_TRIAL_CLOSEOUT.md",
       "line_number": 30,
       "target": "src/exchange/kraken_live.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/evidence/self_learning_restoration_committed_readback_and_question_reconciliation_v1_2026_11_04/README.md",
+      "line_number": 9,
+      "target": "../../../../scripts/ops/verify_self_learning_restoration_v1.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md",
+      "line_number": 651,
+      "target": "docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
       "link_text": null
     },
     {
@@ -972,26 +1536,8 @@
     },
     {
       "source_file": "docs/ops/roadmap/CURRENT_FOCUS.md",
-      "line_number": 13,
-      "target": "../release/README.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/roadmap/CURRENT_FOCUS.md",
-      "line_number": 348,
-      "target": "../release/README.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/roadmap/CURRENT_FOCUS.md",
-      "line_number": 421,
-      "target": "../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/ops/roadmap/CURRENT_FOCUS.md",
-      "line_number": 486,
-      "target": "../release/runbooks/RELEASE_CHECKLIST_AND_GO_NO_GO_RUBRIC.md",
+      "line_number": 432,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
       "link_text": null
     },
     {
@@ -1031,9 +1577,51 @@
       "link_text": null
     },
     {
+      "source_file": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
+      "line_number": 372,
+      "target": "../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/runbooks/RUNBOOK_AI_AUTONOMY_BIS_FINISH_2026.md",
       "line_number": 823,
       "target": "../archives/repo_root_docs/KILL_SWITCH_SUMMARY.txt",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md",
+      "line_number": 16,
+      "target": "../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md",
+      "line_number": 159,
+      "target": "../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md",
+      "line_number": 18,
+      "target": "../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md",
+      "line_number": 30,
+      "target": "../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md",
+      "line_number": 27,
+      "target": "../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md",
+      "line_number": 98,
+      "target": "../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
       "link_text": null
     },
     {
@@ -1046,6 +1634,36 @@
       "source_file": "docs/ops/runbooks/RUNBOOK_COMMIT_SALVAGE_CB006C4A_POINTER.md",
       "line_number": 28,
       "target": "../archives/repo_root_docs/RUNBOOK_COMMIT_SALVAGE_CB006C4A.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_CURSOR_MULTI_AGENT_TRUTH_GOVERNANCE.md",
+      "line_number": 63,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_MASTER_V2_FIRST_LIVE_PILOT_SEQUENCE_V0.md",
+      "line_number": 54,
+      "target": "../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_MASTER_V2_FIRST_LIVE_PILOT_SEQUENCE_V0.md",
+      "line_number": 145,
+      "target": "../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md",
+      "line_number": 34,
+      "target": "../registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_OPS_SUITE_PHASE_E_GOVERNANCE_REVIEW.md",
+      "line_number": 67,
+      "target": "../registry/DOCS_TRUTH_MAP.md",
       "link_text": null
     },
     {
@@ -1085,6 +1703,30 @@
       "link_text": null
     },
     {
+      "source_file": "docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_UNEXPECTED_EXPOSURE.md",
+      "line_number": 111,
+      "target": "../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_SESSION_REVIEW_PACK_INVOKE_V0.md",
+      "line_number": 65,
+      "target": "../specs/MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_STARTED_BOUNDED_PILOT_SESSION_REVIEW_V0.md",
+      "line_number": 71,
+      "target": "../specs/MASTER_V2_PAPER_TESTNET_READINESS_GAP_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/RUNBOOK_STARTED_BOUNDED_PILOT_SESSION_REVIEW_V0.md",
+      "line_number": 71,
+      "target": "docs/ops/specs/MASTER_V2_PAPER_TESTNET_READINESS_GAP_MAP_V0.md",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md",
       "line_number": 24,
       "target": "../spikes/A1_CONFIG_MODULE_INVENTORY_2026-03-29.md",
@@ -1115,6 +1757,18 @@
       "link_text": null
     },
     {
+      "source_file": "docs/ops/runbooks/double_play.md",
+      "line_number": 18,
+      "target": "../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/runbooks/double_play_specialists.md",
+      "line_number": 20,
+      "target": "../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/slides/BOUNDED_ACCEPTANCE_SLIDES_V1.md",
       "line_number": 73,
       "target": "scripts/ops/run_bounded_pilot_with_local_secrets.py",
@@ -1127,15 +1781,669 @@
       "link_text": null
     },
     {
+      "source_file": "docs/ops/specs/CANONICAL_MEASURED_SELF_LEARNING_GVEF_REFERENCE_V1.md",
+      "line_number": 12,
+      "target": "../evidence/self_learning_full_original_corpus_and_contract_reconciliation_v1_2026_11_04/README.md",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/specs/CAPABILITY_PHASE_9_2_STEP_5_FINAL_GENERIC_BINDING_EVIDENCE_EPHEMERAL_PERSISTENCE_ISOLATION_FIX_V1.md",
       "line_number": 36,
       "target": "docs/evidence/capability_phase_9_2_step_5_final_generic_binding_evidence_ephemeral_persistence_isolation_fix_v1",
       "link_text": null
     },
     {
+      "source_file": "docs/ops/specs/MASTER_V2_BACKTEST_ROBUSTNESS_VALIDATION_SURFACE_INVENTORY_V0.md",
+      "line_number": 97,
+      "target": "./MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_BACKTEST_ROBUSTNESS_VALIDATION_SURFACE_INVENTORY_V0.md",
+      "line_number": 116,
+      "target": "./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md",
+      "line_number": 46,
+      "target": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_PURE_STACK_DASHBOARD_DISPLAY_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md",
+      "line_number": 60,
+      "target": "docs/ops/specs/MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md",
+      "line_number": 61,
+      "target": "docs/ops/specs/MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md",
+      "line_number": 62,
+      "target": "docs/ops/specs/MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md",
+      "line_number": 65,
+      "target": "docs/ops/specs/MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md",
+      "line_number": 76,
+      "target": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_RUNTIME_PRODUCER_DASHBOARD_PREREQUISITE_PARKING_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md",
+      "line_number": 99,
+      "target": "./MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md",
+      "line_number": 114,
+      "target": "./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md",
+      "line_number": 114,
+      "target": "./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_DASHBOARD_COCKPIT_OBSERVER_SURFACE_INVENTORY_V0.md",
+      "line_number": 118,
+      "target": "./MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
       "source_file": "docs/ops/specs/MASTER_V2_DOUBLE_PLAY_ARITHMETIC_SEQUENCE_SURVIVAL_CONTRACT_V0.md",
       "line_number": 11,
       "target": "../_archive/downloads_intake_20260519T195748Z/README.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_FIRST_LIVE_AUTHORITY_HANDOFF_BOUNDARY_LEDGER_V1.md",
+      "line_number": 101,
+      "target": "../registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_FIRST_LIVE_AUTHORITY_HANDOFF_PACKET_CONTRACT_V1.md",
+      "line_number": 104,
+      "target": "../registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_FIRST_LIVE_AUTHORITY_HANDOFF_PACKET_TO_LB_APR_001_EXTERNAL_SIGNOFF_EVIDENCE_CLASSIFICATION_REPLAY_CONTRACT_V1.md",
+      "line_number": 70,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_FIRST_LIVE_AUTHORITY_HANDOFF_PACKET_TO_LB_APR_001_EXTERNAL_SIGNOFF_EVIDENCE_CLASSIFICATION_REPLAY_CONTRACT_V1.md",
+      "line_number": 148,
+      "target": "../registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_FIRST_LIVE_AUTHORITY_HANDOFF_PACKET_TO_LB_APR_001_EXTERNAL_SIGNOFF_EVIDENCE_CLASSIFICATION_TRACE_LEDGER_V1.md",
+      "line_number": 139,
+      "target": "../registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_FIRST_LIVE_AUTHORITY_HANDOFF_PACKET_TO_LB_APR_001_EXTERNAL_SIGNOFF_EVIDENCE_TRUTH_PRECEDENCE_MATRIX_V1.md",
+      "line_number": 138,
+      "target": "../registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_FIRST_LIVE_AUTHORITY_HANDOFF_PACKET_TO_LB_APR_001_REVIEW_ROUTE_COMPASS_V1.md",
+      "line_number": 99,
+      "target": "../registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_FIRST_LIVE_AUTHORITY_HANDOFF_PACKET_TO_LB_APR_001_SIGNOFF_EVIDENCE_BOUNDARY_MATRIX_V1.md",
+      "line_number": 48,
+      "target": "../registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_FIRST_LIVE_AUTHORITY_HANDOFF_PACKET_TO_LB_APR_001_SIGNOFF_EVIDENCE_BOUNDARY_MATRIX_V1.md",
+      "line_number": 108,
+      "target": "../registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_FIRST_LIVE_AUTHORITY_HANDOFF_PACKET_TRACEABILITY_MATRIX_V1.md",
+      "line_number": 111,
+      "target": "../registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_FIRST_LIVE_CANDIDATE_EVIDENCE_BUNDLE_LEDGER_V1.md",
+      "line_number": 45,
+      "target": "../registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_FIRST_LIVE_CANDIDATE_EVIDENCE_BUNDLE_LEDGER_V1.md",
+      "line_number": 96,
+      "target": "../registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_FIRST_LIVE_CROSS_GATE_EVIDENCE_BUNDLE_INDEX_V1.md",
+      "line_number": 101,
+      "target": "../registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_FIRST_LIVE_EXECUTION_SEQUENCE_V0.md",
+      "line_number": 55,
+      "target": "./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md",
+      "line_number": 56,
+      "target": "./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md",
+      "line_number": 155,
+      "target": "./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md",
+      "line_number": 170,
+      "target": "./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md",
+      "line_number": 225,
+      "target": "./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md",
+      "line_number": 229,
+      "target": "./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md",
+      "line_number": 231,
+      "target": "./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md",
+      "line_number": 236,
+      "target": "./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md",
+      "line_number": 350,
+      "target": "./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md",
+      "line_number": 357,
+      "target": "./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md",
+      "line_number": 383,
+      "target": "./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md",
+      "line_number": 391,
+      "target": "./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_GO_LIVE_ROADMAP_V0.md",
+      "line_number": 61,
+      "target": "./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_GO_LIVE_ROADMAP_V0.md",
+      "line_number": 64,
+      "target": "./MASTER_V2_PAPER_TESTNET_READINESS_GAP_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_KB_REGISTRY_EVIDENCE_TAXONOMY_V0.md",
+      "line_number": 131,
+      "target": "./MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_KB_REGISTRY_EVIDENCE_TAXONOMY_V0.md",
+      "line_number": 179,
+      "target": "./MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_AUDIT_FLAT_PATH_INDEX_V0.md",
+      "line_number": 50,
+      "target": "./MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_AUDIT_FLAT_PATH_INDEX_V0.md",
+      "line_number": 59,
+      "target": "./MASTER_V2_PAPER_TESTNET_READINESS_GAP_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_AUDIT_FLAT_PATH_INDEX_V0.md",
+      "line_number": 60,
+      "target": "./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_AUDIT_FLAT_PATH_INDEX_V0.md",
+      "line_number": 61,
+      "target": "./MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_AUDIT_FLAT_PATH_INDEX_V0.md",
+      "line_number": 71,
+      "target": "./MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_AUDIT_FLAT_PATH_INDEX_V0.md",
+      "line_number": 76,
+      "target": "./MASTER_V2_PAPER_TESTNET_READINESS_GAP_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_AUDIT_FLAT_PATH_INDEX_V0.md",
+      "line_number": 77,
+      "target": "./MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_AUDIT_FLAT_PATH_INDEX_V0.md",
+      "line_number": 86,
+      "target": "./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_AUDIT_FLAT_PATH_INDEX_V0.md",
+      "line_number": 124,
+      "target": "./MASTER_V2_PAPER_TESTNET_READINESS_GAP_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_AUDIT_FLAT_PATH_INDEX_V0.md",
+      "line_number": 133,
+      "target": "./MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_AUDIT_FLAT_PATH_INDEX_V0.md",
+      "line_number": 134,
+      "target": "./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md",
+      "line_number": 39,
+      "target": "./MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md",
+      "line_number": 41,
+      "target": "./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md",
+      "line_number": 43,
+      "target": "./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md",
+      "line_number": 44,
+      "target": "./MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md",
+      "line_number": 66,
+      "target": "./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md",
+      "line_number": 66,
+      "target": "./MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md",
+      "line_number": 68,
+      "target": "./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md",
+      "line_number": 69,
+      "target": "./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md",
+      "line_number": 70,
+      "target": "./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md",
+      "line_number": 71,
+      "target": "./MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_OPERATOR_TRIAGE_OPEN_FIRST_CHECKLIST_V0.md",
+      "line_number": 73,
+      "target": "./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_PROMOTION_STATE_MACHINE_V1.md",
+      "line_number": 166,
+      "target": "./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_REGISTRY_EVIDENCE_SURFACE_POINTER_INDEX_V0.md",
+      "line_number": 54,
+      "target": "./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_REGISTRY_EVIDENCE_SURFACE_POINTER_INDEX_V0.md",
+      "line_number": 89,
+      "target": "./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_REGISTRY_EVIDENCE_SURFACE_POINTER_INDEX_V0.md",
+      "line_number": 107,
+      "target": "./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_REUSE_REWIRE_INVENTORY_V1.md",
+      "line_number": 55,
+      "target": "docs/ops/specs/MASTER_V2_DATAFLOW_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_REUSE_REWIRE_INVENTORY_V1.md",
+      "line_number": 56,
+      "target": "docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_REUSE_REWIRE_INVENTORY_V1.md",
+      "line_number": 105,
+      "target": "docs/ops/specs/MASTER_V2_DATAFLOW_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_REUSE_REWIRE_INVENTORY_V1.md",
+      "line_number": 106,
+      "target": "docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_REUSE_REWIRE_INVENTORY_V1.md",
+      "line_number": 117,
+      "target": "docs/ops/specs/MASTER_V2_DATAFLOW_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_REUSE_REWIRE_INVENTORY_V1.md",
+      "line_number": 118,
+      "target": "docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md",
+      "line_number": 68,
+      "target": "./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md",
+      "line_number": 70,
+      "target": "./MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md",
+      "line_number": 75,
+      "target": "./MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md",
+      "line_number": 77,
+      "target": "./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md",
+      "line_number": 85,
+      "target": "./MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md",
+      "line_number": 87,
+      "target": "./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md",
+      "line_number": 89,
+      "target": "./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md",
+      "line_number": 139,
+      "target": "./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md",
+      "line_number": 43,
+      "target": "./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md",
+      "line_number": 48,
+      "target": "./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md",
+      "line_number": 107,
+      "target": "./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md",
+      "line_number": 113,
+      "target": "./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md",
+      "line_number": 120,
+      "target": "./MASTER_V2_OPERATOR_HANDOFF_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_SOURCE_BOUND_REGISTRY_EVIDENCE_LINKAGE_PLAN_V0.md",
+      "line_number": 51,
+      "target": "./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SESSION_REVIEW_PACK_STARTED_OPEN_SESSION_LINKAGE_PLAN_V0.md",
+      "line_number": 65,
+      "target": "./MASTER_V2_PAPER_TESTNET_READINESS_GAP_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_SYSTEM_DATAFLOW_AND_AI_LAYER_OVERVIEW_V0.md",
+      "line_number": 182,
+      "target": "../../architecture/ai_autonomy_layer_map_v1.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_VISUAL_LEARNING_EVIDENCE_REFERENCE_CHAIN_POINTER_V0.md",
+      "line_number": 43,
+      "target": "./MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_VISUAL_LEARNING_EVIDENCE_REFERENCE_CHAIN_POINTER_V0.md",
+      "line_number": 45,
+      "target": "./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_VISUAL_LEARNING_EVIDENCE_REFERENCE_CHAIN_POINTER_V0.md",
+      "line_number": 46,
+      "target": "./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_VISUAL_LEARNING_EVIDENCE_REFERENCE_CHAIN_POINTER_V0.md",
+      "line_number": 53,
+      "target": "./MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_VISUAL_LEARNING_EVIDENCE_REFERENCE_CHAIN_POINTER_V0.md",
+      "line_number": 54,
+      "target": "./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_VISUAL_LEARNING_EVIDENCE_REFERENCE_CHAIN_POINTER_V0.md",
+      "line_number": 55,
+      "target": "./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_VISUAL_LEARNING_EVIDENCE_REFERENCE_CHAIN_POINTER_V0.md",
+      "line_number": 55,
+      "target": "./MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_VISUAL_LEARNING_EVIDENCE_REFERENCE_CHAIN_POINTER_V0.md",
+      "line_number": 56,
+      "target": "./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_VISUAL_LEARNING_EVIDENCE_REFERENCE_CHAIN_POINTER_V0.md",
+      "line_number": 57,
+      "target": "./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_VISUAL_LEARNING_EVIDENCE_REFERENCE_CHAIN_POINTER_V0.md",
+      "line_number": 58,
+      "target": "./MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_VISUAL_LEARNING_EVIDENCE_REFERENCE_CHAIN_POINTER_V0.md",
+      "line_number": 139,
+      "target": "./MASTER_V2_STRATEGY_VISUAL_MAP_TO_REPO_SURFACE_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_VISUAL_LEARNING_EVIDENCE_REFERENCE_CHAIN_POINTER_V0.md",
+      "line_number": 141,
+      "target": "./MASTER_V2_LEARNING_LOOP_TO_REPO_PATH_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/MASTER_V2_VISUAL_LEARNING_EVIDENCE_REFERENCE_CHAIN_POINTER_V0.md",
+      "line_number": 142,
+      "target": "./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md",
+      "line_number": 145,
+      "target": "../registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md",
+      "line_number": 145,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md",
+      "line_number": 153,
+      "target": "../registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_PAYLOAD_READ_MODEL_CONTRACT.md",
+      "line_number": 153,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md",
+      "line_number": 60,
+      "target": "../registry/DOCS_TRUTH_MAP.md",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md",
+      "line_number": 60,
+      "target": "docs/ops/registry/DOCS_TRUTH_MAP.md",
       "link_text": null
     },
     {
@@ -1154,6 +2462,12 @@
       "source_file": "docs/ops/specs/PEAK_TRADE_POST_RESTORATION_VENUE_PRETRADE_METADATA_BINDING_ALIGNMENT_ADJUDICATION_V1.md",
       "line_number": 246,
       "target": "src/exchange/kraken_live.py",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md",
+      "line_number": 1366,
+      "target": "../registry/DOCS_TRUTH_MAP.md",
       "link_text": null
     },
     {
@@ -1415,6 +2729,48 @@
       "link_text": null
     },
     {
+      "source_file": "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
+      "line_number": 111,
+      "target": "../../../src/learning/mutation_critical_control_state_storage_v1",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+      "line_number": 217,
+      "target": "../../../src/ops/governed_productive_account_equity_authority_producer_v1",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+      "line_number": 302,
+      "target": "../../../src/ops/full_core_live_path_composition_root_v1",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+      "line_number": 343,
+      "target": "../../../src/ops/okx_eea_private_account_state_runtime_v1",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+      "line_number": 363,
+      "target": "../../../src/ops/full_core_live_path_composition_root_v1",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+      "line_number": 442,
+      "target": "../../../src/webui",
+      "link_text": null
+    },
+    {
+      "source_file": "docs/system_atlas/generated/SYSTEM_ATLAS.md",
+      "line_number": 460,
+      "target": "../../../scripts/ci",
+      "link_text": null
+    },
+    {
       "source_file": "docs/trigger_training/README.md",
       "line_number": 29,
       "target": "src/trigger_training/hooks.py",
@@ -1468,5 +2824,12 @@
       "target": "src/trigger_training/operator_meta_report.py",
       "link_text": null
     }
-  ]
+  ],
+  "rebind_provenance": {
+    "previous_missing_count": 653,
+    "previous_tool_version": "1.0.0",
+    "previous_baseline_at": "a026d32b18a32a82671c79b69af8854a8e6627df:docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json",
+    "source": "read-only Git blob scan of the same verified origin/main snapshot",
+    "reason": "Re-measure identical main documents with URI-correct resolver 1.1.0; encoded spaces no longer create false missing-source reports. Reference extraction and ignore policy are unchanged."
+  }
 }

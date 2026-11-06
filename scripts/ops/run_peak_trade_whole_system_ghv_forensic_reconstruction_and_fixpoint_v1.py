@@ -116,7 +116,11 @@ def lossless_local_snapshot(main_repo: Path) -> dict[str, Any]:
             text = f"ERROR:{exc}"
         out[key] = text
         blobs.append(text)
-    skip = [ln for ln in out.get("ls_files_v", "").splitlines() if ln.startswith("S ") or ln.startswith("h ")]
+    skip = [
+        ln
+        for ln in out.get("ls_files_v", "").splitlines()
+        if ln.startswith("S ") or ln.startswith("h ")
+    ]
     out["skip_worktree_or_assume_unchanged_count"] = len(skip)
     out["snapshot_sha256"] = _sha256_bytes("\n".join(blobs).encode())
     return out
@@ -218,7 +222,10 @@ def _forensic_probe_env(current_repo: Path) -> dict[str, str]:
         while p in sys.path:
             sys.path.remove(p)
         sys.path.insert(0, p)
-    from src.ops.ghv_forensic_control_binding_v1 import forensic_subprocess_env, resolve_forensic_control_binding_v1
+    from src.ops.ghv_forensic_control_binding_v1 import (
+        forensic_subprocess_env,
+        resolve_forensic_control_binding_v1,
+    )
 
     binding = resolve_forensic_control_binding_v1(MAIN_REPO, fail_closed=True)
     env = os.environ.copy()
@@ -334,7 +341,9 @@ def runtime_surfaces_from_bulk05() -> list[dict[str, Any]]:
                 "EXTERNAL_EFFECT_CAPABILITY": "varies_by_sector",
                 "EXTERNAL_EFFECT_ALLOWED": False,
                 "ACTIVATION_GATE": "Owner-GO / safety gates",
-                "CLASSIFICATION": "PROVEN_CURRENT" if row.get("GHV_CARTOGRAPHY_STATUS") == "DEEP_CARTOGRAPHED" else "UNKNOWN_CURRENT",
+                "CLASSIFICATION": "PROVEN_CURRENT"
+                if row.get("GHV_CARTOGRAPHY_STATUS") == "DEEP_CARTOGRAPHED"
+                else "UNKNOWN_CURRENT",
             }
         )
     return surfaces
@@ -443,15 +452,27 @@ def _run_pass(
     }
 
     _write(pass_dir, "pass_summary.json", summary)
-    _write(pass_dir, "node_delta.json", {"NEW": discovery.get("NEW_COMPONENTS"), "COUNT": discovery["NEW_COMPONENTS_COUNT"]})
+    _write(
+        pass_dir,
+        "node_delta.json",
+        {"NEW": discovery.get("NEW_COMPONENTS"), "COUNT": discovery["NEW_COMPONENTS_COUNT"]},
+    )
     _write(pass_dir, "edge_delta.json", {"NEW_EDGES": summary["NEW_EDGES"]})
     _write(pass_dir, "cross_flow_delta.json", {"NEW_CROSS_FLOWS": summary["NEW_CROSS_FLOWS"]})
-    _write(pass_dir, "runtime_surface_delta.json", {"NEW_RUNTIME_SURFACES": summary["NEW_RUNTIME_SURFACES"]})
+    _write(
+        pass_dir,
+        "runtime_surface_delta.json",
+        {"NEW_RUNTIME_SURFACES": summary["NEW_RUNTIME_SURFACES"]},
+    )
     _write(pass_dir, "defects.json", {"NEW_DEFECTS": new_defects})
     _write(pass_dir, "repairs.json", {"REPAIRS": []})
     _write(pass_dir, "ghv_results.json", probe)
     _write(pass_dir, "regression_results.json", regression)
-    _write(pass_dir, "safety_results.json", {"POST_ALLOWED": False, "EXTERNAL_EFFECT_AUTHORIZED": False})
+    _write(
+        pass_dir,
+        "safety_results.json",
+        {"POST_ALLOWED": False, "EXTERNAL_EFFECT_AUTHORIZED": False},
+    )
     _write(pass_dir, "semantic_results.json", {"DECISION_SEMANTICS_CHANGED": False})
     _write(pass_dir, "discovery_delta.json", discovery)
 
@@ -533,8 +554,16 @@ def main() -> int:
     surfaces = runtime_surfaces_from_bulk05()
     last_probe_dir = root / "exhaustive_passes" / f"pass_{pass_num:03d}" / "ghv_probe"
 
-    _write(root, "whole_system_node_inventory.json", {"NODES": nodes, "TOTAL": len(nodes), "AUTHORITY": "NONE"})
-    _write(root, "whole_system_edge_inventory.json", {"EDGES": edges, "TOTAL": len(edges), "DISCOVERY_EDGES": last["TOTAL_EDGES"]})
+    _write(
+        root,
+        "whole_system_node_inventory.json",
+        {"NODES": nodes, "TOTAL": len(nodes), "AUTHORITY": "NONE"},
+    )
+    _write(
+        root,
+        "whole_system_edge_inventory.json",
+        {"EDGES": edges, "TOTAL": len(edges), "DISCOVERY_EDGES": last["TOTAL_EDGES"]},
+    )
     _write(
         root,
         "whole_system_cross_flow_inventory.json",
@@ -556,16 +585,46 @@ def main() -> int:
     _write(
         root,
         "authority_relationship_matrix.json",
-        {"GHV_AUTHORITY": "NONE", "DECISION_AUTHORITY": "Master_V2_Double_Play", "DASHBOARD_AUTHORITY": "NONE"},
+        {
+            "GHV_AUTHORITY": "NONE",
+            "DECISION_AUTHORITY": "Master_V2_Double_Play",
+            "DASHBOARD_AUTHORITY": "NONE",
+        },
     )
     _write(
         root,
         "reachability_matrix.json",
-        {"ENTRYPOINTS": [e for e in ENTRYPOINTS if (current_repo / e).is_file()], "ORIGIN_MAIN": ORIGIN_MAIN_SHA},
+        {
+            "ENTRYPOINTS": [e for e in ENTRYPOINTS if (current_repo / e).is_file()],
+            "ORIGIN_MAIN": ORIGIN_MAIN_SHA,
+        },
     )
-    _write(root, "activation_matrix.json", {"TESTNET_ACTIVATED": False, "LIVE_ACTIVATED": False, "PAPER_SHADOW_ACTIVATED": "BOUNDED_OWNER_GO_ONLY"})
-    _write(root, "safety_boundary_matrix.json", {"POST_ALLOWED": False, "REAL_VENUE_POST_ALLOWED": False, "EXTERNAL_EFFECT_AUTHORIZED": False})
-    _write(root, "credential_boundary_matrix.json", {"REAL_KEYCHAIN_ACCESS_AUTHORIZED": False, "CREDENTIAL_CAPABILITY": "EXISTS_NOT_AUTHORIZED"})
+    _write(
+        root,
+        "activation_matrix.json",
+        {
+            "TESTNET_ACTIVATED": False,
+            "LIVE_ACTIVATED": False,
+            "PAPER_SHADOW_ACTIVATED": "BOUNDED_OWNER_GO_ONLY",
+        },
+    )
+    _write(
+        root,
+        "safety_boundary_matrix.json",
+        {
+            "POST_ALLOWED": False,
+            "REAL_VENUE_POST_ALLOWED": False,
+            "EXTERNAL_EFFECT_AUTHORIZED": False,
+        },
+    )
+    _write(
+        root,
+        "credential_boundary_matrix.json",
+        {
+            "REAL_KEYCHAIN_ACCESS_AUTHORIZED": False,
+            "CREDENTIAL_CAPABILITY": "EXISTS_NOT_AUTHORIZED",
+        },
+    )
 
     _write(
         root,
@@ -577,7 +636,9 @@ def main() -> int:
                     "SURFACE_B": "CURRENT_ORIGIN_MAIN",
                     "COMMON_PREFIX": "MARKET_DATA..DECISION",
                     "FIRST_EXPECTED_DIVERGENCE": "PRE_EXTERNAL on wallclock before PR7052",
-                    "FIRST_OBSERVED_DIVERGENCE": "none_post_merge" if probe_last.get("PASS") else "see_ghv_probe",
+                    "FIRST_OBSERVED_DIVERGENCE": "none_post_merge"
+                    if probe_last.get("PASS")
+                    else "see_ghv_probe",
                     "PARITY_BEFORE_DIVERGENCE": probe_last.get("MATCH_RATE"),
                     "STATUS": "PASS" if probe_last.get("PASS") else "FAIL",
                 }
@@ -589,13 +650,21 @@ def main() -> int:
         "feedback_flow_matrix.json",
         {
             "FLOWS": [
-                {"FLOW_ID": "EXEC_TO_RISK", "STATUS": "PARTIAL_GHV", "RETURN_FLOW_PROVEN": "GHV_SIM_PATH"},
+                {
+                    "FLOW_ID": "EXEC_TO_RISK",
+                    "STATUS": "PARTIAL_GHV",
+                    "RETURN_FLOW_PROVEN": "GHV_SIM_PATH",
+                },
                 {"FLOW_ID": "RUN002_HISTORICAL", "STATUS": "UNKNOWN_EVIDENCE_GAP"},
             ]
         },
     )
 
-    _write(root, "ghv_probe_catalog.json", {"PROBE_SCRIPT": str(PROBE_SCRIPT.relative_to(MAIN_REPO)), "STAGES": 23})
+    _write(
+        root,
+        "ghv_probe_catalog.json",
+        {"PROBE_SCRIPT": str(PROBE_SCRIPT.relative_to(MAIN_REPO)), "STAGES": 23},
+    )
     _write(root, "ghv_probe_results.json", probe_last)
     _write(
         root,
@@ -651,7 +720,10 @@ def main() -> int:
     _write(
         root,
         "productive_prefix_reproof.json",
-        {"PRODUCTIVE_PREFIX_COVERAGE": f"{min(prefix_num, PREFIX_STAGES)}/{PREFIX_STAGES}", "GHV_MATCH": probe_last.get("MATCH_RATE")},
+        {
+            "PRODUCTIVE_PREFIX_COVERAGE": f"{min(prefix_num, PREFIX_STAGES)}/{PREFIX_STAGES}",
+            "GHV_MATCH": probe_last.get("MATCH_RATE"),
+        },
     )
     _write(root, "whole_system_regression_results.json", reg_last)
     _write(
@@ -687,7 +759,9 @@ def main() -> int:
         and open_s1 == 0
     )
 
-    landing = "NO_PRODUCTIVE_CHANGE_REQUIRED" if forensic_fixpoint else "BLOCKED_BY_GOVERNANCE_DECISION"
+    landing = (
+        "NO_PRODUCTIVE_CHANGE_REQUIRED" if forensic_fixpoint else "BLOCKED_BY_GOVERNANCE_DECISION"
+    )
     if not forensic_fixpoint and reg_last.get("PASS") and ghv_control_ok:
         landing = "SINGLE_COHERENT_PRODUCTIVE_PR"
 
@@ -704,10 +778,18 @@ def main() -> int:
     _write(
         root,
         "landing_strategy_adjudication.json",
-        {"LANDING_STRATEGY": landing, "OWNER_MERGE_GO": False, "PRODUCTIVE_CHANGE_REQUIRED": landing != "NO_PRODUCTIVE_CHANGE_REQUIRED"},
+        {
+            "LANDING_STRATEGY": landing,
+            "OWNER_MERGE_GO": False,
+            "PRODUCTIVE_CHANGE_REQUIRED": landing != "NO_PRODUCTIVE_CHANGE_REQUIRED",
+        },
     )
 
-    verdict = "PASS" if forensic_fixpoint else ("BLOCKED" if open_s1 and not reg_last.get("PASS") else "FAIL")
+    verdict = (
+        "PASS"
+        if forensic_fixpoint
+        else ("BLOCKED" if open_s1 and not reg_last.get("PASS") else "FAIL")
+    )
     if ghv_control_ok and reg_last.get("PASS") and not forensic_fixpoint:
         verdict = "BLOCKED"
 

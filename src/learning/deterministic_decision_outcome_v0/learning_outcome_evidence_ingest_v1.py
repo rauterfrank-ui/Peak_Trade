@@ -37,18 +37,25 @@ EXTERNAL_EFFECT_AUTHORIZED: Final[bool] = False
 
 
 def derive_learning_state_scope_id_v1(
-    *, session_id: str, account_identity: str | None = None,
-    config_hash: str | None = None, code_sha: str | None = None,
+    *,
+    session_id: str,
+    account_identity: str | None = None,
+    config_hash: str | None = None,
+    code_sha: str | None = None,
 ) -> str:
     account = account_identity or UNKNOWN
     identity = f"{session_id}|{account}"
     if config_hash is not None or code_sha is not None:
         # Explicit versioned pool, including an isolated UNKNOWN/legacy pool.
-        identity = canonical_json_dumps_v0({
-            "contract": "learning_scope_configuration_v2", "session": session_id,
-            "account": account, "config_hash": config_hash or UNKNOWN,
-            "code_sha": code_sha or UNKNOWN,
-        })
+        identity = canonical_json_dumps_v0(
+            {
+                "contract": "learning_scope_configuration_v2",
+                "session": session_id,
+                "account": account,
+                "config_hash": config_hash or UNKNOWN,
+                "code_sha": code_sha or UNKNOWN,
+            }
+        )
     digest = hashlib.sha256(identity.encode("utf-8")).hexdigest()
     return f"ddo.lscope.{digest[:40]}"
 

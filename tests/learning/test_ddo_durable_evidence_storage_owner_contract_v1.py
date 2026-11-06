@@ -6,14 +6,23 @@ ledger_path. No runtime file. No second DDO storage implementation.
 
 from __future__ import annotations
 
-import subprocess
+import gzip
+import hashlib
+import json
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 MASTER_RUNBOOK = REPO_ROOT / "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md"
 MAP_OF_TRUTH = REPO_ROOT / "docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"
 SPEC_PATH = REPO_ROOT / "docs/ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md"
-ATLAS_CATALOG = REPO_ROOT / "docs/system_atlas/entities/catalog.yaml"
+ATLAS_MODEL = REPO_ROOT / "docs/system_atlas/source/current-model.json"
+HISTORICAL_DOCS = REPO_ROOT / "tests/fixtures/learning/ddo_document_history_v1.json.gz"
+HISTORICAL_COMMIT = "c17ffa3f9cf812f5422a35ca3c2eb20cde54cb57"
+HISTORICAL_DIGESTS = {
+    "master": "4f35d94fd6c2b378b615204589d11c0fb26da684194f207334ae7c23a95b20de",
+    "map": "49706f9f6a4661603bdf07fcff644ef18a74695d9fc45e9ce7a505574fc18ec7",
+    "atlas": "a36cf73eaebcfca6b59e19f95caed19df65077bb3255611599f7b5dbc9a22a32",
+}
 HOST_PATH = (
     REPO_ROOT
     / "src/ops/wallclock_full_canonical_decision_to_simulated_economics_runtime_bridge_v1"
@@ -25,6 +34,26 @@ AUTHORITY_PATH = REPO_ROOT / "src/learning/deterministic_decision_outcome_v0/aut
 OWNER_GO = "PEAK_TRADE_OWNER_GO_DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1"
 BOUND_SHA = "c14730e99f1b1303b69a117fdc0d6896ee1c1e51"
 ORIGINAL_WORKPACKAGE_SHA = "89eef9dfc021fe1954f071eaf0559c184b2b0bdf"
+
+
+def _historical_document(name: str) -> str:
+    """Keep every historical assertion bound to its original, dated source."""
+    fixture = json.loads(gzip.decompress(HISTORICAL_DOCS.read_bytes()))
+    assert fixture["source_commit"] == HISTORICAL_COMMIT
+    assert fixture["authority"] == fixture["runtime_authorization_effect"] == "NONE"
+    document = fixture["documents"][name]
+    assert hashlib.sha256(document["text"].encode()).hexdigest() == HISTORICAL_DIGESTS[name]
+    return document["text"]
+
+
+def _original_workpackage_changed_paths() -> list[str]:
+    fixture = json.loads(gzip.decompress(HISTORICAL_DOCS.read_bytes()))
+    diff = fixture["original_workpackage_diff"]
+    assert diff["base"] == BOUND_SHA
+    assert diff["head"] == ORIGINAL_WORKPACKAGE_SHA
+    digest = hashlib.sha256(json.dumps(diff["paths"], separators=(",", ":")).encode()).hexdigest()
+    assert digest == "270e197a8759b87c293403f28eba1d01e37a03f01ecd7d743d8ccb58475cc2c4"
+    return diff["paths"]
 
 
 def _owner_contract_persist_section(text: str) -> str:
@@ -210,6 +239,15 @@ def test_contract_discoverable_and_bound() -> None:
 
 def test_master_runbook_refers_to_valid_spec() -> None:
     runbook = MASTER_RUNBOOK.read_text(encoding="utf-8")
+    relative = "../../ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md"
+    assert relative in runbook
+    assert (MASTER_RUNBOOK.parent / relative).resolve() == SPEC_PATH
+    assert SPEC_PATH.is_file()
+    assert "RUNTIME_AUTHORIZATION_EFFECT=NONE" in runbook
+
+
+def test_historical_master_progress_retains_all_original_contract_assertions() -> None:
+    runbook = _historical_document("master")
     section = _owner_contract_persist_section(runbook)
     assert SPEC_PATH.is_file()
     assert "docs&#47;ops&#47;specs&#47;DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md" in section
@@ -461,7 +499,25 @@ def test_master_runbook_refers_to_valid_spec() -> None:
 
 def test_map_and_atlas_remain_navigation_only() -> None:
     mot = MAP_OF_TRUTH.read_text(encoding="utf-8")
-    atlas = ATLAS_CATALOG.read_text(encoding="utf-8")
+    model = json.loads(ATLAS_MODEL.read_bytes())
+    assert "DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md" in mot
+    assert "MAP_OF_TRUTH_AUTHORITY=NAVIGATION_ONLY" in mot
+    assert model["authority"] == model["runtime_authorization_effect"] == "NONE"
+    assert f"SOURCE_COMMIT={model['source_commit']}" in mot
+    layers = {layer["source"] for domain in model["domains"] for layer in domain["layers"]}
+    assert CAPTURE_PATH.relative_to(REPO_ROOT).as_posix() in layers
+    inventory = [
+        json.loads(line)
+        for line in gzip.decompress(
+            (REPO_ROOT / "docs/system_atlas/source/current-files.jsonl.gz").read_bytes()
+        ).splitlines()
+    ]
+    assert LEDGER_PATH.relative_to(REPO_ROOT).as_posix() in {row["path"] for row in inventory}
+
+
+def test_historical_map_and_atlas_retain_all_original_navigation_assertions() -> None:
+    mot = _historical_document("map")
+    atlas = _historical_document("atlas")
     assert "DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md" in mot
     assert "DOCUMENT_ROLE=NAVIGATION_POINTER_ONLY" in mot or (
         "DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_ROLE=NAVIGATION_POINTER_ONLY" in mot
@@ -553,11 +609,7 @@ def test_no_productive_host_ledger_path_and_no_second_store() -> None:
     # Do not apply this historical diff guard to later authorized #6304/#6936
     # capture joins. Current wallclock defaults and observation-only seams above
     # remain checked; current capture/owner behavior has its own runtime tests.
-    changed = subprocess.check_output(
-        ["git", "diff", "--name-only", BOUND_SHA, ORIGINAL_WORKPACKAGE_SHA],
-        cwd=REPO_ROOT,
-        text=True,
-    ).splitlines()
+    changed = _original_workpackage_changed_paths()
     allowed_src_prefixes = (
         "src/learning/deterministic_decision_outcome_v0/",
         "src/learning/mutation_critical_control_state_storage_v1/",

@@ -117,7 +117,10 @@ def _forensic_probe_env() -> dict[str, str]:
         ps = str(p)
         if ps not in sys.path:
             sys.path.insert(0, ps)
-    from src.ops.ghv_forensic_control_binding_v1 import forensic_subprocess_env, resolve_forensic_control_binding_v1
+    from src.ops.ghv_forensic_control_binding_v1 import (
+        forensic_subprocess_env,
+        resolve_forensic_control_binding_v1,
+    )
 
     binding = resolve_forensic_control_binding_v1(REPO, fail_closed=True)
     env = os.environ.copy()
@@ -159,7 +162,9 @@ def run_ghv_probe(out_dir: Path) -> dict[str, Any]:
 
 
 def _latest_prefix_probe_file(checkpoint: Path) -> Path | None:
-    passes = sorted((checkpoint / "exhaustive_passes").glob("pass_*/ghv_probe/prefix_probe_results.json"))
+    passes = sorted(
+        (checkpoint / "exhaustive_passes").glob("pass_*/ghv_probe/prefix_probe_results.json")
+    )
     return passes[-1] if passes else None
 
 
@@ -250,7 +255,9 @@ def main() -> int:
     prior_components: set[str] = set()
     cum_path = checkpoint / "cumulative_component_coverage.json"
     if cum_path.is_file():
-        prior_components.update(json.loads(cum_path.read_text()).get("DISCOVERY", {}).get("NEW_COMPONENTS", []))
+        prior_components.update(
+            json.loads(cum_path.read_text()).get("DISCOVERY", {}).get("NEW_COMPONENTS", [])
+        )
     passes_dir = checkpoint / "exhaustive_passes"
     pass_results: list[dict[str, Any]] = []
 
@@ -382,7 +389,9 @@ def main() -> int:
         "PR7052_FINAL_ADJUDICATION=VALID_BUT_INCOMPLETE",
         "RUN003_STARTED=false",
     ]
-    (checkpoint / "00_continuation_report.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    (checkpoint / "00_continuation_report.txt").write_text(
+        "\n".join(lines) + "\n", encoding="utf-8"
+    )
     print(checkpoint)
     return 0
 

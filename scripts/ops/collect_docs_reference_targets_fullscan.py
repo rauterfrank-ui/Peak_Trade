@@ -49,7 +49,7 @@ from src.ops.docs_reference_targets_common import (
 )
 
 # Tool version for tracking baseline compatibility
-TOOL_VERSION = "1.0.0"
+TOOL_VERSION = "1.1.0"
 
 
 def get_git_sha(repo_root: Path) -> str:

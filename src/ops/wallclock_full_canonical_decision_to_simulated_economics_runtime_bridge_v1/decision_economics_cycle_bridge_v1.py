@@ -1499,8 +1499,8 @@ def run_bridge_cycle_v1(
 
         state.ddo_capture_binding.capture_scope_config_hash = "UNKNOWN"
         try:
-            state.ddo_capture_binding.capture_scope_config_hash = productive_scope_learning_config_hash_v1(
-                replay_input
+            state.ddo_capture_binding.capture_scope_config_hash = (
+                productive_scope_learning_config_hash_v1(replay_input)
             )
         except (ValueError, TypeError, AttributeError) as exc:
             state.ddo_capture_binding.last_error = f"scope_config_capture:{type(exc).__name__}"

@@ -40,9 +40,10 @@ def test_stored_fractional_receive_time_is_replayed_without_an_extra_second(pend
 
 def test_missing_receive_time_does_not_invent_a_receipt_from_event_time(pending_case):
     _root, pending = pending_case
-    assert _normalized_from_ingest_detail_v1(
-        pending, {"mark_px": 3500.0, "event_ts_unix": T_BAR1}
-    ) is None
+    assert (
+        _normalized_from_ingest_detail_v1(pending, {"mark_px": 3500.0, "event_ts_unix": T_BAR1})
+        is None
+    )
 
 
 def test_actual_event_ledger_to_bar_replay_preserves_recorded_receive_time(pending_case):

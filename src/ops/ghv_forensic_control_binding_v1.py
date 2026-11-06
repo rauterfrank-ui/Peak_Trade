@@ -11,7 +11,9 @@ from pathlib import Path
 from typing import Any
 
 FORENSIC_CONTROL_EXPECTED_SHA = "b36ccbaa0468369db634c7bbb6130dcb3713045c"
-FORENSIC_CONTROL_SETTINGS_DIGEST = "289a66c6fce4e8eccb75f05782fe09c6140be338fb889fe25c36bca8444a8bc2"
+FORENSIC_CONTROL_SETTINGS_DIGEST = (
+    "289a66c6fce4e8eccb75f05782fe09c6140be338fb889fe25c36bca8444a8bc2"
+)
 FORENSIC_CONTROL_INSTRUMENT = "ETH-USD_UM_XPERP-310404"
 FORENSIC_CONTROL_WORKTREE_REL = ".ghv_worktrees/b36ccbaa"
 
@@ -151,9 +153,7 @@ def resolve_forensic_control_binding_v1(
         if not settings_match:
             raise ForensicControlBindingError("forensic_control_settings_digest_mismatch")
         if dirty:
-            raise ForensicControlBindingError(
-                f"forensic_control_worktree_dirty:{violations[:5]}"
-            )
+            raise ForensicControlBindingError(f"forensic_control_worktree_dirty:{violations[:5]}")
 
     return binding
 

@@ -19,7 +19,7 @@ Dieses Runbook beschreibt ausschließlich den fixierten Repository-Bestand vom 0
 
 Der bereinigte Nachfolgebestand ist im [Abgrenzungsbeleg](../../system_atlas/source/successor-disposition.json) festgehalten. Historische Backup-Pakete, vollständige lokale Worktrees und der datierte Wiederherstellungsprüfer samt Eingabepaket liegen extern auf M2DATA. Aus den Worktrees wurde kein Code übernommen. Originalzustände unter `runtime/`, Produktcode, fachliche Konfiguration und die checkoutgebundene Python-Umgebung bleiben erhalten.
 
-Die bestehenden Quellintegritätsprüfungen benötigen `origin/main` als konkrete Vergleichsquelle. Deshalb bleibt genau dieser Quellsnapshot ohne seine Commit-Vorgeschichte zusätzlich zur neuen lokalen Quellbasis erhalten. Die Vergleichsquelle wird nicht in den Arbeitsbaum ausgecheckt. Ihre Rolle ist von der aktuellen Quellbasis und einer Ausführungsfreigabe getrennt; bestehende Identitäts-, Drift- und Owner-Gates gelten weiterhin.
+Die bestehenden Quellintegritätsprüfungen benötigen origin/main als konkrete Vergleichsquelle. Deshalb bleibt genau dieser Quellsnapshot ohne seine Commit-Vorgeschichte zusätzlich zur neuen lokalen Quellbasis erhalten. Die Vergleichsquelle wird nicht in den Arbeitsbaum ausgecheckt. Ihre Rolle ist von der aktuellen Quellbasis und einer Ausführungsfreigabe getrennt; bestehende Identitäts-, Drift- und Owner-Gates gelten weiterhin.
 
 Der [System Atlas](../../system_atlas/generated/SYSTEM_ATLAS.md) enthält die vertiefte Struktur und den vollständigen Dateikatalog. Die [Map of Truth](../../governance/PEAK_TRADE_MAP_OF_TRUTH.md) vermittelt die Navigation. Ausführbare Fachverträge stammen aus dem referenzierten Code und seinen expliziten Inputs. Eine Dokumentationsmarkierung erzeugt keine Betriebsfreigabe.
 
@@ -108,7 +108,7 @@ Der vollständige Dateikatalog und die annotierten Klassen-/Parameterfelder lieg
 
 Readback, Digest-/Identityprüfung und idempotente Wiederholung werden an den jeweiligen Storeverträgen ausgewertet. Ein Recordbuilder ist nicht automatisch ein dauerhafter Writer. Prozessreplay, Hostcrash und physischer Stromausfall besitzen unterschiedliche Nachweisanforderungen.
 
-Quellen: [Factstore](../../../src/ops/peak_trade_public_market_data_runtime_v1/durable_store_v1.py), [Scopepersistenz](../../../src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/durable_state_v1.py), [Budgetstore](../../../src/ops/portfolio_capital_reservation_budget_v1/durable_store_v1.py), [DDO-Ledger](../../../src/learning/deterministic_decision_outcome_v0/ledger_v0.py), [Mutation-critical Store](../../../src/learning/mutation_critical_control_state_storage_v1), [Handoffjournal](../../../src/ops/bounded_peaktrade_system_composition_v1/handoff_receipts_v1.py).
+Quellen: [Factstore](../../../src/ops/peak_trade_public_market_data_runtime_v1/durable_store_v1.py), [Scopepersistenz](../../../src/trading/master_v2/naked_mv2_dp_explicit_layered_core_v1/durable_state_v1.py), [Budgetstore](../../../src/ops/portfolio_capital_reservation_budget_v1/durable_store_v1.py), [DDO-Ledger](../../../src/learning/deterministic_decision_outcome_v0/ledger_v0.py), [DDO-Speichervertrag](../../ops/specs/DDO_DURABLE_EVIDENCE_STORAGE_OWNER_CONTRACT_V1.md), [Mutation-critical Store](../../../src/learning/mutation_critical_control_state_storage_v1/wal_adapter_v1.py), [Handoffjournal](../../../src/ops/bounded_peaktrade_system_composition_v1/handoff_receipts_v1.py).
 
 ## Lernen und Research
 

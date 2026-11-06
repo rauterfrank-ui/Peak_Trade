@@ -21,7 +21,9 @@ def initialize_synthetic_host_budget_v1(private_store_root, bound, account="host
     root = private_store_root / "portfolio_budget_host_v1"
     if not root.exists():
         owner = PortfolioCapitalReservationBudgetOwnerV1(
-            durable_root=root / "owner", durable_account_identity=account,
-            durable_mode="create", durable_lane_bindings={"LANE_1": bound},
+            durable_root=root / "owner",
+            durable_account_identity=account,
+            durable_mode="create",
+            durable_lane_bindings={"LANE_1": bound},
         )
         owner.close()

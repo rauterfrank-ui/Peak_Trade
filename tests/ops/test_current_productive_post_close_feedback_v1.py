@@ -51,11 +51,20 @@ FILL_MS = "1793664001000"
 POSITION_MS = "1793664002000"
 
 
-def _case(monkeypatch, *, state="filled", remaining="0", replace_member=False):
-    initial = _five_ranking()
+def _case(
+    monkeypatch,
+    *,
+    state="filled",
+    remaining="0",
+    replace_member=False,
+    initial_ranking=None,
+    bound_instrument=None,
+    prior_membership=None,
+):
+    initial = _five_ranking() if initial_ranking is None else initial_ranking
     old = _cid(initial, "ETH-USDT-SWAP")
     # Keep one explicit universe; refreshing ranking does not merge universes.
-    bound = replace(
+    bound = bound_instrument or replace(
         execution_cases._bound(),
         instrument_id=old,
         venue_native_id="ETH-USDT-SWAP",
@@ -108,7 +117,7 @@ def _case(monkeypatch, *, state="filled", remaining="0", replace_member=False):
         ),
     )
     assert not capital.fail_closed, capital.reason_codes
-    prior = _membership(initial, [old])
+    prior = prior_membership or _membership(initial, [old])
     snapshot = ProductiveFuturesRankingSnapshotV1.from_dict(initial)
     candidates = tuple(
         replace(c, eligibility_status="INELIGIBLE")

@@ -22,17 +22,35 @@ PRIOR_CKPT = MAIN_REPO / (
     "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1/20261005T080457Z"
 )
 
-BWP02 = MAIN_REPO / "evidence/ops/wsfc_ghv_static_whole_system_cartography_bwp02/20261002T221600Z/WHOLE_SYSTEM_STATIC_CARTOGRAPHY_BWP02_V1.json"
-HIST_EDGES_112 = MAIN_REPO / "evidence/ops/wsfc_ghv_static_whole_system_cartography_bwp02/20261002T221600Z/_ghv_edges_112_seed.json"
-HIST_CARTO = MAIN_REPO / "evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1/20261002T232000Z/EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_V1.json"
-BULK05 = MAIN_REPO / "evidence/ops/whole_system_forensic_cartography_golden_happy_vector_bulk05_v1/20261002T223000Z/WHOLE_SYSTEM_GHV_BULK05_COVERAGE_MATRIX_V1.json"
-CLOSURE_REPORT = MAIN_REPO / "evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1/20261002T232000Z/EXHAUSTIVE_REPOSITORY_CLOSURE_FINAL_REPORT_V1.json"
+BWP02 = (
+    MAIN_REPO
+    / "evidence/ops/wsfc_ghv_static_whole_system_cartography_bwp02/20261002T221600Z/WHOLE_SYSTEM_STATIC_CARTOGRAPHY_BWP02_V1.json"
+)
+HIST_EDGES_112 = (
+    MAIN_REPO
+    / "evidence/ops/wsfc_ghv_static_whole_system_cartography_bwp02/20261002T221600Z/_ghv_edges_112_seed.json"
+)
+HIST_CARTO = (
+    MAIN_REPO
+    / "evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1/20261002T232000Z/EXHAUSTIVE_REPOSITORY_CARTOGRAPHY_V1.json"
+)
+BULK05 = (
+    MAIN_REPO
+    / "evidence/ops/whole_system_forensic_cartography_golden_happy_vector_bulk05_v1/20261002T223000Z/WHOLE_SYSTEM_GHV_BULK05_COVERAGE_MATRIX_V1.json"
+)
+CLOSURE_REPORT = (
+    MAIN_REPO
+    / "evidence/ops/wsfc_ghv_exhaustive_repository_cartography_v1/20261002T232000Z/EXHAUSTIVE_REPOSITORY_CLOSURE_FINAL_REPORT_V1.json"
+)
 
 ALT_ROOT_MARKERS = re.compile(
     r"(__main__|def main\(|def run_|def start_|def serve_|orchestrator|bootstrap|recover|resume|execute|scheduler|worker)",
     re.I,
 )
-KEYWORD_SURFACE = re.compile(r"(testnet|sandbox|canary|paper|shadow|simulation|live|production|external|execution|venue|adapter|transport|promotion)", re.I)
+KEYWORD_SURFACE = re.compile(
+    r"(testnet|sandbox|canary|paper|shadow|simulation|live|production|external|execution|venue|adapter|transport|promotion)",
+    re.I,
+)
 
 
 def _write(p: Path, name: str, obj: object) -> None:
@@ -49,7 +67,9 @@ def _load_mod(name: str, path: Path) -> Any:
 
 
 def _canonical_hash(items: list[str]) -> str:
-    return hashlib.sha256(json.dumps(sorted(set(items)), separators=(",", ":")).encode()).hexdigest()
+    return hashlib.sha256(
+        json.dumps(sorted(set(items)), separators=(",", ":")).encode()
+    ).hexdigest()
 
 
 def _path_to_mod(rel: str) -> str:
@@ -59,7 +79,9 @@ def _path_to_mod(rel: str) -> str:
     return m
 
 
-def build_import_index(repo: Path, py_paths: list[str]) -> tuple[dict[str, set[str]], dict[str, set[str]]]:
+def build_import_index(
+    repo: Path, py_paths: list[str]
+) -> tuple[dict[str, set[str]], dict[str, set[str]]]:
     """importers[rel] = set of rel paths that import this module; out_edges[from]=set(to module)."""
     importers: dict[str, set[str]] = defaultdict(set)
     out_edges: dict[str, set[str]] = defaultdict(set)
@@ -160,7 +182,9 @@ def adjudicate_fs_minus_bfs(
     }
 
 
-def adjudicate_surface_candidate(row: dict[str, Any], repo: Path, reachable: set[str], importers: dict[str, set[str]]) -> dict[str, Any]:
+def adjudicate_surface_candidate(
+    row: dict[str, Any], repo: Path, reachable: set[str], importers: dict[str, set[str]]
+) -> dict[str, Any]:
     rel = row["PATH"]
     path = repo / rel
     kw = row.get("KEYWORD_HITS") or []
@@ -215,7 +239,8 @@ def adjudicate_surface_candidate(row: dict[str, Any], repo: Path, reachable: set
         "NON_TEST_IMPORTERS": len(non_test),
         "FINAL_CLASSIFICATION": final,
         "EVIDENCE": evidence,
-        "EXTERNAL_EFFECT_CAPABILITY": "testnet" in rel.lower() or "submit_transport" in text.lower(),
+        "EXTERNAL_EFFECT_CAPABILITY": "testnet" in rel.lower()
+        or "submit_transport" in text.lower(),
         "EXTERNAL_EFFECT_ALLOWED": False,
     }
 
@@ -235,7 +260,9 @@ def build_historical_120() -> list[dict[str, Any]]:
     for r in closure.get("PASS3_CORPUS_NODES", []):
         nodes.append({"HIST_ID": r["NODE_ID"], "PATH": r.get("PATH"), "KIND": "PASS3_CORPUS"})
     for row in bulk.get("rows", []):
-        nodes.append({"HIST_ID": row["SECTOR_ID"], "NAME": row["SECTOR_NAME"], "KIND": "BULK05_SECTOR"})
+        nodes.append(
+            {"HIST_ID": row["SECTOR_ID"], "NAME": row["SECTOR_NAME"], "KIND": "BULK05_SECTOR"}
+        )
     # Dedupe by HIST_ID
     seen: set[str] = set()
     uniq: list[dict[str, Any]] = []
@@ -268,7 +295,13 @@ def reconcile_historical_nodes(repo: Path, nodes: list[dict[str, Any]]) -> list[
             # map CMP name to path search
             name = str(n.get("NAME", "")).lower().replace(" ", "_")
             hits = list(repo.glob(f"src/**/{name}*.py"))[:1]
-            status = "CURRENT_RENAMED_MATCH" if hits else "CURRENT_MATCH" if name in str(repo) else "UNKNOWN_CURRENT"
+            status = (
+                "CURRENT_RENAMED_MATCH"
+                if hits
+                else "CURRENT_MATCH"
+                if name in str(repo)
+                else "UNKNOWN_CURRENT"
+            )
         elif n.get("KIND") == "BULK05_SECTOR":
             status = "CURRENT_MATCH"
         out.append({**n, "RECONCILIATION": status})
@@ -281,22 +314,48 @@ def build_historical_396_edges() -> list[dict[str, Any]]:
     edges = [{**e, "SOURCE_KIND": "GHV_SEED_112"} for e in seed]
     for c in bwp.get("WHOLE_SYSTEM_COMPONENT_MATRIX", []):
         for u in c.get("upstream", []):
-            edges.append({"id": f"CMP-{u}-{c['id']}", "source": u, "dest": c["id"], "SOURCE_KIND": "CMP_MATRIX"})
+            edges.append(
+                {
+                    "id": f"CMP-{u}-{c['id']}",
+                    "source": u,
+                    "dest": c["id"],
+                    "SOURCE_KIND": "CMP_MATRIX",
+                }
+            )
         for d in c.get("downstream", []):
-            edges.append({"id": f"CMP-{c['id']}-{d}", "source": c["id"], "dest": d, "SOURCE KIND": "CMP_MATRIX"})
+            edges.append(
+                {
+                    "id": f"CMP-{c['id']}-{d}",
+                    "source": c["id"],
+                    "dest": d,
+                    "SOURCE KIND": "CMP_MATRIX",
+                }
+            )
     # Documented aggregate gap — machine list for full 396 not materialized as flat register in repo
     return edges
 
 
 def main() -> int:
-    cont = _load_mod("cont_v1", MAIN_REPO / "scripts/ops/run_current_full_repository_recartography_and_whole_system_fixpoint_continuation_v1.py")
-    ws = _load_mod("ws_v1", MAIN_REPO / "scripts/ops/run_peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1.py")
+    cont = _load_mod(
+        "cont_v1",
+        MAIN_REPO
+        / "scripts/ops/run_current_full_repository_recartography_and_whole_system_fixpoint_continuation_v1.py",
+    )
+    ws = _load_mod(
+        "ws_v1",
+        MAIN_REPO
+        / "scripts/ops/run_peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1.py",
+    )
 
     repo = cont._resolve_current_repo()
     ws.ensure_forensic_evidence_bridge(repo, MAIN_REPO)
 
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    root = MAIN_REPO / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1" / ts
+    root = (
+        MAIN_REPO
+        / "evidence/research/peak_trade_whole_system_ghv_forensic_reconstruction_and_fixpoint_v1"
+        / ts
+    )
     pass_dir = root / "exhaustive_passes" / "pass_005"
     pass_dir.mkdir(parents=True, exist_ok=True)
 
@@ -361,13 +420,17 @@ def main() -> int:
     fs_set = set(py_paths)
     fs_minus_bfs = sorted(fs_set - reachable)
 
-    fs_adj = [adjudicate_fs_minus_bfs(r, repo, reachable, importers, alt_roots) for r in fs_minus_bfs]
+    fs_adj = [
+        adjudicate_fs_minus_bfs(r, repo, reachable, importers, alt_roots) for r in fs_minus_bfs
+    ]
     fs_adj_count = sum(1 for a in fs_adj if a["ADJUDICATED"])
     unexplained_fs = [a for a in fs_adj if not a["ADJUDICATED"]]
 
     # Load 170 pass004 unknown
     prior_union = json.loads((PRIOR_CKPT / "whole_repository_union_nodes.json").read_text())
-    pass004_unknown = [n for n in prior_union["NODES"] if n.get("REACHABILITY_CLASS") == "UNKNOWN_REACHABILITY"]
+    pass004_unknown = [
+        n for n in prior_union["NODES"] if n.get("REACHABILITY_CLASS") == "UNKNOWN_REACHABILITY"
+    ]
     pass004_closure = []
     for n in pass004_unknown:
         rel = n["NODE_KEY"]
@@ -375,7 +438,9 @@ def main() -> int:
         pass004_closure.append({"NODE_KEY": rel, **adj})
 
     # Surface candidates
-    surf_raw = json.loads((PRIOR_CKPT / "execution_promotion_surface_candidates.json").read_text())["CANDIDATES"]
+    surf_raw = json.loads((PRIOR_CKPT / "execution_promotion_surface_candidates.json").read_text())[
+        "CANDIDATES"
+    ]
     surf_adj = [adjudicate_surface_candidate(c, repo, reachable, importers) for c in surf_raw]
     surf_done = sum(1 for s in surf_adj if s["FINAL_CLASSIFICATION"] != "UNKNOWN_CURRENT")
 
@@ -430,7 +495,9 @@ def main() -> int:
         else:
             sem = "FALSE_STATIC_CANDIDATE"
         edge_adj.append({**e, "SEMANTIC_CLASS": sem})
-    semantic_edges = [e for e in edge_adj if e["SEMANTIC_CLASS"] in ("COMPOSITION_CURRENT", "DORMANT_CURRENT")]
+    semantic_edges = [
+        e for e in edge_adj if e["SEMANTIC_CLASS"] in ("COMPOSITION_CURRENT", "DORMANT_CURRENT")
+    ]
 
     ghv = ws.run_ghv_probe(pass_dir / "ghv_probe")
     regression = ws.run_regression(repo)
@@ -452,18 +519,42 @@ def main() -> int:
         "HISTORICAL_CARTOGRAPHY_RECONCILED": False,
         "DISAGREEMENT_LEDGER_SAMPLE_CAP": "NONE",
         "UNEXPLAINED_DISCOVERY_DISAGREEMENTS": unexp_disc,
-        "UNADJUDICATED_REPOSITORY_NODES": sum(1 for p in pass004_closure if not p.get("ADJUDICATED")),
+        "UNADJUDICATED_REPOSITORY_NODES": sum(
+            1 for p in pass004_closure if not p.get("ADJUDICATED")
+        ),
         "UNADJUDICATED_RUNTIME_SURFACE_CANDIDATES": len(surf_raw) - surf_done,
         "UNIVERSE_CLOSURE_PROVEN": False,
     }
-    if unexp_disc == 0 and universe["UNADJUDICATED_REPOSITORY_NODES"] == 0 and universe["UNADJUDICATED_RUNTIME_SURFACE_CANDIDATES"] == 0:
-        if all(r.get("RECONCILIATION") != "HISTORICAL_AGGREGATE_NOT_FLAT_INDEXED" for r in hist396_rec):
+    if (
+        unexp_disc == 0
+        and universe["UNADJUDICATED_REPOSITORY_NODES"] == 0
+        and universe["UNADJUDICATED_RUNTIME_SURFACE_CANDIDATES"] == 0
+    ):
+        if all(
+            r.get("RECONCILIATION") != "HISTORICAL_AGGREGATE_NOT_FLAT_INDEXED" for r in hist396_rec
+        ):
             universe["UNIVERSE_CLOSURE_PROVEN"] = True
 
-    _write(root, "pass005_full_disagreement_ledger.json", {"ENTRIES": disagreements, "TOTAL": total_disc})
-    _write(root, "fs_minus_bfs_full_adjudication.json", {"TOTAL": len(fs_minus_bfs), "ADJUDICATED": fs_adj_count, "ROWS": fs_adj})
-    _write(root, "alternative_root_adjudication.json", {"ROOTS": alt_rows, "NEW_ROOTS_VS_PASS004": sorted(new_roots)})
-    _write(root, "runtime_surface_candidate_adjudication.json", {"TOTAL": len(surf_raw), "ADJUDICATED": surf_done, "ROWS": surf_adj})
+    _write(
+        root,
+        "pass005_full_disagreement_ledger.json",
+        {"ENTRIES": disagreements, "TOTAL": total_disc},
+    )
+    _write(
+        root,
+        "fs_minus_bfs_full_adjudication.json",
+        {"TOTAL": len(fs_minus_bfs), "ADJUDICATED": fs_adj_count, "ROWS": fs_adj},
+    )
+    _write(
+        root,
+        "alternative_root_adjudication.json",
+        {"ROOTS": alt_rows, "NEW_ROOTS_VS_PASS004": sorted(new_roots)},
+    )
+    _write(
+        root,
+        "runtime_surface_candidate_adjudication.json",
+        {"TOTAL": len(surf_raw), "ADJUDICATED": surf_done, "ROWS": surf_adj},
+    )
     _write(root, "pass004_unadjudicated_node_closure.json", {"TOTAL": 170, "ROWS": pass004_closure})
     _write(root, "historical_120_node_reconciliation.json", {"TOTAL": 120, "ROWS": hist120_rec})
     _write(root, "historical_396_edge_reconciliation.json", {"TOTAL": 396, "ROWS": hist396_rec})
@@ -507,8 +598,19 @@ def main() -> int:
         },
     )
     _write(pass_dir, "edge_semantic_adjudication_rows.json", {"ROWS": edge_adj})
-    _write(root, "cross_flow_reconstruction.json", {"CROSS_FLOW_COUNT": len(json.loads(BULK05.read_text())["rows"]), "NOTE": "Rebuild from adjudicated surfaces pending universe closure"})
-    _write(root, "expanded_regression_scope.json", {"LEGACY": ws.REGRESSION_TESTS, "NEWLY_REQUIRED": [], "TOTAL": len(ws.REGRESSION_TESTS)})
+    _write(
+        root,
+        "cross_flow_reconstruction.json",
+        {
+            "CROSS_FLOW_COUNT": len(json.loads(BULK05.read_text())["rows"]),
+            "NOTE": "Rebuild from adjudicated surfaces pending universe closure",
+        },
+    )
+    _write(
+        root,
+        "expanded_regression_scope.json",
+        {"LEGACY": ws.REGRESSION_TESTS, "NEWLY_REQUIRED": [], "TOTAL": len(ws.REGRESSION_TESTS)},
+    )
     _write(root, "universe_closure_proof.json", universe)
     _write(
         root,
@@ -521,21 +623,25 @@ def main() -> int:
     )
 
     node_hash = _canonical_hash([a["NODE"] for a in fs_adj])
-    _write(pass_dir, "pass_summary.json", {
-        "PASS_ID": "PASS_005",
-        "FS_MINUS_BFS_TOTAL": len(fs_minus_bfs),
-        "FS_MINUS_BFS_ADJUDICATED": fs_adj_count,
-        "TOTAL_DISCOVERY_DISAGREEMENTS": total_disc,
-        "ADJUDICATED_DISCOVERY_DISAGREEMENTS": adj_disc,
-        "UNEXPLAINED_DISCOVERY_DISAGREEMENTS": unexp_disc,
-        "RUNTIME_SURFACE_CANDIDATE_ADJUDICATION": f"{surf_done}/{len(surf_raw)}",
-        "PASS004_UNADJUDICATED_NODE_CLOSURE": f"{sum(1 for p in pass004_closure if p.get('ADJUDICATED'))}/170",
-        "HISTORICAL_NODE_RECONCILIATION": f"{sum(1 for r in hist120_rec if r.get('RECONCILIATION') in ('CURRENT_MATCH', 'CURRENT_RENAMED_MATCH'))}/120",
-        "HISTORICAL_EDGE_RECONCILIATION": f"{sum(1 for r in hist396_rec if r.get('RECONCILIATION') == 'CURRENT_MATCH')}/396",
-        "UNIVERSE_CLOSURE_PROVEN": universe["UNIVERSE_CLOSURE_PROVEN"],
-        "GHV": ghv.get("MATCH_RATE"),
-        "REGRESSION_PASS": regression.get("PASS"),
-    })
+    _write(
+        pass_dir,
+        "pass_summary.json",
+        {
+            "PASS_ID": "PASS_005",
+            "FS_MINUS_BFS_TOTAL": len(fs_minus_bfs),
+            "FS_MINUS_BFS_ADJUDICATED": fs_adj_count,
+            "TOTAL_DISCOVERY_DISAGREEMENTS": total_disc,
+            "ADJUDICATED_DISCOVERY_DISAGREEMENTS": adj_disc,
+            "UNEXPLAINED_DISCOVERY_DISAGREEMENTS": unexp_disc,
+            "RUNTIME_SURFACE_CANDIDATE_ADJUDICATION": f"{surf_done}/{len(surf_raw)}",
+            "PASS004_UNADJUDICATED_NODE_CLOSURE": f"{sum(1 for p in pass004_closure if p.get('ADJUDICATED'))}/170",
+            "HISTORICAL_NODE_RECONCILIATION": f"{sum(1 for r in hist120_rec if r.get('RECONCILIATION') in ('CURRENT_MATCH', 'CURRENT_RENAMED_MATCH'))}/120",
+            "HISTORICAL_EDGE_RECONCILIATION": f"{sum(1 for r in hist396_rec if r.get('RECONCILIATION') == 'CURRENT_MATCH')}/396",
+            "UNIVERSE_CLOSURE_PROVEN": universe["UNIVERSE_CLOSURE_PROVEN"],
+            "GHV": ghv.get("MATCH_RATE"),
+            "REGRESSION_PASS": regression.get("PASS"),
+        },
+    )
     _write(pass_dir, "ghv_results.json", ghv)
     _write(pass_dir, "regression_results.json", regression)
 

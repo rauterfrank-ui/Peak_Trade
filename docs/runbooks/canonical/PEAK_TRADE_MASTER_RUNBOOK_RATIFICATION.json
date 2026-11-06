@@ -5,7 +5,7 @@
   "owner_requested_current_only": true,
   "source_tag": "freeze/clean-system-2026-11-06-v1",
   "source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
-  "canonical_document_sha256": "cb4bb31b6e968fc1bcb879fc6eac353625babe4e5da65482e7535466d179ac76",
+  "canonical_document_sha256": "d9600206cdc53decd510f43aa2f50610865b7bc2f257b9a2d13835ac8a21b10d",
   "runtime_authorization_effect": "NONE",
   "no_parallel_semantic_model": true,
   "live_authorized": false,

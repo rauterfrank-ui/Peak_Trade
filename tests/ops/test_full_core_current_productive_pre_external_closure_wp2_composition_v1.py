@@ -273,7 +273,8 @@ def test_wp2_consumer_compose_layered_store_then_c1_orchestrator_consumed(tmp_pa
     )
     last_ts = float(C1_TS)
     kwargs = _market_kwargs(
-        cycle_id_prefix="wp2-consumer-compose", last_ts=last_ts,
+        cycle_id_prefix="wp2-consumer-compose",
+        last_ts=last_ts,
         venue_native_id=bound.venue_native_id,
     )
     kwargs["g17_typed_vol_producers"] = g17_map

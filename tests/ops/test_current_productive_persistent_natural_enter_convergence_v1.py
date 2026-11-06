@@ -534,7 +534,10 @@ def test_pre_external_terminal_on_natural_enter_long(tmp_path: Path) -> None:
         assert context.native_id == native_id
         assert context.reference_price == float(enter_closes[-1]) + 1.0
         assert context.decision_timestamp_unix == enter_ts + 1.0
-        from scripts.ops.pre_external_convergence_natural_enter_reporting_v1 import evaluate_natural_enter_reporting_v1
+        from scripts.ops.pre_external_convergence_natural_enter_reporting_v1 import (
+            evaluate_natural_enter_reporting_v1,
+        )
+
         reporting = evaluate_natural_enter_reporting_v1(
             cycle_records=result.cycle_records,
             terminal_disposition=result.disposition,
@@ -544,12 +547,20 @@ def test_pre_external_terminal_on_natural_enter_long(tmp_path: Path) -> None:
         assert reporting.natural_pre_external_reached
         assert reporting.decision_context == context
         assert reporting.dpo["cycle_id"] == context.cycle_id
-        from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.creation_v1 import maybe_create_natural_enter_pending_outcome_v1
+        from src.ops.full_core_live_path_composition_root_v1.natural_enter_cross_session_outcome_closure_v1.creation_v1 import (
+            maybe_create_natural_enter_pending_outcome_v1,
+        )
+
         pending = maybe_create_natural_enter_pending_outcome_v1(
-            lane_state_root=lane_root, reporting=reporting, run_id="offline-contract-test",
-            evidence_root=tmp_path / "evidence5", canonical_instrument_id=bound.instrument_id,
-            native_id=native_id, decision_timestamp_unix=context.decision_timestamp_unix,
-            decision_reference_price=context.reference_price, market_context_ref=context.market_context_ref,
+            lane_state_root=lane_root,
+            reporting=reporting,
+            run_id="offline-contract-test",
+            evidence_root=tmp_path / "evidence5",
+            canonical_instrument_id=bound.instrument_id,
+            native_id=native_id,
+            decision_timestamp_unix=context.decision_timestamp_unix,
+            decision_reference_price=context.reference_price,
+            market_context_ref=context.market_context_ref,
         )
         assert pending.created
         assert pending.record.decision_reference_price == float(enter_closes[-1]) + 1.0

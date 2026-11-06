@@ -6,20 +6,32 @@ from pathlib import Path
 import pytest
 
 from src.ops.n1_standing_pre_external_runtime_supervisor_v1.supervisor_v1 import (
-    StandingSupervisorConfigV1, StandingSupervisorError, budget_owner_root_for_config_v1,
+    StandingSupervisorConfigV1,
+    StandingSupervisorError,
+    budget_owner_root_for_config_v1,
     run_n1_standing_pre_external_supervisor_v1,
 )
 from src.ops.portfolio_capital_reservation_budget_v1.host_v1 import PortfolioBudgetHostV1
 from tests.ops.test_durable_portfolio_budget_recovery_v1 import (
-    ACCOUNT, BINDINGS, EPOCH, NOW, _produce, _reserve,
+    ACCOUNT,
+    BINDINGS,
+    EPOCH,
+    NOW,
+    _produce,
+    _reserve,
 )
 from tests.ops.test_portfolio_budget_host_v1 import _fetch
 
 
 def _open(root, *, mode="recover", account=ACCOUNT, fetch=None, session="session-one"):
     return PortfolioBudgetHostV1(
-        root=root, private_rest_fetch=fetch or _fetch(), repository_sha="treasury-test-revision",
-        session_id=session, expected_account_identity=account, durable_mode=mode, clock=lambda: NOW,
+        root=root,
+        private_rest_fetch=fetch or _fetch(),
+        repository_sha="treasury-test-revision",
+        session_id=session,
+        expected_account_identity=account,
+        durable_mode=mode,
+        clock=lambda: NOW,
     )
 
 
@@ -128,8 +140,10 @@ def test_lost_scope_after_a_real_bootstrap_is_not_silently_recreated(tmp_path):
 
 def _config(tmp_path):
     return StandingSupervisorConfigV1(
-        private_store_root=tmp_path / "private", public_store_root=tmp_path / "public",
-        lane_state_root=tmp_path / "lanes", evidence_root=tmp_path / "evidence-one",
+        private_store_root=tmp_path / "private",
+        public_store_root=tmp_path / "public",
+        lane_state_root=tmp_path / "lanes",
+        evidence_root=tmp_path / "evidence-one",
         expected_account_identity=ACCOUNT,
     )
 
@@ -138,7 +152,10 @@ def test_evidence_rotation_does_not_change_owner_root(tmp_path):
     config = _config(tmp_path)
     expected = tmp_path / "private/portfolio_budget_host_v1"
     assert budget_owner_root_for_config_v1(config) == expected
-    assert budget_owner_root_for_config_v1(replace(config, evidence_root=tmp_path / "evidence-two")) == expected
+    assert (
+        budget_owner_root_for_config_v1(replace(config, evidence_root=tmp_path / "evidence-two"))
+        == expected
+    )
     assert not list(tmp_path.iterdir())
 
 
@@ -147,7 +164,11 @@ def test_evidence_rotation_does_not_change_owner_root(tmp_path):
 def test_owner_root_cannot_overlap_run_lane_or_public_state(tmp_path, name, direction):
     config = _config(tmp_path)
     owner = config.private_store_root / "portfolio_budget_host_v1"
-    other = {"owner-inside": config.private_store_root, "other-inside": owner / "child", "same": owner}[direction]
+    other = {
+        "owner-inside": config.private_store_root,
+        "other-inside": owner / "child",
+        "same": owner,
+    }[direction]
     config = replace(config, **{name: other})
     with pytest.raises(StandingSupervisorError, match="BUDGET_OWNER_ROOT_OVERLAP"):
         run_n1_standing_pre_external_supervisor_v1(config=config)

@@ -799,7 +799,9 @@ def _run_stateful_replay(
         _FakeClock,
     )
 
-    from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import require_startup_portfolio_v1
+    from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import (
+        require_startup_portfolio_v1,
+    )
 
     require_startup_portfolio_v1(observed_portfolio)
     prod_template = REPO / PRODUCTIVITY_TEMPLATE_REL
@@ -1114,8 +1116,12 @@ def _witness_levels(replay: dict[str, Any], dist: dict[str, Any]) -> dict[str, A
     }
 
 
-def run_g17_parity_readjudication_v1(out_dir: Path, *, observed_portfolio=None, observation_now_unix=None) -> dict[str, Any]:
-    from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import require_startup_portfolio_v1
+def run_g17_parity_readjudication_v1(
+    out_dir: Path, *, observed_portfolio=None, observation_now_unix=None
+) -> dict[str, Any]:
+    from src.ops.productive_reconciliation_runtime_binding_v1.startup_portfolio_document_v1 import (
+        require_startup_portfolio_v1,
+    )
 
     require_startup_portfolio_v1(observed_portfolio)
     """Run synthetic vs natural-checkpoint G17 provision on the same post6999 capture."""
@@ -1360,6 +1366,7 @@ def main() -> int:
         load_startup_portfolio_args_v1,
         startup_observation_now_v1,
     )
+
     add_startup_portfolio_arguments_v1(parser, replay_clock=True)
     args = parser.parse_args()
     observed_portfolio = load_startup_portfolio_args_v1(args)
@@ -1368,7 +1375,9 @@ def main() -> int:
         out = args.output_dir
         out.mkdir(parents=True, exist_ok=True)
         head = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True).strip()
-        verdict = run_g17_parity_readjudication_v1(out, observed_portfolio=observed_portfolio, observation_now_unix=observation_now_unix)
+        verdict = run_g17_parity_readjudication_v1(
+            out, observed_portfolio=observed_portfolio, observation_now_unix=observation_now_unix
+        )
         verdict["FINAL_HEAD"] = head
         verdict["CODE_CHANGED"] = True
         verdict["PR_CREATED"] = False

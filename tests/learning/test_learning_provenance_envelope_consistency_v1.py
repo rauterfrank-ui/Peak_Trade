@@ -11,8 +11,12 @@ from src.experiments.canonical_optimization_universe_learning_input_v1 import (
     validate_canonical_optimization_universe_learning_input_v1,
 )
 from src.learning.deterministic_decision_outcome_v0.errors_v0 import DdoValidationError
-from src.learning.deterministic_decision_outcome_v0.learning_evidence_export_v1 import export_learning_evidence_from_state_v1
-from src.learning.deterministic_decision_outcome_v0.learning_evidence_record_v1 import build_learning_evidence_record_v1
+from src.learning.deterministic_decision_outcome_v0.learning_evidence_export_v1 import (
+    export_learning_evidence_from_state_v1,
+)
+from src.learning.deterministic_decision_outcome_v0.learning_evidence_record_v1 import (
+    build_learning_evidence_record_v1,
+)
 from src.learning.deterministic_decision_outcome_v0.optimization_provenance_eligibility_v1 import (
     assert_optimization_pool_compatible_v1,
     evaluate_optimization_provenance_eligibility_v1,
@@ -28,7 +32,13 @@ def evidence(tmp_path):
 @pytest.mark.parametrize(
     "changes,reason",
     [
-        ({"outcome_semantic_class": "INTERNAL_SIMULATED_OUTCOME", "evidence_pool_class": "INTERNAL_SIMULATED_OUTCOME"}, "OUTCOME_SEMANTIC_CLASS_MISMATCH"),
+        (
+            {
+                "outcome_semantic_class": "INTERNAL_SIMULATED_OUTCOME",
+                "evidence_pool_class": "INTERNAL_SIMULATED_OUTCOME",
+            },
+            "OUTCOME_SEMANTIC_CLASS_MISMATCH",
+        ),
         ({"evidence_pool_class": "INTERNAL_SIMULATED_OUTCOME"}, "EVIDENCE_POOL_CLASS_MISMATCH"),
         ({"outcome_evidence_provenance_digest": "0" * 64}, "PROVENANCE_DIGEST_MISMATCH"),
     ],
@@ -70,7 +80,8 @@ def test_pool_compatibility_does_not_silently_replace_wrong_declared_pool(eviden
 
 def test_existing_minimal_pair_check_without_repeated_digest_remains_valid(evidence):
     minimal = {
-        key: evidence[key] for key in ("outcome_evidence_provenance", "outcome_semantic_class", "evidence_pool_class")
+        key: evidence[key]
+        for key in ("outcome_evidence_provenance", "outcome_semantic_class", "evidence_pool_class")
     }
     assert evaluate_optimization_provenance_eligibility_v1(minimal).admitted
     assert_optimization_pool_compatible_v1(minimal, minimal)

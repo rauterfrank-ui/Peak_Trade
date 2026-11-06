@@ -103,6 +103,7 @@ def maybe_create_natural_enter_pending_outcome_v1(
         from src.ops.full_core_live_path_composition_root_v1.current_productive_pending_decision_lineage_v1 import (
             load_bound_pending_decision_identity_v1,
         )
+
         context_matches = (
             canonical_instrument_id == context.instrument_id
             and native_id == context.native_id
@@ -112,15 +113,22 @@ def maybe_create_natural_enter_pending_outcome_v1(
             and reporting.dpo.get("cycle_id") == context.cycle_id
             and reporting.enter_side.upper() == str(reporting.dpo.get("selected_side", "")).upper()
         )
-        bound_identity = load_bound_pending_decision_identity_v1(
-            ledger_path=lane_state_root / "LANE_1/ddo_learning_capture_v1.jsonl",
-            context=context, dpo=reporting.dpo,
-        ) if context_matches else None
+        bound_identity = (
+            load_bound_pending_decision_identity_v1(
+                ledger_path=lane_state_root / "LANE_1/ddo_learning_capture_v1.jsonl",
+                context=context,
+                dpo=reporting.dpo,
+            )
+            if context_matches
+            else None
+        )
         if bound_identity is None or (
             decision_id and decision_id != bound_identity.policy_decision_id
         ):
             return NaturalEnterPendingCreationResultV1(
-                created=False, skipped=True, reason="PENDING_DECISION_LINEAGE_UNBOUND",
+                created=False,
+                skipped=True,
+                reason="PENDING_DECISION_LINEAGE_UNBOUND",
             )
     decision_event_ref = str(reporting.dpo.get("decision_event_ref") or "")
     ddo_path = lane_state_root / "LANE_1/ddo_learning_capture_v1.jsonl"
@@ -144,8 +152,11 @@ def maybe_create_natural_enter_pending_outcome_v1(
     cycle_id = str(reporting.dpo.get("cycle_id") or "")
     session_part = cycle_id.rsplit(":cycle:", 1)[0] if ":cycle:" in cycle_id else cycle_id
     correlation_id = (
-        bound_identity.correlation_id if bound_identity is not None
-        else f"ddo.corr.{session_part}" if session_part else ""
+        bound_identity.correlation_id
+        if bound_identity is not None
+        else f"ddo.corr.{session_part}"
+        if session_part
+        else ""
     )
     now = _utc_now_iso_v1()
     record = NaturalEnterPendingOutcomeRecordV1(
@@ -153,7 +164,9 @@ def maybe_create_natural_enter_pending_outcome_v1(
         pending_outcome_id=pending_id,
         decision_event_ref=decision_event_ref,
         dpo_ref=str(reporting.dpo.get("dpo_ref") or ""),
-        decision_id=bound_identity.policy_decision_id if bound_identity is not None else str(decision_id or ""),
+        decision_id=bound_identity.policy_decision_id
+        if bound_identity is not None
+        else str(decision_id or ""),
         correlation_id=correlation_id[:128],
         cycle_id=cycle_id,
         source_run_id=str(run_id),

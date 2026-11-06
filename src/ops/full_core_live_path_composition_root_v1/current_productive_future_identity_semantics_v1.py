@@ -6,7 +6,9 @@ from src.research.instrument_id_canonicalization_v1 import validate_instrument_i
 from trading.master_v2.double_play_futures_input import FuturesMarketType
 
 
-def resolve_selected_future_market_type_v1(*, instrument_id: str, venue_native_id: str) -> FuturesMarketType:
+def resolve_selected_future_market_type_v1(
+    *, instrument_id: str, venue_native_id: str
+) -> FuturesMarketType:
     native = str(venue_native_id or "").strip().upper()
     if native.endswith("-SWAP"):
         market_type = FuturesMarketType.PERPETUAL
@@ -21,7 +23,8 @@ def resolve_selected_future_market_type_v1(*, instrument_id: str, venue_native_i
         if contract not in {"linear_perpetual", "linear_dated_future"}:
             raise ValueError("future_contract_type_unsupported")
         expected = (
-            FuturesMarketType.PERPETUAL if contract == "linear_perpetual"
+            FuturesMarketType.PERPETUAL
+            if contract == "linear_perpetual"
             else FuturesMarketType.FUTURES
         )
         if expected is not market_type:

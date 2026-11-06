@@ -155,10 +155,13 @@ def test_rc_ord_cursor_carry_advances_cap61_across_two_mv2_cycles(tmp_path: Path
     )
     first_ts = 1_700_000_200.0
     second_ts = first_ts + 60.0
-    g17 = {"LANE_1": governed_c1_aligned_g17_dk_producer_v1(
-        bound=pair[1], anchor_event_ts_unix=first_ts - 60,
-        evidence_store_root=tmp_path / "g17",
-    )}
+    g17 = {
+        "LANE_1": governed_c1_aligned_g17_dk_producer_v1(
+            bound=pair[1],
+            anchor_event_ts_unix=first_ts - 60,
+            evidence_store_root=tmp_path / "g17",
+        )
+    }
     base = {**_carry_kwargs(cycle_id_prefix="rc-ord-carry-1"), "g17_typed_vol_producers": g17}
     base["canonical_price_provenance"] = prov
     base["finalized_closes"] = tuple(100.0 - (99 - i) * 0.5 for i in range(100))

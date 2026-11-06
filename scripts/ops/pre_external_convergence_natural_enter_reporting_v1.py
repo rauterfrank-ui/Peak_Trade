@@ -8,7 +8,8 @@ from pathlib import Path
 from typing import Any, Mapping, Protocol, Sequence
 
 from src.ops.full_core_live_path_composition_root_v1.current_productive_pending_decision_context_v1 import (
-    PendingDecisionContextV1, canonical_payload_json_v1,
+    PendingDecisionContextV1,
+    canonical_payload_json_v1,
 )
 
 PRODUCTIVE_LIVE_C1_DDO_SESSION_MARKER = "persistent-natural-enter-live-c1"
@@ -73,7 +74,8 @@ def _parse_dpo_row(row: Mapping[str, Any]) -> ProductiveDpoObservationV1 | None:
         selected_side=str(canon.get("selected_side") or "").strip().lower(),
         execution_eligible=(
             str(canon["execution_eligible"]).strip().lower()
-            if canon.get("execution_eligible") is not None else ""
+            if canon.get("execution_eligible") is not None
+            else ""
         ),
         decision_event_ref=str(payload.get("decision_event_ref") or ""),
         dpo_ref=str(row.get("record_id") or payload.get("record_id") or ""),
@@ -120,9 +122,7 @@ def load_productive_live_dpo_observations_v1(
     ordered = sorted(observations, key=_sort_key)
     correlated: list[ProductiveDpoObservationV1] = []
     for index, item in enumerate(ordered, start=1):
-        correlated.append(
-            replace(item, s5_cycle_index=index)
-        )
+        correlated.append(replace(item, s5_cycle_index=index))
     return tuple(correlated)
 
 
@@ -218,8 +218,12 @@ def evaluate_natural_enter_reporting_v1(
     correlated: ProductiveDpoObservationV1 | None = None
     context = getattr(reporting, "pending_decision_context", None)
     if context is not None:
-        matches = [item for item in observations if item.cycle_id == context.cycle_id
-                   and item.producer_payload_json == context.producer_payload_json]
+        matches = [
+            item
+            for item in observations
+            if item.cycle_id == context.cycle_id
+            and item.producer_payload_json == context.producer_payload_json
+        ]
         if len(matches) == 1:
             correlated = replace(matches[0], s5_cycle_index=int(reporting.cycle_index))
     elif lane_state_root is not None:

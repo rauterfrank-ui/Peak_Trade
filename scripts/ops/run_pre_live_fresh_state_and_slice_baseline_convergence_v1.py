@@ -41,6 +41,7 @@ def main() -> int:
         load_startup_portfolio_args_v1,
         startup_observation_now_v1,
     )
+
     parser = argparse.ArgumentParser(description="PRE-LIVE fresh-state convergence; no POST")
     add_startup_portfolio_arguments_v1(parser, replay_clock=True)
     args = parser.parse_args()

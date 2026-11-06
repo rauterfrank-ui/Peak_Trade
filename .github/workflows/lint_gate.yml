@@ -209,14 +209,17 @@ jobs:
 
       - name: Run ruff format check
         if: ${{ steps.reuse_norm.outputs.reuse != 'true' && steps.detect.outputs.applicable == 'true' }}
+        env:
+          PT_RUNTIME_MODE: provisioned
+          PT_SKIP_TRADING_PREFLIGHT: "1"
         run: |
           set -euo pipefail
 
           echo "Checking code formatting with ruff..."
 
-          ruff format --check src/ tests/ scripts/ || {
+          ./scripts/pt scripts/ci/check_ruff_frozen_format_v1.py || {
             echo "❌ Code formatting issues found"
-            echo "Run 'ruff format src/ tests/ scripts/' locally to fix"
+            echo "Format changed files; preserve the exact frozen-source byte guards."
             exit 1
           }
 

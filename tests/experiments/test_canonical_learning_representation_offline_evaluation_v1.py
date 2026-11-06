@@ -24,7 +24,10 @@ from src.meta.learning_loop.contract_safety_v1 import compute_content_sha256
 
 
 def _plan(pattern: str) -> dict:
-    from tests.experiments.test_canonical_learning_representation_research_adaptation_plan_v1 import _applicable_decision
+    from tests.experiments.test_canonical_learning_representation_research_adaptation_plan_v1 import (
+        _applicable_decision,
+    )
+
     decision = _applicable_decision(pattern=pattern)
     return dict(
         build_learning_representation_research_adaptation_plan_v1(
@@ -71,7 +74,9 @@ def test_rejection_coverage_failure() -> None:
 def test_changed_fixture_cannot_reuse_the_old_plan_identity_and_digest() -> None:
     plan = _plan(FIXTURE_LABEL_REDUNDANCY)
     plan["evaluation_fixture_label"] = "FIXTURE_FEATURE_USEFULNESS"
-    with pytest.raises(LearningRepresentationResearchAdaptationPlanError, match="IDENTITY_MISMATCH"):
+    with pytest.raises(
+        LearningRepresentationResearchAdaptationPlanError, match="IDENTITY_MISMATCH"
+    ):
         run_learning_representation_offline_evaluation_v1(
             LearningRepresentationOfflineEvaluationRequestV1(research_plan=plan)
         )
@@ -83,7 +88,9 @@ def test_changed_parent_cannot_be_hidden_by_rehashing_only_the_outer_result() ->
     plan["result_digest"] = compute_content_sha256(
         {key: value for key, value in plan.items() if key != "result_digest"}
     )
-    with pytest.raises(LearningRepresentationResearchAdaptationPlanError, match="IDENTITY_MISMATCH"):
+    with pytest.raises(
+        LearningRepresentationResearchAdaptationPlanError, match="IDENTITY_MISMATCH"
+    ):
         run_learning_representation_offline_evaluation_v1(
             LearningRepresentationOfflineEvaluationRequestV1(research_plan=plan)
         )

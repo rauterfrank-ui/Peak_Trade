@@ -250,13 +250,37 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
         if entry:
             meta, path = entry.split(b"\t", 1)
             tree[path.decode()] = meta.decode().split()[2]
+    development_policy_files = []
     for policy in policies:
         path = policy["path"]
         raw = (root / path).read_bytes()
         actual = hashlib.sha256(raw).hexdigest()
-        if actual != policy["frozen_sha256"] or actual != frozen[path]["sha256"]:
+        original = raw
+        if actual != policy["frozen_sha256"]:
+            if path != "config/governance/clean_core_seal_manifest_v1.json":
+                raise ValueError("POLICY_SOURCE_DRIFT:" + path)
+            binding = json.loads(
+                (root / "docs/system_atlas/source/development-binding-v1.json").read_bytes()
+            )
+            rows = [row for row in binding["files"] if row["path"] == path]
+            if (
+                binding.get("schema") != "peaktrade.atlas_development_binding.v1"
+                or binding.get("authority") != "NONE"
+                or binding.get("runtime_authorization_effect") != "NONE"
+                or binding.get("frozen_source_commit") != resolved
+                or len(rows) != 1
+                or rows[0]["before_sha256"] != policy["frozen_sha256"]
+                or rows[0]["sha256"] != actual
+            ):
+                raise ValueError("POLICY_DEVELOPMENT_BINDING_INVALID:" + path)
+            original = subprocess.check_output(["git", "show", resolved + ":" + path], cwd=root)
+            development_policy_files.append(path)
+        original_digest = hashlib.sha256(original).hexdigest()
+        if original_digest != policy["frozen_sha256"] or original_digest != frozen[path]["sha256"]:
             raise ValueError("POLICY_SOURCE_DRIFT:" + path)
-        git_digest = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+        git_digest = hashlib.sha1(
+            b"blob " + str(len(original)).encode() + b"\0" + original
+        ).hexdigest()
         if git_digest != policy["git_blob_oid"] or git_digest != tree[path]:
             raise ValueError("POLICY_GIT_OBJECT_MISMATCH:" + path)
         if policy["kind"] != policy_scope_kind(path):
@@ -279,4 +303,5 @@ def validate_policy_inventory(root: Path, doc: dict) -> dict:
         "by_kind": dict(Counter(p["kind"] for p in policies)),
         "runtime_effect_inferred": False,
         "retained_consumed_documents": len(doc.get("consumed_documents", [])),
+        "development_policy_files": development_policy_files,
     }
