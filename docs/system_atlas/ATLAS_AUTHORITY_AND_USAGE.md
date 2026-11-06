@@ -5,8 +5,8 @@ ATLAS_AUTHORITY=NONE
 ATLAS_MUST_NOT_CREATE_AUTHORITY=true
 CURRENT_ONLY=true
 RUNTIME_AUTHORIZATION_EFFECT=NONE
-SOURCE_TAG=freeze/visible-system-2026-11-06-v2
-SOURCE_COMMIT=a8e1c0088e25651ad4bb29ebe02e10142a0a92b2
+SOURCE_TAG=freeze/clean-system-2026-11-06-v1
+SOURCE_COMMIT=c742a23c964901c1353fcf3468e618db9cb6ef42
 ```
 
 Der [Atlas](generated/SYSTEM_ATLAS.md) stellt den fixierten Code und seine Schnittstellen dar. Der [Master Runbook](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) enthält die Betriebs-/Entwicklungsorientierung; ausführbare Verträge liegen in den dort zitierten Codeownern. Die [Map of Truth](../governance/PEAK_TRADE_MAP_OF_TRUTH.md) vermittelt die Navigation.

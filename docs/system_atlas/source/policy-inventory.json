@@ -1,7 +1,7 @@
 {
   "schema": "peaktrade.frozen_policy_inventory.v1",
-  "source_tag": "freeze/visible-system-2026-11-06-v2",
-  "source_commit": "a8e1c0088e25651ad4bb29ebe02e10142a0a92b2",
+  "source_tag": "freeze/clean-system-2026-11-06-v1",
+  "source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
   "sha256": "d3ce063bf1a3c3531095bf25a77cb3dfdeb173bc3cb450b1394425d6d5e93006",
   "bytes": 255407,
   "count": 780,

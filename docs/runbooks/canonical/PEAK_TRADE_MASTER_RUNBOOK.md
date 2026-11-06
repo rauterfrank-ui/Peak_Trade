@@ -5,9 +5,10 @@ DOCUMENT_CLASS=CANONICAL_MASTER_RUNBOOK
 DOCUMENT_ROLE=CURRENT_OPERATIONAL_SSOT
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 CURRENT_ONLY=true
+SYSTEM_FREEZE_TAG=freeze/clean-system-complete-2026-11-06-v1
 NO_PARALLEL_SEMANTIC_MODEL=true
-SOURCE_TAG=freeze/visible-system-2026-11-06-v2
-SOURCE_COMMIT=a8e1c0088e25651ad4bb29ebe02e10142a0a92b2
+SOURCE_TAG=freeze/clean-system-2026-11-06-v1
+SOURCE_COMMIT=c742a23c964901c1353fcf3468e618db9cb6ef42
 CANONICAL_PYTHON_LAUNCHER=scripts/pt
 CANONICAL_PYTHON_INTERPRETER=.venv/bin/python
 ```
@@ -152,6 +153,7 @@ Projekt-Python wird über `scripts/pt` ausgeführt. Der Launcher prüft die chec
 ```text
 ./scripts/pt runtime-check
 ./scripts/pt scripts/ops/validate_system_atlas_v1.py
+PYTHONDONTWRITEBYTECODE=1 ./scripts/pt docs/system_atlas/current_atlas.py frozen
 ```
 
 Der Atlas prüft den fixierten Quellenbestand, seine Literalverträge, Referenzen und generierten Ansichten. Die Funktion des Systems muss über den jeweils konkreten Codepfad und passende Originaldaten beurteilt werden. Vorhandene Tests und Reports sind Bestandteile des Dateikatalogs; daraus wird keine pauschale Betriebs- oder Qualitätsabnahme abgeleitet.

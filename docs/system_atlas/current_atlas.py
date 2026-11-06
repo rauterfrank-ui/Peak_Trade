@@ -6,6 +6,7 @@ import ast
 import gzip
 import hashlib
 import json
+import os
 import re
 import subprocess
 from runpy import run_path
@@ -50,6 +51,8 @@ def views(model):
         + model["source_tag"]
         + "\nSOURCE_COMMIT="
         + model["source_commit"]
+        + "\nSYSTEM_FREEZE_TAG="
+        + model.get("system_freeze_tag", model["source_tag"])
         + "\n```\n\n",
         "Dieser Atlas beschreibt den Dateibestand, die benannten Schnittstellen und die Fachgrenzen des fixierten Quellbaums. Die Fachgruppen sind Navigationsräume. Autorität und tatsächliche Zustandswirkung ergeben sich aus den zitierten Codeownern und dem [Master Runbook](../../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md).\n\n",
         "## Vollständiger Quellenbestand\n\n",
@@ -393,7 +396,7 @@ def validate(root, check_outputs=True):
 
 def main(argv=None):
     parser = argparse.ArgumentParser()
-    parser.add_argument("mode", choices=["generate", "check", "impact"])
+    parser.add_argument("mode", choices=["generate", "check", "impact", "frozen"])
     parser.add_argument("--repo-root", type=Path, default=ROOT)
     args = parser.parse_args(argv)
     root = args.repo_root.resolve()
@@ -409,6 +412,91 @@ def main(argv=None):
             for key, text in projection["render_law_views"](law, root).items():
                 (root / LAW_ROOT / LAW_NAMES[key]).write_text(text)
     result = validate(root)
+    if args.mode == "frozen":
+        tag = model["system_freeze_tag"]
+        commit = git(root, "rev-parse", tag + "^{commit}").decode().strip()
+        assert git(root, "rev-parse", "HEAD").decode().strip() == commit
+        assert not git(root, "diff", "--name-only", commit, "--").strip()
+        verified_files = 0
+        for entry in git(root, "ls-tree", "-r", "-z", commit).split(b"\0"):
+            if not entry:
+                continue
+            meta, rel = entry.split(b"\t", 1)
+            mode, kind, oid = meta.decode().split()
+            path = root / rel.decode()
+            assert kind == "blob", ["UNSUPPORTED_FROZEN_ENTRY", rel]
+            if mode == "120000":
+                assert path.is_symlink(), path
+                raw = os.fsencode(os.readlink(path))
+            else:
+                assert path.is_file() and not path.is_symlink(), path
+                assert bool(path.stat().st_mode & 0o111) == (mode == "100755"), path
+                raw = path.read_bytes()
+            actual = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+            assert actual == oid, ["FROZEN_FILE_BYTES_CHANGED", rel]
+            verified_files += 1
+        assert not git(root, "ls-files", "--others", "--exclude-standard").strip()
+        ignored = (
+            git(
+                root,
+                "ls-files",
+                "--others",
+                "--ignored",
+                "--exclude-standard",
+                "--directory",
+                "--no-empty-directory",
+            )
+            .decode()
+            .splitlines()
+        )
+        assert all(p == ".venv/" for p in ignored), ["UNSCOPED_LOCAL_FILES", ignored]
+        disposition = json.loads((root / ATLAS / "source/successor-disposition.json").read_bytes())
+        for key, value in disposition.get("protected_git_configuration", {}).items():
+            assert key in {
+                "core.abbrev",
+                "remote.origin.fetch",
+                "remote.origin.tagOpt",
+                "remote.origin.skipDefaultUpdate",
+                "remote.origin.skipFetchAll",
+            }
+            assert git(root, "config", "--get", key).decode().strip() == value, key
+        comparison = next(
+            x["commit"]
+            for x in disposition["required_git_references"]
+            if x["reference"] == "refs/remotes/origin/main"
+        )
+        expected = {commit, model["source_commit"], comparison}
+        assert set(git(root, "rev-list", "--all").decode().splitlines()) == expected
+        local_commits = {
+            line.split()[1]
+            for line in git(
+                root, "cat-file", "--batch-all-objects", "--batch-check=%(objecttype) %(objectname)"
+            )
+            .decode()
+            .splitlines()
+            if line.startswith("commit ")
+        }
+        assert local_commits == expected, ["EXTRA_LOCAL_COMMIT_OBJECTS", local_commits - expected]
+        assert git(root, "worktree", "list", "--porcelain").decode().count("worktree ") == 1
+        expected_refs = {
+            "refs/heads/main",
+            "refs/remotes/origin/main",
+            "refs/tags/" + model["source_tag"],
+            "refs/tags/" + tag,
+        }
+        assert (
+            set(git(root, "for-each-ref", "--format=%(refname)").decode().splitlines())
+            == expected_refs
+        )
+        result.update(
+            system_freeze_tag=tag,
+            system_freeze_commit=commit,
+            complete_working_tree_matches_freeze=True,
+            verified_working_tree_files=verified_files,
+            local_commit_count=len(expected),
+            local_historical_worktrees=0,
+            allowed_nonversioned_dependency=".venv/",
+        )
     if args.mode == "impact":
         print("ATLAS_IMPACT=UPDATED\nSYSTEM_ATLAS_DRIFT_DETECTED=false")
     print(json.dumps(result, ensure_ascii=False))

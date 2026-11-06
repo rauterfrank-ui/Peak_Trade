@@ -131,6 +131,61 @@ def normalize_repo_wikilinks(text: str, retired: set[str]) -> tuple[str, int]:
     return re.sub(r"\[\[([^\]\n]+)\]\]", replace, text), count
 
 
+ARCHIVE_MARKER = re.compile(
+    r"\n<!-- external-archive-links:start -->.*?<!-- external-archive-links:end -->\n", re.S
+)
+
+
+def archive_markdown_links(body: str, archived: dict[str, str]) -> tuple[str, int, int]:
+    """Move only explicit links to retired files; keep historical prose intact."""
+    changed = 0
+    external = 0
+    external_paths = {str(Path(p)) for p in archived.values()}
+
+    def replace(match):
+        nonlocal changed, external
+        label, target = match.groups()
+        target = target.strip("<>")
+        path, sep, fragment = target.partition("#")
+        plain = unquote(path.removeprefix("file://"))
+        if plain in external_paths:
+            external += 1
+            return match.group(0)
+        if not plain.startswith(str(ROOT) + "/"):
+            return match.group(0)
+        rel = Path(plain).relative_to(ROOT).as_posix()
+        if rel not in archived:
+            return match.group(0)
+        changed += 1
+        external += 1
+        return "[" + label + "](" + Path(archived[rel]).as_uri() + (sep + fragment) + ")"
+
+    result = re.sub(r"\[([^\]\n]+)\]\((<[^>\n]+>|[^)\n]+)\)", replace, body)
+    return result, changed, external
+
+
+def archive_notice(body: str, count: int) -> str:
+    base = ARCHIVE_MARKER.sub("\n", body)
+    heading = re.search(r"^# .+$", base, re.M)
+    if not heading:
+        raise ValueError("ARCHIVE_NOTE_HEADING_MISSING")
+    block = (
+        "<!-- external-archive-links:start -->\n"
+        "> [!info] Historische Quellen extern · 06.11.2026\n"
+        f"> {count} Dateiverweise führen zu ausgelagerten Originalen auf M2DATA. "
+        "Die betreffenden Dateien sind historische Nachweise und keine aktuellen Produktinputs. "
+        "Die folgende datierte Beschreibung wird dadurch nicht zu einer neuen Laufzeitabnahme.\n"
+        "<!-- external-archive-links:end -->"
+    )
+    return (
+        base[: heading.end()].rstrip()
+        + "\n\n"
+        + block
+        + "\n\n"
+        + base[heading.end() :].lstrip("\n")
+    )
+
+
 def current_block(domain: dict, model: dict, docs_commit: str) -> str:
     lines = [
         "\n<!-- current-repo-projection:start -->\n",
@@ -242,7 +297,11 @@ def build(vault: Path) -> tuple[dict[str, bytes], dict]:
     truth = wiki(MIRRORS["docs/governance/PEAK_TRADE_MAP_OF_TRUTH.md"], "Map of Truth")
     impact = wiki(MIRRORS[LAW_ROOT + "LAW_CHANGE_IMPACT.md"], "Law Impact Map")
     profile = wiki(PREFIX + "/Arbeitsprofil.md", "Arbeitsprofil")
-    binding = f"Code-Fixpunkt **`{model['source_tag']}` / `{model['source_commit'][:9]}`**. Nachgeführte Repo-Dokumentation **`{docs_commit[:9]}`**. Vault: `{vault}`.\n\n"
+    binding = (
+        f"Vollständiger Repo-Freeze **`{model.get('system_freeze_tag', model['source_tag'])}`**. "
+        f"Code-Fixpunkt **`{model['source_tag']}` / `{model['source_commit'][:9]}`**. "
+        f"Nachgeführte Repo-Dokumentation **`{docs_commit[:9]}`**. Vault: `{vault}`.\n\n"
+    )
     nav = master + " · " + atlas + " · " + truth + " · " + impact + " · " + profile + "\n\n"
     common = (
         "## Die belegten Größen getrennt lesen\n\n"
@@ -320,7 +379,11 @@ def build(vault: Path) -> tuple[dict[str, bytes], dict]:
         + wiki(MIRRORS[LAW_ROOT + "unknown_and_conflict_v1.md"], "Offene Regelbeziehungen")
         + "\n\n"
     )
-    cockpit += "Die Repo-Dokumentationsänderung ist mit 27 gezielten Tests geprüft. Das ist keine vollständige System-, Policy- oder Wirtschaftsabnahme. Frühere Testnachweise behalten ihre datierten Scopes; ihre Zahlen werden nicht addiert oder als heutiger Gesamt-PASS übernommen.\n\n"
+    cockpit += (
+        "Die aktuellen Abgrenzungs- und Prüfbelege stehen im [Nachfolgerbeleg]("
+        + (ROOT / "docs/system_atlas/source/successor-disposition.json").as_uri()
+        + "). Quellen-, Link- und Snapshotprüfungen bleiben von funktionalen Tests sowie einer vollständigen System- oder Wirtschaftsabnahme getrennt. Frühere Testnachweise behalten ihre datierten Scopes.\n\n"
+    )
     cockpit += "## Bereiche und innere Ebenen\n\n"
     index = note_header("PeakTrade-Systemindex") + "# PeakTrade-Systemindex\n\n" + binding + nav
     index += "22 fachliche Navigationsbereiche mit eigenen Eingängen, Verarbeitung, Ausgängen, Zuständen und Consumergrenzen. Die Gliederung erteilt keine zusätzliche Fachautorität.\n\n"
@@ -418,7 +481,10 @@ def build(vault: Path) -> tuple[dict[str, bytes], dict]:
             )
         files[name] = (json.dumps(data, ensure_ascii=False, indent=2) + "\n").encode()
     retired = {x["path"] for x in cleanup["removed"]}
+    archived = {x["path"]: x["archive_path"] for x in cleanup.get("externalized_archives", [])}
     normalized = 0
+    external_archive_links = 0
+    external_archive_notes = 0
     for path in vault.rglob("*.md"):
         rel = path.relative_to(vault).as_posix()
         if any(p.startswith(".") for p in path.relative_to(vault).parts):
@@ -428,6 +494,11 @@ def build(vault: Path) -> tuple[dict[str, bytes], dict]:
         if count:
             files[rel] = text.encode()
             normalized += count
+        text, changed, external = archive_markdown_links(text, archived)
+        if external:
+            files[rel] = archive_notice(text, external).encode()
+            external_archive_links += external
+            external_archive_notes += 1
     receipt = {
         "schema": "peaktrade.current_obsidian_projection.v1",
         "vault": str(vault),
@@ -439,6 +510,8 @@ def build(vault: Path) -> tuple[dict[str, bytes], dict]:
         "policy_files": law["policy_inventory"]["count"],
         "removed_repo_map_files": len(cleanup["removed"]),
         "normalized_external_repo_wikilinks": normalized,
+        "external_archive_file_links": external_archive_links,
+        "external_archive_notes": external_archive_notes,
         "canvas_before": canvas_before,
         "runtime_authorization_effect": "NONE",
         "backup_created": False,
@@ -555,6 +628,8 @@ def check(vault: Path) -> dict:
         "policy_files": receipt["policy_files"],
         "normalized_external_repo_wikilinks": receipt["normalized_external_repo_wikilinks"],
         "canvas_serialization_changes": serialization_changes,
+        "external_archive_file_links": receipt.get("external_archive_file_links", 0),
+        "external_archive_notes": receipt.get("external_archive_notes", 0),
         "runtime_authorization_effect": "NONE",
     }
 

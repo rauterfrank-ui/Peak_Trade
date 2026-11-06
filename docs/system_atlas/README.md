@@ -5,8 +5,9 @@ ATLAS_AUTHORITY=NONE
 ATLAS_ROLE=CURRENT_FROZEN_SYSTEM_DESCRIPTION
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 CURRENT_ONLY=true
-SOURCE_TAG=freeze/visible-system-2026-11-06-v2
-SOURCE_COMMIT=a8e1c0088e25651ad4bb29ebe02e10142a0a92b2
+SYSTEM_FREEZE_TAG=freeze/clean-system-complete-2026-11-06-v1
+SOURCE_TAG=freeze/clean-system-2026-11-06-v1
+SOURCE_COMMIT=c742a23c964901c1353fcf3468e618db9cb6ef42
 ```
 
 Der [System Atlas](generated/SYSTEM_ATLAS.md) beschreibt diesen fixierten Quellbaum mit Fachräumen, inneren Modulen, Eingängen, Verarbeitung, Ausgängen, Zustand und Consumergrenzen. Der [Quellenindex](generated/SOURCE_INDEX.md) erschließt alle Dateien des Fixpunkts.
@@ -48,3 +49,11 @@ ATLAS_SOURCE_MISSING:census/census_meta.yaml
 ```
 
 Die aktuellen CLI-Prüfungen ersetzen keine erfolgreiche Ausführung dieser Testbindung. Die Testdateien und die YAML-Bibliothek gehören zum unveränderten Quellstand.
+
+Der vollständige Freeze umfasst den bereinigten Quellstand und die nachgeführten Dokumentationsansichten. Sein Tag ist oben gesondert benannt. Den exakten Arbeitsbaum, die Grenze der lokal vorhandenen Commit-Vorgeschichte und die einzige nicht versionierte Betriebsabhängigkeit `.venv/` prüft:
+
+```text
+PYTHONDONTWRITEBYTECODE=1 ./scripts/pt docs/system_atlas/current_atlas.py frozen
+```
+
+Diese Prüfung ist absichtlich strikt: zusätzliche lokale Dateien oder spätere Änderungen am eingefrorenen Arbeitsbaum werden gemeldet. Leere Ausgabeverzeichnisse für die vorhandenen Writer enthalten keine Archivdaten und bleiben als Betriebsadressen erhalten. Der Dateikatalog des Atlas bindet den Quell-Fixpunkt; der vollständige System-Tag bindet zusätzlich die aktuellen Ansichten über seinen Git-Baum.

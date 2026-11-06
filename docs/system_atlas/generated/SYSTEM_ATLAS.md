@@ -6,15 +6,16 @@ ATLAS_AUTHORITY=NONE
 ATLAS_ROLE=CURRENT_FROZEN_SYSTEM_DESCRIPTION
 RUNTIME_AUTHORIZATION_EFFECT=NONE
 CURRENT_ONLY=true
-SOURCE_TAG=freeze/visible-system-2026-11-06-v2
-SOURCE_COMMIT=a8e1c0088e25651ad4bb29ebe02e10142a0a92b2
+SOURCE_TAG=freeze/clean-system-2026-11-06-v1
+SOURCE_COMMIT=c742a23c964901c1353fcf3468e618db9cb6ef42
+SYSTEM_FREEZE_TAG=freeze/clean-system-complete-2026-11-06-v1
 ```
 
 Dieser Atlas beschreibt den Dateibestand, die benannten Schnittstellen und die Fachgrenzen des fixierten Quellbaums. Die Fachgruppen sind Navigationsräume. Autorität und tatsächliche Zustandswirkung ergeben sich aus den zitierten Codeownern und dem [Master Runbook](../../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md).
 
 ## Vollständiger Quellenbestand
 
-Der Dateikatalog enthält **23.040 Dateien**. der Pythonkatalog **9.959 syntaktisch gelesene Module**. **100.867 benannte Definitionen** und **175.234 lexikalische Importreferenzen**. Die vollständigen Pfade, Git-Objekte, Größen und SHA256 stehen in [current-files.jsonl.gz](../source/current-files.jsonl.gz). [current-symbols.jsonl.gz](../source/current-symbols.jsonl.gz) enthält Funktionen, Klassen, Parameter und annotierte Felder mit Quellzeilen. [current-imports.jsonl.gz](../source/current-imports.jsonl.gz) enthält die syntaktischen Importstellen.
+Der Dateikatalog enthält **22.459 Dateien**. der Pythonkatalog **9.963 syntaktisch gelesene Module**. **100.915 benannte Definitionen** und **175.260 lexikalische Importreferenzen**. Die vollständigen Pfade, Git-Objekte, Größen und SHA256 stehen in [current-files.jsonl.gz](../source/current-files.jsonl.gz). [current-symbols.jsonl.gz](../source/current-symbols.jsonl.gz) enthält Funktionen, Klassen, Parameter und annotierte Felder mit Quellzeilen. [current-imports.jsonl.gz](../source/current-imports.jsonl.gz) enthält die syntaktischen Importstellen.
 
 Ein Import ist eine Quellreferenz. Ein definierter Parameter ist noch kein beobachteter Wertverbrauch. Diese Kataloge behaupten keine ausgeführte Laufzeitkette. Der vollständige Dateibestand umfasst auch Dokumentations-, Test- und Belegdateien, die im fixierten Baum vorhanden sind; deren Inhalte werden dadurch nicht zu Betriebsregeln.
 

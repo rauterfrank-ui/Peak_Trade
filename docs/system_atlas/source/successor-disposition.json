@@ -62,5 +62,72 @@
     "disposition": "PRESERVED_UNCHANGED_IN_EXTERNAL_GIT_ARCHIVE"
   },
   "whole_repository_functional_approval": false,
-  "runtime_authorization_effect": "NONE"
+  "runtime_authorization_effect": "NONE",
+  "freeze_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+  "source_file_count": 22459,
+  "git_history_scope": "New clean local root plus the necessary shallow origin/main comparison snapshot; no predecessor ancestors or historical branches are retained locally",
+  "system_freeze_tag": "freeze/clean-system-complete-2026-11-06-v1",
+  "git_archive_complete": true,
+  "old_git_temporary_local_copy_remaining": false,
+  "archive_read_access_git": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/git-history-access.git",
+  "verified_unchanged_product_source_and_runtime_files": 5530,
+  "protected_source_comparison": {
+    "paths": 34,
+    "before_after_sha256": "2dafebe411ef136c79aafac644f2726900363d4edc85462cbea90575e10c295c",
+    "unchanged": true,
+    "existing_nonempty_drift_preserved": true,
+    "new_execution_authority": false
+  },
+  "configured_output_directories_retained": [
+    "logs/launchd"
+  ],
+  "configured_output_directory_status": "Installed writer configurations observed; this is not proof those jobs are running.",
+  "verification": {
+    "targeted_suite": {
+      "passed": 64,
+      "failed": 0,
+      "scope": [
+        "law and policy projections",
+        "Obsidian projection",
+        "offline lifecycle reconciliation",
+        "29P integrity gates",
+        "PL-TF-002 integrity gates"
+      ]
+    },
+    "updated_obsidian_link_tests": {
+      "passed": 8,
+      "failed": 0
+    },
+    "whole_repository_suite": "NOT_CLAIMED; existing YAML atlas test boundary remains documented",
+    "historical_restoration_audit": "FAILED_ON_CURRENT_CORPUS_BEFORE_ARCHIVING; not promoted to a current PASS",
+    "source_and_runtime_files_compared_bytewise": 5530,
+    "protected_source_comparison_identical": true,
+    "historical_worktree_code_imports": 0,
+    "effective_distinct_targeted_tests": 66
+  },
+  "obsidian_archive_link_migration": {
+    "known_archived_file_links": 279,
+    "affected_notes": 18,
+    "source_code_imported": false,
+    "dated_detail_preserved": true
+  },
+  "retired_external_autostarts": {
+    "count": 8,
+    "manifest": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/historische-autostarts-manifest.json",
+    "reason": "Legacy shadow-qualification/dashboard output generators and a v0 launcher whose target was already absent; no historical launcher code was restored."
+  },
+  "current_mail_and_stage1_maintenance_preserved": true,
+  "final_retired_writer_outputs": {
+    "count": 38,
+    "bytes": 17799,
+    "manifest": "/Volumes/M2DATA/PeakTrade_Bereinigter_Nachfolger_2026-11-06/stillgelegte-schreiber-letzte-ausgaben.json"
+  },
+  "reproducible_cache_entries_removed": 481,
+  "protected_git_configuration": {
+    "core.abbrev": "9",
+    "remote.origin.fetch": "+refs/heads/main:refs/remotes/origin/main",
+    "remote.origin.tagOpt": "--no-tags",
+    "remote.origin.skipDefaultUpdate": "true",
+    "remote.origin.skipFetchAll": "true"
+  }
 }

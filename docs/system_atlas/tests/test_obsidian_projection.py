@@ -71,3 +71,25 @@ def test_markdown_remains_byte_bound_even_if_json_digest_were_present():
     }
     with pytest.raises(ValueError, match="PROJECTION_CONTENT_CHANGED"):
         N["verify_generated_file"](b"{}", item)
+
+
+def test_archive_links_are_relocated_without_changing_unrelated_source_links():
+    rel = "docs/old/input.zip"
+    target = "/Volumes/M2DATA/Selected archive/input.zip"
+    original = (
+        f"[Datiert]({(ROOT / rel).as_uri()}#Scope) [Current]({(ROOT / 'src/current.py').as_uri()})"
+    )
+    text, changed, external = N["archive_markdown_links"](original, {rel: target})
+    assert Path(target).as_uri() + "#Scope" in text
+    assert (ROOT / "src/current.py").as_uri() in text
+    assert (changed, external) == (1, 1)
+    assert N["archive_markdown_links"](text, {rel: target}) == (text, 0, 1)
+
+
+def test_external_archive_notice_is_idempotent_and_preserves_dated_details():
+    original = "---\nstand: 2026-11-04\n---\n\n# Details\n\nOriginaler Messnachweis.\n"
+    once = N["archive_notice"](original, 2)
+    assert N["archive_notice"](once, 2) == once
+    assert "stand: 2026-11-04" in once
+    assert "Originaler Messnachweis." in once
+    assert once.count("<!-- external-archive-links:start -->") == 1

@@ -8,9 +8,10 @@ MAP_OF_TRUTH_SEMANTIC_AUTHORITY_EFFECT=NONE
 THIS_DOCUMENT_POINTS_ONLY_TO_CANONICAL_OWNERS=true
 PARALLEL_SSOT_CREATED=false
 CURRENT_ONLY_INVENTORY=true
+SYSTEM_FREEZE_TAG=freeze/clean-system-complete-2026-11-06-v1
 RUNTIME_AUTHORIZATION_EFFECT=NONE
-SOURCE_TAG=freeze/visible-system-2026-11-06-v2
-SOURCE_COMMIT=a8e1c0088e25651ad4bb29ebe02e10142a0a92b2
+SOURCE_TAG=freeze/clean-system-2026-11-06-v1
+SOURCE_COMMIT=c742a23c964901c1353fcf3468e618db9cb6ef42
 ```
 
 Diese Map vermittelt ausschließlich die Navigation für den fixierten Repository-Stand. Der [Master Runbook](../runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md) enthält die Betriebs-/Entwicklungsorientierung. Die ausführbaren Verträge liegen im dort zitierten Code und in seinen expliziten Konfigurations-/Aufrufinputs. Der [System Atlas](../system_atlas/generated/SYSTEM_ATLAS.md) erschließt Struktur und Schnittstellen.

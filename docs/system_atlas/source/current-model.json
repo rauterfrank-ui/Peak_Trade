@@ -2,15 +2,15 @@
   "schema": "peaktrade.current_frozen_atlas.v1",
   "authority": "NONE",
   "runtime_authorization_effect": "NONE",
-  "source_tag": "freeze/visible-system-2026-11-06-v2",
-  "source_commit": "a8e1c0088e25651ad4bb29ebe02e10142a0a92b2",
-  "source_tree": "84788b7c88ec141a408b3496453813df4f18e6c1",
-  "source_scope": "Single fixed repository tree and its source interfaces",
-  "file_count": 23040,
-  "python_modules_parsed": 9959,
+  "source_tag": "freeze/clean-system-2026-11-06-v1",
+  "source_commit": "c742a23c964901c1353fcf3468e618db9cb6ef42",
+  "source_tree": "ecc5c2c40b8a1f4033f868bb40a2dc0724d3c470",
+  "source_scope": "Clean accepted working-tree snapshot; required origin/main comparison snapshot is a separate input, not checked-out code",
+  "file_count": 22459,
+  "python_modules_parsed": 9963,
   "python_parse_errors": [],
-  "named_definitions": 100867,
-  "lexical_imports": 175234,
+  "named_definitions": 100915,
+  "lexical_imports": 175260,
   "groups_are_navigation_not_new_runtime_authority": true,
   "runtime_execution_inferred": false,
   "domains": [
@@ -2742,22 +2742,14 @@
     ".local": 2,
     ".pre-commit-config.yaml": 1,
     "AGENTS.md": 1,
-    "DISASTER_RECOVERY_ENVIRONMENT.txt": 1,
-    "DISASTER_RECOVERY_GIT_STATUS.txt": 1,
-    "DISASTER_RECOVERY_MANIFEST.txt": 1,
-    "DISASTER_RECOVERY_RSYNC_LOG.txt": 1,
-    "DISASTER_RECOVERY_UNTRACKED_INVENTORY.txt": 1,
-    "DISASTER_RECOVERY_VERIFICATION.txt": 1,
     "Makefile": 1,
     "README.md": 1,
-    "RESTORE_INSTRUCTIONS.txt": 1,
     "SECURITY_NOTES.md": 1,
-    "backups": 18,
-    "config": 798,
+    "config": 797,
     "config.toml": 1,
     "data": 5,
     "docker": 8,
-    "docs": 8062,
+    "docs": 7509,
     "evidence": 2936,
     "forensics": 67,
     "mypy.ini": 1,
@@ -2769,8 +2761,7 @@
     "requirements.txt": 1,
     "runtime": 404,
     "schemas": 3,
-    "scripts": 1473,
-    "sidebar_before.png": 1,
+    "scripts": 1472,
     "src": 5126,
     "static": 14,
     "templates": 32,
@@ -2779,16 +2770,16 @@
   },
   "files": {
     "current-files.jsonl.gz": {
-      "sha256": "e3fa973f5e2dd9a08c85775bbdc3e4d6bf92c4bf13700dc5898511da1832b9db",
-      "bytes": 1867093
+      "sha256": "789e20acb8ba8b5b79183e18f065cdcfcbb397dbccff8f42fedf7a3b6d06256f",
+      "bytes": 1820954
     },
     "current-symbols.jsonl.gz": {
-      "sha256": "2e5da680a30a1128bb81569463581703f65a7e061d07eea3276498ea1ed93ad7",
-      "bytes": 2585061
+      "sha256": "c5fcf00ea7d4aba9b3be43723aa3b858055bca621ab613b41f35c89224fcab19",
+      "bytes": 2586351
     },
     "current-imports.jsonl.gz": {
-      "sha256": "c72da6cf894ca7d9a0fa9cd4532357bde95777576668d289fb34fab49e276e45",
-      "bytes": 2011250
+      "sha256": "cd2d7bf18783d26f83b27fab4fe081abb2817fd1ec9315cc390326beb5607a96",
+      "bytes": 2011425
     },
     "current-policies.jsonl.gz": {
       "sha256": "d3ce063bf1a3c3531095bf25a77cb3dfdeb173bc3cb450b1394425d6d5e93006",
@@ -2867,5 +2858,6 @@
       "value": "BOUNDED_CONTINUOUS_SEQUENCING_TO_PRE_EXTERNAL_EFFECT_ONLY"
     }
   ],
-  "policy_files": 780
+  "policy_files": 780,
+  "system_freeze_tag": "freeze/clean-system-complete-2026-11-06-v1"
 }
