@@ -19,12 +19,12 @@
     {
       "path": "docs/ops/evidence/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_2026_11_06.json",
       "before_sha256": null,
-      "sha256": "aa5331060d24a3cbfe13a33a0aaa33e39e5e2ce4f3be2a84f0db66bac44e1a79"
+      "sha256": "301551485c41dba8b069ef0b519094d3b3416c2b5627dfa9d5a98340e062e8a2"
     },
     {
       "path": "docs/ops/evidence/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_2026_11_06.md",
       "before_sha256": null,
-      "sha256": "a5eec9742aa7c3ff48084c1b79b7c2f90ad335a0329a03ae6e5c595da4b76ba9"
+      "sha256": "8fbd57214b2f1d24e35c279acd662cf56e93d1d5d9d947e7930546ab0702c6d6"
     },
     {
       "path": "docs/ops/specs/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_V1.md",
@@ -34,7 +34,7 @@
     {
       "path": "docs/system_atlas/README.md",
       "before_sha256": "c01fe47919849c236d2e5c2b33cb2510848a69b2815545e793d90555a0711b67",
-      "sha256": "a1c58ea8958e01667b6a674a7de9c3e32a8490d1d1ef79784425ccd1c89adc50"
+      "sha256": "a7bcb7410e702c5d5bd25925e41510679e3ed336145cfc02c0dc64e14c6aefbc"
     },
     {
       "path": "docs/system_atlas/current_atlas.py",
@@ -45,6 +45,11 @@
       "path": "docs/system_atlas/tests/test_development_binding.py",
       "before_sha256": null,
       "sha256": "5f4e5e3ba2543187c29b5bba87e18a0dc9969186a50c7b9737ee45b6ef51ab01"
+    },
+    {
+      "path": "scripts/ops/run_pass_008_whole_system_v2_zero_delta_v1.py",
+      "before_sha256": "9ed29830c8951ac1577292613bcac70ae67f9397cbad1d13d93f543c8e3c73c0",
+      "sha256": "4bfcdcf707b0a5e76de8d1580decb1e800d8ddb24b8e68c84e05f81e655ca314"
     },
     {
       "path": "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py",

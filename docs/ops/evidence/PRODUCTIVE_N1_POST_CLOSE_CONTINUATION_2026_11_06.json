@@ -160,5 +160,76 @@
     },
     "runtime_effect_inferred": false,
     "retained_consumed_documents": 3
+  },
+  "ci_followup": {
+    "pr": "https://github.com/rauterfrank-ui/Peak_Trade/pull/7180",
+    "failed_candidate": "a34da19f34f1e83cc414fde6072e79faae5887cc",
+    "failed_checks": [
+      "operator-verify",
+      "docs-token-policy-gate",
+      "lint",
+      "Lint Gate",
+      "docs-drift-guard"
+    ],
+    "root_causes": [
+      "Pre-existing E731 in PASS-008 forensic helper",
+      "Virtualenv path token classified differently on a fresh CI runner",
+      "Law impact declaration path set and hash stale after the development delta"
+    ],
+    "original_nine_python_sources_unchanged": true,
+    "functional_pass_reused": 188,
+    "ruff_full_check": "PASS: src/ tests/ scripts/",
+    "baseline_format_debt": {
+      "format_version": "0.14.9",
+      "baseline_commit": "9397d04a37d527a8316b3e44ef4f80b4ef44db7a",
+      "unformatted_files": 107,
+      "all_bytes_identical_to_baseline": true,
+      "path_set_sha256": "ce543381e6f270e7f230376d997ed39333c5529c663122653cd95a1e7771ef1b",
+      "stdout_final_line": "107 files would be reformatted, 9787 files already formatted",
+      "forensic_helper_ast": "Only one assigned lambda replaced by same-argument named function; remaining AST identical."
+    },
+    "ci_gate_ruff_version": "0.15.22",
+    "remote_rerun_result": "pending new candidate",
+    "gate_disabled": false,
+    "additional_failed_check": "Check Docs Link Debt Trend",
+    "baseline_link_debt": {
+      "gate_baseline_missing": 243,
+      "current_missing": 653,
+      "all_missing_source_files_unchanged_against_pr_base": true,
+      "all_resolved_missing_targets_also_absent_in_pr_base": true,
+      "pr_base": "9397d04a37d527a8316b3e44ef4f80b4ef44db7a",
+      "baseline_not_rewritten": true
+    },
+    "forensic_helper": {
+      "path": "scripts/ops/run_pass_008_whole_system_v2_zero_delta_v1.py",
+      "sha256": "4bfcdcf707b0a5e76de8d1580decb1e800d8ddb24b8e68c84e05f81e655ca314",
+      "AST_proof": "Only one assigned lambda replaced by same-argument named function; remaining AST identical."
+    },
+    "local_validation": [
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt -m ruff check src/ tests/ scripts/",
+        "result": "PASS"
+      },
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt scripts/ops/validate_docs_token_policy.py --base origin/main",
+        "result": "PASS",
+        "markdown_files": 4
+      },
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt scripts/ops/current_law_impact_map_v1.py validate --diff-base origin/main",
+        "result": "PASS"
+      },
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt docs/system_atlas/current_atlas.py check",
+        "result": "PASS",
+        "development_bound_files": 16
+      },
+      {
+        "command": "PYTHONDONTWRITEBYTECODE=1 ./scripts/pt -m pytest -q -p no:cacheprovider tests/ops/test_current_law_impact_map_v1.py tests/ops/test_pass_008_root_isolation_regression_guards_v1.py",
+        "result": "PASS",
+        "passed": 22,
+        "duration_seconds": 0.35
+      }
+    ]
   }
 }

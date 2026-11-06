@@ -12,6 +12,11 @@
     "docs/governance/current_law_impact_map_v1/generated/semantic_object_index_v1.md",
     "docs/governance/current_law_impact_map_v1/generated/surface_census_v1.md",
     "docs/governance/current_law_impact_map_v1/generated/unknown_and_conflict_v1.md",
+    "docs/ops/evidence/OUTER_RING_PACKAGE_A_SEMANTIC_BASELINE_2026_11_06.json",
+    "docs/ops/evidence/OUTER_RING_PACKAGE_A_SEMANTIC_BASELINE_2026_11_06.md",
+    "docs/ops/evidence/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_2026_11_06.json",
+    "docs/ops/evidence/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_2026_11_06.md",
+    "docs/ops/specs/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_V1.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK.md",
     "docs/runbooks/canonical/PEAK_TRADE_MASTER_RUNBOOK_RATIFICATION.json",
     "docs/system_atlas/ATLAS_AUTHORITY_AND_USAGE.md",
@@ -24,18 +29,32 @@
     "docs/system_atlas/source/current-imports.jsonl.gz",
     "docs/system_atlas/source/current-model.json",
     "docs/system_atlas/source/current-symbols.jsonl.gz",
+    "docs/system_atlas/source/development-binding-v1.json",
     "docs/system_atlas/source/documentation-cleanup.json",
     "docs/system_atlas/source/policy-inventory.json",
     "docs/system_atlas/source/successor-disposition.json",
-    "docs/system_atlas/tests/test_obsidian_projection.py"
+    "docs/system_atlas/tests/test_development_binding.py",
+    "docs/system_atlas/tests/test_obsidian_projection.py",
+    "scripts/ops/run_pass_008_whole_system_v2_zero_delta_v1.py",
+    "src/ops/current_mf_n5_durable_lane_assignment_persistence_v1/persistence_v1.py",
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/__init__.py",
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/orchestrator_v1.py",
+    "src/ops/current_mf_n5_full_autonomy_productive_runtime_orchestrator_v1/post_close_continuation_v1.py",
+    "src/ops/current_mf_n5_ranking_domain_occupied_lane_cap23_n1_produce_join_v1/checked_publication_v1.py",
+    "tests/ops/test_current_productive_post_close_feedback_v1.py",
+    "tests/ops/test_productive_n1_post_close_continuation_v1.py"
   ],
-  "changed_paths_sha256": "ef893ea189b83877513910611e59aac9b4334e463db41a1e4a6bd6acdcb97117",
+  "changed_paths_sha256": "8e9c0424374bea46aceeff0635b09d429c1a06c55dae7a59b193ff31bd9e5a66",
   "verdict": "LAW_MAP_UPDATE_REQUIRED",
   "selector_used_as_law_impact_authority": false,
-  "reason": "Clean successor documentation rebinding; retired archive receipts are baseline-bound. Product src/runtime bytes and existing protected-source comparison are preserved.",
+  "reason": "Change-bound continuation of the existing frozen law/policy projection and clean successor documentation. The explicit N1 post-close delta connects original membership, publication, capital recovery and Core consumers; original authority and risk policies remain. Exact development hashes, consumer tests and unresolved freshness/ACK boundaries are recorded separately. A pre-existing forensic-helper lint error is corrected without executing reconstruction. Frozen source/catalog/tag and runtime state remain preserved; product src bytes now include the declared N1 changes.",
   "evidence_refs": [
     "docs/system_atlas/source/documentation-cleanup.json",
     "docs/system_atlas/source/policy-inventory.json",
-    "config/governance/current_law_impact_map_v1/source_v1.json"
+    "config/governance/current_law_impact_map_v1/source_v1.json",
+    "docs/system_atlas/source/development-binding-v1.json",
+    "docs/ops/specs/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_V1.md",
+    "docs/ops/evidence/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_2026_11_06.md",
+    "docs/ops/evidence/PRODUCTIVE_N1_POST_CLOSE_CONTINUATION_2026_11_06.json"
   ]
 }
